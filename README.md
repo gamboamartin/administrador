@@ -1,0 +1,2 @@
+# administrador
+Administracion de sistema
