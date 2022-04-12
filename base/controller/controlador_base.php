@@ -872,7 +872,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $filtro['accion.status'] = 'activo';
         $filtro['seccion.descripcion'] = $this->seccion;
         $filtro['accion.lista'] = 'activo';
-        $resultado = $accion_modelo->filtro_and($filtro,'numeros',array(),array(),0,0,array());
+        $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->retorno_error('Error al obtener acciones', $resultado, $header, $ws);
         }
