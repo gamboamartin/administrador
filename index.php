@@ -281,6 +281,7 @@ if($view){
     <script type="text/javascript" src="node_modules/datatables.net/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="node_modules/google-charts/dist/loader.js"></script>
     <script type="text/javascript" src="js/base.js"></script>
+    <script type="text/javascript" src="js/checkbox.js"></script>
 
     <?php  if(file_exists('./css/'.$seccion.'.'.$accion.'.css')){
         ?>
