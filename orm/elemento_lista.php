@@ -128,48 +128,62 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param string $tabla_externa
      * @param string $campo
      * @param string $seccion
      * @return array
      */
-    public function filtro_el(string $tabla_externa, string $campo, string $seccion): array
+    public function filtro_el(string $campo, string $seccion, string $tabla_externa): array
     {
         $filtro_el['elemento_lista.tabla_externa'] = $tabla_externa;
         $filtro_el['elemento_lista.campo'] = $campo;
         $filtro_el['elemento_lista.filtro'] = 'activo';
-        $filtro_el['seccion_menu.descripcion'] = $seccion;
+        $filtro_el['seccion.descripcion'] = $seccion;
         return $filtro_el;
     }
 
-    public function elemento_para_filtro(string $tabla_externa, string $campo, string $seccion): array
+    /**
+     * P INT P ORDER
+     * @param string $tabla_externa
+     * @param string $campo
+     * @param string $seccion
+     * @return array|stdClass
+     */
+    public function elemento_para_filtro(string $campo, string $seccion, string $tabla_externa): array|stdClass
     {
         $filtro_el = $this->filtro_el(campo: $campo, seccion:  $seccion, tabla_externa:$tabla_externa);
         if(errores::$error){
             return $this->error->error('Error al obtener filtro', $filtro_el);
         }
 
-        $data_el = $this->filtro_and($filtro_el);
+        $data_el = $this->filtro_and(filtro: $filtro_el);
         if (errores::$error) {
             return $this->error->error('Error al obtener elemento', $data_el);
         }
         return $data_el;
     }
 
-    public function elemento_para_lista(string $tabla_externa, string $campo, string $seccion){
-        $data_el = $this->elemento_para_filtro($tabla_externa, $campo, $seccion);
+    /**
+     * P INT P ORDER
+     * @param string $tabla_externa
+     * @param string $campo
+     * @param string $seccion
+     * @return array
+     */
+    public function elemento_para_lista(string $tabla_externa, string $campo, string $seccion):array{
+        $data_el = $this->elemento_para_filtro(campo:  $campo, seccion:  $seccion, tabla_externa: $tabla_externa);
         if (errores::$error) {
             return $this->error->error('Error al obtener elemento', $data_el);
         }
-        if ((int)$data_el['n_registros'] === 0) {
+        if ((int)$data_el->n_registros === 0) {
             return $this->error->error('Error no existe el elemento lista', $data_el);
         }
-        if ((int)$data_el['n_registros'] > 1) {
+        if ((int)$data_el->n_registros > 1) {
            return $this->error->error('Error existe mas de un elemento lista con filtro', $data_el);
 
         }
-        return $data_el['registros'][0];
+        return $data_el->registros[0];
     }
 
     /**

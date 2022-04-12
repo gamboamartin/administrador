@@ -130,7 +130,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
     public function data_grupo(array $filtro): array
     {
         $grupo_modelo = new grupo($this->link);
-        $r_grupo = $grupo_modelo->filtro_and($filtro);
+        $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener grupo',$r_grupo);
         }
@@ -178,7 +178,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
         $filtro['usuario.user'] = $usuario;
         $filtro['usuario.password'] = $password;
         $filtro['usuario.status'] = 'activo';
-        $r_usuario = $this->filtro_and($filtro);
+        $r_usuario = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener usuario',$r_usuario);
         }

@@ -73,7 +73,7 @@ class seguridad{
         $filtro = array('session_id'=>(new generales())->session_id);
         $session_modelo = new session($link);
 
-        $r_session = $session_modelo->filtro_and($filtro);
+        $r_session = $session_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error("Error al obtener registro", $r_session);
         }

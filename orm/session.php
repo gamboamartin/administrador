@@ -29,6 +29,11 @@ class session extends modelo{//PRUEBAS FINALIZADAS
         return $resultado['registros'];
     }
 
+    /**
+     * P INT P ORDER
+     * @param stdClass $r_session
+     * @return array
+     */
     public function asigna_data_session(stdClass $r_session): array
     {
         $_SESSION['numero_empresa'] = 1;
@@ -53,6 +58,10 @@ class session extends modelo{//PRUEBAS FINALIZADAS
         return $r_session;
     }
 
+    /**
+     * P INT
+     * @return array
+     */
     public function carga_data_session(): array
     {
         $session_id = $_GET['session_id'] ?? '';

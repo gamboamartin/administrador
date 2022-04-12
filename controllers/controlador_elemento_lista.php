@@ -1,6 +1,6 @@
 <?php
 namespace controllers;
-use controller\controlador_base;
+use base\controller\controlador_base;
 use models\elemento_lista;
 class controlador_elemento_lista extends controlador_base{
     public function __construct($link){

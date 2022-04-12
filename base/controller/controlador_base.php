@@ -350,7 +350,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
     /**
-     * PRUEBAS FINALIZADAS
+     * P INT
      * @param bool $header
      * @return array
      */
@@ -428,7 +428,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                         die('Error');
 
                     }
-                    $elemento_lista = $elm->elemento_para_lista($tabla_externa, $campo, $this->seccion);
+                    $elemento_lista = $elm->elemento_para_lista(tabla_externa: $tabla_externa, campo: $campo,seccion:  $this->seccion);
                     if (errores::$error) {
                         $error = $this->errores->error('Error al obtener elemento', $elemento_lista);
                         if (!$header) {
