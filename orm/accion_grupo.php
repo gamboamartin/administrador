@@ -21,7 +21,7 @@ class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     }
 
     /**
-     *
+     * P INT
      * @param int $seccion_menu_id
      * @return array|stdClass
      */

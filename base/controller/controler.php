@@ -112,11 +112,11 @@ class controler{
 
             $accion_modelo = new accion($this->link);
 
-            $accion_registro = $accion_modelo->accion_registro($this->seccion, $this->accion);
+            $accion_registro = $accion_modelo->accion_registro(accion:  $this->accion, seccion: $this->seccion);
             if(errores::$error){
                 return  $this->errores->error('Error al obtener acciones',$accion_registro);
             }
-            $acciones =  $accion_modelo->acciones_permitidas($this->seccion,$this->accion,$this->modelo);
+            $acciones =  $accion_modelo->acciones_permitidas(seccion: $this->seccion,accion: $this->accion,modelo: $this->modelo);
             if(errores::$error){
                 return  $this->errores->error('Error al obtener acciones',$acciones);
             }

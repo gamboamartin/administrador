@@ -518,12 +518,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/orm.git",
-                "reference": "eea10b55b100662d535b747c7f5bedccbaab7f37"
+                "reference": "1829f8a507358d01baa9ba8969d4f8e5a690285e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/orm/zipball/eea10b55b100662d535b747c7f5bedccbaab7f37",
-                "reference": "eea10b55b100662d535b747c7f5bedccbaab7f37",
+                "url": "https://api.github.com/repos/gamboamartin/orm/zipball/1829f8a507358d01baa9ba8969d4f8e5a690285e",
+                "reference": "1829f8a507358d01baa9ba8969d4f8e5a690285e",
                 "shasum": ""
             },
             "require": {
@@ -562,7 +562,7 @@
                 "issues": "https://github.com/gamboamartin/orm/issues",
                 "source": "https://github.com/gamboamartin/orm/tree/main"
             },
-            "time": "2022-04-12T21:28:52+00:00"
+            "time": "2022-04-12T21:55:33+00:00"
         },
         {
             "name": "gamboa.martin/plugins",
@@ -663,12 +663,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/validacion.git",
-                "reference": "47ad5ab2a3b74d9692f7c5a8d75df9b325c4c24e"
+                "reference": "b5eb82f22efbd80e6e4fbe160dbdc6453b90cb4e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/validacion/zipball/47ad5ab2a3b74d9692f7c5a8d75df9b325c4c24e",
-                "reference": "47ad5ab2a3b74d9692f7c5a8d75df9b325c4c24e",
+                "url": "https://api.github.com/repos/gamboamartin/validacion/zipball/b5eb82f22efbd80e6e4fbe160dbdc6453b90cb4e",
+                "reference": "b5eb82f22efbd80e6e4fbe160dbdc6453b90cb4e",
                 "shasum": ""
             },
             "require": {
@@ -703,7 +703,7 @@
                 "issues": "https://github.com/gamboamartin/validacion/issues",
                 "source": "https://github.com/gamboamartin/validacion/tree/main"
             },
-            "time": "2022-04-11T15:57:25+00:00"
+            "time": "2022-04-12T21:57:53+00:00"
         },
         {
             "name": "graham-campbell/guzzle-factory",

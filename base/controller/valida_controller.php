@@ -54,7 +54,7 @@ class valida_controller extends base_modelos{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT PROBADO
      * @return bool|array
      */
     public function valida_post_alta(): bool|array

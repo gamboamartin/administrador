@@ -14,6 +14,28 @@ class valida_controllerTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_valida_post_alta(){
+        errores::$error = false;
+        $val = new valida_controller();
+        //$nm = new liberator($nm);
+        $_POST = array();
+
+        $resultado = $val->valida_post_alta();
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error el POST no puede venir vacio", $resultado['mensaje']);
+
+        errores::$error = false;
+        $_POST = array();
+        $_POST['A'] = 'X';
+
+        $resultado = $val->valida_post_alta();
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_post_modifica(){
         errores::$error = false;
         $val = new valida_controller();

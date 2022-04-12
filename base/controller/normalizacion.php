@@ -147,7 +147,7 @@ class normalizacion{
     }
 
     /**
-     *
+     * P INT
      * @param array $filtro
      * @param array $filtro_btn
      * @param controler $controler
@@ -231,7 +231,7 @@ class normalizacion{
     }
 
     /**
-     *
+     * P INT
      * @param array $filtro
      * @param controler $controler
      * @param array $filtro_btn
@@ -240,7 +240,7 @@ class normalizacion{
     public function genera_filtro_modelado(array $filtro,controler $controler, array $filtro_btn = array()):array{
 
 
-        $filtro_modelado = $this->determina_filtro_modelado($filtro, $filtro_btn,$controler);
+        $filtro_modelado = $this->determina_filtro_modelado(filtro: $filtro, filtro_btn: $filtro_btn,controler: $controler);
         if(errores::$error){
             return $this->error->error('Error al generar filtro',$filtro_modelado);
         }
@@ -464,7 +464,7 @@ class normalizacion{
     }
 
     /**
-     *
+     * P INT
      * @param array $filtro_modelado
      * @param array $filtro_btn
      * @param controler $controler

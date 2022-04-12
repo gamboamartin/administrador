@@ -23,7 +23,7 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     *
+     * P INT
      * @param string $seccion
      * @param string $accion
      * @param modelo $modelo
@@ -176,14 +176,14 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * PHPUNIT
+     * P INT
      * @param string $seccion
      * @param string $accion
      * @return array
      */
     private function filtro_accion_seccion(string $seccion, string $accion):array{
 
-        $valida = $this->validacion->seccion_accion($seccion, $accion);
+        $valida = $this->validacion->seccion_accion( accion: $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error('Error al validar seccion',$valida);
         }
@@ -195,23 +195,22 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * PHPUNIT
+     * P INT
      * @param string $seccion
      * @param string $accion
      * @return array|stdClass
      */
     private function accion_seccion(string $seccion, string $accion):array|stdClass{
-        $valida = $this->validacion->seccion_accion($seccion, $accion);
+        $valida = $this->validacion->seccion_accion(accion:  $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error('Error al validar seccion',$valida);
         }
 
-        $filtro = $this->filtro_accion_seccion($seccion, $accion);
+        $filtro = $this->filtro_accion_seccion(seccion: $seccion, accion: $accion);
         if(errores::$error){
             return  $this->error->error('Error al obtener filtros',$filtro);
         }
-        $r_accion = $this->filtro_and($filtro,'numeros',array(),array(),0,
-            0,array());
+        $r_accion = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return  $this->error->error('Error al obtener acciones',$r_accion);
         }
@@ -265,17 +264,17 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * PHPUNIT
+     * P INT
      * @param string $seccion
      * @param string $accion
      * @return array
      */
     public function accion_registro(string $seccion, string $accion):array{
-        $valida = $this->validacion->seccion_accion($seccion, $accion);
+        $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error('Error al validar seccion',$valida);
         }
-        $r_accion = $this->accion_seccion($seccion,$accion);
+        $r_accion = $this->accion_seccion(seccion: $seccion,accion: $accion);
         if(errores::$error){
             return  $this->error->error('Error al obtener acciones',$r_accion);
         }
