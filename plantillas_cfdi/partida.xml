@@ -1,0 +1,11 @@
+<cfdi:Concepto ClaveProdServ="|clave_producto_servicio|" NoIdentificacion="|no_identificacion|" Cantidad="|cantidad|" ClaveUnidad="|clave_unidad|" Unidad="|unidad|" Descripcion="|descripcion|" ValorUnitario="|valor_unitario|" Importe="|importe|" |Descuento|>
+    |tag_impuestos_inicial|
+        |tag_inicio_traslados|
+            |tag_inicio_traslado_ieps| |etiqueta_importe_impuesto_ieps||importe_impuesto_ieps| |etiqueta_tasa_cuota_ieps||tasa_cuota_ieps| |etiqueta_tipo_factor_ieps||tipo_factor_codigo_ieps| |etiqueta_impuesto_ieps||impuesto_codigo_ieps| |etiqueta_base_ieps||importe_base_ieps| |tag_fin_traslado_ieps|
+            |tag_inicio_traslado| |etiqueta_importe_impuesto||importe_impuesto| |etiqueta_tasa_cuota||tasa_cuota| |etiqueta_tipo_factor||tipo_factor_codigo| |etiqueta_impuesto||impuesto_codigo| |etiqueta_base||importe_base| |tag_fin_traslado|
+        |tag_fin_traslados|
+        |tag_inicio_retenciones|
+            |tag_inicio_retencion| |etiqueta_base_retencion||importe_base_retencion| |etiqueta_impuesto_retencion||impuesto_codigo_retencion| |etiqueta_tipo_factor_retencion||tipo_factor_codigo_retencion| |etiqueta_tasa_cuota_retencion||tasa_cuota_retencion| |etiqueta_importe_impuesto_retencion||importe_impuesto_retencion| |tag_fin_retencion|
+        |tag_fin_retenciones|
+    |tag_impuestos_final|
+</cfdi:Concepto>
