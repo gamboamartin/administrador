@@ -1,4 +1,14 @@
 {
+  "name": "gamboa.martin/administrador",
+  "description": "Frontend",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "authors": [
+    {
+      "name": "Martin Gamboa",
+      "email": "gamboa.martin@gmail.com"
+    }
+  ],
     "autoload": {
         "psr-4": {
             "controllers\\": "controllers",

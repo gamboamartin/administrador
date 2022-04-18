@@ -199,6 +199,42 @@ class whereTest extends test {
         $this->assertEquals( "", $resultado);
 
     }
+    public function test_maqueta_filtro_especial(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = '';
+        $filtro = array();
+        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "Error al validar filtro", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = 'b';
+        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "Error al validar filtro", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = 'b';
+        $filtro['a']['valor'] = 'b';
+        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "ab'b'", $resultado);
+
+        errores::$error = false;
+    }
 
     public function test_value(){
         errores::$error = false;

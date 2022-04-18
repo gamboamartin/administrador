@@ -915,7 +915,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -947,6 +947,12 @@ class where{
         $campo = trim($campo);
 
         $valida = (new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro);
+        if(errores::$error){
+            return $this->error->error('Error al validar filtro', $valida);
+        }
+
+        $keys = array('valor');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $filtro[$campo]);
         if(errores::$error){
             return $this->error->error('Error al validar filtro', $valida);
         }
