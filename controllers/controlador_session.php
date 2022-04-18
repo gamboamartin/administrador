@@ -193,8 +193,6 @@ class controlador_session extends controlador_base{
             return $this->retorno_error('Error al generar session', $e, $header, $ws);
         }
 
-
-
         $r_alta  = $this->alta_session($usuario);
         if(errores::$error){
             return $this->retorno_error('Error al dar de alta session', $r_alta, $header, $ws);

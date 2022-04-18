@@ -226,7 +226,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $template->campos_invisibles =$this->campos_invisibles;
         $this->registro_en_proceso = $registro_en_proceso;
 
-        $campos = $elm->obten_campos($this->modelo,'alta', array());
+        $campos = $elm->obten_campos(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
         if(errores::$error){
             return  $this->retorno_error('Error al obtener campos',$campos,$header,false);
         }
@@ -355,6 +355,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @return array
      */
     public function aplica_filtro(bool $header): array{
+
         if(!isset($_POST)){
             $error =  $this->errores->error('Error POST debe existir',array());
 
@@ -406,10 +407,13 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(isset($_POST['btn_limpiar']) && $_POST['btn_limpiar'] ==='activo'){
             unset($_SESSION['filtros'][$this->seccion]);
         }
+
         $ejecuta = true;
         if(is_string($filtros)){
             $ejecuta = false;
         }
+
+        $filtros_env = array();
         if(isset($_POST['btn_filtrar']) && $_POST['btn_filtrar'] ==='activo' && $ejecuta){
             foreach($filtros as $tabla_externa=>$data){
                 if(!is_array($data)){
@@ -428,7 +432,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                         die('Error');
 
                     }
-                    $elemento_lista = $elm->elemento_para_lista(tabla_externa: $tabla_externa, campo: $campo,seccion:  $this->seccion);
+                    $elemento_lista = $elm->elemento_para_lista(campo: $campo, seccion:  $this->seccion, tabla_externa: $tabla_externa);
                     if (errores::$error) {
                         $error = $this->errores->error('Error al obtener elemento', $elemento_lista);
                         if (!$header) {
@@ -437,10 +441,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                         print_r($error);
                         die('Error');
                     }
-                    $filtros[$tabla_externa][$campo] = array('es_sq'=>$elemento_lista['elemento_lista_es_sq'],'value'=>$value);
+                    $filtros_env[$tabla_externa][$campo]['es_sq'] = $elemento_lista['elemento_lista_es_sq'];
+                    $filtros_env[$tabla_externa][$campo]['value'] = $value;
+
                 }
             }
-            $_SESSION['filtros'][$this->seccion] = $filtros;
+            $_SESSION['filtros'][$this->seccion] = $filtros_env;
         }
 
         if($header) {
@@ -1169,7 +1175,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         $exportador = new exportador();
-        $campos = $elm->obten_campos($this->seccion,'lista', array());
+
+        $campos = $elm->obten_campos(modelo: $this->modelo,vista: 'lista', estructura_bd: array());
         if(errores::$error){
             return   $this->errores->error('Error al obtener campos',$campos);
         }
@@ -1183,14 +1190,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        $campos = $elm->obten_campos($this->seccion,'lista', array());
+        $campos = $elm->obten_campos(modelo: $this->modelo,vista: 'lista',estructura_bd:  array());
         if(errores::$error){
             return   $this->errores->error('Error al obtener campos',$campos);
         }
 
         $campos = $this->obten_estructura($campos);
 
-        if(isset($campos['error'])){
+        if(errores::$error){
             $error =  $this->errores->error('Error al obtener estructura',$campos);
             if(!$header){
                 return $error;

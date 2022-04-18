@@ -27,6 +27,30 @@ class valida_controller extends base_modelos{
     }
 
     /**
+     * P INT P ORDER PROBADO
+     * @param string $campo
+     * @param string $seccion
+     * @param string $tabla_externa
+     * @return bool|array
+     */
+    public function valida_el(string $campo, string $seccion, string $tabla_externa): bool|array
+    {
+        $tabla_externa = trim($tabla_externa);
+        if($tabla_externa === ''){
+            return $this->error->error('Error tabla_externa no puede venir vacio',$tabla_externa);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error('Error $campo no puede venir vacio',$campo);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error('Error $seccion no puede venir vacio',$seccion);
+        }
+        return true;
+    }
+
+    /**
      * P ORDER P INT
      * @param string $clase
      * @param controler $controler

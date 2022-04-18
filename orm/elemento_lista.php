@@ -1,5 +1,6 @@
 <?php
 namespace models;
+use base\controller\valida_controller;
 use gamboamartin\errores\errores;
 use gamboamartin\orm\modelo;
 use gamboamartin\orm\sql_bass;
@@ -128,7 +129,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * @param string $tabla_externa
      * @param string $campo
      * @param string $seccion
@@ -136,6 +137,11 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      */
     public function filtro_el(string $campo, string $seccion, string $tabla_externa): array
     {
+        $valida = (new valida_controller())->valida_el(campo: $campo, seccion: $seccion, tabla_externa: $tabla_externa);
+        if(errores::$error){
+            return $this->error->error('Error al validar datos',$valida);
+        }
+
         $filtro_el['elemento_lista.tabla_externa'] = $tabla_externa;
         $filtro_el['elemento_lista.campo'] = $campo;
         $filtro_el['elemento_lista.filtro'] = 'activo';
@@ -152,6 +158,11 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      */
     public function elemento_para_filtro(string $campo, string $seccion, string $tabla_externa): array|stdClass
     {
+        $valida = (new valida_controller())->valida_el(campo: $campo, seccion: $seccion, tabla_externa: $tabla_externa);
+        if(errores::$error){
+            return $this->error->error('Error al validar datos',$valida);
+        }
+
         $filtro_el = $this->filtro_el(campo: $campo, seccion:  $seccion, tabla_externa:$tabla_externa);
         if(errores::$error){
             return $this->error->error('Error al obtener filtro', $filtro_el);
@@ -171,7 +182,13 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @param string $seccion
      * @return array
      */
-    public function elemento_para_lista(string $tabla_externa, string $campo, string $seccion):array{
+    public function elemento_para_lista(string $campo, string $seccion, string $tabla_externa):array{
+
+        $valida = (new valida_controller())->valida_el(campo: $campo, seccion: $seccion, tabla_externa: $tabla_externa);
+        if(errores::$error){
+            return $this->error->error('Error al validar datos',$valida);
+        }
+
         $data_el = $this->elemento_para_filtro(campo:  $campo, seccion:  $seccion, tabla_externa: $tabla_externa);
         if (errores::$error) {
             return $this->error->error('Error al obtener elemento', $data_el);
@@ -187,7 +204,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * Funcion obtener los elementos lista de una vista
      *
      * @param string $tabla tabla de la bd
@@ -226,7 +243,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     *
+     * P INT P ORDER
      * Funcion para la generacion de la estructura para ser utilizada en views
      *
      * @param string $tabla tabla del modelo o estructura
@@ -240,7 +257,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @internal  $this->elementos_lista($link,$tabla,$vista);
      * @internal  $this->maqueta_estructuras($estructura_init,$campos_obligatorios,$vista,$tabla);
      */
-    public function genera_estructura_tabla(string $tabla, string $vista, array $campos_obligatorios, array $estructura_bd): array{
+    public function genera_estructura_tabla(array $campos_obligatorios, array $estructura_bd, string $tabla, string $vista): array{
         $valida = $this->validacion->valida_modelo(tabla: $tabla);
         if(errores::$error){
             return $this->error->error('Error al validar '.$tabla,$valida);
@@ -255,8 +272,8 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         $estructura_init = $resultado->registros;
         $estructura_bd[$tabla]['campos'] = array();
         $estructura_bd[$tabla]['campos_completos']= array();
-        $estructura_bd = (new sql_bass())->maqueta_estructuras(estructura_init: $estructura_init,
-            campos_obligatorios: $campos_obligatorios,vista: $vista,tabla: $tabla,estructura_bd:  $estructura_bd);
+        $estructura_bd = (new sql_bass())->maqueta_estructuras(campos_obligatorios: $campos_obligatorios,
+            estructura_bd:  $estructura_bd, estructura_init: $estructura_init, tabla: $tabla,vista: $vista);
         if(errores::$error){
             return $this->error->error('Error al generar estructura',$estructura_bd);
         }
@@ -265,7 +282,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     *
+     * P INT P ORDER
      * Funcion para la generacion de la estructura para ser utilizada en views
      *
      * @param modelo $modelo
@@ -279,18 +296,17 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @internal  $modelo_base->genera_modelo($tabla);
      * @internal  $this->genera_estructura_tabla($link,$tabla,$vista,$campos_obligatorios);
      */
-    public function genera_estructura_bd( modelo $modelo, string $vista, array $estructura_bd): array{
+    public function genera_estructura_bd(array $estructura_bd,  modelo $modelo, string $vista): array{
 
         if($vista === ''){
             return $this->error->error('Error $vista no puede venir vacia',$vista);
         }
 
-
         $campos_obligatorios = $modelo->campos_obligatorios;
 
         if(!isset($estructura_bd[$modelo->tabla]['campos'])) {
-            $estructura_bd = $this->genera_estructura_tabla(tabla: $modelo->tabla,vista: $vista,
-                campos_obligatorios: $campos_obligatorios,estructura_bd:  $estructura_bd);
+            $estructura_bd = $this->genera_estructura_tabla(campos_obligatorios: $campos_obligatorios,
+                estructura_bd:  $estructura_bd, tabla: $modelo->tabla,vista: $vista);
             if(errores::$error){
                 return $this->error->error('Error al generar estructura',$estructura_bd);
             }
@@ -301,7 +317,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     *
+     * P INT P ORDER
      * Funcion para obtener los campos de una vista
      *
      * @param modelo $modelo
@@ -317,7 +333,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @uses templates
      * @internal  $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
      */
-    public function obten_campos(modelo $modelo, string $vista, array $estructura_bd): array{
+    public function obten_campos(array $estructura_bd, modelo $modelo, string $vista): array{
 
         $estructura_bd = $this->genera_estructura_bd(estructura_bd:  $estructura_bd, modelo: $modelo,vista: $vista);
         if(errores::$error){

@@ -1,13 +1,16 @@
 <?php
 namespace models;
 
+use config\generales;
 use gamboamartin\calculo\calculo;
 use gamboamartin\errores\errores;
 
 
 use gamboamartin\orm\modelo;
+use JetBrains\PhpStorm\Pure;
 use PDO;
 use stdClass;
+use Throwable;
 
 class session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
@@ -30,17 +33,100 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
+     * P ORDER P INT
      * @param stdClass $r_session
      * @return array
      */
     public function asigna_data_session(stdClass $r_session): array
+    {
+
+        $session_activa = $this->session_activa();
+        if(errores::$error){
+            return $this->error->error('Error al validar session', $session_activa);
+        }
+
+        $carga = $this->init_data_session(r_session: $r_session,session_activa:  $session_activa);
+        if(errores::$error){
+            return $this->error->error('Error al $asigna session', $carga);
+        }
+
+        return $_SESSION;
+    }
+
+    /**
+     * P ORDER P INT
+     * @param stdClass $r_session
+     * @return array
+     */
+    private function asigna_datos_session(stdClass $r_session): array
     {
         $_SESSION['numero_empresa'] = 1;
         $_SESSION['activa'] = 1;
         $_SESSION['grupo_id'] = $r_session->registros[0]['grupo_id'];
         $_SESSION['usuario_id'] = $r_session->registros[0]['usuario_id'];
         return $_SESSION;
+    }
+
+    /**
+     * P ORDER P INT
+     * @param stdClass $r_session
+     * @return array
+     */
+    private function carga_session(stdClass $r_session): array
+    {
+        $init = $this->init_session(session_id:(new generales())->session_id);
+        if(errores::$error){
+            return $this->error->error('Error al iniciar session', $init);
+        }
+
+        $asigna = $this->asigna_datos_session(r_session: $r_session);
+        if(errores::$error){
+            return $this->error->error('Error al $asigna session', $asigna);
+        }
+        return $asigna;
+    }
+
+    /**
+     * P ORDER P INT
+     * @param stdClass $r_session
+     * @param bool $session_activa
+     * @return bool|array
+     */
+    private function init_data_session(stdClass $r_session, bool $session_activa): bool|array
+    {
+        if($session_activa) {
+            $carga = $this->carga_session(r_session: $r_session);
+            if(errores::$error){
+                return $this->error->error('Error al $asigna session', $carga);
+            }
+        }
+        else{
+            session_destroy();
+        }
+        return $session_activa;
+    }
+
+    /**
+     * P ORDER P INT PROBADO
+     * @param string $session_id
+     * @return string|array
+     */
+    private function init_session(string $session_id): string|array
+    {
+        $session_id = trim($session_id);
+        if($session_id === ''){
+            return $this->error->error('Error session_id esta vacia', $session_id);
+        }
+
+        try{
+            session_id($session_id);
+            session_start();
+        }
+        catch (Throwable $e){
+            return $this->error->error('Error al iniciar session', $e);
+        }
+
+        return $session_id;
     }
 
 
@@ -59,7 +145,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @return array
      */
     public function carga_data_session(): array
@@ -194,6 +280,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
                 return $this->error->error('Error filtro invalido',$filtro);
             }
         }
+
         return $filtro;
     }
 
@@ -205,6 +292,20 @@ class session extends modelo{//PRUEBAS FINALIZADAS
             return $this->error->error("Error al filtrar", $r_session);
         }
         return $r_session;
+    }
+
+    /**
+     * P ORDER P INT PROBADO
+     * @return bool
+     */
+    #[Pure] private function session_activa(): bool
+    {
+        $session_id = (new generales())->session_id;
+        $session_activa = false;
+        if($session_id !== ''){
+            $session_activa = true;
+        }
+        return $session_activa;
     }
 
 
