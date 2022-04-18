@@ -2,12 +2,12 @@
 require "init.php";
 
 use base\conexion;
+use base\frontend\directivas;
+use base\frontend\templates;
 use base\seguridad;
 use config\generales;
 use controllers\controlador_session;
 use gamboamartin\errores\errores;
-use gamboamartin\frontend\directivas;
-use gamboamartin\frontend\templates;
 use models\accion;
 use models\elemento_lista;
 use models\menu;

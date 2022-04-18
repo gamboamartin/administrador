@@ -1,11 +1,11 @@
 <?php
 namespace base\controller;
 
+use base\frontend\directivas;
+use base\orm\modelo;
 use config\generales;
 use gamboamartin\errores\errores;
-use gamboamartin\frontend\directivas;
-use gamboamartin\orm\modelo;
-use gamboamartin\orm\modelo_base;
+
 
 
 use models\accion;
@@ -132,7 +132,7 @@ class controler{
 
 
     /**
-     *
+     * P INT
      * @param int $limit
      * @param int $offset
      * @param array $filtro
@@ -227,7 +227,7 @@ class controler{
     }
 
     /**
-     * PHPUNIT
+     * P INT
      * @param int $limit
      * @param int $pag_seleccionada
      * @param array $filtro
@@ -484,7 +484,7 @@ class controler{
     }
 
     /**
-     * PHPUNIT
+     * P INT
      * @param int $limit
      * @param int $pag_seleccionada
      * @param array $filtro

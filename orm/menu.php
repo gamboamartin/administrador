@@ -1,8 +1,7 @@
 <?php
 namespace models;
 
-
-use gamboamartin\orm\modelo;
+use base\orm\modelo;
 use PDO;
 
 class menu extends modelo{ //PRUEBAS FINALIZADAS

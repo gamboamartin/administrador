@@ -147,21 +147,20 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $filtro
      * @param array $filtro_btn
      * @param controler $controler
      * @return array
      */
-    private function determina_filtro_modelado(array $filtro, array $filtro_btn, controler $controler):array{ //FIN PROT
+    private function determina_filtro_modelado(controler $controler, array $filtro, array $filtro_btn):array{
 
         $filtro_modelado = $this->genera_filtros_modelados(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al generar filtro',$filtro_modelado);
         }
 
-        $filtro_modelado = $this->merge_filtro_modelado(filtro_modelado:$filtro_modelado,filtro_btn: $filtro_btn,
-            controler:  $controler);
+        $filtro_modelado = $this->merge_filtro_modelado(controler:  $controler, filtro_btn: $filtro_btn, filtro_modelado:$filtro_modelado);
         if(errores::$error){
             return $this->error->error('Error al aplicar filtro en merge',$filtro_modelado);
         }
@@ -231,16 +230,16 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $filtro
      * @param controler $controler
      * @param array $filtro_btn
      * @return array
      */
-    public function genera_filtro_modelado(array $filtro,controler $controler, array $filtro_btn = array()):array{
+    public function genera_filtro_modelado(controler $controler, array $filtro, array $filtro_btn = array()):array{
 
 
-        $filtro_modelado = $this->determina_filtro_modelado(filtro: $filtro, filtro_btn: $filtro_btn,controler: $controler);
+        $filtro_modelado = $this->determina_filtro_modelado(controler: $controler, filtro: $filtro, filtro_btn: $filtro_btn);
         if(errores::$error){
             return $this->error->error('Error al generar filtro',$filtro_modelado);
         }
@@ -464,13 +463,13 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $filtro_modelado
      * @param array $filtro_btn
      * @param controler $controler
      * @return array
      */
-    #[Pure] private function merge_filtro_modelado(array $filtro_modelado, array $filtro_btn, controler $controler):array{ //FIN
+    #[Pure] private function merge_filtro_modelado( controler $controler, array $filtro_btn, array $filtro_modelado):array{ //FIN
         $filtro_modelado = array_merge($filtro_modelado,$controler->modelo->sql_seguridad_por_ubicacion);
         $filtro_modelado = array_merge($filtro_modelado,$controler->modelo->filtro_seguridad);
 

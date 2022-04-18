@@ -1,10 +1,10 @@
 <?php
 namespace models;
 
+use base\orm\modelo;
 use gamboamartin\errores\errores;
 
 
-use gamboamartin\orm\modelo;
 use PDO;
 
 class usuario extends modelo{ //PRUEBAS en proceso

@@ -1,12 +1,12 @@
 <?php
 namespace models;
 
+use base\orm\modelo;
 use config\generales;
 use gamboamartin\calculo\calculo;
 use gamboamartin\errores\errores;
 
 
-use gamboamartin\orm\modelo;
 use JetBrains\PhpStorm\Pure;
 use PDO;
 use stdClass;

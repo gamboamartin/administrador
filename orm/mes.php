@@ -1,7 +1,7 @@
 <?php
 namespace models;
+use base\orm\modelo;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\modelo;
 
 use PDO;
 

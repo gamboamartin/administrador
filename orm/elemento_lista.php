@@ -1,10 +1,9 @@
 <?php
 namespace models;
 use base\controller\valida_controller;
+use base\orm\modelo;
+use base\orm\sql_bass;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\modelo;
-use gamboamartin\orm\sql_bass;
-use gamboamartin\validacion\validacion;
 
 
 use PDO;

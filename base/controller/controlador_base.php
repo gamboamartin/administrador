@@ -1,12 +1,12 @@
 <?php //DEBUG FIN
 namespace base\controller;
 
+use base\frontend\directivas;
+use base\frontend\templates;
+use base\frontend\values;
+use base\orm\modelo;
 use config\views;
 use gamboamartin\errores\errores;
-use gamboamartin\frontend\directivas;
-use gamboamartin\frontend\templates;
-use gamboamartin\frontend\values;
-use gamboamartin\orm\modelo;
 
 use gamboamartin\plugins\exportador;
 use JsonException;
@@ -764,7 +764,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->errores->error('Error al obtener filtro',$filtro);
         }
 
-        $filtros =    (new normalizacion())->genera_filtro_modelado(filtro: $filtro,controler:  $this);
+        $filtros =    (new normalizacion())->genera_filtro_modelado(controler:  $this, filtro: $filtro);
         if(errores::$error){
             $error = $this->errores->error('Error al $filtros',$filtros);
             if(!$header){
@@ -1161,7 +1161,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->errores->error('Error al obtener filtro',$filtro);
         }
 
-        $registros = $this->obten_registros_para_lista( 0,1,$filtro,$filtro_btn);
+        $registros = $this->obten_registros_para_lista( limit: 0,pag_seleccionada: 1,filtro: $filtro,filtro_btn: $filtro_btn);
         if(errores::$error){
             $error =  $this->errores->error('Error al generar resultado filtrado',$registros);
             if(!$header){

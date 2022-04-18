@@ -1,10 +1,8 @@
 <?php
 namespace models;
 
+use base\orm\modelo;
 use gamboamartin\errores\errores;
-
-
-use gamboamartin\orm\modelo;
 use PDO;
 use stdClass;
 
@@ -21,11 +19,11 @@ class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param int $seccion_menu_id
      * @return array|stdClass
      */
-    public function obten_accion_permitida(int $seccion_menu_id):array|stdClass{ //FIN PROT
+    public function obten_accion_permitida(int $seccion_menu_id):array|stdClass{
         $keys = array('grupo_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
         if(errores::$error){
