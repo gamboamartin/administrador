@@ -1,9 +1,12 @@
 <?php
 namespace base\controller;
+use base\conexion;
 use base\seguridad;
+use config\generales;
 use controllers\controlador_session;
 use gamboamartin\errores\errores;
 use models\accion;
+use models\session;
 use PDO;
 use stdClass;
 
@@ -51,6 +54,81 @@ class init{
             $include_action = './views/vista_base/alta.php';
         }
         return $include_action;
+    }
+
+    public function index(){
+        $con = new conexion();
+        $link = conexion::$link;
+
+        $session = (new session($link))->carga_data_session();
+        if(errores::$error){
+            return $this->error->error('Error al asignar session',$session);
+
+        }
+
+        $conf_generales = new generales();
+        $seguridad = new seguridad();
+        $_SESSION['tiempo'] = time();
+
+        $seguridad = $this->permiso( link: $link,seguridad:   $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al verificar seguridad', $seguridad);
+
+        }
+
+        $controlador = $this->controller(link:  $link,seccion:  $seguridad->seccion);
+        if(errores::$error){
+            return $this->error->error('Error al generar controlador', $controlador);
+
+        }
+
+        $include_action = (new init())->include_action(seguridad: $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al generar include', $include_action);
+
+        }
+
+        $out_ws = (new salida_data())->salida_ws(controlador:$controlador, include_action: $include_action,seguridad:  $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al generar salida', $out_ws);
+
+        }
+
+        $mensajeria = (new mensajes())->data();
+        if(errores::$error){
+            return $this->error->error('Error al generar mensajes', $mensajeria);
+
+        }
+
+        $data_custom = (new custom())->data(seguridad: $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al generar datos custom', $data_custom);
+
+        }
+
+        $data = new stdClass();
+        $data->css_custom = $data_custom->css;
+        $data->js_seccion = $data_custom->js_seccion;
+        $data->js_accion = $data_custom->js_accion;
+
+        $data->menu = $seguridad->menu;
+
+        $data->link = $link;
+        $data->path_base = $conf_generales->path_base;
+
+        $data->error_msj = $mensajeria->error_msj;
+        $data->exito_msj = $mensajeria->exito_msj;
+
+        $data->breadcrumbs = $controlador->breadcrumbs;
+
+        $data->include_action = $include_action;
+
+        $data->controlador = $controlador;
+
+        $data->conf_generales = $conf_generales;
+
+
+        return $data;
     }
 
     /**

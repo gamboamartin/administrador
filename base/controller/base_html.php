@@ -7,4 +7,11 @@ class base_html{
                     <span aria-hidden="true">&times;</span>
                 </button>';
     }
+    public function head(string $titulo): string
+    {
+        $errores_html = '<h4 class="alert-heading">';
+        $errores_html .= $titulo;
+        $errores_html .= '</h4>';
+        return $errores_html;
+    }
 }

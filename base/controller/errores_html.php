@@ -27,7 +27,7 @@ class errores_html extends base_html {
 
     private function data_modal_error(array $errores_previos): array|string
     {
-        $head_error = $this->head();
+        $head_error = $this->head(titulo: 'Error');
         if(errores::$error){
             return $this->error->error('Error al generar head', $head_error);
         }
@@ -52,13 +52,7 @@ class errores_html extends base_html {
         return '<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#msj_error">Detalle</button>';
     }
 
-    private function head(): string
-    {
-        $errores_html = '<h4 class="alert-heading">';
-        $errores_html .= 'Error';
-        $errores_html .= '</h4>';
-        return $errores_html;
-    }
+
 
     private function error_previo(array $error_previo): string
     {

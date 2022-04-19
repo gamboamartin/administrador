@@ -2,101 +2,21 @@
 require "init.php";
 require 'vendor/autoload.php';
 
-use base\conexion;
-use base\controller\base_html;
-use base\controller\errores_html;
 use base\controller\init;
-use base\controller\salida_data;
-use base\frontend\directivas;
-use base\seguridad;
-use config\generales;
 use gamboamartin\errores\errores;
 use models\menu;
-use models\session;
 
-$con = new conexion();
-$link = conexion::$link;
-
-$session = (new session($link))->carga_data_session();
+$data = (new init())->index();
 if(errores::$error){
-    $error = (new errores())->error('Error al asignar session',$session);
+    $error = (new errores())->error('Error al inicializar datos', $data);
     print_r($error);
     die('Error');
 }
 
-$conf_generales = new generales();
-$seguridad = new seguridad();
-$directiva = new directivas();
-$_SESSION['tiempo'] = time();
+$controlador = $data->controlador;
+$link = $data->link;
+$conf_generales = $data->conf_generales;
 
-
-$seguridad = (new init())->permiso( link: $link,seguridad:   $seguridad);
-if(errores::$error){
-    $error = (new gamboamartin\errores\errores())->error('Error al verificar seguridad', $seguridad);
-    print_r($error);
-    die('Error');
-}
-
-$controlador = (new init())->controller(link:  $link,seccion:  $seguridad->seccion);
-if(errores::$error){
-    $error = (new gamboamartin\errores\errores())->error('Error al generar controlador', $controlador);
-    print_r($error);
-    die('Error');
-}
-
-$include_action = (new init())->include_action(seguridad: $seguridad);
-if(errores::$error){
-    $error = (new gamboamartin\errores\errores())->error('Error al generar include', $include_action);
-    print_r($error);
-    die('Error');
-}
-
-
-$out_ws = (new salida_data())->salida_ws(controlador:$controlador, include_action: $include_action,seguridad:  $seguridad);
-if(errores::$error){
-    $error = (new gamboamartin\errores\errores())->error('Error al generar salida', $out_ws);
-    print_r($error);
-    die('Error');
-}
-
-$nombre_empresa = '';
-
-
-$errores_transaccion = (new errores_html())->errores_transaccion();
-if(errores::$error){
-    $error = (new gamboamartin\errores\errores())->error('Error al generar errores', $errores_transaccion);
-    print_r($error);
-    die('Error');
-}
-
-
-$mensajes_exito = $_SESSION['exito'] ?? array();
-
-$exito_transaccion = '';
-if(count($mensajes_exito)>0) {
-
-    $close_btn = (new base_html())->close_btn();
-    if(errores::$error){
-        $error = (new gamboamartin\errores\errores())->error('Error al generar boton', $close_btn);
-        print_r($error);
-        die('Error');
-    }
-
-    $exito_html =   '<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">';
-    $exito_html  .=     '<h4 class="alert-heading">Exito</h4><hr>';
-    $exito_html.=       '<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>';
-    $exito_html.=       '<div class="collapse" id="msj_exito">';
-    foreach ($mensajes_exito as $mensaje_exito) {
-        $exito_html .=      '<p class="mb-0">'.$mensaje_exito['mensaje'] . '</p>';
-    }
-    $exito_html.=       '</div>';
-    $exito_html.= $close_btn;
-    $exito_html .=      '</div></div>';
-    $exito_transaccion = $exito_html;
-    if (isset($_SESSION['exito'])) {
-        unset($_SESSION['exito']);
-    }
-}
 
 ?>
 
@@ -127,25 +47,10 @@ if(count($mensajes_exito)>0) {
     <script type="text/javascript" src="js/base.js"></script>
     <script type="text/javascript" src="js/checkbox.js"></script>
 
-    <?php  if(file_exists('./css/'.$seguridad->seccion.'.'.$seguridad->accion.'.css')){
-        ?>
-        <link rel="stylesheet" href="./css/<?php echo $seguridad->seccion.'.'.$seguridad->accion.'.css'; ?>">
-        <?php
-    } ?>
-    <?php if(file_exists('./js/'.$seguridad->seccion.'.js')){
-        ?>
-        <script type="text/javascript" src="./js/<?php echo $seguridad->seccion.'.js'; ?>"></script>
-        <?php
+    <?php echo $data->css_custom; ?>
+    <?php echo $data->js_seccion; ?>
+    <?php echo $data->js_accion; ?>
 
-    }
-    ?>
-    <?php if(file_exists('./js/'.$seguridad->accion.'.js')){
-        ?>
-        <script type="text/javascript" src="./js/<?php echo $seguridad->accion.'.js'; ?>"></script>
-        <?php
-
-    }
-    ?>
 
 </head>
 <body>
@@ -154,9 +59,9 @@ if(count($mensajes_exito)>0) {
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="main_nav">
-    <?php if($seguridad->menu){
+    <?php if($data->menu){
 
-        $modelo_menu = new menu($link);
+        $modelo_menu = new menu($data->link);
         $r_menu = $modelo_menu->obten_menu_permitido();
         if(errores::$error){
             $error = $modelo_menu->error->error('Error al obtener menu',$r_menu);
@@ -165,7 +70,7 @@ if(count($mensajes_exito)>0) {
         }
         $menus = $r_menu['registros'];
         foreach($menus as $menu) {
-            include $conf_generales->path_base . 'views/_templates/_principal_menu.php';
+            include $data->path_base . 'views/_templates/_principal_menu.php';
         }
     } ?>
     </div>
@@ -174,11 +79,11 @@ if(count($mensajes_exito)>0) {
 
 <div>
     <?php
-    if($errores_transaccion!==''){
-        echo $errores_transaccion;
+    if($data->error_msj !== ''){
+        echo $data->error_msj;
     }
-    if($exito_transaccion!==''){
-        echo $exito_transaccion;
+    if($data->exito_msj !== ''){
+        echo $data->exito_msj;
     }
     ?>
 
@@ -203,8 +108,8 @@ if(count($mensajes_exito)>0) {
 
 
     <?php
-    echo $controlador->breadcrumbs;
-    include($include_action);
+    echo $data->breadcrumbs;
+    include($data->include_action);
     ?>
 
 </div>
