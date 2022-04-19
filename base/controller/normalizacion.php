@@ -31,12 +31,12 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $filtro_default_btn
      * @param array $filtro_btn
      * @return array
      */
-    private function asigna_filtros(array $filtro_default_btn, array $filtro_btn):array{
+    private function asigna_filtros(array $filtro_btn, array $filtro_default_btn):array{
         $keys = array('tabla','valor_default');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $filtro_default_btn);
         if(errores::$error){
@@ -130,12 +130,12 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $filtro_default_btn
      * @param array $filtro_btn
      * @return array
      */
-    private function determina_filtro_btn(array $filtro_default_btn, array $filtro_btn):array{
+    private function determina_filtro_btn(array $filtro_btn, array $filtro_default_btn):array{
         $keys = array('tabla','valor_default');
         $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $filtro_default_btn);
         if(errores::$error){
@@ -168,7 +168,7 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param controler $controler
      * @return array
      */
@@ -564,12 +564,12 @@ class normalizacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $filtro_btn
      * @param controler $controler
      * @return array
      */
-    private function reasigna_filtros(array $filtro_btn, controler $controler):array{
+    private function reasigna_filtros(controler $controler, array $filtro_btn):array{
         foreach($controler->filtro_boton_lista as $filtro_default_btn){
             if(!isset($_SESSION['filtros'][$controler->tabla])) {
                 if (!isset($_GET['filtro_btn'])) {

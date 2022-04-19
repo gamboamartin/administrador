@@ -132,7 +132,7 @@ class controler{
 
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param int $limit
      * @param int $offset
      * @param array $filtro
@@ -141,15 +141,15 @@ class controler{
      * @param array $columnas
      * @return array|stdClass
      */
-    private function asigna_registros(int $limit, int $offset, array $filtro, array $orders,
-                                     array $filtro_especial = array(), array $columnas = array()): array|stdClass{
+    private function asigna_registros(array $columnas, array $filtro, array $filtro_especial, int $limit, int $offset,
+                                      array $orders): array|stdClass{
         if($limit < 0){
             return $this->errores->error(
                 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',$limit);
         }
 
-        $resultado = $this->modelo->filtro_and(filtro: $filtro,tipo_filtro: 'textos',filtro_especial: $filtro_especial,
-            order: $orders,limit: $limit,offset: $offset, group_by: array(),columnas: $columnas);
+        $resultado = $this->modelo->filtro_and(columnas: $columnas, filtro: $filtro, filtro_especial: $filtro_especial,
+            group_by: array(), limit: $limit, offset: $offset, order: $orders, tipo_filtro: 'textos');
         if(errores::$error){
             return $this->errores->error('Error al filtrar',$resultado);
         }
@@ -227,7 +227,7 @@ class controler{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param int $limit
      * @param int $pag_seleccionada
      * @param array $filtro
@@ -236,8 +236,8 @@ class controler{
      * @param array $columnas
      * @return array
      */
-    private function genera_resultado_filtrado(int $limit  , int $pag_seleccionada, array $filtro, array $orders,
-                                              array $filtro_especial = array(), array $columnas = array()):array{
+    private function genera_resultado_filtrado( array $columnas, array $filtro, array $filtro_especial, int $limit,
+                                                array $orders, int $pag_seleccionada):array{
 
         if($limit < 0){
             return $this->errores->error('Error limit debe ser mayor o igual a 0  con 0 no aplica limit',$limit);
@@ -247,8 +247,8 @@ class controler{
                 'Error $pag_seleccionada debe ser mayor o igual a 0 ',$pag_seleccionada);
         }
         $offset = ($pag_seleccionada - 1) * $limit;
-        $resultado = $this->asigna_registros(limit: $limit,offset: $offset,filtro: $filtro, orders: $orders,
-            filtro_especial:  $filtro_especial,columnas: $columnas);
+        $resultado = $this->asigna_registros(columnas: $columnas, filtro: $filtro, filtro_especial:  $filtro_especial,
+            limit: $limit, offset: $offset, orders: $orders);
         if(errores::$error){
             return $this->errores->error('Error al asignar registros',$resultado);
         }
@@ -376,7 +376,7 @@ class controler{
      * @param bool $ws si ws retorna error en navegador via json
      * @return array
      */
-    protected function retorno_error(string $mensaje, errores|array|string|stdClass $data, bool $header, bool $ws): array
+    protected function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws): array
     {
         $error = $this->errores->error($mensaje, $data);
         if($ws){
@@ -492,7 +492,7 @@ class controler{
      * @param array $columnas
      * @return array
      */
-    protected function obten_registros_para_lista(int $limit, int $pag_seleccionada, array $filtro, array $filtro_btn = array(),
+    protected function obten_registros_para_lista(array $filtro, int $limit, int $pag_seleccionada, array $filtro_btn = array(),
                                                array $columnas = array()): array{
         $this->seccion = str_replace('models\\','',$this->seccion);
         $class = 'models\\'.$this->seccion;
@@ -523,9 +523,9 @@ class controler{
             $filtro_especial[$contador][$campo]['valor'] = $valor;
             $contador++;
         }
-        $registros = $this->genera_resultado_filtrado(limit: $limit,pag_seleccionada: $pag_seleccionada,
-            filtro: $filtro_modelado, orders: $this->orders,
-            filtro_especial: $filtro_especial, columnas: $columnas);
+        $registros = $this->genera_resultado_filtrado(columnas: $columnas, filtro: $filtro_modelado,
+            filtro_especial: $filtro_especial, limit: $limit, orders: $this->orders,
+            pag_seleccionada: $pag_seleccionada);
         if(errores::$error){
             return  $this->errores->error('Error al generar resultado filtrado',$registros);
         }

@@ -1,7 +1,7 @@
 <?php
 namespace models;
+use base\orm\modelo;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\modelo;
 
 use PDO;
 
@@ -9,8 +9,7 @@ class hora extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);
-        parent::__construct($link, $tabla,$columnas_extra = array(),$campos_obligatorios = array(),$tipo_campos = array(),
-            $columnas);
+        parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas);
     }
     public function hoy(){
         $hora = date('H');

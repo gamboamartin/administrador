@@ -1,6 +1,6 @@
 <?php
 namespace controllers;
-use controller\controlador_base;
+use base\controller\controlador_base;
 use models\hora;
 
 class controlador_hora extends controlador_base{

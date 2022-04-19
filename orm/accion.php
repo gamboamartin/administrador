@@ -23,13 +23,13 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param string $seccion
      * @param string $accion
      * @param modelo $modelo
      * @return array
      */
-    public function acciones_permitidas(string $seccion, string $accion, modelo $modelo):array{
+    public function acciones_permitidas(string $accion, modelo $modelo, string $seccion):array{
         if(!isset($_SESSION['grupo_id']) && $seccion !== 'session' && $accion !== 'login'){
             return $this->error->error('Error debe existir grupo_id',$_SESSION);
         }

@@ -184,6 +184,35 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_filtro_especial(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = '';
+        $data_sql = '';
+        $filtro_esp = array();
+        $filtro_especial_sql = '';
+        $resultado = $wh->genera_filtro_especial($campo, $data_sql, $filtro_esp, $filtro_especial_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( "", $resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $data_sql = 'z';
+        $filtro_esp = array();
+        $filtro_especial_sql = 'a';
+        $filtro_esp['a']['comparacion'] = 'b';
+        $resultado = $wh->genera_filtro_especial($campo, $data_sql, $filtro_esp, $filtro_especial_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( "a b z", $resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_sentencia_base(){
         errores::$error = false;
         $wh = new where();

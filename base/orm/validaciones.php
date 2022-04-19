@@ -104,6 +104,33 @@ class validaciones extends validacion{
     }
 
     /**
+     * P INT P ORDER
+     * @param string $campo
+     * @param array $filtro_esp
+     * @return bool|array
+     */
+    public function valida_dato_filtro_especial(string $campo, array $filtro_esp): bool|array
+    {
+        $campo = trim($campo);
+        if(trim($campo) === ''){
+            return $this->error->error("Error campo vacio", $campo);
+        }
+        if(!isset($filtro_esp[$campo])){
+            return $this->error->error('Error $filtro_esp['.$campo.'] debe existir)', $filtro_esp);
+        }
+        if(!is_array($filtro_esp[$campo])){
+            return $this->error->error('Error $filtro_esp['.$campo.'] debe ser un array)', $filtro_esp);
+        }
+        if(!isset($filtro_esp[$campo]['valor'])){
+            return $this->error->error('Error $filtro_esp['.$campo.'][\'valor\'] debe existir', $filtro_esp);
+        }
+        if(is_array($filtro_esp[$campo]['valor'])){
+            return $this->error->error('Error $filtro_esp['.$campo.'][\'valor\'] debe ser un dato', $filtro_esp);
+        }
+        return true;
+    }
+
+    /**
      * P ORDER P INT PROBADO
      * @param array $data
      * @param string $tabla_renombrada

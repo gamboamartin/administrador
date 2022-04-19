@@ -547,7 +547,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -1020,22 +1020,12 @@ class where{
 
     private function obten_filtro_especial(array $filtro_esp, string $filtro_especial_sql):array|string{
         $campo = key($filtro_esp);
-        if(trim($campo) === ''){
-            return $this->error->error("Error campo vacio", $filtro_esp);
-        }
-        if(!isset($filtro_esp[$campo])){
-            return $this->error->error('Error $filtro_esp['.$campo.'] debe existir)', $filtro_esp);
+
+        $valida = (new validaciones())->valida_dato_filtro_especial(campo: $campo, filtro_esp: $filtro_esp);
+        if(errores::$error){
+            return $this->error->error("Error en filtro_esp", $valida);
         }
 
-        if(!is_array($filtro_esp[$campo])){
-            return $this->error->error('Error $filtro_esp['.$campo.'] debe ser un array)', $filtro_esp);
-        }
-        if(!isset($filtro_esp[$campo]['valor'])){
-            return $this->error->error('Error $filtro_esp['.$campo.'][\'valor\'] debe existir', $filtro_esp);
-        }
-        if(is_array($filtro_esp[$campo]['valor'])){
-            return $this->error->error('Error $filtro_esp['.$campo.'][\'valor\'] debe ser un dato', $filtro_esp);
-        }
         $valida = $this->validacion->valida_filtro_especial(campo: $campo,filtro: $filtro_esp[$campo]);
         if(errores::$error){
             return $this->error->error("Error en filtro", $valida);

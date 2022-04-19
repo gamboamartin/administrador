@@ -636,49 +636,25 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $valida = $this->validacion->valida_datos_lista_entrada(accion: $this->accion, seccion: $this->seccion);
         if(errores::$error){
-            $error = $this->errores->error("Error al validar",$valida);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
+            return $this->retorno_error('Error al validar', $valida, $header, $ws);
         }
         $modelo = new accion($this->link);
         if(errores::$error){
-            $error = $this->errores->error('Error al generar modelo',$modelo);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
+            return $this->retorno_error('Error al generar modelo accion', $modelo, $header, $ws);
         }
 
-        $acciones = $modelo->acciones_permitidas(seccion:$this->seccion,accion:$this->accion,modelo:$this->modelo);
+        $acciones = $modelo->acciones_permitidas(accion:$this->accion, modelo:$this->modelo, seccion:$this->seccion);
         if(errores::$error){
-            $error = $this->errores->error('Error al obtener accion',$acciones);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
+            return $this->retorno_error('Error al obtener accion', $acciones, $header, $ws);
         }
 
         $pag_seleccionada = 1;
         if(isset($_GET['pag_seleccionada'])){
-            $pag_seleccionada = $_GET['pag_seleccionada'];
+            $pag_seleccionada = (int)$_GET['pag_seleccionada'];
         }
         $filtro_btn = (new normalizacion())->filtro_btn(controler: $this);
         if(errores::$error){
-            $error = $this->errores->error('Error al generar filtro',$filtro_btn);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
+            return $this->retorno_error('Error al obtener filtro de boton', $filtro_btn, $header, $ws);
         }
 
         $elm = new elemento_lista($this->link);
@@ -747,7 +723,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $registros = $this->obten_registros_para_lista(limit: 15,pag_seleccionada:  $pag_seleccionada,filtro:  $filtro,
+        $registros = $this->obten_registros_para_lista(filtro:  $filtro, limit: 15,pag_seleccionada:  $pag_seleccionada,
             filtro_btn: $filtro_btn,columnas: $columnas_mostrables);
         if(errores::$error){
             $error = $this->errores->error('Error al obtener registros',$registros);
