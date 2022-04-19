@@ -962,6 +962,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header
      * @param bool $ws
      * @return array
+     * @throws JsonException
      */
     public function modifica_bd(bool $header, bool $ws): array{
         $namespace = 'models\\';
@@ -974,7 +975,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -988,7 +989,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1003,7 +1004,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1020,7 +1021,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1048,7 +1049,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1062,7 +1063,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1081,7 +1082,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1099,7 +1100,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             if($ws){
                 header('Content-Type: application/json');
-                echo json_encode($error);
+                echo json_encode($error, JSON_THROW_ON_ERROR);
                 exit;
             }
             $retorno = $_SERVER['HTTP_REFERER'];
@@ -1113,7 +1114,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         if($ws){
             header('Content-Type: application/json');
-            echo json_encode($r_modifica);
+            echo json_encode($r_modifica, JSON_THROW_ON_ERROR);
             exit;
         }
         return $r_modifica;
