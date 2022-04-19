@@ -121,6 +121,60 @@ class validacionesTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_dato_filtro_especial(): void
+    {
+        errores::$error = false;
+        $val = new validaciones();
+        //$val = new liberator($val);
+
+        $filtro_esp = array();
+        $campo = '';
+        $resultado = $val->valida_dato_filtro_especial($campo, $filtro_esp);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_esp = array();
+        $campo = 'z';
+        $resultado = $val->valida_dato_filtro_especial($campo, $filtro_esp);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $filtro_esp[z] debe existir', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_esp = array();
+        $campo = 'z';
+        $filtro_esp['z'] = 'a';
+        $resultado = $val->valida_dato_filtro_especial($campo, $filtro_esp);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $filtro_esp[z] debe ser un array', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_esp = array();
+        $campo = 'z';
+        $filtro_esp['z'] = array();
+        $resultado = $val->valida_dato_filtro_especial($campo, $filtro_esp);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $filtro_esp[z][valor] debe existir', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_esp = array();
+        $campo = 'z';
+        $filtro_esp['z']['valor'] = 'd';
+        $resultado = $val->valida_dato_filtro_especial($campo, $filtro_esp);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_keys_renombre(): void
     {
         errores::$error = false;

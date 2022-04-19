@@ -21,7 +21,7 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * Funcion asignar true o false a un conjunto de campos para su utilizacion en vistas
      *
      * @param array $campo  campo a utilizar
@@ -44,10 +44,11 @@ class sql_bass{
     private function asigna_booleanos(array $bools, array $bools_asignar, array $campo):array{
         foreach($bools_asignar as $bool){
             if($bool === ''){
-                return $this->error->error('Error $bool no puede venir vacia',$bool);
+                return $this->error->error('Error $bool no puede venir vacia',$bools_asignar);
             }
-            if(!isset($campo['elemento_lista_'.$bool])){
-                return $this->error->error('Error $campo[\'elemento_lista_'.$bool.'] debe existir',$campo);
+            $key = 'elemento_lista_'.$bool;
+            if(!isset($campo[$key])){
+                return $this->error->error('Error $campo['.$key.'] debe existir',$campo);
             }
             $data = $this->asigna_data_bool(bool: $bool, bools:  $bools,campo: $campo);
             if(errores::$error){
@@ -112,7 +113,7 @@ class sql_bass{
             return $this->error->error('Error no existe $campo[elemento_lista_campo]',$campo);
         }
         $required = false;
-        if(in_array($campo['elemento_lista_campo'],$campos_obligatorios)){
+        if(in_array($campo['elemento_lista_campo'], $campos_obligatorios, true)){
             $required = true;
         }
         $bools = array('required'=>$required);
@@ -316,7 +317,7 @@ class sql_bass{
     $estructura = $this->maqueta_estructuras($estructura_init,$campos_obligatorios,$vista,$tabla);
      *
      * @return array con datos para su utilizacion en views
-     * @throws errores definidos en internals
+     * @throws errores|JsonException definidos en internals
      * @uses consultas_base->genera_estructura_tabla
      * @internal  $this->genera_estructura_init($campo,$campos_obligatorios,$vista,$tabla);
      */

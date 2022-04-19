@@ -66,4 +66,5 @@ unit_test/prueba.zip
 /config/views.php
 /config/generales.php
 /vendor/
+/templates/generals/error_previo.php
 

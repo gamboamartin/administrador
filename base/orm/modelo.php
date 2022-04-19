@@ -1622,7 +1622,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     *
+     * P INT
      * Obtiene todos los registros de un modelo
      * @param string $sql_extra
      * @param string $group_by

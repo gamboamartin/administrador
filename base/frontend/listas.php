@@ -5,6 +5,7 @@ use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use PDO;
 use stdClass;
+use validacion\accion;
 
 class listas{
     private errores $error;
@@ -58,7 +59,15 @@ class listas{
         return $accion;
     }
 
-    private function asigna_accion_to_session(PDO $link, string $accion, string $seccion){
+    /**
+     * P INT
+     * @param PDO $link
+     * @param string $accion
+     * @param string $seccion
+     * @return array
+     */
+    private function asigna_accion_to_session(PDO $link, string $accion, string $seccion): array
+    {
         $datos_accion_bd = $this->datos_accion_bd(link: $link,accion: $accion,seccion: $seccion);
         if (errores::$error) {
             return $this->error->error('Error al obtener acciones', $datos_accion_bd);
@@ -69,7 +78,7 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $id
      * @param string $seccion
      * @param string $accion
@@ -85,12 +94,12 @@ class listas{
             return $this->error->error('Error la accion esta vacia', $accion);
         }
         $directiva = new directivas();
-        $datos_accion = $this->datos_accion($seccion,$accion, $link);
+        $datos_accion = $this->datos_accion(seccion: $seccion,accion: $accion,link:  $link);
         if(errores::$error){
             return $this->error->error('Error al obtener acciones',$datos_accion);
         }
 
-        $link_accion = $directiva->genera_link_accion($datos_accion, $id, $session_id, $class_link);
+        $link_accion = $directiva->genera_link_accion(accion:$datos_accion, id: $id,session_id:  $session_id, class_link: $class_link);
         if(errores::$error){
             return $this->error->error('Error al generar link',$link_accion);
         }
@@ -170,7 +179,7 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $seccion
      * @param array $botones_filtro
      * @param string $session_id
@@ -180,7 +189,8 @@ class listas{
     {
         $filtro_btn_html = '';
         foreach($botones_filtro as $tabla=>$boton){
-            $filtro_btn_html = $this->genera_conjunto_filtro_rapido($tabla,$filtro_btn_html, $boton, $seccion, $session_id);
+            $filtro_btn_html = $this->genera_conjunto_filtro_rapido(tabla: $tabla,filtro_btn_html: $filtro_btn_html,
+                boton:  $boton,seccion:  $seccion,session_id:  $session_id);
             if(errores::$error){
                 return $this->error->error('Error al generar conjunto de botones',$filtro_btn_html);
             }
@@ -333,7 +343,7 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $seccion
      * @param string $accion
      * @param PDO $link
@@ -357,11 +367,16 @@ class listas{
         return $_SESSION['datos_accion'][$seccion][$accion];
     }
 
-    private function datos_accion_bd(PDO $link, string $accion, string $seccion){
-        $accion_modelo = (new modelo_base($link))->genera_modelo(modelo: 'accion');
-        if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $accion_modelo);
-        }
+    /**
+     * P INT
+     * @param PDO $link
+     * @param string $accion
+     * @param string $seccion
+     * @return array
+     */
+    private function datos_accion_bd(PDO $link, string $accion, string $seccion): array
+    {
+        $accion_modelo = new \models\accion(link: $link);
 
         $filtro['accion.descripcion'] = $accion;
         $filtro['seccion.descripcion'] =$seccion;
@@ -577,7 +592,7 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $tabla
      * @param string $filtro_btn_html
      * @param array $boton
@@ -625,10 +640,11 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $seccion
      * @param array $botones_filtros
      * @param array $campos_filtro
+     * @param string $session_id
      * @return array|string
      */
 
@@ -784,7 +800,7 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $id
      * @param string $status
      * @param array $acciones
@@ -799,21 +815,10 @@ class listas{
     {
         $html = '';
 
-        $modelo_accion = (new modelo_base($link))->genera_modelo('accion');
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo_accion);
-        }
-
+        $modelo_accion = new \models\accion(link: $link);
 
         foreach ($acciones as $accion){
 
-
-            /*$data_accion = $this->accion_activa_desactiva(accion: $accion, status: $status);
-            if (errores::$error) {
-                return $this->error->error('Error al obtener accion', $data_accion);
-            }
-
-            $accion = $data_accion->accion;*/
 
             $acciones_permitidas = $modelo_accion->obten_accion_permitida_session(seccion:$seccion, accion:$accion);
 
@@ -822,7 +827,8 @@ class listas{
             }
 
             if ($acciones_permitidas) {
-                $link_accion = $this->asigna_datos_accion_link($id, $seccion, $accion, $session_id, $class_link, $link);
+                $link_accion = $this->asigna_datos_accion_link(id: $id,seccion:  $seccion, accion: $accion,
+                    session_id: $session_id,class_link:  $class_link, link: $link);
                 if(errores::$error){
                     return $this->error->error('Error al generar link',$link_accion);
                 }
@@ -854,7 +860,7 @@ class listas{
     }
 
     /**
-     *
+     * P INT
      * @param string $filtros_lista
      * @param string $filtro_boton_seleccionado_html
      * @param string $seccion
@@ -875,7 +881,8 @@ class listas{
         $html.="        <div class='row col-md-12 no-print'>";
 
 
-        $btn = $directiva->btn_enviar(12,'Filtrar','btn_filtrar','activo','submit','success btn-sm',array('filtro-base'));
+        $btn = $directiva->btn_enviar(label: 'Filtrar',name: 'btn_filtrar',value: 'activo', stilo: 'success btn-sm',
+            class_css: array('filtro-base'));
         if(errores::$error){
             return $this->error->error('Error al generar btn',$btn);
         }
@@ -883,7 +890,8 @@ class listas{
         $html .=  $btn;
         $html.="</div>";
 
-        $btn = $directiva->btn_enviar(12,'Limpiar','btn_limpiar','activo','submit','warning btn-sm',array('filtro-base'));
+        $btn = $directiva->btn_enviar(label: 'Limpiar',name: 'btn_limpiar',value: 'activo',
+            stilo: 'warning btn-sm',class_css: array('filtro-base'));
         if(errores::$error){
             return $this->error->error('Error al generar btn',$btn);
         }
@@ -897,7 +905,7 @@ class listas{
         $btn =  "
                 <a href='./index.php?seccion=" . $seccion_xls . '&accion=' . $accion_xls . '&session_id=' . $session_id . $filtro_boton_seleccionado_html."'  
                 title='Exporta Excel' alt='Exporta Excel' class='no-print'>
-            " . $directiva->btn_enviar(12, 'Exporta Excel','btn_xls','activo','button','info btn-sm') . '</a>';
+            " . $directiva->btn_enviar(label: 'Exporta Excel',name: 'btn_xls',value: 'activo',type: 'button',stilo: 'info btn-sm') . '</a>';
 
         if(errores::$error){
             return $this->error->error('Error al generar btn',$btn);

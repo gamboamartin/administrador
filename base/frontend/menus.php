@@ -3,6 +3,7 @@ namespace base\frontend;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use PDO;
+use stdClass;
 
 
 class menus{
@@ -28,14 +29,12 @@ class menus{
      * @uses  $directivas->genera_texto_etiqueta
      * @internal   $this->genera_texto_etiqueta($etiqueta,'capitalize');
      */
-    private function breadcrumb(string $etiqueta, string $accion, string $session_id):array|string{
+    private function breadcrumb(string $etiqueta, string $accion, string $seccion, string $session_id):array|string{
         if($etiqueta === ''){
             return $this->error->error("Error texto vacio",$etiqueta);
         }
-        if(!defined('SECCION')){
-            return $this->error->error('Error al SECCION no existe',$accion);
-        }
-        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta($etiqueta,'capitalize');
+
+        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta,tipo_letra: 'capitalize');
         if(errores::$error){
             return $this->error->error('Error al generar texto de etiqueta',$r_etiqueta);
         }
@@ -45,7 +44,7 @@ class menus{
             $link = '#';
         }
         else{
-            $link = './index.php?seccion='.SECCION.'&session_id='.$session_id."&accion=$accion";
+            $link = './index.php?seccion='.$seccion.'&session_id='.$session_id."&accion=$accion";
         }
         return "<a type='button' class='btn btn-info btn-sm no-print' href='$link'>$etiqueta</a>";
     }
@@ -82,13 +81,11 @@ class menus{
      * @param array $breadcrumbs
      * @param string $active
      * @param string $seccion
-     *
+     * @param string $session_id
+     * @return array|string html para breadcrumbs
      * @example
      *       $breadcrumbs_html = $this->breadcrumbs($breadcrumbs, $accion, $seccion);
      *
-     * @return array|string html para breadcrumbs
-     * @throws errores $seccion === ''
-     * @throws errores $active === ''
      * @uses  $directivas
      * @internal   $this->breadcrumb($seccion,'');
      * @internal   $this->genera_texto_etiqueta($etiqueta,'capitalize');
@@ -131,7 +128,7 @@ class menus{
                 return $this->error->error('Error al generar Etiqueta',$etiqueta);
             }
 
-            $bread = $this->breadcrumb($etiqueta, $link, $session_id);
+            $bread = $this->breadcrumb(etiqueta: $etiqueta, accion: $link, seccion: $seccion,session_id:  $session_id);
 
             if(errores::$error){
                 return $this->error->error('Error al generar bread',$bread);
@@ -157,8 +154,9 @@ class menus{
      * @param PDO|bool $link Conexion a bd
      * @param string $seccion seccion tabla modelo
      * @param string $accion accion
+     * @param array $accion_registro
      * @param bool $valida_accion valida o no la existencia de un accion en acciones
-     * @return array con datos para generar html
+     * @return array|stdClass con datos para generar html
      * @example
      *      $breads = $this->breadcrumbs_con_label($link, $seccion, $accion,$valida_accion);
      *
@@ -166,17 +164,20 @@ class menus{
      * @internal   $this->valida_estructura_seccion_accion($seccion,$accion);
      * @internal   $accion_modelo->filtro_and($filtro,'numeros',array(),array(),0,0,array());
      */
-    public function breadcrumbs_con_label(PDO|bool $link, string $seccion, string $accion, array $accion_registro, bool $valida_accion = true): array{//PROTFIN
-        $valida = $this->validacion->valida_estructura_seccion_accion($seccion,$accion);
+    public function breadcrumbs_con_label(PDO|bool $link, string $seccion, string $accion, array $accion_registro,
+                                          bool $valida_accion = true): array|stdClass{
+        $valida = $this->validacion->valida_estructura_seccion_accion(seccion: $seccion,accion: $accion);
         if(errores::$error){
             return   $this->error->error('Error al validar entrada de datos ', $valida);
         }
 
         $seccion_br = str_replace('_',' ', $seccion);
+        $seccion_br = ucwords($seccion_br);
         $accion_br = str_replace('_',' ', $accion);
+        $accion_br = ucwords($accion_br);
 
 
-        $data_link = (new links())->aplica_data_link_validado($link, $valida_accion, $seccion, $accion, $accion_registro);
+        $data_link = (new links())->aplica_data_link_validado(link: $link, valida_accion: $valida_accion,seccion:  $seccion,accion:  $accion,accion_registro:  $accion_registro);
         if(errores::$error){
             return   $this->error->error('Error al generar datos ', $data_link);
         }
@@ -187,7 +188,13 @@ class menus{
             }
         }
 
-        return array('seccion_menu'=>ucwords($seccion_br), 'accion'=>ucwords($accion_br));
+        $data = new stdClass();
+        $data->seccion = $seccion;
+        $data->seccion_br = $seccion_br;
+        $data->accion = $accion;
+        $data->accion_br = $accion_br;
+
+        return $data;
     }
 
     /**

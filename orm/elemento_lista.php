@@ -250,6 +250,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @param array $campos_obligatorios informacion inicializada para su utilizacion n las vistas
      * @param array $estructura_bd
      * @return array conjunto de elementos para ser utilizados en views
+     * @throws \JsonException
      * @example
      *      $estructura = $this->genera_estructura_tabla($link,$tabla,$vista,$campos_obligatorios);
      * @uses consultas_base->genera_estructura_bd
@@ -288,12 +289,13 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @param string $vista vista a la que se le aplicara la estructura
      * @param array $estructura_bd
      * @return array conjunto de elementos para ser utilizados en views
-     * @example
-     *      $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
-     *
+     * @throws \JsonException
      * @uses consultas_base->obten_campos
      * @internal  $modelo_base->genera_modelo($tabla);
      * @internal  $this->genera_estructura_tabla($link,$tabla,$vista,$campos_obligatorios);
+     * @example
+     *      $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
+     *
      */
     public function genera_estructura_bd(array $estructura_bd,  modelo $modelo, string $vista): array{
 
@@ -323,6 +325,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @param string $vista vista para su aplicacion en views
      * @param array $estructura_bd
      * @return array con datos para su utilizacion en views
+     * @throws \JsonException
      * @example
      *      $consultas_base = new consultas_base();
      * $campos = $consultas_base->obten_campos($this->seccion,'lista',$this->link);

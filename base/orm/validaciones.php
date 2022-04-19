@@ -104,7 +104,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * @param string $campo
      * @param array $filtro_esp
      * @return bool|array
@@ -116,16 +116,36 @@ class validaciones extends validacion{
             return $this->error->error("Error campo vacio", $campo);
         }
         if(!isset($filtro_esp[$campo])){
-            return $this->error->error('Error $filtro_esp['.$campo.'] debe existir)', $filtro_esp);
+            return $this->error->error('Error $filtro_esp['.$campo.'] debe existir', $filtro_esp);
         }
         if(!is_array($filtro_esp[$campo])){
-            return $this->error->error('Error $filtro_esp['.$campo.'] debe ser un array)', $filtro_esp);
+            return $this->error->error('Error $filtro_esp['.$campo.'] debe ser un array', $filtro_esp);
         }
         if(!isset($filtro_esp[$campo]['valor'])){
-            return $this->error->error('Error $filtro_esp['.$campo.'][\'valor\'] debe existir', $filtro_esp);
+            return $this->error->error('Error $filtro_esp['.$campo.'][valor] debe existir', $filtro_esp);
         }
         if(is_array($filtro_esp[$campo]['valor'])){
-            return $this->error->error('Error $filtro_esp['.$campo.'][\'valor\'] debe ser un dato', $filtro_esp);
+            return $this->error->error('Error $filtro_esp['.$campo.'][valor] debe ser un dato', $filtro_esp);
+        }
+        return true;
+    }
+
+    /**
+     * P INT P ORDER
+     * @param string $campo
+     * @param array $filtro_esp
+     * @return bool|array
+     */
+    public function valida_full_filtro_especial(string $campo, array $filtro_esp): bool|array
+    {
+        $valida = $this->valida_dato_filtro_especial(campo: $campo, filtro_esp: $filtro_esp);
+        if(errores::$error){
+            return $this->error->error("Error en filtro_esp", $valida);
+        }
+
+        $valida = $this->valida_filtro_especial(campo: $campo,filtro: $filtro_esp[$campo]);
+        if(errores::$error){
+            return $this->error->error("Error en filtro", $valida);
         }
         return true;
     }

@@ -1,23 +1,21 @@
 <?php
 require "init.php";
+require 'vendor/autoload.php';
 
 use base\conexion;
+use base\controller\base_html;
+use base\controller\errores_html;
+use base\controller\init;
+use base\controller\salida_data;
 use base\frontend\directivas;
-use base\frontend\templates;
 use base\seguridad;
 use config\generales;
-use controllers\controlador_session;
 use gamboamartin\errores\errores;
-use models\accion;
-use models\elemento_lista;
 use models\menu;
 use models\session;
 
-require 'vendor/autoload.php';
-
 $con = new conexion();
 $link = conexion::$link;
-
 
 $session = (new session($link))->carga_data_session();
 if(errores::$error){
@@ -28,195 +26,62 @@ if(errores::$error){
 
 $conf_generales = new generales();
 $seguridad = new seguridad();
-
-
+$directiva = new directivas();
 $_SESSION['tiempo'] = time();
 
 
-$seccion = $seguridad->seccion;
-$accion = $seguridad->accion;
-$webservice = $seguridad->webservice;
-
-
-
-define('SECCION',$seccion);
-define('ACCION',$accion);
-
-
-if($link) {
-    $modelo_accion = new accion($link);
-    if (isset($_SESSION['grupo_id'])) {
-
-        $permiso = $modelo_accion->valida_permiso(SECCION, ACCION);
-        if(errores::$error){
-            $error = $modelo_accion->error->error('Error al validar permisos',$permiso);
-            print_r($error);
-            die('Error');
-        }
-        if(ACCION === 'login' || ACCION === 'loguea'){
-            $permiso = true;
-        }
-
-        if (!$permiso) {
-            $seccion = 'session';
-            $accion = 'denegado';
-            $_GET['tipo_mensaje'] = 'error';
-            $_GET['mensaje'] = 'Permiso denegado';
-        }
-        $n_acciones = $modelo_accion->cuenta_acciones();
-        if(isset($n_acciones['error'])){
-            $error = $modelo_accion->error->error('Error al contar acciones permitidas',$n_acciones);
-            print_r($error);
-            session_destroy();
-            die('Error');
-        }
-        if ($n_acciones == 0) {
-            session_destroy();
-        }
-    }
-}
-
-$directiva = new directivas();
-$ws = false;
-$header = true;
-$view = false;
-if(isset($_GET['ws'])){
-    $header = false;
-    $ws = true;
-
-}
-if(isset($_GET['view'])){
-    $header = false;
-    $ws = false;
-    $view = true;
-}
-
-$name_ctl = 'controlador_'.$seccion;
-$name_ctl = str_replace('controllers\\','',$name_ctl);
-$name_ctl = 'controllers\\'.$name_ctl;
-if(!class_exists($name_ctl)){
-    $error = $directiva->errores->error('Error no existe la clase '.$name_ctl,$name_ctl);
-    if($ws){
-        ob_clean();
-        header('Content-Type: application/json');
-        echo json_encode($error);
-        exit;
-    }
+$seguridad = (new init())->permiso( link: $link,seguridad:   $seguridad);
+if(errores::$error){
+    $error = (new gamboamartin\errores\errores())->error('Error al verificar seguridad', $seguridad);
     print_r($error);
     die('Error');
 }
 
-if(SECCION === 'session') {
-    $controlador = new controlador_session($link);
+$controlador = (new init())->controller(link:  $link,seccion:  $seguridad->seccion);
+if(errores::$error){
+    $error = (new gamboamartin\errores\errores())->error('Error al generar controlador', $controlador);
+    print_r($error);
+    die('Error');
 }
-else{
 
-    $controlador = new $name_ctl($link);
-}
-
-if($link) {
-    $elm = new elemento_lista($link);
-    $filtro = array();
-    $filtro['seccion.descripcion'] = $seccion;
-    $filtro['elemento_lista.status'] = 'activo';
-    $filtro['elemento_lista.lista'] = 'activo';
-
-    $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden', filtros: $filtro,orden: 'ASC');
-    if(errores::$error){
-        $error =  (new errores())->error('Error al obtener obten_registros_filtro_and_ordenado',$resultado);
-        print_r($error);
-        die('Error');
-
-    }
-    $elementos_lista = $resultado->registros;
-
-    $elm = new elemento_lista($controlador->link);
-    $filtro = array();
-    $filtro['seccion.descripcion'] = $seccion;
-    $filtro['elemento_lista.filtro'] = 'activo';
-    $filtro['elemento_lista.status'] = 'activo';
-
-    $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden', filtros: $filtro,orden: 'ASC');
-
-    if(errores::$error){
-        $error =  (new errores())->error('Error al obtener registros',$resultado);
-        print_r($error);
-        die('Error');
-    }
-
-    $elementos_lista_filtro = $resultado->registros;
-
-    $template = new templates($link);
-    if(errores::$error){
-        $error =  (new errores())->error('Error al generar template',$template);
-        print_r($error);
-        die('Error');
-    }
+$include_action = (new init())->include_action(seguridad: $seguridad);
+if(errores::$error){
+    $error = (new gamboamartin\errores\errores())->error('Error al generar include', $include_action);
+    print_r($error);
+    die('Error');
 }
 
 
-$data = $controlador->$accion($header, $ws);
-
-
-if($ws && ($accion === 'denegado'))
-{
-    echo json_encode(array('mensaje'=>$_GET['mensaje'], 'error'=>True));
-    exit;
-}
-if($ws){
-    ob_clean();
-    header('Content-Type: application/json');
-    echo json_encode($data);
-    exit;
+$out_ws = (new salida_data())->salida_ws(controlador:$controlador, include_action: $include_action,seguridad:  $seguridad);
+if(errores::$error){
+    $error = (new gamboamartin\errores\errores())->error('Error al generar salida', $out_ws);
+    print_r($error);
+    die('Error');
 }
 
 $nombre_empresa = '';
 
 
-$errores_previos = array();
-if(isset($_SESSION['error_resultado'])){
-    $errores_previos = $_SESSION['error_resultado'];
-}
-$errores_transaccion = '';
-if(count($errores_previos)>0) {
-    $errores_html = '<div class="alert alert-danger no-margin-bottom alert-dismissible fade show" role="alert">';
-    $errores_html .= '<h4 class="alert-heading">';
-    $errores_html .= 'Error';
-    $errores_html .= '</h4>';
-
-    foreach ($errores_previos as $error_previo) {
-        $errores_html .= $error_previo['mensaje'] ;
-        $errores_html .= ' Line '.$error_previo['line'] ;
-        $errores_html .= ' Funcion  '.$error_previo['function'] ;
-        $errores_html .= ' Class '.$error_previo['class'] . '<br><br>';
-    }
-    $errores_html.='<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>';
-
-    $errores_html.='<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#msj_error">Detalle</button>';
-    $errores_html.='<div class="collapse" id="msj_error">';
-    foreach ($errores_previos as $error_previo) {
-        $errores_html.=print_r($error_previo,true);
-        $errores_html.='<br><br>';
-    }
-    $errores_html.='</div>';
-
-    $errores_html.='</div>';
-
-    $errores_transaccion = $errores_html;
-    if (isset($_SESSION['error_resultado'])) {
-        unset($_SESSION['error_resultado']);
-    }
+$errores_transaccion = (new errores_html())->errores_transaccion();
+if(errores::$error){
+    $error = (new gamboamartin\errores\errores())->error('Error al generar errores', $errores_transaccion);
+    print_r($error);
+    die('Error');
 }
 
-$mensajes_exito = array();
-if(isset($_SESSION['exito'])){
-    $mensajes_exito = $_SESSION['exito'];
-}
+
+$mensajes_exito = $_SESSION['exito'] ?? array();
 
 $exito_transaccion = '';
 if(count($mensajes_exito)>0) {
+
+    $close_btn = (new base_html())->close_btn();
+    if(errores::$error){
+        $error = (new gamboamartin\errores\errores())->error('Error al generar boton', $close_btn);
+        print_r($error);
+        die('Error');
+    }
+
     $exito_html =   '<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">';
     $exito_html  .=     '<h4 class="alert-heading">Exito</h4><hr>';
     $exito_html.=       '<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>';
@@ -225,33 +90,12 @@ if(count($mensajes_exito)>0) {
         $exito_html .=      '<p class="mb-0">'.$mensaje_exito['mensaje'] . '</p>';
     }
     $exito_html.=       '</div>';
-    $exito_html.='        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>';
+    $exito_html.= $close_btn;
     $exito_html .=      '</div></div>';
     $exito_transaccion = $exito_html;
     if (isset($_SESSION['exito'])) {
         unset($_SESSION['exito']);
     }
-}
-
-
-if($view){
-    ob_clean();
-    $include = './views/'.$seccion.'/'.$accion.'.php';
-    if(file_exists($include)){
-        include($include);
-    }
-    elseif(ACCION == 'lista') {
-        include('./views/vista_base/lista.php');
-    }
-    elseif (ACCION=='modifica'){
-        include('./views/vista_base/modifica.php');
-    }
-    elseif (ACCION=='alta'){
-        include('./views/vista_base/alta.php');
-    }
-    exit;
 }
 
 ?>
@@ -283,21 +127,21 @@ if($view){
     <script type="text/javascript" src="js/base.js"></script>
     <script type="text/javascript" src="js/checkbox.js"></script>
 
-    <?php  if(file_exists('./css/'.$seccion.'.'.$accion.'.css')){
+    <?php  if(file_exists('./css/'.$seguridad->seccion.'.'.$seguridad->accion.'.css')){
         ?>
-        <link rel="stylesheet" href="./css/<?php echo $seccion.'.'.$accion.'.css'; ?>">
+        <link rel="stylesheet" href="./css/<?php echo $seguridad->seccion.'.'.$seguridad->accion.'.css'; ?>">
         <?php
     } ?>
-    <?php if(file_exists('./js/'.$seccion.'.js')){
+    <?php if(file_exists('./js/'.$seguridad->seccion.'.js')){
         ?>
-        <script type="text/javascript" src="./js/<?php echo $seccion.'.js'; ?>"></script>
+        <script type="text/javascript" src="./js/<?php echo $seguridad->seccion.'.js'; ?>"></script>
         <?php
 
     }
     ?>
-    <?php if(file_exists('./js/'.$accion.'.js')){
+    <?php if(file_exists('./js/'.$seguridad->accion.'.js')){
         ?>
-        <script type="text/javascript" src="./js/<?php echo $accion.'.js'; ?>"></script>
+        <script type="text/javascript" src="./js/<?php echo $seguridad->accion.'.js'; ?>"></script>
         <?php
 
     }
@@ -330,10 +174,10 @@ if($view){
 
 <div>
     <?php
-    if((string)$errores_transaccion!==''){
+    if($errores_transaccion!==''){
         echo $errores_transaccion;
     }
-    if((string)$exito_transaccion!==''){
+    if($exito_transaccion!==''){
         echo $exito_transaccion;
     }
     ?>
@@ -358,24 +202,10 @@ if($view){
     </div>
 
 
-
     <?php
-
     echo $controlador->breadcrumbs;
-    $include = './views/'.$seccion.'/'.$accion.'.php';
-
-    if(file_exists($include)){
-        include($include);
-    }
-    elseif(ACCION == 'lista') {
-        include('./views/vista_base/lista.php');
-    }
-    elseif (ACCION=='modifica'){
-        include('./views/vista_base/modifica.php');
-    }
-    elseif (ACCION=='alta'){
-        include('./views/vista_base/alta.php');
-    } ?>
+    include($include_action);
+    ?>
 
 </div>
 </body>

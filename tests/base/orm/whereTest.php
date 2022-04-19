@@ -138,6 +138,40 @@ class whereTest extends test {
 
     }
 
+    public function test_filtro_especial_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $filtro_especial = array();
+        $filtro_especial[] = '';
+        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error filtro debe ser un array filtro_especial[] = array()', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_especial = array();
+        $filtro_especial[]['campo'] = array();
+        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_especial = array();
+        $filtro_especial[0]['x']['operador'] = 'x';
+        $filtro_especial[0]['x']['valor'] = 'x';
+        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_genera_and(){
 
         errores::$error = false;
@@ -265,6 +299,66 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_not_in_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $llave = '';
+        $values[] = '';
+        $resultado = $wh->not_in_sql($llave, $values);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "Error la llave esta vacia", $resultado['mensaje']);
+
+        errores::$error = false;
+        $values = array();
+        $llave = 'z';
+        $values[] = 'a';
+        $resultado = $wh->not_in_sql($llave, $values);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "z NOT IN (a)", $resultado);
+
+        errores::$error = false;
+        $values = array();
+        $llave = 'z';
+        $values[] = 'a';
+        $values[] = 'b';
+        $resultado = $wh->not_in_sql($llave, $values);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "z NOT IN (a ,b)", $resultado);
+        errores::$error = false;
+    }
+
+    public function test_obten_filtro_especial(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $filtro_esp = array();
+        $filtro_especial_sql = '';
+        $resultado = $wh->obten_filtro_especial($filtro_esp, $filtro_especial_sql);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error en filtro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_esp = array();
+        $filtro_especial_sql = '';
+        $filtro_esp['x']['operador'] = 'x';
+        $filtro_esp['x']['valor'] = 'x';
+        $resultado = $wh->obten_filtro_especial($filtro_esp, $filtro_especial_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_value(){
         errores::$error = false;
         $wh = new where();
@@ -277,6 +371,74 @@ class whereTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado);
 
+        errores::$error = false;
+    }
+
+    public function test_value_coma(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $value = '';
+        $values_sql = '';
+        $resultado = $wh->value_coma($value, $values_sql);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error value esta vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $value = ' z   ';
+        $values_sql = '';
+        $resultado = $wh->value_coma($value, $values_sql);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z', $resultado->value);
+        $this->assertEquals('', $resultado->coma);
+
+        errores::$error = false;
+
+        $value = ' z   ';
+        $values_sql = 'x';
+        $resultado = $wh->value_coma($value, $values_sql);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z', $resultado->value);
+        $this->assertEquals(' ,', $resultado->coma);
+        errores::$error = false;
+    }
+
+    public function test_values_sql_in(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $values = array();
+        $values[] = '';
+        $resultado = $wh->values_sql_in($values);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error obtener datos de value', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $values = array();
+        $values[] = 'a';
+        $resultado = $wh->values_sql_in($values);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado);
+
+        errores::$error = false;
+
+        $values = array();
+        $values[] = 'a';
+        $values[] = 'b';
+        $resultado = $wh->values_sql_in($values);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a ,b', $resultado);
         errores::$error = false;
     }
 

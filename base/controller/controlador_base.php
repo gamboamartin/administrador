@@ -185,9 +185,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     *
+     * P INT
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array|string
+     * @throws JsonException
      */
     public function alta(bool $header):array|string{
 
@@ -231,15 +232,17 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return  $this->retorno_error('Error al obtener campos',$campos,$header,false);
         }
 
-        $alta_html = $template->alta($this->directivas_extra, true,
-            true,$this->valores_filtrados,$campos , $this->seccion,$this->session_id,$this->path_base,
-            $this->campos_disabled,$this->valores_asignados_default,$this->campos_invisibles);
+        $alta_html = $template->alta(directivas_extra: $this->directivas_extra,muestra_btn_guardar:  true,
+            aplica_form: true,valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
+            session_id: $this->session_id,path_base: $this->path_base,
+            campos_disabled: $this->campos_disabled,valores_default: $this->valores_asignados_default,
+            campos_invisibles: $this->campos_invisibles);
         if(errores::$error){
             return $this->retorno_error('Error al generar template alta', $alta_html, $header, false);
         }
         $this->alta_html = $alta_html;
         $directiva = new directivas();
-        $btn = $directiva->btn_enviar(12,'Agrega','btn_agrega','btn_agrega','submit','success');
+        $btn = $directiva->btn_enviar(label: 'Agrega',name: 'btn_agrega',value: 'btn_agrega',type: 'submit',stilo: 'success');
 
         if(errores::$error){
             return $this->retorno_error('Error al generar btn', $btn , $header, false);
@@ -627,7 +630,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
     /**
-     *
+     * P INT
      * @param bool $header
      * @param bool $ws
      * @return array
@@ -837,12 +840,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $template = new templates($this->link);
 
-        $campos = $template->campos_lista($elementos_lista);
+        $campos = $template->campos_lista(elementos_lista: $elementos_lista);
         if(errores::$error){
             return $this->retorno_error('Error al obtener campos', $campos, $header, $ws);
         }
 
-        $campos_filtro = $template->obten_campos_filtro($elementos_lista_filtro);
+        $campos_filtro = $template->obten_campos_filtro(elementos_lista: $elementos_lista_filtro);
         if(errores::$error){
             return $this->retorno_error('Error al obtener campos de filtro', $campos_filtro, $header, $ws);
         }
@@ -862,7 +865,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $lista_html = $template->lista_completa(registros: $registros,campo_id:  $this->tabla.'_id',
             n_paginas:  $n_paginas, pagina_seleccionada: $pag_seleccionada,seccion:  $this->seccion,
-            acciones_asignadas:  $acciones_asignadas,seccion_link: SECCION,accion_link: ACCION,
+            acciones_asignadas:  $acciones_asignadas,seccion_link: $this->seccion,accion_link: $this->accion,
             session_id: $this->session_id,campos:  $campos->campos,etiqueta_campos:  $campos->etiqueta_campos,
             botones_filtros: $botones_filtro, filtro_boton_seleccionado: $filtro_btn);
 

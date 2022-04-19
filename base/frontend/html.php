@@ -90,7 +90,7 @@ class html  {
 
 
     /**
-     *
+     * P INT
      * @param string $tipo
      * @param string $size
      * @param stdClass $params
@@ -103,7 +103,7 @@ class html  {
                                 string $value): string|array
     {
 
-        $params_r = (new params_inputs())->limpia_obj_input($params);
+        $params_r = (new params_inputs())->limpia_obj_input(params: $params);
         if (errores::$error) {
             return $this->error->error('Error al limpiar params', $params_r);
         }

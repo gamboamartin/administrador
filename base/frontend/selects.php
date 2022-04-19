@@ -595,7 +595,7 @@ class selects{
      */
     private function option_for_select(string $key, string $value_data, string $value_select): array|string
     {
-        $selected = (new selects())->selected_value(value_base: $value_select,value_tabla: $value_data);
+        $selected = (new selects())->selected_value(value_base: $value_data,value_tabla: $value_select);
         if(errores::$error){
             return $this->error->error('Error al generar selected', $selected);
         }

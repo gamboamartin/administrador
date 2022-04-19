@@ -35,7 +35,7 @@ class templates{
     }
 
     /**
-     *
+     * P INT
      * @param array $directivas_extra
      * @param bool $muestra_btn_guardar
      * @param bool $aplica_form
@@ -86,8 +86,7 @@ class templates{
 
         $html .= '<div class="col-md-12"></div>';
         if($muestra_btn_guardar) {
-            $btn = $directiva->btn_enviar(cols: 12,label:  'Guardar',name:  'btn_guarda',value: 'activo',
-                type: 'submit', stilo: 'success');
+            $btn = $directiva->btn_enviar(label:  'Guardar',name:  'btn_guarda',value: 'activo', stilo: 'success');
             if(errores::$error){
                 return  $this->error->error('Error al generar boton',$btn);
             }
@@ -251,7 +250,7 @@ class templates{
 
 
     /**
-     *
+     * P INT
      * @param string $tipo
      * @param string $campo_name
      * @param int $cols
@@ -306,7 +305,7 @@ class templates{
     }
 
     /**
-     *
+     * P INT
      * @param array $valores_filtrados
      * @param array $campos
      * @param array $campos_disabled
@@ -377,7 +376,7 @@ class templates{
     }
 
     /**
-     *
+     * P INT
      * Genera un input de tipo HTML
      *
      * @example
@@ -434,21 +433,23 @@ class templates{
         if( $tipo === 'fecha') {
             $data_html =  $directiva->fecha( campo: $campo_name,cols: $cols,value: $valor, required: $required,
                 disabled: $disabled,ln: $ln,etiqueta: $etiqueta,pattern:  $pattern, css_id: $css_id,
-                data_extra: $data_extra,tipo_letra: 'capitalize');
+                data_extra: $data_extra);
 
             if(errores::$error){
                 return $this->error->error('Error al generar input fecha',$data_html);
             }
         }
         if($tipo === 'numero') {
-            $data_html = $directiva->genera_input_numero($campo_name, $cols, $valor, $required, $disabled,$ln,
-                $etiqueta, $pattern, $css_id,  $data_extra ,'mayusculas');
+            $data_html = $directiva->genera_input_numero(campo: $campo_name,cols:  $cols, value: $valor,
+                required: $required, disabled: $disabled,ln: $ln,
+                etiqueta: $etiqueta,pattern:  $pattern,css_id:  $css_id,data_extra:   $data_extra ,tipo_letra: 'mayusculas');
             if(errores::$error){
                 return $this->error->error('Error al generar input numero',$data_html);
             }
         }
         if($tipo === 'password') {
-            $data_html = $directiva->password($campo_name,$cols, $valor, $required, $etiqueta, $pattern, $css_id,$data_extra );
+            $data_html = $directiva->password(campo: $campo_name,cols: $cols,value:  $valor,required:  $required,
+                etiqueta:  $etiqueta, pattern: $pattern, css_id: $css_id,data_extra: $data_extra );
             if(errores::$error){
                 return $this->error->error('Error al generar input password',$data_html);
             }
@@ -479,8 +480,9 @@ class templates{
         if( $tipo === 'select_estatico') {
 
 
-            $data_html =  $directiva->genera_select_estatico($campo_name,$cols,$valor,$required,$disabled, $ln,
-                $etiqueta,$css_id );
+            $data_html =  $directiva->genera_select_estatico(campo_name: $campo_name, llaves_valores: $llaves_valores,
+                css_id: $css_id, cols: $cols, disabled: $disabled, etiqueta: $etiqueta, required: $required,
+                valor: $valor );
 
             if(errores::$error){
                 return  $this->error->error('Error al obtener genera_select_estatico',$data_html);
@@ -490,22 +492,26 @@ class templates{
         if( $tipo === 'text') {
 
 
-            $data_html = $directiva->genera_input_text($campo_name, $cols, $valor, $required,$disabled, $ln,$etiqueta,
-                $pattern, $css_id, $data_extra,'capitalize', array(),array(),true,'md');
+            $data_html = $directiva->genera_input_text(campo: $campo_name,cols:  $cols, value: $valor,
+                required:  $required,disabled: $disabled,ln:  $ln,etiqueta: $etiqueta,
+                pattern: $pattern,css_id:  $css_id,data_extra:  $data_extra,
+                clases_css: array(),ids_css: array());
 
             if(errores::$error){
                 return  $this->error->error('Error al generar text',$data_html);
             }
         }
         if( $tipo === 'telefono') {
-            $data_html = $directiva->telefono($campo_name, $cols, $valor, $required, $disabled,$ln,$etiqueta, $css_id, $data_extra,
-                'capitalize');
+            $data_html = $directiva->telefono(campo: $campo_name,cols:  $cols, value: $valor,required:  $required,
+                disabled:  $disabled,ln: $ln,etiqueta: $etiqueta, css_id: $css_id,data_extra:  $data_extra,
+                tipo_letra: 'capitalize');
             if(errores::$error){
                 return  $this->error->error('Error al generar telefono',$data_html);
             }
         }
         if( $tipo === 'textarea') {
-            $data_html = $directiva->textarea($campo_name,$cols, $valor, $required, $disabled, $ln, $etiqueta, $pattern, $css_id, $data_extra);
+            $data_html = $directiva->textarea(campo_name: $campo_name,cols: $cols,value:  $valor,required:  $required,
+                disabled:  $disabled,ln:  $ln,etiqueta:  $etiqueta,pattern:  $pattern,css_id:  $css_id,data_extra:  $data_extra);
             if(errores::$error){
                 return  $this->error->error('Error al generar textarea',$data_html);
             }
@@ -603,7 +609,7 @@ class templates{
     }
 
     /**
-     *
+     * P INT
      * Genera un input de tipo HTML
      * @param string $tipo
      * @param string $campo_name
@@ -666,7 +672,7 @@ class templates{
 
 
     /**
-     *
+     * P INT
      * @param array $registros
      * @param string $campo_id
      * @param int $n_paginas
@@ -710,31 +716,33 @@ class templates{
             return $this->error->error('Error al generar ths',$ths);
         }
 
+
         $filtros_lista = (new listas())->genera_filtros_lista(seccion: $seccion,
             botones_filtros:  $this->botones_filtros,campos_filtro: $this->campos_filtro,session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al obtener filtros', $filtros_lista);
         }
 
-        $filtros_html = (new listas())->obten_html_filtros($filtros_lista, $filtro_boton_seleccionado_html, $seccion,$session_id);
+        $filtros_html = (new listas())->obten_html_filtros(filtros_lista: $filtros_lista,
+            filtro_boton_seleccionado_html:  $filtro_boton_seleccionado_html,seccion:  $seccion,session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al obtener filtros', $filtros_html);
         }
 
-        $acciones_completas = (new inicializacion())->acciones( $acciones_asignadas);
+        $acciones_completas = (new inicializacion())->acciones( acciones_asignadas:$acciones_asignadas);
         if(errores::$error){
             return $this->error->error('Error al obtener acciones',$acciones_completas);
         }
 
-        $acciones_autorizadas_base = (new listas())->obten_acciones('{registro_id}', '{registro_status}',
-            $acciones_completas, $seccion,'icono_menu_lista',$this->link, $session_id);
+        $acciones_autorizadas_base = (new listas())->obten_acciones(id:'{registro_id}', status: '{registro_status}',
+            acciones: $acciones_completas,seccion:  $seccion,class_link: 'icono_menu_lista',link: $this->link, session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al obtener acciones autorizadas',$acciones_autorizadas_base);
         }
 
         $html = $filtros_html;
 
-        $modal = (new directivas())->modal_menu_acciones($acciones_autorizadas_base);
+        $modal = (new directivas())->modal_menu_acciones(acciones_autorizadas_base:$acciones_autorizadas_base);
         if(errores::$error){
             return $this->error->error('Error al generar modal',$modal);
         }

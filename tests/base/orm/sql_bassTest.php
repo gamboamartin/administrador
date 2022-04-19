@@ -17,6 +17,46 @@ class sql_bassTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_booleanos(): void
+    {
+        errores::$error = false;
+        $sql = new sql_bass();
+        $sql = new liberator($sql);
+
+        $campo = array();
+        $bools_asignar = array();
+        $bools = array();
+        $resultado = $sql->asigna_booleanos($bools, $bools_asignar, $campo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $campo = array();
+        $bools_asignar = array();
+        $bools = array();
+        $bools_asignar[] = '';
+        $resultado = $sql->asigna_booleanos($bools, $bools_asignar, $campo);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $bool no puede venir vacia',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = array();
+        $bools_asignar = array();
+        $bools = array();
+        $bools_asignar[] = 'z';
+        $campo['elemento_lista_z'] = 'b';
+
+        $resultado = $sql->asigna_booleanos($bools, $bools_asignar, $campo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_asigna_data_bool(): void
     {
         errores::$error = false;

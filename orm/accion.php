@@ -99,7 +99,12 @@ class accion extends modelo{ //FINALIZADAS
         return $r_alta_bd;
     }
 
-    public function cuenta_acciones(){ //FIN PROT
+    /**
+     * P INT P ORDER
+     * @return array|int
+     */
+    public function cuenta_acciones(): int|array
+    { //FIN PROT
         if(!isset($_SESSION['grupo_id'])){
             return $this->error->error('Error debe existir grupo_id',array($_SESSION));
         }
@@ -108,31 +113,21 @@ class accion extends modelo{ //FINALIZADAS
         if(isset($_SESSION['n_permisos']) && (int)$_SESSION['n_permisos']>0){
             return $_SESSION['n_permisos'];
         }
-        $consulta = "SELECT COUNT(*) AS n_permisos
-              		  FROM accion 
-              	      INNER JOIN seccion  ON seccion.id = accion.seccion_id
-              	      INNER JOIN accion_grupo AS permiso ON permiso.accion_id = accion.id
-                      INNER JOIN grupo  ON grupo.id = permiso.grupo_id
-                    WHERE  
-                	 accion.status = 'activo' 
-                	AND grupo.status = 'activo'
-                	AND seccion.status = 'activo'         	
-                	AND permiso.grupo_id = $grupo_id
-                ";
 
-        $result = $this->link->query($consulta);
-        if($this->link->errorInfo()[1]){
-            return $this->error->error('Error al ejecutar sql',array($this->link->errorInfo(),$consulta));
+        $filtro['accion.status'] = 'activo';
+        $filtro['grupo.status'] = 'activo';
+        $filtro['seccion.status'] = 'activo';
+        $filtro['accion_grupo.grupo_id'] = $grupo_id;
+        $n_permisos = (new accion_grupo($this->link))->cuenta(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error('Error al contar permisos', $n_permisos);
         }
-        $row = (array)$result->fetchObject();
-        $result->closeCursor();
-        $n_permisos = $row['n_permisos'];
-        $_SESSION['n_permisos'] = $n_permisos;
-        return $n_permisos;
+
+        return (int)$n_permisos;
     }
 
     /**
-     *
+     * P INT
      * @param string $seccion
      * @param string $accion
      * @return bool|array
@@ -285,6 +280,52 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
+     * P INT P ORDER
+     * @param string $accion
+     * @param int $grupo_id
+     * @param string $seccion
+     * @return array
+     */
+    private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
+    {
+        $filtro['accion.status'] = 'activo';
+        $filtro['grupo.status'] = 'activo';
+        $filtro['seccion.status'] = 'activo';
+        $filtro['accion_grupo.grupo_id'] = $grupo_id;
+        $filtro['seccion.descripcion'] = $seccion;
+        $filtro['accion.descripcion'] = $accion;
+        return $filtro;
+    }
+
+    private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
+    {
+        $n_permisos = $this->n_permisos(accion: $accion, grupo_id: $grupo_id, seccion: $seccion);
+        if (errores::$error) {
+            return $this->error->error('Error al contar acciones', $n_permisos);
+        }
+        $permiso_valido = $this->permiso_valido(accion: $accion, grupo_id: $grupo_id, n_permisos: $n_permisos,
+            seccion: $seccion);
+        if (errores::$error) {
+            return $this->error->error('Error al verificar permiso', $permiso_valido);
+        }
+        return $permiso_valido;
+    }
+
+    private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
+    {
+        $filtro = $this->filtro_permiso(accion: $accion,grupo_id:  $grupo_id, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro',$filtro);
+        }
+
+        $n_permisos = (new accion_grupo($this->link))->cuenta(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error('Error al contar acciones',$n_permisos);
+        }
+        return $n_permisos;
+    }
+
+    /**
      *
      * @return array
      */
@@ -315,7 +356,50 @@ class accion extends modelo{ //FINALIZADAS
         return $resultado;
     }
 
-	public function valida_permiso(string $seccion, string $accion){//FIN PROT
+    /**
+     * P INT
+     * @param string $accion
+     * @param string $seccion
+     * @return array|bool
+     */
+    public function permiso(string $accion, string $seccion): bool|array
+    {
+        $permiso = $this->valida_permiso(seccion: $seccion,accion:  $accion);
+        if(errores::$error){
+            return $this->error->error('Error al validar permisos',$permiso);
+        }
+        if($accion === 'login' || $accion === 'loguea'){
+            $permiso = true;
+        }
+        return $permiso;
+    }
+
+    /**
+     * P ORDER P INT
+     * @param string $accion
+     * @param int $grupo_id
+     * @param int $n_permisos
+     * @param string $seccion
+     * @return bool
+     */
+    private function permiso_valido(string $accion, int $grupo_id, int $n_permisos, string $seccion): bool
+    {
+        $permiso_valido = false;
+        if($n_permisos === 1){
+            $permiso_valido = true;
+        }
+        $_SESSION['valida_permiso'][$grupo_id][$seccion][$accion] = $permiso_valido;
+        return $permiso_valido;
+    }
+
+    /**
+     * P INT
+     * @param string $seccion
+     * @param string $accion
+     * @return array|bool
+     */
+	private function valida_permiso(string $seccion, string $accion): bool|array
+    {
         if(!isset($_SESSION['grupo_id'])){
             return $this->error->error('Error debe existir grupo_id',array($_SESSION));
         }
@@ -325,40 +409,21 @@ class accion extends modelo{ //FINALIZADAS
         if($accion === ''){
             return $this->error->error('Error accion esta vacia',array($seccion, $accion));
         }
+
         $grupo_id = $_SESSION['grupo_id'];
+
         if(isset($_SESSION['valida_permiso'][$grupo_id][$seccion][$accion])){
-            return $_SESSION['valida_permiso'][$grupo_id][$seccion][$accion];
-        }
+            $permiso_valido =  $_SESSION['valida_permiso'][$grupo_id][$seccion][$accion];
 
-        $consulta = "SELECT count(*) AS existe
-              		  FROM accion 
-              	      INNER JOIN seccion  ON seccion.id = accion.seccion_id
-              	      INNER JOIN accion_grupo AS permiso ON permiso.accion_id = accion.id
-                      INNER JOIN grupo  ON grupo.id = permiso.grupo_id
-                    WHERE  
-                	 accion.status = 'activo' 
-                	AND grupo.status = 'activo'
-                	AND seccion.status = 'activo'         	
-                	AND permiso.grupo_id = $grupo_id 
-                	AND seccion.descripcion = '$seccion' AND accion.descripcion = '$accion'
-                ";
+        }
+        else {
+            $permiso_valido = $this->genera_permiso_valido(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
+            if (errores::$error) {
+                return $this->error->error('Error al verificar permiso', $permiso_valido);
+            }
+        }
+        return $permiso_valido;
 
-
-        $result = $this->link->query($consulta);
-        if($this->link->errorInfo()[1]){
-            return $this->error->error('Error al ejecutar sql',array($this->link->errorInfo(),$consulta));
-        }
-        $row = (array)$result->fetchObject();
-        $permiso = $row['existe'];
-        $result->closeCursor();
-        if($permiso == 1){
-            $_SESSION['valida_permiso'][$grupo_id][$seccion][$accion] = True;
-            return True;
-        }
-        else{
-            $_SESSION['valida_permiso'][$grupo_id][$seccion][$accion] = False;
-            return False;
-        }
 	}
 
 }

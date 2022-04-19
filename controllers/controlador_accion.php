@@ -24,7 +24,7 @@ class controlador_accion extends controlador_base{
      * @return array|$this
      */
     public function encuentra_accion(bool $header):array|controlador_accion{
-        $template = parent::alta(false);
+        $template = parent::alta(header: false);
         if(errores::$error){
             $error = $this->errores->error("Error al cargar template", $template);
             if(!$header){

@@ -88,11 +88,9 @@ class controler{
     }
 
     public function data_bread():array|string{
-        if(!isset($_SESSION['grupo_id'])){
-            if($_GET['seccion'] !== 'session' &&  $_GET['accion'] !== 'login'){
-                header('Location: index.php?seccion=session&accion=login');
-                exit;
-            }
+        if(!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
+            header('Location: index.php?seccion=session&accion=login');
+            exit;
         }
 
         $es_vista = false;
@@ -257,7 +255,7 @@ class controler{
     }
 
     /**
-     * PRUEBAS FINALIZADAS
+     * P ORDER P INT
      * @return string
      */
     public function get_real_ip():string{
@@ -304,19 +302,19 @@ class controler{
 
 
     /**
-     * PHPUNIT
+     * P INT
      * @return array
      */
     protected function obten_botones_para_filtro():array{
         $botones_filtro = array();
         foreach($this->filtro_boton_lista as $filtro_boton_lista){
-            $registros_botones_filtro = $this->obten_registros_para_boton_filtro($filtro_boton_lista['tabla']);
+            $registros_botones_filtro = $this->obten_registros_para_boton_filtro(filtro_boton_lista: $filtro_boton_lista['tabla']);
             if(errores::$error){
                 return $this->errores->error('Error al obtener registros de filtro',$registros_botones_filtro);
             }
             $data_para_botones = $registros_botones_filtro['registros'];
             foreach ($data_para_botones as $data_para_boton){
-                $data_btn = $this->genera_data_btn($data_para_boton,$filtro_boton_lista['tabla']);
+                $data_btn = $this->genera_data_btn(data_para_boton: $data_para_boton,filtro_boton_lista: $filtro_boton_lista['tabla']);
                 if(errores::$error){
                     return  $this->errores->error('Error al generar datos para el boton',$data_btn);
                 }
@@ -452,7 +450,7 @@ class controler{
 
 
     /**
-     * PHPUNIT
+     * P INT
      * Obtiene todos los registros de un modelo para la muestra de los botones de filtros rapidos
      * @param string $filtro_boton_lista nombre del modelo para traerse todos
      * @example
@@ -472,7 +470,7 @@ class controler{
         if(!class_exists($class)){
             return  $this->errores->error('Error modelo no existe '.$filtro_boton_lista,$filtro_boton_lista);
         }
-        $modelo_filtro_btns = $this->modelo->genera_modelo($filtro_boton_lista);
+        $modelo_filtro_btns = $this->modelo->genera_modelo(modelo:$filtro_boton_lista);
         if(errores::$error){
             return  $this->errores->error('Error al generar modelo', $modelo_filtro_btns);
         }

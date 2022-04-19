@@ -184,7 +184,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT PROBADO
      * Genera las condiciones sql de un filtro especial
      *
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -220,13 +220,15 @@ class where{
      * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe, Debe existir $filtro_esp[$campo]['comparacion']
      * @throws errores $filtro_especial_sql != '' = $data_sql = '',  data_sql debe tener info
      */
-    private function filtro_especial_sql(array $filtro_especial):array|string{ //DEBUG
+    PUBLIC function filtro_especial_sql(array $filtro_especial):array|string{ //DEBUG
 
         $filtro_especial_sql = '';
-        foreach ($filtro_especial as $filtro_esp){
+        foreach ($filtro_especial as $campo=>$filtro_esp){
             if(!is_array($filtro_esp)){
-                return $this->error->error("Error filtro", $filtro_esp);
+
+                return $this->error->error("Error filtro debe ser un array filtro_especial[] = array()", $filtro_esp);
             }
+
             $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,filtro_especial_sql: $filtro_especial_sql);
             if(errores::$error){
                 return $this->error->error("Error filtro", $filtro_especial_sql);
@@ -263,6 +265,7 @@ class where{
                 return $this->error->error('Error $data_filtro debe ser un array',$filtro_extra);
             }
             $campo = key($data_filtro);
+            $campo = trim($campo);
 
             if(!isset($data_filtro[$campo]['operador'])){
                 return $this->error->error('Error data_filtro['.$campo.'][operador] debe existir',$data_filtro);
@@ -384,10 +387,10 @@ class where{
                 return  $this->error->error('Error $filtro debe ser un array',$filtro);
             }
             if(!isset($filtro['valor1'])){
-                return  $this->error->error('Error $filtro[\'valor1\'] debe existir',$filtro);
+                return  $this->error->error('Error $filtro[valor1] debe existir',$filtro);
             }
             if(!isset($filtro['valor2'])){
-                return  $this->error->error('Error $filtro[\'valor2\'] debe existir',$filtro);
+                return  $this->error->error('Error $filtro[valor2] debe existir',$filtro);
             }
             $valor_campo = false;
 
@@ -641,6 +644,7 @@ class where{
      */
     private function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
                                               bool $valor_campo = false):array|string{ //DOC DEBUG
+        $campo = trim($campo);
         if($campo === ''){
             return  $this->error->error('Error $campo no puede venir vacio',$campo);
         }
@@ -968,13 +972,18 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER PROBADO
      * @param array $values
      * @param string $llave
      * @return array|string
      */
     private function not_in_sql(string $llave, array $values): array|string
     {
+        $llave = trim($llave);
+        if($llave === ''){
+            return $this->error->error('Error la llave esta vacia',$llave);
+        }
+
         $not_in_sql = '';
         $values_sql = $this->values_sql_in(values:$values);
         if(errores::$error){
@@ -982,14 +991,14 @@ class where{
         }
 
         if($values_sql!==''){
-            $not_in_sql.=" $llave NOT IN ( $values_sql )";
+            $not_in_sql.="$llave NOT IN ($values_sql)";
         }
 
         return $not_in_sql;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT PROBADO
      * Genera la condicion sql de un filtro especial
      *
      * @param string $filtro_especial_sql //condicion en forma de sql
@@ -1020,15 +1029,11 @@ class where{
 
     private function obten_filtro_especial(array $filtro_esp, string $filtro_especial_sql):array|string{
         $campo = key($filtro_esp);
+        $campo = trim($campo);
 
-        $valida = (new validaciones())->valida_dato_filtro_especial(campo: $campo, filtro_esp: $filtro_esp);
+        $valida =(new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro_esp);
         if(errores::$error){
-            return $this->error->error("Error en filtro_esp", $valida);
-        }
-
-        $valida = $this->validacion->valida_filtro_especial(campo: $campo,filtro: $filtro_esp[$campo]);
-        if(errores::$error){
-            return $this->error->error("Error en filtro", $valida);
+            return $this->error->error("Error en filtro ", $valida);
         }
         $data_sql = $this->maqueta_filtro_especial(campo: $campo,filtro: $filtro_esp);
         if(errores::$error){
@@ -1085,16 +1090,20 @@ class where{
      * @return array|string
      * @throws errores Si $filtro_rango_sql es diferente de vacio y condicion es igual a vacio
      */
-    private function setea_filtro_rango(string $condicion, string $filtro_rango_sql):array|string{ //DOC DEBUG
+    private function setea_filtro_rango(string $condicion, string $filtro_rango_sql):array|string{
+        $filtro_rango_sql = trim($filtro_rango_sql);
+        $condicion = trim($condicion);
         if(trim($filtro_rango_sql) !=='' && trim($condicion) === ''){
-            return  $this->error->error('Error $filtro_rango_sql al setear',$filtro_rango_sql);
+            return  $this->error->error(
+                'Error $filtro_rango_sql y condicion no pueden venir ambas vacias al setear',$filtro_rango_sql);
         }
-        if($filtro_rango_sql === ''){
-            $filtro_rango_sql .= $condicion;
+
+        $and = '';
+        if($filtro_rango_sql !==''){
+            $and = ' AND ';
         }
-        else {
-            $filtro_rango_sql .= ' AND ' . $condicion;
-        }
+
+        $filtro_rango_sql.= $and.$condicion;
 
         return $filtro_rango_sql;
     }
@@ -1210,7 +1219,32 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT PROBADO
+     * @param string $value
+     * @param string $values_sql
+     * @return array|stdClass
+     */
+    private function value_coma(string $value, string $values_sql): array|stdClass
+    {
+        $values_sql = trim($values_sql);
+        $value = trim($value);
+        if($value === ''){
+            return $this->error->error('Error value esta vacio',$value);
+        }
+
+        $coma = '';
+        if($values_sql !== ''){
+            $coma = ' ,';
+        }
+
+        $data = new stdClass();
+        $data->value = $value;
+        $data->coma = $coma;
+        return $data;
+    }
+
+    /**
+     * P ORDER P INT PROBADO
      * @param array $values
      * @return string|array
      */
@@ -1218,15 +1252,11 @@ class where{
     {
         $values_sql = '';
         foreach ($values as $value){
-            $value = trim($value);
-            if($value === ''){
-                return $this->error->error('Error value esta vacio',$value);
+            $data = $this->value_coma(value:$value, values_sql: $values_sql);
+            if(errores::$error){
+                return $this->error->error('Error obtener datos de value',$data);
             }
-            if($values_sql===''){
-                $values_sql.=" $value ";
-                continue;
-            }
-            $values_sql.=" , $value ";
+            $values_sql.="$data->coma$data->value";
         }
         return $values_sql;
     }

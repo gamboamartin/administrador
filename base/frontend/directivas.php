@@ -386,7 +386,7 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MEUEV
+     * P INT
      * Genera un input fecha
      * @param string $campo Nombre o identificador del campo del input
      * @param int $cols Columnas para asignacion de html entre 1 y 12
@@ -478,7 +478,7 @@ class directivas extends html {
 
         $html .= $con_label_html;
 
-        $container_html = $this->html_fecha($tipo, $size, $params, $campo, $campo_capitalize, $value);
+        $container_html = $this->html_fecha(tipo: $tipo, size: $size,params:  $params,campo:  $campo,campo_capitalize:  $campo_capitalize, value: $value);
         if (errores::$error) {
             return $this->error->error('Error al integrar params',$container_html);
         }
@@ -691,7 +691,7 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MUEVE
+     * P INT
      * Genera un input para ser mostrado en html del front
      *
      * @param string $campo Nombre del campo
@@ -711,12 +711,12 @@ class directivas extends html {
     public function genera_input_numero(string $campo, int $cols, string $value,bool $required, bool $disabled,
                                         bool $ln, string $etiqueta, string $pattern, string $css_id, array $data_extra, string $tipo_letra):array|string{  //FIN PROT
 
-        $valida = $this->validacion->valida_elementos_base_input($campo,$cols);
+        $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return  $this->error->error('Error al validar',$valida);
         }
 
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta($campo, $tipo_letra);
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo,tipo_letra:  $tipo_letra);
 
         if(errores::$error){
             return  $this->error->error('Error al generar $campo_capitalize',$campo_capitalize);
@@ -977,7 +977,7 @@ class directivas extends html {
     }
 
     /**
-     *
+     * P INT
      * @param array $accion
      * @param string $id
      * @param string $session_id
@@ -1486,7 +1486,7 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MUEVE
+     * P ORDER P INT
      * @return string
      */
     public function modal_ejecuta_accion():string{
@@ -1534,7 +1534,7 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MUEVE
+     * P ORDER P INT
      * @param string $acciones_autorizadas_base
      * @return string
      */
@@ -1601,8 +1601,9 @@ class directivas extends html {
         if(errores::$error){
             return  $this->error->error('Error al generar breads', $breads);
         }
-        $seccion = $breads['seccion_menu'];
-        $accion = $breads['accion'];
+
+        $seccion = $breads->seccion;
+        $accion = $breads->accion;
         $breadcrumbs_html = (new menus())->breadcrumbs($breadcrumbs, $accion, $seccion, $session_id);
 
         if(errores::$error){
@@ -1610,7 +1611,7 @@ class directivas extends html {
         }
 
         $html ='<div class="container-fluid text-left titulo">
-          <h4>'.$seccion.' '.$accion.'</h4>
+          <h4>'.$breads->seccion_br.' '.$breads->accion_br.'</h4>
             '.$breadcrumbs_html.'
       </div>';
 
@@ -1642,7 +1643,7 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MEUEVE
+     * P INT
      * Genera el html de la barra de navegacion
      *
      * @param string $value
@@ -1659,11 +1660,11 @@ class directivas extends html {
      */
     public function password( string $campo, int $cols, string $value, bool $required, string $etiqueta,
                               string $pattern, string $css_id, array $data_extra):string|array{ //FIN PROT
-        $valida = $this->validacion->valida_elementos_base_input($campo,$cols);
+        $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return  $this->error->error('Error al validar',$valida);
         }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta($campo,'capitalize');
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto:$campo,tipo_letra: 'capitalize');
 
         if(errores::$error){
             return  $this->error->error('Error al generar etiqueta',$campo_capitalize);
@@ -1954,7 +1955,7 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MEUEVBE
+     * P INT
      * Genera un input de tipo textarea
      *
      * @param string $campo_name
@@ -1986,7 +1987,7 @@ class directivas extends html {
         if($cols >12){
             return  $this->error->error('Error cols debe ser menor a 12',$cols);
         }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta($campo_name,$tipo_letra);
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo_name,tipo_letra: $tipo_letra);
         if(errores::$error){
             return  $this->error->error('Error al $campo_capitalize',$campo_capitalize);
         }
@@ -2026,20 +2027,22 @@ class directivas extends html {
     }
 
     /**
-     * NO SE MEUEVE
+     * P INT
      * Genera un input para subida de archivos
      *
-     * @param int $cols numero de columnas entre 1 y 12
      * @param string $campo Nombre del campo
+     * @param int $cols numero de columnas entre 1 y 12
+     * @param bool $required
+     * @param bool $disabled
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
+     * @param string $css_id
+     * @param array $data_extra
      * @param string $codigo Codigo del tipo de documento
      * @param bool $multiple
-     * @param bool $required
      * @param array $ids
      * @param array $class_css
-     * @param bool $disabled
      * @return array|string html con info del input a mostrar
      * @example
      *      $input = $directiva->upload_file(12,'tipo_documento_id['.$tipo_documento['tipo_documento_id'].']',false,$tipo_documento['tipo_documento_descripcion']);
@@ -2079,12 +2082,12 @@ class directivas extends html {
             return  $this->error->error('Error al obtener ids',$ids_html);
         }
 
-        $class_css_html = (new class_css())->class_css_html($class_css);
+        $class_css_html = (new class_css())->class_css_html(clases_css: $class_css);
         if(errores::$error){
             return  $this->error->error('Error al obtener ids',$ids_html);
         }
 
-        $disable_html = (new params_inputs())->disabled_html($disabled);
+        $disable_html = (new params_inputs())->disabled_html(disabled: $disabled);
         if(errores::$error){
             return  $this->error->error('Error al obtener $disable_html',$disable_html);
         }
@@ -2092,7 +2095,7 @@ class directivas extends html {
 
         $html = '';
 
-        $ln_html = (new params_inputs())->ln($ln, 'md');
+        $ln_html = (new params_inputs())->ln(ln: $ln,size:  'md');
         if(errores::$error){
             return  $this->error->error('Error al obtener ln',$ln_html);
         }
