@@ -56,7 +56,8 @@ class init{
         return $include_action;
     }
 
-    public function index(){
+    public function index(): array|stdClass
+    {
         $con = new conexion();
         $link = conexion::$link;
 

@@ -4,9 +4,11 @@ use config\database;
 use PDO;
 class conexion{
 	public static PDO $link;
-	public string $nombre_base_datos;
 
-    public function __construct(string $nombre_base_datos = ''){
+    /**
+     * P ORDER P INT PROBADO
+     */
+    public function __construct(){
 
         $conf_database = new database();
 

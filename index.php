@@ -6,6 +6,8 @@ use base\controller\init;
 use gamboamartin\errores\errores;
 use models\menu;
 
+
+
 $data = (new init())->index();
 if(errores::$error){
     $error = (new errores())->error('Error al inicializar datos', $data);
@@ -16,7 +18,6 @@ if(errores::$error){
 $controlador = $data->controlador;
 $link = $data->link;
 $conf_generales = $data->conf_generales;
-
 
 ?>
 

@@ -1,6 +1,6 @@
 <?php
 namespace models;
-use gamboamartin\orm\modelo;
+use base\orm\modelo;
 use PDO;
 
 class campo extends modelo{
