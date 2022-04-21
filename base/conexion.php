@@ -18,7 +18,7 @@ class conexion{
         if(!file_exists($path_gc)){
 
             $path_gce = "vendor/gamboa.martin/configuraciones/$path_gc.example";
-            $data = htmlentities(file_get_contents("././$path_gc"));
+            $data = htmlentities(file_get_contents("././$path_gce"));
 
             $data.="<br><br>$data><br><br>";
 
