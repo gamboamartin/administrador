@@ -23,7 +23,6 @@ class conexion{
             exit;
         }
 
-       
         $conf_database = new database();
 
         $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
@@ -66,7 +65,7 @@ class conexion{
      */
     private function valida_conf_composer(string $tipo_conf): bool|array
     {
-        if(!class_exists("$tipo_conf\\class")){
+        if(!class_exists("config\\$tipo_conf")){
 
             $data_composer['autoload']['psr-4']['config\\'] = "config/";
             $llave_composer = json_encode($data_composer, JSON_THROW_ON_ERROR);
