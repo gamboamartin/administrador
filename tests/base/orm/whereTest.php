@@ -359,6 +359,31 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_setea_filtro_rango(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $condicion = '';
+        $filtro_rango_sql = 'a';
+        $resultado = $wh->setea_filtro_rango($condicion, $filtro_rango_sql);
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error if filtro_rango tiene info $condicion no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $condicion = 'z';
+        $filtro_rango_sql = 'a';
+        $resultado = $wh->setea_filtro_rango($condicion, $filtro_rango_sql);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a AND z', $resultado);
+        errores::$error = false;
+    }
+
     public function test_value(){
         errores::$error = false;
         $wh = new where();

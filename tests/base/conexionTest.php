@@ -14,14 +14,5 @@ class conexionTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_conexion_construct(){
-        errores::$error = false;
-        $cnx = new conexion();
-
-        print_r($cnx);exit;
-    }
-
-
-
-
+    
 }

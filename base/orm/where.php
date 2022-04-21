@@ -4,6 +4,7 @@ namespace base\orm;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JetBrains\PhpStorm\Pure;
+use ReflectionFunction;
 use stdClass;
 
 
@@ -1093,9 +1094,13 @@ class where{
     private function setea_filtro_rango(string $condicion, string $filtro_rango_sql):array|string{
         $filtro_rango_sql = trim($filtro_rango_sql);
         $condicion = trim($condicion);
+
         if(trim($filtro_rango_sql) !=='' && trim($condicion) === ''){
+            $data = new stdClass();
+            $data->filtro_rango_sql = $filtro_rango_sql;
+            $data->condicion = $condicion;
             return  $this->error->error(
-                'Error $filtro_rango_sql y condicion no pueden venir ambas vacias al setear',$filtro_rango_sql);
+                'Error if filtro_rango tiene info $condicion no puede venir vacio',$data);
         }
 
         $and = '';
