@@ -198,7 +198,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->seccion = str_replace('models\\','',$this->seccion);
         $class_model = 'models\\'.$this->seccion;
         if($this->seccion === ''){
-            return $this->retorno_error("Error la seccion esta vacia", $this->seccion, $header, false);
+            return $this->retorno_error(mensaje: "Error la seccion esta vacia",data:  $this->seccion, header: $header,
+                ws: false, params: get_defined_vars());
         }
         if($this->accion === ''){
             return $this->retorno_error("Error la accion esta vacia", $this->accion, $header, false);
@@ -639,7 +640,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $valida = $this->validacion->valida_datos_lista_entrada(accion: $this->accion, seccion: $this->seccion);
         if(errores::$error){
-            return $this->retorno_error('Error al validar', $valida, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al validar', data: $valida,header:  $header, ws: $ws);
         }
         $modelo = new accion($this->link);
         if(errores::$error){

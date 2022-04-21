@@ -1,6 +1,5 @@
 <?php
 namespace base;
-require "init.php";
 
 use config\generales;
 use gamboamartin\errores\errores;

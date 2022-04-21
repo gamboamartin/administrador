@@ -7,7 +7,7 @@ use config\generales;
 use gamboamartin\errores\errores;
 
 
-
+use JsonException;
 use models\accion;
 use PDO;
 use stdClass;
@@ -367,20 +367,22 @@ class controler{
     }
 
     /**
-     * PHPUNIT/AMBITO
+     *
      * @param string $mensaje Mensaje a mostrar
      * @param errores|array|string|stdClass $data Complemento y/o detalle de error
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @param bool $ws si ws retorna error en navegador via json
+     * @param array $params
      * @return array
+     * @throws JsonException
      */
-    protected function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws): array
+    protected function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
     {
-        $error = $this->errores->error($mensaje, $data);
+        $error = $this->errores->error(mensaje: $mensaje,data:  $data, params: $params);
         if($ws){
             ob_clean();
             header('Content-Type: application/json');
-            echo json_encode($error);
+            echo json_encode($error, JSON_THROW_ON_ERROR);
             exit;
         }
         if(!$header){
