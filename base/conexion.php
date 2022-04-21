@@ -14,15 +14,16 @@ class conexion{
     public function __construct(){
         $error = new errores();
 
-        if(!file_exists('./config/generales.php')){
+        $path_gc = 'config/generales.php';
+        if(!file_exists($path_gc)){
 
-            $path_gc = "vendor/gamboa.martin/configuraciones/config/generales.php.example";
+            $path_gce = "vendor/gamboa.martin/configuraciones/$path_gc.example";
             $data = htmlentities(file_get_contents("././$path_gc"));
 
             $data.="<br><br>$data><br><br>";
 
-            $error = $error->error(mensaje: "Error no existe clase config\\generales favor de generar 
-            la ruta RAIZ/config/generales.php basado en la estructura del ejemplo $path_gc",data: $data,
+            $error = $error->error(mensaje: "Error no existe el archivo $path_gc favor de generar 
+            la ruta $path_gc basado en la estructura del ejemplo $path_gce",data: $data,
                 params: get_defined_vars());
             print_r($error);
             exit;
