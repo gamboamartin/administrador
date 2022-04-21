@@ -10,6 +10,7 @@ class conexion{
 
     /**
      * P ORDER P INT
+     * @throws \JsonException
      */
     public function __construct(){
         $error = new errores();
@@ -30,15 +31,14 @@ class conexion{
         }
 
         if(!class_exists(generales::class)){
-            $path_gc = "vendor/gamboa.martin/configuraciones/config/generales.php.example";
-            $data = htmlentities(file_get_contents("././$path_gc"));
 
-            $data.="<br><br>$data><br><br>";
+            $data_composer['autoload']['psr-4']['config\\'] = "config/";
+            $llave_composer = json_encode($data_composer, JSON_THROW_ON_ERROR);
 
-            $error = $error->error(mensaje: "Error no existe clase config\\generales favor de generar 
-            la ruta RAIZ/config/generales.php basado en la estructura del ejemplo $path_gc",data: $data,
+            $mensaje = "Agrega el registro $llave_composer en composer.json";
+            $error_ = $error->error(mensaje: $mensaje,data: '',
                 params: get_defined_vars());
-            print_r($error);
+            print_r($error_);
             exit;
         }
 
