@@ -369,6 +369,7 @@ class whereTest extends test {
         $filtro_rango_sql = 'a';
         $resultado = $wh->setea_filtro_rango($condicion, $filtro_rango_sql);
 
+
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error if filtro_rango tiene info $condicion no puede venir vacio', $resultado['mensaje']);

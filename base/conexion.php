@@ -6,7 +6,7 @@ class conexion{
 	public static PDO $link;
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT
      */
     public function __construct(){
 

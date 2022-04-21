@@ -14,5 +14,5 @@ class conexionTest extends test {
         $this->errores = new errores();
     }
 
-    
+
 }

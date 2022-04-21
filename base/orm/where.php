@@ -613,7 +613,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERREV
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      *
      * @param string $campo
@@ -647,12 +647,14 @@ class where{
                                               bool $valor_campo = false):array|string{ //DOC DEBUG
         $campo = trim($campo);
         if($campo === ''){
-            return  $this->error->error('Error $campo no puede venir vacio',$campo);
+            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo,
+                params: get_defined_vars());
         }
         $keys = array('valor1','valor2');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $filtro);
         if(errores::$error){
-            return  $this->error->error('Error al validar filtro',$valida);
+            return  $this->error->error(mensaje: 'Error al validar filtro',data: $valida,
+                params: get_defined_vars());
         }
 
         $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
@@ -662,7 +664,8 @@ class where{
         }
         $filtro_rango_sql_r = $this->setea_filtro_rango(condicion: $condicion, filtro_rango_sql: $filtro_rango_sql);
         if(errores::$error){
-            return $this->error->error('Error $filtro_rango_sql al setear',$filtro_rango_sql_r);
+            return $this->error->error(mensaje: 'Error $filtro_rango_sql al setear',data: $filtro_rango_sql_r,
+                params: get_defined_vars());
         }
 
         return $filtro_rango_sql_r;
@@ -1073,7 +1076,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRREV
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      *
      * @access public
@@ -1096,11 +1099,10 @@ class where{
         $condicion = trim($condicion);
 
         if(trim($filtro_rango_sql) !=='' && trim($condicion) === ''){
-            $data = new stdClass();
-            $data->filtro_rango_sql = $filtro_rango_sql;
-            $data->condicion = $condicion;
+
             return  $this->error->error(
-                'Error if filtro_rango tiene info $condicion no puede venir vacio',$data);
+                'Error if filtro_rango tiene info $condicion no puede venir vacio',get_defined_vars(),
+                get_defined_vars());
         }
 
         $and = '';
