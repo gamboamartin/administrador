@@ -395,7 +395,8 @@ class modelo extends modelo_base {
     {
 
         if($limit<0){
-            return $this->error->error('Error limit debe ser mayor o igual a 0', $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit,
+                params: get_defined_vars());
         }
         if($offset<0){
             return $this->error->error('Error $offset debe ser mayor o igual a 0',$offset);
@@ -1120,7 +1121,8 @@ class modelo extends modelo_base {
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo_filtro',$verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
+                params: get_defined_vars());
         }
 
         if($this->aplica_seguridad && $aplica_seguridad) {
@@ -1236,7 +1238,8 @@ class modelo extends modelo_base {
     {
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo_filtro',$verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
+                params: get_defined_vars());
         }
         $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura:  $this->extension_estructura,
             renombradas:  $this->renombres);
@@ -1267,7 +1270,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @return string|array
      */
@@ -1277,10 +1280,12 @@ class modelo extends modelo_base {
         foreach ($group_by as $campo){
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error('Error el campo no puede venir vacio', $group_by);
+                return $this->error->error(mensaje: 'Error el campo no puede venir vacio', data: $group_by,
+                    params: get_defined_vars());
             }
             if(is_numeric($campo)){
-                return $this->error->error('Error el campo debe ser un texto', $campo);
+                return $this->error->error(mensaje:'Error el campo debe ser un texto', data: $campo,
+                    params: get_defined_vars());
             }
             if($group_by_sql === ''){
                 $group_by_sql.=' GROUP BY '.$campo.' ';
@@ -1836,10 +1841,12 @@ class modelo extends modelo_base {
     private function params_sql(array $group_by, int $limit,  int $offset, array $order): array|stdClass
     {
         if($limit<0){
-            return $this->error->error('Error limit debe ser mayor o igual a 0', $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit,
+                params: get_defined_vars());
         }
         if($offset<0){
-            return $this->error->error('Error $offset debe ser mayor o igual a 0',$offset);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
+                params: get_defined_vars());
 
         }
 

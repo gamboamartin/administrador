@@ -352,7 +352,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
      *
      * @param array $filtro_rango
@@ -385,13 +385,16 @@ class where{
         $filtro_rango_sql = '';
         foreach ($filtro_rango as $campo=>$filtro){
             if(!is_array($filtro)){
-                return  $this->error->error('Error $filtro debe ser un array',$filtro);
+                return  $this->error->error(mensaje: 'Error $filtro debe ser un array',data: $filtro,
+                    params: get_defined_vars());
             }
             if(!isset($filtro['valor1'])){
-                return  $this->error->error('Error $filtro[valor1] debe existir',$filtro);
+                return  $this->error->error(mensaje:'Error $filtro[valor1] debe existir',data:$filtro,
+                    params: get_defined_vars());
             }
             if(!isset($filtro['valor2'])){
-                return  $this->error->error('Error $filtro[valor2] debe existir',$filtro);
+                return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro,
+                    params: get_defined_vars());
             }
             $valor_campo = false;
 
@@ -401,7 +404,8 @@ class where{
             $filtro_rango_sql = $this->genera_filtro_rango_base(campo: $campo,filtro: $filtro,
                 filtro_rango_sql: $filtro_rango_sql,valor_campo: $valor_campo);
             if(errores::$error){
-                return  $this->error->error('Error $filtro_rango_sql al generar',$filtro_rango_sql);
+                return  $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql,
+                    params: get_defined_vars());
             }
         }
 
@@ -1187,7 +1191,7 @@ class where{
 
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param string $tipo_filtro
      * @return bool|array
      */
@@ -1200,7 +1204,8 @@ class where{
         $tipos_permitidos = array('numeros','textos');
         if(!in_array($tipo_filtro,$tipos_permitidos)){
             return $this->error->error(
-                'Error el tipo filtro no es correcto los filtros pueden ser o numeros o textos',$tipo_filtro);
+                mensaje: 'Error el tipo filtro no es correcto los filtros pueden ser o numeros o textos',
+                data: $tipo_filtro,params: get_defined_vars());
         }
         return true;
     }

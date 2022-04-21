@@ -2,6 +2,7 @@
 namespace controllers;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
+use JsonException;
 use models\accion;
 
 class controlador_accion extends controlador_base{
@@ -19,14 +20,16 @@ class controlador_accion extends controlador_base{
 
 
     /**
-     * PRUEBAS FINALIZADAS
+     *
      * @param bool $header
      * @return array|$this
+     * @throws JsonException
      */
     public function encuentra_accion(bool $header):array|controlador_accion{
         $template = parent::alta(header: false);
         if(errores::$error){
-            $error = $this->errores->error("Error al cargar template", $template);
+            $error = $this->errores->error(mensaje: "Error al cargar template",data:  $template,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }
