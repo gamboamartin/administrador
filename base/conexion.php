@@ -3,9 +3,11 @@ namespace base;
 use config\database;
 use config\generales;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use JsonException;
 use PDO;
 use stdClass;
+use Throwable;
 
 class conexion{
 	public static PDO $link;
@@ -18,7 +20,7 @@ class conexion{
     public function __construct(stdClass $paths_conf = new stdClass()){
         $error = new errores();
 
-        $valida = $this->valida_confs($paths_conf);
+        $valida = $this->valida_confs(paths_conf: $paths_conf);
         if(errores::$error){
             $error_ = $error->error(mensaje: "Error al validar configuraciones",data:$valida, params: get_defined_vars());
             print_r($error_);
@@ -27,15 +29,32 @@ class conexion{
 
         $conf_database = new database();
 
-        $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
-            $conf_database->db_user, $conf_database->db_password);
+        $link = $this->conecta(conf_database: $conf_database);
+        if(errores::$error){
+            $error_ = $error->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
+            print_r($error_);
+            exit;
+        }
 
-        $link->query("SET NAMES 'utf8'");
-        $sql = "SET sql_mode = '';";
-        $link->query($sql);
+        $link = $this->asigna_set_names(link: $link, set_name: 'utf8');
+        if(errores::$error){
+            $error_ = $error->error(mensaje: "Error al asignar codificacion en bd",data:$link, params: get_defined_vars());
+            print_r($error_);
+            exit;
+        }
 
-        $sql = "SET innodb_lock_wait_timeout=100;";
-        $link->query($sql);
+        $link = $this->asigna_sql_mode(link: $link,sql_mode: '');
+        if(errores::$error){
+            $error_ = $error->error(mensaje: "Error al asignar sql mode en bd",data:$link, params: get_defined_vars());
+            print_r($error_);
+            exit;
+        }
+        $link = $this->asigna_timeout(link:$link,time_out: 10);
+        if(errores::$error){
+            $error_ = $error->error(mensaje: "Error al asignar sql mode en bd",data:$link, params: get_defined_vars());
+            print_r($error_);
+            exit;
+        }
 
         $consulta = "USE ".$conf_database->db_name;
         $link->query($consulta);
@@ -44,17 +63,67 @@ class conexion{
 
 	}
 
+    private function asigna_set_names(PDO $link, string $set_name): PDO
+    {
+        $link->query("SET NAMES '$set_name'");
+        return $link;
+    }
+
+    private function asigna_sql_mode(PDO $link, string $sql_mode): PDO
+    {
+        $sql = "SET sql_mode = '$sql_mode';";
+        $link->query($sql);
+        return $link;
+    }
+
+    private function asigna_timeout(PDO $link, int $time_out): PDO
+    {
+        $sql = "SET innodb_lock_wait_timeout=$time_out;";
+        $link->query($sql);
+        return $link;
+    }
+
     /**
+     * P INT P ORDER PROBADO
+     * @param database $conf_database
+     * @return PDO|array
+     */
+    private function conecta(database $conf_database): PDO|array
+    {
+        $keys = array('db_host','db_name','db_user','db_password');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
+        if(errores::$error){
+            return (new errores())->error(mensaje:  'Error al validar conf_database',data: $valida,
+                params: get_defined_vars());
+        }
+        try{
+            $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
+                $conf_database->db_user, $conf_database->db_password);
+        }
+        catch (Throwable $e) {
+            return (new errores())->error(mensaje:  'Error al conectar',data: $e,params: get_defined_vars());
+        }
+        return $link;
+    }
+
+    /**
+     * P ORDER P INT PROBADO
      * @throws JsonException
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
+        $tipo_conf = trim($tipo_conf);
+        if($tipo_conf === ''){
+            return (new errores())->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
+                params: get_defined_vars());
+        }
+
         $valida = $this->valida_conf_file(paths_conf:$paths_conf, tipo_conf:$tipo_conf);
         if(errores::$error){
             return (new errores())->error(mensaje: "Error al validar $tipo_conf.php",data:$valida,
                 params: get_defined_vars());
         }
-        $valida = $this->valida_conf_composer($tipo_conf);
+        $valida = $this->valida_conf_composer(tipo_conf: $tipo_conf);
         if(errores::$error){
             return (new errores())->error(mensaje: "Error al validar $tipo_conf.php",data:$valida,
                 params: get_defined_vars());
@@ -63,10 +132,17 @@ class conexion{
     }
 
     /**
+     * P ORDER P INT PROBADO
      * @throws JsonException
      */
     private function valida_conf_composer(string $tipo_conf): bool|array
     {
+        $tipo_conf = trim($tipo_conf);
+        if($tipo_conf === ''){
+            return (new errores())->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
+                params: get_defined_vars());
+        }
+
         if(!class_exists("config\\$tipo_conf")){
 
             $data_composer['autoload']['psr-4']['config\\'] = "config/";
@@ -112,6 +188,7 @@ class conexion{
     }
 
     /**
+     * P ORDER P INT PROBADO
      * @throws JsonException
      */
     private function valida_confs(stdClass $paths_conf): bool|array
