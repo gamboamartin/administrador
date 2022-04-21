@@ -14,7 +14,7 @@ class conexion{
     public function __construct(){
         $error = new errores();
         if(!class_exists(generales::class)){
-            $data = file_get_contents('././vendor/gamboa.martin/configuraciones/config/generales.php.example');
+            $data = htmlentities(file_get_contents('././vendor/gamboa.martin/configuraciones/config/generales.php.example'));
             $error = $error->error(mensaje: 'Error no existe clase config\\generales',data: $data,
                 params: get_defined_vars());
             print_r($error);
