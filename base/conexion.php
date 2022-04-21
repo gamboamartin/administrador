@@ -1,6 +1,7 @@
 <?php
 namespace base;
 use config\database;
+use config\generales;
 use gamboamartin\errores\errores;
 use PDO;
 class conexion{
@@ -13,7 +14,8 @@ class conexion{
     public function __construct(){
         $error = new errores();
         if(!class_exists(database::class)){
-            $error = $error->error(mensaje: 'Error no existe clase config\\database',data: '',
+            $data = file_get_contents((new generales())->path_base.'config/database.php.example');
+            $error = $error->error(mensaje: 'Error no existe clase config\\database',data: $data,
                 params: get_defined_vars());
             print_r($error);
             exit;
