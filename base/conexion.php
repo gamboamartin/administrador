@@ -1,5 +1,6 @@
 <?php
 namespace base;
+use chillerlan\QRCodeExamples\QRImageWithLogo;
 use config\database;
 use config\generales;
 use gamboamartin\errores\errores;
@@ -27,37 +28,12 @@ class conexion{
             exit;
         }
 
-        $conf_database = new database();
-
-        $link = $this->conecta(conf_database: $conf_database);
+        $link = $this->genera_link();
         if(errores::$error){
-            $error_ = $error->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
+            $error_ = $error->error(mensaje: "Error al generar link",data: $link, params: get_defined_vars());
             print_r($error_);
             exit;
         }
-
-        $link = $this->asigna_set_names(link: $link, set_name: 'utf8');
-        if(errores::$error){
-            $error_ = $error->error(mensaje: "Error al asignar codificacion en bd",data:$link, params: get_defined_vars());
-            print_r($error_);
-            exit;
-        }
-
-        $link = $this->asigna_sql_mode(link: $link,sql_mode: '');
-        if(errores::$error){
-            $error_ = $error->error(mensaje: "Error al asignar sql mode en bd",data:$link, params: get_defined_vars());
-            print_r($error_);
-            exit;
-        }
-        $link = $this->asigna_timeout(link:$link,time_out: 10);
-        if(errores::$error){
-            $error_ = $error->error(mensaje: "Error al asignar sql mode en bd",data:$link, params: get_defined_vars());
-            print_r($error_);
-            exit;
-        }
-
-        $consulta = "USE ".$conf_database->db_name;
-        $link->query($consulta);
 
         self::$link = $link;
 
@@ -83,6 +59,29 @@ class conexion{
         return $link;
     }
 
+    private function asigna_parametros_query(PDO $link, string $set_name, string $sql_mode, int $time_out): PDO|array
+    {
+        $link = $this->asigna_set_names(link: $link, set_name: $set_name);
+        if(errores::$error){
+            return (new errores())->error(mensaje: "Error al asignar codificacion en bd",data:$link,
+                params: get_defined_vars());
+        }
+
+        $link = $this->asigna_sql_mode(link: $link, sql_mode: $sql_mode);
+        if(errores::$error){
+            return (new errores())->error(mensaje: "Error al asignar sql mode en bd",data:$link,
+                params: get_defined_vars());
+        }
+
+        $link = $this->asigna_timeout(link:$link, time_out: $time_out);
+        if(errores::$error){
+            return (new errores())->error(mensaje: "Error al asignar sql mode en bd",data:$link,
+                params: get_defined_vars());
+        }
+
+        return $link;
+    }
+
     /**
      * P INT P ORDER PROBADO
      * @param database $conf_database
@@ -103,6 +102,38 @@ class conexion{
         catch (Throwable $e) {
             return (new errores())->error(mensaje:  'Error al conectar',data: $e,params: get_defined_vars());
         }
+        return $link;
+    }
+
+    private function genera_link(): PDO|array
+    {
+        $conf_database = new database();
+
+        $link = $this->conecta(conf_database: $conf_database);
+        if(errores::$error){
+            return (new errores())->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
+        }
+
+        $link = $this->asigna_parametros_query(link: $link, set_name: 'utf8', sql_mode: '',time_out: 10);
+        if(errores::$error){
+            return (new errores())->error(mensaje: "Error al asignar parametros", data:$link,
+                params: get_defined_vars());
+        }
+
+        $link = $this->usa_base_datos(link: $link, db_name: $conf_database->db_name);
+        if(errores::$error){
+            return (new errores())->error(mensaje: "Error usar base de datos", data:$link,
+                params: get_defined_vars());
+        }
+
+        return $link;
+    }
+
+    private function usa_base_datos(PDO $link, string $db_name): PDO
+    {
+        $consulta = "USE ".$db_name;
+        $link->query($consulta);
+
         return $link;
     }
 
