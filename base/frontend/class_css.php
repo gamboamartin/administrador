@@ -12,7 +12,7 @@ class class_css{
         $this->error = new errores();
     }
     /**
-     * PROBADO-PARAMS ORDER P INT
+     * PROBADO-PARAMS ORDER P INT ERRORREV
      * @param array $clases_css
      * @return string
      */

@@ -62,7 +62,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $valida = (new configuraciones())->valida_confs(paths_conf:$paths_conf);
         if(errores::$error){
-            $error = $this->errores->error('Error al validar configuraciones',$valida);
+            $error = $this->errores->error(mensaje: 'Error al validar configuraciones',data: $valida,
+                params: get_defined_vars());
             print_r($error);
             die('Error');
         }
@@ -239,7 +240,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $campos = $elm->obten_campos(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
         if(errores::$error){
-            return  $this->retorno_error('Error al obtener campos',$campos,$header,false);
+            return  $this->retorno_error(mensaje: 'Error al obtener campos',data: $campos,header: $header,ws: false,
+                params: get_defined_vars());
         }
 
         $alta_html = $template->alta(directivas_extra: $this->directivas_extra,muestra_btn_guardar:  true,

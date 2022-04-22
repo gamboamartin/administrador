@@ -159,7 +159,7 @@ class botones{
     {
         $class_html = (new class_css())->class_css_html(clases_css:$class_css);
         if(errores::$error){
-            return $this->error->error('Error al generar clases', $class_html);
+            return $this->error->error(mensaje: 'Error al generar clases',data:  $class_html, params: get_defined_vars());
         }
 
         $icon_html = $this->icon_html(icon:$icon);

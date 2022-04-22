@@ -175,7 +175,7 @@ class directivas extends html {
         $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,  params: $params,
             stilo: $stilo,type: $type,value:  $value);
         if(errores::$error){
-            return $this->error->error('Error al generar container', $button);
+            return $this->error->error(mensaje: 'Error al generar container', data: $button, params: get_defined_vars());
         }
 
         return $button;

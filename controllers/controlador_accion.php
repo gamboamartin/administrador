@@ -60,7 +60,7 @@ class controlador_accion extends controlador_base{
 
         $this->form_ini = $this->directiva->form_ini('resultado_accion');
         if(errores::$error){
-            $error = $this->errores->error("Error al generar form", $input);
+            $error = $this->errores->error(mensaje: "Error al generar form", data: $input, params: get_defined_vars());
             if(!$header){
                 return $error;
             }
