@@ -2,9 +2,9 @@
 namespace base\controller;
 
 
+use base\orm\modelo;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\modelo;
 use JetBrains\PhpStorm\Pure;
 
 class activacion{
@@ -24,12 +24,13 @@ class activacion{
      */
     public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array{
         if($registro_id <= 0){
-            return $this->error->error('Error id debe ser mayor a 0',$registro_id);
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0',data: $registro_id,
+                params: get_defined_vars());
 
         }
         $modelo->registro_id = $registro_id;
 
-        $registro = $modelo->registro($registro_id);
+        $registro = $modelo->registro(registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error('Error al obtener registro',$registro);
         }

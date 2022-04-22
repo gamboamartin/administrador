@@ -284,7 +284,7 @@ class inicializacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param modelo_base $modelo
      * @return array
      */
@@ -296,7 +296,8 @@ class inicializacion{
         $consulta_base->estructura_bd[$modelo->tabla]['columnas'] = $modelo->columnas;
 
         return $consulta_base->estructura_bd[$modelo->tabla]['columnas'] ??
-            $this->error->error('No existen columnas para la tabla ' . $modelo->tabla, $modelo->tabla);
+            $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla, data: $modelo->tabla,
+                params: get_defined_vars());
     }
 
 

@@ -69,7 +69,7 @@ class controlador_accion extends controlador_base{
         }
         $this->form_fin = $this->directiva->form_fin();
         if(errores::$error){
-            $error = $this->errores->error("Error al generar form", $input);
+            $error = $this->errores->error(mensaje: "Error al generar form",data:  $input, params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -89,7 +89,7 @@ class controlador_accion extends controlador_base{
          * REFCATRORIZAR
          */
         if(!isset($_POST)){
-            $error = $this->errores->error("Error no existe POST", $_GET);
+            $error = $this->errores->error(mensaje: "Error no existe POST", data: $_GET, params: get_defined_vars());
             if(!$header){
                 return $error;
             }

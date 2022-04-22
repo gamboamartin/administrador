@@ -774,13 +774,15 @@ class columnas{
 
         $tablas_select = (new inicializacion())->tablas_select(modelo: $modelo);
         if(errores::$error){
-            return $this->error->error('Error al inicializar tablas select', $tablas_select);
+            return $this->error->error(mensaje: 'Error al inicializar tablas select',data:  $tablas_select,
+                params: get_defined_vars());
         }
 
         $columnas = $this->columnas_full(columnas_sql:  $columnas_sql, extension_estructura: $extension_estructura,
             modelo: $modelo, renombres:  $renombres, tablas_select: $tablas_select);
         if(errores::$error){
-            return $this->error->error('Error al integrar columnas', $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
+                params: get_defined_vars());
         }
 
         return $columnas.' ';
