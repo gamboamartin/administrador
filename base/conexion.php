@@ -64,7 +64,7 @@ class conexion{
     {
         $link = $this->asigna_set_names(link: $link, set_name: $set_name);
         if(errores::$error){
-            return (new errores())->error(mensaje: "Error al asignar codificacion en bd",data:$link,
+            return $this->error->error(mensaje: "Error al asignar codificacion en bd",data:$link,
                 params: get_defined_vars());
         }
 

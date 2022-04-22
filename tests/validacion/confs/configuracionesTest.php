@@ -159,7 +159,6 @@ class configuracionesTest extends test {
 
         $paths = new stdClass();
 
-
         $paths->generales = '/var/www/html/administrador/config/generales.php';
         $paths->database = '/var/www/html/administrador/config/database.php';
         $resultado = $val->valida_confs($paths);
