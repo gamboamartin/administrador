@@ -15,7 +15,8 @@ use models\accion;
 use models\elemento_lista;
 use models\session;
 use PDO;
-
+use stdClass;
+use validacion\confs\configuraciones;
 
 
 class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
@@ -47,14 +48,24 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public array $registro_en_proceso = array();
 
 
-
-    public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
-                                string $campo_busca = 'registro_id', string $valor_busca_fault = ''){
+    /**
+     * @throws JsonException
+     */
+    public function __construct(PDO      $link, modelo $modelo, array $filtro_boton_lista = array(),
+                                string   $campo_busca = 'registro_id', string $valor_busca_fault = '',
+                                stdClass $paths_conf = new stdClass()){
 
 
         $this->campo_busca = $campo_busca;
         $this->errores = new errores();
         $this->filtros_lista = array();
+
+        $valida = (new configuraciones())->valida_confs(paths_conf:$paths_conf);
+        if(errores::$error){
+            $error = $this->errores->error('Error al validar configuraciones',$valida);
+            print_r($error);
+            die('Error');
+        }
 
         $conf_views = new views();
         $this->reg_x_pagina = $conf_views->reg_x_pagina;
