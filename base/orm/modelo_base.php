@@ -836,7 +836,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function ejecuta_insersion_attr(int $registro_id): array|string
     {
         if($registro_id<=0){
-            return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id, params: get_defined_vars());
         }
 
         $clase_attr = $this->class_attr();
@@ -1481,7 +1481,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $keys = array('atributo_descripcion','atributo_id');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $atributo);
         if(errores::$error){
-            return $this->error->error('Error al validar $atributo',$valida);
+            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
         }
         $keys = array('atributo_id');
         $valida = $this->validacion->valida_ids( keys:$keys, registro: $atributo);
@@ -1518,7 +1518,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function inserta_atributos( int $registro_id, string $tabla_attr): array
     {
         if($this->tabla === ''){
-            return $this->error->error('Error this->tabla esta vacia', $this->tabla);
+            return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $this->tabla,
+                params: get_defined_vars());
         }
         if($registro_id<=0){
             return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
@@ -1555,7 +1556,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function inserta_data_attr(string $clase_attr, int $registro_id): array
     {
         if($registro_id<=0){
-            return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id, params: get_defined_vars());
         }
 
         $model_attr = $this->genera_modelo(modelo: $clase_attr);
@@ -1616,7 +1617,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
             columnas_seleccionables: $columnas_seleccionables);
         if(errores::$error){
-            return $this->error->error('Error al generar sub querys', $sub_querys_sql);
+            return $this->error->error(mensaje: 'Error al generar sub querys', data: $sub_querys_sql,
+                params: get_defined_vars());
         }
 
 
@@ -2172,7 +2174,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $clase_modelo = 'models\\'.$tabla_original;
 
         if($tabla_bd === ''){
-            return  $this->error->error('Error tabla original no puede venir vacia',$tabla_bd);
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd,
+                params: get_defined_vars());
         }
         if(!class_exists($clase_modelo)){
             return $this->error->error('Error no existe el modelo '.$clase_modelo, $clase_modelo);
@@ -2180,7 +2183,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $se_asignaron_columnas = (new columnas())->asigna_columnas_en_session(modelo: $this, tabla_bd: $tabla_bd);
         if(errores::$error){
-            return $this->error->error('Error al asignar columnas', $se_asignaron_columnas);
+            return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas,
+                params: get_defined_vars());
         }
         if(!$se_asignaron_columnas){
             $columnas_field = (new columnas())->asigna_columnas_session_new(modelo:$this, tabla_bd: $tabla_bd);

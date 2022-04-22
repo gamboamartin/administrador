@@ -115,14 +115,15 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param controler $controler
      * @return string|array
      */
     public function clase_model(controler $controler): string|array
     {
         if($controler->seccion === ''){
-            return $this->error->error('Error this->seccion esta vacio', $controler->seccion);
+            return $this->error->error(mensaje: 'Error this->seccion esta vacio',data:  $controler->seccion,
+                params: get_defined_vars());
         }
         $namespace = 'models\\';
         $controler->seccion = str_replace($namespace,'',$controler->seccion);

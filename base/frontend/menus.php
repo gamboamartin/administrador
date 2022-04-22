@@ -179,7 +179,7 @@ class menus{
 
         $data_link = (new links())->aplica_data_link_validado(link: $link, valida_accion: $valida_accion,seccion:  $seccion,accion:  $accion,accion_registro:  $accion_registro);
         if(errores::$error){
-            return   $this->error->error('Error al generar datos ', $data_link);
+            return   $this->error->error(mensaje: 'Error al generar datos ',data:  $data_link, params: get_defined_vars());
         }
         if(is_object($data_link)) {
             if($data_link->seccion!=='' && $data_link->accion !=='') {

@@ -97,7 +97,8 @@ class controlador_accion extends controlador_base{
             die('Error');
         }
         if(!is_array($_POST)){
-            $error = $this->errores->error("Error POST debe ser un array", $_POST);
+            $error = $this->errores->error(mensaje: "Error POST debe ser un array",  data: $_POST,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }

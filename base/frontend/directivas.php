@@ -621,7 +621,8 @@ class directivas extends html {
         $data_breadcrumbs = $this->nav_breadcumbs(
             $breadcrumbs,$seccion,$accion, $link, $accion_registro,$session_id, $valida_accion);
         if(errores::$error){
-            return  $this->errores->error('Error al generar nav breads',$data_breadcrumbs);
+            return  $this->errores->error(mensaje: 'Error al generar nav breads',data: $data_breadcrumbs,
+                params: get_defined_vars());
         }
 
 
@@ -1591,7 +1592,7 @@ class directivas extends html {
                                    array $accion_registro, string $session_id, bool $valida_accion = true):array|string{
 
         if($seccion === ''){
-            return $this->error->error("Error la seccion esta vacia",$seccion);
+            return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion, params: get_defined_vars());
         }
         if($accion === ''){
             return $this->error->error('$accion no puede venir vacia',$accion);

@@ -19,7 +19,7 @@ class menu extends modelo{ //PRUEBAS FINALIZADAS
 	public function obten_menu_permitido(): array
     { //FIN PROT
         if(!isset($_SESSION['grupo_id'])){
-            return $this->error->error('Error debe existir grupo_id',$_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir grupo_id',data: $_SESSION, params: get_defined_vars());
         }
         if($_SESSION['grupo_id']<=0){
             return $this->error->error('Error grupo_id debe ser mayor a 0',$_SESSION);

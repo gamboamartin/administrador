@@ -28,7 +28,7 @@ class links{
         if($link && $valida_accion) {
             $valida = $this->validacion->seccion_accion(seccion: $seccion,accion:  $accion);
             if(errores::$error){
-                return  $this->error->error('Error al validar seccion',$valida);
+                return  $this->error->error(mensaje: 'Error al validar seccion', data: $valida, params: get_defined_vars());
             }
 
             $data_link = $this->data_link_conectado(seccion: $seccion,accion:  $accion,accion_registro:  $accion_registro);

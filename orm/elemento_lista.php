@@ -24,29 +24,32 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     * PHPUNIT
-     * @return array
+     *
+     * @return array|stdClass
      */
-    public function alta_bd(): array{
+    public function alta_bd(): array|stdClass{
         if(!isset($this->registro['orden'])){
-            return $this->error->error('Error orden debe existir',$this->registro);
+            return $this->error->error(mensaje: 'Error orden debe existir',data: $this->registro,
+                params: get_defined_vars());
         }
-        if(!isset($this->registro['seccion_menu_id'])){
-            return $this->error->error('Error seccion_menu_id debe existir',$this->registro);
+        if(!isset($this->registro['seccion_id'])){
+            return $this->error->error(mensaje: 'Error seccion_menu_id debe existir',data: $this->registro,
+                params: get_defined_vars());
         }
         $r_elemento_lista = parent::alta_bd();
         if(errores::$error){
-            return $this->error->error('Error al dar de alta registro',$r_elemento_lista);
+            return $this->error->error(mensaje: 'Error al dar de alta registro',data: $r_elemento_lista,
+                params: get_defined_vars());
         }
 
 
-        $registro_id = $r_elemento_lista['registro_id'];
+        $registro_id = $r_elemento_lista->registro_id;
 
         $orden = $this->registro['orden'];
-        $seccion_menu_id = $this->registro['seccion_menu_id'];
+        $seccion_menu_id = $this->registro['seccion_id'];
 
         $consulta = /** @lang text */
-            "SELECT *FROM elemento_lista WHERE seccion_menu_id=$seccion_menu_id AND orden >=$orden AND id <> $registro_id ORDER BY orden ASC";
+            "SELECT *FROM elemento_lista WHERE seccion_id=$seccion_menu_id AND orden >=$orden AND id <> $registro_id ORDER BY orden ASC";
 
         $resultado = $this->link->query($consulta);
 
@@ -61,7 +64,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
 
         $resultado->closeCursor();
 
-        return array('mensaje'=>'Registro insertado con éxito',  'registro_id'=>$registro_id);
+        return $r_elemento_lista;
 
     }
 

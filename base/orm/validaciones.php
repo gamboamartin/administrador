@@ -6,7 +6,7 @@ use gamboamartin\validacion\validacion;
 class validaciones extends validacion{
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $registro
      * @param string $tabla
      * @return bool|array
@@ -14,12 +14,14 @@ class validaciones extends validacion{
     public function valida_alta_bd(array $registro, string $tabla): bool|array
     {
         if(count($registro) === 0){
-            return $this->error->error('Error registro no puede venir vacio', $registro);
+            return $this->error->error(mensaje: 'Error registro no puede venir vacio', data: $registro,
+                params: get_defined_vars());
         }
 
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('Error $tabla esta vacia'.$tabla, $tabla);
+            return $this->error->error(mensaje: 'Error $tabla esta vacia'.$tabla, data: $tabla,
+                params: get_defined_vars());
         }
 
         return true;

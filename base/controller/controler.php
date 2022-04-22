@@ -122,7 +122,7 @@ class controler{
             $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->link,
                 $accion_registro,$this->session_id);
             if (errores::$error) {
-                return $this->errores->error('Error al generar nav breads', $breadcrumbs);
+                return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs, params: get_defined_vars());
             }
         }
         return $breadcrumbs;

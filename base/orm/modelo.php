@@ -65,14 +65,14 @@ class modelo extends modelo_base {
 
             $data = $this->obten_columnas(tabla_original: $tabla);
             if (errores::$error) {
-                $error = $this->error->error('Error al obtener columnas de '.$tabla, $data);
+                $error = $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data,
+                    params: get_defined_vars());
                 print_r($error);
                 die('Error');
             }
             $this->campos_tabla = $data->columnas_parseadas;
         }
-        $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id',
-            'es_ubicacion','es_fisico');
+        $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id');
 
         foreach($campos_obligatorios_parciales as $campo){
             if(in_array($campo, $this->campos_tabla, true)){
@@ -213,35 +213,36 @@ class modelo extends modelo_base {
         $this->status_default = 'activo';
         $registro = $this->registro_ins(registro: $this->registro,status_default: $this->status_default);
         if(errores::$error){
-            return $this->error->error('Error al maquetar registro ', $registro);
+            return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro, params: get_defined_vars());
         }
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
             no_duplicados: $this->no_duplicados, registro: $registro,tabla:  $this->tabla,
             tipo_campos: $this->tipo_campos);
         if(errores::$error){
-            return $this->error->error('Error al validar alta ', $valida);
+            return $this->error->error(mensaje: 'Error al validar alta ', data: $valida, params: get_defined_vars());
         }
 
 
         $data_log = $this->genera_data_log();
         if(errores::$error){
-            return $this->error->error('Error al asignar data log', $data_log);
+            return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log, params: get_defined_vars());
         }
 
         $resultado = $this->inserta_sql(data_log: $data_log);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql', $resultado);
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado, params: get_defined_vars());
         }
 
         $transacciones = $this->transacciones_default(consulta: $resultado->sql);
         if(errores::$error){
-            return $this->error->error('Error al generar transacciones', $transacciones);
+            return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones,
+                params: get_defined_vars());
         }
 
         $registro = $this->registro(registro_id: $this->registro_id);
         if(errores::$error){
-            return $this->error->error('Error al obtener registro', $registro);
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro, params: get_defined_vars());
         }
 
         $data = new stdClass();
@@ -254,7 +255,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * @param array $registro
      * @param string $status_default
      * @return array
@@ -263,12 +264,12 @@ class modelo extends modelo_base {
     {
         $registro = (new inicializacion())->status(registro: $registro,status_default:  $status_default);
         if(errores::$error){
-            return $this->error->error('Error al asignar status ', $registro);
+            return $this->error->error(mensaje: 'Error al asignar status ', data: $registro, params: get_defined_vars());
         }
 
         $registro = (new data_format())->ajusta_campos_moneda(registro: $registro, tipo_campos: $this->tipo_campos);
         if(errores::$error){
-            return $this->error->error('Error al asignar campo ', $registro);
+            return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro, params: get_defined_vars());
         }
         $this->registro = $registro;
         return $registro;
@@ -276,7 +277,7 @@ class modelo extends modelo_base {
 
     /**
      * P ORDER P INT
-     * @param array $registro Registro con datos para lka insersion
+     * @param array $registro Registro con datos para la insersion
      * @return array
      */
     public function alta_registro(array $registro):array{ //FIN
@@ -284,7 +285,7 @@ class modelo extends modelo_base {
 
         $r_alta  = $this->alta_bd();
         if(errores::$error) {
-            return $this->error->error('Error al dar de alta registro', $r_alta);
+            return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta, params: get_defined_vars());
         }
         return $r_alta;
     }
@@ -1170,7 +1171,8 @@ class modelo extends modelo_base {
         foreach($filtro as $campo=>$value){
             $data_sentencia = $this->data_sentencia(campo:  $campo,sentencia:  $sentencia,value:  $value, where: $where);
             if(errores::$error){
-                return $this->error->error('Error al generar data sentencia',$data_sentencia);
+                return $this->error->error(mensaje: 'Error al generar data sentencia',data: $data_sentencia,
+                    params: get_defined_vars());
             }
             $where = $data_sentencia->where;
             $sentencia = $data_sentencia->sentencia;
@@ -2173,7 +2175,8 @@ class modelo extends modelo_base {
     private function transacciones_default(string $consulta): array|stdClass
     {
         if($this->registro_id<=0){
-            return $this->error->error('Error this->registro_id debe ser mayor a 0', $this->registro_id);
+            return $this->error->error(mensaje: 'Error this->registro_id debe ser mayor a 0', data: $this->registro_id,
+                params: get_defined_vars());
         }
 
         $bitacora = $this->bitacora(registro: $this->registro,funcion: __FUNCTION__,consulta: $consulta);

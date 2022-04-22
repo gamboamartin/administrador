@@ -20,13 +20,16 @@ class altas{
 
         $registro_r = (new normalizacion())->asigna_registro_alta(controler: $controler,registro:  $registro);
         if(errores::$error){
-            return $this->error->error('Error al asignar registro', $registro_r);
+            return $this->error->error(mensaje: 'Error al asignar registro',data:  $registro_r,
+                params: get_defined_vars());
         }
 
         $resultado = $controler->modelo->alta_bd();
         if(errores::$error){
-            return $this->error->error('Error al dar de alta registros', $resultado);
+            return $this->error->error(mensaje: 'Error al dar de alta registros', data: $resultado,
+                params: get_defined_vars());
         }
+
         return $resultado;
     }
 

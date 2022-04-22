@@ -1,6 +1,6 @@
 <?php
 namespace controllers;
-use controller\controlador_base;
+use base\controller\controlador_base;
 use models\menu;
 
 class controlador_menu extends controlador_base{

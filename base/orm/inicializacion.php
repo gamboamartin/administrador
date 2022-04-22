@@ -265,7 +265,7 @@ class inicializacion{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $registro
      * @param string $status_default
      * @return array
@@ -274,7 +274,8 @@ class inicializacion{
     {
         $status_default = trim($status_default);
         if($status_default === ''){
-            return $this->error->error('Error status_default no puede venir vacio', $status_default);
+            return $this->error->error(mensaje: 'Error status_default no puede venir vacio',
+                data: $status_default, params: get_defined_vars());
         }
 
         if(!isset($registro['status'])){

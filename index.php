@@ -9,7 +9,7 @@ use models\menu;
 
 $data = (new init())->index();
 if(errores::$error){
-    $error = (new errores())->error('Error al inicializar datos', $data);
+    $error = (new errores())->error(mensaje: 'Error al inicializar datos',data:  $data);
     print_r($error);
     die('Error');
 }

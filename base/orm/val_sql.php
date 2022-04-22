@@ -8,9 +8,9 @@ class val_sql extends validaciones {
 
     private function campo_existe(string $campo, array $keys_ids, array $registro): array|string
     {
-        $campo_r = $this->txt_valido($campo);
+        $campo_r = $this->txt_valido(txt: $campo);
         if(errores::$error){
-            return $this->error->error('Error key invalido', $campo_r);
+            return $this->error->error(mensaje: 'Error key invalido', data: $campo_r, params: get_defined_vars());
         }
         $existe = $this->existe(keys_obligatorios: $keys_ids, registro: $registro);
         if(errores::$error){
@@ -100,7 +100,8 @@ class val_sql extends validaciones {
         foreach($keys_ids as $campo){
             $verifica = $this->verifica_id(campo: $campo,keys_ids: $keys_ids,registro: $registro);
             if(errores::$error){
-                return $this->error->error('Error al verificar campo ids', $verifica);
+                return $this->error->error(mensaje: 'Error al verificar campo ids',data:  $verifica,
+                    params: get_defined_vars());
             }
 
         }
@@ -147,7 +148,8 @@ class val_sql extends validaciones {
         $txt = trim($txt);
 
         if($txt === ''){
-            return $this->error->error('Error el $txt no puede venir vacio', $txt);
+            return $this->error->error(mensaje: 'Error el $txt no puede venir vacio', data: $txt,
+                params: get_defined_vars());
         }
         if(is_numeric($txt)){
             return $this->error->error('Error el $txt es numero debe se un string', $txt);
@@ -202,13 +204,14 @@ class val_sql extends validaciones {
         $valida_campo_obligatorio = $this->valida_campo_obligatorio(campos_obligatorios: $campos_obligatorios,
             registro: $registro,tabla:  $tabla);
         if(errores::$error){
-            return $this->error->error('Error el campo al validar campos obligatorios de registro '.$tabla,
-                $valida_campo_obligatorio);
+            return $this->error->error(mensaje: 'Error el campo al validar campos obligatorios de registro '.$tabla,
+                data: $valida_campo_obligatorio, params: get_defined_vars());
         }
 
         $valida_estructura = (new val_sql())->valida_estructura_campos(registro: $registro, tipo_campos: $tipo_campos);
         if(errores::$error){
-            return $this->error->error('Error el campo al validar estructura ', $valida_estructura);
+            return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura,
+                params: get_defined_vars());
         }
         return true;
     }
@@ -217,7 +220,8 @@ class val_sql extends validaciones {
     {
         $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys_ids,registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al verificar campo ids', $campo_r);
+            return $this->error->error(mensaje: 'Error al verificar campo ids', data: $campo_r,
+                params: get_defined_vars());
         }
 
         if(!preg_match($this->patterns['id'], $registro[$campo_r])){
@@ -242,13 +246,14 @@ class val_sql extends validaciones {
     {
         $valida = (new validaciones())->valida_alta_bd(registro: $registro,tabla:  $tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar alta ', $valida);
+            return $this->error->error(mensaje: 'Error al validar alta ',data:  $valida, params: get_defined_vars());
         }
 
         $valida_estructura = $this->verifica_estructura(campos_obligatorios: $campos_obligatorios,
             registro: $registro,tabla: $tabla,tipo_campos: $tipo_campos);
         if(errores::$error){
-            return $this->error->error('Error el campo al validar estructura ', $valida_estructura);
+            return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura,
+                params: get_defined_vars());
         }
 
         foreach($no_duplicados as $campo){
@@ -258,10 +263,11 @@ class val_sql extends validaciones {
 
             $existe = $modelo->existe(filtro:$filtro);
             if(errores::$error){
-                return $this->error->error('Error verificar si existe duplicado', $existe);
+                return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe, params: get_defined_vars());
             }
             if($existe){
-                return $this->error->error('Error ya existe un registro con el campo '.$campo, $existe);
+                return $this->error->error(mensaje: 'Error ya existe un registro con el campo '.$campo, data: $existe,
+                    params: get_defined_vars());
             }
         }
 
@@ -292,7 +298,8 @@ class val_sql extends validaciones {
 
         $v_tipo_campos = $this->tipo_campos(registro:$registro, tipo_campos: $tipo_campos);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo de campo', $v_tipo_campos);
+            return $this->error->error(mensaje: 'Error al validar tipo de campo', data: $v_tipo_campos,
+                params: get_defined_vars());
         }
         $v_obligatorios = $this->obligatorios(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){

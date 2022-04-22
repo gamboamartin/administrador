@@ -28,7 +28,8 @@ class columnas{
         $class = 'models\\'.$tabla;
 
         if(!class_exists($class)){
-            return  $this->error->error('Error no existe el modelo '.$tabla,$tabla);
+            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla,data: $tabla,
+                params: get_defined_vars());
         }
         $resultado_columnas = $this->genera_columnas_consulta(modelo: $modelo, tabla_original: $tabla,
             tabla_renombrada: $tabla_renombrada, columnas: $columnas_sql);
@@ -83,13 +84,15 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
-            return $this->error->error('Error tabla_bd no puede venir vacia', $tabla_bd);
+            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd,
+                params: get_defined_vars());
         }
         $data = new stdClass();
         if(isset($_SESSION['campos_tabla'][$tabla_bd], $_SESSION['columnas_completas'][$tabla_bd])){
             $data = $this->asigna_data_columnas(data: $data,tabla_bd: $tabla_bd);
             if(errores::$error){
-                return $this->error->error('Error al generar columnas', $data);
+                return $this->error->error(mensaje: 'Error al generar columnas', data: $data,
+                    params: get_defined_vars());
             }
             $modelo->data_columnas = $data;
             return true;
@@ -138,7 +141,7 @@ class columnas{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
+     * PROBADO-PARAMS ORDER P INT ERROREV
      * @param stdClass $data
      * @param string $tabla_bd
      * @return stdClass|array
@@ -147,19 +150,24 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
-            return $this->error->error('Error tabla_bd no puede venir vacia', $tabla_bd);
+            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd,
+                params: get_defined_vars());
         }
         if(!isset($_SESSION['campos_tabla'])){
-            return $this->error->error('Error debe existir SESSION[campos_tabla]', $_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]',data: $_SESSION,
+                params: get_defined_vars());
         }
         if(!isset($_SESSION['campos_tabla'][$tabla_bd])){
-            return $this->error->error('Error debe existir SESSION[campos_tabla]['.$tabla_bd.']', $_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]['.$tabla_bd.']',
+                data: $_SESSION, params: get_defined_vars());
         }
         if(!isset($_SESSION['columnas_completas'])){
-            return $this->error->error('Error debe existir SESSION[columnas_completas]', $_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]',data: $_SESSION,
+                params: get_defined_vars());
         }
         if(!isset($_SESSION['columnas_completas'][$tabla_bd])){
-            return $this->error->error('Error debe existir SESSION[columnas_completas]['.$tabla_bd.']', $_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]['.$tabla_bd.']',
+                data:$_SESSION, params: get_defined_vars());
         }
 
         $data->columnas_parseadas = $_SESSION['campos_tabla'][$tabla_bd];
@@ -183,7 +191,7 @@ class columnas{
 
         $valida = $this->validacion->valida_data_columna(data: $data,tabla:  $tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar data', $valida);
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida, params: get_defined_vars());
         }
 
 
@@ -346,7 +354,7 @@ class columnas{
         $columnas = $this->columnas_tablas_select(columnas_sql: $columnas_sql, modelo: $modelo,
             tablas_select: $tablas_select);
         if(errores::$error){
-            return $this->error->error('Error al integrar columnas', $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas, params: get_defined_vars());
         }
 
         $columnas = $this->columnas_extension(columnas:  $columnas, columnas_sql: $columnas_sql,
@@ -378,7 +386,8 @@ class columnas{
     {
         foreach($renombres as $tabla=>$data){
             if(!is_array($data)){
-                return $this->error->error('Error data debe ser array '.$tabla, $data);
+                return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data,
+                    params: get_defined_vars());
             }
             $r_columnas = $this->carga_columna_renombre(columnas: $columnas,columnas_sql: $columnas_sql,
                 data: $data,modelo: $modelo,tabla: $tabla);
@@ -524,7 +533,8 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
         $class = 'models\\'.$tabla_original;
         if($tabla_original === ''){
-            return  $this->error->error('Error tabla original no puede venir vacia',$tabla_original);
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original,
+                params: get_defined_vars());
         }
         if(!class_exists($class)){
             return $this->error->error('Error no existe el modelo '.$tabla_original, $tabla_original);
@@ -592,7 +602,8 @@ class columnas{
         $class = 'models\\'.$tabla_original;
 
         if(!class_exists($class)){
-            return  $this->error->error('Error no existe el modelo '.$tabla_original,$tabla_original);
+            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original,data: $tabla_original,
+                params: get_defined_vars());
         }
 
 
@@ -688,7 +699,8 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
         $class = 'models\\'.$tabla_original;
         if($tabla_original === ''){
-            return  $this->error->error('Error tabla original no puede venir vacia',$tabla_original);
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original,
+                params: get_defined_vars());
         }
         if(!class_exists($class)){
             return $this->error->error('Error no existe el modelo '.$tabla_original, $tabla_original);

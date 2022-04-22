@@ -1,7 +1,7 @@
 <?php
 namespace models;
-use gamboamartin\orm\modelo;
 
+use base\orm\modelo;
 use PDO;
 
 class accion_basica extends modelo{

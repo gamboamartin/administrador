@@ -25,7 +25,7 @@ class init{
     public function controller(PDO $link, string $seccion):controler|array{
         $name_ctl = $this->name_controler(seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al obtener nombre de controlador', $name_ctl);
+            return $this->error->error(mensaje: 'Error al obtener nombre de controlador', data: $name_ctl, params: get_defined_vars());
 
         }
 
@@ -79,7 +79,7 @@ class init{
 
         $controlador = $this->controller(link:  $link,seccion:  $seguridad->seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar controlador', $controlador);
+            return $this->error->error(mensaje: 'Error al generar controlador', data: $controlador, params: get_defined_vars());
 
         }
 
