@@ -115,7 +115,8 @@ class conexion{
             return $this->error->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
         }
 
-        $link = $this->asigna_parametros_query(link: $link, set_name: 'utf8', sql_mode: '',time_out: 10);
+        $link = $this->asigna_parametros_query(link: $link, set_name: $conf_database->set_name,
+            sql_mode: $conf_database->sql_mode,time_out: $conf_database->time_out);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al asignar parametros", data:$link,
                 params: get_defined_vars());
