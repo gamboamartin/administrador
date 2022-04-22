@@ -115,6 +115,14 @@ class conexion{
             return $this->error->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
         }
 
+        $keys = array('set_name','time_out', 'sql_mode');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database,
+            valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida,
+                params: get_defined_vars());
+        }
+
         $link = $this->asigna_parametros_query(link: $link, set_name: $conf_database->set_name,
             sql_mode: $conf_database->sql_mode,time_out: $conf_database->time_out);
         if(errores::$error){
