@@ -47,7 +47,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param int $cols
      * @param string $label
      * @param string $name
@@ -58,13 +58,15 @@ class validaciones_directivas extends validacion{
     {
         $valida = $this->valida_cols(cols: $cols);
         if(errores::$error){
-            return $this->error->error('Error al validar cols', $valida);
+            return $this->error->error(mensaje: 'Error al validar cols',data:  $valida, params: get_defined_vars());
         }
         if($name===''){
-            return $this->error->error('Error $name no puede venir vacio', $label);
+            return $this->error->error(mensaje:'Error $name no puede venir vacio',data: $label,
+                params: get_defined_vars());
         }
         if($value===''){
-            return $this->error->error('Error $value no puede venir vacio', $name);
+            return $this->error->error(mensaje:'Error $value no puede venir vacio',data: $name,
+                params: get_defined_vars());
         }
         return true;
     }

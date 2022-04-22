@@ -8,7 +8,7 @@ use stdClass;
 class configuraciones extends validacion {
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @throws JsonException
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
@@ -32,7 +32,7 @@ class configuraciones extends validacion {
         return true;
     }
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @throws JsonException
      */
     public function valida_confs(stdClass $paths_conf): bool|array
@@ -52,7 +52,7 @@ class configuraciones extends validacion {
 
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @throws JsonException
      */
     private function valida_conf_composer(string $tipo_conf): bool|array
@@ -76,7 +76,7 @@ class configuraciones extends validacion {
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param stdClass $paths_conf
      * @param string $tipo_conf
      * @return bool|array

@@ -78,7 +78,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $init = (new normalizacion())->init_controler(controler: $this);
         if(errores::$error){
-            $error = $this->errores->error('Error al incializar entradas',$init);
+            $error = $this->errores->error(mensaje:'Error al incializar entradas',data: $init,
+                params: get_defined_vars());
             print_r($error);
             die('Error');
         }
@@ -213,7 +214,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         }
         if(!class_exists($class_model)){
-            return $this->retorno_error("Error la seccion es invalida", $class_model, $header, false);
+            return $this->retorno_error(mensaje: "Error la seccion es invalida", data: $class_model, header: $header,
+                ws:  false, params: get_defined_vars());
         }
 
 
@@ -250,10 +252,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->alta_html = $alta_html;
         $directiva = new directivas();
-        $btn = $directiva->btn_enviar(label: 'Agrega',name: 'btn_agrega',value: 'btn_agrega',type: 'submit',stilo: 'success');
+        $btn = $directiva->btn_enviar(label: 'Agrega',name: 'btn_agrega',value: 'btn_agrega',stilo: 'success');
 
         if(errores::$error){
-            return $this->retorno_error('Error al generar btn', $btn , $header, false);
+            return $this->retorno_error(mensaje: 'Error al generar btn', data: $btn , header: $header, ws: false,
+                params: get_defined_vars());
 
         }
         $this->btn = $btn;

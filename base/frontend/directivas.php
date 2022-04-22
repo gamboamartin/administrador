@@ -169,7 +169,7 @@ class directivas extends html {
 
         $params = (new botones())->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
         if(errores::$error){
-            return $this->error->error('Error al generar parametros', $params);
+            return $this->error->error(mensaje: 'Error al generar parametros', data: $params,params: get_defined_vars());
         }
 
         $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,  params: $params,
