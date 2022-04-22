@@ -38,7 +38,7 @@ class controlador_accion extends controlador_base{
         }
         $input = $this->directiva->busca_accion();
         if(errores::$error){
-            $error = $this->errores->error("Error al generar input", $input);
+            $error = $this->errores->error(mensaje: "Error al generar input", data: $input, params: get_defined_vars());
             if(!$header){
                 return $error;
             }

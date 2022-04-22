@@ -11,6 +11,7 @@ use Throwable;
 
 class conexion{
 	public static PDO $link;
+    private errores $error;
 
 
     /**
@@ -19,6 +20,7 @@ class conexion{
      */
     public function __construct(stdClass $paths_conf = new stdClass()){
         $error = new errores();
+        $this->error = new errores();
 
         $valida = $this->valida_confs(paths_conf: $paths_conf);
         if(errores::$error){
@@ -155,37 +157,7 @@ class conexion{
         return true;
     }
 
-    /**
-     * P ORDER P INT PROBADO
-     * @param stdClass $paths_conf
-     * @param string $tipo_conf
-     * @return bool|array
-     */
-    private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): bool|array
-    {
-        $tipo_conf = trim($tipo_conf);
-        if($tipo_conf === ''){
-            return (new errores())->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
-                params: get_defined_vars());
-        }
 
-        $path = $paths_conf->$tipo_conf ?? "config/$tipo_conf.php";
-        if(!file_exists($path)){
-
-            $path_e = "vendor/gamboa.martin/configuraciones/$path.example";
-            $data = '';
-            if(file_exists("././$path_e")) {
-                $data = htmlentities(file_get_contents("././$path_e"));
-            }
-
-            $data.="<br><br>$data><br><br>";
-
-            return (new errores())->error(mensaje: "Error no existe el archivo $path favor de generar 
-            la ruta $path basado en la estructura del ejemplo $path_e",data: $data,
-                params: get_defined_vars());
-        }
-        return true;
-    }
 
     /**
      * P ORDER P INT PROBADO
@@ -202,6 +174,38 @@ class conexion{
                 return (new errores())->error(mensaje: "Error al validar $tipo_conf.php",data:$valida,
                     params: get_defined_vars());
             }
+        }
+        return true;
+    }
+
+    /**
+     * P ORDER P INT PROBADO
+     * @param stdClass $paths_conf
+     * @param string $tipo_conf
+     * @return bool|array
+     */
+    private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): bool|array
+    {
+        $tipo_conf = trim($tipo_conf);
+        if($tipo_conf === ''){
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
+                params: get_defined_vars());
+        }
+
+        $path = $paths_conf->$tipo_conf ?? "config/$tipo_conf.php";
+        if(!file_exists($path)){
+
+            $path_e = "vendor/gamboa.martin/configuraciones/$path.example";
+            $data = '';
+            if(file_exists("././$path_e")) {
+                $data = htmlentities(file_get_contents("././$path_e"));
+            }
+
+            $data.="<br><br>$data><br><br>";
+
+            return $this->error->error(mensaje: "Error no existe el archivo $path favor de generar 
+            la ruta $path basado en la estructura del ejemplo $path_e",data: $data,
+                params: get_defined_vars());
         }
         return true;
     }

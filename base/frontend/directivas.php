@@ -164,7 +164,7 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_data_btn(cols: $cols,label:  $label,name:  $name,value:  $value);
         if(errores::$error){
-            return $this->error->error('Error al validar boton', $valida);
+            return $this->error->error(mensaje: 'Error al validar boton', data: $valida, params: get_defined_vars());
         }
 
         $params = (new botones())->data_btn(class_css: $class_css, datas: $datas, icon: $icon);

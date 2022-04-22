@@ -81,7 +81,7 @@ class etiquetas{
     }
 
     /**
-     * PROBADO PARAMS INT PARAMS ORDER
+     * PROBADO PARAMS INT PARAMS ORDER ERRORREV
      * @param string $campo_busca
      * @return string|string[]
      */

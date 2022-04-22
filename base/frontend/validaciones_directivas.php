@@ -29,17 +29,19 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
+     * PROBADO-PARAMS ORDER P INT ERROREV
      * @param int $cols
      * @return bool|array
      */
     public function valida_cols(int $cols): bool|array
     {
         if($cols<=0){
-            return $this->error->error('Error cols debe ser mayor a 0', $cols);
+            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data:  $cols,
+                params: get_defined_vars());
         }
         if($cols>=13){
-            return $this->error->error('Error cols debe ser menor a 13', $cols);
+            return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data:  $cols,
+                params: get_defined_vars());
         }
         return true;
     }

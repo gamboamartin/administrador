@@ -30,7 +30,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public int $reg_x_pagina;
 
     public array $valores_asignados_default = array();
-    public array $selects_filtrados = array();
     public array $selects_registros_completos = array();
 
     public bool $registros_alta = false;
@@ -43,12 +42,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public string $lista_html = '';
     public string $modifica_html = '';
     public string $btn = '';
-    public array $encabezados = array();
 
-    public array $registros_capturados = array();
-
-    public array $letras_long_pdf = array();
-    public string $cols_lista = '';
 
     public array $registro_en_proceso = array();
 
@@ -56,6 +50,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
                                 string $campo_busca = 'registro_id', string $valor_busca_fault = ''){
+
 
         $this->campo_busca = $campo_busca;
         $this->errores = new errores();
@@ -202,7 +197,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                 ws: false, params: get_defined_vars());
         }
         if($this->accion === ''){
-            return $this->retorno_error("Error la accion esta vacia", $this->accion, $header, false);
+            return $this->retorno_error(mensaje: "Error la accion esta vacia",data:  $this->accion,header:  $header,
+                ws:false, params: get_defined_vars());
 
         }
         if(!class_exists($class_model)){

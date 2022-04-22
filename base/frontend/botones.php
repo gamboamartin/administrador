@@ -106,7 +106,7 @@ class botones{
     {
         $type = trim ($type);
         if($type === ''){
-            return $this->error->error('Error type esta vacio', $type);
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, params: get_defined_vars());
         }
         $stilo = trim ($stilo);
         if($stilo === ''){
@@ -128,7 +128,7 @@ class botones{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * PROBADO-PARAMS ORDER-PARAMS INT ERRORREV
      * @param int $cols
      * @param string $contenido
      * @return string|array
@@ -139,7 +139,7 @@ class botones{
 
         $valida =  (new validaciones_directivas())->valida_cols(cols: $cols);
         if(errores::$error){
-            return $this->error->error('Error al validar cols',$valida);
+            return $this->error->error(mensaje: 'Error al validar cols',data: $valida, params: get_defined_vars());
         }
 
         $html = "<div class='col-md-$cols'>";

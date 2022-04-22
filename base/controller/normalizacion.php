@@ -306,7 +306,7 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param controler $controler
      * @return controler
      */
