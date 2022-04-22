@@ -39,6 +39,7 @@ class configuraciones extends validacion {
     {
         $tipo_confs[] = 'generales';
         $tipo_confs[] = 'database';
+        $tipo_confs[] = 'views';
 
         foreach ($tipo_confs as $tipo_conf){
             $valida = $this->valida_conf(paths_conf: $paths_conf, tipo_conf: $tipo_conf);
