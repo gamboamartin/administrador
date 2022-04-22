@@ -1602,14 +1602,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             columnas_sql: $columnas_seleccionables, extension_estructura:  $extension_estructura,
             renombres:  $renombradas);
         if(errores::$error){
-            return  $this->error->error('Error al obtener columnas',$columnas_sql);
+            return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql,
+                params: get_defined_vars());
         }
 
 
         $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
             modelo: $this, renombradas: $renombradas, tabla: $this->tabla);
         if(errores::$error){
-            return $this->error->error('Error al generar joins', $tablas);
+            return $this->error->error(mensaje: 'Error al generar joins', data: $tablas, params: get_defined_vars());
         }
 
         $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,

@@ -1163,7 +1163,7 @@ class modelo extends modelo_base {
         $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura:  $this->extension_estructura,
             renombradas:  $this->renombres);
         if(errores::$error){
-            return $this->error->error('Error al generar sql',$consulta);
+            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta, params: get_defined_vars());
         }
         $where = '';
         $sentencia = '';
@@ -1528,7 +1528,8 @@ class modelo extends modelo_base {
     public function obten_data(array $columnas = array(), array $extension_estructura = array(), array $hijo= array()): array{
         $this->row = new stdClass();
         if($this->registro_id < 0){
-            return  $this->error->error('Error el id debe ser mayor a 0 en el modelo '.$this->tabla,$this->registro_id);
+            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
+                data: $this->registro_id, params: get_defined_vars());
         }
         if(count($extension_estructura) === 0){
             $extension_estructura = $this->extension_estructura;
@@ -1602,7 +1603,8 @@ class modelo extends modelo_base {
     private function obten_por_id(array $columnas = array(), array $extension_estructura= array(),
                                   array $hijo = array()):array|stdClass{
         if($this->registro_id < 0){
-            return  $this->error->error('Error el id debe ser mayor a 0',$this->registro_id);
+            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id,
+                params: get_defined_vars());
         }
         if(count($extension_estructura)===0){
             $extension_estructura = $this->extension_estructura;
@@ -1895,7 +1897,8 @@ class modelo extends modelo_base {
     public function registro(int $registro_id, array $columnas = array(), array $extension_estructura = array(),
                              array $hijo = array()):array{
         if($registro_id <=0){
-            return  $this->error->error('Error al obtener registro $registro_id debe ser mayor a 0',$registro_id);
+            return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
+                data: $registro_id, params: get_defined_vars());
         }
         $this->registro_id = $registro_id;
         $registro = $this->obten_data(columnas: $columnas, extension_estructura: $extension_estructura, hijo: $hijo);

@@ -164,7 +164,7 @@ class botones{
 
         $icon_html = $this->icon_html(icon:$icon);
         if(errores::$error){
-            return $this->error->error('Error al generar icons', $icon_html);
+            return $this->error->error(mensaje: 'Error al generar icons', data: $icon_html, params: get_defined_vars());
         }
 
         $data_extra_html = (new extra_params())->data_extra_html(data_extra: $datas);
@@ -179,7 +179,7 @@ class botones{
     }
 
     /**
-     * PROBADO - PARAMS ORDER-PARAMS INT
+     * PROBADO - PARAMS ORDER-PARAMS INT ERRORREV
      * @param string $icon
      * @return string
      */
