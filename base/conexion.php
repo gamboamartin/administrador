@@ -70,13 +70,13 @@ class conexion{
 
         $link = $this->asigna_sql_mode(link: $link, sql_mode: $sql_mode);
         if(errores::$error){
-            return (new errores())->error(mensaje: "Error al asignar sql mode en bd",data:$link,
+            return $this->error->error(mensaje: "Error al asignar sql mode en bd",data:$link,
                 params: get_defined_vars());
         }
 
         $link = $this->asigna_timeout(link:$link, time_out: $time_out);
         if(errores::$error){
-            return (new errores())->error(mensaje: "Error al asignar sql mode en bd",data:$link,
+            return $this->error->error(mensaje: "Error al asignar sql mode en bd",data:$link,
                 params: get_defined_vars());
         }
 
@@ -93,7 +93,7 @@ class conexion{
         $keys = array('db_host','db_name','db_user','db_password');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
         if(errores::$error){
-            return (new errores())->error(mensaje:  'Error al validar conf_database',data: $valida,
+            return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida,
                 params: get_defined_vars());
         }
         try{
@@ -101,7 +101,7 @@ class conexion{
                 $conf_database->db_user, $conf_database->db_password);
         }
         catch (Throwable $e) {
-            return (new errores())->error(mensaje:  'Error al conectar',data: $e,params: get_defined_vars());
+            return $this->error->error(mensaje:  'Error al conectar',data: $e,params: get_defined_vars());
         }
         return $link;
     }
@@ -112,18 +112,18 @@ class conexion{
 
         $link = $this->conecta(conf_database: $conf_database);
         if(errores::$error){
-            return (new errores())->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
         }
 
         $link = $this->asigna_parametros_query(link: $link, set_name: 'utf8', sql_mode: '',time_out: 10);
         if(errores::$error){
-            return (new errores())->error(mensaje: "Error al asignar parametros", data:$link,
+            return $this->error->error(mensaje: "Error al asignar parametros", data:$link,
                 params: get_defined_vars());
         }
 
         $link = $this->usa_base_datos(link: $link, db_name: $conf_database->db_name);
         if(errores::$error){
-            return (new errores())->error(mensaje: "Error usar base de datos", data:$link,
+            return $this->error->error(mensaje: "Error usar base de datos", data:$link,
                 params: get_defined_vars());
         }
 
