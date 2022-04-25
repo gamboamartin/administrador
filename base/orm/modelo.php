@@ -125,7 +125,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT ERRROREV
+     * P INT ERRROREV P ORDER
      * @param bool $reactiva
      * @return array
      */
@@ -146,8 +146,8 @@ class modelo extends modelo_base {
             }
 
             $valida = $this->validacion->valida_transaccion_activa(
-                aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo,
-                registro_id: $this->registro_id,tabla:  $this->tabla,registro: $registro);
+                aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro: $registro,
+                registro_id: $this->registro_id,tabla:  $this->tabla);
             if (errores::$error) {
                 return $this->error->error(mensaje:'Error al validar transaccion activa en '.$this->tabla,data:$valida,
                     params: get_defined_vars() );
@@ -1932,7 +1932,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER ERRORREV
+     * P INT P ORDER ERRORREV PROBADO
      * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
      * estructura
      * @param int $registro_id $id Identificador del registro

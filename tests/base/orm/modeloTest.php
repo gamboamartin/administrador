@@ -224,6 +224,18 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_registro(): void
+    {
+        errores::$error = false;
+        $modelo = new seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $resultado = $modelo->registro(registro_id: 1);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
 
 
     public function test_seccion_menu_id(): void

@@ -247,6 +247,33 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_filtro_rango_base(){
+        errores::$error = false;
+        $wh = new where();
+        //$wh = new liberator($wh);
+
+
+        $campo = '';
+        $filtro_rango_sql = 'a';
+        $filtro = array();
+        $resultado = $wh->genera_filtro_rango_base($campo, $filtro, $filtro_rango_sql);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( 'Error $campo no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+        $campo = 'a';
+        $filtro_rango_sql = 'a';
+        $filtro = array();
+        $filtro['valor1'] = 1;
+        $filtro['valor2'] = 1;
+        $resultado = $wh->genera_filtro_rango_base($campo, $filtro, $filtro_rango_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( "a AND a BETWEEN '1' AND '1'", $resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_sentencia_base(){
         errores::$error = false;
         $wh = new where();

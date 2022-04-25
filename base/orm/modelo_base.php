@@ -7,6 +7,8 @@ use JetBrains\PhpStorm\Pure;
 
 
 use JsonException;
+use models\bitacora;
+use models\seccion;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -138,14 +140,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT ERRORREV
+     * P INT ERRORREV P ORDER
      * @param string $tabla
      * @param string $funcion
      * @param string $consulta
      * @param int $registro_id
      * @return array
      */
-    private function aplica_bitacora(string $tabla, string $funcion, string $consulta, int $registro_id): array
+    private function aplica_bitacora(string $consulta, string $funcion, int $registro_id, string $tabla): array
     {
         $model = $this->genera_modelo(modelo: $tabla);
         if(errores::$error){
@@ -918,7 +920,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT ERRORREV
+     * P INT ERRORREV P ORDER
      * @param string $tabla
      * @param string $funcion
      * @param int $registro_id
@@ -935,8 +937,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje:'Error al ejecutar sql en '.$tabla,data:$resultado,
                 params: get_defined_vars());
         }
-        $bitacora = $this->aplica_bitacora(consulta: $consulta, registro_id:  $registro_id,
-            funcion: $funcion, tabla: $tabla);
+        $bitacora = $this->aplica_bitacora(consulta: $consulta, funcion: $funcion, registro_id:  $registro_id,
+            tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al insertar bitacora en '.$tabla,data:$bitacora,
                 params: get_defined_vars());
@@ -1410,9 +1412,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 data:$this->registro_id, params: get_defined_vars());
         }
 
-        $bitacora_modelo = $this->genera_modelo(modelo: 'bitacora');
+        $bitacora_modelo = (new bitacora($this ->link));
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener bitacora',data:$bitacora_modelo->registro,
+            return $this->error->error(mensaje:'Error al obtener bitacora',data:$bitacora_modelo,
                 params: get_defined_vars());
         }
 
@@ -2346,7 +2348,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 params: get_defined_vars());
         }
 
-        $seccion_menu_modelo = $this->genera_modelo(modelo: 'seccion_menu');
+        $seccion_menu_modelo = (new seccion($this->link));
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar modelo',data:$seccion_menu_modelo,
                 params: get_defined_vars());

@@ -638,7 +638,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERREV
+     * FULL
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      *
      * @param string $campo
@@ -668,7 +668,7 @@ class where{
      * @throws errores Si filtro[valor1] = vacio
      * @throws errores Si filtro[valor2] = vacio
      */
-    private function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
+    PUBLIC function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
                                               bool $valor_campo = false):array|string{ //DOC DEBUG
         $campo = trim($campo);
         if($campo === ''){
@@ -1111,7 +1111,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRREV
+     * FULL
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      *
      * @access public

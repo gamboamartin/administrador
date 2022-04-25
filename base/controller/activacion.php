@@ -16,7 +16,7 @@ class activacion{
     }
 
     /**
-     * ERRORREV
+     * ERRORREV P INT P ORDER
      * @param int $registro_id
      * @param modelo $modelo
      * @param string $seccion
