@@ -8,7 +8,7 @@ use gamboamartin\errores\errores;
 
 $data = (new init())->index();
 if(errores::$error){
-    $error = (new errores())->error(mensaje: 'Error al inicializar datos',data:  $data);
+    $error = (new errores())->error(mensaje: 'Error al inicializar datos',data:  $data, params: get_defined_vars());
     print_r($error);
     die('Error');
 }
@@ -16,4 +16,6 @@ if(errores::$error){
 $controlador = $data->controlador;
 $link = $data->link;
 $conf_generales = $data->conf_generales;
-include "principal.php";
+if($conf_generales->muestra_index) {
+    include "principal.php";
+}

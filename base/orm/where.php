@@ -365,7 +365,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * FULL
      * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
      *
      * @param array $filtro_rango
@@ -407,6 +407,11 @@ class where{
             }
             if(!isset($filtro['valor2'])){
                 return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro,
+                    params: get_defined_vars());
+            }
+            $campo = trim($campo);
+            if(is_numeric($campo)){
+                return  $this->error->error(mensaje:'Error campo debe ser un string',data:$campo,
                     params: get_defined_vars());
             }
             $valor_campo = false;

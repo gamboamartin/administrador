@@ -172,6 +172,57 @@ class whereTest extends test {
 
     }
 
+    public function test_filtro_rango_sql(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $filtro_rango = array();
+        $resultado = $wh->filtro_rango_sql($filtro_rango);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $filtro_rango = array();
+        $filtro_rango[] = '';
+        $resultado = $wh->filtro_rango_sql($filtro_rango);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $filtro debe ser un array', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_rango = array();
+        $filtro_rango[] = array();
+        $resultado = $wh->filtro_rango_sql($filtro_rango);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $filtro[valor1] debe existir', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_rango = array();
+        $filtro_rango[0]['valor1'] = 1;
+        $filtro_rango[0]['valor2'] = 1;
+        $resultado = $wh->filtro_rango_sql($filtro_rango);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error campo debe ser un string', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_rango = array();
+        $filtro_rango['a']['valor1'] = 1;
+        $filtro_rango['a']['valor2'] = 1;
+        $resultado = $wh->filtro_rango_sql($filtro_rango);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a BETWEEN '1' AND '1'", $resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_and(){
 
         errores::$error = false;

@@ -121,6 +121,7 @@ class init{
         $data->link = $link;
         $data->path_base = $conf_generales->path_base;
 
+
         $data->error_msj = $mensajeria->error_msj;
         $data->exito_msj = $mensajeria->exito_msj;
 
@@ -131,6 +132,7 @@ class init{
         $data->controlador = $controlador;
 
         $data->conf_generales = $conf_generales;
+        $data->muestra_index = $conf_generales->muestra_index;
 
 
         return $data;
