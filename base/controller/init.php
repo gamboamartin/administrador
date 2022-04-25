@@ -5,6 +5,7 @@ use base\seguridad;
 use config\generales;
 use controllers\controlador_session;
 use gamboamartin\errores\errores;
+use JsonException;
 use models\accion;
 use models\session;
 use PDO;
@@ -58,7 +59,7 @@ class init{
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function index(): array|stdClass
     {
@@ -67,7 +68,7 @@ class init{
 
         $session = (new session($link))->carga_data_session();
         if(errores::$error){
-            return $this->error->error('Error al asignar session',$session);
+            return $this->error->error(mensaje: 'Error al asignar session',data: $session, params: get_defined_vars());
 
         }
 
@@ -77,37 +78,43 @@ class init{
 
         $seguridad = $this->permiso( link: $link,seguridad:   $seguridad);
         if(errores::$error){
-            return $this->error->error('Error al verificar seguridad', $seguridad);
+            return $this->error->error(mensaje:'Error al verificar seguridad',data: $seguridad,
+                params: get_defined_vars());
 
         }
 
         $controlador = $this->controller(link:  $link,seccion:  $seguridad->seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar controlador', data: $controlador, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar controlador', data: $controlador,
+                params: get_defined_vars());
 
         }
 
         $include_action = (new init())->include_action(seguridad: $seguridad);
         if(errores::$error){
-            return $this->error->error('Error al generar include', $include_action);
+            return $this->error->error(mensaje:'Error al generar include',data: $include_action,
+                params: get_defined_vars());
 
         }
 
-        $out_ws = (new salida_data())->salida_ws(controlador:$controlador, include_action: $include_action,seguridad:  $seguridad);
+        $out_ws = (new salida_data())->salida_ws(controlador:$controlador, include_action: $include_action,
+            seguridad:  $seguridad);
         if(errores::$error){
-            return $this->error->error('Error al generar salida', $out_ws);
+            return $this->error->error(mensaje:'Error al generar salida',data: $out_ws, params: get_defined_vars());
 
         }
 
         $mensajeria = (new mensajes())->data();
         if(errores::$error){
-            return $this->error->error('Error al generar mensajes', $mensajeria);
+            return $this->error->error(mensaje:'Error al generar mensajes',data: $mensajeria,
+                params: get_defined_vars());
 
         }
 
         $data_custom = (new custom())->data(seguridad: $seguridad);
         if(errores::$error){
-            return $this->error->error('Error al generar datos custom', $data_custom);
+            return $this->error->error(mensaje:'Error al generar datos custom',data: $data_custom,
+                params: get_defined_vars());
 
         }
 

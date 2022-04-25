@@ -33,7 +33,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $r_session
      * @return array
      */
@@ -42,19 +42,20 @@ class session extends modelo{//PRUEBAS FINALIZADAS
 
         $session_activa = $this->session_activa();
         if(errores::$error){
-            return $this->error->error('Error al validar session', $session_activa);
+            return $this->error->error(mensaje: 'Error al validar session', data: $session_activa,
+                params: get_defined_vars());
         }
 
         $carga = $this->init_data_session(r_session: $r_session,session_activa:  $session_activa);
         if(errores::$error){
-            return $this->error->error('Error al $asigna session', $carga);
+            return $this->error->error(mensaje:'Error al $asigna session', data: $carga, params: get_defined_vars());
         }
 
         return $_SESSION;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $r_session
      * @return array
      */
@@ -68,7 +69,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $r_session
      * @return array
      */
@@ -76,18 +77,18 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     {
         $init = $this->init_session(session_id:(new generales())->session_id);
         if(errores::$error){
-            return $this->error->error('Error al iniciar session', $init);
+            return $this->error->error(mensaje: 'Error al iniciar session',data:  $init, params: get_defined_vars());
         }
 
         $asigna = $this->asigna_datos_session(r_session: $r_session);
         if(errores::$error){
-            return $this->error->error('Error al $asigna session', $asigna);
+            return $this->error->error(mensaje: 'Error al $asigna session', data: $asigna, params: get_defined_vars());
         }
         return $asigna;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $r_session
      * @param bool $session_activa
      * @return bool|array
@@ -97,7 +98,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
         if($session_activa) {
             $carga = $this->carga_session(r_session: $r_session);
             if(errores::$error){
-                return $this->error->error('Error al $asigna session', $carga);
+                return $this->error->error(mensaje: 'Error al $asigna session',data:  $carga, params: get_defined_vars());
             }
         }
         else{
@@ -107,7 +108,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $session_id
      * @return string|array
      */
@@ -115,7 +116,8 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     {
         $session_id = trim($session_id);
         if($session_id === ''){
-            return $this->error->error('Error session_id esta vacia', $session_id);
+            return $this->error->error(mensaje: 'Error session_id esta vacia',data:  $session_id,
+                params: get_defined_vars());
         }
 
         try{
@@ -123,7 +125,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
             session_start();
         }
         catch (Throwable $e){
-            return $this->error->error('Error al iniciar session', $e);
+            return $this->error->error(mensaje:'Error al iniciar session', data: $e, params: get_defined_vars());
         }
 
         return $session_id;
@@ -145,7 +147,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @return array
      */
     public function carga_data_session(): array
@@ -154,13 +156,13 @@ class session extends modelo{//PRUEBAS FINALIZADAS
         $filtro['session.name'] = $session_id;
         $r_session = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener session',$r_session);
+            return $this->error->error(mensaje: 'Error al obtener session',data: $r_session, params: get_defined_vars());
         }
         $session = array();
         if((int)$r_session->n_registros === 1){
             $session = $this->asigna_data_session(r_session: $r_session);
             if(errores::$error){
-                return $this->error->error('Error al asignar session',$session);
+                return $this->error->error(mensaje:'Error al asignar session',data: $session, params: get_defined_vars());
             }
         }
         return $session;
@@ -295,7 +297,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @return bool
      */
     #[Pure] private function session_activa(): bool

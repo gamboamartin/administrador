@@ -172,6 +172,58 @@ class whereTest extends test {
 
     }
 
+    public function test_filtro_extra_sql(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $filtro_extra = array();
+        $resultado = $wh->filtro_extra_sql($filtro_extra);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $filtro_extra = array();
+        $filtro_extra[] = '';
+        $resultado = $wh->filtro_extra_sql($filtro_extra);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $data_filtro debe ser un array', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_extra = array();
+        $filtro_extra[] = array();
+        $resultado = $wh->filtro_extra_sql($filtro_extra);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error data_filtro[][operador] debe existir', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_extra = array();
+        $filtro_extra[]['operador'] = 'a';
+        $resultado = $wh->filtro_extra_sql($filtro_extra);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error data_filtro[operador][operador]', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtro_extra = array();
+        $filtro_extra[0]['a']['operador'] = '=';
+        $filtro_extra[0]['a']['valor'] = '1';
+        $filtro_extra[0]['a']['comparacion'] = 'AND';
+        $resultado = $wh->filtro_extra_sql($filtro_extra);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('a=1', $resultado);
+        errores::$error = false;
+    }
+
     public function test_filtro_rango_sql(): void
     {
         errores::$error = false;

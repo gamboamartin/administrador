@@ -244,7 +244,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * FULL
      * Funcion que genera las condiciones de sql de un filtro extra
      *
      * @param array $filtro_extra arreglo que contiene las condiciones
