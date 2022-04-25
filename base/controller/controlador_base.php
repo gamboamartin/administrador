@@ -657,6 +657,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header
      * @param bool $ws
      * @return array
+     * @throws JsonException
      */
     public function lista(bool $header, bool $ws = false): array{
 
@@ -666,12 +667,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $modelo = new accion($this->link);
         if(errores::$error){
-            return $this->retorno_error('Error al generar modelo accion', $modelo, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al generar modelo accion', data: $modelo, header: $header,
+                ws: $ws, params: get_defined_vars());
         }
 
         $acciones = $modelo->acciones_permitidas(accion:$this->accion, modelo:$this->modelo, seccion:$this->seccion);
         if(errores::$error){
-            return $this->retorno_error('Error al obtener accion', $acciones, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener accion', data: $acciones, header: $header, ws: $ws,
+                params: get_defined_vars());
         }
 
         $pag_seleccionada = 1;

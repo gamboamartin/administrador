@@ -108,7 +108,7 @@ class controlador_accion extends controlador_base{
         $keys = array('busca_accion');
         $valida = $this->validacion->valida_existencia_keys($_POST,$keys);
         if(errores::$error){
-            $error = $this->errores->error("Error al validar POST", $valida);
+            $error = $this->errores->error(mensaje: "Error al validar POST", data: $valida, params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -124,7 +124,8 @@ class controlador_accion extends controlador_base{
         $accion_modelo = new accion($this->link);
         $resultado = $accion_modelo->filtro_or($filtro);
         if(errores::$error){
-            $error = $this->errores->error("Error al obtener acciones", $resultado);
+            $error = $this->errores->error(mensaje: "Error al obtener acciones", data: $resultado,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -136,7 +137,8 @@ class controlador_accion extends controlador_base{
             $data = $accion;
             $link = $this->directiva->link($accion['seccion_menu_descripcion'], $accion['accion_descripcion']);
             if(errores::$error){
-                $error = $this->errores->error("Error al obtener link", $link);
+                $error = $this->errores->error(mensaje: "Error al obtener link", data: $link,
+                    params: get_defined_vars());
                 if(!$header){
                     return $error;
                 }

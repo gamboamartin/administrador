@@ -174,7 +174,7 @@ class modelo extends modelo_base {
 
         $resultado = $this->ejecuta_sql(consulta: $consulta);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$resultado);
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $resultado, params: get_defined_vars());
         }
 
         return array('mensaje'=>'Registros activados con éxito','sql'=>$this->consulta);
@@ -476,7 +476,8 @@ class modelo extends modelo_base {
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo_filtro',$verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
+                params: get_defined_vars());
         }
 
         $tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $this->tabla);
@@ -1131,7 +1132,8 @@ class modelo extends modelo_base {
         }
 
         if($limit < 0){
-            return $this->error->error('Error limit debe ser mayor o igual a 0  con 0 no aplica limit', $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
+                data: $limit, params: get_defined_vars());
         }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, filtro:  $filtro, filtro_especial: $filtro_especial,
@@ -1181,7 +1183,7 @@ class modelo extends modelo_base {
 
         $result = $this->ejecuta_consulta(consulta:$consulta, hijo: $hijo);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$result);
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
         }
 
         return $result;
@@ -1539,10 +1541,12 @@ class modelo extends modelo_base {
         $resultado = $this->obten_por_id(columnas:  $columnas, extension_estructura: $extension_estructura, hijo: $hijo);
 
         if(errores::$error){
-            return $this->error->error('Error al obtener por id en '.$this->tabla, $resultado);
+            return $this->error->error(mensaje: 'Error al obtener por id en '.$this->tabla, data: $resultado,
+                params: get_defined_vars());
         }
         if((int)$resultado->n_registros === 0){
-            return $this->error->error('Error no existe registro de '.$this->tabla, $resultado);
+            return $this->error->error(mensaje: 'Error no existe registro de '.$this->tabla,data:  $resultado,
+                params: get_defined_vars());
         }
         foreach($resultado->registros[0] as $campo=>$value){
             $this->row->$campo = $value;
@@ -1616,7 +1620,8 @@ class modelo extends modelo_base {
         $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura: $extension_estructura,
             renombradas:  $this->renombres);
         if(errores::$error){
-            return $this->error->error('Error al generar consulta base', $consulta);
+            return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta,
+                params: get_defined_vars());
         }
 
         $where = " WHERE $tabla".".id = $this->registro_id ";
@@ -1625,7 +1630,7 @@ class modelo extends modelo_base {
         $result = $this->ejecuta_consulta(consulta: $consulta, hijo: $hijo);
 
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql', $result);
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result, params: get_defined_vars());
         }
         return $result;
     }
@@ -1905,7 +1910,8 @@ class modelo extends modelo_base {
         $this->registro_id = $registro_id;
         $registro = $this->obten_data(columnas: $columnas, extension_estructura: $extension_estructura, hijo: $hijo);
         if(errores::$error){
-            return  $this->error->error('Error al obtener registro',$registro);
+            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro,
+                params: get_defined_vars());
         }
 
         return $registro;

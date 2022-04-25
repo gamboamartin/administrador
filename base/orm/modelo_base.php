@@ -795,21 +795,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public function ejecuta_consulta(string $consulta, array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
-            return $this->error->error('La consulta no puede venir vacia', array(
-                $this->link->errorInfo(),$consulta));
+            return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
+                $this->link->errorInfo(),$consulta), params: get_defined_vars());
         }
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_sql(consulta: $consulta);
 
         if(errores::$error){
-            return  $this->error->error('Error al ejecutar sql',$result);
+            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
         }
 
         $r_sql = $result->result;
 
         $new_array = $this->parsea_registros_envio( r_sql: $r_sql);
         if(errores::$error){
-            return $this->error->error("Error al parsear registros", $new_array);
+            return $this->error->error(mensaje: "Error al parsear registros",data:  $new_array,
+                params: get_defined_vars());
         }
 
         $n_registros = $r_sql->rowCount();
@@ -854,7 +855,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * PARAMS ORDER P INT PROBADO
+     * PARAMS ORDER P INT PROBADO ERROREV
      * Devuelve un arreglo que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de
      * sql y por ultimo un objeto PDOStatement de la consulta sql ingresada
      *
@@ -874,14 +875,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     protected function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
-            return $this->error->error("Error consulta vacia", $consulta.' tabla: '.$this->tabla);
+            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla,
+                params: get_defined_vars());
         }
         try {
             $result = $this->link->query($consulta);
         }
         catch (Throwable $e){
-            return $this->error->error('Error al ejecutar sql '. $e->getMessage(),
-                array($e->getCode().' '.$this->tabla.' '.$this->consulta.' '.$this->tabla, 'registro'=>$this->registro));
+            return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
+                data: array($e->getCode().' '.$this->tabla.' '.$this->consulta.' '.$this->tabla,
+                    'registro'=>$this->registro), params: get_defined_vars());
         }
         if($this->transaccion ==='INSERT'){
             $this->registro_id = $this->link->lastInsertId();
@@ -1091,7 +1094,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros ligados
      * @param string $campo_filtro Nombre del campo del registro el cual se utiliza como valor del filtro
      * @param array $filtro Filtro precargado, es recursivo hace push con el nuevo resultado
@@ -1101,10 +1104,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{ //DEBUG
         if($campo_row===''){
-            return $this->error->error("Error campo vacio",$campo_row);
+            return $this->error->error(mensaje: "Error campo vacio",data: $campo_row, params: get_defined_vars());
         }
         if($campo_filtro===''){
-            return $this->error->error("Error filtro",$campo_filtro);
+            return $this->error->error(mensaje: "Error filtro",data: $campo_filtro, params: get_defined_vars());
         }
         if(!isset($row[$campo_row])){
             $row[$campo_row] = '';
@@ -1337,11 +1340,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $filtro = array();
         foreach($filtros as $campo_filtro=>$campo_row){
             if($campo_row===''){
-                return $this->error->error("Error campo vacio",$campo_filtro);
+                return $this->error->error(mensaje: "Error campo vacio",data: $campo_filtro,
+                    params: get_defined_vars());
             }
             $filtro = $this->filtro_hijo(campo_filtro: $campo_filtro, campo_row: $campo_row,filtro: $filtro, row: $row);
             if(errores::$error){
-                return $this->error->error('Error al generar filtro',$filtro);
+                return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro, params: get_defined_vars());
             }
         }
         return $filtro;
@@ -1655,7 +1659,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]
      *
@@ -1685,22 +1689,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $modelos_hijos = array() ;
         foreach($this->hijo as $key=>$modelo){
             if(is_numeric($key)){
-                return $this->error->error("Error en key",$this->hijo);
+                return $this->error->error(mensaje: "Error en key",data: $this->hijo, params: get_defined_vars());
             }
             if(!isset($modelo['filtros'])){
-                return $this->error->error("Error filtro",$this->hijo);
+                return $this->error->error(mensaje: "Error filtro",data: $this->hijo, params: get_defined_vars());
             }
             if(!isset($modelo['filtros_con_valor'])){
-                return $this->error->error("Error filtro",$this->hijo);
+                return $this->error->error(mensaje:"Error filtro",data:$this->hijo, params: get_defined_vars());
             }
             if(!is_array($modelo['filtros'])){
-                return $this->error->error("Error filtro",$this->hijo);
+                return $this->error->error(mensaje:"Error filtro",data:$this->hijo, params: get_defined_vars());
             }
             if(!is_array($modelo['filtros_con_valor'])){
-                return $this->error->error("Error filtro",$this->hijo);
+                return $this->error->error(mensaje:"Error filtro",data:$this->hijo, params: get_defined_vars());
             }
             if(!isset($modelo['nombre_estructura'])){
-                return $this->error->error("Error en estructura",$this->hijo);
+                return $this->error->error(mensaje:"Error en estructura",data:$this->hijo, params: get_defined_vars());
             }
 
             $modelos_hijos[$key]['filtros']= $modelo['filtros'];
@@ -1728,16 +1732,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     private function genera_registro_hijo(array $data_modelo, string $name_modelo, array $row):array{
         if(!isset($data_modelo['nombre_estructura'])){
-            return $this->error->error('Error debe existir $data_modelo[\'nombre_estructura\'] ',$data_modelo);
+            return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
+                data: $data_modelo, params: get_defined_vars());
         }
         $filtro = $this->obten_filtro_para_hijo(data_modelo: $data_modelo,row: $row);
         if(errores::$error){
-            return  $this->error->error("Error filtro",$filtro);
+            return  $this->error->error(mensaje: "Error filtro",data: $filtro, params: get_defined_vars());
         }
         $row = $this->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
             nombre_estructura: $data_modelo['nombre_estructura'],row: $row);
         if(errores::$error){
-            return $this->error->error('Error al asignar registros de hijo', $row);
+            return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row,
+                params: get_defined_vars());
         }
         return $row;
     }
@@ -1757,18 +1763,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function genera_registros_hijos(array $modelos_hijos, array $row):array{
         foreach($modelos_hijos as $name_modelo=>$data_modelo){
             if(!is_array($data_modelo)){
-                return $this->error->error("Error en datos",$modelos_hijos);
+                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, params: get_defined_vars());
             }
 
             if(!isset($data_modelo['nombre_estructura'])){
-                return  $this->error->error('Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                    $data_modelo);
+                return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
+                    data: $data_modelo, params: get_defined_vars());
             }
 
             $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo,
                 row: $row);
             if(errores::$error){
-                return $this->error->error('Error al generar registros de hijo', $row);
+                return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row,
+                    params: get_defined_vars());
             }
 
         }
@@ -1848,7 +1855,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             if(count($modelos_hijos)>0) {
                 $row = $this->genera_registros_hijos(modelos_hijos: $modelos_hijos,row:  $row);
                 if (errores::$error) {
-                    return $this->error->error("Error en registro",$row);
+                    return $this->error->error(mensaje: "Error en registro",data: $row, params: get_defined_vars());
                 }
             }
             $new_array[] = $row;
@@ -2178,7 +2185,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 params: get_defined_vars());
         }
         if(!class_exists($clase_modelo)){
-            return $this->error->error('Error no existe el modelo '.$clase_modelo, $clase_modelo);
+            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo,
+                params: get_defined_vars());
         }
 
         $se_asignaron_columnas = (new columnas())->asigna_columnas_en_session(modelo: $this, tabla_bd: $tabla_bd);
@@ -2189,7 +2197,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(!$se_asignaron_columnas){
             $columnas_field = (new columnas())->asigna_columnas_session_new(modelo:$this, tabla_bd: $tabla_bd);
             if(errores::$error){
-                return $this->error->error('Error al obtener columnas', $columnas_field);
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
+                    params: get_defined_vars());
             }
         }
 
@@ -2219,13 +2228,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     private function obten_filtro_para_hijo(array $data_modelo, array $row):array{
         if(!isset($data_modelo['filtros'])){
-            return $this->error->error("Error filtro",$data_modelo);
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
         }
         if(!isset($data_modelo['filtros_con_valor'])){
-            return $this->error->error("Error filtro",$data_modelo);
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
         }
         if(!is_array($data_modelo['filtros'])){
-            return $this->error->error("Error filtro",$data_modelo);
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
         }
         if(!is_array($data_modelo['filtros_con_valor'])){
             return $this->error->error("Error filtro",$data_modelo);
@@ -2236,7 +2245,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $filtro = $this->filtro_para_hijo(filtros: $filtros,row: $row);
         if(errores::$error){
-            return $this->error->error("Error filtro",$filtro);
+            return $this->error->error(mensaje: "Error filtro",data: $filtro, params: get_defined_vars());
         }
 
         foreach($filtros_con_valor as $campo_filtro=>$value){
@@ -2412,11 +2421,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $modelos_hijos = $this->genera_modelos_hijos();
         if(errores::$error){
-            return $this->error->error("Error al general modelo",$modelos_hijos);
+            return $this->error->error(mensaje: "Error al general modelo",data: $modelos_hijos,
+                params: get_defined_vars());
         }
         $new_array = $this->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql);
         if(errores::$error){
-            return  $this->error->error('Error al generar arreglo con registros',$new_array);
+            return  $this->error->error(mensaje: 'Error al generar arreglo con registros',data: $new_array,
+                params: get_defined_vars());
         }
 
         return $new_array;

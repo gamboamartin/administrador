@@ -32,19 +32,22 @@ class activacion{
 
         $registro = $modelo->registro(registro_id: $registro_id);
         if(errores::$error){
-            return $this->error->error('Error al obtener registro',$registro);
+            return $this->error->error(mensaje: 'Error al obtener registro',data: $registro,
+                params: get_defined_vars());
         }
 
         $valida = $this->validacion->valida_transaccion_activa(
             aplica_transaccion_inactivo: $modelo->aplica_transaccion_inactivo,  registro: $registro,
             registro_id: $registro_id, tabla: $modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar transaccion activa',$valida);
+            return $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida,
+                params: get_defined_vars());
         }
         $registro = $modelo->activa_bd();
 
         if(errores::$error){
-            return $this->error->error('Error al activar registro en '.$seccion,$registro);
+            return $this->error->error(mensaje: 'Error al activar registro en '.$seccion,data: $registro,
+                params: get_defined_vars());
         }
 
         return $registro;
