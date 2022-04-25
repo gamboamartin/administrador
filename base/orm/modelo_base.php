@@ -138,7 +138,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param string $tabla
      * @param string $funcion
      * @param string $consulta
@@ -149,17 +149,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     {
         $model = $this->genera_modelo(modelo: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al generar modelo'.$tabla,$model);
+            return $this->error->error(mensaje: 'Error al generar modelo'.$tabla,data: $model,
+                params: get_defined_vars());
         }
 
         $registro_bitacora = $model->registro(registro_id: $registro_id);
         if(errores::$error){
-            return $this->error->error('Error al obtener registro de '.$tabla,$registro_bitacora);
+            return $this->error->error(mensaje:'Error al obtener registro de '.$tabla,data:$registro_bitacora,
+                params: get_defined_vars());
         }
 
         $bitacora = $this->bitacora(consulta: $consulta, funcion: $funcion, registro: $registro_bitacora);
         if(errores::$error){
-            return $this->error->error('Error al insertar bitacora de '.$tabla,$bitacora);
+            return $this->error->error(mensaje:'Error al insertar bitacora de '.$tabla,data:$bitacora,
+                params: get_defined_vars());
         }
         return $bitacora;
     }
@@ -258,7 +261,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * Devuelve un arreglo con las columnas y el valor del ID del usuario
      *
      * @return array
@@ -271,10 +274,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function asigna_data_user_transaccion(): array
     {//FIN
         if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error('Error no existe usuario',$_SESSION);
+            return $this->error->error(mensaje: 'Error no existe usuario',data: $_SESSION, params: get_defined_vars());
         }
         if($_SESSION['usuario_id'] <= 0){
-            return $this->error->error('Error USUARIO INVALIDO',$_SESSION['usuario_id']);
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id'],
+                params: get_defined_vars());
         }
 
         $usuario_alta_id = $_SESSION['usuario_id'];
@@ -286,7 +290,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * Devuelve un arreglo que contiene los campos necesarios para un registro en la bitacora
      *
      * @param array $seccion_menu es un arreglo que indica a que parte del catalogo pertenece la accion
@@ -320,16 +324,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function asigna_registro_para_bitacora(string $consulta,string $funcion, array $registro, array $seccion_menu): array
     {//FIN Y DOC
         if($seccion_menu['seccion_menu_id']<=0){
-            return$this->error->error('Error el id de $seccion_menu[\'seccion_menu_id\'] no puede ser menor a 0',$seccion_menu['seccion_menu_id']);
+            return$this->error->error(mensaje: 'Error el id de $seccion_menu[\'seccion_menu_id\'] no puede ser menor a 0',
+                data: $seccion_menu['seccion_menu_id'], params: get_defined_vars());
         }
         if($funcion === ''){
-            return $this->error->error('Error $funcion no puede venir vacia',$funcion);
+            return $this->error->error(mensaje: 'Error $funcion no puede venir vacia',data:$funcion,
+                params: get_defined_vars());
         }
         if($consulta === ''){
-            return $this->error->error('Error $consulta no puede venir vacia',$consulta);
+            return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data:$consulta,
+                params: get_defined_vars());
         }
         if($this->registro_id<=0){
-            return $this->error->error('Error el id de $this->registro_id no puede ser menor a 0',$this->registro_id);
+            return $this->error->error(mensaje: 'Error el id de $this->registro_id no puede ser menor a 0',
+                data:$this->registro_id, params: get_defined_vars());
         }
         $registro_data['seccion_menu_id'] = $seccion_menu['seccion_menu_id'];
         $registro_data['status'] = 'activo';
@@ -382,7 +390,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * Inserta una transaccion de bitacora
      * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
      * @param string $funcion es una cadena que indica que funcion o accion se utilizo
@@ -406,23 +414,29 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $this->tabla = str_replace($namespace,'',$this->tabla);
             $clase = $namespace.$this->tabla;
             if($this->tabla === ''){
-                return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
+                return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla,
+                    params: get_defined_vars());
             }
             if(!class_exists($clase)){
-                return $this->error->error('Error no existe la clase '.$clase,$clase);
+                return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
+                    params: get_defined_vars());
             }
             if($funcion === ''){
-                return $this->error->error('Error $funcion no puede venir vacia',$funcion);
+                return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion,
+                    params: get_defined_vars());
             }
             if($consulta === ''){
-                return $this->error->error('Error $consulta no puede venir vacia',$consulta);
+                return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta,
+                    params: get_defined_vars());
             }
             if($this->registro_id<=0){
-                return $this->error->error('Error el id de $this->registro_id no puede ser menor a 0',$this->registro_id);
+                return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
+                    data: $this->registro_id, params: get_defined_vars());
             }
             $r_bitacora = $this->genera_bitacora(consulta:  $consulta, funcion: $funcion, registro: $registro);
             if(errores::$error){
-                return $this->error->error('Error al generar bitacora en '.$this->tabla,$r_bitacora);
+                return $this->error->error(mensaje:'Error al generar bitacora en '.$this->tabla,data:$r_bitacora,
+                    params: get_defined_vars());
             }
             $bitacora = $r_bitacora;
         }
@@ -904,7 +918,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param string $tabla
      * @param string $funcion
      * @param int $registro_id
@@ -913,16 +927,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function ejecuta_transaccion(string $tabla, string $funcion, int $registro_id = -1):array{
         $consulta = $this->consulta;
         if($this->consulta === ''){
-            return $this->error->error('La consulta no puede venir vacia del modelo '.$this->tabla, $this->consulta);
+            return $this->error->error(mensaje: 'La consulta no puede venir vacia del modelo '.$this->tabla,
+                data: $this->consulta, params: get_defined_vars());
         }
         $resultado = $this->ejecuta_sql(consulta: $consulta);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql en '.$tabla,$resultado);
+            return $this->error->error(mensaje:'Error al ejecutar sql en '.$tabla,data:$resultado,
+                params: get_defined_vars());
         }
         $bitacora = $this->aplica_bitacora(consulta: $consulta, registro_id:  $registro_id,
             funcion: $funcion, tabla: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al insertar bitacora en '.$tabla,$bitacora);
+            return $this->error->error(mensaje:'Error al insertar bitacora en '.$tabla,data:$bitacora,
+                params: get_defined_vars());
         }
 
         return $bitacora;
@@ -1355,7 +1372,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * Inserta un registro de bitacora de la tabla afectada
      * @param array $registro es el registro afectado por la accion del sistema
      * @param string $funcion es la funcion que se aplica sobre el registro
@@ -1373,34 +1390,43 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->tabla = str_replace($namespace,'',$this->tabla);
         $clase = $namespace.$this->tabla;
         if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
+            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio', data: $this->tabla,
+                params: get_defined_vars());
         }
         if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
+            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
+                params: get_defined_vars());
         }
         if($funcion === ''){
-            return $this->error->error('Error $funcion no puede venir vacia',$funcion);
+            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion,
+                params: get_defined_vars());
         }
         if($consulta === ''){
-            return $this->error->error('Error $consulta no puede venir vacia',$consulta);
+            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta,
+                params: get_defined_vars());
         }
         if($this->registro_id<=0){
-            return $this->error->error('Error el id de $this->registro_id no puede ser menor a 0',$this->registro_id);
+            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
+                data:$this->registro_id, params: get_defined_vars());
         }
 
         $bitacora_modelo = $this->genera_modelo(modelo: 'bitacora');
         if(errores::$error){
-            return $this->error->error('Error al obtener bitacora',$bitacora_modelo->registro);
+            return $this->error->error(mensaje:'Error al obtener bitacora',data:$bitacora_modelo->registro,
+                params: get_defined_vars());
         }
 
 
-        $bitacora_modelo->registro = $this->maqueta_data_bitacora(consulta:  $consulta, funcion: $funcion, registro: $registro);
+        $bitacora_modelo->registro = $this->maqueta_data_bitacora(consulta:  $consulta, funcion: $funcion,
+            registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al obtener MAQUETAR REGISTRO PARA BITACORA',$bitacora_modelo->registro);
+            return $this->error->error(mensaje:'Error al obtener MAQUETAR REGISTRO PARA BITACORA',
+                data:$bitacora_modelo->registro, params: get_defined_vars());
         }
         $r_bitacora = $bitacora_modelo->alta_bd();
         if(errores::$error){
-            return $this->error->error('Error al insertar bitacora',$r_bitacora);
+            return $this->error->error(mensaje:'Error al insertar bitacora',data:$r_bitacora,
+                params: get_defined_vars());
         }
         return $r_bitacora;
     }
@@ -1867,7 +1893,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * Genera un array para insertarlo en la bitacora
      *
      * @param array $registro registro afectado
@@ -1888,28 +1914,36 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->tabla = str_replace($namespace,'',$this->tabla);
         $clase = $namespace.$this->tabla;
         if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
+            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla,
+                params: get_defined_vars());
         }
         if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
+            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
+                params: get_defined_vars());
         }
         if($funcion === ''){
-            return $this->error->error('Error $funcion no puede venir vacia',$funcion);
+            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion,
+                params: get_defined_vars());
         }
         if($consulta === ''){
-            return $this->error->error('Error $consulta no puede venir vacia',$consulta);
+            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta,
+                params: get_defined_vars());
         }
         if($this->registro_id<=0){
-            return $this->error->error('Error el id de $this->registro_id no puede ser menor a 0',$this->registro_id);
+            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
+                data:$this->registro_id, params: get_defined_vars());
         }
         $seccion_menu = $this->obten_seccion_bitacora();
         if(errores::$error){
-            return $this->error->error('Error al obtener seccion', $seccion_menu);
+            return $this->error->error(mensaje:'Error al obtener seccion', data:$seccion_menu,
+                params: get_defined_vars());
         }
 
-        $registro = $this->asigna_registro_para_bitacora(consulta: $consulta, funcion: $funcion, registro: $registro, seccion_menu: $seccion_menu);
+        $registro = $this->asigna_registro_para_bitacora(consulta: $consulta, funcion: $funcion, registro: $registro,
+            seccion_menu: $seccion_menu);
         if(errores::$error){
-            return $this->error->error('Error al obtener MAQUETAR REGISTRO PARA BITACORA', $registro);
+            return $this->error->error(mensaje:'Error al obtener MAQUETAR REGISTRO PARA BITACORA', data:$registro,
+                params: get_defined_vars());
         }
 
 
@@ -2287,7 +2321,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * Funcion que obtiene el registro de seccion menu para aplicacion de una bitacora
      * @example
     $seccion_menu = $this->obten_seccion_bitacora();
@@ -2304,25 +2338,30 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->tabla = str_replace($namespace,'',$this->tabla);
         $clase = $namespace.$this->tabla;
         if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
+            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla,
+                params: get_defined_vars());
         }
         if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
+            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
+                params: get_defined_vars());
         }
 
         $seccion_menu_modelo = $this->genera_modelo(modelo: 'seccion_menu');
         if(errores::$error){
-            return $this->error->error('Error al generar modelo',$seccion_menu_modelo);
+            return $this->error->error(mensaje:'Error al generar modelo',data:$seccion_menu_modelo,
+                params: get_defined_vars());
         }
 
 
         $filtro['seccion_menu.descripcion'] = $this->tabla;
         $r_seccion_menu = $seccion_menu_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener seccion menu',$r_seccion_menu);
+            return $this->error->error(mensaje:'Error al obtener seccion menu',data:$r_seccion_menu,
+                params: get_defined_vars());
         }
         if((int)$r_seccion_menu['n_registros'] === 0){
-            return $this->error->error('Error no existe la seccion menu',$r_seccion_menu);
+            return $this->error->error(mensaje:'Error no existe la seccion menu',data:$r_seccion_menu,
+                params: get_defined_vars());
         }
         return $r_seccion_menu['registros'][0];
     }
@@ -2371,7 +2410,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * Funcion genera order en forma de sql
      * @param array  $order con parametros para generar sentencia
      * @return array|string cadena con order en forma de SQL
@@ -2384,7 +2423,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $order_sql = '';
         foreach ($order as $campo=>$tipo_order){
             if(is_numeric($campo)){
-                return $this->error->error('Error $campo debe ser txt',$order);
+                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order, params: get_defined_vars());
             }
             if($order_sql === ''){
                 $order_sql.=' ORDER BY '.$campo.' '.$tipo_order;

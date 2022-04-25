@@ -21,6 +21,7 @@ class init{
      * @param PDO $link
      * @param string $seccion
      * @return controler|array
+     * @throws \JsonException
      */
     public function controller(PDO $link, string $seccion):controler|array{
         $name_ctl = $this->name_controler(seccion: $seccion);
@@ -56,6 +57,9 @@ class init{
         return $include_action;
     }
 
+    /**
+     * @throws \JsonException
+     */
     public function index(): array|stdClass
     {
         $con = new conexion();

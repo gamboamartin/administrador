@@ -146,7 +146,7 @@ class links{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param array $accion
      * @param bool $aplica_etiqueta
      * @param string $id
@@ -158,11 +158,15 @@ class links{
     {
         $init = $this->init_link(accion: $accion);
         if(errores::$error){
-            return $this->error->error('Error al inicializar link', $init);
+            return $this->error->error(mensaje: 'Error al inicializar link', data: $init, params: get_defined_vars());
         }
 
         $data_accion = $this->link_accion_base(accion: $init->accion,accion_envio:  $init->accion_descripcion_envio,
             id:$id, seccion: $init->seccion_envio, session_id: $session_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar link', data: $data_accion,
+                params: get_defined_vars());
+        }
 
         $etiqueta = $init->accion_descripcion_envio;
         if(!$aplica_etiqueta){
@@ -171,7 +175,8 @@ class links{
 
         $texto_link = $this->txt_link(etiqueta: $etiqueta,init:  $init,st_btn:  $st_btn);
         if(errores::$error){
-            return $this->error->error('Error al inicializar texto link', $texto_link);
+            return $this->error->error(mensaje:'Error al inicializar texto link',data:  $texto_link,
+                params: get_defined_vars());
         }
 
         $data = new stdClass();
@@ -186,7 +191,7 @@ class links{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param string $accion
      * @param string $id
      * @param string $seccion
@@ -198,14 +203,14 @@ class links{
         $valida = (new validaciones_directivas())->valida_href(accion: $accion,id:  $id,seccion:  $seccion,
             session_id:  $session_id);
         if(errores::$error){
-            return $this->error->error('Error al validar datos', $valida);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida, params: get_defined_vars());
         }
 
         return "./index.php?seccion=$seccion&accion=$accion&session_id=".$session_id."&registro_id=$id";
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRROEV
      * @param array $accion
      * @return array|stdClass
      */
@@ -214,7 +219,7 @@ class links{
         $keys = array('seccion_descripcion','accion_descripcion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion);
         if(errores::$error){
-            return $this->error->error('Error al validar $accion', $valida);
+            return $this->error->error(mensaje: 'Error al validar $accion',data:  $valida, params: get_defined_vars());
         }
 
 
@@ -225,7 +230,7 @@ class links{
         $accion_descripcion_envio = $accion['accion_descripcion'];
         $title = (new etiquetas())->title(txt: $accion_descripcion_envio);
         if(errores::$error){
-            return $this->error->error('Error al generar titulo', $title);
+            return $this->error->error(mensaje:'Error al generar titulo', data:$title, params: get_defined_vars());
         }
         $icono = $accion['accion_icono'];
 
@@ -278,7 +283,7 @@ class links{
     }
 
     /**
-     * PROBADO - P ORDER P INT
+     * PROBADO - P ORDER P INT ERRORREV
      * @param array $accion
      * @param string $accion_envio
      * @param string $id
@@ -290,7 +295,7 @@ class links{
     {
         $href = $this->href_base(accion: $accion_envio, id: $id,seccion:  $seccion, session_id: $session_id);
         if(errores::$error){
-            return $this->error->error('Error al generar href', $href);
+            return $this->error->error(mensaje: 'Error al generar href', data: $href,params: get_defined_vars());
         }
 
 
@@ -303,7 +308,8 @@ class links{
 
             $data_accion = (new listas())->data_accion_limpia();
             if(errores::$error){
-                return $this->error->error('Error al generar data accion modal', $data_accion);
+                return $this->error->error(mensaje: 'Error al generar data accion modal', data: $data_accion,
+                    params: get_defined_vars());
             }
 
         }
@@ -344,7 +350,7 @@ class links{
     }
 
     /**
-     * PROBADO - P ORDER P INT
+     * PROBADO - P ORDER P INT ERRORREV
      * @param string $etiqueta
      * @param stdClass $init
      * @param string $st_btn

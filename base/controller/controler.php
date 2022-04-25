@@ -318,7 +318,8 @@ class controler{
             foreach ($data_para_botones as $data_para_boton){
                 $data_btn = $this->genera_data_btn(data_para_boton: $data_para_boton,filtro_boton_lista: $filtro_boton_lista['tabla']);
                 if(errores::$error){
-                    return  $this->errores->error('Error al generar datos para el boton',$data_btn);
+                    return  $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $data_btn,
+                        params: get_defined_vars());
                 }
                 $botones_filtro[$filtro_boton_lista['tabla']][] = $data_btn;
             }
@@ -481,7 +482,8 @@ class controler{
         }
         $registros_botones_filtro = $modelo_filtro_btns->obten_registros();
         if(errores::$error){
-            return $this->errores->error('Error al obtener registros de filtro', $registros_botones_filtro);
+            return $this->errores->error(mensaje: 'Error al obtener registros de filtro',
+                data:  $registros_botones_filtro, params: get_defined_vars());
         }
         return $registros_botones_filtro;
     }

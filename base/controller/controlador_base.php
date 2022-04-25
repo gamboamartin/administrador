@@ -706,7 +706,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $r_elementos = $elm->filtro_and(filtro:$filtro);
 
         if(errores::$error){
-            $error = $this->errores->error("Error al filtrar",$r_elementos);
+            $error = $this->errores->error(mensaje: "Error al filtrar",data: $r_elementos, params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -792,7 +792,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $n_registros = $this->modelo->cuenta($filtros,'textos', $filtro_especial);
         if(errores::$error){
-            $error = $this->errores->error(MENSAJES['registros_contar'],$n_registros);
+            $error = $this->errores->error(mensaje: 'Error al contar registros',data: $n_registros,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -822,7 +823,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $botones_filtro = $this->obten_botones_para_filtro();
         if(errores::$error){
-            $error = $this->errores->error('Error al generar datos para el boton',$botones_filtro);
+            $error = $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $botones_filtro,
+                params: get_defined_vars());
 
             if(!$header){
                 return $error;
@@ -843,7 +845,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden', filtros: $filtro,orden: 'ASC');
         if(errores::$error){
-            $error =  $this->errores->error('Error al obtener obten_registros_filtro_and_ordenado',$resultado);
+            $error =  $this->errores->error(mensaje: 'Error al obtener obten_registros_filtro_and_ordenado',
+                data: $resultado, params: get_defined_vars());
             print_r($error);
             die('Error');
 
@@ -898,7 +901,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         if(errores::$error){
-            return $this->retorno_error('Error al generar template',$lista_html,$header,$ws);
+            return $this->retorno_error(mensaje: 'Error al generar template',data: $lista_html,header: $header,ws: $ws,
+                params: get_defined_vars());
         }
 
         $this->lista_html = $lista_html;

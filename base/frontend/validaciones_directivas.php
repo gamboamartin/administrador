@@ -99,7 +99,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param string $seccion
      * @param string $accion
      * @return bool|array
@@ -108,10 +108,10 @@ class validaciones_directivas extends validacion{
     {
         $valida = $this->valida_name_clase(tabla: $seccion);
         if (errores::$error) {
-            return $this->error->error('Error al validar seccion', $valida);
+            return $this->error->error(mensaje: 'Error al validar seccion', data: $valida, params: get_defined_vars());
         }
         if ($accion === '') {
-            return $this->error->error('Error la accion esta vacia', $accion);
+            return $this->error->error(mensaje:'Error la accion esta vacia', data:$accion, params: get_defined_vars());
         }
         return true;
     }
@@ -198,23 +198,34 @@ class validaciones_directivas extends validacion{
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $accion
+     * @param string $id
+     * @param string $seccion
+     * @param string $session_id
+     * @return bool|array
+     */
     public function valida_href(string $accion, string $id, string $seccion, string $session_id): bool|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error('Error la seccion no puede venir vacia', $seccion);
+            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia',data:  $seccion,
+                params: get_defined_vars());
         }
         $accion = trim($accion);
         if($accion === ''){
-            return $this->error->error('Error la $accion no puede venir vacia', $accion);
+            return $this->error->error(mensaje:'Error la $accion no puede venir vacia', data:$accion,
+                params: get_defined_vars());
         }
         $session_id = trim($session_id);
         if($session_id === ''){
-            return $this->error->error('Error la $session_id no puede venir vacia', $session_id);
+            return $this->error->error(mensaje:'Error la $session_id no puede venir vacia',data: $session_id);
         }
         $id = trim($id);
         if($id === ''){
-            return $this->error->error('Error la $id no puede venir vacia', $id);
+            return $this->error->error(mensaje:'Error la $id no puede venir vacia',data: $id,
+                params: get_defined_vars());
         }
         return true;
     }
@@ -244,20 +255,23 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param array $accion
      * @return bool|array
      */
     public function valida_link(array $accion): bool|array
     {
         if(count($accion)===0){
-            return $this->error->error('Error accion no puede venir vacia',$accion);
+            return $this->error->error(mensaje: 'Error accion no puede venir vacia',data: $accion,
+                params: get_defined_vars());
         }
         if(!isset($accion['seccion_descripcion'])){
-            return $this->error->error('$accion[seccion_descripcion] debe existir',$accion);
+            return $this->error->error(mensaje:'$accion[seccion_descripcion] debe existir',data:$accion,
+                params: get_defined_vars());
         }
         if(!isset($accion['accion_descripcion'])){
-            return $this->error->error('$accion[accion_descripcion] debe existir',$accion);
+            return $this->error->error(mensaje:'$accion[accion_descripcion] debe existir',data:$accion,
+                params: get_defined_vars());
         }
         return true;
     }

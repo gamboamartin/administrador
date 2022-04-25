@@ -82,7 +82,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $campo
      * @param array $filtro
      * @return bool|array
@@ -90,19 +90,22 @@ class validaciones extends validacion{
     public function valida_data_filtro_especial(string $campo, array $filtro): bool|array
     {
         if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
+            return $this->error->error(mensaje: "Error campo vacio", data: $campo, params: get_defined_vars());
         }
         if(!isset($filtro[$campo]['valor_es_campo']) && is_numeric($campo)){
-            return $this->error->error('Error el campo debe ser un string $filtro[campo]', $filtro);
+            return $this->error->error(mensaje:'Error el campo debe ser un string $filtro[campo]', data:$filtro,
+                params: get_defined_vars());
         }
         if(!isset($filtro[$campo]['operador'])){
-            return $this->error->error('Error debe existir $filtro[campo][operador]', $filtro);
+            return $this->error->error(mensaje:'Error debe existir $filtro[campo][operador]', data:$filtro,
+                params: get_defined_vars());
         }
         if(!isset($filtro[$campo]['valor'])){
             $filtro[$campo]['valor'] = '';
         }
         if(is_array($filtro[$campo]['valor'])){
-            return $this->error->error('Error $filtro['.$campo.'][\'valor\'] debe ser un dato', $filtro);
+            return $this->error->error(mensaje:'Error $filtro['.$campo.'][\'valor\'] debe ser un dato', data:$filtro,
+                params: get_defined_vars());
         }
         return true;
     }
@@ -222,7 +225,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Valida que una expresion regular se cumpla en un registro
      * @param string $key campo de un registro o this->registro
      * @param array $registro
@@ -242,16 +245,17 @@ class validaciones extends validacion{
      */
     public function valida_pattern_campo(string $key, array $registro, string $tipo_campo):array|bool{
         if(count($registro) === 0){
-            return $this->error->error('Error el registro no no puede venir vacio',  $registro);
+            return $this->error->error(mensaje: 'Error el registro no no puede venir vacio',  data: $registro,
+                params: get_defined_vars());
         }
         $key = trim($key);
         if($key === ''){
-            return $this->error->error('Error key esta vacio ',  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio ', data:  $key, params: get_defined_vars());
         }
         if(isset($registro[$key])&&(string)$registro[$key] !==''){
             $valida_data = $this->valida_pattern_model(key:$key,registro: $registro, tipo_campo: $tipo_campo);
             if(errores::$error){
-                return $this->error->error('Error al validar', $valida_data);
+                return $this->error->error(mensaje: 'Error al validar', data: $valida_data, params: get_defined_vars());
             }
         }
 
@@ -260,7 +264,7 @@ class validaciones extends validacion{
 
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * Valida que una expresion regular se cumpla en un registro
      * @param string $key campo de un registro o this->registro
      * @param array $registro
@@ -276,19 +280,22 @@ class validaciones extends validacion{
 
         $key = trim($key);
         if($key === ''){
-            return $this->error->error('Error key esta vacio ',  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio ',  data: $key, params: get_defined_vars());
         }
         if(!isset($registro[$key])){
-            return $this->error->error('Error no existe el campo '.$key,  $registro);
+            return $this->error->error(mensaje: 'Error no existe el campo '.$key, data: $registro,
+                params: get_defined_vars());
         }
         if(!isset($this->patterns[$tipo_campo])){
-            return $this->error->error('Error no existe el pattern '.$tipo_campo, $registro);
+            return $this->error->error(mensaje: 'Error no existe el pattern '.$tipo_campo,data: $registro,
+                params: get_defined_vars());
         }
         $value = trim($registro[$key]);
         $pattern = trim($this->patterns[$tipo_campo]);
 
         if(!preg_match($pattern, $value)){
-            return $this->error->error('Error el campo '.$key.' es invalido', array($registro[$key],$pattern));
+            return $this->error->error(mensaje: 'Error el campo '.$key.' es invalido',
+                data: array($registro[$key],$pattern), params: get_defined_vars());
         }
 
         return true;

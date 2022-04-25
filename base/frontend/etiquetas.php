@@ -294,15 +294,15 @@ class etiquetas{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * PROBADO - PARAMS ORDER PARAMS INT ERROREV
      * @param string $txt
-     * @return string
+     * @return string|array
      */
     public function title(string $txt): string|array
     {
         $title = trim(str_replace('_',' ',$txt));
         if($title === ''){
-            return  $this->error->error('Error title esta vacio',$title);
+            return  $this->error->error(mensaje: 'Error title esta vacio',data: $title, params: get_defined_vars());
         }
         return ucwords(trim($title));
     }

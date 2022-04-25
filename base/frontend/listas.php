@@ -60,7 +60,7 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param PDO $link
      * @param string $accion
      * @param string $seccion
@@ -70,7 +70,8 @@ class listas{
     {
         $datos_accion_bd = $this->datos_accion_bd(link: $link,accion: $accion,seccion: $seccion);
         if (errores::$error) {
-            return $this->error->error('Error al obtener acciones', $datos_accion_bd);
+            return $this->error->error(mensaje: 'Error al obtener acciones', data: $datos_accion_bd,
+                params: get_defined_vars());
         }
         $_SESSION['datos_accion'][$seccion][$accion] = $datos_accion_bd;
 
@@ -78,7 +79,7 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param string $id
      * @param string $seccion
      * @param string $accion
@@ -91,17 +92,17 @@ class listas{
                                               string $class_link, PDO $link): array|string
     {
         if ($accion === '') {
-            return $this->error->error('Error la accion esta vacia', $accion);
+            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion, params: get_defined_vars());
         }
         $directiva = new directivas();
         $datos_accion = $this->datos_accion(seccion: $seccion,accion: $accion,link:  $link);
         if(errores::$error){
-            return $this->error->error('Error al obtener acciones',$datos_accion);
+            return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion, params: get_defined_vars());
         }
 
         $link_accion = $directiva->genera_link_accion(accion:$datos_accion, id: $id,session_id:  $session_id, class_link: $class_link);
         if(errores::$error){
-            return $this->error->error('Error al generar link',$link_accion);
+            return $this->error->error(mensaje:'Error al generar link',data:$link_accion, params: get_defined_vars());
         }
 
         return $link_accion;
@@ -201,7 +202,7 @@ class listas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @return stdClass
      */
     #[Pure] public function data_accion_limpia(): stdClass
@@ -343,7 +344,7 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT ERROREV
      * @param string $seccion
      * @param string $accion
      * @param PDO $link
@@ -354,13 +355,14 @@ class listas{
 
         $valida = $this->validacion->valida_datos_accion(accion: $accion, seccion: $seccion);
         if (errores::$error) {
-            return $this->error->error('Error al validar datos', $valida);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida, params: get_defined_vars());
         }
 
         if(!isset($_SESSION['datos_accion'][$seccion][$accion])) {
             $datos_accion_bd = $this->asigna_accion_to_session(link: $link,accion: $accion,seccion: $seccion);
             if (errores::$error) {
-                return $this->error->error('Error al asignar acciones', $datos_accion_bd);
+                return $this->error->error(mensaje:'Error al asignar acciones',data: $datos_accion_bd,
+                    params: get_defined_vars());
             }
         }
 
@@ -368,7 +370,7 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param PDO $link
      * @param string $accion
      * @param string $seccion
@@ -383,10 +385,12 @@ class listas{
 
         $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if (errores::$error) {
-            return $this->error->error('Error al obtener acciones', $resultado);
+            return $this->error->error(mensaje: 'Error al obtener acciones', data: $resultado,
+                params: get_defined_vars());
         }
         if ((int)($resultado->n_registros) === 0) {
-            return $this->error->error( 'Error no existen acciones',  $resultado);
+            return $this->error->error( mensaje: 'Error no existen acciones', data:  $resultado,
+                params: get_defined_vars());
         }
         return $resultado->registros[0];
     }
@@ -800,7 +804,7 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param string $id
      * @param string $status
      * @param array $acciones
@@ -823,14 +827,16 @@ class listas{
             $acciones_permitidas = $modelo_accion->obten_accion_permitida_session(seccion:$seccion, accion:$accion);
 
             if(errores::$error){
-                return $this->error->error('Error al obtener acciones permitidas',$acciones_permitidas);
+                return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $acciones_permitidas,
+                    params: get_defined_vars());
             }
 
             if ($acciones_permitidas) {
                 $link_accion = $this->asigna_datos_accion_link(id: $id,seccion:  $seccion, accion: $accion,
                     session_id: $session_id,class_link:  $class_link, link: $link);
                 if(errores::$error){
-                    return $this->error->error('Error al generar link',$link_accion);
+                    return $this->error->error(mensaje: 'Error al generar link',data: $link_accion,
+                        params: get_defined_vars());
                 }
                 $html.=$link_accion;
             }

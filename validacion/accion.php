@@ -5,7 +5,7 @@ use base\controller\valida_controller;
 class accion extends valida_controller {
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $accion
      * @param string $seccion
      * @return bool|array
@@ -13,13 +13,15 @@ class accion extends valida_controller {
    public function valida_accion_permitida(string $accion, string $seccion): bool|array
    {
        if($seccion === ''){
-           return $this->error->error('Error $seccion debe tener info',$seccion);
+           return $this->error->error(mensaje: 'Error $seccion debe tener info',data: $seccion,
+               params: get_defined_vars());
        }
        if($accion === ''){
-           return $this->error->error('Error $accion debe tener info',$accion);
+           return $this->error->error(mensaje:'Error $accion debe tener info',data:$accion, params: get_defined_vars());
        }
        if(!isset($_SESSION['grupo_id'])){
-           return $this->error->error('Error debe existir grupo_id en SESSION',$_SESSION);
+           return $this->error->error(mensaje:'Error debe existir grupo_id en SESSION',data:$_SESSION,
+               params: get_defined_vars());
        }
        return true;
    }

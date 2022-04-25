@@ -129,7 +129,7 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT
+     * P INT ERROREV
      * @param string $seccion
      * @param string $accion
      * @return bool|array
@@ -139,7 +139,7 @@ class accion extends modelo{ //FINALIZADAS
 
         $valida = $this->validacion->valida_accion_permitida(accion: $accion,seccion:  $seccion);
         if(errores::$error){
-            return $this->error->error('Error al validar datos',$valida);
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida, params: get_defined_vars());
         }
 
         $grupo_id = $_SESSION['grupo_id'];
@@ -163,7 +163,7 @@ class accion extends modelo{ //FINALIZADAS
 
         $existe = (new accion_grupo($this->link))->existe(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$existe);
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $existe, params: get_defined_vars());
         }
 
         $_SESSION['accion_permitida'][$seccion][$grupo_id][$accion] = $existe;

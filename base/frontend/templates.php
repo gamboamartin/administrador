@@ -695,7 +695,8 @@ class templates{
     {
 
         if(count($campos) === 0){
-            return $this->error->error('Error los campos de lista no pueden venir vacios',$campos);
+            return $this->error->error(mensaje: 'Error los campos de lista no pueden venir vacios',data: $campos,
+                params: get_defined_vars());
         }
         if(count($etiqueta_campos) === 0){
             return $this->error->error('Error $etiqueta_campos esta vacio',$etiqueta_campos);

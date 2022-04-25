@@ -6,6 +6,13 @@ use stdClass;
 
 class val_sql extends validaciones {
 
+    /**
+     * ERROREV
+     * @param string $campo
+     * @param array $keys_ids
+     * @param array $registro
+     * @return array|string
+     */
     private function campo_existe(string $campo, array $keys_ids, array $registro): array|string
     {
         $campo_r = $this->txt_valido(txt: $campo);
@@ -14,13 +21,14 @@ class val_sql extends validaciones {
         }
         $existe = $this->existe(keys_obligatorios: $keys_ids, registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al verificar si existe', $existe);
+            return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe,
+                params: get_defined_vars());
         }
         return $campo_r;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRROEV
      * @param array $keys_checked
      * @param array $registro
      * @return bool|array
@@ -30,27 +38,37 @@ class val_sql extends validaciones {
         foreach($keys_checked as $campo){
             $verifica = $this->verifica_chk(campo: $campo,keys_checked: $keys_checked,registro: $registro);
             if(errores::$error){
-                return $this->error->error('Error al verificar campo',$verifica);
+                return $this->error->error(mensaje: 'Error al verificar campo',data: $verifica,
+                    params: get_defined_vars());
             }
         }
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $campo
+     * @param array $keys_obligatorios
+     * @param array $registro
+     * @return array|string
+     */
     private function data_vacio(string $campo, array $keys_obligatorios, array $registro): array|string
     {
         $campo_r = $this->txt_valido($campo);
         if(errores::$error){
-            return $this->error->error('Error al reasignar campo valor',$campo_r);
+            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r,
+                params: get_defined_vars());
         }
         $existe = $this->existe(keys_obligatorios: $keys_obligatorios,registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al verificar si existe',$existe);
+            return $this->error->error(mensaje: 'Error al verificar si existe',data: $existe,
+                params: get_defined_vars());
         }
         return trim($registro[$campo_r]);
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * @param array $keys_obligatorios
      * @param array $registro
      * @return bool|array
@@ -61,7 +79,8 @@ class val_sql extends validaciones {
 
             $verifica = $this->verifica_existe(campo: $campo, registro: $registro);
             if(errores::$error){
-                return $this->error->error('Error al verificar si existe campo', $verifica);
+                return $this->error->error(mensaje: 'Error al verificar si existe campo', data: $verifica,
+                    params: get_defined_vars());
             }
 
         }
@@ -69,7 +88,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * @param array $keys_obligatorios
      * @param array $registro
      * @return bool|array
@@ -78,11 +97,13 @@ class val_sql extends validaciones {
     {
         $existe = $this->existe(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al validar campos no existe', $existe);
+            return $this->error->error(mensaje: 'Error al validar campos no existe', data: $existe,
+                params: get_defined_vars());
         }
         $vacio = $this->vacio(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al validar campo vacio', $vacio);
+            return $this->error->error(mensaje: 'Error al validar campo vacio', data: $vacio,
+                params: get_defined_vars());
         }
 
 
@@ -90,7 +111,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $keys_ids
      * @param array $registro
      * @return bool|array
@@ -108,15 +129,23 @@ class val_sql extends validaciones {
         return true;
     }
 
+    /**
+     * ERROREV
+     * @param string $key
+     * @param string $tipo_campo
+     * @return array|stdClass
+     */
     private function limpia_data_tipo_campo(string $key, string $tipo_campo): array|stdClass
     {
         $key_r = $this->txt_valido(txt:$key);
         if(errores::$error){
-            return $this->error->error('Error en key de tipo campo', $key);
+            return $this->error->error(mensaje: 'Error en key de tipo campo', data: $key,
+                params: get_defined_vars());
         }
         $tipo_campo_r = $this->txt_valido(txt:$tipo_campo);
         if(errores::$error){
-            return $this->error->error('Error en $tipo_campo de tipo campo', $tipo_campo);
+            return $this->error->error(mensaje:'Error en $tipo_campo de tipo campo',data: $tipo_campo,
+                params: get_defined_vars());
         }
         $data = new stdClass();
         $data->key = $key_r;
@@ -125,7 +154,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $registro
      * @param array $tipo_campos
      * @return bool|array
@@ -135,7 +164,8 @@ class val_sql extends validaciones {
         foreach($tipo_campos as $key =>$tipo_campo){
             $valida_campos = $this->verifica_tipo_dato(key: $key,registro: $registro,tipo_campo: $tipo_campo);
             if(errores::$error){
-                return $this->error->error('Error al validar campos', $valida_campos);
+                return $this->error->error(mensaje: 'Error al validar campos', data: $valida_campos,
+                    params: get_defined_vars());
             }
         }
 
@@ -143,6 +173,11 @@ class val_sql extends validaciones {
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $txt
+     * @return array|string
+     */
     private function txt_valido(string $txt): array|string
     {
         $txt = trim($txt);
@@ -152,13 +187,14 @@ class val_sql extends validaciones {
                 params: get_defined_vars());
         }
         if(is_numeric($txt)){
-            return $this->error->error('Error el $txt es numero debe se un string', $txt);
+            return $this->error->error(mensaje: 'Error el $txt es numero debe se un string', data: $txt,
+                params: get_defined_vars());
         }
         return $txt;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $keys_obligatorios
      * @param array $registro
      * @return bool|array
@@ -168,30 +204,40 @@ class val_sql extends validaciones {
         foreach($keys_obligatorios as $campo){
             $verifica = $this->verifica_vacio(campo: $campo,keys_obligatorios: $keys_obligatorios,registro: $registro);
             if(errores::$error){
-                return $this->error->error('Error al verificar vacio',$verifica);
+                return $this->error->error(mensaje: 'Error al verificar vacio',data: $verifica,
+                    params: get_defined_vars());
             }
         }
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $campo
+     * @param array $keys_checked
+     * @param array $registro
+     * @return bool|array
+     */
     private function verifica_chk(string $campo, array $keys_checked, array $registro): bool|array
     {
         $campo_r = $this->txt_valido($campo);
         if(errores::$error){
-            return $this->error->error('Error al reasignar campo valor',$campo_r);
+            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r,
+                params: get_defined_vars());
         }
         $existe = $this->existe(keys_obligatorios: $keys_checked,registro:  $registro);
         if(errores::$error){
-            return $this->error->error('Error al validar si existe',$existe);
+            return $this->error->error(mensaje: 'Error al validar si existe',data: $existe, params: get_defined_vars());
         }
         if((string)$registro[$campo_r] !== 'activo' && (string)$registro[$campo_r]!=='inactivo' ){
-            return $this->error->error('Error $registro['.$campo_r.'] debe ser activo o inactivo',$registro);
+            return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe ser activo o inactivo',
+                data: $registro, params: get_defined_vars());
         }
         return true;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * @param array $campos_obligatorios
      * @param array $registro
      * @param string $tabla
@@ -216,6 +262,13 @@ class val_sql extends validaciones {
         return true;
     }
 
+    /**
+     * ERROR
+     * @param string $campo
+     * @param array $keys_ids
+     * @param array $registro
+     * @return bool|array
+     */
     private function verifica_id(string $campo, array $keys_ids, array $registro): bool|array
     {
         $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys_ids,registro: $registro);
@@ -225,14 +278,14 @@ class val_sql extends validaciones {
         }
 
         if(!preg_match($this->patterns['id'], $registro[$campo_r])){
-            return $this->error->error('Error $registro['.$campo_r.'] es invalido',
-                array($registro[$campo_r],$this->patterns['id']));
+            return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] es invalido',
+                data: array($registro[$campo_r],$this->patterns['id']), params: get_defined_vars());
         }
         return true;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROR
      * @param array $campos_obligatorios
      * @param modelo $modelo
      * @param array $no_duplicados
@@ -263,7 +316,8 @@ class val_sql extends validaciones {
 
             $existe = $modelo->existe(filtro:$filtro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe,
+                    params: get_defined_vars());
             }
             if($existe){
                 return $this->error->error(mensaje: 'Error ya existe un registro con el campo '.$campo, data: $existe,
@@ -275,7 +329,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Funcion que valida la estructura de los campos de un modelo
      *
      * @param array $registro
@@ -303,55 +357,79 @@ class val_sql extends validaciones {
         }
         $v_obligatorios = $this->obligatorios(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo de campo', $v_obligatorios);
+            return $this->error->error(mensaje: 'Error al validar tipo de campo', data: $v_obligatorios,
+                params: get_defined_vars());
         }
         $v_ids = $this->ids(keys_ids: $keys_ids,registro:  $registro);
         if(errores::$error){
-            return $this->error->error('Error al validar id', $v_ids);
+            return $this->error->error(mensaje: 'Error al validar id', data: $v_ids, params: get_defined_vars());
         }
         $v_checked = $this->checked(keys_checked: $keys_checked,registro:  $registro);
         if(errores::$error){
-            return $this->error->error('Error al validar checked', $v_checked);
+            return $this->error->error(mensaje: 'Error al validar checked', data: $v_checked, params: get_defined_vars());
         }
 
 
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $campo
+     * @param array $registro
+     * @return bool|array
+     */
     private function verifica_existe(string $campo, array $registro): bool|array
     {
         $campo_r = $this->txt_valido(txt:$campo);
         if(errores::$error){
-            return $this->error->error('Error al limpiar campo', $campo);
+            return $this->error->error(mensaje: 'Error al limpiar campo', data: $campo, params: get_defined_vars());
         }
         if(!isset($registro[$campo_r])){
-            return $this->error->error('Error $registro['.$campo_r.'] debe existir', $registro);
+            return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe existir', data: $registro,
+                params: get_defined_vars());
         }
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $key
+     * @param array $registro
+     * @param string $tipo_campo
+     * @return bool|array
+     */
     private function verifica_tipo_dato(string $key, array $registro, string $tipo_campo): bool|array
     {
         $data = $this->limpia_data_tipo_campo(key: $key, tipo_campo: $tipo_campo);
         if(errores::$error){
-            return $this->error->error('Error al limpiar dato', $data);
+            return $this->error->error(mensaje: 'Error al limpiar dato',data:  $data, params: get_defined_vars());
         }
 
         $valida_campos = $this->valida_pattern_campo(key: $key, registro:  $registro, tipo_campo: $tipo_campo);
         if(errores::$error){
-            return $this->error->error('Error al validar campos', $valida_campos);
+            return $this->error->error(mensaje:'Error al validar campos', data:$valida_campos,
+                params: get_defined_vars());
         }
         return true;
     }
 
+    /**
+     * ERRORREV
+     * @param string $campo
+     * @param array $keys_obligatorios
+     * @param array $registro
+     * @return bool|array
+     */
     private function verifica_vacio(string $campo,array $keys_obligatorios, array $registro): bool|array
     {
         $value = $this->data_vacio(campo: $campo,keys_obligatorios: $keys_obligatorios,registro: $registro);
         if(errores::$error){
-            return $this->error->error('Error al verificar si existe',$value);
+            return $this->error->error(mensaje:'Error al verificar si existe',data:$value, params: get_defined_vars());
         }
         if($value === ''){
-            return $this->error->error('Error $registro['.$campo.'] debe tener datos',$registro);
+            return $this->error->error(mensaje:'Error $registro['.$campo.'] debe tener datos',data:$registro,
+                params: get_defined_vars());
         }
         return true;
     }

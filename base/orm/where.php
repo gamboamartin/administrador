@@ -19,7 +19,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param string $filtro_fecha_sql
      * @return string
      */
@@ -33,7 +33,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param string $sentencia
      * @param string $filtro_especial_sql
      * @param string $filtro_rango_sql
@@ -59,21 +59,21 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser $data[(string)campo] sino un string
      * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
      * @return string|array
      */
     private function campo(array|string|null $data, string $key):string|array{
         if($key === ''){
-            return $this->error->error("Error key vacio", $key);
+            return $this->error->error(mensaje: "Error key vacio",data:  $key, params: get_defined_vars());
         }
         $campo = $data['campo'] ?? $key;
         return addslashes($campo);
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
      * @param string $default
@@ -84,7 +84,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array $columnas_extra
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
@@ -94,19 +94,21 @@ class where{
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
 
         if($key === ''){
-            return $this->error->error("Error key vacio", $key);
+            return $this->error->error(mensaje: "Error key vacio", data: $key, params: get_defined_vars());
         }
         if(is_array($data) && count($data) === 0){
-            return $this->error->error("Error datos vacio",$data);
+            return $this->error->error(mensaje:"Error datos vacio",data: $data, params: get_defined_vars());
         }
         $datas = new stdClass();
         $datas->campo = $this->campo(data: $data,key:  $key);
         if(errores::$error){
-            return $this->error->error("Error al maquetar campo",$datas->campo);
+            return $this->error->error(mensaje:"Error al maquetar campo",data: $datas->campo,
+                params: get_defined_vars());
         }
         $datas->value = $this->value(data: $data);
         if(errores::$error){
-            return $this->error->error("Error al validar maquetacion",$datas->value);
+            return $this->error->error(mensaje:"Error al validar maquetacion",data: $datas->value,
+                params: get_defined_vars());
         }
         if(isset($data['es_sq']) && $data['es_sq']){
             $datas->campo = $columnas_extra[$key];
@@ -118,7 +120,7 @@ class where{
 
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param array $fil_fecha
      * @return stdClass|array
      */
@@ -127,7 +129,7 @@ class where{
 
         $valida = $this->valida_data_filtro_fecha(fil_fecha: $fil_fecha);
         if(errores::$error){
-            return $this->error->error('Error al validar fecha',$valida);
+            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida, params: get_defined_vars());
         }
 
         $campo_1 = $fil_fecha['campo_1'];
@@ -141,7 +143,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRROREV
      * @param array $columnas_extra
      * @param array $keys_data_filter
      * @param string $tipo_filtro
@@ -160,32 +162,33 @@ class where{
     {
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo_filtro',$verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
+                params: get_defined_vars());
         }
         $filtros = $this->genera_filtros_sql(columnas_extra: $columnas_extra, filtro:  $filtro,
             filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_rango:  $filtro_rango,
             keys_data_filter: $keys_data_filter, not_in: $not_in, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
             filtro_fecha: $filtro_fecha);
         if(errores::$error){
-            return $this->error->error('Error al generar filtros', $filtros);
+            return $this->error->error(mensaje:'Error al generar filtros', data:$filtros, params: get_defined_vars());
         }
 
 
         $where = $this->where(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al generar where',$where);
+            return $this->error->error(mensaje:'Error al generar where',data:$where, params: get_defined_vars());
         }
 
         $filtros = $this->filtros_full(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al generar filtros',$filtros);
+            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros, params: get_defined_vars());
         }
         $filtros->where = $where;
         return $filtros;
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * Genera las condiciones sql de un filtro especial
      *
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -227,19 +230,21 @@ class where{
         foreach ($filtro_especial as $campo=>$filtro_esp){
             if(!is_array($filtro_esp)){
 
-                return $this->error->error("Error filtro debe ser un array filtro_especial[] = array()", $filtro_esp);
+                return $this->error->error(mensaje: "Error filtro debe ser un array filtro_especial[] = array()",
+                    data: $filtro_esp, params: get_defined_vars());
             }
 
             $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,filtro_especial_sql: $filtro_especial_sql);
             if(errores::$error){
-                return $this->error->error("Error filtro", $filtro_especial_sql);
+                return $this->error->error(mensaje:"Error filtro", data: $filtro_especial_sql,
+                    params: get_defined_vars());
             }
         }
         return $filtro_especial_sql;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * Funcion que genera las condiciones de sql de un filtro extra
      *
      * @param array $filtro_extra arreglo que contiene las condiciones
@@ -263,30 +268,36 @@ class where{
         $filtro_extra_sql = '';
         foreach($filtro_extra as $data_filtro){
             if(!is_array($data_filtro)){
-                return $this->error->error('Error $data_filtro debe ser un array',$filtro_extra);
+                return $this->error->error(mensaje: 'Error $data_filtro debe ser un array',data: $filtro_extra,
+                    params: get_defined_vars());
             }
             $campo = key($data_filtro);
             $campo = trim($campo);
 
             if(!isset($data_filtro[$campo]['operador'])){
-                return $this->error->error('Error data_filtro['.$campo.'][operador] debe existir',$data_filtro);
+                return $this->error->error(mensaje:'Error data_filtro['.$campo.'][operador] debe existir',
+                    data:$data_filtro, params: get_defined_vars());
             }
 
             $operador = $data_filtro[$campo]['operador'];
             if($operador===''){
-                return $this->error->error('Error el operador debe de existir',$operador);
+                return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador,
+                    params: get_defined_vars());
             }
 
             if(!isset($data_filtro[$campo]['valor'])){
-                return $this->error->error('Error data_filtro['.$campo.'][valor] debe existir',$data_filtro);
+                return $this->error->error(mensaje:'Error data_filtro['.$campo.'][valor] debe existir',
+                    data:$data_filtro, params: get_defined_vars());
             }
             if(!isset($data_filtro[$campo]['comparacion'])){
-                return $this->error->error('Error data_filtro['.$campo.'][comparacion] debe existir',$data_filtro);
+                return $this->error->error(mensaje:'Error data_filtro['.$campo.'][comparacion] debe existir',
+                    data:$data_filtro, params: get_defined_vars());
             }
 
             $valor = $data_filtro[$campo]['valor'];
             if($valor===''){
-                return $this->error->error('Error el operador debe de existir',$valor);
+                return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor,
+                    params: get_defined_vars());
             }
             $comparacion = $data_filtro[$campo]['comparacion'];
             $condicion = $campo.$operador.$valor;
@@ -303,7 +314,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param array $filtro_fecha
      * @return array|string
      */
@@ -312,7 +323,8 @@ class where{
 
         $filtro_fecha_sql = $this->filtro_fecha_base(filtro_fecha: $filtro_fecha);
         if(errores::$error){
-            return $this->error->error('Error al obtener sql',$filtro_fecha_sql);
+            return $this->error->error(mensaje: 'Error al obtener sql',data: $filtro_fecha_sql,
+                params: get_defined_vars());
         }
 
         if($filtro_fecha_sql !==''){
@@ -323,7 +335,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param array $filtro_fecha
      * @return array|string
      */
@@ -332,17 +344,18 @@ class where{
         $filtro_fecha_sql = '';
         foreach ($filtro_fecha as $fil_fecha){
             if(!is_array($fil_fecha)){
-                return $this->error->error('Error $fil_fecha debe ser un array',$fil_fecha);
+                return $this->error->error(mensaje: 'Error $fil_fecha debe ser un array',data: $fil_fecha,
+                    params: get_defined_vars());
             }
 
             $valida = $this->valida_filtro_fecha(fil_fecha: $fil_fecha);
             if(errores::$error){
-                return $this->error->error('Error al validar filtro',$valida);
+                return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
             }
 
             $sql = $this->genera_sql_filtro_fecha(fil_fecha: $fil_fecha, filtro_fecha_sql: $filtro_fecha_sql);
             if(errores::$error){
-                return $this->error->error('Error al obtener sql',$sql);
+                return $this->error->error(mensaje: 'Error al obtener sql',data: $sql, params: get_defined_vars());
             }
 
             $filtro_fecha_sql.= $sql;
@@ -413,7 +426,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $filtros
      * @param array $keys_data_filter
      * @return stdClass
@@ -422,7 +435,7 @@ class where{
     {
         $filtros = $this->limpia_filtros(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al limpiar filtros',$filtros);
+            return $this->error->error(mensaje: 'Error al limpiar filtros',data: $filtros, params: get_defined_vars());
         }
 
         $and = '';
@@ -438,7 +451,7 @@ class where{
 
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRREV
      * @param stdClass $complemento
      * @param array $keys_data_filter
      * @return bool
@@ -460,7 +473,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql
      * @param array $columnas_extra
      * @param array $filtro parametros para maquetar filtro[data] =  $data $data dato para la asignacion de un nombre de un campo si es array debe ser
@@ -483,21 +496,25 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    'Los key deben de ser campos asociativos con referencia a tabla.campo',$filtro);
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
+                    params: get_defined_vars());
             }
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data, key: $key);
             if(errores::$error){
-                return $this->error->error("Error al maquetar campo",$data_comparacion);
+                return $this->error->error(mensaje:"Error al maquetar campo",data:$data_comparacion,
+                    params: get_defined_vars());
             }
 
             $comparacion = $this->comparacion(data: $data,default: '=');
             if(errores::$error){
-                return $this->error->error("Error al maquetar",$comparacion);
+                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion,
+                    params: get_defined_vars());
             }
 
             $operador = $data['operador'] ?? ' AND ';
             if(trim($operador) !=='AND' && trim($operador) !=='OR'){
-                return $this->error->error('El operador debe ser AND u OR',$operador);
+                return $this->error->error(mensaje:'El operador debe ser AND u OR',data:$operador,
+                    params: get_defined_vars());
             }
 
             $data_sql = "$data_comparacion->campo $comparacion '$data_comparacion->value'";
@@ -510,7 +527,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
      * @param array $columnas_extra
      * @param array $filtro filtros para la maquetacion de filtros
@@ -525,17 +542,19 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    'Los key deben de ser campos asociativos con referencia a tabla.campo',$filtro);
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
+                    params: get_defined_vars());
             }
 
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data,key:  $key);
             if(errores::$error){
-                return $this->error->error("Error al maquetar",$data_comparacion);
+                return $this->error->error(mensaje: "Error al maquetar",data:$data_comparacion,
+                    params: get_defined_vars());
             }
 
             $comparacion = $this->comparacion(data: $data,default: 'LIKE');
             if(errores::$error){
-                return $this->error->error("Error al maquetar",$comparacion);
+                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion, params: get_defined_vars());
             }
 
             $txt = '%';
@@ -555,7 +574,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -604,10 +623,12 @@ class where{
         }
         else{
             if(!isset($filtro_esp[$campo]['comparacion'])){
-                return $this->error->error('Error $filtro_esp[$campo][\'comparacion\'] debe existir', $filtro_esp);
+                return $this->error->error(mensaje: 'Error $filtro_esp[$campo][\'comparacion\'] debe existir',
+                    data: $filtro_esp, params: get_defined_vars());
             }
             if(trim($data_sql) === ''){
-                return $this->error->error('Error $data_sql no puede venir vacio', $data_sql);
+                return $this->error->error(mensaje:'Error $data_sql no puede venir vacio', data:$data_sql,
+                    params: get_defined_vars());
             }
 
             $filtro_especial_sql .= ' '.$filtro_esp[$campo]['comparacion'].' '.$data_sql;
@@ -676,7 +697,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param string $sentencia
      * @param string $filtro_especial_sql
      * @param string $filtro_rango_sql
@@ -695,23 +716,23 @@ class where{
             filtro_extra_sql: $filtro_extra_sql, filtro_fecha_sql:  $filtro_fecha_sql,
             filtro_rango_sql:  $filtro_rango_sql, not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
         if(errores::$error){
-            return $this->error->error('Error al asignar filtros',$filtros);
+            return $this->error->error(mensaje: 'Error al asignar filtros',data: $filtros, params: get_defined_vars());
         }
 
         $filtros = $this->limpia_filtros(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al limpiar filtros',$filtros);
+            return $this->error->error(mensaje:'Error al limpiar filtros',data:$filtros, params: get_defined_vars());
         }
 
         $filtros = $this->parentesis_filtro(filtros: $filtros,keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al generar filtros',$filtros);
+            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros, params: get_defined_vars());
         }
         return $filtros;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRROEV
      * @param array $columnas_extra
      * @param array $keys_data_filter
      * @param string $tipo_filtro
@@ -731,34 +752,41 @@ class where{
     {
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo_filtro',$verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
+                params: get_defined_vars());
         }
-        $sentencia = $this->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro, tipo_filtro: $tipo_filtro);
+        $sentencia = $this->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
+            tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al generar sentencia', $sentencia);
+            return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia,
+                params: get_defined_vars());
         }
 
         $filtro_especial_sql = $this->filtro_especial_sql(filtro_especial: $filtro_especial);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro', $filtro_especial_sql);
+            return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql,
+                params: get_defined_vars());
         }
         $filtro_rango_sql = $this->filtro_rango_sql(filtro_rango: $filtro_rango);
         if(errores::$error){
-            return $this->error->error('Error $filtro_rango_sql al generar',$filtro_rango_sql);
+            return $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql,
+                params: get_defined_vars());
         }
         $filtro_extra_sql = $this->filtro_extra_sql(filtro_extra: $filtro_extra);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro extra',$filtro_extra_sql);
+            return $this->error->error(mensaje:'Error al generar filtro extra',data:$filtro_extra_sql,
+                params: get_defined_vars());
         }
 
         $not_in_sql = $this->genera_not_in_sql(not_in: $not_in);
         if(errores::$error){
-            return $this->error->error('Error al generar sql',$not_in_sql);
+            return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql, params: get_defined_vars());
         }
 
         $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro_fecha',$filtro_fecha_sql);
+            return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql,
+                params: get_defined_vars());
         }
 
         $filtros = $this->genera_filtros_iniciales(filtro_especial_sql:  $filtro_especial_sql,
@@ -766,7 +794,7 @@ class where{
             keys_data_filter:  $keys_data_filter,not_in_sql:  $not_in_sql, sentencia: $sentencia,
             sql_extra:  $sql_extra,filtro_fecha_sql:  $filtro_fecha_sql);
         if(errores::$error){
-            return $this->error->error('Error al generar filtros',$filtros);
+            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros, params: get_defined_vars());
         }
 
 
@@ -775,7 +803,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * @param array $not_in
      * @return array|string
      */
@@ -784,25 +812,26 @@ class where{
         $keys = array('llave','values');
         $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $not_in);
         if(errores::$error){
-            return $this->error->error('Error al validar not_in',$valida);
+            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida, params: get_defined_vars());
         }
 
         $llave = $not_in['llave'];
         $values = $not_in['values'];
 
         if(!is_array($values)){
-            return $this->error->error('Error values debe ser un array',$values);
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values,
+                params: get_defined_vars());
         }
 
         $not_in_sql = $this->not_in_sql(llave:  $llave, values:$values);
         if(errores::$error){
-            return $this->error->error('Error al generar sql',$not_in_sql);
+            return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql, params: get_defined_vars());
         }
         return $not_in_sql;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * @param array $not_in
      * @return array|string
      */
@@ -813,11 +842,11 @@ class where{
             $keys = array('llave','values');
             $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $not_in);
             if(errores::$error){
-                return $this->error->error('Error al validar not_in',$valida);
+                return $this->error->error(mensaje: 'Error al validar not_in',data: $valida, params: get_defined_vars());
             }
             $not_in_sql = $this->genera_not_in(not_in: $not_in);
             if(errores::$error){
-                return $this->error->error('Error al generar sql',$not_in_sql);
+                return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql, params: get_defined_vars());
             }
 
         }
@@ -825,7 +854,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE o =
      * @param string $tipo_filtro numeros = textos LIKE
      * @param array $filtro parametros para generar sentencia
@@ -838,26 +867,27 @@ class where{
     private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar tipo_filtro',$verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
+                params: get_defined_vars());
         }
         $sentencia = '';
         if($tipo_filtro === 'numeros') {
             $sentencia = $this->genera_and(columnas_extra: $columnas_extra, filtro: $filtro);
             if(errores::$error){
-                return $this->error->error("Error en and",$sentencia);
+                return $this->error->error(mensaje: "Error en and",data:$sentencia, params: get_defined_vars());
             }
         }
         elseif ($tipo_filtro==='textos'){
             $sentencia = $this->genera_and_textos(columnas_extra: $columnas_extra,filtro: $filtro);
             if(errores::$error){
-                return $this->error->error("Error en texto",$sentencia);
+                return $this->error->error(mensaje: "Error en texto",data:$sentencia, params: get_defined_vars());
             }
         }
         return $sentencia;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param array $fil_fecha
      * @param string $filtro_fecha_sql
      * @return array|string
@@ -866,28 +896,28 @@ class where{
     {
         $valida = $this->valida_data_filtro_fecha(fil_fecha: $fil_fecha);
         if(errores::$error){
-            return $this->error->error('Error al validar fecha',$valida);
+            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida, params: get_defined_vars());
         }
 
         $data = $this->data_filtro_fecha(fil_fecha: $fil_fecha);
         if(errores::$error){
-            return $this->error->error('Error al generar datos',$data);
+            return $this->error->error(mensaje:'Error al generar datos',data:$data, params: get_defined_vars());
         }
 
         $and = $this->and_filtro_fecha(filtro_fecha_sql: $filtro_fecha_sql);
         if(errores::$error){
-            return $this->error->error('Error al obtener and',$and);
+            return $this->error->error(mensaje:'Error al obtener and',data:$and, params: get_defined_vars());
         }
 
         $sql = $this->sql_fecha(and:$and,data:  $data);
         if(errores::$error){
-            return $this->error->error('Error al obtener sql',$sql);
+            return $this->error->error(mensaje:'Error al obtener sql',data:$sql, params: get_defined_vars());
         }
         return $sql;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param stdClass $complemento
      * @param array $keys_data_filter
      * @return array|stdClass
@@ -896,18 +926,19 @@ class where{
     {
         $complemento_w = $this->where_filtro(complemento: $complemento,key_data_filter:  $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error ajustar where',$complemento_w);
+            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_w, params: get_defined_vars());
         }
 
         $complemento_r = (new inicializacion())->ajusta_params(complemento: $complemento_w);
         if(errores::$error){
-            return $this->error->error('Error al inicializar params',$complemento_r);
+            return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r,
+                params: get_defined_vars());
         }
         return $complemento_r;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * @param stdClass $filtros
      * @param array $keys_data_filter
      * @return stdClass
@@ -927,7 +958,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -960,13 +991,13 @@ class where{
 
         $valida = (new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro', $valida);
+            return $this->error->error(mensaje: 'Error al validar filtro', data: $valida, params: get_defined_vars());
         }
 
         $keys = array('valor');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $filtro[$campo]);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro', $valida);
+            return $this->error->error(mensaje:'Error al validar filtro',  data:$valida, params: get_defined_vars());
         }
 
         $data_sql = $campo . $filtro[$campo]['operador'] . "'" . $filtro[$campo]['valor'] . "'";
@@ -980,7 +1011,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $values
      * @param string $llave
      * @return array|string
@@ -989,13 +1020,13 @@ class where{
     {
         $llave = trim($llave);
         if($llave === ''){
-            return $this->error->error('Error la llave esta vacia',$llave);
+            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, params: get_defined_vars());
         }
 
         $not_in_sql = '';
         $values_sql = $this->values_sql_in(values:$values);
         if(errores::$error){
-            return $this->error->error('Error al generar sql',$values_sql);
+            return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql, params: get_defined_vars());
         }
 
         if($values_sql!==''){
@@ -1006,7 +1037,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * Genera la condicion sql de un filtro especial
      *
      * @param string $filtro_especial_sql //condicion en forma de sql
@@ -1041,23 +1072,23 @@ class where{
 
         $valida =(new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro_esp);
         if(errores::$error){
-            return $this->error->error("Error en filtro ", $valida);
+            return $this->error->error(mensaje: "Error en filtro ", data: $valida, params: get_defined_vars());
         }
         $data_sql = $this->maqueta_filtro_especial(campo: $campo,filtro: $filtro_esp);
         if(errores::$error){
-            return $this->error->error("Error filtro", $data_sql);
+            return $this->error->error(mensaje:"Error filtro", data:$data_sql, params: get_defined_vars());
         }
         $filtro_especial_sql_r = $this->genera_filtro_especial(campo:  $campo, data_sql: $data_sql,
             filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
         if(errores::$error){
-            return $this->error->error("Error filtro", $filtro_especial_sql_r);
+            return $this->error->error(mensaje:"Error filtro",data: $filtro_especial_sql_r, params: get_defined_vars());
         }
 
         return $filtro_especial_sql_r;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param stdClass $filtros
      * @param array $keys_data_filter
      * @return stdClass|array
@@ -1066,7 +1097,7 @@ class where{
     {
         $filtros = $this->limpia_filtros(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al limpiar filtros', $filtros);
+            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros, params: get_defined_vars());
         }
 
         foreach($keys_data_filter as $key){
@@ -1120,7 +1151,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param string $and
      * @param stdClass $data
      * @return string|array
@@ -1130,17 +1161,19 @@ class where{
         $keys = array('fecha','campo_1','campo_2');
         foreach($keys as $key){
             if(!isset($data->$key)){
-                return $this->error->error('error no existe $data->'.$key, $data);
+                return $this->error->error(mensaje: 'error no existe $data->'.$key, data: $data,
+                    params: get_defined_vars());
             }
             if(trim($data->$key) === ''){
-                return $this->error->error('error esta vacio $data->'.$key, $data);
+                return $this->error->error(mensaje:'error esta vacio $data->'.$key, data:$data,
+                    params: get_defined_vars());
             }
         }
         $keys = array('fecha');
         foreach($keys as $key){
             $valida = $this->validacion->valida_fecha(fecha: $data->$key);
             if(errores::$error){
-                return $this->error->error('error al validar '.$key, $valida);
+                return $this->error->error(mensaje:'error al validar '.$key,data: $valida, params: get_defined_vars());
             }
         }
 
@@ -1148,7 +1181,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param array $fil_fecha
      * @return bool|array
      */
@@ -1157,17 +1190,17 @@ class where{
         $keys = array('campo_1','campo_2','fecha');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro',$valida);
+            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
         }
         $valida = $this->validacion->valida_fecha(fecha: $fil_fecha['fecha']);
         if(errores::$error){
-            return $this->error->error('Error al validar fecha',$valida);
+            return $this->error->error(mensaje:'Error al validar fecha',data:$valida, params: get_defined_vars());
         }
         return true;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param array $fil_fecha
      * @return bool|array
      */
@@ -1177,13 +1210,13 @@ class where{
         $keys = array('campo_1','campo_2','fecha');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro',$valida);
+            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
         }
 
         $keys = array('fecha');
         $valida = $this->validacion->fechas_in_array(data:  $fil_fecha, keys: $keys);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro',$valida);
+            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
         }
         return true;
     }
@@ -1211,7 +1244,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
      * @return string|array
@@ -1222,16 +1255,16 @@ class where{
             $value = trim($data['value']);
         }
         if(is_array($data) && count($data) === 0){
-            return $this->error->error("Error datos vacio",$data);
+            return $this->error->error(mensaje: "Error datos vacio",data: $data, params: get_defined_vars());
         }
         if(is_array($data) && !isset($data['value'])){
-            return $this->error->error("Error no existe valor",$data);
+            return $this->error->error(mensaje:"Error no existe valor",data: $data, params: get_defined_vars());
         }
         return addslashes($value);
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $value
      * @param string $values_sql
      * @return array|stdClass
@@ -1241,7 +1274,7 @@ class where{
         $values_sql = trim($values_sql);
         $value = trim($value);
         if($value === ''){
-            return $this->error->error('Error value esta vacio',$value);
+            return $this->error->error(mensaje: 'Error value esta vacio',data: $value, params: get_defined_vars());
         }
 
         $coma = '';
@@ -1256,7 +1289,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param array $values
      * @return string|array
      */
@@ -1266,7 +1299,8 @@ class where{
         foreach ($values as $value){
             $data = $this->value_coma(value:$value, values_sql: $values_sql);
             if(errores::$error){
-                return $this->error->error('Error obtener datos de value',$data);
+                return $this->error->error(mensaje: 'Error obtener datos de value',data: $data,
+                    params: get_defined_vars());
             }
             $values_sql.="$data->coma$data->value";
         }
@@ -1274,7 +1308,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param stdClass $complemento
      * @param array $key_data_filter
      * @return bool|array
@@ -1287,17 +1321,19 @@ class where{
         if($complemento->where!==''){
             $filtros_vacios = $this->filtros_vacios(complemento: $complemento, keys_data_filter: $key_data_filter);
             if(errores::$error){
-                return $this->error->error('Error validar filtros',$filtros_vacios);
+                return $this->error->error(mensaje: 'Error validar filtros',data: $filtros_vacios,
+                    params: get_defined_vars());
             }
             if($filtros_vacios){
-                return $this->error->error('Error si existe where debe haber al menos un filtro',$complemento);
+                return $this->error->error(mensaje: 'Error si existe where debe haber al menos un filtro',
+                    data: $complemento, params: get_defined_vars());
             }
         }
         return true;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRROREV
      * @param stdClass $filtros
      * @param array $keys_data_filter
      * @return string
@@ -1307,7 +1343,7 @@ class where{
 
         $filtros = $this->limpia_filtros(filtros: $filtros,keys_data_filter:  $keys_data_filter);
         if(errores::$error){
-            return $this->error->error('Error al limpiar filtros', $filtros);
+            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros, params: get_defined_vars());
         }
         $where='';
         foreach($keys_data_filter as $key){
@@ -1320,7 +1356,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $complemento
      * @return array|stdClass
      */
@@ -1331,13 +1367,13 @@ class where{
         }
         $complemento_r = $this->where_mayus(complemento: $complemento);
         if(errores::$error){
-            return $this->error->error('Error ajustar where',$complemento_r);
+            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_r, params: get_defined_vars());
         }
         return $complemento_r;
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param stdClass $complemento
      * @param array $key_data_filter
      * @return array|stdClass
@@ -1346,12 +1382,12 @@ class where{
     {
         $complemento_r = $this->where_base(complemento: $complemento);
         if(errores::$error){
-            return $this->error->error('Error ajustar where',$complemento_r);
+            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_r, params: get_defined_vars());
         }
 
         $verifica = $this->verifica_where(complemento: $complemento_r,key_data_filter: $key_data_filter);
         if(errores::$error){
-            return $this->error->error('Error validar where',$verifica);
+            return $this->error->error(mensaje:'Error validar where',data:$verifica, params: get_defined_vars());
         }
 
         $complemento_r->where = ' '.$complemento_r->where.' ';
@@ -1359,7 +1395,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param stdClass $complemento
      * @return array|stdClass
      */
@@ -1373,7 +1409,8 @@ class where{
             $complemento->where = strtoupper($complemento->where);
         }
         if($complemento->where!=='' && $complemento->where !=='WHERE'){
-            return $this->error->error('Error where mal aplicado',$complemento->where);
+            return $this->error->error(mensaje: 'Error where mal aplicado',data: $complemento->where,
+                params: get_defined_vars());
         }
         return $complemento;
     }

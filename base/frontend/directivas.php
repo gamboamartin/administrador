@@ -978,7 +978,7 @@ class directivas extends html {
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param array $accion
      * @param string $id
      * @param string $session_id
@@ -993,14 +993,14 @@ class directivas extends html {
 
         $valida = (new validaciones_directivas())->valida_link(accion: $accion);
         if(errores::$error){
-            return $this->error->error('Error al validar accion', $valida);
+            return $this->error->error(mensaje: 'Error al validar accion',data:  $valida, params: get_defined_vars());
         }
 
 
         $datos = (new links())->data_para_link(accion:$accion,aplica_etiqueta:  $aplica_etiqueta,id:  $id,
             session_id:  $session_id,st_btn:  $st_btn);
         if(errores::$error){
-            return $this->error->error('Error al inicializa datos', $datos);
+            return $this->error->error(mensaje: 'Error al inicializa datos',data: $datos, params: get_defined_vars());
         }
 
         $html = "<a href='$datos->href' title='$datos->title' ";

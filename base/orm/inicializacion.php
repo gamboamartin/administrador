@@ -15,7 +15,7 @@ class inicializacion{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $complemento
      * @return array|stdClass
      */
@@ -24,7 +24,8 @@ class inicializacion{
         if(!isset($complemento->params)){
             $complemento = $this->init_params(complemento: $complemento);
             if(errores::$error){
-                return $this->error->error('Error al inicializar params',$complemento);
+                return $this->error->error(mensaje: 'Error al inicializar params',data: $complemento,
+                    params: get_defined_vars());
             }
         }
         return $complemento;
@@ -166,7 +167,7 @@ class inicializacion{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERRORREV
      * @param stdClass $complemento
      * @return stdClass
      */
