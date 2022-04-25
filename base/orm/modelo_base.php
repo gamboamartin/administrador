@@ -873,7 +873,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * PARAMS ORDER P INT PROBADO ERROREV
+     * FULL
      * Devuelve un arreglo que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de
      * sql y por ultimo un objeto PDOStatement de la consulta sql ingresada
      *
@@ -1115,8 +1115,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
-     * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros ligados
+     * FULL
+     * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros
+     * ligados
      * @param string $campo_filtro Nombre del campo del registro el cual se utiliza como valor del filtro
      * @param array $filtro Filtro precargado, es recursivo hace push con el nuevo resultado
      * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
@@ -1349,7 +1350,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
      * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
      * Genera arreglo
@@ -1689,8 +1690,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
-     * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus dependientes o dependencias
+     * FULL
+     * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus
+     * dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]
      *
 
@@ -2247,7 +2249,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
      *
      * @param array $data_modelo datos de la configuracion del modelo a procesar los filtros

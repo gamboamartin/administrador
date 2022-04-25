@@ -78,7 +78,7 @@ class columnas{
     }
 
     /**
-     * PARAMS ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $tabla_bd
      * @param modelo_base $modelo
      * @return bool|array
@@ -147,7 +147,7 @@ class columnas{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT ERROREV
+     * FULL
      * @param stdClass $data
      * @param string $tabla_bd
      * @return stdClass|array

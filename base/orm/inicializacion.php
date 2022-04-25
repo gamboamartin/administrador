@@ -286,7 +286,7 @@ class inicializacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param modelo_base $modelo
      * @return array
      */

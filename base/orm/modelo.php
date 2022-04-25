@@ -168,7 +168,7 @@ class modelo extends modelo_base {
 
     /**
      * PARAMS ORDER P INT
-     * Aplica status = a activo a todos los elementos o registros de un atabla
+     * Aplica status = a activo a todos los elementos o registros de una tabla
      * @return array
      */
     public function activa_todo(): array
