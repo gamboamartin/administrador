@@ -165,7 +165,8 @@ class controler{
         $name_modelo = trim($name_modelo);
         $valida = $this->validacion->valida_data_modelo($name_modelo);
         if(errores::$error){
-            return  $this->errores->error('Error al validar entrada para generacion de modelo en '.$name_modelo,$valida);
+            return  $this->errores->error(mensaje: 'Error al validar entrada para generacion de modelo en '.$name_modelo,
+                data: $valida, params: get_defined_vars());
         }
         if($this->registro_id<=0){
             return  $this->errores->error('Error registro_id debe ser mayor a 0 ',$this->registro_id);
@@ -310,7 +311,8 @@ class controler{
         foreach($this->filtro_boton_lista as $filtro_boton_lista){
             $registros_botones_filtro = $this->obten_registros_para_boton_filtro(filtro_boton_lista: $filtro_boton_lista['tabla']);
             if(errores::$error){
-                return $this->errores->error('Error al obtener registros de filtro',$registros_botones_filtro);
+                return $this->errores->error(mensaje: 'Error al obtener registros de filtro',
+                    data: $registros_botones_filtro, params: get_defined_vars());
             }
             $data_para_botones = $registros_botones_filtro['registros'];
             foreach ($data_para_botones as $data_para_boton){
@@ -466,7 +468,8 @@ class controler{
         $filtro_boton_lista = str_replace('models\\','', $filtro_boton_lista);
         $class = 'models\\'.$filtro_boton_lista;
         if($filtro_boton_lista===''){
-            return $this->errores->error('Error $filtro_boton_lista no puede venir vacio', $filtro_boton_lista);
+            return $this->errores->error(mensaje: 'Error $filtro_boton_lista no puede venir vacio',
+                data: $filtro_boton_lista, params: get_defined_vars());
 
         }
         if(!class_exists($class)){

@@ -683,7 +683,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $filtro_btn = (new normalizacion())->filtro_btn(controler: $this);
         if(errores::$error){
-            return $this->retorno_error('Error al obtener filtro de boton', $filtro_btn, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener filtro de boton', data: $filtro_btn,
+                header: $header, ws: $ws, params: get_defined_vars());
         }
 
         $elm = new elemento_lista($this->link);
@@ -943,7 +944,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if(errores::$error){
-            $error = $this->errores->error('Error al asignar datos', $resultado);
+            $error = $this->errores->error(mensaje: 'Error al asignar datos',data:  $resultado,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }

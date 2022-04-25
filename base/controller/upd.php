@@ -14,7 +14,7 @@ class upd{
     }
 
     /**
-     *
+     * ERRORREV
      * @param controler $controler
      * @return array
      */
@@ -24,19 +24,21 @@ class upd{
         $controler->seccion = str_replace($namespace,'', $controler->seccion);
         $clase = $namespace.$controler->seccion;
         if($controler->seccion === ''){
-            return$this->error->error('Error seccion no puede venir vacio', $controler->seccion);
+            return$this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $controler->seccion,
+                params: get_defined_vars());
         }
         if($controler->registro_id<=0){
-            return  $this->error->error('Error registro_id debe sr mayor a 0',$controler->registro_id);
+            return  $this->error->error(mensaje:'Error registro_id debe sr mayor a 0', data:$controler->registro_id,
+                params: get_defined_vars());
         }
         if(!class_exists($clase)){
-            return  $this->error->error('Error no existe la clase',$clase);
+            return  $this->error->error(mensaje:'Error no existe la clase', data:$clase, params: get_defined_vars());
         }
 
         $controler->modelo->registro_id = $controler->registro_id;
         $resultado = $controler->modelo->obten_data();
         if(errores::$error){
-            return  $this->error->error('Error al obtener datos',$resultado);
+            return  $this->error->error(mensaje:'Error al obtener datos', data:$resultado, params: get_defined_vars());
         }
         return $resultado;
     }
@@ -85,7 +87,8 @@ class upd{
         $controlador->seccion = str_replace($namespace,'',$controlador->seccion);
         $clase = $namespace.$controlador->seccion;
         if($registro_id <=0){
-            return $this->error->error('Error no existe registro_id debe ser mayor a 0',$_GET);
+            return $this->error->error(mensaje: 'Error no existe registro_id debe ser mayor a 0',data: $_GET,
+                params: get_defined_vars());
         }
         if((string)$controlador->seccion === ''){
             return $this->error->error('Error seccion esta vacia',$_GET);

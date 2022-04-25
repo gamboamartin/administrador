@@ -18,7 +18,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param string $tabla
      * @return stdClass|array
      */
@@ -26,7 +26,8 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia', $tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,
+                params: get_defined_vars());
         }
 
         $tabla = str_replace('models\\','',$tabla);
@@ -39,7 +40,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $tabla
      * @param string $tabla_enlace
      * @return array|stdClass
@@ -48,21 +49,25 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia', $tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,
+                params: get_defined_vars());
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error('Error $tabla_enlace no puede venir vacia', $tabla_enlace);
+            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace,
+                params: get_defined_vars());
         }
 
         $data_model_tabla = $this->ajusta_name_model(tabla: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al ajustar nombre del modelo', $data_model_tabla);
+            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_model_tabla,
+                params: get_defined_vars());
         }
 
         $data_model_tabla_enl = $this->ajusta_name_model(tabla:$tabla_enlace);
         if(errores::$error){
-            return $this->error->error('Error al ajustar nombre del modelo', $data_model_tabla_enl);
+            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_model_tabla_enl,
+                params: get_defined_vars());
         }
 
         $data = new stdClass();
@@ -72,7 +77,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $tablas_join
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -83,7 +88,8 @@ class joins{
         foreach ($tablas_join as $key=>$tabla_join){
             $tablas_env = $this->data_tabla_sql(key: $key, tabla_join: $tabla_join,tablas:  $tablas);
             if(errores::$error){
-                return $this->error->error('Error al generar data join', $tablas_env);
+                return $this->error->error(mensaje: 'Error al generar data join',data:  $tablas_env,
+                    params: get_defined_vars());
             }
             $tablas = (string)$tablas_env;
         }
@@ -91,7 +97,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array $tabla_join Datos para hacer join con tablas
      * @return stdClass|array
      */
@@ -100,7 +106,8 @@ class joins{
         $keys = array('tabla_base','tabla_enlace');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al validar $tabla_join',$valida);
+            return $this->error->error(mensaje: 'Error al validar $tabla_join',data: $valida,
+                params: get_defined_vars());
         }
 
         if(!isset($tabla_join['tabla_renombrada'])){
@@ -125,7 +132,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $id_renombrada
      * @param stdClass $init
      * @param string $join
@@ -138,7 +145,7 @@ class joins{
         $keys = array('tabla','tabla_enlace');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $init);
         if(errores::$error){
-            return $this->error->error('Error al validar $init',$valida);
+            return $this->error->error(mensaje: 'Error al validar $init',data: $valida, params: get_defined_vars());
         }
 
         $join_tabla = $join.' JOIN '.$init->tabla;
@@ -153,7 +160,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $tabla_join Datos para hacer join con tablas
      * @return array|string
      */
@@ -162,25 +169,26 @@ class joins{
         $keys = array('tabla_base','tabla_enlace');
         $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al validar $tabla_join',$valida);
+            return $this->error->error(mensaje: 'Error al validar $tabla_join',data: $valida,
+                params: get_defined_vars());
         }
 
         $data_join = $this->data_join(tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al generar data', $data_join);
+            return $this->error->error(mensaje: 'Error al generar data',data:  $data_join, params: get_defined_vars());
         }
 
         $data = $this->genera_join(tabla: $data_join->tabla_base, tabla_enlace: $data_join->tabla_enlace,
             campo_renombrado: $data_join->campo_renombrado, campo_tabla_base_id: $data_join->campo_tabla_base_id,
             renombrada: $data_join->tabla_renombre);
         if(errores::$error){
-            return $this->error->error('Error al generar join', $data);
+            return $this->error->error(mensaje: 'Error al generar join', data: $data, params: get_defined_vars());
         }
         return $data;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $key
      * @param string $tabla_join Datos para hacer join con tablas
      * @return array|string
@@ -192,18 +200,18 @@ class joins{
 
         $valida = (new validaciones())->valida_tabla_join(key: $key, tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al validar join', $valida);
+            return $this->error->error(mensaje: 'Error al validar join', data: $valida, params: get_defined_vars());
         }
 
         $data = $this->genera_join(tabla:$key, tabla_enlace: $tabla_join );
         if(errores::$error){
-            return $this->error->error('Error al generar join', $data);
+            return $this->error->error(mensaje:'Error al generar join', data:$data, params: get_defined_vars());
         }
         return $data;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array|string $tabla_join
      * @param string $tablas Tablas en forma de SQL
      * @param string $key
@@ -215,20 +223,22 @@ class joins{
         if(is_array($tabla_join)){
             $tablas_env = $this->tablas_join_base(tabla_join: $tabla_join, tablas: $tablas);
             if(errores::$error){
-                return $this->error->error('Error al generar data join', $tablas_env);
+                return $this->error->error(mensaje: 'Error al generar data join', data: $tablas_env,
+                    params: get_defined_vars());
             }
         }
         else if ($tabla_join) {
             $tablas_env = $this->tablas_join_esp(key: $key,tabla_join:  $tabla_join, tablas: $tablas);
             if(errores::$error){
-                return $this->error->error('Error al generar join', $tablas_env);
+                return $this->error->error(mensaje: 'Error al generar join', data: $tablas_env,
+                    params: get_defined_vars());
             }
         }
         return $tablas_env;
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array $extension_estructura
      * @param modelo_base $modelo
      * @param string $tablas
@@ -239,19 +249,23 @@ class joins{
         $tablas_env = $tablas;
         foreach($extension_estructura as $tabla=>$data){
             if(!is_array($data)){
-                return $this->error->error('Error data debe ser un array', $data);
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data,
+                    params: get_defined_vars());
             }
             $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
             if(errores::$error){
-                return $this->error->error('Error al validar data', $valida);
+                return $this->error->error(mensaje:'Error al validar data', data:$valida,
+                    params: get_defined_vars());
             }
             if(is_numeric($tabla)){
-                return $this->error->error('Error $tabla debe ser un texto', $tabla);
+                return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla,
+                    params: get_defined_vars());
             }
 
             $tablas_env = $this->join_extension(data: $data, modelo: $modelo,tabla:  $tabla, tablas: $tablas);
             if(errores::$error){
-                return $this->error->error('Error al generar join', $tablas);
+                return $this->error->error(mensaje:'Error al generar join',data: $tablas,
+                    params: get_defined_vars());
             }
             $tablas = (string)$tablas_env;
         }
@@ -259,7 +273,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $campo_tabla_base_id
      * @return string
      */
@@ -274,7 +288,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion para determinar un JOIN entre dos tablas para SQL
      *
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
@@ -298,23 +312,24 @@ class joins{
         $tabla_enlace = str_replace('models\\','',$tabla_enlace);
 
         if($tabla === ''){
-            return $this->error->error('La tabla no puede ir vacia', $tabla);
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla, params: get_defined_vars());
         }
         if($tabla_enlace === ''){
-            return $this->error->error('El $tabla_enlace no puede ir vacio', $tabla_enlace);
+            return $this->error->error(mensaje: 'El $tabla_enlace no puede ir vacio', data: $tabla_enlace,
+                params: get_defined_vars());
         }
 
         $sql = $this->sql_join(campo_renombrado: $campo_renombrado, campo_tabla_base_id: $campo_tabla_base_id,
             class:  $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         if(errores::$error){
-            return $this->error->error('Error al genera sql', $sql);
+            return $this->error->error(mensaje: 'Error al genera sql',data:  $sql, params: get_defined_vars());
         }
 
         return $sql;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion para determinar un JOIN entre dos tablas para SQL
      *
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
@@ -340,7 +355,7 @@ class joins{
 
         $init = $this->init_renombre(tabla: $tabla, tabla_enlace:$tabla_enlace);
         if(errores::$error){
-            return $this->error->error('Error al inicializar ', $init);
+            return $this->error->error(mensaje: 'Error al inicializar ', data: $init, params: get_defined_vars());
         }
 
         $valida = (new validaciones())->valida_renombres(campo_renombrado: $campo_renombrado, class: $init->class,
@@ -348,18 +363,19 @@ class joins{
             tabla_enlace:  $init->tabla_enlace);
 
         if(errores::$error){
-            return $this->error->error('Error al validar ', $valida);
+            return $this->error->error(mensaje: 'Error al validar ', data: $valida, params: get_defined_vars());
         }
 
         $id_renombrada = $this->id_renombrada(campo_tabla_base_id: $campo_tabla_base_id);
         if(errores::$error){
-            return $this->error->error('El al obtener renombrada ', $id_renombrada);
+            return $this->error->error(mensaje: 'El al obtener renombrada ',data:  $id_renombrada,
+                params: get_defined_vars());
         }
 
         $data_rename = $this->data_for_rename(id_renombrada: $id_renombrada,init: $init,join: $join,
             renombrada: $renombrada);
         if(errores::$error){
-            return $this->error->error('El al obtener datos ', $data_rename);
+            return $this->error->error(mensaje: 'El al obtener datos ', data: $data_rename, params: get_defined_vars());
         }
 
 
@@ -367,7 +383,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array $data
      * @param modelo_base $modelo
      * @param string $tabla
@@ -379,19 +395,19 @@ class joins{
 
         $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar data', $valida);
+            return $this->error->error(mensaje: 'Error al validar data',data:  $valida, params: get_defined_vars());
         }
 
         $left_join = $this->left_join_str(tablas: $tablas);
         if(errores::$error){
-            return $this->error->error('Error al generar join', $left_join);
+            return $this->error->error(mensaje: 'Error al generar join', data:$left_join, params: get_defined_vars());
         }
 
         $tablas.=$left_join;
 
         $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla);
         if(errores::$error){
-            return $this->error->error('Error al generar sql', $str_join);
+            return $this->error->error(mensaje: 'Error al generar sql', data:$str_join, params: get_defined_vars());
         }
 
         $tablas .= ' '.$str_join;
@@ -400,7 +416,7 @@ class joins{
 
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $data
      * @param modelo_base $modelo
      * @param string $tabla_renombrada
@@ -414,7 +430,7 @@ class joins{
 
         $valida = (new validaciones())->valida_keys_renombre(data:$data,tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
-            return $this->error->error('Error al validar datos', $valida);
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida, params: get_defined_vars());
         }
 
         $data['nombre_original'] = trim($data['nombre_original']);
@@ -425,13 +441,13 @@ class joins{
 
         $valida = (new validaciones())->valida_keys_sql(data: $data,tabla:  $modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar data', $valida);
+            return $this->error->error(mensaje:'Error al validar data',data: $valida, params: get_defined_vars());
         }
 
 
         $left_join = $this->left_join_str(tablas: $tablas);
         if(errores::$error){
-            return $this->error->error('Error al generar join', $left_join);
+            return $this->error->error(mensaje:'Error al generar join', data:$left_join, params: get_defined_vars());
         }
 
         $tablas.=$left_join;
@@ -439,7 +455,7 @@ class joins{
         $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $data['nombre_original'],
             tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
-            return $this->error->error('Error al generar sql', $str_join);
+            return $this->error->error(mensaje:'Error al generar sql',data: $str_join, params: get_defined_vars());
         }
 
         $tablas .= ' '.$str_join;
@@ -447,7 +463,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $tabla
      * @param string $tabla_enlace
      * @return stdClass|array
@@ -456,16 +472,19 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia', $tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,
+                params: get_defined_vars());
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error('Error $tabla_enlace no puede venir vacia', $tabla_enlace);
+            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace,
+                params: get_defined_vars());
         }
 
         $data_models = $this->ajusta_name_models(tabla: $tabla, tabla_enlace: $tabla_enlace);
         if(errores::$error){
-            return $this->error->error('Error al ajustar nombre del modelo', $data_models);
+            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_models,
+                params: get_defined_vars());
         }
 
         $data = new stdClass();
@@ -477,7 +496,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $tablas
      * @return string
      */
@@ -491,7 +510,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion para determinar un JOINs entre dos p mas tablas para SQL
      *
      * @param string $tabla  tabla para la ejecucion del JOIN
@@ -506,23 +525,24 @@ class joins{
         $tabla = str_replace('models\\','',$tabla);
         $class = 'models\\'.$tabla;
         if($tabla === ''){
-            return $this->error->error('La tabla no puede ir vacia', $tabla);
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla, params: get_defined_vars());
         }
         if(!class_exists($class)){
-            return $this->error->error('Error no existe la clase '.$tabla, $tabla);
+            return $this->error->error(mensaje: 'Error no existe la clase '.$tabla,data:  $tabla,
+                params: get_defined_vars());
         }
         $tablas = $tabla.' AS '.$tabla;
         $tablas_join = $columnas_join;
 
         $tablas = $this->ajusta_tablas(tablas: $tablas, tablas_join: $tablas_join);
         if(errores::$error){
-            return $this->error->error('Error al generar data join', $tablas);
+            return $this->error->error(mensaje: 'Error al generar data join', data: $tablas, params: get_defined_vars());
         }
         return $tablas;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param modelo_base $modelo
      * @param array $renombradas
      * @param string $tablas
@@ -533,12 +553,14 @@ class joins{
         $tablas_env = $tablas;
         foreach($renombradas as $tabla_renombrada=>$data){
             if(!is_array($data)){
-                return $this->error->error('Error data debe ser un array', $data);
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data
+                    , params: get_defined_vars());
             }
             $tablas_env = $this->join_renombres(data: $data,modelo: $modelo, tabla_renombrada: $tabla_renombrada,
                 tablas:  $tablas);
             if(errores::$error){
-                return $this->error->error('Error al generar join', $tablas_env);
+                return $this->error->error(mensaje:'Error al generar join', data:$tablas_env,
+                    params: get_defined_vars());
             }
             $tablas = (string)$tablas_env;
 
@@ -547,7 +569,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $campo_renombrado
      * @param string $campo_tabla_base_id
      * @param string $class
@@ -562,11 +584,12 @@ class joins{
         $join = 'LEFT';
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('Error $tabla esta vacia', $tabla);
+            return $this->error->error(mensaje: 'Error $tabla esta vacia',data:  $tabla, params: get_defined_vars());
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error('Error $tabla_enlace esta vacia', $tabla_enlace);
+            return $this->error->error(mensaje: 'Error $tabla_enlace esta vacia', data: $tabla_enlace,
+                params: get_defined_vars());
         }
 
         if($renombrada !==''){
@@ -574,12 +597,12 @@ class joins{
                 campo_tabla_base_id: $campo_tabla_base_id,join: $join, renombrada: $renombrada,tabla: $tabla,
                 tabla_enlace: $tabla_enlace);
             if(errores::$error ){
-                return $this->error->error('Error al generar sql', $sql);
+                return $this->error->error(mensaje: 'Error al generar sql', data: $sql, params: get_defined_vars());
             }
         }
         else {
             if(!class_exists($class)){
-                return $this->error->error('No existe la clase', $class);
+                return $this->error->error(mensaje: 'No existe la clase', data: $class, params: get_defined_vars());
             }
             $sql = ' '.$join.' JOIN ' . $tabla . ' AS ' . $tabla . ' ON ' . $tabla . '.id = ' . $tabla_enlace . '.'
                 . $tabla . '_id';
@@ -589,7 +612,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * @param array $data
      * @param modelo_base $modelo
      * @param string $tabla
@@ -600,30 +623,34 @@ class joins{
     {
         $valida = (new validaciones())->valida_keys_sql(data:$data, tabla: $modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar data', $valida);
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida, params: get_defined_vars());
         }
         $tabla = trim($tabla);
         $tabla_renombrada = trim($tabla_renombrada);
 
         if($tabla === ''){
-            return $this->error->error('Error $tabla no puede venir vacia', $tabla);
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla,
+                params: get_defined_vars());
         }
         if($tabla_renombrada === ''){
-            return $this->error->error('Error $tabla_renombrada no puede venir vacia', $tabla_renombrada);
+            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada,
+                params: get_defined_vars());
         }
 
         if(is_numeric($tabla)){
-            return $this->error->error('Error $tabla debe ser un texto', $tabla);
+            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla,
+                params: get_defined_vars());
         }
         if(is_numeric($tabla_renombrada)){
-            return $this->error->error('Error $tabla debe ser un texto', $tabla);
+            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla,
+                params: get_defined_vars());
         }
 
         return "$tabla AS $tabla_renombrada  ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]";
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $columnas
      * @param array $extension_estructura
      * @param modelo_base $modelo
@@ -636,29 +663,29 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('La tabla no puede ir vacia', $tabla);
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia',data:  $tabla, params: get_defined_vars());
         }
         $tablas = $this->obten_tablas_completas(columnas_join:  $columnas, tabla: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al obtener tablas', $tablas);
+            return $this->error->error(mensaje: 'Error al obtener tablas',data:  $tablas, params: get_defined_vars());
         }
 
         $tablas = $this->extensiones_join(extension_estructura: $extension_estructura, modelo: $modelo,
             tablas:  $tablas);
         if(errores::$error){
-            return $this->error->error('Error al generar join', $tablas);
+            return $this->error->error(mensaje: 'Error al generar join',data:  $tablas, params: get_defined_vars());
         }
 
         $tablas = $this->renombres_join(modelo:$modelo,renombradas: $renombradas, tablas: $tablas);
         if(errores::$error){
-            return $this->error->error('Error al generar join', $tablas);
+            return $this->error->error(mensaje: 'Error al generar join', data: $tablas, params: get_defined_vars());
         }
         return $tablas;
     }
 
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $tabla_join Datos para hacer join con tablas
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -668,19 +695,20 @@ class joins{
         $keys = array('tabla_base','tabla_enlace');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al validar $tabla_join',$valida);
+            return $this->error->error(mensaje: 'Error al validar $tabla_join',data: $valida,
+                params: get_defined_vars());
         }
 
         $data = $this->data_para_join(tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al generar data join', $data);
+            return $this->error->error(mensaje: 'Error al generar data join', data: $data, params: get_defined_vars());
         }
         $tablas .=  $data;
         return $tablas;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $key
      * @param string $tabla_join
      * @param string $tablas
@@ -693,11 +721,11 @@ class joins{
 
         $valida = (new validaciones())->valida_tabla_join(key: $key, tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al validar join', $valida);
+            return $this->error->error(mensaje: 'Error al validar join', data: $valida, params: get_defined_vars());
         }
         $data = $this->data_para_join_esp(key: $key, tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error('Error al generar join', $data);
+            return $this->error->error(mensaje: 'Error al generar join',data:  $data, params: get_defined_vars());
         }
         $tablas .=  $data;
         return $tablas;

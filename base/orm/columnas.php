@@ -13,7 +13,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql
      * @param modelo_base $modelo
@@ -48,7 +48,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param string $atributo
      * @param array $columna
      * @param array $columnas_completas
@@ -58,12 +58,13 @@ class columnas{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error('Error atributo no puede venir vacio', $atributo);
+            return $this->error->error(mensaje: 'Error atributo no puede venir vacio', data: $atributo,
+                params: get_defined_vars());
         }
         $keys = array('Type','Null');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $columna);
         if(errores::$error){
-            return $this->error->error('Error al validar $columna', $valida);
+            return $this->error->error(mensaje:'Error al validar $columna', data: $valida, params: get_defined_vars());
         }
         if(!isset($columna['Key']) ){
             $columna['Key'] = '';
@@ -103,7 +104,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRREV
      * @param array $columnas_parseadas
      * @param string $atributo
      * @return array
@@ -112,14 +113,15 @@ class columnas{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error('Error atributo no puede venir vacio', $atributo);
+            return $this->error->error(mensaje: 'Error atributo no puede venir vacio',data:  $atributo,
+                params: get_defined_vars());
         }
         $columnas_parseadas[] = $atributo;
         return $columnas_parseadas;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param modelo_base $modelo
      * @param string $tabla_bd
      * @return array|stdClass
@@ -181,7 +183,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $columnas
      * @param array $columnas_sql
      * @param array $data
@@ -210,7 +212,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $columna
      * @param array $columnas_parseadas
      * @param array $columnas_completas
@@ -222,7 +224,8 @@ class columnas{
             $columnas_field = $this->columnas_field(atributo: $atributo, campo: $campo, columna: $columna,
                 columnas_completas: $columnas_completas, columnas_parseadas:  $columnas_parseadas);
             if(errores::$error){
-                return $this->error->error('Error al obtener columnas', $columnas_field);
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
+                    params: get_defined_vars());
             }
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
@@ -235,7 +238,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * @param modelo_base $modelo
      * @param string $tabla_bd
      * @return array
@@ -260,7 +263,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $columnas_extra_sql
      * @param string $columnas_sql
      * @return string
@@ -280,7 +283,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * @param array $extension_estructura
      * @param array $columnas_sql
      * @param string $columnas
@@ -295,16 +298,19 @@ class columnas{
             $tabla = str_replace('models\\','',$tabla);
             $class = 'models\\'.$tabla;
             if(is_numeric($tabla)){
-                return $this->error->error('Error ingrese un array valido '.$tabla, $extension_estructura);
+                return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
+                    data: $extension_estructura, params: get_defined_vars());
             }
             if(!class_exists($class)){
-                return $this->error->error('Error no existe el modelo '.$tabla, $tabla);
+                return $this->error->error(mensaje:'Error no existe el modelo '.$tabla, data:$tabla,
+                    params: get_defined_vars());
             }
 
             $columnas_env = $this->ajusta_columnas_completas(columnas:  $columnas, columnas_sql:  $columnas_sql,
                 modelo: $modelo, tabla: $tabla, tabla_renombrada: '');
             if(errores::$error){
-                return $this->error->error('Error al integrar columnas', $columnas);
+                return $this->error->error(mensaje:'Error al integrar columnas', data:$columnas,
+                    params: get_defined_vars());
             }
 
         }
@@ -312,7 +318,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $campo
      * @param array $columnas_parseadas
      * @param string|null $atributo
@@ -328,14 +334,16 @@ class columnas{
                 columnas_parseadas: $columnas_parseadas);
             if(errores::$error){
 
-                return $this->error->error('Error al obtener columnas parseadas', $columnas_parseadas);
+                return $this->error->error(mensaje: 'Error al obtener columnas parseadas', data: $columnas_parseadas,
+                    params: get_defined_vars());
             }
 
             $columnas_completas = $this->asigna_columna_completa(atributo: $atributo,columna:
                 $columna,columnas_completas:  $columnas_completas);
             if(errores::$error){
 
-                return $this->error->error('Error al obtener columnas completas', $columnas_completas);
+                return $this->error->error(mensaje: 'Error al obtener columnas completas', data: $columnas_completas,
+                    params: get_defined_vars());
             }
         }
 
@@ -346,7 +354,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $tablas_select
      * @param array $columnas_sql
      * @param array $extension_estructura
@@ -384,7 +392,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $renombres
      * @param array $columnas_sql
      * @param string $columnas
@@ -411,7 +419,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que genera una columna en forma de sql para ser utilizada en un SELECT
      * @param string $columnas_sql columnas en forma de sql
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
@@ -427,13 +435,16 @@ class columnas{
     private function columnas_sql(string $alias_columnas, string $columna_parseada, string $columnas_sql,
                                   string $tabla_nombre):array|string{
         if($tabla_nombre === ''){
-            return $this->error->error('Error $tabla_nombre no puede venir vacia', $tabla_nombre);
+            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre,
+                params: get_defined_vars());
         }
         if($columna_parseada === ''){
-            return $this->error->error('Error $columna_parseada no puede venir vacia', $columna_parseada);
+            return $this->error->error(mensaje:'Error $columna_parseada no puede venir vacia',data: $columna_parseada,
+                params: get_defined_vars());
         }
         if($alias_columnas === ''){
-            return $this->error->error('Error $alias_columnas no puede venir vacia', $alias_columnas);
+            return $this->error->error(mensaje:'Error $alias_columnas no puede venir vacia',data: $alias_columnas,
+                params: get_defined_vars());
         }
 
         if($columnas_sql === ''){
@@ -447,7 +458,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $columnas
      * @return array|stdClass
      */
@@ -457,12 +468,14 @@ class columnas{
         $columnas_completas = array();
         foreach($columnas as $columna ){
             if(!is_array($columna)){
-                return $this->error->error('Error $columna debe ser un array', $columnas);
+                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas,
+                    params: get_defined_vars());
             }
             $columnas_field = $this->columnas_attr(columna: $columna, columnas_completas:  $columnas_completas,
                 columnas_parseadas:  $columnas_parseadas);
             if(errores::$error){
-                return $this->error->error('Error al obtener columnas', $columnas_field);
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
+                    params: get_defined_vars());
             }
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
@@ -475,7 +488,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
      * @param array $columnas_parseadas arreglo con datos para la creacion de las columnas en sql
@@ -489,7 +502,8 @@ class columnas{
      */
     private function columnas_sql_init(array $columnas, array $columnas_parseadas, string $tabla_nombre):array|string{
         if($tabla_nombre === ''){
-            return $this->error->error('Error $tabla_nombre no puede venir vacia', $tabla_nombre);
+            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia',data:  $tabla_nombre,
+                params: get_defined_vars());
         }
         $columnas_sql = '';
         foreach($columnas_parseadas as $columna_parseada){
@@ -500,7 +514,8 @@ class columnas{
             $columnas_sql = $this->columnas_sql(alias_columnas: $alias_columnas, columna_parseada: $columna_parseada,
                 columnas_sql: $columnas_sql,tabla_nombre: $tabla_nombre);
             if(errores::$error){
-                return $this->error->error('Error al obtener columnas sql', $columnas_sql);
+                return $this->error->error(mensaje: 'Error al obtener columnas sql',data:  $columnas_sql,
+                    params: get_defined_vars());
             }
         }
 
@@ -509,7 +524,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $columnas_sql
      * @param modelo_base $modelo
      * @param array $tablas_select
@@ -531,7 +546,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $columnas
      * @param modelo_base $modelo
      * @param string $tabla_original
@@ -573,7 +588,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param string $columnas
      * @param array $columnas_sql
      * @param string $key
@@ -601,7 +616,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Genera las columnas en forma de sql para ser utilizado en un SELECT
      *
      * @param modelo_base $modelo
@@ -641,7 +656,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT obtenidas de
      *      this->columnas_extra this->columnas_extra debe ser un conjunto de subquerys
      * @param array $columnas columnas a mostrar y obtener en el sql
@@ -660,13 +675,16 @@ class columnas{
                 continue;
             }
             if(is_numeric($sub_query)){
-                return $this->error->error('Error el key debe ser el nombre de la subquery', $columnas_extra);
+                return $this->error->error(mensaje: 'Error el key debe ser el nombre de la subquery',
+                    data: $columnas_extra, params: get_defined_vars());
             }
             if((string)$sub_query === ''){
-                return $this->error->error('Error el key no puede venir vacio', $columnas_extra);
+                return $this->error->error(mensaje:'Error el key no puede venir vacio', data: $columnas_extra,
+                    params: get_defined_vars());
             }
             if((string)$sql === ''){
-                return $this->error->error('Error el sql no puede venir vacio', $columnas_extra);
+                return $this->error->error(mensaje:'Error el sql no puede venir vacio', data: $columnas_extra,
+                    params: get_defined_vars());
             }
             $columnas_sql .= $columnas_sql === ''?"$sql AS $sub_query":",$sql AS $sub_query";
         }
@@ -674,7 +692,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param modelo_base $modelo
      * @param string $tabla_bd
      * @return array|stdClass
@@ -702,7 +720,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param string $tabla_original nombre base de la tabla
@@ -748,7 +766,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PRO
+     * P INT P ORDER PRO ERRORREV
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return stdClass
@@ -776,7 +794,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return array|string
@@ -785,13 +803,13 @@ class columnas{
     {
         $data = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
         if(errores::$error){
-            return $this->error->error('Error al integrar columnas', $data);
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $data, params: get_defined_vars());
         }
         return $data->columnas;
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Genera las columnas en forma de sql para ser utilizado en un SELECT de todas las columnas unidas por el modelo
      * @param array $columnas_sql conjunto de columnas mostradas a peticion
      * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
@@ -824,7 +842,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Devuelve un conjunto de campos obtenidos de this->sub_querys
      *
      * @param string $columnas
@@ -839,13 +857,16 @@ class columnas{
         $sub_querys_sql = '';
         foreach($modelo->sub_querys as $alias => $sub_query){
             if($sub_query === ''){
-                return $this->error->error("Error el sub query no puede venir vacio",$modelo->sub_querys);
+                return $this->error->error(mensaje: "Error el sub query no puede venir vacio",
+                    data: $modelo->sub_querys, params: get_defined_vars());
             }
             if(trim($alias) === ''){
-                return $this->error->error("Error el alias no puede venir vacio",$modelo->sub_querys);
+                return $this->error->error(mensaje:"Error el alias no puede venir vacio", data:$modelo->sub_querys,
+                    params: get_defined_vars());
             }
             if(is_numeric($alias)){
-                return $this->error->error("Error el alias no puede ser un numero",$modelo->sub_querys);
+                return $this->error->error(mensaje:"Error el alias no puede ser un numero", data:$modelo->sub_querys,
+                    params: get_defined_vars());
             }
             if((count($columnas_seleccionables) > 0) && !in_array($alias, $columnas_seleccionables, true)) {
                 continue;

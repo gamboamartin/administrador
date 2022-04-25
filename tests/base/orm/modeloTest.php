@@ -105,6 +105,25 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_obten_data(): void
+    {
+        errores::$error = false;
+        $modelo = new seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $resultado = $modelo->obten_data();
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error el id debe ser mayor a 0 en el modelo seccion', $resultado['mensaje']);
+
+        errores::$error = false;
+        $modelo->registro_id = 1;
+        $resultado = $modelo->obten_data();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_obten_por_id(): void
     {
         errores::$error = false;

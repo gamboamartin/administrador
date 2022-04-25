@@ -592,7 +592,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param string $where
      * @param string $sentencia
      * @param string $campo
@@ -603,7 +603,7 @@ class modelo extends modelo_base {
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error el campo esta vacio',$campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, params: get_defined_vars());
         }
 
         if($where === ''){
@@ -612,7 +612,7 @@ class modelo extends modelo_base {
 
         $sentencia_env = $this->sentencia_or(campo:  $campo, sentencia: $sentencia, value: $value);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$sentencia_env);
+            return $this->error->error(mensaje:'Error al ejecutar sql',data:$sentencia_env, params: get_defined_vars());
         }
         $data = new stdClass();
         $data->where = $where;
@@ -1155,7 +1155,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $columnas
      * @param array $filtro
      * @param array $hijo
@@ -1512,7 +1512,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV PROBADO
      * Devuelve un array con el registro buscado por this->registro_id del modelo
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
@@ -1588,7 +1588,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Devuelve un array con un elemento declarado por $this->>registro_id
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
@@ -1892,7 +1892,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
      * estructura
      * @param int $registro_id $id Identificador del registro
@@ -2000,7 +2000,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     *  P ORDER P INT PROBADO
+     *  P ORDER P INT PROBADO ERRORREV
      * @param string $sentencia
      * @param string $campo
      * @param string $value
@@ -2010,7 +2010,7 @@ class modelo extends modelo_base {
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error el campo esta vacio',$campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, params: get_defined_vars());
         }
         $or = '';
         if($sentencia !== ''){

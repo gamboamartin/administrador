@@ -54,7 +54,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * @param array $data
      * @param string $tabla
      * @return bool|array
@@ -65,16 +65,18 @@ class validaciones extends validacion{
         $keys = array('nombre_original');
         $valida = $this->valida_existencia_keys(keys:$keys, registro: $data);
         if(errores::$error){
-            return $this->error->error('Error al validar data', $valida);
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida, params: get_defined_vars());
         }
 
         $data['nombre_original'] = str_replace('models\\','',$data['nombre_original']);
         $class = 'models\\'.$data['nombre_original'];
         if(is_numeric($tabla)){
-            return $this->error->error('Error ingrese un array valido '.$tabla, $tabla);
+            return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla,
+                params: get_defined_vars());
         }
         if(!class_exists($class)){
-            return $this->error->error('Error no existe el modelo '.$class, $data);
+            return $this->error->error(mensaje:'Error no existe el modelo '.$class, data: $data,
+                params: get_defined_vars());
         }
         return true;
     }
@@ -153,7 +155,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array $data
      * @param string $tabla_renombrada
      * @return bool|array
@@ -161,24 +163,28 @@ class validaciones extends validacion{
     public function valida_keys_renombre(array $data, string $tabla_renombrada): bool|array
     {
         if(!isset($data['enlace'])){
-            return $this->error->error('Error data[enlace] debe existir', $data);
+            return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data,
+                params: get_defined_vars());
         }
         if(!isset($data['nombre_original'])){
-            return $this->error->error('Error data[nombre_original] debe existir', $data);
+            return $this->error->error(mensaje:'Error data[nombre_original] debe existir', data:$data,
+                params: get_defined_vars());
         }
         $data['nombre_original'] = trim($data['nombre_original']);
         if($data['nombre_original'] === ''){
-            return $this->error->error('Error data[nombre_original] no puede venir vacia', $data);
+            return $this->error->error(mensaje:'Error data[nombre_original] no puede venir vacia',data: $data,
+                params: get_defined_vars());
         }
         $tabla_renombrada = trim($tabla_renombrada);
         if($tabla_renombrada === ''){
-            return $this->error->error('Error $tabla_renombrada no puede venir vacia', $tabla_renombrada);
+            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada,
+                params: get_defined_vars());
         }
         return true;
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * @param array $data
      * @param string $tabla
      * @return bool|array
@@ -186,25 +192,31 @@ class validaciones extends validacion{
     public function valida_keys_sql(array $data, string $tabla): bool|array
     {
         if(!isset($data['key'])){
-            return $this->error->error('Error data[key] debe existir en '.$tabla, $data);
+            return $this->error->error(mensaje: 'Error data[key] debe existir en '.$tabla, data: $data
+                , params: get_defined_vars());
         }
         if(!isset($data['enlace'])){
-            return $this->error->error('Error data[enlace] debe existir', $data);
+            return $this->error->error(mensaje:'Error data[enlace] debe existir',data: $data,
+                params: get_defined_vars());
         }
         if(!isset($data['key_enlace'])){
-            return $this->error->error('Error data[key_enlace] debe existir', $data);
+            return $this->error->error(mensaje:'Error data[key_enlace] debe existir',data: $data,
+                params: get_defined_vars());
         }
         $data['key'] = trim($data['key']);
         $data['enlace'] = trim($data['enlace']);
         $data['key_enlace'] = trim($data['key_enlace']);
         if($data['key'] === ''){
-            return $this->error->error('Error data[key] esta vacio '.$tabla, $data);
+            return $this->error->error(mensaje:'Error data[key] esta vacio '.$tabla, data:$data,
+                params: get_defined_vars());
         }
         if($data['enlace'] === ''){
-            return $this->error->error('Error data[enlace] esta vacio '.$tabla, $data);
+            return $this->error->error(mensaje:'Error data[enlace] esta vacio '.$tabla, data:$data,
+                params: get_defined_vars());
         }
         if($data['key_enlace'] === ''){
-            return $this->error->error('Error data[key_enlace] esta vacio '.$tabla, $data);
+            return $this->error->error(mensaje:'Error data[key_enlace] esta vacio '.$tabla, data:$data,
+                params: get_defined_vars());
         }
         return true;
     }
@@ -282,7 +294,7 @@ class validaciones extends validacion{
         return true;
     }
 
-    /** P ORDER P INT PROBADO
+    /** P ORDER P INT PROBADO ERRORREV
      * @param string $campo_renombrado
      * @param string $class
      * @param string $class_enlace
@@ -296,34 +308,41 @@ class validaciones extends validacion{
                                      string $renombrada, string $tabla, string $tabla_enlace): bool|array
     {
         if($tabla === ''){
-            return$this->error->error('La tabla no puede ir vacia', $tabla);
+            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla,
+                params: get_defined_vars());
         }
         if($join === ''){
-            return $this->error->error('El join no puede ir vacio', $tabla);
+            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla,
+                params: get_defined_vars());
         }
         if($renombrada === ''){
-            return $this->error->error('El $renombrada no puede ir vacio', $tabla);
+            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla,
+                params: get_defined_vars());
         }
         if($tabla_enlace === ''){
-            return $this->error->error('El $tabla_enlace no puede ir vacio', $tabla);
+            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla,
+                params: get_defined_vars());
         }
         if($campo_renombrado === ''){
-            return $this->error->error('El $campo_renombrado no puede ir vacio', $tabla);
+            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla,
+                params: get_defined_vars());
         }
         if(!class_exists($class)){
-            return $this->error->error('El no existe el modelo '.$class, $class);
+            return $this->error->error(mensaje:'El no existe el modelo '.$class,data: $class);
         }
         if(trim($join) !=='LEFT' && trim($join) !=='RIGHT' && trim($join) !=='INNER'){
-            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ', $join);
+            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join,
+                params: get_defined_vars());
         }
         if(!class_exists($class_enlace)){
-            return $this->error->error('El no existe el modelo '.$class_enlace, $class_enlace);
+            return $this->error->error(mensaje:'El no existe el modelo '.$class_enlace,data: $class_enlace,
+                params: get_defined_vars());
         }
         return true;
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * @param string $key
      * @param string $tabla_join
      * @return bool|array
@@ -332,17 +351,20 @@ class validaciones extends validacion{
     {
         $key = trim($key);
         if(is_numeric($key)){
-            return $this->error->error('Error el key no puede ser un numero', $key);
+            return $this->error->error(mensaje: 'Error el key no puede ser un numero', data: $key,
+                params: get_defined_vars());
         }
         if($key === ''){
-            return $this->error->error('Error key esta vacio', $key);
+            return $this->error->error(mensaje:'Error key esta vacio', data:$key);
         }
         $tabla_join = trim($tabla_join);
         if(is_numeric($tabla_join)){
-            return $this->error->error('Error el $tabla_join no puede ser un numero', $tabla_join);
+            return $this->error->error(mensaje:'Error el $tabla_join no puede ser un numero',data: $tabla_join,
+                params: get_defined_vars());
         }
         if($tabla_join === ''){
-            return $this->error->error('Error $tabla_join esta vacio', $tabla_join);
+            return $this->error->error(mensaje:'Error $tabla_join esta vacio',data: $tabla_join,
+                params: get_defined_vars());
         }
         return true;
     }

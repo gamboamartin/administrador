@@ -343,7 +343,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que asigna un registro encontrado para hijos en las diferentes consultas
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
@@ -359,7 +359,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function asigna_registros_hijo(array $filtro, string $name_modelo, string $nombre_estructura, array $row):array{
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
-            return $this->error->error('Error al validar entrada para modelo',$valida);
+            return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida,
+                params: get_defined_vars());
         }
         if($nombre_estructura === ''){
             return  $this->error->error('Error nombre estructura no puede venir vacia',$nombre_estructura);
@@ -371,7 +372,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $data = $modelo->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->error->error('Error al generar registro hijos', $data);
+            return $this->error->error(mensaje: 'Error al generar registro hijos', data: $data,
+                params: get_defined_vars());
         }
         $row[$nombre_estructura] = $data->registros;
 
@@ -779,7 +781,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Funcion que ejecuta un query de tipo select
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @return array|stdClass registros obtenidos de la consulta del modelo con datos o vacio
@@ -1328,7 +1330,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERRORREV
      * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
      * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
      * Genera arreglo
@@ -1578,7 +1580,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que genera el SQL para un SELECT
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
@@ -1634,7 +1636,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * PROBADO P ORDER P INT
+     * PROBADO P ORDER P INT ERROREV
      * Funcion que genera un modelo a partir del nombre
      *
      * @param string $modelo txt con el nombre del modelo a crear
@@ -1653,7 +1655,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $modelo = trim($modelo);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo);
         if(errores::$error){
-            return  $this->error->error("Error al validar modelo",$valida);
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida, params: get_defined_vars());
         }
         return new $modelo($this->link);
     }
@@ -1715,7 +1717,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Funcion que asigna los registros encontrados de hijos en un registro
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
@@ -1749,7 +1751,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
@@ -1835,7 +1837,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
@@ -2167,7 +2169,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
      *  variable de session para su reutilizacion futura
      * @param string $tabla_original nombre del modelo
@@ -2209,7 +2211,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P ORDER P INT PROBADO
+     * P ORDER P INT PROBADO ERROREV
      * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
      *
      * @param array $data_modelo datos de la configuracion del modelo a procesar los filtros
@@ -2237,7 +2239,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
         }
         if(!is_array($data_modelo['filtros_con_valor'])){
-            return $this->error->error("Error filtro",$data_modelo);
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
         }
 
         $filtros = $data_modelo['filtros'];
@@ -2256,7 +2258,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERRORREV
      * Funcion que obtiene con base en la tabla renombrada si tabla renombrada no es vacia cambia el nombre a tabla original
      * @param string $tabla_original nombre del modelo
      * @param string $tabla_renombrada nombre a renombrar tabla
@@ -2272,7 +2274,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada):array|string{
 
         if(trim($tabla_original)==='' && trim($tabla_renombrada) === ''){
-            return $this->error->error('Error no pueden venir vacios todos los parametros', $tabla_renombrada);
+            return $this->error->error(mensaje: 'Error no pueden venir vacios todos los parametros',
+                data: $tabla_renombrada, params: get_defined_vars());
         }
         if($tabla_renombrada!==''){
             $tabla_nombre = $tabla_renombrada;
@@ -2394,7 +2397,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * P INT P ORDER PROBADO ERROREV
      * Funcion que asigna y genera los registros encontrados en un query
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @example
