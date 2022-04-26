@@ -245,13 +245,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                 params: get_defined_vars());
         }
 
-        $alta_html = $template->alta(directivas_extra: $this->directivas_extra,muestra_btn_guardar:  true,
-            aplica_form: true,valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
+        $alta_html = $template->alta(aplica_form: true, directivas_extra: $this->directivas_extra,
+            muestra_btn_guardar:  true,valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
             session_id: $this->session_id,path_base: $this->path_base,
             campos_disabled: $this->campos_disabled,valores_default: $this->valores_asignados_default,
             campos_invisibles: $this->campos_invisibles);
         if(errores::$error){
-            return $this->retorno_error('Error al generar template alta', $alta_html, $header, false);
+            return $this->retorno_error(mensaje: 'Error al generar template alta', data: $alta_html, header: $header,
+                ws: false, params: get_defined_vars());
         }
         $this->alta_html = $alta_html;
         $directiva = new directivas();
@@ -741,8 +742,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $registros = $this->obten_registros_para_lista(filtro:  $filtro, limit: 15,pag_seleccionada:  $pag_seleccionada,
-            filtro_btn: $filtro_btn,columnas: $columnas_mostrables);
+        $registros = $this->obten_registros_para_lista(filtro:  $filtro, limit: 15,
+            pag_seleccionada:  $pag_seleccionada,columnas: $columnas_mostrables, filtro_btn: $filtro_btn);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al obtener registros',data: $registros,
                 params: get_defined_vars());
@@ -779,7 +780,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $filtro_especial[$contador][$campo]['valor'] = $valor;
             $contador++;
         }
-        $n_registros = $this->modelo->cuenta($filtros,'textos', $filtro_especial);
+        $n_registros = $this->modelo->cuenta(filtro: $filtros,tipo_filtro: 'textos',filtro_especial:  $filtro_especial);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al contar registros',data: $n_registros,
                 params: get_defined_vars());
@@ -883,7 +884,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $acciones_asignadas = $resultado->registros;
 
-        $lista_html = $template->lista_completa(registros: $registros,campo_id:  $this->tabla.'_id',
+        $lista_html = $template->lista_completa(campo_id:  $this->tabla.'_id', registros: $registros,
             n_paginas:  $n_paginas, pagina_seleccionada: $pag_seleccionada,seccion:  $this->seccion,
             acciones_asignadas:  $acciones_asignadas,seccion_link: $this->seccion,accion_link: $this->accion,
             session_id: $this->session_id,campos:  $campos->campos,etiqueta_campos:  $campos->etiqueta_campos,

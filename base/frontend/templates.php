@@ -49,7 +49,7 @@ class templates{
      * @param array $campos_invisibles
      * @return array|string
      */
-    public function alta(array $directivas_extra , bool $muestra_btn_guardar , bool $aplica_form ,
+    public function alta(bool $aplica_form, array $directivas_extra , bool $muestra_btn_guardar  ,
                          array $valores_filtrados, array $campos, string $seccion,string $session_id,
                          string $path_base, array $campos_disabled, array $valores_default,
                          array $campos_invisibles):array|string{
@@ -71,11 +71,12 @@ class templates{
         $header_section = 'Alta';
         $html .= file_get_contents($path_base.'views/_templates/__header_section.php');
         $html .= "<div class='form-row  alta'>";
-        $data_html = $this->genera_campos_alta(valores_filtrados: $valores_filtrados,campos:  $campos,
+        $data_html = $this->genera_campos_alta(campos:  $campos, valores_filtrados: $valores_filtrados,
             campos_disabled: $campos_disabled,valores_default: $valores_default,
             campos_invisibles: $campos_invisibles);
         if(errores::$error){
-            return  $this->error->error('Error al generar campos alta',$data_html);
+            return  $this->error->error(mensaje: 'Error al generar campos alta',data: $data_html,
+                params: get_defined_vars());
         }
 
         $html .= $data_html;
@@ -272,14 +273,14 @@ class templates{
      * @param array $campos_invisibles
      * @return array|string
      */
-    public function genera_campos(string $tipo, string $campo_name, int $cols, mixed $valor, bool $required,
+    public function genera_campos(string $campo_name, string $tipo, int $cols, mixed $valor, bool $required,
                                   bool $disabled, bool $ln, string $etiqueta, string $pattern, string $css_id,
                                   array $data_extra, string $tabla_foranea, bool $select_vacio_alta,
                                   array $valores_filtrados, string $columnas, string $llaves_foraneas,
                                   array $vistas, string $accion, array $campos_invisibles):array|string{
 
         if($accion === ''){
-            return $this->error->error('Error accion debe existir',$accion);
+            return $this->error->error(mensaje: 'Error accion debe existir',data: $accion, params: get_defined_vars());
         }
 
         if(in_array($campo_name, $campos_invisibles,false)){
@@ -292,20 +293,20 @@ class templates{
         $filtro = $valores_filtrados[$campo_name] ?? array();
 
 
-        $html = $this->genera_html_input(tipo: $tipo,campo_name: $campo_name,cols: $cols,valor: $valor,
+        $html = $this->genera_html_input(campo_name: $campo_name, tipo: $tipo,cols: $cols,valor: $valor,
             required: $required,disabled: $disabled,ln: $ln,etiqueta: $etiqueta,pattern: $pattern, css_id: $css_id,
             data_extra: $data_extra,tabla_foranea: $tabla_foranea,select_vacio_alta: $select_vacio_alta,
             columnas: $columnas,llaves_valores: $llaves_foraneas,filtro: $filtro,vistas: $vistas,accion: $accion);
 
         if(errores::$error){
-            return $this->error->error('Error al generar html',$html);
+            return $this->error->error(mensaje: 'Error al generar html',data: $html, params: get_defined_vars());
         }
 
         return $html;
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param array $valores_filtrados
      * @param array $campos
      * @param array $campos_disabled
@@ -313,7 +314,7 @@ class templates{
      * @param array $campos_invisibles
      * @return array|string
      */
-    public function genera_campos_alta(array $valores_filtrados, array $campos, array $campos_disabled,
+    public function genera_campos_alta(array $campos, array $valores_filtrados, array $campos_disabled,
                                        array $valores_default, array $campos_invisibles):array|string{ //FIN
         $html = '';
 
@@ -340,7 +341,7 @@ class templates{
             }
 
             $accion = 'alta';
-            $data_html = $this->genera_campos(tipo: $input['tipo'],campo_name: $campo_name,cols: $input['cols'],
+            $data_html = $this->genera_campos(campo_name: $campo_name, tipo: $input['tipo'],cols: $input['cols'],
                 valor: $valor,required: $input['required'], disabled: $disabled,ln: $input['ln'],
                 etiqueta: $input['etiqueta'],pattern: $input['pattern'],css_id: $input['css_id'],
                 data_extra: $input['data_extra'], tabla_foranea: $input['tabla_foranea'],
@@ -348,7 +349,8 @@ class templates{
                 columnas: $input['columnas'], llaves_foraneas: $input['llaves_foraneas'],vistas: array('alta'),
                 accion: $accion,campos_invisibles: $campos_invisibles);
             if(errores::$error){
-                return  $this->error->error('Error al generar campos',$data_html);
+                return  $this->error->error(mensaje: 'Error al generar campos',data: $data_html,
+                    params: get_defined_vars());
             }
             $html .= $data_html;
         }
@@ -396,7 +398,7 @@ class templates{
      * @internal $directiva->input_select_columnas($tabla_foranea,$this->valor,$this->cols,$disabled,$columnas,$this->link,$required,'capitalize',$this->ln,$select_vacio_alta,$registros = array(),$valor_extra,$this->filtro);
      * @internal $directiva->genera_select_estatico($llaves_valores, $this->cols, $this->campo,$etiqueta,false,false,$this->valor,$css_id);
      */
-    public function genera_dato_html(string $tipo, string $campo_name, int $cols,mixed $valor, bool $required, bool $disabled,
+    public function genera_dato_html(string $campo_name, string $tipo, int $cols,mixed $valor, bool $required, bool $disabled,
                                      bool $ln, string $etiqueta, string $pattern,string $css_id, array $data_extra,
                                      array $filtro, string $tabla_foranea, bool $select_vacio_alta, string $columnas,
                                      string $llaves_valores):array|string{ //FIN
@@ -431,12 +433,13 @@ class templates{
         }
 
         if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name,cols: $cols,value: $valor, required: $required,
+            $data_html =  $directiva->fecha( campo: $campo_name,cols: $cols, required: $required,value: $valor,
                 disabled: $disabled,ln: $ln,etiqueta: $etiqueta,pattern:  $pattern, css_id: $css_id,
                 data_extra: $data_extra);
 
             if(errores::$error){
-                return $this->error->error('Error al generar input fecha',$data_html);
+                return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html,
+                    params: get_defined_vars());
             }
         }
         if($tipo === 'numero') {
@@ -637,7 +640,7 @@ class templates{
      * @internal $this->validacion->valida_existencia_keys($this->input, $keys);
      * @internal $this->genera_dato_html();
      */
-    public function genera_html_input(string $tipo, string $campo_name, int $cols, mixed $valor, bool $required,
+    public function genera_html_input(string $campo_name, string $tipo, int $cols, mixed $valor, bool $required,
                                       bool $disabled, bool $ln, string $etiqueta, string $pattern, string $css_id,
                                       array $data_extra, string $tabla_foranea, bool $select_vacio_alta,
                                       string $columnas, string $llaves_valores, array $filtro, array $vistas,
@@ -654,13 +657,13 @@ class templates{
             if($cols>12){
                 return $this->error->error('Error cols debe ser menor a 13',$cols);
             }
-            $data_html = $this->genera_dato_html(tipo: $tipo, campo_name: $campo_name,cols:  $cols, valor: $valor,
+            $data_html = $this->genera_dato_html(campo_name: $campo_name, tipo: $tipo,cols:  $cols, valor: $valor,
                 required:  $required,disabled:  $disabled,ln:  $ln, etiqueta: $etiqueta,pattern:  $pattern,
                 css_id:  $css_id, data_extra:  $data_extra,filtro:  $filtro,tabla_foranea:  $tabla_foranea,
                 select_vacio_alta: $select_vacio_alta,columnas:  $columnas, llaves_valores: $llaves_valores);
 
             if(errores::$error){
-                return $this->error->error('Error al generar html',$data_html);
+                return $this->error->error(mensaje: 'Error al generar html',data: $data_html, params: get_defined_vars());
             }
 
             $html .= $data_html;
@@ -688,7 +691,7 @@ class templates{
      * @param array $campos
      * @return array|string
      */
-    public function lista_completa(array $registros, string $campo_id, int $n_paginas, int $pagina_seleccionada,
+    public function lista_completa(string $campo_id, array $registros, int $n_paginas, int $pagina_seleccionada,
                                    string $seccion, array $acciones_asignadas, string $seccion_link,
                                    string $accion_link, string $session_id, array $campos, array $etiqueta_campos,
                                    array $botones_filtros = array(), array $filtro_boton_seleccionado = array()): array|string
@@ -719,8 +722,8 @@ class templates{
         }
 
 
-        $filtros_lista = (new listas())->genera_filtros_lista(seccion: $seccion,
-            botones_filtros:  $this->botones_filtros,campos_filtro: $this->campos_filtro,session_id: $session_id);
+        $filtros_lista = (new listas())->genera_filtros_lista(botones_filtros:  $this->botones_filtros,
+            seccion: $seccion,campos_filtro: $this->campos_filtro,session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al obtener filtros', $filtros_lista);
         }
@@ -736,8 +739,9 @@ class templates{
             return $this->error->error('Error al obtener acciones',$acciones_completas);
         }
 
-        $acciones_autorizadas_base = (new listas())->obten_acciones(id:'{registro_id}', status: '{registro_status}',
-            acciones: $acciones_completas,seccion:  $seccion,class_link: 'icono_menu_lista',link: $this->link, session_id: $session_id);
+        $acciones_autorizadas_base = (new listas())->obten_acciones(acciones: $acciones_completas,
+            id:'{registro_id}', status: '{registro_status}',seccion:  $seccion,class_link: 'icono_menu_lista',
+            link: $this->link, session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al obtener acciones autorizadas',$acciones_autorizadas_base);
         }

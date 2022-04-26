@@ -21,7 +21,7 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER PROBADO
+     * FULL
      * Funcion asignar true o false a un conjunto de campos para su utilizacion en vistas
      *
      * @param array $campo  campo a utilizar
@@ -44,15 +44,17 @@ class sql_bass{
     private function asigna_booleanos(array $bools, array $bools_asignar, array $campo):array{
         foreach($bools_asignar as $bool){
             if($bool === ''){
-                return $this->error->error('Error $bool no puede venir vacia',$bools_asignar);
+                return $this->error->error(mensaje: 'Error $bool no puede venir vacia',data: $bools_asignar,
+                    params: get_defined_vars());
             }
             $key = 'elemento_lista_'.$bool;
             if(!isset($campo[$key])){
-                return $this->error->error('Error $campo['.$key.'] debe existir',$campo);
+                return $this->error->error(mensaje: 'Error $campo['.$key.'] debe existir',data: $campo,
+                    params: get_defined_vars());
             }
             $data = $this->asigna_data_bool(bool: $bool, bools:  $bools,campo: $campo);
             if(errores::$error){
-                return $this->error->error('Error al generar bool',$data);
+                return $this->error->error(mensaje: 'Error al generar bool',data: $data, params: get_defined_vars());
             }
             $bools = $data;
         }
@@ -61,7 +63,7 @@ class sql_bass{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * FULL
      * Funcion asignar true o false a un campo para su utilizacion en vistas
      *
      * @param string $bool key de campo
@@ -77,15 +79,17 @@ class sql_bass{
      */
     private function asigna_data_bool(string $bool, array $bools, array $campo):array{
         if($bool === ''){
-            return $this->error->error('Error $bool no puede venir vacia',$bool);
+            return $this->error->error(mensaje: 'Error $bool no puede venir vacia',data: $bool,
+                params: get_defined_vars());
         }
         $key = 'elemento_lista_'.$bool;
         if(!isset($campo[$key])){
-            return $this->error->error('Error $campo[elemento_lista_'.$bool.'] debe existir',$campo);
+            return $this->error->error(mensaje: 'Error $campo[elemento_lista_'.$bool.'] debe existir',data: $campo,
+                params: get_defined_vars());
         }
         $data = $this->true_false(campo: $campo, key:$bool);
         if(errores::$error){
-            return $this->error->error('Error al generar bool',$data);
+            return $this->error->error(mensaje:'Error al generar bool',data:$data, params: get_defined_vars());
         }
         $bools[$bool] = $data;
 
@@ -95,7 +99,7 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROR
      * Funcion para la generacion de booleanos para su utilizacion en vistas
      *
      * @param array $campo campo de la vista
@@ -110,7 +114,8 @@ class sql_bass{
      */
     private function genera_bools(array $campo, array $campos_obligatorios):array{
         if(!isset($campo['elemento_lista_campo'])){
-            return $this->error->error('Error no existe $campo[elemento_lista_campo]',$campo);
+            return $this->error->error(mensaje: 'Error no existe $campo[elemento_lista_campo]',data: $campo,
+                params: get_defined_vars());
         }
         $required = false;
         if(in_array($campo['elemento_lista_campo'], $campos_obligatorios, true)){
@@ -120,7 +125,7 @@ class sql_bass{
         $bools_asignar = array('ln','con_label','select_vacio_alta');
         $bools = $this->asigna_booleanos(bools: $bools, bools_asignar: $bools_asignar,campo: $campo);
         if(errores::$error){
-            return $this->error->error('Error al generar bools',$bools);
+            return $this->error->error(mensaje: 'Error al generar bools',data: $bools, params: get_defined_vars());
         }
 
         return $bools;
@@ -194,11 +199,12 @@ class sql_bass{
     private function genera_estructura_init(array $campo, array $campos_obligatorios,  array $estructura_bd,
                                             string $tabla, string $vista):array{
         if(!isset($campo['elemento_lista_campo'])){
-            return $this->error->error('Error no existe $campo[elemento_lista_campo]',$campo);
+            return $this->error->error(mensaje: 'Error no existe $campo[elemento_lista_campo]',data: $campo,
+                params: get_defined_vars());
         }
         $bools = $this->genera_bools(campo: $campo,campos_obligatorios: $campos_obligatorios);
         if(errores::$error){
-            return $this->error->error('Error al generar bools',$bools);
+            return $this->error->error(mensaje: 'Error al generar bools',data: $bools, params: get_defined_vars());
         }
         if(!isset($campo['elemento_lista_css_id'])){
             $campo['elemento_lista_css_id'] = '';
@@ -327,12 +333,14 @@ class sql_bass{
 
         foreach ($estructura_init as $campo){
             if(!is_array($campo)){
-                return $this->error->error('Error al campo debe ser un array',$estructura_init);
+                return $this->error->error(mensaje: 'Error al campo debe ser un array',data: $estructura_init,
+                    params: get_defined_vars());
             }
             $estructura_bd = $this->genera_estructura_init(campo: $campo,campos_obligatorios: $campos_obligatorios,
                 estructura_bd:  $estructura_bd, tabla: $tabla, vista: $vista);
             if(errores::$error){
-                return $this->error->error('Error al generar estructura',$estructura_bd);
+                return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd,
+                    params: get_defined_vars());
             }
 
         }
@@ -342,7 +350,7 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER PROBADO
+     * FULL
      * Funcion para determinar TRUE O FALSE a campo para elemento lista
      *
      * @param string $key  key de elemento lista a validar
@@ -358,11 +366,12 @@ class sql_bass{
     private function true_false(array $campo, string $key):array|bool{
         $key = trim($key);
         if($key === ''){
-            return $this->error->error('Error key no puede venir vacio',$key);
+            return $this->error->error(mensaje: 'Error key no puede venir vacio',data: $key, params: get_defined_vars());
         }
         $key_row = 'elemento_lista_'.$key;
         if(!isset($campo[$key_row])){
-            return $this->error->error('Error $campo[elemento_lista_'.$key.'] debe existir',$campo);
+            return $this->error->error(mensaje:'Error $campo[elemento_lista_'.$key.'] debe existir',data:$campo,
+                params: get_defined_vars());
         }
         $data = false;
         if($campo[$key_row] === 'activo'){

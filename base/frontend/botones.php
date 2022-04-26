@@ -51,7 +51,7 @@ class botones{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * FULL
      * @param string $type
      * @param string $name
      * @param string $value
@@ -71,17 +71,17 @@ class botones{
 
         $params = (new params_inputs())->limpia_obj_btn(params: $params);
         if(errores::$error){
-            return $this->error->error('Error al limpiar params', $params);
+            return $this->error->error(mensaje: 'Error al limpiar params',data:  $params, params: get_defined_vars());
         }
 
         $type = trim ($type);
         if($type === ''){
-            return $this->error->error('Error type esta vacio', $type);
+            return $this->error->error(mensaje: 'Error type esta vacio', data: $type, params: get_defined_vars());
         }
 
         $stilo = trim ($stilo);
         if($stilo === ''){
-            return $this->error->error('Error $stilo esta vacio', $stilo);
+            return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo, params: get_defined_vars());
         }
 
         return "<button type='$type' name='$name' value='$value' id='$id_css'  
@@ -90,7 +90,7 @@ class botones{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * FULL
      * @param string $type
      * @param string $name
      * @param string $value
@@ -110,25 +110,25 @@ class botones{
         }
         $stilo = trim ($stilo);
         if($stilo === ''){
-            return $this->error->error('Error $stilo esta vacio', $stilo);
+            return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo, params: get_defined_vars());
         }
 
         $btn = $this->btn_html(id_css:  $id_css, label: $label,name:  $name,params:  $params, stilo: $stilo,
             type: $type, value:  $value);
         if(errores::$error){
-            return $this->error->error('Error al generar boton', $btn);
+            return $this->error->error(mensaje: 'Error al generar boton', data: $btn, params: get_defined_vars());
         }
 
         $button = $this->container_html(cols: $cols, contenido:  $btn);
         if(errores::$error){
-            return $this->error->error('Error al generar container', $btn);
+            return $this->error->error(mensaje: 'Error al generar container',data:  $btn, params: get_defined_vars());
         }
         return $button;
 
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT ERRORREV
+     * FULL
      * @param int $cols
      * @param string $contenido
      * @return string|array
@@ -149,7 +149,7 @@ class botones{
     }
 
     /**
-     * PROBADO - PARAMS-ORDER-PARAMS INT
+     * FULL
      * @param array $class_css
      * @param string $icon
      * @param array $datas
@@ -159,7 +159,8 @@ class botones{
     {
         $class_html = (new class_css())->class_css_html(clases_css:$class_css);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar clases',data:  $class_html, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar clases',data:  $class_html,
+                params: get_defined_vars());
         }
 
         $icon_html = $this->icon_html(icon:$icon);
@@ -169,7 +170,8 @@ class botones{
 
         $data_extra_html = (new extra_params())->data_extra_html(data_extra: $datas);
         if(errores::$error){
-            return $this->error->error('Error al generar datas', $data_extra_html);
+            return $this->error->error(mensaje: 'Error al generar datas', data: $data_extra_html,
+                params: get_defined_vars());
         }
         $params = new stdClass();
         $params->class = $class_html;
@@ -179,7 +181,7 @@ class botones{
     }
 
     /**
-     * PROBADO - PARAMS ORDER-PARAMS INT ERRORREV
+     * FULL
      * @param string $icon
      * @return string
      */

@@ -158,7 +158,7 @@ class directivas extends html {
 
      */
     public function btn_enviar(int $cols = 12, string $label = 'Enviar', string $name= 'Enviar',
-                               string $value = 'Enviar', string $type = 'submit', string $stilo = 'primary',
+                               string $type = 'submit', string $value = 'Enviar', string $stilo = 'primary',
                                array $class_css = array(), string $icon = '', string $id_css = '',
                                array $datas = array()):array|string{
 
@@ -412,7 +412,7 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      */
-    public function fecha(string $campo, int $cols = 4, string $value = '', bool $required = true,
+    public function fecha(string $campo, int $cols = 4, bool $required = true, string $value = '',
                           bool $disabled = false, bool $ln = false, string $etiqueta = '', string $pattern = '',
                           string $css_id = '', array $data_extra = array(), string $tipo_letra='capitalize',
                           bool $value_vacio = false, array $css = array(), string $tipo = 'date', string $size = 'md',
@@ -431,7 +431,7 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_elementos_base_input(cols:$cols, tabla: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar",$valida);
+            return $this->error->error(mensaje: "Error al validar",data: $valida, params: get_defined_vars());
         }
 
         $con_label = false;
@@ -893,7 +893,7 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar", $valida);
+            return $this->error->error(mensaje: "Error al validar", data: $valida, params: get_defined_vars());
         }
         if($aplica_etiqueta) {
             $etiqueta = str_replace('_',' ',$etiqueta);

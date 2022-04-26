@@ -1,11 +1,10 @@
 <?php
 namespace base\frontend;
-use base\orm\modelo_base;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
+use models\accion;
 use PDO;
 use stdClass;
-use validacion\accion;
 
 class listas{
     private errores $error;
@@ -18,7 +17,7 @@ class listas{
     }
 
     /**
-     *  P ORDER P INT PROBADO
+     *  FULL
      * @param string $accion
      * @param string $status
      * @return bool|array|stdClass
@@ -27,13 +26,14 @@ class listas{
     {
         $accion = trim($accion);
         if($accion === ''){
-            return $this->error->error('Error accion esta vacia',$accion);
+            return $this->error->error(mensaje: 'Error accion esta vacia',data: $accion, params: get_defined_vars());
         }
         if ($accion === 'desactiva_bd' || $accion === 'activa_bd') {
 
             $act_dec = $this->activa_desactiva(status: $status);
             if(errores::$error){
-                return $this->error->error('Error al obtener accion',$act_dec);
+                return $this->error->error(mensaje: 'Error al obtener accion',data: $act_dec,
+                    params: get_defined_vars());
             }
             $accion = $act_dec;
         }
@@ -44,7 +44,7 @@ class listas{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * FULL
      * @param string $status
      * @return string
      */
@@ -60,7 +60,7 @@ class listas{
     }
 
     /**
-     * P INT ERRORREV
+     * P INT ERRORREV P ORDER
      * @param PDO $link
      * @param string $accion
      * @param string $seccion
@@ -68,7 +68,7 @@ class listas{
      */
     private function asigna_accion_to_session(PDO $link, string $accion, string $seccion): array
     {
-        $datos_accion_bd = $this->datos_accion_bd(link: $link,accion: $accion,seccion: $seccion);
+        $datos_accion_bd = $this->datos_accion_bd(accion: $accion, link: $link,seccion: $seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener acciones', data: $datos_accion_bd,
                 params: get_defined_vars());
@@ -88,14 +88,14 @@ class listas{
      * @param PDO $link
      * @return array|string
      */
-    private function asigna_datos_accion_link(string $id, string $seccion, string $accion, $session_id,
+    private function asigna_datos_accion_link(string $accion, string $id, string $seccion, $session_id,
                                               string $class_link, PDO $link): array|string
     {
         if ($accion === '') {
             return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion, params: get_defined_vars());
         }
         $directiva = new directivas();
-        $datos_accion = $this->datos_accion(seccion: $seccion,accion: $accion,link:  $link);
+        $datos_accion = $this->datos_accion(accion: $accion, seccion: $seccion,link:  $link);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion, params: get_defined_vars());
         }
@@ -108,6 +108,10 @@ class listas{
         return $link_accion;
     }
 
+    /**
+     * ERRORREV
+     * @return string
+     */
     private function btn_acciones_row(): string
     {
         return '<button class="btn btn-outline-info  btn-sm"><i class="bi bi-chevron-down"></i> Acciones </button>';
@@ -129,7 +133,7 @@ class listas{
         $seccion = str_replace($namespace,'',$seccion);
         $clase = $namespace.$seccion;
         if($campo === ''){
-            return  $this->error->error("Error campo vacio",$campo);
+            return  $this->error->error(mensaje: "Error campo vacio",data: $campo, params: get_defined_vars());
         }
         if($valor <=0 ){
             return  $this->error->error("Error el valor er menor a 0",$valor);
@@ -161,7 +165,8 @@ class listas{
     private function campos_lista_html(array $etiqueta_campos, string $seccion): array|string
     {
         if(count($etiqueta_campos) === 0){
-            return $this->error->error('Error $etiqueta_campos esta vacio',$etiqueta_campos);
+            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos,
+                params: get_defined_vars());
         }
         $html = '';
         foreach($etiqueta_campos as $campo){
@@ -180,20 +185,21 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param string $seccion
      * @param array $botones_filtro
      * @param string $session_id
      * @return array|string
      */
-    private function carga_botones_filtro_rapido(string $seccion, array $botones_filtro, string $session_id): array|string
+    private function carga_botones_filtro_rapido(array $botones_filtro, string $seccion, string $session_id): array|string
     {
         $filtro_btn_html = '';
         foreach($botones_filtro as $tabla=>$boton){
-            $filtro_btn_html = $this->genera_conjunto_filtro_rapido(tabla: $tabla,filtro_btn_html: $filtro_btn_html,
-                boton:  $boton,seccion:  $seccion,session_id:  $session_id);
+            $filtro_btn_html = $this->genera_conjunto_filtro_rapido(boton:  $boton, filtro_btn_html: $filtro_btn_html,
+                seccion:  $seccion,session_id:  $session_id, tabla: $tabla);
             if(errores::$error){
-                return $this->error->error('Error al generar conjunto de botones',$filtro_btn_html);
+                return $this->error->error(mensaje: 'Error al generar conjunto de botones',data: $filtro_btn_html,
+                    params: get_defined_vars());
             }
         }
 
@@ -228,7 +234,8 @@ class listas{
         $keys = array('representacion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error('Error al asignar valor campo',$valida);
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
+                params: get_defined_vars());
         }
 
         $dato = $this->init_dato_campo(campo: $campo,registro: $registro);
@@ -259,7 +266,8 @@ class listas{
         $keys = array('representacion','nombre_campo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error('Error al asignar valor campo',$valida);
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
+                params: get_defined_vars());
         }
 
 
@@ -286,7 +294,8 @@ class listas{
         $keys = array('representacion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error('Error al asignar valor campo',$valida);
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
+                params: get_defined_vars());
         }
         $dato_env = $this->dato_moneda(campo: $campo,dato:  $dato);
         if(errores::$error){
@@ -312,7 +321,8 @@ class listas{
         $keys = array('representacion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error('Error al asignar valor campo',$valida);
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
+                params: get_defined_vars());
         }
         $dato_env = $dato;
         if($campo['representacion'] === 'moneda'){
@@ -335,7 +345,8 @@ class listas{
         $keys = array('representacion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error('Error al asignar valor campo',$valida);
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
+                params: get_defined_vars());
         }
         if($campo['representacion'] === 'telefono'){
             $dato = "<a href='tel:$dato'>$dato</a>";
@@ -350,7 +361,7 @@ class listas{
      * @param PDO $link
      * @return array
      */
-    private function datos_accion(string $seccion, string $accion, PDO $link): array
+    private function datos_accion(string $accion, string $seccion, PDO $link): array
     {
 
         $valida = $this->validacion->valida_datos_accion(accion: $accion, seccion: $seccion);
@@ -370,15 +381,15 @@ class listas{
     }
 
     /**
-     * P INT ERRORREV
+     * P INT ERRORREV P ORDER
      * @param PDO $link
      * @param string $accion
      * @param string $seccion
      * @return array
      */
-    private function datos_accion_bd(PDO $link, string $accion, string $seccion): array
+    private function datos_accion_bd(string $accion, PDO $link, string $seccion): array
     {
-        $accion_modelo = new \models\accion(link: $link);
+        $accion_modelo = new accion(link: $link);
 
         $filtro['accion.descripcion'] = $accion;
         $filtro['seccion.descripcion'] =$seccion;
@@ -407,7 +418,7 @@ class listas{
         $seccion = str_replace($namespace,'',$seccion);
         $clase = $namespace.$seccion;
         if($seccion === ''){
-            return $this->error->error('Error seccion esta vacia',$seccion);
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion, params: get_defined_vars());
         }
         if(!class_exists($clase)){
             return $this->error->error('Error no existe la clase '.$clase,$clase);
@@ -443,7 +454,7 @@ class listas{
 
         $valida = $this->validacion->valida_footer_row(registro: $registro,seccion:  $seccion);
         if(errores::$error){
-            return $this->error->error('Error al validar datos',$valida);
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida, params: get_defined_vars());
         }
 
         $registro = $this->registro_status(registro: $registro, seccion: $seccion );
@@ -596,7 +607,7 @@ class listas{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param string $tabla
      * @param string $filtro_btn_html
      * @param array $boton
@@ -604,8 +615,8 @@ class listas{
      * @param string $session_id
      * @return array|string
      */
-    private function genera_conjunto_filtro_rapido(string $tabla,string $filtro_btn_html, array $boton,
-                                                   string $seccion, string $session_id): array|string
+    private function genera_conjunto_filtro_rapido(array $boton, string $filtro_btn_html, string $seccion,
+                                                   string $session_id, string $tabla): array|string
     {
         $filtro_btn_html = $this->titulo_conjunto_filtro_rapido(filtro_btn_html: $filtro_btn_html, tabla: $tabla);
         if(errores::$error){
@@ -631,7 +642,8 @@ class listas{
         $inputs_filtro_html = '';
         foreach($campos_filtro as $campo) {
             if(!is_array($campo)){
-                return $this->error->error('Error campo debe ser un array',$campo);
+                return $this->error->error(mensaje: 'Error campo debe ser un array',data: $campo,
+                    params: get_defined_vars());
             }
             $input_text = $this->genera_input_text_filtro(campo: $campo,filtro: $filtro);
             if(errores::$error){
@@ -652,11 +664,12 @@ class listas{
      * @return array|string
      */
 
-    public function genera_filtros_lista(string $seccion, array $botones_filtros, array $campos_filtro, string $session_id ): array|string
+    public function genera_filtros_lista(array $botones_filtros, string $seccion, array $campos_filtro, string $session_id ): array|string
     {
         $html = '';
 
-        $filtro_btn_html = $this->carga_botones_filtro_rapido(seccion: $seccion,botones_filtro:  $botones_filtros, session_id: $session_id);
+        $filtro_btn_html = $this->carga_botones_filtro_rapido(botones_filtro:  $botones_filtros,
+            seccion: $seccion, session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al generar filtros rapidos',$filtro_btn_html);
         }
@@ -699,7 +712,7 @@ class listas{
         $keys = array('etiqueta','tabla_externa','campo');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error('Error al validar campo',$valida);
+            return $this->error->error(mensaje: 'Error al validar campo',data: $valida, params: get_defined_vars());
         }
         $etiqueta = $campo['etiqueta'];
         $value = $filtro[$campo['tabla_externa']][$campo['campo']]['value']??false;
@@ -727,7 +740,7 @@ class listas{
             cols: 2,value: $value,required: false,etiqueta: $etiqueta, data_extra: array(), clases_css: $clases_css,
             ids_css: $ids_css,size: 'sm');
         if(errores::$error){
-            return $this->error->error('Error al generar input',$input_text);
+            return $this->error->error(mensaje: 'Error al generar input',data: $input_text, params: get_defined_vars());
         }
         return $input_text;
     }
@@ -815,7 +828,7 @@ class listas{
      * @param string $session_id
      * @return array|string
      */
-    public function obten_acciones( string $id, string $status, array $acciones, string $seccion,
+    public function obten_acciones(array $acciones,  string $id, string $status, string $seccion,
                                     string $class_link, PDO $link, string $session_id): array|string
     {
         $html = '';
@@ -833,7 +846,7 @@ class listas{
             }
 
             if ($acciones_permitidas) {
-                $link_accion = $this->asigna_datos_accion_link(id: $id,seccion:  $seccion, accion: $accion,
+                $link_accion = $this->asigna_datos_accion_link(accion: $accion, id: $id,seccion:  $seccion,
                     session_id: $session_id,class_link:  $class_link, link: $link);
                 if(errores::$error){
                     return $this->error->error(mensaje: 'Error al generar link',data: $link_accion,
@@ -847,7 +860,7 @@ class listas{
     }
 
     /**
-     *
+     * P ORDER P INT ERROREV
      * @param string $seccion
      * @return mixed
      */
@@ -857,10 +870,11 @@ class listas{
         $seccion = str_replace($namespace,'',$seccion);
         $clase = $namespace.$seccion;
         if($seccion === ''){
-            return $this->error->error('Error seccion esta vacia',$seccion);
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion, params: get_defined_vars());
         }
         if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$seccion,$seccion);
+            return $this->error->error(mensaje: 'Error no existe la clase '.$seccion,data: $seccion,
+                params: get_defined_vars());
         }
 
         return $_SESSION['filtros'][$seccion]??array();
@@ -1133,7 +1147,7 @@ class listas{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param string $tabla
      * @param string $filtro_btn_html
      * @return string
@@ -1161,7 +1175,7 @@ class listas{
     {
         $valida = $this->validacion->valida_footer_row(registro: $registro,seccion:  $seccion);
         if(errores::$error){
-            return $this->error->error('Error al validar datos',$valida);
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida, params: get_defined_vars());
         }
 
         $row_html = $this->row_html(campos: $campos, registro: $registro);

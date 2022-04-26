@@ -499,7 +499,7 @@ class controler{
     }
 
     /**
-     * P INT ERORREV
+     * P INT ERORREV P ORDER
      * @param int $limit
      * @param int $pag_seleccionada
      * @param array $filtro
@@ -507,8 +507,8 @@ class controler{
      * @param array $columnas
      * @return array
      */
-    protected function obten_registros_para_lista(array $filtro, int $limit, int $pag_seleccionada, array $filtro_btn = array(),
-                                               array $columnas = array()): array{
+    protected function obten_registros_para_lista(array $filtro, int $limit, int $pag_seleccionada,
+                                                  array $columnas = array(), array $filtro_btn = array()): array{
         $this->seccion = str_replace('models\\','',$this->seccion);
         $class = 'models\\'.$this->seccion;
         if($this->seccion === ''){

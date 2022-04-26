@@ -205,7 +205,7 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER PARAMS INT
+     * FULL
      * @param array $keys
      * @param stdClass $params
      * @return stdClass
@@ -221,7 +221,7 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER PARAMS INT
+     * FULL
      * @param stdClass $params
      * @return stdClass
      */
@@ -230,7 +230,7 @@ class params_inputs{
         $keys = array('class','data_extra','icon');
         $params = $this->limpia_obj(keys: $keys,params: $params);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar params', $params);
+            return $this->error->error(mensaje: 'Error al limpiar params', data: $params, params: get_defined_vars());
         }
         return $params;
     }

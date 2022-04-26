@@ -36,7 +36,7 @@ class extra_params{
     }
 
     /**
-     * PROBADO-PARAMS ORDER PARAMS INT
+     * FULL
      * @param array $data_extra
      * @return string|array
      */
@@ -45,11 +45,13 @@ class extra_params{
         $data_extra_html = '';
         foreach($data_extra as $key =>$valor){
             if(is_numeric($key)){
-                return $this->error->error('Error el data_extra[] key debe ser texto',$data_extra);
+                return $this->error->error(mensaje: 'Error el data_extra[] key debe ser texto',data: $data_extra,
+                    params: get_defined_vars());
             }
             $valor = trim($valor);
             if($valor === ''){
-                return $this->error->error('Error el $valor de data extra no puede venir vacio',$data_extra);
+                return $this->error->error(mensaje:'Error el $valor de data extra no puede venir vacio',
+                    data:$data_extra, params: get_defined_vars());
             }
             $data_extra_html.= 'data-'.$key." = '$valor'";
         }

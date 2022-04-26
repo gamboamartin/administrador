@@ -29,7 +29,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT ERROREV
+     * FULL
      * @param int $cols
      * @return bool|array
      */
@@ -47,7 +47,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param int $cols
      * @param string $label
      * @param string $name
@@ -132,7 +132,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
+     * PROBADO-PARAMS ORDER P INT ERROREV
      * Valida la entrada de datos para generacion de inputs
      *
      * @param string $tabla Tabla - estructura modelo sistema
@@ -150,11 +150,11 @@ class validaciones_directivas extends validacion{
      */
     public function valida_elementos_base_input(int $cols, string $tabla):array|bool{
         if($tabla === ''){
-            return $this->error->error("Error tabla vacia", $tabla);
+            return $this->error->error(mensaje: "Error tabla vacia", data: $tabla, params: get_defined_vars());
         }
         $valida = $this->valida_cols(cols: $cols);
         if(errores::$error){
-            return $this->error->error("Error al validar columnas", $valida);
+            return $this->error->error(mensaje: "Error al validar columnas", data: $valida, params: get_defined_vars());
         }
 
         return true;
