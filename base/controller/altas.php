@@ -11,7 +11,7 @@ class altas{
     }
 
     /**
-     *
+     * ERROREV
      * @param array $registro
      * @param controler $controler
      * @return array|stdClass

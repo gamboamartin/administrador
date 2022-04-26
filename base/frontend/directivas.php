@@ -754,7 +754,7 @@ class directivas extends html {
     }
 
     /**
-     * NMO SE MUEVE
+     * ERRORREV
      * Genera los inputs de un conjunto de selects
      *
      * @param string $tabla
@@ -787,7 +787,8 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_estructura_input_base(columnas: $columnas,tabla: $tabla);
         if(errores::$error) {
-            return $this->errores->error('Error al validar estructura de input',$valida);
+            return $this->errores->error(mensaje: 'Error al validar estructura de input',data: $valida,
+                params: get_defined_vars());
         }
 
 
@@ -803,7 +804,8 @@ class directivas extends html {
 
 
         if(errores::$error){
-            return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
+            return $this->errores->error(mensaje: 'Error al generar '.$campo,data: $inputs[$campo],
+                params: get_defined_vars());
         }
 
 
@@ -1229,7 +1231,7 @@ class directivas extends html {
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * Genera un contenedor div con un select
      * @param string $campo_name
      * @param int $cols Columnas para asignacion de html entre 1 y 12
@@ -1284,7 +1286,7 @@ class directivas extends html {
             name_input:  $campo_name,etiqueta:  $etiqueta,multiple:  $multiple,inline:  $inline);
 
         if(errores::$error){
-            return $this->error->error('Error al generar options', $datos);
+            return $this->error->error(mensaje: 'Error al generar options', data: $datos, params: get_defined_vars());
 
         }
 

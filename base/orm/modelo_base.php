@@ -390,7 +390,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     *
+     * P ORDER P INT ERROREV
      * @param string $tabla
      * @return array
      */
@@ -402,11 +402,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $modelo_atributo = new atributo($this->link);
         $filtro['seccion.descripcion'] = $tabla;
-        $r_atributo = $modelo_atributo->filtro_and($filtro);
+        $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener atributos', $r_atributo);
+            return $this->error->error(mensaje: 'Error al obtener atributos', data: $r_atributo,
+                params: get_defined_vars());
         }
-        return $r_atributo['registros'];
+        return $r_atributo->registros;
     }
 
     /**
@@ -466,7 +467,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * @return string
      */
     private function class_attr(): string
@@ -681,7 +682,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param array $atributo
      * @param int $registro_id
      * @return array
@@ -699,11 +700,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
         }
         if($registro_id<=0){
-            return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
+                params: get_defined_vars());
         }
         $this->tabla = trim($this->tabla);
         if($this->tabla === ''){
-            return $this->error->error('Error $this->tabla esta vacia',$this->tabla);
+            return $this->error->error(mensaje: 'Error $this->tabla esta vacia',data: $this->tabla,
+                params: get_defined_vars());
         }
 
         $data_ins['descripcion'] = $atributo['atributo_descripcion'];
@@ -866,25 +869,28 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param int $registro_id
      * @return array|string
      */
     protected function ejecuta_insersion_attr(int $registro_id): array|string
     {
         if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id,
+                params: get_defined_vars());
         }
 
         $clase_attr = $this->class_attr();
         if(errores::$error){
-            return $this->error->error('Error al obtener class', $clase_attr);
+            return $this->error->error(mensaje: 'Error al obtener class', data: $clase_attr,
+                params: get_defined_vars());
         }
         if(class_exists($clase_attr)){
 
             $r_ins = $this->inserta_data_attr(clase_attr: $clase_attr, registro_id: $registro_id);
             if(errores::$error){
-                return $this->error->error('Error al insertar atributos', $r_ins);
+                return $this->error->error(mensaje: 'Error al insertar atributos',data:  $r_ins,
+                    params: get_defined_vars());
             }
         }
         return $clase_attr;
@@ -1523,7 +1529,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT
+     * P INT ERRORREV
      * @param array $atributo
      * @param int $registro_id
      * @param string $tabla
@@ -1542,28 +1548,30 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
         }
         if($registro_id<=0){
-            return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
+                params: get_defined_vars());
         }
 
         $data_ins = $this->data_inst_attr(atributo: $atributo,registro_id:  $registro_id);
         if(errores::$error){
-            return $this->error->error('Error al maquetar atributos', $data_ins);
+            return $this->error->error(mensaje: 'Error al maquetar atributos', data: $data_ins,
+                params: get_defined_vars());
         }
 
         $modelo = $this->genera_modelo(modelo: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al generar modelo', $modelo);
+            return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo, params: get_defined_vars());
         }
 
         $r_ins = $modelo->alta_registro(registro: $data_ins);
         if(errores::$error){
-            return $this->error->error('Error al insertar atributos', $r_ins);
+            return $this->error->error(mensaje: 'Error al insertar atributos',data:  $r_ins, params: get_defined_vars());
         }
         return $r_ins;
     }
 
     /**
-     * P INT
+     * P INT ERROREV
      * @param int $registro_id
      * @param string $tabla_attr
      * @return array
@@ -1582,7 +1590,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $atributos = $this->atributos(tabla: $tabla_attr);
         if(errores::$error){
-            return $this->error->error('Error al obtener atributos', $atributos);
+            return $this->error->error(mensaje: 'Error al obtener atributos', data: $atributos,
+                params: get_defined_vars());
         }
 
         foreach($atributos as $atributo){
@@ -1598,7 +1607,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT
+     * P INT ERROREV
      * @param string $clase_attr
      * @param int $registro_id
      * @return array
@@ -1606,7 +1615,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function inserta_data_attr(string $clase_attr, int $registro_id): array
     {
         if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id,
+                params: get_defined_vars());
         }
 
         $model_attr = $this->genera_modelo(modelo: $clase_attr);
@@ -1616,7 +1626,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $r_ins = $this->inserta_atributos(registro_id:  $registro_id,tabla_attr:  $model_attr->tabla);
         if(errores::$error){
-            return $this->error->error('Error al insertar atributos', $r_ins);
+            return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins, params: get_defined_vars());
         }
         return $r_ins;
     }
@@ -2388,7 +2398,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT P ORDER PROBADO
+     * FULL
      * Funcion reemplaza el primer dato encontrado en la posicion 0
      * @param string $from cadena de busqueda
      * @param string $to cadena de reemplazo
@@ -2412,10 +2422,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     public function str_replace_first(string $content, string $from, string $to):array|string{
         if($content === ''){
-            return $this->error->error('Error al content esta vacio',$content);
+            return $this->error->error(mensaje: 'Error al content esta vacio',data: $content,
+                params: get_defined_vars());
         }
         if($from === ''){
-            return $this->error->error('Error from esta vacio',$from);
+            return $this->error->error(mensaje: 'Error from esta vacio',data: $from, params: get_defined_vars());
         }
         $pos = strpos($content, $from);
 

@@ -51,7 +51,7 @@ class valida_controller extends base_modelos{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param string $clase
      * @param controler $controler
      * @param array $registro
@@ -60,34 +60,38 @@ class valida_controller extends base_modelos{
     public function valida_in_alta(string $clase, controler $controler, array $registro): bool|array
     {
         if($controler->tabla === ''){
-            return $this->error->error('Error  tabla no puede venir vacia', $controler->tabla);
+            return $this->error->error(mensaje: 'Error  tabla no puede venir vacia',data:  $controler->tabla,
+                params: get_defined_vars());
         }
         if(count($registro) === 0){
-            return $this->error->error('Error el registro no puede venir vacio', $registro);
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data:  $registro,
+                params: get_defined_vars());
         }
 
         if($controler->seccion === ''){
-            return $this->error->error('Error la seccion no puede venir vacia', $controler->seccion);
+            return $this->error->error(mensaje:'Error la seccion no puede venir vacia',data: $controler->seccion,
+                params: get_defined_vars());
 
         }
         if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase', $clase);
+            return $this->error->error(mensaje:'Error no existe la clase',data: $clase, params: get_defined_vars());
         }
 
         return true;
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * FULL
      * @return bool|array
      */
     public function valida_post_alta(): bool|array
     {
         if(!isset($_POST)){
-            return $this->error->error('Error no existe POST', $_GET);
+            return $this->error->error(mensaje: 'Error no existe POST', data: $_GET, params: get_defined_vars());
         }
         if(count($_POST) === 0){
-            return $this->error->error('Error el POST no puede venir vacio', $_POST);
+            return $this->error->error(mensaje: 'Error el POST no puede venir vacio', data: $_POST,
+                params: get_defined_vars());
         }
         return true;
     }

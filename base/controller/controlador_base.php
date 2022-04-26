@@ -267,7 +267,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     * PRUEBAS FINALIZADAS
+     * ERROREV
      * @param bool $header
      * @param bool $ws
      * @return array

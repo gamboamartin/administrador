@@ -69,7 +69,7 @@ class controlador_seccion extends controlador_base{
         }
 
         $seccion_menu_id = $this->registro_id;
-        $r_accion_basica = $this->accion_basica_modelo->obten_registros_activos(array(),array());
+        $r_accion_basica = $this->accion_basica_modelo->obten_registros_activos();
         if (errores::$error){
             $this->link->rollBack();
             $error =   $this->errores->error(mensaje: 'Error al obtener datos del registro',data: $r_accion_basica,

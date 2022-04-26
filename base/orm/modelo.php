@@ -199,7 +199,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT
+     * P INT ERRORREV
      * inserta un registro por registro enviado
      * @return array|stdClass con datos del registro insertado
      * @example
@@ -289,7 +289,8 @@ class modelo extends modelo_base {
 
         $r_alta  = $this->alta_bd();
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta,
+                params: get_defined_vars());
         }
         return $r_alta;
     }
@@ -632,16 +633,18 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @return  array
      */
     private function data_session_alta(): array
     {
         if($this->tabla === ''){
-            return  $this->error->error('Error this->tabla esta vacia',$this->tabla);
+            return  $this->error->error(mensaje: 'Error this->tabla esta vacia',data: $this->tabla,
+                params: get_defined_vars());
         }
         if($this->registro_id <=0){
-            return  $this->error->error('Error $this->registro_id debe ser mayor a 0',$this->registro_id);
+            return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id,
+                params: get_defined_vars());
         }
         $_SESSION['exito'][]['mensaje'] = $this->tabla.' se agrego con el id '.$this->registro_id;
         return $_SESSION['exito'];
@@ -1744,7 +1747,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     * ERROREV
      * Devuelve un conjunto de registros con status igual a activo
      * @param array $order array para ordenar el resultado
      * @param array $filtro filtro para generar AND en el resultado
@@ -1776,9 +1779,9 @@ class modelo extends modelo_base {
         array $order = array(), array $filtro= array(), array $hijo = array()):array|stdClass{
 
         $filtro[$this->tabla.'.status'] = 'activo';
-        $r_data = $this->filtro_and(filtro: $filtro,order: $order,hijo: $hijo);
+        $r_data = $this->filtro_and(filtro: $filtro, hijo: $hijo,order: $order);
         if(errores::$error){
-            return $this->error->error("Error al filtrar", $r_data);
+            return $this->error->error(mensaje: "Error al filtrar", data: $r_data, params: get_defined_vars());
         }
 
         return $r_data;
@@ -2217,7 +2220,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT
+     * P INT ERROREV
      * @param string $consulta
      * @return array|stdClass
      */
