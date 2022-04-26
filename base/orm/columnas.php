@@ -13,7 +13,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql
      * @param modelo_base $modelo
@@ -48,7 +48,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param string $atributo
      * @param array $columna
      * @param array $columnas_completas
@@ -104,7 +104,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRREV
+     * FULL
      * @param array $columnas_parseadas
      * @param string $atributo
      * @return array
@@ -121,7 +121,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param modelo_base $modelo
      * @param string $tabla_bd
      * @return array|stdClass
@@ -183,7 +183,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $columnas
      * @param array $columnas_sql
      * @param array $data
@@ -212,7 +212,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $columna
      * @param array $columnas_parseadas
      * @param array $columnas_completas
@@ -238,7 +238,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * @param modelo_base $modelo
      * @param string $tabla_bd
      * @return array
@@ -263,7 +263,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $columnas_extra_sql
      * @param string $columnas_sql
      * @return string
@@ -283,7 +283,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * @param array $extension_estructura
      * @param array $columnas_sql
      * @param string $columnas
@@ -318,7 +318,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $campo
      * @param array $columnas_parseadas
      * @param string|null $atributo
@@ -354,7 +354,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $tablas_select
      * @param array $columnas_sql
      * @param array $extension_estructura
@@ -392,7 +392,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $renombres
      * @param array $columnas_sql
      * @param string $columnas
@@ -419,7 +419,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que genera una columna en forma de sql para ser utilizada en un SELECT
      * @param string $columnas_sql columnas en forma de sql
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
@@ -458,7 +458,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $columnas
      * @return array|stdClass
      */
@@ -488,7 +488,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
      * @param array $columnas_parseadas arreglo con datos para la creacion de las columnas en sql
@@ -524,7 +524,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $columnas_sql
      * @param modelo_base $modelo
      * @param array $tablas_select
@@ -546,7 +546,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $columnas
      * @param modelo_base $modelo
      * @param string $tabla_original
@@ -588,7 +588,7 @@ class columnas{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $columnas
      * @param array $columnas_sql
      * @param string $key
@@ -616,7 +616,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Genera las columnas en forma de sql para ser utilizado en un SELECT
      *
      * @param modelo_base $modelo
@@ -656,7 +656,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT obtenidas de
      *      this->columnas_extra this->columnas_extra debe ser un conjunto de subquerys
      * @param array $columnas columnas a mostrar y obtener en el sql
@@ -692,7 +692,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param modelo_base $modelo
      * @param string $tabla_bd
      * @return array|stdClass
@@ -720,7 +720,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param string $tabla_original nombre base de la tabla
@@ -766,7 +766,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PRO ERRORREV
+     * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return stdClass
@@ -794,7 +794,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return array|string
@@ -809,7 +809,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Genera las columnas en forma de sql para ser utilizado en un SELECT de todas las columnas unidas por el modelo
      * @param array $columnas_sql conjunto de columnas mostradas a peticion
      * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
@@ -842,7 +842,7 @@ class columnas{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Devuelve un conjunto de campos obtenidos de this->sub_querys
      *
      * @param string $columnas

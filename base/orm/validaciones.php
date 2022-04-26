@@ -54,7 +54,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $data
      * @param string $tabla
      * @return bool|array
@@ -158,7 +158,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $data
      * @param string $tabla_renombrada
      * @return bool|array
@@ -187,7 +187,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $data
      * @param string $tabla
      * @return bool|array
@@ -301,7 +301,8 @@ class validaciones extends validacion{
         return true;
     }
 
-    /** P ORDER P INT PROBADO ERRORREV
+    /**
+     * FULL
      * @param string $campo_renombrado
      * @param string $class
      * @param string $class_enlace
@@ -349,7 +350,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param string $key
      * @param string $tabla_join
      * @return bool|array

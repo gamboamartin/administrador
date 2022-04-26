@@ -84,7 +84,7 @@ class conexion{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * FULL
      * @param database $conf_database
      * @return PDO|array
      */

@@ -603,7 +603,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $where
      * @param string $sentencia
      * @param string $campo
@@ -1182,7 +1182,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $columnas
      * @param array $filtro
      * @param array $hijo
@@ -1546,7 +1546,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER ERRORREV PROBADO
+     * FULL
      * Devuelve un array con el registro buscado por this->registro_id del modelo
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
@@ -1622,7 +1622,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Devuelve un array con un elemento declarado por $this->>registro_id
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
@@ -1932,7 +1932,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT P ORDER ERRORREV PROBADO
+     * FULL
      * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
      * estructura
      * @param int $registro_id $id Identificador del registro
@@ -2040,7 +2040,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     *  P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $sentencia
      * @param string $campo
      * @param string $value

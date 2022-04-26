@@ -18,7 +18,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param string $tabla
      * @return stdClass|array
      */
@@ -40,7 +40,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $tabla
      * @param string $tabla_enlace
      * @return array|stdClass
@@ -77,7 +77,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $tablas_join
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -97,7 +97,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $tabla_join Datos para hacer join con tablas
      * @return stdClass|array
      */
@@ -132,7 +132,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $id_renombrada
      * @param stdClass $init
      * @param string $join
@@ -160,7 +160,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $tabla_join Datos para hacer join con tablas
      * @return array|string
      */
@@ -188,7 +188,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $key
      * @param string $tabla_join Datos para hacer join con tablas
      * @return array|string
@@ -211,7 +211,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array|string $tabla_join
      * @param string $tablas Tablas en forma de SQL
      * @param string $key
@@ -238,7 +238,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $extension_estructura
      * @param modelo_base $modelo
      * @param string $tablas
@@ -273,7 +273,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $campo_tabla_base_id
      * @return string
      */
@@ -288,7 +288,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion para determinar un JOIN entre dos tablas para SQL
      *
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
@@ -329,7 +329,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion para determinar un JOIN entre dos tablas para SQL
      *
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
@@ -383,7 +383,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $data
      * @param modelo_base $modelo
      * @param string $tabla
@@ -416,7 +416,7 @@ class joins{
 
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $data
      * @param modelo_base $modelo
      * @param string $tabla_renombrada
@@ -463,7 +463,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $tabla
      * @param string $tabla_enlace
      * @return stdClass|array
@@ -496,7 +496,7 @@ class joins{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $tablas
      * @return string
      */
@@ -510,7 +510,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion para determinar un JOINs entre dos p mas tablas para SQL
      *
      * @param string $tabla  tabla para la ejecucion del JOIN
@@ -542,7 +542,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param modelo_base $modelo
      * @param array $renombradas
      * @param string $tablas
@@ -569,7 +569,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $campo_renombrado
      * @param string $campo_tabla_base_id
      * @param string $class
@@ -612,7 +612,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * @param array $data
      * @param modelo_base $modelo
      * @param string $tabla
@@ -650,7 +650,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $columnas
      * @param array $extension_estructura
      * @param modelo_base $modelo
@@ -685,7 +685,7 @@ class joins{
 
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $tabla_join Datos para hacer join con tablas
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -708,7 +708,7 @@ class joins{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $key
      * @param string $tabla_join
      * @param string $tablas

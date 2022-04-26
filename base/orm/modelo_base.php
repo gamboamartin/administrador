@@ -353,7 +353,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que asigna un registro encontrado para hijos en las diferentes consultas
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
@@ -797,7 +797,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * Funcion que ejecuta un query de tipo select
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @return array|stdClass registros obtenidos de la consulta del modelo con datos o vacio
@@ -1609,7 +1609,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que genera el SQL para un SELECT
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
@@ -1665,7 +1665,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * PROBADO P ORDER P INT ERROREV
+     * FULL
      * Funcion que genera un modelo a partir del nombre
      *
      * @param string $modelo txt con el nombre del modelo a crear
@@ -1747,7 +1747,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * Funcion que asigna los registros encontrados de hijos en un registro
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
@@ -1781,7 +1781,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
@@ -1867,7 +1867,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
@@ -2207,7 +2207,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
      *  variable de session para su reutilizacion futura
      * @param string $tabla_original nombre del modelo
@@ -2296,7 +2296,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Funcion que obtiene con base en la tabla renombrada si tabla renombrada no es vacia cambia el nombre a tabla original
      * @param string $tabla_original nombre del modelo
      * @param string $tabla_renombrada nombre a renombrar tabla
@@ -2440,7 +2440,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * Funcion que asigna y genera los registros encontrados en un query
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @example
