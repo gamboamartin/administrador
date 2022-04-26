@@ -4,16 +4,14 @@ namespace base\orm;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-
-
 use JsonException;
+use models\atributo;
 use models\bitacora;
 use models\seccion;
 use PDO;
 use PDOStatement;
 use stdClass;
 use Throwable;
-
 
 
 class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
@@ -392,6 +390,26 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     *
+     * @param string $tabla
+     * @return array
+     */
+    private function atributos(string $tabla): array
+    {
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $tabla,
+                params: get_defined_vars());
+        }
+        $modelo_atributo = new atributo($this->link);
+        $filtro['seccion.descripcion'] = $tabla;
+        $r_atributo = $modelo_atributo->filtro_and($filtro);
+        if(errores::$error){
+            return $this->error->error('Error al obtener atributos', $r_atributo);
+        }
+        return $r_atributo['registros'];
+    }
+
+    /**
      * P INT P ORDER ERRORREV
      * Inserta una transaccion de bitacora
      * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
@@ -673,12 +691,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $keys = array('atributo_descripcion','atributo_id');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $atributo);
         if(errores::$error){
-            return $this->error->error('Error al validar $atributo',$valida);
+            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
         }
         $keys = array('atributo_id');
         $valida = $this->validacion->valida_ids(keys:  $keys, registro: $atributo);
         if(errores::$error){
-            return $this->error->error('Error al validar $atributo',$valida);
+            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
         }
         if($registro_id<=0){
             return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
@@ -1521,7 +1539,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $keys = array('atributo_id');
         $valida = $this->validacion->valida_ids( keys:$keys, registro: $atributo);
         if(errores::$error){
-            return $this->error->error('Error al validar $atributo',$valida);
+            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
         }
         if($registro_id<=0){
             return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
@@ -1557,16 +1575,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 params: get_defined_vars());
         }
         if($registro_id<=0){
-            return $this->error->error('Error registro_id debe ser mayor a 0',$registro_id);
-        }
-
-        $modelo_atributo = $this->genera_modelo(modelo: 'atributo');
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo', $modelo_atributo);
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
+                params: get_defined_vars());
         }
 
 
-        $atributos = $modelo_atributo->atributos($tabla_attr);
+        $atributos = $this->atributos(tabla: $tabla_attr);
         if(errores::$error){
             return $this->error->error('Error al obtener atributos', $atributos);
         }
@@ -1574,7 +1588,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         foreach($atributos as $atributo){
             $r_ins = $this->inserta_atributo(atributo: $atributo,registro_id:  $registro_id,tabla:  $tabla_attr);
             if(errores::$error){
-                return $this->error->error('Error al insertar atributos', $r_ins);
+                return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins,
+                    params: get_defined_vars());
             }
         }
         return $atributos;
@@ -2414,7 +2429,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * Funcion genera order en forma de sql
      * @param array  $order con parametros para generar sentencia
      * @return array|string cadena con order en forma de SQL

@@ -1229,7 +1229,7 @@ class where{
 
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param string $tipo_filtro
      * @return bool|array
      */

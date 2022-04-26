@@ -1304,7 +1304,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @return string|array
      */
@@ -1670,7 +1670,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * Obtiene todos los registros de un modelo
      * @param string $sql_extra
      * @param string $group_by
@@ -1683,9 +1683,8 @@ class modelo extends modelo_base {
      *
      * @uses  TODO EL SISTEMA
      */
-    public function obten_registros(
-        string $sql_extra='', string $group_by = '', array $columnas = array(),
-        bool $aplica_seguridad = false, int $limit = 0): array|stdClass{
+    public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(), string $group_by = '',
+                                    int $limit = 0, string $sql_extra=''): array|stdClass{
 
         if($group_by !== ''){
             $group_by =" GROUP BY $group_by ";
@@ -2019,7 +2018,8 @@ class modelo extends modelo_base {
     protected function seccion_menu_id(string $seccion):array|int{
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error('Error seccion no puede venir vacio',$seccion);
+            return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $seccion,
+                params: get_defined_vars());
         }
         $filtro['seccion.descripcion'] = $seccion;
         $modelo_sm = $this->genera_modelo(modelo: 'seccion');
