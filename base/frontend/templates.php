@@ -699,7 +699,8 @@ class templates{
                 params: get_defined_vars());
         }
         if(count($etiqueta_campos) === 0){
-            return $this->error->error('Error $etiqueta_campos esta vacio',$etiqueta_campos);
+            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos,
+                params: get_defined_vars());
         }
 
         $filtro_boton_seleccionado_html = '';

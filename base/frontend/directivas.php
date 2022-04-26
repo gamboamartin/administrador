@@ -536,7 +536,7 @@ class directivas extends html {
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERORREV
      * @param array $filtro
      * @return array|string
      */
@@ -544,7 +544,8 @@ class directivas extends html {
         $filtro_html = '';
         foreach($filtro as $key=>$data){
             if($key === ''){
-                return $this->errores->error('Error el key no puede venir vacio', $key);
+                return $this->errores->error(mensaje: 'Error el key no puede venir vacio',data:  $key,
+                    params: get_defined_vars());
             }
             $data_key = str_replace(array('.', '_'), ' ', $key);
             $data_key = ucwords($data_key);

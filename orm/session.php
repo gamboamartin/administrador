@@ -262,7 +262,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * FULL
      * @param string $seccion
      * @return array
      */
@@ -270,16 +270,17 @@ class session extends modelo{//PRUEBAS FINALIZADAS
         $seccion = str_replace('models\\','',$seccion);
         $class = 'models\\'.$seccion;
         if($seccion===''){
-            return $this->error->error("Error la seccion esta vacia",$seccion);
+            return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion,
+                params: get_defined_vars());
         }
         if(!class_exists($class)){
-            return $this->error->error("Error la clase es invalida",$class);
+            return $this->error->error(mensaje: "Error la clase es invalida",data: $class, params: get_defined_vars());
         }
         $filtro = array();
         if(isset($_SESSION['filtros'][$seccion])){
             $filtro = $_SESSION['filtros'][$seccion];
             if(!is_array($filtro)){
-                return $this->error->error('Error filtro invalido',$filtro);
+                return $this->error->error(mensaje: 'Error filtro invalido',data: $filtro, params: get_defined_vars());
             }
         }
 

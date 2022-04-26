@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use models\seccion;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -1385,7 +1386,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param int $limit
      * @return string|array
      */
@@ -1673,7 +1674,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * Obtiene todos los registros de un modelo
      * @param string $sql_extra
      * @param string $group_by
@@ -1731,7 +1732,8 @@ class modelo extends modelo_base {
             extension_estructura: $this->extension_estructura, renombradas: $this->renombres);
 
         if(errores::$error){
-            return $this->error->error('Error al generar consulta', $consulta_base);
+            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta_base,
+                params: get_defined_vars());
         }
 
         $consulta = $consulta_base.' '.$sql_extra.' '.$seguridad.' '.$group_by.' '.$order_sql.' '.$limit_sql.' '.$offset_sql;
@@ -1739,7 +1741,7 @@ class modelo extends modelo_base {
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_consulta(consulta: $consulta);
         if(errores::$error){
-            return $this->error->error('Error al ejecutar consulta', $result);
+            return $this->error->error(mensaje: 'Error al ejecutar consulta', data: $result, params: get_defined_vars());
         }
         $this->transaccion = '';
 
@@ -1788,7 +1790,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P ORDER P INT PORBADO ERRORREV
+     * FULL
      * Devuelve un conjunto de registros ordenados con filtro
      * @param array $filtros filtros para generar AND en el resultado
      * @param string $campo campo de orden
@@ -1863,7 +1865,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param int $offset
      * @return string|array
      */
@@ -1882,7 +1884,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $group_by
      * @param array $order
      * @param int $limit
@@ -2014,7 +2016,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PROBADO P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param string $seccion
      * @return array|int
      */
@@ -2025,16 +2027,16 @@ class modelo extends modelo_base {
                 params: get_defined_vars());
         }
         $filtro['seccion.descripcion'] = $seccion;
-        $modelo_sm = $this->genera_modelo(modelo: 'seccion');
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo_sm);
-        }
+        $modelo_sm = new seccion($this->link);
+
         $r_seccion_menu = $modelo_sm->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener seccion menu',$r_seccion_menu);
+            return $this->error->error(mensaje: 'Error al obtener seccion menu',data: $r_seccion_menu,
+                params: get_defined_vars());
         }
         if((int)$r_seccion_menu->n_registros === 0){
-            return $this->error->error('Error al obtener seccion menu no existe',$r_seccion_menu);
+            return $this->error->error(mensaje: 'Error al obtener seccion menu no existe',data: $r_seccion_menu,
+                params: get_defined_vars());
         }
 
         $registros = $r_seccion_menu->registros[0];

@@ -14,7 +14,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER PROBADO
+     * FULL
      * @param array $filtro_default_btn
      * @return array
      */
@@ -22,7 +22,8 @@ class normalizacion{
         $keys = array('tabla','valor_default');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $filtro_default_btn);
         if(errores::$error){
-            return $this->error->error('Error validar filtro_default_btn',$valida);
+            return $this->error->error(mensaje: 'Error validar filtro_default_btn',data: $valida,
+                params: get_defined_vars());
         }
 
         $_GET['filtro_btn'][$filtro_default_btn['tabla'] . '.id']['campo'] = $filtro_default_btn['tabla'] . '.id';
@@ -31,7 +32,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROR
      * @param array $filtro_default_btn
      * @param array $filtro_btn
      * @return array
@@ -40,7 +41,8 @@ class normalizacion{
         $keys = array('tabla','valor_default');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $filtro_default_btn);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro_default_btn', $valida);
+            return $this->error->error(mensaje: 'Error al validar filtro_default_btn', data: $valida,
+                params: get_defined_vars());
         }
         $filtro_btn = $this->determina_filtro_btn(filtro_btn: $filtro_btn, filtro_default_btn: $filtro_default_btn);
         if(errores::$error){
@@ -48,7 +50,8 @@ class normalizacion{
         }
         $asigna_filtro_get = $this->asigna_filtro_btn_get(filtro_default_btn: $filtro_default_btn);
         if(errores::$error){
-            return $this->error->error('Error al determinar filtro',$asigna_filtro_get);
+            return $this->error->error(mensaje: 'Error al determinar filtro',data: $asigna_filtro_get,
+                params: get_defined_vars());
         }
         return $filtro_btn;
     }
@@ -79,7 +82,7 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param array $campo
      * @param string $tabla
      * @param array $filtro_modelado
@@ -88,7 +91,7 @@ class normalizacion{
     private function asigna_valor_filtro_modelado(array $campo,array $filtro_modelado, string $tabla):array{
         foreach($campo as $key=>$data){
             if(is_numeric($key)){
-                return $this->error->error('Error filtro invalido',$campo);
+                return $this->error->error(mensaje: 'Error filtro invalido',data: $campo, params: get_defined_vars());
             }
             if(isset($data['value']) && (string)$data['value'] === ''){
                 continue;
@@ -133,7 +136,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param array $filtro_default_btn
      * @param array $filtro_btn
      * @return array
@@ -142,7 +145,8 @@ class normalizacion{
         $keys = array('tabla','valor_default');
         $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $filtro_default_btn);
         if(errores::$error){
-            return $this->error->error('Error al validar filtro_default_btn', $valida);
+            return $this->error->error(mensaje: 'Error al validar filtro_default_btn', data: $valida,
+                params: get_defined_vars());
         }
         $filtro_btn[$filtro_default_btn['tabla'] . '.id']['campo'] = $filtro_default_btn['tabla'] . '.id';
         $filtro_btn[$filtro_default_btn['tabla'] . '.id'] = $filtro_default_btn['valor_default'];
@@ -150,7 +154,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param array $filtro
      * @param array $filtro_btn
      * @param controler $controler
@@ -160,18 +164,20 @@ class normalizacion{
 
         $filtro_modelado = $this->genera_filtros_modelados(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro',$filtro_modelado);
+            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_modelado,
+                params: get_defined_vars());
         }
 
         $filtro_modelado = $this->merge_filtro_modelado(controler:  $controler, filtro_btn: $filtro_btn, filtro_modelado:$filtro_modelado);
         if(errores::$error){
-            return $this->error->error('Error al aplicar filtro en merge',$filtro_modelado);
+            return $this->error->error(mensaje: 'Error al aplicar filtro en merge',data: $filtro_modelado,
+                params: get_defined_vars());
         }
         return $filtro_modelado;
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERRORREV
      * @param controler $controler
      * @return array
      */
@@ -187,11 +193,13 @@ class normalizacion{
         }
 
         if(!is_array($filtro_btn)){
-            return $this->error->error('Error filtro_btn debe ser un array',$filtro_btn);
+            return $this->error->error(mensaje: 'Error filtro_btn debe ser un array',data: $filtro_btn,
+                params: get_defined_vars());
         }
         $filtro_btn = $this->reasigna_filtros(controler:  $controler, filtro_btn: $filtro_btn);
         if(errores::$error){
-            return $this->error->error('Error al determinar filtro',$filtro_btn);
+            return $this->error->error(mensaje: 'Error al determinar filtro',data: $filtro_btn,
+                params: get_defined_vars());
         }
 
         return $filtro_btn;
@@ -233,7 +241,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param array $filtro
      * @param controler $controler
      * @param array $filtro_btn
@@ -244,7 +252,8 @@ class normalizacion{
 
         $filtro_modelado = $this->determina_filtro_modelado(controler: $controler, filtro: $filtro, filtro_btn: $filtro_btn);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro',$filtro_modelado);
+            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_modelado,
+                params: get_defined_vars());
         }
         return $filtro_modelado;
     }
@@ -267,7 +276,7 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT
+     * P ORDER P INT ERROREV
      * @param array $filtro
      * @return array
      */
@@ -275,15 +284,17 @@ class normalizacion{
         $filtro_modelado = array();
         foreach($filtro as $tabla =>$campo){
             if(is_numeric($tabla)){
-                return $this->error->error('Error filtro invalido key invalido',$filtro);
+                return $this->error->error(mensaje: 'Error filtro invalido key invalido',data: $filtro,
+                    params: get_defined_vars());
             }
             if(!is_array($campo)){
-                return $this->error->error('Error filtro invalido',$filtro);
+                return $this->error->error(mensaje: 'Error filtro invalido',data: $filtro, params: get_defined_vars());
             }
             $filtro_modelado = $this->asigna_valor_filtro_modelado(campo: $campo,filtro_modelado: $filtro_modelado,
                 tabla: $tabla);
             if(errores::$error){
-                return $this->error->error('Error al generar filtro',$filtro_modelado);
+                return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_modelado,
+                    params: get_defined_vars());
             }
         }
         return $filtro_modelado;
@@ -469,7 +480,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param array $filtro_modelado
      * @param array $filtro_btn
      * @param controler $controler
@@ -579,7 +590,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROR
      * @param array $filtro_btn
      * @param controler $controler
      * @return array
@@ -591,7 +602,8 @@ class normalizacion{
                     if ($filtro_default_btn['valor_default'] > 0) {
                         $filtro_btn = $this->asigna_filtros(filtro_btn: $filtro_btn, filtro_default_btn: $filtro_default_btn);
                         if(errores::$error){
-                            return $this->error->error('Error al determinar filtro',$filtro_btn);
+                            return $this->error->error(mensaje: 'Error al determinar filtro',data: $filtro_btn,
+                                params: get_defined_vars());
                         }
                     }
                 }

@@ -740,7 +740,8 @@ class listas{
      */
     public function genera_th(array $etiqueta_campos, string $seccion):array|string{
         if(count($etiqueta_campos) === 0){
-            return $this->error->error('Error $etiqueta_campos esta vacio',$etiqueta_campos);
+            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos
+                , params: get_defined_vars());
         }
         $html = $this->genera_campos_elementos_lista(etiqueta_campos: $etiqueta_campos, seccion: $seccion);
         if(errores::$error){

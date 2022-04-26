@@ -19,7 +19,7 @@ class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     }
 
     /**
-     * P INT P ORDER
+     * P INT P ORDER ERROREV
      * @param int $seccion_menu_id
      * @return array|stdClass
      */

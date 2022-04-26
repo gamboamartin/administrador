@@ -59,8 +59,9 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
-     * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser $data[(string)campo] sino un string
+     * FULL
+     * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
+     * $data[(string)campo] sino un string
      * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
      * @return string|array
      */
@@ -73,7 +74,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
      * @param string $default
@@ -84,7 +85,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $columnas_extra
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
@@ -478,7 +479,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql
      * @param array $columnas_extra
      * @param array $filtro parametros para maquetar filtro[data] =  $data $data dato para la asignacion de un nombre de un campo si es array debe ser
@@ -1249,7 +1250,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
      * @return string|array

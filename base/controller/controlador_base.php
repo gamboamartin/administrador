@@ -666,10 +666,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->retorno_error(mensaje: 'Error al validar', data: $valida,header:  $header, ws: $ws);
         }
         $modelo = new accion($this->link);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar modelo accion', data: $modelo, header: $header,
-                ws: $ws, params: get_defined_vars());
-        }
 
         $acciones = $modelo->acciones_permitidas(accion:$this->accion, modelo:$this->modelo, seccion:$this->seccion);
         if(errores::$error){
@@ -689,7 +685,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $elm = new elemento_lista($this->link);
         if(errores::$error){
-            $error = $this->errores->error('Error al generar modelo',$elm);
+            $error = $this->errores->error(mensaje: 'Error al generar modelo',data: $elm, params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -737,15 +733,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         $session_modelo = new session($this->link);
-        if(errores::$error){
-            $error = $this->errores->error('Error al generar modelo',$modelo);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
+
 
         $filtro = $session_modelo->obten_filtro_session(seccion:$this->seccion);
         if(errores::$error){
@@ -756,7 +744,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $registros = $this->obten_registros_para_lista(filtro:  $filtro, limit: 15,pag_seleccionada:  $pag_seleccionada,
             filtro_btn: $filtro_btn,columnas: $columnas_mostrables);
         if(errores::$error){
-            $error = $this->errores->error('Error al obtener registros',$registros);
+            $error = $this->errores->error(mensaje: 'Error al obtener registros',data: $registros,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -767,12 +756,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $filtro = $session_modelo->obten_filtro_session(seccion:$this->seccion);
         if(errores::$error){
-            return $this->errores->error('Error al obtener filtro',$filtro);
+            return $this->errores->error(mensaje: 'Error al obtener filtro',data: $filtro, params: get_defined_vars());
         }
 
         $filtros =    (new normalizacion())->genera_filtro_modelado(controler:  $this, filtro: $filtro);
         if(errores::$error){
-            $error = $this->errores->error('Error al $filtros',$filtros);
+            $error = $this->errores->error(mensaje: 'Error al $filtros',data: $filtros, params: get_defined_vars());
             if(!$header){
                 return $error;
             }
@@ -804,7 +793,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $filtro_html = $this->directiva->format_filtro_base_html(filtro: $filtros);
         if(errores::$error){
-            $error = $this->errores->error('Error al $filtro_html',$filtro_html);
+            $error = $this->errores->error(mensaje: 'Error al $filtro_html',data: $filtro_html,
+                params: get_defined_vars());
             if(!$header){
                 return $error;
             }
