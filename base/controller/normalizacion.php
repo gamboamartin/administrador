@@ -57,7 +57,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * P INT P ORDER  ERROREV
      * @param controler $controler
      * @param array $registro
      * @return array
@@ -498,7 +498,7 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $seccion
      * @return string|array
      */
@@ -614,7 +614,7 @@ class normalizacion{
     }
 
     /**
-     *  P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param array $arreglo
      * @return array
      */

@@ -189,7 +189,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * Genera las condiciones sql de un filtro especial
      *
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -533,7 +533,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
      * @param array $columnas_extra
      * @param array $filtro filtros para la maquetacion de filtros
@@ -580,7 +580,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -860,7 +860,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * FULL
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE o =
      * @param string $tipo_filtro numeros = textos LIKE
      * @param array $filtro parametros para generar sentencia
@@ -964,7 +964,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -1017,7 +1017,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param array $values
      * @param string $llave
      * @return array|string
@@ -1043,7 +1043,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * Genera la condicion sql de un filtro especial
      *
      * @param string $filtro_especial_sql //condicion en forma de sql
@@ -1270,7 +1270,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * FULL
      * @param string $value
      * @param string $values_sql
      * @return array|stdClass
@@ -1295,7 +1295,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * FULL
      * @param array $values
      * @return string|array
      */

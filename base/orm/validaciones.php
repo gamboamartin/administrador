@@ -82,7 +82,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * FULL
      * @param string $campo
      * @param array $filtro
      * @return bool|array
