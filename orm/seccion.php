@@ -236,6 +236,7 @@ class seccion extends modelo{
         $selects[] = 'accion_id';
         $selects[] = 'acl_valida_comision_id';
         $selects[] = 'almacen_id';
+        $selects[] = 'asentamiento_id';
         $selects[] = 'atributo_id';
         $selects[] = 'avance_ubicacion_id';
         $selects[] = 'banco_id';
@@ -342,6 +343,7 @@ class seccion extends modelo{
         $selects[] = 'tipo_nomina_id';
         $selects[] = 'tipo_proveedor_id';
         $selects[] = 'tipo_relacion_id';
+        $selects[] = 'tipo_vialidad_id';
         $selects[] = 'ubicacion_id';
         $selects[] = 'unidad_id';
         $selects[] = 'uso_cfdi_id';
