@@ -478,7 +478,8 @@ class directivas extends html {
 
         $html .= $con_label_html;
 
-        $container_html = $this->html_fecha(tipo: $tipo, size: $size,params:  $params,campo:  $campo,campo_capitalize:  $campo_capitalize, value: $value);
+        $container_html = $this->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+            size: $size, tipo: $tipo, value: $value);
         if (errores::$error) {
             return $this->error->error('Error al integrar params',$container_html);
         }

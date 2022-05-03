@@ -87,6 +87,7 @@ class seccion extends modelo{
         $texts[] = 'descuento_compartido';
         $texts[] = 'descuento_neto';
         $texts[] = 'destino';
+        $texts[] = 'direccion';
         $texts[] = 'domicilio';
         $texts[] = 'dom_pat';
         $texts[] = 'edo_telc';
@@ -200,6 +201,7 @@ class seccion extends modelo{
         $texts[] = 'size';
         $texts[] = 'status_envio';
         $texts[] = 'sub_total';
+        $texts[] = 'telefono';
         $texts[] = 'tel_cel';
         $texts[] = 'tel_contac_telc';
         $texts[] = 'tel_1';
@@ -334,6 +336,7 @@ class seccion extends modelo{
         $selects[] = 'status_cliente_id';
         $selects[] = 'status_ubicacion_id';
         $selects[] = 'tipo_ajuste_id';
+        $selects[] = 'tipo_clave_oficina_id';
         $selects[] = 'tipo_comision_id';
         $selects[] = 'tipo_dato_id';
         $selects[] = 'tipo_descuento_id';

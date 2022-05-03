@@ -5,6 +5,7 @@ use base\frontend\html;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 
 class htmlTest extends test {
@@ -66,5 +67,71 @@ class htmlTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_html_fecha(){
+        errores::$error = false;
+        $html = new html();
+        $inicializacion = new liberator($html);
+
+        $campo = '';
+        $campo_capitalize = '';
+        $params = new stdClass();
+        $size = '';
+        $tipo = '';
+        $value = '';
+
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+            size: $size, tipo: $tipo, value: $value);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error tipo no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = '';
+        $campo_capitalize = '';
+        $params = new stdClass();
+        $size = '';
+        $tipo = 'x';
+        $value = '';
+
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+            size: $size, tipo: $tipo, value: $value);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $size no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = '';
+        $campo_capitalize = '';
+        $params = new stdClass();
+        $size = 'x';
+        $tipo = 'x';
+        $value = '';
+
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+            size: $size, tipo: $tipo, value: $value);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'x';
+        $campo_capitalize = '';
+        $params = new stdClass();
+        $size = 'x';
+        $tipo = 'x';
+        $value = '';
+
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+            size: $size, tipo: $tipo, value: $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<input  type='x'  class='form-control-x form-control input-x '  name='x'   id=''   placeholder='Ingresa '      title='Ingrese una x'   value=''         > ", $resultado);
+
+        errores::$error = false;
     }
 }

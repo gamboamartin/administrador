@@ -90,7 +90,7 @@ class html  {
 
 
     /**
-     * P INT
+     * P INT P
      * @param string $tipo
      * @param string $size
      * @param stdClass $params
@@ -99,7 +99,7 @@ class html  {
      * @param string $value
      * @return string|array
      */
-    protected function html_fecha(string $tipo, string $size, stdClass $params, string $campo, string $campo_capitalize,
+    protected function html_fecha(string $campo, string $campo_capitalize, stdClass $params, string $size, string $tipo,
                                 string $value): string|array
     {
 
