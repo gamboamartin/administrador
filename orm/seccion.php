@@ -156,6 +156,7 @@ class seccion extends modelo{
         $texts[] = 'no_certificado';
         $texts[] = 'no_certificado_sat';
         $texts[] = 'nombre';
+        $texts[] = 'nombre_calle';
         $texts[] = 'nombres';
         $texts[] = 'nombre_arrendatario';
         $texts[] = 'nombre_notario';
