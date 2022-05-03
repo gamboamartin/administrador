@@ -156,7 +156,6 @@ class seccion extends modelo{
         $texts[] = 'no_certificado';
         $texts[] = 'no_certificado_sat';
         $texts[] = 'nombre';
-        $texts[] = 'nombre_calle';
         $texts[] = 'nombres';
         $texts[] = 'nombre_arrendatario';
         $texts[] = 'nombre_notario';
@@ -296,6 +295,7 @@ class seccion extends modelo{
         $selects[] = 'moneda_id';
         $selects[] = 'motivo_cancelacion_id';
         $selects[] = 'municipio_id';
+        $selects[] = 'nombre_calle_id';
         $selects[] = 'notaria_firma_cotejo_id';
         $selects[] = 'notaria_id';
         $selects[] = 'nomina_id';
