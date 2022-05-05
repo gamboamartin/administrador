@@ -15,6 +15,31 @@ class menusTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_breadcrumb_active(){
+        errores::$error = false;
+        $m = new menus();
+        $m = new liberator($m);
+
+        $etiqueta = '';
+        $resultado = $m->breadcrumb_active(etiqueta: $etiqueta);
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al $etiqueta no puede venir vacia',
+            $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $etiqueta = 'x';
+        $resultado = $m->breadcrumb_active(etiqueta: $etiqueta);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<button class='btn btn-info btn-sm disabled no-print'>X</button>", $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_data_menu(){
         errores::$error = false;
         $m = new menus();

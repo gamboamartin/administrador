@@ -51,7 +51,7 @@ class menus{
 
     /**
      *
-     * Genera el breadcrumb en forma html
+     * PROBADO - PARAMS ORDER PARAMS INT Genera el breadcrumb en forma html
      *
      * @param string $etiqueta
      *
@@ -65,11 +65,13 @@ class menus{
      */
     private function breadcrumb_active(string $etiqueta):array|string{
         if($etiqueta === ''){
-            return $this->error->error('Error al $etiqueta no puede venir vacia',$etiqueta);
+            return $this->error->error(mensaje: 'Error al $etiqueta no puede venir vacia',data: $etiqueta,
+                params: get_defined_vars());
         }
-        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta($etiqueta,'capitalize');
+        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta, tipo_letra: 'capitalize');
         if(errores::$error){
-            return $this->error->error('Error al generar genera_texto_etiqueta',$r_etiqueta);
+            return $this->error->error(mensaje: 'Error al generar genera_texto_etiqueta', data: $r_etiqueta,
+                params: get_defined_vars());
         }
         return "<button class='btn btn-info btn-sm disabled no-print'>$r_etiqueta</button>";
     }
@@ -238,7 +240,7 @@ class menus{
         $keys = array('accion_descripcion','accion_icono');
         $valida = $this->validacion->valida_existencia_keys($keys, $etiqueta);
         if(errores::$error){
-            return $this->error->error('Error al validar etiqueta', $valida);
+            return $this->error->error(mensaje: 'Error al validar etiqueta', data: $valida, params: get_defined_vars());
         }
         $data['etiqueta'] = $etiqueta['accion_descripcion'];
         $data['link'] = $etiqueta['accion_descripcion'];

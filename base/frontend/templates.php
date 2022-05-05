@@ -598,7 +598,7 @@ class templates{
 
         $accion ='modifica';
 
-        $campos_html = $this->genera_campos($tipo, $campo_name, $cols, $valor, $required, $disabled, $ln, $etiqueta,
+        $campos_html = $this->genera_campos($campo_name, $tipo, $cols, $valor, $required, $disabled, $ln, $etiqueta,
             $pattern, $css_id, $data_extra, $tabla_foranea, $select_vacio_alta, $valores_filtrados, $columnas,
             $llaves_foraneas, $vistas, $accion, $campos_invisibles);
         if(errores::$error){
