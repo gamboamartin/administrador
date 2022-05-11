@@ -1,5 +1,5 @@
 <?php
-namespace controllers;
+namespace gamboamartin\controllers;
 
 use base\controller\init;
 use base\seguridad;
@@ -60,7 +60,6 @@ class controlador_session extends controlador_base{
         }
         return $r_alta;
     }
-
 
 
 

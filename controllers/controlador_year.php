@@ -1,6 +1,6 @@
 <?php
-namespace controllers;
-use controller\controlador_base;
+namespace gamboamartin\controllers;
+use base\controller\controlador_base;
 use models\year;
 
 class controlador_year extends controlador_base{

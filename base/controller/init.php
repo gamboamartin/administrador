@@ -3,7 +3,7 @@ namespace base\controller;
 use base\conexion;
 use base\seguridad;
 use config\generales;
-use controllers\controlador_session;
+use gamboamartin\controllers\controlador_session;
 use gamboamartin\errores\errores;
 use JsonException;
 use models\accion;
@@ -28,7 +28,7 @@ class init{
     public function controller(PDO $link, string $seccion):controler|array{
         $name_ctl = $this->name_controler(seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener nombre de controlador', data: $name_ctl, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener nombre de controlador', data: $name_ctl);
 
         }
 
@@ -86,7 +86,7 @@ class init{
 
         $session = (new session($link))->carga_data_session();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar session',data: $session, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar session',data: $session);
 
         }
 
@@ -96,43 +96,38 @@ class init{
 
         $seguridad = $this->permiso( link: $link,seguridad:   $seguridad);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al verificar seguridad',data: $seguridad,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al verificar seguridad',data: $seguridad);
 
         }
 
         $controlador = $this->controller(link:  $link,seccion:  $seguridad->seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar controlador', data: $controlador,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar controlador', data: $controlador);
 
         }
 
         $include_action = (new init())->include_action(seguridad: $seguridad);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar include',data: $include_action,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar include',data: $include_action);
 
         }
 
         $out_ws = (new salida_data())->salida_ws(controlador:$controlador, include_action: $include_action,
             seguridad:  $seguridad);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar salida',data: $out_ws, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar salida',data: $out_ws);
 
         }
 
         $mensajeria = (new mensajes())->data();
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar mensajes',data: $mensajeria,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar mensajes',data: $mensajeria);
 
         }
 
         $data_custom = (new custom())->data(seguridad: $seguridad);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar datos custom',data: $data_custom,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar datos custom',data: $data_custom);
 
         }
 
@@ -188,12 +183,18 @@ class init{
      */
     private function name_controler(string $seccion): string|array
     {
+        $sistema = (new generales())->sistema;
+        $namespace = '';
+        if($sistema === 'administrador'){
+            $namespace = 'gamboamartin\\';
+        }
+
         $name_ctl = 'controlador_'.$seccion;
-        $name_ctl = str_replace('controllers\\','',$name_ctl);
-        $name_ctl = 'controllers\\'.$name_ctl;
+        $name_ctl = str_replace($namespace.'controllers\\','',$name_ctl);
+        $name_ctl = $namespace.'controllers\\'.$name_ctl;
 
         if(!class_exists($name_ctl)){
-            return $this->error->error('Error no existe la clase '.$name_ctl,$name_ctl);
+            return $this->error->error(mensaje: 'Error no existe la clase '.$name_ctl,data: $name_ctl);
         }
 
         return $name_ctl;

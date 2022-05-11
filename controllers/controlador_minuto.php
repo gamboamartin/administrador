@@ -1,6 +1,7 @@
 <?php
-namespace controllers;
-use controller\controlador_base;
+namespace gamboamartin\controllers;
+
+use base\controller\controlador_base;
 use models\minuto;
 
 class controlador_minuto extends controlador_base{

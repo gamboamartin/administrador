@@ -1,7 +1,8 @@
 <?php
-namespace controllers;
+namespace gamboamartin\controllers;
+use base\controller\controlador_base;
 use gamboamartin\errores\errores;
-use controller\controlador_base;
+
 use models\accion_grupo;
 
 class controlador_accion_grupo extends controlador_base{

@@ -1,7 +1,7 @@
 <?php
-namespace controllers;
+namespace gamboamartin\controllers;
+use base\controller\controlador_base;
 use gamboamartin\errores\errores;
-use controller\controlador_base;
 use models\usuario;
 
 class controlador_usuario extends controlador_base{

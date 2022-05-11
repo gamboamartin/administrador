@@ -1,6 +1,6 @@
 <?php
-namespace controllers;
-use controller\controlador_base;
+namespace gamboamartin\controllers;
+use base\controller\controlador_base;
 use models\bitacora;
 
 class controlador_bitacora extends controlador_base{

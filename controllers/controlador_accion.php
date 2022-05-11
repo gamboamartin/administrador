@@ -1,5 +1,5 @@
 <?php
-namespace controllers;
+namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
 use JsonException;

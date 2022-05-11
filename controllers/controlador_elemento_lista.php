@@ -1,5 +1,5 @@
 <?php
-namespace controllers;
+namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use models\elemento_lista;
 class controlador_elemento_lista extends controlador_base{

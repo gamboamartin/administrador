@@ -289,16 +289,17 @@ class validaciones_directivasTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error la clase es invalida', $resultado['mensaje']);
 
         errores::$error = false;
-        $tabla = 'pruebas';
+        $tabla = 'minuto';
         $accion = '';
         $resultado = $val->valida_metodos(accion:  $accion, tabla: $tabla);
+
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error la accion es invalida', $resultado['mensaje']);
 
         errores::$error = false;
-        $tabla = 'pruebas';
-        $accion = 'a';
+        $tabla = 'minuto';
+        $accion = 'alta';
         $resultado = $val->valida_metodos(accion:  $accion, tabla: $tabla);
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);

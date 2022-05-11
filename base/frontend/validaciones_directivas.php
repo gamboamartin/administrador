@@ -2,6 +2,7 @@
 namespace base\frontend;
 
 
+use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 
@@ -277,7 +278,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO P INT P ORDER
+     * TODO
      * Valida que exista la clase y la accion
      *
      * @param string $tabla tabla modelo a validar
@@ -293,16 +294,21 @@ class validaciones_directivas extends validacion{
         $tabla = trim($tabla);
         $accion = trim($accion);
 
+        $namespace = '';
+        if((new generales())->sistema === 'administrador'){
+            $namespace = 'gamboamartin\\';
+        }
+
         $tabla = str_replace('models\\','',$tabla);
-        $class = 'controllers\\controlador_'.$tabla;
+        $class = $namespace.'controllers\\controlador_'.$tabla;
         if($tabla === ''){
-            return  $this->error->error("Error tabla vacia",$tabla);
+            return  $this->error->error(mensaje: "Error tabla vacia",data: $tabla);
         }
         if(!class_exists ( $class)){
-            return  $this->error->error("Error la clase es invalida",'controlador_'.$tabla);
+            return  $this->error->error(mensaje:"Error la clase es invalida",data:'controlador_'.$tabla);
         }
         if(!method_exists($class,$accion)){
-            return  $this->error->error("Error la accion es invalida",array('controlador_'.$tabla,$accion));
+            return  $this->error->error(mensaje:"Error la accion es invalida",data:array('controlador_'.$tabla,$accion));
         }
 
         return true;

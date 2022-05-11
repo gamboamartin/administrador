@@ -56,14 +56,14 @@ class templates{
         $directiva = new directivas();
         $valida_metodo = $directiva->validacion->valida_metodos(accion: 'alta', tabla: $seccion);
         if(errores::$error){
-            return  $this->error->error("Error al validar metodo",$valida_metodo);
+            return  $this->error->error(mensaje: "Error al validar metodo",data:$valida_metodo);
         }
         $html = '';
         if($aplica_form) {
             $header_form = (new forms())->header_form(accion:  'alta', accion_request: 'alta_bd', seccion: $seccion,
                 session_id:  $session_id);
             if(errores::$error){
-                return  $this->error->error("Error al generar header form",$header_form);
+                return  $this->error->error(mensaje: "Error al generar header form",data:$header_form);
             }
             $html.=$header_form;
 
@@ -75,8 +75,7 @@ class templates{
             campos_disabled: $campos_disabled,valores_default: $valores_default,
             campos_invisibles: $campos_invisibles);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al generar campos alta',data: $data_html,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al generar campos alta',data: $data_html);
         }
 
         $html .= $data_html;
@@ -89,7 +88,7 @@ class templates{
         if($muestra_btn_guardar) {
             $btn = $directiva->btn_enviar(label:  'Guardar',name:  'btn_guarda',value: 'activo', stilo: 'success');
             if(errores::$error){
-                return  $this->error->error('Error al generar boton',$btn);
+                return  $this->error->error(mensaje: 'Error al generar boton',data: $btn);
             }
             $html.=$btn;
         }
