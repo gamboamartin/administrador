@@ -1,6 +1,7 @@
 <?php
 namespace controllers;
 
+use base\controller\init;
 use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
@@ -60,21 +61,7 @@ class controlador_session extends controlador_base{
         return $r_alta;
     }
 
-    /**
-     * Asigna una session aleatoria a get
-     * @return array GET con session_id en un key
-     */
-    public function asigna_session_get(): array
-    {
-        $session_id = $this->session_id();
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar session_id', data: $session_id,
-                params: get_defined_vars());
-        }
 
-        $_GET['session_id'] = $session_id;
-        return $_GET;
-    }
 
 
     /**
@@ -199,7 +186,7 @@ class controlador_session extends controlador_base{
         $_SESSION['usuario_id'] = $usuario['usuario_id'];
 
 
-        $data_get = $this->asigna_session_get();
+        $data_get = (new init())->asigna_session_get();
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar session_id', data: $data_get, header: $header,
                 ws: $ws);
@@ -215,25 +202,7 @@ class controlador_session extends controlador_base{
         exit;
     }
 
-    /**
-     * UNIT
-     * Genera la session_id basada en un rand
-     * @return array|string string es la session generada
-     */
-    private function session_id(): array|string
-    {
-        try{
-            $session_id = random_int(10,99);
-            $session_id .= random_int(10,99);
-            $session_id .= random_int(10,99);
-            $session_id .= random_int(10,99);
-            $session_id .= random_int(10,99);
-        }
-        catch (Throwable $e){
-            return $this->errores->error(mensaje: 'Error al generar session', data: $e,params: get_defined_vars());
-        }
-        return $session_id;
-    }
+
 
     public function srv_login(){
         $datos_validos = (new \validacion\session())->valida_datos_recepcion();

@@ -22,24 +22,7 @@ class controlador_sessionTest extends test {
         $this->paths_conf->views = '/var/www/html/administrador/config/views.php';
     }
 
-    /**
-     * @throws JsonException
-     */
-    public function test_session_id(){
 
-        errores::$error = false;
-
-        $ctl = new controlador_session(link: $this->link, paths_conf: $this->paths_conf);
-        $ctl = new liberator($ctl);
-
-        $resultado = $ctl->session_id();
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsNumeric($resultado);
-
-        errores::$error = false;
-    }
 
 
 

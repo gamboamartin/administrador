@@ -10,6 +10,7 @@ use models\accion;
 use models\session;
 use PDO;
 use stdClass;
+use Throwable;
 
 class init{
     private errores $error;
@@ -38,6 +39,23 @@ class init{
             $controlador = new $name_ctl(link:$link);
         }
         return $controlador;
+    }
+
+    /**
+     * UNIT
+     * Asigna una session aleatoria a get
+     * @return array GET con session_id en un key
+     */
+    public function asigna_session_get(): array
+    {
+        $session_id = $this->session_id();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar session_id', data: $session_id,
+                params: get_defined_vars());
+        }
+
+        $_GET['session_id'] = $session_id;
+        return $_GET;
     }
 
     public function include_action(seguridad $seguridad): string
@@ -221,5 +239,28 @@ class init{
             }
         }
         return $seguridad;
+    }
+
+    /**
+     * UNIT
+     * Genera la session_id basada en un rand
+     * @return array|string string es la session generada
+     */
+    private function session_id(): array|string
+    {
+        if(isset($_GET['session_id'])){
+            return $_GET['session_id'];
+        }
+        try{
+            $session_id = random_int(10,99);
+            $session_id .= random_int(10,99);
+            $session_id .= random_int(10,99);
+            $session_id .= random_int(10,99);
+            $session_id .= random_int(10,99);
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al generar session', data: $e,params: get_defined_vars());
+        }
+        return $session_id;
     }
 }
