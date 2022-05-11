@@ -134,12 +134,12 @@ class controlador_session extends controlador_base{
     /**
      * DEBUG
      */
-    public function login(){
+    public function login(bool $header = true, bool $ws = false){
 
 
     }
 
-    public function logout(){
+    public function logout(bool $header = true, bool $ws = false){
         $seguridad = new seguridad();
         $seguridad->elimina_session($this->link);
         header('Location: index.php?seccion=session&accion=login');

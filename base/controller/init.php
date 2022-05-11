@@ -163,6 +163,24 @@ class init{
         return $data;
     }
 
+    private function init_for_view(): stdClass
+    {
+        $data = new stdClass();
+        $data->header = false;
+        $data->ws = false;
+        $data->view = true;
+        return $data;
+    }
+
+    private function init_for_ws(): stdClass
+    {
+        $data = new stdClass();
+        $data->header = false;
+        $data->ws = true;
+        $data->view = false;
+        return $data;
+    }
+
     /**
      * P INT P ORDER
      * @param string $seccion
@@ -187,24 +205,49 @@ class init{
      */
     public function params_controler(): stdClass
     {
-        $ws = false;
-        $header = true;
-        $view = false;
+
+        $data_i = $this->init_params();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar ws',data: $data_i);
+        }
+
+        $data_i = $this->init_con_get(data_i:$data_i);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar ws',data: $data_i);
+        }
+
+
+        return $data_i;
+    }
+
+    private function init_con_get(stdClass $data_i): array|stdClass
+    {
         if(isset($_GET['ws'])){
-            $header = false;
-            $ws = true;
+            $data_i = $this->init_for_ws();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar ws',data: $data_i);
+            }
 
         }
-        if(isset($_GET['view'])){
-            $header = false;
-            $ws = false;
-            $view = true;
+        if(isset($_GET['view'])) {
+
+            $data_i = $this->init_for_view();
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al inicializar ws', data: $data_i);
+            }
         }
+        return $data_i;
+    }
+
+    private function init_params(): stdClass
+    {
 
         $data = new stdClass();
-        $data->ws = $ws;
-        $data->header = $header;
-        $data->view = $view;
+
+        $data->ws = false;
+        $data->header = true;
+        $data->view = false;
+
         return $data;
     }
 

@@ -25,7 +25,7 @@ class salida_data{
 
         }
         $accion = $seguridad->accion;
-        $data = $controlador->$accion($params->header, $params->ws);
+        $data = $controlador->$accion(header:$params->header,ws: $params->ws);
 
         try {
             if ($params->ws && ($seguridad->accion === 'denegado')) {
