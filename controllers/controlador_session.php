@@ -116,36 +116,19 @@ class controlador_session extends controlador_base{
 
     /**
      * DEBUG INI
+     * @throws JsonException
      */
-    public function inicio(): void
+    public function inicio(bool $aplica_template = true, bool $header = true, bool $ws = false): string|array
     {
-
-        $template = $this->alta(header: false);
-        if(errores::$error){
-            $error = $this->errores->error('Error al generar template',$template);
-            print_r($error);
-            exit;
+        $template = '';
+        if($aplica_template) {
+            $template = $this->alta(header: false);
+            if (errores::$error) {
+                return $this->retorno_error('Error al generar template', $template, $header, $ws);
+            }
         }
+        return $template;
 
-
-        $input = $this->directiva->btn_enviar(cols:6,label: 'Elimina',name: 'btn',value: 'Elimina',stilo: 'danger');
-
-        if(isset($input['error'])){
-            $error = $this->errores->error('Error obtener boton',$input);
-            print_r($error);
-            exit;
-        }
-
-        $this->inputs['btn_elimina'] = $input;
-
-        $input = $this->directiva->btn_enviar(cols:6,label: 'Selecciona',name: 'btn_selecciona',value: 'Selecciona',type: 'button');
-
-        if(isset($input['error'])){
-            $error = $this->errores->error('Error obtener boton',$input);
-            print_r($error);
-            exit;
-        }
-        $this->inputs['btn_selecciona_todo'] = $input;
     }
 
     /**
