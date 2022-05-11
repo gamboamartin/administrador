@@ -125,6 +125,7 @@ class init{
         $data->css_custom = $data_custom->css;
         $data->js_seccion = $data_custom->js_seccion;
         $data->js_accion = $data_custom->js_accion;
+        $data->js_view = $data_custom->js_view;
 
         $data->menu = $seguridad->menu;
 

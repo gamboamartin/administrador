@@ -52,6 +52,7 @@ class controler{
     public stdclass $pestanas ;
     public string $path_base;
     public string $session_id;
+    public string $url_base;
 
 
 
@@ -64,7 +65,6 @@ class controler{
         }
 
         $generals = (new generales());
-
 
         $init = (new init())->init_data_controler(controler: $this);
         if(errores::$error){

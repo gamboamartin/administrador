@@ -33,12 +33,16 @@ class custom{
         $js_accion = (new custom())->js_accion(seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error('Error al generar js', $js_accion);
-
+        }
+        $js_view = (new custom())->js_view(seguridad: $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al generar js', $js_view);
         }
         $data = new stdClass();
         $data->css = $css_custom;
         $data->js_seccion = $js_seccion;
         $data->js_accion = $js_accion;
+        $data->js_view = $js_view;
 
         return $data;
     }
@@ -55,6 +59,21 @@ class custom{
         $js = '';
         if(file_exists('./js/'.$seguridad->seccion.'.js')){
             $js = "<script type='text/javascript' src='./js/$seguridad->seccion.js'></script>";
+        }
+        return $js;
+    }
+
+    /**
+     * Obtiene el js si existe el doc dentro de js/seccion/accion.js
+     * @param seguridad $seguridad Clase de seguridad donde se obtienen los datos de accion y seccion
+     * @return string
+     */
+    public function js_view(seguridad $seguridad): string
+    {
+        $js = '';
+        $ruta_js = './js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+        if(file_exists($ruta_js)){
+            $js = "<script type='text/javascript' src='$ruta_js'></script>";
         }
         return $js;
     }

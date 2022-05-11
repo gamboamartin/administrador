@@ -1230,8 +1230,8 @@ class where{
 
 
     /**
-     * FULL
-     * @param string $tipo_filtro
+     * TODO Verifica que un tipo filtro sea valido
+     * @param string $tipo_filtro validos son numeros y textos
      * @return bool|array
      */
     public function verifica_tipo_filtro(string $tipo_filtro): bool|array
@@ -1244,7 +1244,7 @@ class where{
         if(!in_array($tipo_filtro,$tipos_permitidos)){
             return $this->error->error(
                 mensaje: 'Error el tipo filtro no es correcto los filtros pueden ser o numeros o textos',
-                data: $tipo_filtro,params: get_defined_vars());
+                data: $tipo_filtro);
         }
         return true;
     }
