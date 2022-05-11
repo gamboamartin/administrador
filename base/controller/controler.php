@@ -54,6 +54,7 @@ class controler{
     public string $session_id;
 
 
+
     public function __construct(){
         if(!isset($_SESSION['grupo_id'])){
             if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
@@ -64,10 +65,14 @@ class controler{
 
         $generals = (new generales());
 
-        $this->errores = new errores();
-        $this->validacion = new valida_controller();
-        $this->directiva = new directivas();
-        $this->pestanas = new stdClass();
+
+        $init = (new init())->init_data_controler(controler: $this);
+        if(errores::$error){
+            $error =  $this->errores->error('Error al inicializar',$init);
+            print_r($error);
+            exit;
+        }
+
         $this->pestanas->includes = array();
         $this->pestanas->targets = array();
 

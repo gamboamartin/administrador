@@ -1,6 +1,7 @@
 <?php
 namespace base\controller;
 use base\conexion;
+use base\frontend\directivas;
 use base\seguridad;
 use config\generales;
 use gamboamartin\controllers\controlador_session;
@@ -145,6 +146,23 @@ class init{
 
 
         return $data;
+    }
+
+    /**
+     * Se inicializan datos base para controler
+     * @param controler $controler
+     * @return controler
+     */
+    public function init_data_controler(controler $controler): controler
+    {
+
+        $controler->errores = new errores();
+        $controler->validacion = new valida_controller();
+        $controler->directiva = new directivas();
+        $controler->pestanas = new stdClass();
+        $controler->pestanas->includes = array();
+        $controler->pestanas->targets = array();
+        return $controler;
     }
 
     private function init_for_view(): stdClass
