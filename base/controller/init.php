@@ -51,21 +51,18 @@ class init{
         return $_GET;
     }
 
+    /**
+     * Aqui se determina que view se va a utilizar para el frontend
+     * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
+     * @return string retorna el path para include
+     */
     public function include_action(seguridad $seguridad): string
     {
         $include_action = './views/'.$seguridad->seccion.'/'.$seguridad->accion.'.php';
-        if(file_exists($include_action)){
-            include($include_action);
+        if(!file_exists($include_action)){
+            $include_action = './views/vista_base/'.$seguridad->accion.'.php';
         }
-        elseif($seguridad->accion === 'lista') {
-            $include_action = './views/vista_base/lista.php';
-        }
-        elseif ($seguridad->accion ==='modifica'){
-            $include_action = './views/vista_base/modifica.php';
-        }
-        elseif ($seguridad->accion ==='alta'){
-            $include_action = './views/vista_base/alta.php';
-        }
+
         return $include_action;
     }
 
