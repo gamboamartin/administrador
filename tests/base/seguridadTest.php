@@ -42,6 +42,25 @@ class seguridadTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_menu_login(){
+
+        errores::$error = false;
+
+        if(isset($_SESSION['activa'])){
+            unset($_SESSION['activa']);
+        }
+        $seg = new seguridad();
+        $seg = new liberator($seg);
+
+        $resultado = $seg->init_menu_login();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('session',$resultado->seccion);
+        $this->assertEquals('login',$resultado->accion);
+        $this->assertNotTrue($resultado->menu);
+        errores::$error = false;
+    }
+
 
 
 

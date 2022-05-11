@@ -5,6 +5,7 @@ use config\generales;
 use gamboamartin\errores\errores;
 use models\session;
 use PDO;
+use stdClass;
 
 
 class seguridad{
@@ -46,17 +47,18 @@ class seguridad{
         }
 
         if(!isset($_SESSION['activa']) && ($this->seccion !== 'session') && $this->accion !== 'loguea' && $aplica_seguridad) {
-            $this->menu = false;
-            $this->seccion = "session";
-            $this->accion = "login";
+
+            $data = $this->init_menu_login();
+            if(errores::$error){
+                $error = $this->error->error(mensaje: 'Error al inicializar login',data:  $data,
+                    params: get_defined_vars());
+                print_r($error);
+                die('Error');
+            }
+
         }
 
         if($this->seccion === 'session' && $this->accion === 'inicio' && $aplica_seguridad){
-
-            $this->accion = 'login';
-            if(isset($_SESSION['activa'])){
-                $this->accion = 'inicio';
-            }
 
             $accion = $this->init_accion();
             if(errores::$error){
@@ -114,6 +116,24 @@ class seguridad{
             $this->accion = 'inicio';
         }
         return $this->accion;
+    }
+
+    /**
+     * TODO
+     * Inicializa menu en false, seccion en session y accion en login
+     * @return stdClass
+     */
+    private function init_menu_login(): stdClass
+    {
+        $this->menu = false;
+        $this->seccion = "session";
+        $this->accion = "login";
+
+        $data = new stdClass();
+        $data->menu = $this->menu;
+        $data->seccion = $this->seccion;
+        $data->accion = $this->accion;
+        return $data;
     }
 
     /**
