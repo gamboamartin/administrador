@@ -79,7 +79,7 @@ class init{
     /**
      * @throws JsonException
      */
-    public function index(): array|stdClass
+    public function index(bool $aplica_seguridad = true): array|stdClass
     {
         $con = new conexion();
         $link = conexion::$link;
@@ -91,7 +91,7 @@ class init{
         }
 
         $conf_generales = new generales();
-        $seguridad = new seguridad();
+        $seguridad = new seguridad(aplica_seguridad: $aplica_seguridad);
         $_SESSION['tiempo'] = time();
 
         $seguridad = $this->permiso( link: $link,seguridad:   $seguridad);
