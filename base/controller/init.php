@@ -23,7 +23,6 @@ class init{
      * @param PDO $link
      * @param string $seccion
      * @return controler|array
-     * @throws \JsonException
      */
     public function controller(PDO $link, string $seccion):controler|array{
         $name_ctl = $this->name_controler(seccion: $seccion);
@@ -32,13 +31,7 @@ class init{
 
         }
 
-        if($seccion === 'session') {
-            $controlador = new controlador_session(link: $link);
-        }
-        else{
-            $controlador = new $name_ctl(link:$link);
-        }
-        return $controlador;
+        return new $name_ctl(link:$link);
     }
 
     /**
@@ -77,9 +70,8 @@ class init{
     }
 
     /**
-     * @throws JsonException
      */
-    public function index(bool $aplica_seguridad = true): array|stdClass
+    public function index(bool $aplica_seguridad): array|stdClass
     {
         $con = new conexion();
         $link = conexion::$link;
@@ -178,6 +170,7 @@ class init{
 
     /**
      * P INT P ORDER
+     * Retorna del nombre de cun controlador para su creacion posterior
      * @param string $seccion
      * @return string|array
      */

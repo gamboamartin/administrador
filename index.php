@@ -6,7 +6,7 @@ use base\controller\init;
 use gamboamartin\errores\errores;
 
 
-$data = (new init())->index();
+$data = (new init())->index(aplica_seguridad: true);
 if(errores::$error){
     $error = (new errores())->error(mensaje: 'Error al inicializar datos',data:  $data, params: get_defined_vars());
     print_r($error);
