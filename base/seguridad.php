@@ -3,7 +3,6 @@ namespace base;
 
 use config\generales;
 use gamboamartin\errores\errores;
-use JetBrains\PhpStorm\Pure;
 use models\session;
 use PDO;
 
@@ -15,7 +14,7 @@ class seguridad{
     public string|bool $webservice = false;
     private errores $error;
 
-    #[Pure] public function __construct(){
+    public function __construct(bool $aplica_seguridad = true){
 
         $this->error = new errores();
         if(isset($_GET['seccion'])){
@@ -31,13 +30,13 @@ class seguridad{
         if(!$this->seccion){
             $this->seccion = 'session';
             $this->accion = "inicio";
-            if(!isset($_SESSION['activa'])){
+            if(!isset($_SESSION['activa']) && $aplica_seguridad){
                 $this->accion = "login";
             }
         }
 
 
-        if(($this->seccion === 'session') && $this->accion === 'login' && isset($_SESSION['activa'])) {
+        if(($this->seccion === 'session') && $this->accion === 'login' && isset($_SESSION['activa']) && $aplica_seguridad) {
             $this->seccion = 'session';
             $this->accion = 'inicio';
         }
@@ -46,17 +45,25 @@ class seguridad{
             $this->menu = true;
         }
 
-        if(!isset($_SESSION['activa']) && ($this->seccion !== 'session') && $this->accion !== 'loguea') {
+        if(!isset($_SESSION['activa']) && ($this->seccion !== 'session') && $this->accion !== 'loguea' && $aplica_seguridad) {
             $this->menu = false;
             $this->seccion = "session";
             $this->accion = "login";
         }
 
-        if($this->seccion === 'session' && $this->accion === 'inicio'){
+        if($this->seccion === 'session' && $this->accion === 'inicio' && $aplica_seguridad){
 
             $this->accion = 'login';
             if(isset($_SESSION['activa'])){
                 $this->accion = 'inicio';
+            }
+
+            $accion = $this->init_accion();
+            if(errores::$error){
+                $error = $this->error->error(mensaje: 'Error al inicializar accion',data:  $accion,
+                    params: get_defined_vars());
+                print_r($error);
+                die('Error');
             }
         }
 
@@ -93,6 +100,20 @@ class seguridad{
             session_destroy();
         }
         return $elimina;
+    }
+
+    /**
+     * TODO
+     * Inicializa this->accion si session esta activa asigna a inicio
+     * @return bool|string
+     */
+    private function init_accion(): bool|string
+    {
+        $this->accion = 'login';
+        if(isset($_SESSION['activa'])){
+            $this->accion = 'inicio';
+        }
+        return $this->accion;
     }
 
     /**
