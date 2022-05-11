@@ -8,14 +8,15 @@ use gamboamartin\errores\errores;
 use JsonException;
 use models\session;
 use models\usuario;
+use PDO;
 use stdClass;
 use Throwable;
 
 
 class controlador_session extends controlador_base{
-    public function __construct($link){
+    public function __construct(PDO $link, stdClass $paths_conf = new stdClass()){
         $modelo = new session($link);
-        parent::__construct(link: $link, modelo: $modelo );
+        parent::__construct(link: $link, modelo: $modelo,paths_conf:  $paths_conf);
 
     }
 
@@ -57,6 +58,22 @@ class controlador_session extends controlador_base{
             return $this->errores->error('Error al dar de alta session',$r_alta);
         }
         return $r_alta;
+    }
+
+    /**
+     * Asigna una session aleatoria a get
+     * @return array GET con session_id en un key
+     */
+    public function asigna_session_get(): array
+    {
+        $session_id = $this->session_id();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar session_id', data: $session_id,
+                params: get_defined_vars());
+        }
+
+        $_GET['session_id'] = $session_id;
+        return $_GET;
     }
 
 
@@ -181,16 +198,11 @@ class controlador_session extends controlador_base{
         $_SESSION['grupo_id'] = $usuario['grupo_id'];
         $_SESSION['usuario_id'] = $usuario['usuario_id'];
 
-        try{
-            $session_id = random_int(10,99);
-            $session_id .= random_int(10,99);
-            $session_id .= random_int(10,99);
-            $session_id .= random_int(10,99);
-            $session_id .= random_int(10,99);
-            $_GET['session_id'] = $session_id;
-        }
-        catch (Throwable $e){
-            return $this->retorno_error('Error al generar session', $e, $header, $ws);
+
+        $data_get = $this->asigna_session_get();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar session_id', data: $data_get, header: $header,
+                ws: $ws);
         }
 
         $r_alta  = $this->alta_session($usuario);
@@ -201,6 +213,26 @@ class controlador_session extends controlador_base{
 
         header("Location: ./index.php?seccion=session&accion=inicio&mensaje=Bienvenido&tipo_mensaje=exito&session_id=".(new generales())->session_id);
         exit;
+    }
+
+    /**
+     * UNIT
+     * Genera la session_id basada en un rand
+     * @return array|string string es la session generada
+     */
+    private function session_id(): array|string
+    {
+        try{
+            $session_id = random_int(10,99);
+            $session_id .= random_int(10,99);
+            $session_id .= random_int(10,99);
+            $session_id .= random_int(10,99);
+            $session_id .= random_int(10,99);
+        }
+        catch (Throwable $e){
+            return $this->errores->error(mensaje: 'Error al generar session', data: $e,params: get_defined_vars());
+        }
+        return $session_id;
     }
 
     public function srv_login(){

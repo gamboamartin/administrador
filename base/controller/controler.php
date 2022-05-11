@@ -11,6 +11,7 @@ use JsonException;
 use models\accion;
 use PDO;
 use stdClass;
+use Throwable;
 
 
 class controler{
@@ -386,7 +387,6 @@ class controler{
      * @param bool $ws si ws retorna error en navegador via json
      * @param array $params
      * @return array
-     * @throws JsonException
      */
     protected function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
     {
@@ -394,8 +394,18 @@ class controler{
         if($ws){
             ob_clean();
             header('Content-Type: application/json');
-            echo json_encode($error, JSON_THROW_ON_ERROR);
-            exit;
+            try {
+                echo json_encode($error, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = $this->errores->error('Error al maquetar json', $e);
+                if($header){
+                    print_r($error);
+                    exit;
+                }
+                return $error;
+            }
+
         }
         if(!$header){
             return $error;
@@ -404,7 +414,7 @@ class controler{
         $seccion_header = '';
         $accion_header = '';
 
-        if(isset($_SESSION['seccion_header']) && isset($_SESSION['accion_header'])) {
+        if(isset($_SESSION['seccion_header'], $_SESSION['accion_header'])) {
             if (trim($_SESSION['seccion_header']) !== '' && trim($_SESSION['accion_header']) !== '') {
                 $seccion_header = trim($_SESSION['seccion_header']);
                 $accion_header = trim($_SESSION['accion_header']);
