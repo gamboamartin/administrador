@@ -4,6 +4,7 @@ namespace tests\base\controller;
 use base\controller\controler;
 use base\controller\init;
 use base\controller\normalizacion;
+use base\seguridad;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -33,6 +34,37 @@ class initTest extends test {
         errores::$error = false;
     }
 
+
+
+    public function test_include_action(){
+
+        errores::$error = false;
+        unset($_SESSION);
+        $init = new init();
+        $init = new liberator($init);
+        $seguridad = (new seguridad());
+        $seguridad->seccion = 'xxx';
+        $resultado = $init->include_action($seguridad);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error no existe la view',$resultado['mensaje']);
+        errores::$error = false;
+    }
+
+    public function test_init_data_controler(){
+
+        errores::$error = false;
+
+        $init = new init();
+        //$init = new liberator($init);
+        $controler = new controler();
+        $resultado = $init->init_data_controler($controler);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */
@@ -48,20 +80,6 @@ class initTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertIsNumeric($resultado);
-
-        errores::$error = false;
-    }
-
-    public function test_init_data_controler(){
-
-        errores::$error = false;
-
-        $init = new init();
-        //$init = new liberator($init);
-        $controler = new controler();
-        $resultado = $init->init_data_controler($controler);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
 
         errores::$error = false;
     }

@@ -55,13 +55,16 @@ class init{
     /**
      * Aqui se determina que view se va a utilizar para el frontend
      * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
-     * @return string retorna el path para include
+     * @return string|array retorna el path para include
      */
-    public function include_action(seguridad $seguridad): string
+    private function include_action(seguridad $seguridad): string|array
     {
         $include_action = './views/'.$seguridad->seccion.'/'.$seguridad->accion.'.php';
         if(!file_exists($include_action)){
             $include_action = './views/vista_base/'.$seguridad->accion.'.php';
+        }
+        if(!file_exists($include_action)){
+            return $this->error->error(mensaje: 'Error no existe la view' , data:$include_action);
         }
 
         return $include_action;
@@ -96,7 +99,7 @@ class init{
 
         }
 
-        $include_action = (new init())->include_action(seguridad: $seguridad);
+        $include_action = $this->include_action(seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar include',data: $include_action);
 
