@@ -118,7 +118,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         parent::__construct();
 
-        $aplica_seguridad = (new generales())->aplica_seguirdad;
+        $aplica_seguridad = (new generales())->aplica_seguridad;
         if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){
             if(!isset($_GET['seccion'])){
                 $_GET['seccion'] = 'session';
