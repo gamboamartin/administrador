@@ -94,10 +94,11 @@ class controler{
     }
 
     protected function data_bread(bool $aplica_seguridad):array|string{
-        if(!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login'
-            && $aplica_seguridad) {
-            header('Location: index.php?seccion=session&accion=login');
-            exit;
+        if($aplica_seguridad) {
+            if (!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
+                header('Location: index.php?seccion=session&accion=login');
+                exit;
+            }
         }
 
         $es_vista = false;
