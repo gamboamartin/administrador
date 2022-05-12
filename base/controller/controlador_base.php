@@ -51,9 +51,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     /**
      * @throws JsonException
      */
-    public function __construct(PDO      $link, modelo $modelo, array $filtro_boton_lista = array(),
+    public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
                                 string   $campo_busca = 'registro_id', string $valor_busca_fault = '',
-                                stdClass $paths_conf = new stdClass()){
+                                stdClass $paths_conf = new stdClass(), bool $aplica_seguridad = true){
 
 
         $this->campo_busca = $campo_busca;
@@ -117,7 +117,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         parent::__construct();
 
-        if(!isset($_SESSION['grupo_id'])){
+        if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){
             if(!isset($_GET['seccion'])){
                 $_GET['seccion'] = 'session';
             }
@@ -127,7 +127,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
         }
 
-        $breadcrumbs = $this->data_bread();
+        $breadcrumbs = $this->data_bread(aplica_seguridad: $aplica_seguridad);
         if(errores::$error){
             $error = $this->errores->error(mensaje: 'Error al generar nav breads',data: $breadcrumbs,
                 params: get_defined_vars());

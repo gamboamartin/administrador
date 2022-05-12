@@ -15,14 +15,12 @@ class configuraciones extends validacion {
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
-            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf);
         }
 
         $valida = $this->valida_conf_file(paths_conf:$paths_conf, tipo_conf:$tipo_conf);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar $tipo_conf.php",data:$valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al validar $tipo_conf.php",data:$valida);
         }
         $valida = $this->valida_conf_composer(tipo_conf: $tipo_conf);
         if(errores::$error){
@@ -44,8 +42,7 @@ class configuraciones extends validacion {
         foreach ($tipo_confs as $tipo_conf){
             $valida = $this->valida_conf(paths_conf: $paths_conf, tipo_conf: $tipo_conf);
             if(errores::$error){
-                return $this->error->error(mensaje: "Error al validar $tipo_conf.php",data:$valida,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: "Error al validar $tipo_conf.php",data:$valida);
             }
         }
         return true;
@@ -77,17 +74,16 @@ class configuraciones extends validacion {
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
-     * @param stdClass $paths_conf
-     * @param string $tipo_conf
+     * TODO Valida que existan los arvhos de configuracion necesarios para arrancar el sistema
+     * @param stdClass $paths_conf rutas de los archivos conf
+     * @param string $tipo_conf tipos de configuraciones
      * @return bool|array
      */
     private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): bool|array
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
-            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf);
         }
 
         $path = $paths_conf->$tipo_conf ?? "config/$tipo_conf.php";
@@ -102,8 +98,7 @@ class configuraciones extends validacion {
             $data.="<br><br>$data><br><br>";
 
             return $this->error->error(mensaje: "Error no existe el archivo $path favor de generar 
-            la ruta $path basado en la estructura del ejemplo $path_e",data: $data,
-                params: get_defined_vars());
+            la ruta $path basado en la estructura del ejemplo $path_e",data: $data);
         }
         return true;
     }

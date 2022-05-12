@@ -93,8 +93,9 @@ class controler{
 
     }
 
-    public function data_bread():array|string{
-        if(!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
+    protected function data_bread(bool $aplica_seguridad):array|string{
+        if(!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login'
+            && $aplica_seguridad) {
             header('Location: index.php?seccion=session&accion=login');
             exit;
         }
@@ -112,7 +113,7 @@ class controler{
             $es_vista = false;
         }
         $breadcrumbs = '';
-        if($es_vista) {
+        if($es_vista && $aplica_seguridad) {
 
             $accion_modelo = new accion($this->link);
 
