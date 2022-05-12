@@ -150,6 +150,7 @@ class init{
     }
 
     /**
+     * TODO
      * Se inicializan datos base para controler
      * @param controler $controler
      * @return controler

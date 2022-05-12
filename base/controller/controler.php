@@ -57,14 +57,13 @@ class controler{
 
 
     public function __construct(){
-        if(!isset($_SESSION['grupo_id'])){
+        $generals = (new generales());
+        if(!isset($_SESSION['grupo_id']) && $generals->aplica_seguridad){
             if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
                 $url = 'index.php?seccion=session&accion=login';
                 header('Location: '.$url);
             }
         }
-
-        $generals = (new generales());
 
         $init = (new init())->init_data_controler(controler: $this);
         if(errores::$error){

@@ -52,6 +52,20 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_data_controler(){
+
+        errores::$error = false;
+
+        $init = new init();
+        //$init = new liberator($init);
+        $controler = new controler();
+        $resultado = $init->init_data_controler($controler);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 
