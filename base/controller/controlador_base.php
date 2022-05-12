@@ -5,6 +5,7 @@ use base\frontend\directivas;
 use base\frontend\templates;
 use base\frontend\values;
 use base\orm\modelo;
+use config\generales;
 use config\views;
 use gamboamartin\errores\errores;
 
@@ -53,7 +54,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      */
     public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
                                 string   $campo_busca = 'registro_id', string $valor_busca_fault = '',
-                                stdClass $paths_conf = new stdClass(), bool $aplica_seguridad = true){
+                                stdClass $paths_conf = new stdClass()){
 
 
         $this->campo_busca = $campo_busca;
@@ -117,6 +118,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         parent::__construct();
 
+        $aplica_seguridad = (new generales())->aplica_seguirdad;
         if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){
             if(!isset($_GET['seccion'])){
                 $_GET['seccion'] = 'session';

@@ -273,7 +273,7 @@ class accion extends modelo{ //FINALIZADAS
     public function accion_registro(string $seccion, string $accion):array{
         $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida, params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
         }
         $r_accion = $this->accion_seccion(seccion: $seccion,accion: $accion);
         if(errores::$error){
