@@ -54,17 +54,21 @@ class init{
 
     /**
      * Aqui se determina que view se va a utilizar para el frontend
+     * @param bool $aplica_view Si view es activo se buscara un archivo valido
      * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
      * @return string|array retorna el path para include
      */
-    private function include_action(seguridad $seguridad): string|array
+    private function include_action(bool $aplica_view, seguridad $seguridad): string|array
     {
-        $include_action = './views/'.$seguridad->seccion.'/'.$seguridad->accion.'.php';
-        if(!file_exists($include_action)){
-            $include_action = './views/vista_base/'.$seguridad->accion.'.php';
-        }
-        if(!file_exists($include_action)){
-            return $this->error->error(mensaje: 'Error no existe la view' , data:$include_action);
+        $include_action = '';
+        if($aplica_view) {
+            $include_action = './views/' . $seguridad->seccion . '/' . $seguridad->accion . '.php';
+            if (!file_exists($include_action)) {
+                $include_action = './views/vista_base/' . $seguridad->accion . '.php';
+            }
+            if (!file_exists($include_action)) {
+                return $this->error->error(mensaje: 'Error no existe la view', data: $include_action);
+            }
         }
 
         return $include_action;
@@ -93,13 +97,23 @@ class init{
 
         }
 
+        $accion = (new accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
+
+        }
+        $aplica_view = false;
+        if($accion['accion_es_view'] === 'activo'){
+            $aplica_view = true;
+        }
+
         $controlador = $this->controller(link:  $link,seccion:  $seguridad->seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar controlador', data: $controlador);
 
         }
 
-        $include_action = $this->include_action(seguridad: $seguridad);
+        $include_action = $this->include_action(aplica_view:$aplica_view, seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar include',data: $include_action);
 

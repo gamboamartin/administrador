@@ -44,7 +44,7 @@ class initTest extends test {
         $init = new liberator($init);
         $seguridad = (new seguridad());
         $seguridad->seccion = 'xxx';
-        $resultado = $init->include_action($seguridad);
+        $resultado = $init->include_action(true, $seguridad);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error no existe la view',$resultado['mensaje']);
