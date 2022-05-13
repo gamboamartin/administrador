@@ -133,7 +133,7 @@ class controlador_session extends controlador_base{
     /**
      * DEBUG
      */
-    public function login(bool $header = true, bool $ws = false): stdClass
+    public function login(bool $header = true, bool $ws = false): stdClass|array
     {
         $data = new stdClass();
         $data->header = $header;
