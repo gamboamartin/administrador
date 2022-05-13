@@ -266,9 +266,10 @@ class inicializacion{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
-     * @param array $registro
-     * @param string $status_default
+     * Asigna a un registro status default
+     * @version 1.0.0
+     * @param array $registro registro a insertar
+     * @param string $status_default status = activo o inactivo
      * @return array
      */
     public function status(array $registro, string $status_default): array

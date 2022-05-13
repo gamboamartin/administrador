@@ -29,22 +29,22 @@ class controlador_session extends controlador_base{
     public function alta_session(array $datos_usuario): array|stdClass
     { //FIN PROT
         if(count($datos_usuario) === 0){
-            return $this->errores->error('Error datos de usuario estan vacios',$datos_usuario);
+            return $this->errores->error(mensaje: 'Error datos de usuario estan vacios',data: $datos_usuario);
         }
         if(!isset($datos_usuario['usuario_id'])){
-            return $this->errores->error('Error datos de usuario_id no existe',$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
         }
         if((int)$datos_usuario['usuario_id']<=0){
-            return $this->errores->error('Error datos de usuario_id debe ser mayor a 0',$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de usuario_id debe ser mayor a 0',data:$datos_usuario);
         }
         if(!isset($datos_usuario['usuario_id'])){
-            return $this->errores->error('Error datos de usuario_id no existe',$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
         }
         if(!isset($datos_usuario['grupo_id'])){
-            return $this->errores->error('Error datos de grupo_id no existe',$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de grupo_id no existe',data:$datos_usuario);
         }
         if((int)$datos_usuario['grupo_id']<=0){
-            return $this->errores->error('Error datos de grupo_id debe ser mayor a 0',$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de grupo_id debe ser mayor a 0',data:$datos_usuario);
         }
         $session_modelo = new session($this->link);
         $session_insertar['name'] = (new generales())->session_id;
@@ -56,20 +56,20 @@ class controlador_session extends controlador_base{
         $session_modelo->registro = $session_insertar;
         $r_alta = $session_modelo->alta_bd();
         if(errores::$error){
-            return $this->errores->error('Error al dar de alta session',$r_alta);
+            return $this->errores->error(mensaje: 'Error al dar de alta session',data: $r_alta);
         }
         return $r_alta;
     }
 
 
-
     /**
      * PRUEBAS FINALIZADAS
      * @param bool $header
+     * @param bool $ws
      * @return array
      * @throws JsonException
      */
-    public function denegado(bool $header):array{
+    public function denegado(bool $header, bool $ws = false):array{
 
         $error = $this->errores->error('Acceso denegado ',array());
         if(isset($_GET['ws'])){
