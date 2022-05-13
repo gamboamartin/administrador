@@ -1230,7 +1230,8 @@ class where{
 
 
     /**
-     * TODO Verifica que un tipo filtro sea valido
+     * Verifica que un tipo filtro sea valido
+     * @version 1.0.0
      * @param string $tipo_filtro validos son numeros y textos
      * @return bool|array
      */

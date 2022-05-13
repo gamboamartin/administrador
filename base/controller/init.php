@@ -20,6 +20,25 @@ class init{
     }
 
     /**
+     * Verifica si es aplicable o no una view
+     * @param PDO $link Conexion a la base de datos
+     * @param seguridad $seguridad Datos de seguridad aplicable en este caso seccion y accion
+     * @return bool|array
+     */
+    private function aplica_view(PDO $link, seguridad $seguridad): bool|array
+    {
+        $accion = (new accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
+        }
+        $aplica_view = false;
+        if($accion['accion_es_view'] === 'activo'){
+            $aplica_view = true;
+        }
+        return $aplica_view;
+    }
+
+    /**
      * P INT P ORDER
      * @param PDO $link
      * @param string $seccion
@@ -97,14 +116,9 @@ class init{
 
         }
 
-        $accion = (new accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+        $aplica_view = $this->aplica_view( link:$link, seguridad: $seguridad);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
-
-        }
-        $aplica_view = false;
-        if($accion['accion_es_view'] === 'activo'){
-            $aplica_view = true;
+            return $this->error->error(mensaje: 'Error al verificar si aplica view', data: $aplica_view);
         }
 
         $controlador = $this->controller(link:  $link,seccion:  $seguridad->seccion);
@@ -161,6 +175,7 @@ class init{
 
         $data->conf_generales = $conf_generales;
         $data->muestra_index = $conf_generales->muestra_index;
+        $data->aplica_view = $aplica_view;
 
 
         return $data;
