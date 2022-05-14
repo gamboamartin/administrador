@@ -1,12 +1,20 @@
 <?php
+/**
+ * @author Martin Gamboa Vazquez
+ * @version 1.0.0
+ *
+ */
 namespace validacion;
 use base\controller\valida_controller;
 
+/**
+ * Verifica datos para inicios de session
+ */
 class session extends valida_controller {
 
     /**
-     * P INT P ORDER PROBADO
      * Verifica que vengan seteados en POST los datos de user y password
+     * @version 1.0.0
      * @return array|bool
      */
     public function valida_datos_recepcion():array|bool{

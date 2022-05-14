@@ -171,6 +171,10 @@ class controlador_session extends controlador_base{
         $modelo_usuario = new usuario($this->link);
         $usuario = $modelo_usuario->valida_usuario_password(password:  $_POST['password'], usuario: $_POST['user']);
         if(errores::$error){
+            if($seccion_header!=='' && $accion_header !==''){
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                exit;
+            }
             return $this->retorno_error(mensaje: 'Error al validar usuario',data:  $usuario, header: $header,ws:  $ws);
         }
 
@@ -181,15 +185,22 @@ class controlador_session extends controlador_base{
 
         $data_get = (new init())->asigna_session_get();
         if(errores::$error){
+            if($seccion_header!=='' && $accion_header !==''){
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                exit;
+            }
             return $this->retorno_error(mensaje: 'Error al generar session_id', data: $data_get, header: $header,
                 ws: $ws);
         }
 
         $r_alta  = $this->alta_session($usuario);
         if(errores::$error){
+            if($seccion_header!=='' && $accion_header !==''){
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                exit;
+            }
             return $this->retorno_error('Error al dar de alta session', $r_alta, $header, $ws);
         }
-
 
         header("Location: ./index.php?seccion=session&accion=inicio&mensaje=Bienvenido&tipo_mensaje=exito&session_id=".(new generales())->session_id);
         exit;
