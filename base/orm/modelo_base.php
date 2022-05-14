@@ -2267,8 +2267,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-
     /**
      * FULL
      * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores

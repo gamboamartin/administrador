@@ -167,12 +167,15 @@ class usuario extends modelo{ //PRUEBAS en proceso
 
 
 
-    public function valida_usuario_password($usuario, $password){
+    public function valida_usuario_password(string $password, string $usuario, string $accion_header = '',
+                                            string $seccion_header = ''){
         if($usuario === ''){
-            return $this->error->error('El usuario no puede ir vacio',$usuario);
+            return $this->error->error(mensaje: 'El usuario no puede ir vacio',data: $usuario,
+                seccion_header: $seccion_header, accion_header: $accion_header);
         }
         if($password === ''){
-            return $this->error->error('El $password no puede ir vacio',$password);
+            return $this->error->error(mensaje: 'El $password no puede ir vacio',data: $password,
+                seccion_header: $seccion_header, accion_header: $accion_header);
         }
 
         $filtro['usuario.user'] = $usuario;
@@ -180,14 +183,17 @@ class usuario extends modelo{ //PRUEBAS en proceso
         $filtro['usuario.status'] = 'activo';
         $r_usuario = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener usuario',$r_usuario);
+            return $this->error->error(mensaje: 'Error al obtener usuario',data: $r_usuario,
+                seccion_header: $seccion_header, accion_header: $accion_header);
         }
 
         if((int)$r_usuario->n_registros === 0){
-            return $this->error->error('Error al validar usuario y pass ',$usuario);
+            return $this->error->error(mensaje: 'Error al validar usuario y pass ',data: $usuario,
+                seccion_header: $seccion_header, accion_header: $accion_header);
         }
         if((int)$r_usuario->n_registros > 1){
-            return $this->error->error('Error al validar usuario y pass ',$usuario);
+            return $this->error->error(mensaje: 'Error al validar usuario y pass ',data: $usuario,
+                seccion_header: $seccion_header, accion_header: $accion_header);
         }
         return $r_usuario->registros[0];
 	}

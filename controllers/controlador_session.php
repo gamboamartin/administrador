@@ -155,19 +155,23 @@ class controlador_session extends controlador_base{
     /**
      *
      */
-    public function loguea(bool $header, bool $ws = false){
+    public function loguea(bool $header, bool $ws = false, string $accion_header = '', string $seccion_header = ''){
 
         $datos_validos = (new \validacion\session())->valida_datos_recepcion();
         if(errores::$error){
+            if($seccion_header!=='' && $accion_header !==''){
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                exit;
+            }
             $this->header_error($datos_validos,false);
         }
 
         $_SESSION['numero_empresa'] = 1;
 
         $modelo_usuario = new usuario($this->link);
-        $usuario = $modelo_usuario->valida_usuario_password($_POST['user'], $_POST['password']);
+        $usuario = $modelo_usuario->valida_usuario_password(password:  $_POST['password'], usuario: $_POST['user']);
         if(errores::$error){
-            return $this->retorno_error('Error al validar usuario', $usuario, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al validar usuario',data:  $usuario, header: $header,ws:  $ws);
         }
 
         $_SESSION['activa'] = 1;
@@ -202,7 +206,7 @@ class controlador_session extends controlador_base{
         $_SESSION['numero_empresa'] = 1;
 
         $modelo_usuario = new usuario($this->link);
-        $usuarios = $modelo_usuario->valida_usuario_password($_POST['user'], $_POST['password']);
+        $usuarios = $modelo_usuario->valida_usuario_password(password: $_POST['password'] , usuario: $_POST['user']);
 
         if($usuarios['error']){
             $resultado['mensaje'] = $usuarios['mensaje'];
