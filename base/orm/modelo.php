@@ -1188,7 +1188,7 @@ class modelo extends modelo_base {
     /**
      * FULL
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $filtro
+     * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
      * @param array $hijo
      * @return array|stdClass
      */

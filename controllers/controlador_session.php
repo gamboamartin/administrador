@@ -160,7 +160,8 @@ class controlador_session extends controlador_base{
         $datos_validos = (new \validacion\session())->valida_datos_recepcion();
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                $mensaje = $datos_validos['mensaje'];
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
             $this->header_error($datos_validos,false);
@@ -172,7 +173,8 @@ class controlador_session extends controlador_base{
         $usuario = $modelo_usuario->valida_usuario_password(password:  $_POST['password'], usuario: $_POST['user']);
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                $mensaje = $datos_validos['mensaje'];
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
             return $this->retorno_error(mensaje: 'Error al validar usuario',data:  $usuario, header: $header,ws:  $ws);
@@ -186,7 +188,8 @@ class controlador_session extends controlador_base{
         $data_get = (new init())->asigna_session_get();
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                $mensaje = $datos_validos['mensaje'];
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
             return $this->retorno_error(mensaje: 'Error al generar session_id', data: $data_get, header: $header,
@@ -196,7 +199,8 @@ class controlador_session extends controlador_base{
         $r_alta  = $this->alta_session($usuario);
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header");
+                $mensaje = $datos_validos['mensaje'];
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
             return $this->retorno_error('Error al dar de alta session', $r_alta, $header, $ws);

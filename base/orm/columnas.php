@@ -16,7 +16,7 @@ class columnas{
      * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada
      * @return array|string
@@ -183,7 +183,7 @@ class columnas{
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $data
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|string
      */
@@ -354,7 +354,7 @@ class columnas{
      * @param array $tablas_select
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres
      * @return array|string
      */
@@ -391,7 +391,7 @@ class columnas{
      * @param array $renombres
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @return array|string
      */
     private function columnas_renombre(string $columnas, array $columnas_sql, modelo_base $modelo, array $renombres): array|string
@@ -542,7 +542,7 @@ class columnas{
     /**
      * FULL
      * @param array $columnas columnas inicializadas a mostrar a peticion
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada
      * @return array|stdClass
@@ -608,7 +608,7 @@ class columnas{
      * FULL
      * Genera las columnas en forma de sql para ser utilizado en un SELECT
      *
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada nombre a renombrar de la tabla
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
@@ -713,6 +713,7 @@ class columnas{
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada nombre para renombre de la tabla
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @example
     $columnas_sql = $this->genera_columnas_tabla($tabla_original,$tabla_renombrada, $columnas);
      * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
@@ -752,7 +753,7 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Integra las columnas en forma de SQL de forma recursiva
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return stdClass
@@ -800,6 +801,7 @@ class columnas{
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
      * @param array $renombres conjunto de columnas renombradas
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @return array|string sql con las columnas para un SELECT
      * @throws errores definidos en la maquetacion de las columnas
      * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe
