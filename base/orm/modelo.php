@@ -791,19 +791,20 @@ class modelo extends modelo_base {
 
         $result = $this->filtro_and(filtro: $this->filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener registros '.$this->tabla, $result);
+            return $this->error->error(mensaje: 'Error al obtener registros '.$this->tabla,data:  $result);
         }
-
-        foreach ($result['registros'] as $row){
+        $dels = array();
+        foreach ($result->registros as $row){
 
             $del = $this->elimina_bd(id:$row[$this->tabla.'_id']);
             if(errores::$error){
                 return $this->error->error('Error al eliminar registros '.$this->tabla, $del);
             }
+            $dels[] = $del;
 
         }
 
-        return array('mensaje'=>'Registro eliminado con éxito');
+        return $dels;
 
     }
 

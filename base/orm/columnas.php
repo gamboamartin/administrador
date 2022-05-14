@@ -76,7 +76,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Asigna las columnas en forma de SQL en una variable de SESSION en caso de que no exista
+     * @version 1.0.0
      * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
      * @param modelo_base $modelo modelo o estructura de la base de datos
      * @return bool|array
@@ -118,7 +119,7 @@ class columnas{
 
     /**
      * FULL
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd
      * @return array|stdClass
      */
@@ -234,7 +235,7 @@ class columnas{
 
     /**
      * FULL
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd
      * @return array
      */
@@ -680,7 +681,7 @@ class columnas{
 
     /**
      * FULL
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd
      * @return array|stdClass
      */
