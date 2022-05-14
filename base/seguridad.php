@@ -86,8 +86,8 @@ class seguridad{
             return $this->error->error("Error al obtener registro", $r_session);
         }
         $elimina = true;
-        if((int)$r_session['n_registros'] === 1){
-            $session = $r_session['registros'][0];
+        if((int)$r_session->n_registros === 1){
+            $session = $r_session->registros[0];
             if($session['session_permanente'] === 'activo'){
                 $elimina = false;
             }

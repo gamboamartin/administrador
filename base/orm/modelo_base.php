@@ -1636,7 +1636,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * FULL
      * Funcion que genera el SQL para un SELECT
-     * @param array $columnas columnas inicializadas a mostrar a peticion
+     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param array $renombradas columnas estructura tabla ligadas renombradas
      * @return array|string string en forma de sql con los datos para la ejecucion de SELECT
@@ -2234,7 +2234,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * FULL
      * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
      *  variable de session para su reutilizacion futura
-     * @param string $tabla_original nombre del modelo
+     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
      * @example
      * $columnas_parseadas = $this->obten_columnas($tabla_original);
@@ -2245,18 +2245,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $clase_modelo = 'models\\'.$tabla_original;
 
         if($tabla_bd === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
         }
         if(!class_exists($clase_modelo)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo);
         }
 
         $se_asignaron_columnas = (new columnas())->asigna_columnas_en_session(modelo: $this, tabla_bd: $tabla_bd);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas);
         }
         if(!$se_asignaron_columnas){
             $columnas_field = (new columnas())->asigna_columnas_session_new(modelo:$this, tabla_bd: $tabla_bd);

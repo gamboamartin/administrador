@@ -15,9 +15,9 @@ class columnas{
     /**
      * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param array $columnas_sql
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo
-     * @param string $tabla Nombre de la tabla
+     * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada
      * @return array|string
      */
@@ -28,14 +28,12 @@ class columnas{
         $class = 'models\\'.$tabla;
 
         if(!class_exists($class)){
-            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla,data: $tabla,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla,data: $tabla);
         }
         $resultado_columnas = $this->genera_columnas_consulta(modelo: $modelo, tabla_original: $tabla,
             tabla_renombrada: $tabla_renombrada, columnas: $columnas_sql);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar columnas', data: $resultado_columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar columnas', data: $resultado_columnas);
         }
 
         $columnas_env = $this->integra_columnas_por_data(columnas: $columnas,resultado_columnas:  $resultado_columnas);
@@ -79,23 +77,21 @@ class columnas{
 
     /**
      * FULL
-     * @param string $tabla_bd
-     * @param modelo_base $modelo
+     * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
+     * @param modelo_base $modelo modelo o estructura de la base de datos
      * @return bool|array
      */
     public function asigna_columnas_en_session(modelo_base $modelo, string $tabla_bd): bool|array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
-            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd);
         }
         $data = new stdClass();
         if(isset($_SESSION['campos_tabla'][$tabla_bd], $_SESSION['columnas_completas'][$tabla_bd])){
             $data = $this->asigna_data_columnas(data: $data,tabla_bd: $tabla_bd);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar columnas', data: $data,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar columnas', data: $data);
             }
             $modelo->data_columnas = $data;
             return true;
@@ -147,33 +143,32 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param stdClass $data
-     * @param string $tabla_bd
-     * @return stdClass|array
+     * Obtiene las columnas de una tabla y los asigna a la variable de SESSION[campos_tabla] y
+     * SESSION[columnas_completas] Para ser utilizadas en las consultas SELECT
+     * @version 1.0.0
+     * @param stdClass $data Objeto recursivo con los atributos  columnas_parseadas y columnas_completas
+     * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
+     * @return stdClass|array stdClass si es exito con atributos columnas_parseadas y columnas_completas
      */
     private function asigna_data_columnas(stdClass $data, string $tabla_bd): stdClass|array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
-            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd);
         }
         if(!isset($_SESSION['campos_tabla'])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]',data: $_SESSION,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]',data: $_SESSION);
         }
         if(!isset($_SESSION['campos_tabla'][$tabla_bd])){
             return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]['.$tabla_bd.']',
-                data: $_SESSION, params: get_defined_vars());
+                data: $_SESSION);
         }
         if(!isset($_SESSION['columnas_completas'])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]',data: $_SESSION,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]',data: $_SESSION);
         }
         if(!isset($_SESSION['columnas_completas'][$tabla_bd])){
             return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]['.$tabla_bd.']',
-                data:$_SESSION, params: get_defined_vars());
+                data:$_SESSION);
         }
 
         $data->columnas_parseadas = $_SESSION['campos_tabla'][$tabla_bd];
@@ -184,11 +179,11 @@ class columnas{
 
     /**
      * FULL
-     * @param string $columnas
-     * @param array $columnas_sql
+     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $data
      * @param modelo_base $modelo
-     * @param string $tabla
+     * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|string
      */
     PUBLIC function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
@@ -356,7 +351,7 @@ class columnas{
     /**
      * FULL
      * @param array $tablas_select
-     * @param array $columnas_sql
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura
      * @param modelo_base $modelo
      * @param array $renombres
@@ -368,8 +363,7 @@ class columnas{
         $columnas = $this->columnas_tablas_select(columnas_sql: $columnas_sql, modelo: $modelo,
             tablas_select: $tablas_select);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
         $columnas = $this->columnas_extension(columnas:  $columnas, columnas_sql: $columnas_sql,
@@ -394,8 +388,8 @@ class columnas{
     /**
      * FULL
      * @param array $renombres
-     * @param array $columnas_sql
-     * @param string $columnas
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param modelo_base $modelo
      * @return array|string
      */
@@ -537,8 +531,7 @@ class columnas{
             $result = $this->genera_columna_tabla(columnas: $columnas,columnas_sql:  $columnas_sql,key:  $key,
                 modelo: $modelo);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al integrar columnas',data:  $result,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al integrar columnas',data:  $result);
             }
             $columnas = (string)$result;
         }
@@ -547,9 +540,9 @@ class columnas{
 
     /**
      * FULL
-     * @param array $columnas
+     * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param modelo_base $modelo
-     * @param string $tabla_original
+     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada
      * @return array|stdClass
      */
@@ -559,19 +552,16 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
         $class = 'models\\'.$tabla_original;
         if($tabla_original === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original);
         }
         if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original);
         }
 
         $columnas_sql = $this->genera_columnas_tabla( modelo: $modelo, tabla_original: $tabla_original,
             tabla_renombrada: $tabla_renombrada, columnas:  $columnas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar columnas',data:  $columnas_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar columnas',data:  $columnas_sql);
 
         }
 
@@ -602,15 +592,13 @@ class columnas{
         $class = 'models\\'.$key;
 
         if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$key,data:  $key,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe el modelo '.$key,data:  $key);
         }
 
         $result = $this->ajusta_columnas_completas(columnas:  $columnas, columnas_sql: $columnas_sql,
             modelo: $modelo, tabla: $key,tabla_renombrada:  '');
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
         return (string)$result;
     }
@@ -620,9 +608,9 @@ class columnas{
      * Genera las columnas en forma de sql para ser utilizado en un SELECT
      *
      * @param modelo_base $modelo
-     * @param string $tabla_original nombre de la tabla base
+     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada nombre a renombrar de la tabla
-     * @param array $columnas conjunto de columnas mostradas a peticion
+     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @return array|string
      * @example
      *      $resultado_columnas = $this->genera_columnas_consulta($key,'',$columnas_sql);
@@ -633,8 +621,7 @@ class columnas{
         $class = 'models\\'.$tabla_original;
 
         if(!class_exists($class)){
-            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original,data: $tabla_original,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original,data: $tabla_original);
         }
 
 
@@ -642,7 +629,7 @@ class columnas{
             tabla_renombrada: $tabla_renombrada);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al datos para columnas', data: $data, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al datos para columnas', data: $data);
         }
 
         $columnas_envio = $this->columnas_envio(columnas_extra_sql: $data->columnas_extra_sql,
@@ -723,7 +710,7 @@ class columnas{
      * FULL
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
      * @param array $columnas columnas inicializadas a mostrar a peticion
-     * @param string $tabla_original nombre base de la tabla
+     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada nombre para renombre de la tabla
      * @example
     $columnas_sql = $this->genera_columnas_tabla($tabla_original,$tabla_renombrada, $columnas);
@@ -737,17 +724,15 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
         $class = 'models\\'.$tabla_original;
         if($tabla_original === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original);
         }
         if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original);
         }
 
         $data = $modelo->obten_columnas(tabla_original: $tabla_original);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas',data:  $data, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener columnas',data:  $data);
         }
         $columnas_parseadas = $data->columnas_parseadas;
         $tabla_nombre = $modelo->obten_nombre_tabla(tabla_original: $tabla_original, tabla_renombrada: $tabla_renombrada);
@@ -811,7 +796,7 @@ class columnas{
     /**
      * FULL
      * Genera las columnas en forma de sql para ser utilizado en un SELECT de todas las columnas unidas por el modelo
-     * @param array $columnas_sql conjunto de columnas mostradas a peticion
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
      * @param array $renombres conjunto de columnas renombradas
      * @return array|string sql con las columnas para un SELECT
@@ -833,8 +818,7 @@ class columnas{
         $columnas = $this->columnas_full(columnas_sql:  $columnas_sql, extension_estructura: $extension_estructura,
             modelo: $modelo, renombres:  $renombres, tablas_select: $tablas_select);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
         return $columnas.' ';

@@ -1186,7 +1186,7 @@ class modelo extends modelo_base {
 
     /**
      * FULL
-     * @param array $columnas
+     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $filtro
      * @param array $hijo
      * @return array|stdClass
