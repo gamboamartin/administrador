@@ -835,13 +835,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
-                $this->link->errorInfo(),$consulta), params: get_defined_vars());
+                $this->link->errorInfo(),$consulta));
         }
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_sql(consulta: $consulta);
 
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
         }
 
         $r_sql = $result->result;
@@ -897,11 +897,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
-     * Devuelve un arreglo que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de
-     * sql y por ultimo un objeto PDOStatement de la consulta sql ingresada
      *
-     * @param string $consulta
+     * Devuelve un objeto que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de
+     * sql y por ultimo un objeto PDOStatement de la consulta sql ingresada
+     * @version 1.0.0
+     *
+     * @param string $consulta Consulta en forma de SQL para su ejecucion directa
      * @return array|stdClass
      * @example
      *      $tabla = 'cliente';
@@ -917,8 +918,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     protected function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
-            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla);
         }
         try {
             $result = $this->link->query($consulta);
@@ -926,7 +926,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
                 data: array($e->getCode().' '.$this->tabla.' '.$this->consulta.' '.$this->tabla,
-                    'registro'=>$this->registro), params: get_defined_vars());
+                    'registro'=>$this->registro));
         }
         if($this->transaccion ==='INSERT'){
             $this->registro_id = $this->link->lastInsertId();

@@ -127,14 +127,12 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
         }
 
         $columnas_field = $this->genera_columnas_field(modelo:$modelo, tabla_bd: $tabla_bd);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
         }
         $_SESSION['campos_tabla'][$tabla_bd] = $columnas_field->columnas_parseadas;
         $_SESSION['columnas_completas'][$tabla_bd] = $columnas_field->columnas_completas;
@@ -243,16 +241,15 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
         }
         $consulta = "DESCRIBE $tabla_bd";
         $result = $modelo->ejecuta_consulta(consulta: $consulta);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
         if((int)$result->n_registros === 0){
-            return $this->error->error(mensaje: 'Error no existen columnas', data: $result, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existen columnas', data: $result);
         }
 
         return $result->registros;
@@ -689,20 +686,17 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
         }
 
         $columnas = $this->columnas_bd_native(modelo:$modelo, tabla_bd: $tabla_bd);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas);
         }
 
         $columnas_field = $this->columnas_sql_array(columnas: $columnas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas',data:  $columnas_field,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener columnas',data:  $columnas_field);
         }
         return $columnas_field;
     }

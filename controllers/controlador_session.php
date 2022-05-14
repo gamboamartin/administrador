@@ -173,7 +173,7 @@ class controlador_session extends controlador_base{
         $usuario = $modelo_usuario->valida_usuario_password(password:  $_POST['password'], usuario: $_POST['user']);
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                $mensaje = $datos_validos['mensaje'];
+                $mensaje = $usuario['mensaje'];
                 header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
@@ -188,7 +188,7 @@ class controlador_session extends controlador_base{
         $data_get = (new init())->asigna_session_get();
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                $mensaje = $datos_validos['mensaje'];
+                $mensaje = $data_get['mensaje'];
                 header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
@@ -199,7 +199,7 @@ class controlador_session extends controlador_base{
         $r_alta  = $this->alta_session($usuario);
         if(errores::$error){
             if($seccion_header!=='' && $accion_header !==''){
-                $mensaje = $datos_validos['mensaje'];
+                $mensaje = $r_alta['mensaje'];
                 header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }

@@ -1173,7 +1173,7 @@ class modelo extends modelo_base {
             sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro, filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql, params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
         }
 
         $result = $this->ejecuta_consulta(consulta:$sql, hijo: $hijo);
