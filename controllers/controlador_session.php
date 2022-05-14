@@ -143,7 +143,11 @@ class controlador_session extends controlador_base{
 
     public function logout(bool $header = true, bool $ws = false){
         $seguridad = new seguridad();
-        $seguridad->elimina_session($this->link);
+        $del = $seguridad->elimina_session($this->link);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al eliminar session', data: $del, header: $header,
+                ws: $ws);
+        }
         header('Location: index.php?seccion=session&accion=login');
         exit;
     }

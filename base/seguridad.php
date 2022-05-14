@@ -78,7 +78,7 @@ class seguridad{
      */
     public function elimina_session(PDO $link): bool|array
     {
-        $filtro = array('session_id'=>(new generales())->session_id);
+        $filtro = array('session.name'=>(new generales())->session_id);
         $session_modelo = new session($link);
 
         $r_session = $session_modelo->filtro_and(filtro: $filtro);

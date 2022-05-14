@@ -827,8 +827,7 @@ class columnas{
 
         $tablas_select = (new inicializacion())->tablas_select(modelo: $modelo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar tablas select',data:  $tablas_select,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al inicializar tablas select',data:  $tablas_select);
         }
 
         $columnas = $this->columnas_full(columnas_sql:  $columnas_sql, extension_estructura: $extension_estructura,

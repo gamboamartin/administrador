@@ -287,8 +287,9 @@ class inicializacion{
     }
 
     /**
-     * FULL
-     * @param modelo_base $modelo
+     * Obtiene las tablas base para ejecutar una consulta en select
+     * @version 1.0.0
+     * @param modelo_base $modelo Modelo para obtencion de nombre de tabla
      * @return array
      */
     public function tablas_select(modelo_base $modelo): array
@@ -299,8 +300,7 @@ class inicializacion{
         $consulta_base->estructura_bd[$modelo->tabla]['columnas'] = $modelo->columnas;
 
         return $consulta_base->estructura_bd[$modelo->tabla]['columnas'] ??
-            $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla, data: $modelo->tabla,
-                params: get_defined_vars());
+            $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla, data: $modelo->tabla);
     }
 
 

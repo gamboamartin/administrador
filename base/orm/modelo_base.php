@@ -1663,8 +1663,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             columnas_sql: $columnas_seleccionables, extension_estructura:  $extension_estructura,
             renombres:  $renombradas);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql);
         }
 
 

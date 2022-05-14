@@ -1154,8 +1154,7 @@ class modelo extends modelo_base {
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
 
         if($this->aplica_seguridad && $aplica_seguridad) {
@@ -1164,7 +1163,7 @@ class modelo extends modelo_base {
 
         if($limit < 0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $limit, params: get_defined_vars());
+                data: $limit);
         }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, filtro:  $filtro, filtro_especial: $filtro_especial,
@@ -1275,13 +1274,12 @@ class modelo extends modelo_base {
     {
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
         $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura:  $this->extension_estructura,
             renombradas:  $this->renombres);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
 
         $complemento_sql = $this->complemento_sql(filtro:  $filtro, filtro_especial: $filtro_especial,
