@@ -86,7 +86,7 @@ class controlador_accion extends controlador_base{
 
     /**
      * PRUEBAS FINALIZADAS
-     * @param bool $header
+     * @param bool $header si header se mostrara la info en html
      * @return array
      */
     public function resultado_accion(bool $header):array{
@@ -127,7 +127,7 @@ class controlador_accion extends controlador_base{
 
 
         $accion_modelo = new accion($this->link);
-        $resultado = $accion_modelo->filtro_or($filtro);
+        $resultado = $accion_modelo->filtro_or(filtro: $filtro);
         if(errores::$error){
             $error = $this->errores->error(mensaje: "Error al obtener acciones", data: $resultado,
                 params: get_defined_vars());

@@ -55,8 +55,8 @@ class validaciones extends validacion{
 
     /**
      * FULL
-     * @param array $data
-     * @param string $tabla
+     * @param array $data Datos para la maquetacion del JOIN
+     * @param string $tabla Tabla o estructura de la base de datos modelo o seccion
      * @return bool|array
      */
     public function valida_data_columna(array $data, string $tabla): bool|array
@@ -65,18 +65,16 @@ class validaciones extends validacion{
         $keys = array('nombre_original');
         $valida = $this->valida_existencia_keys(keys:$keys, registro: $data);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar data', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
         $data['nombre_original'] = str_replace('models\\','',$data['nombre_original']);
         $class = 'models\\'.$data['nombre_original'];
         if(is_numeric($tabla)){
-            return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla);
         }
         if(!class_exists($class)){
-            return $this->error->error(mensaje:'Error no existe el modelo '.$class, data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error no existe el modelo '.$class, data: $data);
         }
         return true;
     }

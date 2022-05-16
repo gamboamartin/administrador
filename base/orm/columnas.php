@@ -180,7 +180,7 @@ class columnas{
      * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $data
+     * @param array $data Datos para la maquetacion del JOIN
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|string
@@ -352,7 +352,7 @@ class columnas{
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param array $renombres
+     * @param array $renombres Conjunto de tablas para renombrar
      * @return array|string
      */
     private function columnas_full(array $columnas_sql, array $extension_estructura, modelo_base $modelo,
@@ -385,7 +385,7 @@ class columnas{
 
     /**
      * FULL
-     * @param array $renombres
+     * @param array $renombres Conjunto de tablas para renombrar
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
@@ -748,6 +748,7 @@ class columnas{
 
     /**
      * Integra las columnas en forma de SQL de forma recursiva
+     * @version 1.0.0
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return stdClass

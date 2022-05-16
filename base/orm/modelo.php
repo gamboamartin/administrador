@@ -1190,7 +1190,7 @@ class modelo extends modelo_base {
      * FULL
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
-     * @param array $hijo
+     * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
      * @return array|stdClass
      */
     public function filtro_or(array $columnas = array(), array $filtro = array(), array $hijo = array()):array|stdClass{
