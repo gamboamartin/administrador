@@ -27,7 +27,7 @@ class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         $keys = array('grupo_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar session',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar session',data: $valida);
         }
         $grupo_id = $_SESSION['grupo_id'];
 
@@ -40,8 +40,7 @@ class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
 
         $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $result,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $result);
         }
         return $result;
     }

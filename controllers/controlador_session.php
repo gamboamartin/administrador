@@ -11,7 +11,6 @@ use models\session;
 use models\usuario;
 use PDO;
 use stdClass;
-use Throwable;
 
 
 class controlador_session extends controlador_base{
@@ -138,6 +137,7 @@ class controlador_session extends controlador_base{
         $data = new stdClass();
         $data->header = $header;
         $data->ws = $ws;
+
         return $data;
     }
 

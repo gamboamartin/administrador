@@ -35,8 +35,7 @@ class accion extends modelo{ //FINALIZADAS
                 params: get_defined_vars());
         }
         if(isset($_SESSION['grupo_id'])&&(int)$_SESSION['grupo_id']<=0 && $seccion !== 'session' && $accion !== 'login'){
-            return $this->error->error(mensaje: 'Error grupo_id debe ser mayor o igual a 0',data: $_SESSION,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error grupo_id debe ser mayor o igual a 0',data: $_SESSION);
         }
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -44,14 +43,12 @@ class accion extends modelo{ //FINALIZADAS
         }
         $seccion_menu_id = $modelo->seccion_menu_id(seccion: $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error obtener seccion_menu_id',data: $seccion_menu_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error obtener seccion_menu_id',data: $seccion_menu_id);
         }
 
         $r_acciones = (new accion_grupo($this->link))->obten_accion_permitida(seccion_menu_id: $seccion_menu_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error obtener acciones permitidas',data: $r_acciones,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error obtener acciones permitidas',data: $r_acciones);
         }
         return $r_acciones->registros;
     }
