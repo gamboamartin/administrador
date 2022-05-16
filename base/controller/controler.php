@@ -123,7 +123,7 @@ class controler{
             }
             $acciones =  $accion_modelo->acciones_permitidas(seccion: $this->seccion,accion: $this->accion,modelo: $this->modelo);
             if(errores::$error){
-                return  $this->errores->error('Error al obtener acciones',$acciones);
+                return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $acciones);
             }
 
             $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->link,

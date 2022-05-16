@@ -2222,7 +2222,7 @@ class modelo extends modelo_base {
 
     /**
      * P INT ERROREV
-     * @param string $consulta
+     * @param string $consulta texto en forma de SQL
      * @return array|stdClass
      */
     private function transacciones_default(string $consulta): array|stdClass

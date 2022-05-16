@@ -683,7 +683,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P ORDER P INT ERROREV
-     * @param array $atributo
+     * @param array $atributo Registro de tipo modelo atributo
      * @param int $registro_id
      * @return array
      */
@@ -870,7 +870,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P INT ERRORREV
-     * @param int $registro_id
+     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array|string
      */
     protected function ejecuta_insersion_attr(int $registro_id): array|string
@@ -1530,7 +1530,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P INT ERRORREV
-     * @param array $atributo
+     * @param array $atributo Registro de tipo modelo atributo
      * @param int $registro_id
      * @param string $tabla
      * @return array
@@ -1572,7 +1572,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P INT ERROREV
-     * @param int $registro_id
+     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @param string $tabla_attr
      * @return array
      */
@@ -1609,7 +1609,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * P INT ERROREV
      * @param string $clase_attr
-     * @param int $registro_id
+     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array
      */
     private function inserta_data_attr(string $clase_attr, int $registro_id): array

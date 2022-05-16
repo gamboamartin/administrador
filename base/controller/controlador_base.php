@@ -131,8 +131,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $breadcrumbs = $this->data_bread(aplica_seguridad: $aplica_seguridad);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar nav breads',data: $breadcrumbs,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al generar nav breads',data: $breadcrumbs);
             print_r($error);
             die('Error');
         }
