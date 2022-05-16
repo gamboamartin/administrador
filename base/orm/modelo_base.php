@@ -821,6 +821,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * FULL
      * Funcion que ejecuta un query de tipo select
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
+     * @param string $consulta Consulta en forma de SQL para su ejecucion directa
      * @return array|stdClass registros obtenidos de la consulta del modelo con datos o vacio
      * @example
      * $this->consulta = "DESCRIBE $tabla_original";
@@ -1714,10 +1715,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
      * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus
      * dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]
+     * @version 1.0.0
      *
 
      *
@@ -1745,22 +1746,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $modelos_hijos = array() ;
         foreach($this->hijo as $key=>$modelo){
             if(is_numeric($key)){
-                return $this->error->error(mensaje: "Error en key",data: $this->hijo, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error en key",data: $this->hijo);
             }
             if(!isset($modelo['filtros'])){
-                return $this->error->error(mensaje: "Error filtro",data: $this->hijo, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error filtro",data: $this->hijo);
             }
             if(!isset($modelo['filtros_con_valor'])){
-                return $this->error->error(mensaje:"Error filtro",data:$this->hijo, params: get_defined_vars());
+                return $this->error->error(mensaje:"Error filtro",data:$this->hijo);
             }
             if(!is_array($modelo['filtros'])){
-                return $this->error->error(mensaje:"Error filtro",data:$this->hijo, params: get_defined_vars());
+                return $this->error->error(mensaje:"Error filtro",data:$this->hijo);
             }
             if(!is_array($modelo['filtros_con_valor'])){
-                return $this->error->error(mensaje:"Error filtro",data:$this->hijo, params: get_defined_vars());
+                return $this->error->error(mensaje:"Error filtro",data:$this->hijo);
             }
             if(!isset($modelo['nombre_estructura'])){
-                return $this->error->error(mensaje:"Error en estructura",data:$this->hijo, params: get_defined_vars());
+                return $this->error->error(mensaje:"Error en estructura",data:$this->hijo);
             }
 
             $modelos_hijos[$key]['filtros']= $modelo['filtros'];

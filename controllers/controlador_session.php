@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author Martin Gamboa Vazquez
+ * @version 1.0.0
+ * @created 2022-05-16
+ * @final En proceso
+ *
+ */
 namespace gamboamartin\controllers;
 
 use base\controller\init;

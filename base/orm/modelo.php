@@ -712,6 +712,7 @@ class modelo extends modelo_base {
      * Elimina un registro por el id enviado
 
      * @param int $id id del registro a eliminar
+     *
      * @example
      *      $registro = $this->modelo->elimina_bd($this->registro_id);
      *

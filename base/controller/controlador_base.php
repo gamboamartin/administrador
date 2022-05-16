@@ -127,6 +127,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                 header('Location: index.php?seccion=session&accion=login');
                 exit;
             }
+
         }
 
         $breadcrumbs = $this->data_bread(aplica_seguridad: $aplica_seguridad);
