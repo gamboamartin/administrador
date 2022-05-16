@@ -18,7 +18,7 @@ class columnas{
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @param string $tabla_renombrada
+     * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @return array|string
      */
     private function ajusta_columnas_completas(string $columnas, array $columnas_sql,modelo_base $modelo, string $tabla,
@@ -120,7 +120,7 @@ class columnas{
     /**
      * FULL
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @param string $tabla_bd
+     * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
      */
     public function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
@@ -234,7 +234,7 @@ class columnas{
     /**
      * FULL
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @param string $tabla_bd
+     * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array
      */
     private function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
@@ -541,7 +541,7 @@ class columnas{
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @param string $tabla_renombrada
+     * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @return array|stdClass
      */
     private function data_for_columnas_envio(array $columnas, modelo_base $modelo, string $tabla_original,
@@ -607,7 +607,7 @@ class columnas{
      *
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @param string $tabla_renombrada nombre a renombrar de la tabla
+     * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @return array|string
      * @example
@@ -679,7 +679,7 @@ class columnas{
     /**
      * FULL
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @param string $tabla_bd
+     * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass

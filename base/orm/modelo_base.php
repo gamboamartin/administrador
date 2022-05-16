@@ -1140,21 +1140,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     * Asigna el filtro necesario para traer elementos dependiendes de una consulta
+     * @version 1.0.0
      * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros
      * ligados
      * @param string $campo_filtro Nombre del campo del registro el cual se utiliza como valor del filtro
      * @param array $filtro Filtro precargado, es recursivo hace push con el nuevo resultado
      * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
      * @return array
-     * @url http://doc.ciproteo.com:3443/en/home/Sistemas/Manuales/Tecnicos/modelo_basico/filtro_hijo
      */
-    private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{ //DEBUG
+    private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{
         if($campo_row===''){
-            return $this->error->error(mensaje: "Error campo vacio",data: $campo_row, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error campo vacio",data: $campo_row);
         }
         if($campo_filtro===''){
-            return $this->error->error(mensaje: "Error filtro",data: $campo_filtro, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error filtro",data: $campo_filtro);
         }
         if(!isset($row[$campo_row])){
             $row[$campo_row] = '';
