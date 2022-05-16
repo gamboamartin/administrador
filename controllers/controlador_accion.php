@@ -4,6 +4,7 @@ use base\controller\controlador_base;
 use gamboamartin\errores\errores;
 use JsonException;
 use models\accion;
+use PDO;
 
 class controlador_accion extends controlador_base{
     public string $busca_accion = '';
@@ -12,7 +13,11 @@ class controlador_accion extends controlador_base{
     public string $form_fin = '';
     public array $acciones = array();
 
-    public function __construct($link){
+    /**
+     * @param PDO $link Conexion a la base de datos
+     * @throws JsonException
+     */
+    public function __construct(PDO $link){
         $modelo = new accion($link);
         parent::__construct($link, $modelo);
         $this->directiva = new html_accion();

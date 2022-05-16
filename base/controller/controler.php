@@ -92,6 +92,12 @@ class controler{
 
     }
 
+    /**
+     * Obtiene los datos de un breadcrumb
+     * @param bool $aplica_seguridad si aplica seguridad validara los elementos necesarios de seguridad
+     * y permisos de acceso
+     * @return array|string
+     */
     protected function data_bread(bool $aplica_seguridad):array|string{
         if($aplica_seguridad) {
             if (!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {

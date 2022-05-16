@@ -589,7 +589,7 @@ class directivas extends html {
      * NO SE MUEVE
      * Genera y asigna los breadcrumbs de una vista
      *
-     * @param string $seccion
+     * @param string $seccion Seccion de un controlador o modelo
      * @param string $accion
      * @param array $etiquetas conjunto de etiquetas a generar
      * @param PDO $link
@@ -615,7 +615,7 @@ class directivas extends html {
         if($accion === ''){
             return  $this->errores->error('$accion no puede venir vacia',$accion);
         }
-        $breadcrumbs = (new menus())->breadcrumbs_con_label_html($etiquetas, $seccion);
+        $breadcrumbs = (new menus())->breadcrumbs_con_label_html(etiquetas_accion: $etiquetas,seccion:  $seccion);
         if(errores::$error){
             return  $this->errores->error('Error al generar breads',$breadcrumbs);
         }

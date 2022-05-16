@@ -204,7 +204,7 @@ class menus{
      * Genera los breadcrumbs de un html
      *
      * @param array $etiquetas_accion conjunto de etiquetas para la creacion de un breadcrums
-     * @param string $seccion
+     * @param string $seccion Seccion de un controlador o modelo
      * @return array arreglo con parametros
      * @example
      *      $breadcrumbs = $controlador->breadcrumbs_con_label(array('alta', 'lista'));
@@ -222,7 +222,7 @@ class menus{
             return  $this->error->error('Error no existe la clase',$class_model);
         }
 
-        $etiquetas_array = $this->etiquetas_array($etiquetas_accion);
+        $etiquetas_array = $this->etiquetas_array(etiquetas_accion: $etiquetas_accion);
         if(errores::$error){
             return $this->error->error('Error al generar etiquetas', $etiquetas_array);
         }
@@ -232,13 +232,13 @@ class menus{
 
     /**
      * PROBADO P ORDER P INT
-     * @param array $etiqueta
+     * @param array $etiqueta Datos para mostrar una etiqueta en un menu
      * @return array
      */
     PUBLIC function data_menu(array $etiqueta): array
     {
         $keys = array('accion_descripcion','accion_icono');
-        $valida = $this->validacion->valida_existencia_keys($keys, $etiqueta);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $etiqueta);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar etiqueta', data: $valida, params: get_defined_vars());
         }
@@ -249,6 +249,11 @@ class menus{
         return$data;
     }
 
+    /**
+     * Funcion la generar las etiquetas de una accion mostrable en el menu
+     * @param array $etiquetas_accion Datos con las etiquetas a mostrar
+     * @return array
+     */
     private function etiquetas_array(array $etiquetas_accion): array
     {
         $etiquetas_array = array();

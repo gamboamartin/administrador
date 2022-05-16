@@ -50,6 +50,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
     /**
+     * @param PDO $link Conexion a la base de datos
+     * @param modelo $modelo
+     * @param array $filtro_boton_lista
+     * @param string $campo_busca
+     * @param string $valor_busca_fault
+     * @param stdClass $paths_conf
      * @throws JsonException
      */
     public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
