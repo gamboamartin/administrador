@@ -664,10 +664,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     /**
      * P INT
-     * @param bool $header
+     * @param bool $header Si header se mostrara la info en el navegador de manera directa
      * @param bool $ws
      * @return array
-     * @throws JsonException
      */
     public function lista(bool $header, bool $ws = false): array{
 

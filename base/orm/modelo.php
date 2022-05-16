@@ -1679,7 +1679,8 @@ class modelo extends modelo_base {
      * @param string $sql_extra
      * @param string $group_by
      * @param array $columnas
-     * @param bool $aplica_seguridad
+     * @param bool $aplica_seguridad Si aplica seguridad se integra usuario_permitido_id el cual debe existir en los
+     * registros
      * @param int $limit
      * @return array|stdClass conjunto de registros obtenidos
      * @example

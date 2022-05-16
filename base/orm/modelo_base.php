@@ -2432,9 +2432,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion genera order en forma de sql
      * @param array  $order con parametros para generar sentencia
+     * @version 1.0.0
      * @return array|string cadena con order en forma de SQL
      * @throws errores if order[campo] es un numero
      * @example
@@ -2445,7 +2446,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $order_sql = '';
         foreach ($order as $campo=>$tipo_order){
             if(is_numeric($campo)){
-                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order);
             }
             if($order_sql === ''){
                 $order_sql.=' ORDER BY '.$campo.' '.$tipo_order;
