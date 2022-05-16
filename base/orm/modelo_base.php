@@ -2393,8 +2393,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
+     *
      * Funcion reemplaza el primer dato encontrado en la posicion 0
+     * @version 1.0.0
      * @param string $from cadena de busqueda
      * @param string $to cadena de reemplazo
      * @param string $content cadena a ejecutar ajuste
@@ -2411,17 +2412,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores $from  = vacio
      * @uses clientes
      * @uses controler
-     * @uses ubicaciones
-     * @uses cliente
-     * @uses prospecto
      */
     public function str_replace_first(string $content, string $from, string $to):array|string{
         if($content === ''){
-            return $this->error->error(mensaje: 'Error al content esta vacio',data: $content,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al content esta vacio',data: $content);
         }
         if($from === ''){
-            return $this->error->error(mensaje: 'Error from esta vacio',data: $from, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error from esta vacio',data: $from);
         }
         $pos = strpos($content, $from);
 

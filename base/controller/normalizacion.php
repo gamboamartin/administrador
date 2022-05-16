@@ -58,7 +58,7 @@ class normalizacion{
 
     /**
      * P INT P ORDER  ERROREV
-     * @param controler $controler
+     * @param controler $controler Controlador de ejecucion
      * @param array $registro
      * @return array
      */
@@ -303,7 +303,7 @@ class normalizacion{
     /**
      * P INT P ORDER ERRORREV
      * @param array $registros
-     * @param controler $controler
+     * @param controler $controler Controlador de ejecucion
      * @return array
      */
     private function genera_registros_envio(controler $controler, array $registros):array{
@@ -311,8 +311,7 @@ class normalizacion{
         foreach ($registros as $key=>$value){
             $key_envio = $this->obten_key_envio(controler:  $controler, key: $key);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error generar  key', data: $key_envio,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error generar  key', data: $key_envio);
             }
             $registro_envio[$key_envio] = $value;
         }
@@ -517,14 +516,11 @@ class normalizacion{
     /**
      * P INT P ORDER ERROREV
      * Obtiene el ker de envio reemplazando valores de prefijos de tablas
-     *
+     * @param controler $controler Controlador de ejecucion
      * @param string $key Key a ejecutar cambio
-
+     * @return array|string key parseado
      * @example
      *      $key_envio = $this->obten_key_envio($key);
-     * @return array|string key parseado
-     * @throws errores $this->seccion === ''
-     * @throws errores $key === ''
      * @internal $this->modelo->str_replace_first($this->seccion . '_', '', $key);
      * @uses controler->genera_registros_envio
      */
@@ -553,7 +549,7 @@ class normalizacion{
     /**
      * P INT P ORDER ERROREV
      * @param array $registro
-     * @param controler $controler
+     * @param controler $controler Controlador de ejecucion
      * @return array
      */
     private function procesa_registros_alta(controler $controler, array $registro): array{
@@ -576,8 +572,7 @@ class normalizacion{
         }
         $registro_envio = $this->genera_registros_envio(controler: $controler, registros: $registros);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar registro envio',data: $registro_envio,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar registro envio',data: $registro_envio);
         }
 
         if(count($registro_envio) === 0){

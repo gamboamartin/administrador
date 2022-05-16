@@ -13,15 +13,14 @@ class altas{
     /**
      * ERROREV
      * @param array $registro
-     * @param controler $controler
+     * @param controler $controler Controlador de ejecucion
      * @return array|stdClass
      */
     public function alta_base(array $registro, controler $controler): array|stdClass{
 
         $registro_r = (new normalizacion())->asigna_registro_alta(controler: $controler,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar registro',data:  $registro_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar registro',data:  $registro_r);
         }
 
         $resultado = $controler->modelo->alta_bd();

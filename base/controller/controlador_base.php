@@ -278,9 +278,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     /**
      * ERROREV
-     * @param bool $header
+     * @param bool $header Si header muestra resultado en front
      * @param bool $ws
-     * @return array
+     * @return array|stdClass
      * @throws JsonException
      */
     public function alta_bd(bool $header, bool $ws): array|stdClass{

@@ -1694,7 +1694,6 @@ class modelo extends modelo_base {
             $group_by =" GROUP BY $group_by ";
         }
 
-
         $limit_sql = '';
 
         if($this->limit > 0){
@@ -1972,12 +1971,12 @@ class modelo extends modelo_base {
     public function registros(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0, array $order = array()):array{
 
         $this->order = $order;
-        $resultado =$this->obten_registros('','', $columnas, $aplica_seguridad,$limit);
+        $resultado =$this->obten_registros(aplica_seguridad:$aplica_seguridad,  columnas:$columnas, limit: $limit);
 
         if(errores::$error){
             return $this->error->error('Error al obtener registros activos',$resultado);
         }
-        $this->registros = $resultado['registros'];
+        $this->registros = $resultado->registros;
         return $this->registros;
     }
 

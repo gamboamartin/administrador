@@ -3,6 +3,7 @@ namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use base\frontend\templates;
 use gamboamartin\errores\errores;
+use JsonException;
 use models\accion;
 use models\accion_basica;
 use models\seccion;
@@ -55,6 +56,12 @@ class controlador_seccion extends controlador_base{
 
     }
 
+    /**
+     * @param bool $header Si header muestra resultado en front
+     * @param bool $ws
+     * @return array
+     * @throws JsonException
+     */
     public function alta_bd(bool $header, bool $ws): array{
         $this->link->beginTransaction();
         $r_alta_bd = parent::alta_bd(false, false);
