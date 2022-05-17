@@ -20,7 +20,7 @@ class data_format{
     /**
      *  P INT P ORDER ERRORREV
      * @param array $registro Registro donde se ajustaran los valores
-     * @param array $tipo_campos
+     * @param array $tipo_campos Son los tipos de campos declarados en el modelo
      * @return array
      */
     public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
@@ -56,10 +56,11 @@ class data_format{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * Regenera los valores de moneda a double cuando estos vienen en formato de moneda local
+     * @version 1.0.0
      * @param string $campo Campo a ajustar valor
-     * @param array $registro
-     * @param string $tipo_dato
+     * @param array $registro Registro al que se le ajustaran los valores antes de insertar
+     * @param string $tipo_dato Ajustara el dato si viene como double o moneda el tipo de dato
      * @return array
      */
     private function asignacion_campo_moneda(string $campo, array $registro, string $tipo_dato): array

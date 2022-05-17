@@ -262,7 +262,7 @@ class modelo extends modelo_base {
     /**
      * P INT P ORDER ERRORREV
      * @param array $registro Registro que se insertara
-     * @param string $status_default
+     * @param string $status_default status activo o inactivo
      * @return array
      */
     private function registro_ins(array $registro, string $status_default): array
