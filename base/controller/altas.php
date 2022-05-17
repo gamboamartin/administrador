@@ -12,7 +12,7 @@ class altas{
 
     /**
      * ERROREV
-     * @param array $registro
+     * @param array $registro Registro que se insertara
      * @param controler $controler Controlador de ejecucion
      * @return array|stdClass
      */

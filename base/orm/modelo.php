@@ -261,7 +261,7 @@ class modelo extends modelo_base {
 
     /**
      * P INT P ORDER ERRORREV
-     * @param array $registro
+     * @param array $registro Registro que se insertara
      * @param string $status_default
      * @return array
      */
@@ -283,15 +283,14 @@ class modelo extends modelo_base {
     /**
      * P ORDER P INT
      * @param array $registro Registro con datos para la insersion
-     * @return array
+     * @return array|stdClass
      */
-    public function alta_registro(array $registro):array{ //FIN
+    public function alta_registro(array $registro):array|stdClass{ //FIN
         $this->registro = $registro;
 
         $r_alta  = $this->alta_bd();
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
         }
         return $r_alta;
     }
