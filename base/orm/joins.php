@@ -18,16 +18,15 @@ class joins{
     }
 
     /**
-     * FULL
-     * @param string $tabla
+     * Ajusta el nombre de un modelo con el namespace models
+     * @param string $tabla Tabla o modelo o seccion a ajustar
      * @return stdClass|array
      */
     private function ajusta_name_model(string $tabla): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla);
         }
 
         $tabla = str_replace('models\\','',$tabla);
@@ -41,7 +40,7 @@ class joins{
 
     /**
      * FULL
-     * @param string $tabla
+     * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace
      * @return array|stdClass
      */
@@ -460,7 +459,7 @@ class joins{
 
     /**
      * FULL
-     * @param string $tabla
+     * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace
      * @return stdClass|array
      */
