@@ -1991,12 +1991,13 @@ class modelo extends modelo_base {
     public function registros_activos(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0): array
     {
         $filtro[$this->tabla.'.status'] = 'activo';
-        $resultado =$this->filtro_and(filtro: $filtro,limit: $limit,columnas: $columnas,aplica_seguridad: $aplica_seguridad);
+        $resultado =$this->filtro_and(aplica_seguridad: $aplica_seguridad, columnas: $columnas, filtro: $filtro,
+            limit: $limit);
 
         if(errores::$error){
-            return $this->error->error('Error al obtener registros',$resultado);
+            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
-        $this->registros = $resultado['registros'];
+        $this->registros = $resultado->registros;
         return $this->registros;
     }
 

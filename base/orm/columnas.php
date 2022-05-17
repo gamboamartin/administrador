@@ -277,7 +277,8 @@ class columnas{
 
     /**
      * FULL
-     * @param array $extension_estructura
+     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
+     * logica natural de dependencias
      * @param array $columnas_sql
      * @param string $columnas
      * @param modelo_base $modelo
@@ -292,7 +293,7 @@ class columnas{
             $class = 'models\\'.$tabla;
             if(is_numeric($tabla)){
                 return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
-                    data: $extension_estructura, params: get_defined_vars());
+                    data: $extension_estructura);
             }
             if(!class_exists($class)){
                 return $this->error->error(mensaje:'Error no existe el modelo '.$tabla, data:$tabla,
@@ -350,7 +351,8 @@ class columnas{
      * FULL
      * @param array $tablas_select
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $extension_estructura
+     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
+     * logica natural de dependencias
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
      * @return array|string

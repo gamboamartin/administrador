@@ -1375,10 +1375,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
      * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
      * Genera arreglo
+     * @version 1.0.0
      * @param array $filtros arreglo de filtros para la obtencion de registros de hijos
      * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
      * @return array
@@ -1387,12 +1388,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $filtro = array();
         foreach($filtros as $campo_filtro=>$campo_row){
             if($campo_row===''){
-                return $this->error->error(mensaje: "Error campo vacio",data: $campo_filtro,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: "Error campo vacio",data: $campo_filtro);
             }
             $filtro = $this->filtro_hijo(campo_filtro: $campo_filtro, campo_row: $campo_row,filtro: $filtro, row: $row);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro);
             }
         }
         return $filtro;
