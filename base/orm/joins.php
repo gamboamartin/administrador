@@ -19,8 +19,9 @@ class joins{
 
     /**
      * Ajusta el nombre de un modelo con el namespace models
+     * @version 1.0.0
      * @param string $tabla Tabla o modelo o seccion a ajustar
-     * @return stdClass|array
+     * @return stdClass|array obj->tabla y obj->name_model
      */
     private function ajusta_name_model(string $tabla): stdClass|array
     {
@@ -41,7 +42,7 @@ class joins{
     /**
      * FULL
      * @param string $tabla Tabla o modelo o seccion a ajustar
-     * @param string $tabla_enlace
+     * @param string $tabla_enlace Tabla de enlace de un join
      * @return array|stdClass
      */
     private function ajusta_name_models(string $tabla, string $tabla_enlace): array|stdClass
@@ -460,7 +461,7 @@ class joins{
     /**
      * FULL
      * @param string $tabla Tabla o modelo o seccion a ajustar
-     * @param string $tabla_enlace
+     * @param string $tabla_enlace Tabla de enlace de un join
      * @return stdClass|array
      */
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
