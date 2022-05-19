@@ -2269,9 +2269,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
-     * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
      *
+     * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
+     * @version 1.0.0
      * @param array $data_modelo datos de la configuracion del modelo a procesar los filtros
      * @param array $row registro formado en forma modelo->registro
      * @example

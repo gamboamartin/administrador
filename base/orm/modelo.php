@@ -1957,7 +1957,8 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     *
+     * Obtiene los registros de una tabla
      * @param array $columnas
      * @param bool $aplica_seguridad
      * @param int $limit
@@ -1977,7 +1978,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     * Obtiene los registros activos de un modelo de datos
      * @param array $columnas
      * @param bool $aplica_seguridad
      * @param int $limit
