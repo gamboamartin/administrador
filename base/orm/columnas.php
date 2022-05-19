@@ -349,7 +349,7 @@ class columnas{
 
     /**
      * FULL
-     * @param array $tablas_select
+     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
@@ -521,7 +521,7 @@ class columnas{
      * FULL
      * @param array $columnas_sql
      * @param modelo_base $modelo
-     * @param array $tablas_select
+     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      */
     private function columnas_tablas_select(array $columnas_sql, modelo_base $modelo, array $tablas_select): array|string
@@ -778,10 +778,11 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Integra las columnas de un objeto para su sos en un select
+     * @version 1.0.0
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @return array|string
+     * @return array|string String con todas las columnas de una tabla
      */
     private function integra_columnas_por_data(string $columnas, string $resultado_columnas):array|string
     {

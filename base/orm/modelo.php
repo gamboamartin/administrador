@@ -1570,7 +1570,7 @@ class modelo extends modelo_base {
         $this->row = new stdClass();
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
-                data: $this->registro_id, params: get_defined_vars());
+                data: $this->registro_id);
         }
         if(count($extension_estructura) === 0){
             $extension_estructura = $this->extension_estructura;
@@ -1578,12 +1578,10 @@ class modelo extends modelo_base {
         $resultado = $this->obten_por_id(columnas:  $columnas, extension_estructura: $extension_estructura, hijo: $hijo);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener por id en '.$this->tabla, data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener por id en '.$this->tabla, data: $resultado);
         }
         if((int)$resultado->n_registros === 0){
-            return $this->error->error(mensaje: 'Error no existe registro de '.$this->tabla,data:  $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe registro de '.$this->tabla,data:  $resultado);
         }
         foreach($resultado->registros[0] as $campo=>$value){
             $this->row->$campo = $value;
@@ -1646,8 +1644,7 @@ class modelo extends modelo_base {
     private function obten_por_id(array $columnas = array(), array $extension_estructura= array(),
                                   array $hijo = array()):array|stdClass{
         if($this->registro_id < 0){
-            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id);
         }
         if(count($extension_estructura)===0){
             $extension_estructura = $this->extension_estructura;
@@ -1948,13 +1945,12 @@ class modelo extends modelo_base {
                              array $hijo = array()):array{
         if($registro_id <=0){
             return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
-                data: $registro_id, params: get_defined_vars());
+                data: $registro_id);
         }
         $this->registro_id = $registro_id;
         $registro = $this->obten_data(columnas: $columnas, extension_estructura: $extension_estructura, hijo: $hijo);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
         }
 
         return $registro;
