@@ -221,11 +221,10 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     public function elementos_lista(string $tabla, string $vista):array|stdClass{
         $valida = $this->validacion->valida_modelo(tabla: $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar '.$tabla,data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar '.$tabla,data: $valida);
         }
         if($vista === ''){
-            return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista);
         }
 
         $filtro['elemento_lista.status'] = 'activo';
@@ -236,12 +235,10 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             orden: 'ASC');
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros filtrados', data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registros filtrados', data: $resultado);
         }
         if((int)$resultado->n_registros === 0){
-            return   $this->error->error(mensaje: 'Error al obtener registros filtrados',data: $resultado,
-                params: get_defined_vars());
+            return   $this->error->error(mensaje: 'Error al obtener registros filtrados',data: $resultado);
         }
 
         return $resultado;
@@ -266,15 +263,14 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     public function genera_estructura_tabla(array $campos_obligatorios, array $estructura_bd, string $tabla, string $vista): array{
         $valida = $this->validacion->valida_modelo(tabla: $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar '.$tabla,data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar '.$tabla,data: $valida);
         }
         if($vista === ''){
             return $this->error->error('Error $vista no puede venir vacia',$vista);
         }
         $resultado = $this->elementos_lista(tabla: $tabla,vista: $vista);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
         $estructura_init = $resultado->registros;
         $estructura_bd[$tabla]['campos'] = array();
@@ -282,8 +278,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         $estructura_bd = (new sql_bass())->maqueta_estructuras(campos_obligatorios: $campos_obligatorios,
             estructura_bd:  $estructura_bd, estructura_init: $estructura_init, tabla: $tabla,vista: $vista);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd);
         }
 
         return $estructura_bd;
@@ -308,8 +303,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     public function genera_estructura_bd(array $estructura_bd,  modelo $modelo, string $vista): array{
 
         if($vista === ''){
-            return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista);
         }
 
         $campos_obligatorios = $modelo->campos_obligatorios;
@@ -318,8 +312,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             $estructura_bd = $this->genera_estructura_tabla(campos_obligatorios: $campos_obligatorios,
                 estructura_bd:  $estructura_bd, tabla: $modelo->tabla,vista: $vista);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd);
             }
 
         }
@@ -349,8 +342,7 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
 
         $estructura_bd = $this->genera_estructura_bd(estructura_bd:  $estructura_bd, modelo: $modelo,vista: $vista);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd);
         }
 
         return $estructura_bd[$modelo->tabla];

@@ -1806,25 +1806,21 @@ class modelo extends modelo_base {
     public function obten_registros_filtro_and_ordenado(string $campo, array $filtros, string $orden):array|stdClass{
         $this->filtro = $filtros;
         if(count($this->filtro) === 0){
-            return $this->error->error(mensaje: 'Error los filtros no pueden venir vacios',data: $this->filtro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error los filtros no pueden venir vacios',data: $this->filtro);
         }
         if($campo === ''){
-            return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro);
         }
 
         $sentencia = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar and',data:$sentencia,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar and',data:$sentencia);
         }
         $consulta = $this->genera_consulta_base(columnas: array(),extension_estructura: $this->extension_estructura,
             renombradas:  $this->renombres);
 
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar consulta',data:$consulta,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar consulta',data:$consulta);
         }
 
         $where = " WHERE $sentencia";
@@ -1833,8 +1829,7 @@ class modelo extends modelo_base {
 
         $result = $this->ejecuta_consulta(consulta: $consulta);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql',data:$result,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
         }
 
         return $result;
