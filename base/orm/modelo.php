@@ -2068,24 +2068,31 @@ class modelo extends modelo_base {
      * @param mixed $value
      * @return array|stdClass
      */
-    public function slaches_campo(string $campo, mixed $value): array|stdClass
+    private function slaches_campo(string $campo, mixed $value): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
         }
+        $value_es_null = false;
         $campo = addslashes($campo);
         try {
-            $value = addslashes($value);
+            if(is_null($value)){
+                $value_es_null = true;
+                $value = 'NULL';
+            }
+            else{
+                $value = addslashes($value);
+            }
+
         }
         catch (Throwable  $e){
-            return $this->error->error(mensaje: 'Error al asignar value de campo '.$campo, data: $e,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar value de campo '.$campo, data: $e);
         }
         $data = new stdClass();
         $data->campo = $campo;
         $data->value = $value;
+        $data->value_es_null = $value_es_null;
         return $data;
     }
 
@@ -2148,26 +2155,27 @@ class modelo extends modelo_base {
     private function sql_base_alta(string $campo, string $campos, string $valores, mixed $value): array|stdClass
     {
         if(is_numeric($campo)){
-            return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo);
         }
 
         $slacheados = $this->slaches_campo(campo: $campo,value:  $value);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al ajustar campo ', data:$slacheados, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al ajustar campo ', data:$slacheados);
         }
 
-        $campos = $this->campos_alta_sql(campo:  $slacheados->campo, campos: $campos);
+        $campos_r = $this->campos_alta_sql(campo:  $slacheados->campo, campos: $campos);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar campo ', data:$campos, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar campo ', data:$campos_r);
         }
 
-        $valores = $this->valores_sql_alta(valores: $valores,value:  $slacheados->value,);
+        $valores_r = $this->valores_sql_alta(valores: $valores,value:  $slacheados->value,
+            value_es_null: $slacheados->value_es_null);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar valor ',data: $valores, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar valor ',data: $valores_r);
         }
         $data = new stdClass();
-        $data->campos = $campos;
-        $data->valores = $valores;
+        $data->campos = $campos_r;
+        $data->valores = $valores_r;
         return $data;
     }
 
@@ -2320,20 +2328,21 @@ class modelo extends modelo_base {
     }
 
 
-
-
-
-
-
     /**
      * P INT P ORDER ERROREV
      * @param string $valores
      * @param string $value
+     * @param bool $value_es_null
      * @return string|array
      */
-    private function valores_sql_alta(string $valores, string $value): string|array
+    private function valores_sql_alta(string $valores, string $value, bool $value_es_null): string|array
     {
-        $valores .= $valores === '' ? "'$value'" : ",'$value'";
+        $value_aj = "'$value'";
+        if($value_es_null){
+            $value_aj = $value;
+        }
+        $value_aj = trim($value_aj);
+        $valores .= $valores === '' ? (string)$value_aj : ",$value_aj";
         return $valores;
     }
 
