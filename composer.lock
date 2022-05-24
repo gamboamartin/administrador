@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "75c6eea8e296cdb37a62960009080b16",
+    "content-hash": "837b0f43fd3ce39ee8249db424404bc2",
     "packages": [
         {
             "name": "chillerlan/php-qrcode",
@@ -275,16 +275,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/base_modelos.git",
-                "reference": "57f6c28a4a461f4678a79a9c639306c7bc0d6686"
+                "reference": "66b2d614a2cbf2393c57895e99bc3344e7ff9662"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/base_modelos/zipball/57f6c28a4a461f4678a79a9c639306c7bc0d6686",
-                "reference": "57f6c28a4a461f4678a79a9c639306c7bc0d6686",
+                "url": "https://api.github.com/repos/gamboamartin/base_modelos/zipball/66b2d614a2cbf2393c57895e99bc3344e7ff9662",
+                "reference": "66b2d614a2cbf2393c57895e99bc3344e7ff9662",
                 "shasum": ""
             },
             "require": {
-                "gamboa.martin/errores": "dev-main",
+                "gamboa.martin/errores": "^1.0.0",
                 "gamboa.martin/test": "dev-main",
                 "gamboa.martin/validacion": "dev-main",
                 "php": " >=8.1"
@@ -296,6 +296,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
+                    "config\\": "config",
                     "gamboamartin\\test\\": "tests/",
                     "gamboamartin\\base_modelos\\": "src/"
                 }
@@ -315,7 +316,7 @@
                 "issues": "https://github.com/gamboamartin/base_modelos/issues",
                 "source": "https://github.com/gamboamartin/base_modelos/tree/main"
             },
-            "time": "2022-03-16T21:53:22+00:00"
+            "time": "2022-05-24T15:41:24+00:00"
         },
         {
             "name": "gamboa.martin/calculo",
@@ -323,16 +324,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/calculo.git",
-                "reference": "1deff7ea47ac1455b6720b396f28c53316db7cb3"
+                "reference": "35b51008cf6fbf619a5ee1cd60e51116eb23af21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/calculo/zipball/1deff7ea47ac1455b6720b396f28c53316db7cb3",
-                "reference": "1deff7ea47ac1455b6720b396f28c53316db7cb3",
+                "url": "https://api.github.com/repos/gamboamartin/calculo/zipball/35b51008cf6fbf619a5ee1cd60e51116eb23af21",
+                "reference": "35b51008cf6fbf619a5ee1cd60e51116eb23af21",
                 "shasum": ""
             },
             "require": {
-                "gamboa.martin/errores": "dev-main",
+                "gamboa.martin/errores": "^1.0.0",
                 "gamboa.martin/test": "dev-main",
                 "gamboa.martin/validacion": "dev-main",
                 "php": " >=8.1"
@@ -344,6 +345,7 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
+                    "config\\": "config/",
                     "gamboamartin\\test\\": "tests/",
                     "gamboamartin\\calculo\\": "src/"
                 }
@@ -363,7 +365,7 @@
                 "issues": "https://github.com/gamboamartin/calculo/issues",
                 "source": "https://github.com/gamboamartin/calculo/tree/main"
             },
-            "time": "2022-03-15T23:41:10+00:00"
+            "time": "2022-05-24T14:29:31+00:00"
         },
         {
             "name": "gamboa.martin/compresor",
@@ -371,18 +373,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/compresor.git",
-                "reference": "c4048b7e85dc612c01828e22150f6302c783bf76"
+                "reference": "5c64881e356a4821ca35467354de9f4e4155cb22"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/compresor/zipball/c4048b7e85dc612c01828e22150f6302c783bf76",
-                "reference": "c4048b7e85dc612c01828e22150f6302c783bf76",
+                "url": "https://api.github.com/repos/gamboamartin/compresor/zipball/5c64881e356a4821ca35467354de9f4e4155cb22",
+                "reference": "5c64881e356a4821ca35467354de9f4e4155cb22",
                 "shasum": ""
             },
             "require": {
                 "ext-imagick": "*",
                 "ext-zip": "*",
-                "gamboa.martin/errores": "dev-main",
+                "gamboa.martin/errores": "^1.0.0",
                 "gamboa.martin/test": "dev-main",
                 "mpdf/mpdf": "^8.0",
                 "php": " >=8.1"
@@ -413,20 +415,53 @@
                 "issues": "https://github.com/gamboamartin/compresor/issues",
                 "source": "https://github.com/gamboamartin/compresor/tree/main"
             },
-            "time": "2022-03-14T19:47:31+00:00"
+            "time": "2022-05-24T15:42:42+00:00"
         },
         {
-            "name": "gamboa.martin/errores",
+            "name": "gamboa.martin/configuraciones",
             "version": "dev-main",
             "source": {
                 "type": "git",
-                "url": "https://github.com/gamboamartin/errores.git",
-                "reference": "a92ae018096a95d0a46071c7f138276fd1119f10"
+                "url": "https://github.com/gamboamartin/configuraciones.git",
+                "reference": "45c3ac78b2ddf5af4b2686549707b3430f8a99b6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/errores/zipball/a92ae018096a95d0a46071c7f138276fd1119f10",
-                "reference": "a92ae018096a95d0a46071c7f138276fd1119f10",
+                "url": "https://api.github.com/repos/gamboamartin/configuraciones/zipball/45c3ac78b2ddf5af4b2686549707b3430f8a99b6",
+                "reference": "45c3ac78b2ddf5af4b2686549707b3430f8a99b6",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Gamboa",
+                    "email": "gamboa.martin@gmail.com"
+                }
+            ],
+            "description": "Configuraciones de ejemplo",
+            "support": {
+                "issues": "https://github.com/gamboamartin/configuraciones/issues",
+                "source": "https://github.com/gamboamartin/configuraciones/tree/main"
+            },
+            "time": "2022-04-22T19:42:37+00:00"
+        },
+        {
+            "name": "gamboa.martin/errores",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/gamboamartin/errores.git",
+                "reference": "8fb20df54f92e9e26f14dd4804b4e110759e0abd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/gamboamartin/errores/zipball/8fb20df54f92e9e26f14dd4804b4e110759e0abd",
+                "reference": "8fb20df54f92e9e26f14dd4804b4e110759e0abd",
                 "shasum": ""
             },
             "require": {
@@ -436,7 +471,6 @@
             "require-dev": {
                 "phpunit/phpunit": "^9.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -457,9 +491,9 @@
             "description": "Clase para controlar errores",
             "support": {
                 "issues": "https://github.com/gamboamartin/errores/issues",
-                "source": "https://github.com/gamboamartin/errores/tree/main"
+                "source": "https://github.com/gamboamartin/errores/tree/v1.0.0"
             },
-            "time": "2022-03-14T19:51:12+00:00"
+            "time": "2022-05-13T20:39:49+00:00"
         },
         {
             "name": "gamboa.martin/plugins",
@@ -467,16 +501,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/plugins.git",
-                "reference": "11307a8b1d0b97d3666c866cd7791c8c5ef8d3b9"
+                "reference": "564a66e890daca464bd5b058f8424807931c4d8e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/plugins/zipball/11307a8b1d0b97d3666c866cd7791c8c5ef8d3b9",
-                "reference": "11307a8b1d0b97d3666c866cd7791c8c5ef8d3b9",
+                "url": "https://api.github.com/repos/gamboamartin/plugins/zipball/564a66e890daca464bd5b058f8424807931c4d8e",
+                "reference": "564a66e890daca464bd5b058f8424807931c4d8e",
                 "shasum": ""
             },
             "require": {
-                "gamboa.martin/errores": "main-dev",
+                "gamboa.martin/errores": "^1.0.0",
                 "gamboa.martin/test": "main-dev",
                 "gamboa.martin/validacion": "main-dev",
                 "php": " >=8.1",
@@ -507,7 +541,7 @@
                 "issues": "https://github.com/gamboamartin/plugins/issues",
                 "source": "https://github.com/gamboamartin/plugins/tree/main"
             },
-            "time": "2022-04-18T14:28:39+00:00"
+            "time": "2022-05-24T14:30:33+00:00"
         },
         {
             "name": "gamboa.martin/test",
@@ -515,15 +549,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/test.git",
-                "reference": "e1f2823794a650783740e1b51092a9216adb293f"
+                "reference": "5016de6348b1568943e338b2e89a3f00a1ecf20f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/test/zipball/e1f2823794a650783740e1b51092a9216adb293f",
-                "reference": "e1f2823794a650783740e1b51092a9216adb293f",
+                "url": "https://api.github.com/repos/gamboamartin/test/zipball/5016de6348b1568943e338b2e89a3f00a1ecf20f",
+                "reference": "5016de6348b1568943e338b2e89a3f00a1ecf20f",
                 "shasum": ""
             },
             "require": {
+                "ext-mysqli": "*",
                 "ext-pdo": "*",
                 "php": " >=8.1"
             },
@@ -554,7 +589,7 @@
                 "issues": "https://github.com/gamboamartin/test/issues",
                 "source": "https://github.com/gamboamartin/test/tree/main"
             },
-            "time": "2022-03-24T18:58:17+00:00"
+            "time": "2022-05-04T18:17:08+00:00"
         },
         {
             "name": "gamboa.martin/validacion",
@@ -562,16 +597,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/gamboamartin/validacion.git",
-                "reference": "8fd65b3b76b51eb8115a5d786f3021448247a790"
+                "reference": "66055233f4007c23980152dcbaa59ad628c20313"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/gamboamartin/validacion/zipball/8fd65b3b76b51eb8115a5d786f3021448247a790",
-                "reference": "8fd65b3b76b51eb8115a5d786f3021448247a790",
+                "url": "https://api.github.com/repos/gamboamartin/validacion/zipball/66055233f4007c23980152dcbaa59ad628c20313",
+                "reference": "66055233f4007c23980152dcbaa59ad628c20313",
                 "shasum": ""
             },
             "require": {
-                "gamboa.martin/errores": "dev-main",
+                "gamboa.martin/errores": "^1.0.0",
                 "gamboa.martin/test": "dev-main",
                 "php": " >=8.1"
             },
@@ -602,7 +637,7 @@
                 "issues": "https://github.com/gamboamartin/validacion/issues",
                 "source": "https://github.com/gamboamartin/validacion/tree/main"
             },
-            "time": "2022-04-12T23:02:04+00:00"
+            "time": "2022-05-24T14:28:44+00:00"
         },
         {
             "name": "graham-campbell/guzzle-factory",
@@ -993,29 +1028,31 @@
         },
         {
             "name": "maennchen/zipstream-php",
-            "version": "2.1.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/maennchen/ZipStream-PHP.git",
-                "reference": "c4c5803cc1f93df3d2448478ef79394a5981cc58"
+                "reference": "211e9ba1530ea5260b45d90c9ea252f56ec52729"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/c4c5803cc1f93df3d2448478ef79394a5981cc58",
-                "reference": "c4c5803cc1f93df3d2448478ef79394a5981cc58",
+                "url": "https://api.github.com/repos/maennchen/ZipStream-PHP/zipball/211e9ba1530ea5260b45d90c9ea252f56ec52729",
+                "reference": "211e9ba1530ea5260b45d90c9ea252f56ec52729",
                 "shasum": ""
             },
             "require": {
                 "myclabs/php-enum": "^1.5",
-                "php": ">= 7.1",
+                "php": "^7.4 || ^8.0",
                 "psr/http-message": "^1.0",
                 "symfony/polyfill-mbstring": "^1.0"
             },
             "require-dev": {
                 "ext-zip": "*",
-                "guzzlehttp/guzzle": ">= 6.3",
+                "guzzlehttp/guzzle": "^6.5.3 || ^7.2.0",
                 "mikey179/vfsstream": "^1.6",
-                "phpunit/phpunit": ">= 7.5"
+                "php-coveralls/php-coveralls": "^2.4",
+                "phpunit/phpunit": "^8.5.8 || ^9.4.2",
+                "vimeo/psalm": "^4.1"
             },
             "type": "library",
             "autoload": {
@@ -1052,7 +1089,7 @@
             ],
             "support": {
                 "issues": "https://github.com/maennchen/ZipStream-PHP/issues",
-                "source": "https://github.com/maennchen/ZipStream-PHP/tree/master"
+                "source": "https://github.com/maennchen/ZipStream-PHP/tree/2.2.1"
             },
             "funding": [
                 {
@@ -1060,7 +1097,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2020-05-30T13:11:16+00:00"
+            "time": "2022-05-18T15:52:06+00:00"
         },
         {
             "name": "markbaker/complex",
@@ -1876,16 +1913,16 @@
         },
         {
             "name": "phpoffice/phpspreadsheet",
-            "version": "1.22.0",
+            "version": "1.23.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHPOffice/PhpSpreadsheet.git",
-                "reference": "3a9e29b4f386a08a151a33578e80ef1747037a48"
+                "reference": "21e4cf62699eebf007db28775f7d1554e612ed9e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/3a9e29b4f386a08a151a33578e80ef1747037a48",
-                "reference": "3a9e29b4f386a08a151a33578e80ef1747037a48",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/21e4cf62699eebf007db28775f7d1554e612ed9e",
+                "reference": "21e4cf62699eebf007db28775f7d1554e612ed9e",
                 "shasum": ""
             },
             "require": {
@@ -1909,7 +1946,7 @@
                 "php": "^7.3 || ^8.0",
                 "psr/http-client": "^1.0",
                 "psr/http-factory": "^1.0",
-                "psr/simple-cache": "^1.0"
+                "psr/simple-cache": "^1.0 || ^2.0"
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "dev-master",
@@ -1974,9 +2011,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
-                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.22.0"
+                "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.23.0"
             },
-            "time": "2022-02-18T12:57:07+00:00"
+            "time": "2022-04-24T13:53:10+00:00"
         },
         {
             "name": "phpspec/prophecy",
@@ -2678,25 +2715,25 @@
         },
         {
             "name": "psr/simple-cache",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-fig/simple-cache.git",
-                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b"
+                "reference": "8707bf3cea6f710bf6ef05491234e3ab06f6432a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
-                "reference": "408d5eafb83c57f6365a3ca330ff23aa4a5fa39b",
+                "url": "https://api.github.com/repos/php-fig/simple-cache/zipball/8707bf3cea6f710bf6ef05491234e3ab06f6432a",
+                "reference": "8707bf3cea6f710bf6ef05491234e3ab06f6432a",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.0"
+                "php": ">=8.0.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.0.x-dev"
+                    "dev-master": "2.0.x-dev"
                 }
             },
             "autoload": {
@@ -2711,7 +2748,7 @@
             "authors": [
                 {
                     "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
+                    "homepage": "https://www.php-fig.org/"
                 }
             ],
             "description": "Common interfaces for simple caching",
@@ -2723,9 +2760,9 @@
                 "simple-cache"
             ],
             "support": {
-                "source": "https://github.com/php-fig/simple-cache/tree/master"
+                "source": "https://github.com/php-fig/simple-cache/tree/2.0.0"
             },
-            "time": "2017-10-23T01:57:42+00:00"
+            "time": "2021-10-29T13:22:09+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -4325,7 +4362,7 @@
         "gamboa.martin/base_modelos": 20,
         "gamboa.martin/calculo": 20,
         "gamboa.martin/compresor": 20,
-        "gamboa.martin/errores": 20,
+        "gamboa.martin/configuraciones": 20,
         "gamboa.martin/plugins": 20,
         "gamboa.martin/validacion": 20,
         "gamboa.martin/test": 20
