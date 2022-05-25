@@ -378,7 +378,7 @@ class modelo extends modelo_base {
                 return $this->error->error('Error $campo esta vacio $campos[alias]=campo',$campos);
             }
 
-            $data = $this->data_campo_suma($campo, $alias, $columnas);
+            $data = $this->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
             if(errores::$error){
                 return $this->error->error('Error al agregar columna',$data);
             }
@@ -542,13 +542,13 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     * PROBADO P ORDER P INT
      * @param string $campo
      * @param string $alias
      * @param string $columnas
      * @return array|stdClass
      */
-    private function data_campo_suma(string $campo, string $alias, string $columnas): array|stdClass
+    private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -564,7 +564,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error al agregar columna',$column);
         }
 
-        $coma = $this->coma_sql($columnas);
+        $coma = $this->coma_sql(columnas: $columnas);
         if(errores::$error){
             return $this->error->error('Error al agregar coma',$coma);
         }
@@ -2241,7 +2241,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error al ejecutar sql',$resultado);
         }
 
-        return $resultado['registros'][0];
+        return $resultado->registros[0];
     }
 
     /**
