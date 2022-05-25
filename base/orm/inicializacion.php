@@ -147,7 +147,9 @@ class inicializacion{
                                             mixed $valor): array
     {
         $campo = trim($campo);
-        $valor = trim($valor);
+        if(!is_null($valor)) {
+            $valor = trim($valor);
+        }
 
         if($campo === ''){
             return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo);
