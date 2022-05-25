@@ -107,7 +107,7 @@ class inicializacion{
         }
 
         $keys = array($campo_limpio->campo);
-        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro);
+        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro, valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
@@ -140,7 +140,7 @@ class inicializacion{
         }
 
         $keys = array($campo);
-        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro);
+        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro,valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
@@ -161,17 +161,21 @@ class inicializacion{
 
     /**
      * Encripta los campos del modelo
+     * @version 1.0.0
      * @param array $campos_encriptados conjunto de campos a encriptar
      * @param array $registro Registro a aplicar la encriptacion
      * @return array Registro con campos encriptados
      */
     public function encripta_valores_registro(array $campos_encriptados, array $registro): array
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio', data: $registro);
+        }
         foreach($registro as $campo=>$valor){
             $registro = $this->encripta_valor_registro(campo:$campo
                 , campos_encriptados: $campos_encriptados,registro:  $registro,valor:  $valor);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al asignar campo encriptado'.$campo, data: $registro);
+                return $this->error->error(mensaje: 'Error al asignar campo encriptado '.$campo, data: $registro);
             }
         }
         return $registro;

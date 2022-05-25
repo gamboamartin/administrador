@@ -141,6 +141,68 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_encripta_valores_registro(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+        $campos_encriptados = array();
+        $registro = array();
+
+        $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error el registro no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campos_encriptados = array();
+        $registro = array();
+        $registro[] = '';
+
+        $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $campos_encriptados = array();
+        $registro = array();
+        $registro['z'] = '';
+
+        $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado['z']);
+
+        errores::$error = false;
+
+        $campos_encriptados = array();
+        $registro = array();
+        $registro['z'] = '';
+        $campos_encriptados = array('z','p');
+
+        $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('PHDA/NloYgF1lc+UHzxaUw==',$resultado['z']);
+
+        errores::$error = false;
+
+        $campos_encriptados = array();
+        $registro = array();
+        $registro['z'] = '';
+        $registro['p'] = 'hola . x';
+        $campos_encriptados = array('z','p');
+
+        $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('PHDA/NloYgF1lc+UHzxaUw==',$resultado['z']);
+        $this->assertEquals('m0iIjKzl1DrfZ17LaSD5Zg==',$resultado['p']);
+        errores::$error = false;
+    }
+
     public function test_init_bools(){
         errores::$error = false;
         $inicializacion = new inicializacion();
