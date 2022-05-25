@@ -1,7 +1,7 @@
 <?php
 namespace models;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\modelo;
+use base\orm\modelo;
 
 use PDO;
 
@@ -9,8 +9,8 @@ class minuto extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);
-        parent::__construct($link, $tabla,$columnas_extra = array(),$campos_obligatorios = array(),$tipo_campos = array(),
-            $columnas);
+        parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios = array(),
+            columnas: $columnas, tipo_campos: $tipo_campos = array());
     }
     public function hoy(){
         $minuto = date('i');

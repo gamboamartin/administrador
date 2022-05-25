@@ -1,6 +1,5 @@
 <?php
 namespace gamboamartin\controllers;
-
 use base\controller\controlador_base;
 use models\minuto;
 

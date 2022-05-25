@@ -15,6 +15,30 @@ class modeloTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_coma_sql(){
+        errores::$error = false;
+
+        $modelo = new seccion($this->link);
+        $modelo = new liberator($modelo);
+
+
+        $columnas = '';
+        $resultado = $modelo->coma_sql(columnas: $columnas);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $columnas = 'x';
+        $resultado = $modelo->coma_sql(columnas: $columnas);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' , ', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_data_sentencia(): void
     {
         errores::$error = false;

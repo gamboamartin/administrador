@@ -553,7 +553,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error $alias no puede venir vacio', $alias);
         }
 
-        $column = (new sql_sum())->add_column($campo, $alias);
+        $column = $this->add_column($campo, $alias);
         if(errores::$error){
             return $this->error->error('Error al agregar columna',$column);
         }
