@@ -601,7 +601,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses modelo_basico->agrega_usuario_session()
      * @internal modelo_basico->$this->ejecuta_consulta();
      */
-    private function usuario_existente(): bool|array
+    private function usuario_existente(array $campos_encriptados = array()): bool|array
     {
         if($this->usuario_id <=0){
             return $this->error->error('Error usuario invalido',$this->usuario_id);
@@ -609,7 +609,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $consulta = /** @lang MYSQL */
             'SELECT count(*) AS existe FROM usuario WHERE usuario.id = '.$this->usuario_id;
-        $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta);
+        $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
 
         if(errores::$error){
             return $this->error->error('Error al ejecutar sql',$r_usuario_existente);
@@ -837,6 +837,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * Funcion que ejecuta un query de tipo select
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param string $consulta Consulta en forma de SQL para su ejecucion directa
+     * @param array $campos_encriptados Campos encriptados de un modelo
      * @return array|stdClass registros obtenidos de la consulta del modelo con datos o vacio
      * @example
      * $this->consulta = "DESCRIBE $tabla_original";
@@ -847,7 +848,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion
      * @uses  accion_grupo
      */
-    public function ejecuta_consulta(string $consulta, array $hijo = array()): array|stdClass{
+    public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
+                                     array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
@@ -862,7 +864,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $r_sql = $result->result;
 
-        $new_array = $this->parsea_registros_envio( r_sql: $r_sql);
+        $new_array = $this->parsea_registros_envio( r_sql: $r_sql, campos_encriptados: $campos_encriptados);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al parsear registros",data:  $new_array);
         }
@@ -2479,6 +2481,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * FULL
      * Funcion que asigna y genera los registros encontrados en un query
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
+     * @param array $campos_encriptados Campos encriptados de un modelo
      * @example
     $this->hijo = $hijo;
     if($this->consulta === ''){
@@ -2499,13 +2502,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @internal  $this->genera_modelos_hijos()
      * @internal  $this->maqueta_arreglo_registros($r_sql,$modelos_hijos);
      */
-    private function parsea_registros_envio(PDOStatement $r_sql):array{
+    private function parsea_registros_envio(PDOStatement $r_sql, array $campos_encriptados = array()):array{
 
         $modelos_hijos = $this->genera_modelos_hijos();
         if(errores::$error){
             return $this->error->error(mensaje: "Error al general modelo",data: $modelos_hijos);
         }
-        $new_array = $this->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql);
+        $new_array = $this->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
+            campos_encriptados: $campos_encriptados);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al generar arreglo con registros',data: $new_array);
         }

@@ -526,7 +526,7 @@ class modelo extends modelo_base {
             " SELECT COUNT(*) AS total_registros FROM $tablas $filtros->where $filtros->sentencia 
             $filtros->filtro_especial $filtros->filtro_rango";
 
-        $result = $this->ejecuta_consulta(consulta: $sql);
+        $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
         }
@@ -1193,7 +1193,7 @@ class modelo extends modelo_base {
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
         }
 
-        $result = $this->ejecuta_consulta(consulta:$sql, hijo: $hijo);
+        $result = $this->ejecuta_consulta(consulta:$sql,campos_encriptados: $this->campos_encriptados, hijo: $hijo);
         if(errores::$error){
             return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result, params: get_defined_vars());
         }
@@ -1229,7 +1229,7 @@ class modelo extends modelo_base {
         }
         $consulta .= $where . $sentencia;
 
-        $result = $this->ejecuta_consulta(consulta:$consulta, hijo: $hijo);
+        $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
         }
@@ -1678,7 +1678,7 @@ class modelo extends modelo_base {
         $where = " WHERE $tabla".".id = $this->registro_id ";
         $consulta .= $where;
 
-        $result = $this->ejecuta_consulta(consulta: $consulta, hijo: $hijo);
+        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result, params: get_defined_vars());
@@ -1752,7 +1752,7 @@ class modelo extends modelo_base {
         $consulta = $consulta_base.' '.$sql_extra.' '.$seguridad.' '.$group_by.' '.$order_sql.' '.$limit_sql.' '.$offset_sql;
 
         $this->transaccion = 'SELECT';
-        $result = $this->ejecuta_consulta(consulta: $consulta);
+        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar consulta', data: $result, params: get_defined_vars());
         }
@@ -1844,7 +1844,7 @@ class modelo extends modelo_base {
         $order_by = " ORDER BY $campo $orden";
         $consulta .= $where . $order_by;
 
-        $result = $this->ejecuta_consulta(consulta: $consulta);
+        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
         }
@@ -2230,7 +2230,7 @@ class modelo extends modelo_base {
 
         $consulta = 'SELECT '.$columnas.' FROM '.$tablas.$where;
 
-        $resultado = $this->ejecuta_consulta(consulta: $consulta);
+        $resultado = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
             return $this->error->error('Error al ejecutar sql',$resultado);
         }

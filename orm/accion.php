@@ -350,7 +350,7 @@ class accion extends modelo{ //FINALIZADAS
                       INNER JOIN seccion ON seccion.id = accion.seccion_id
                       WHERE accion_grupo.grupo_id = $grupo_id AND accion.inicio = 'activo'";
 
-        $resultado = $this->ejecuta_consulta(consulta: $consulta);
+        $resultado = $this->ejecuta_consulta(consulta: $consulta,campos_encriptados:  $this->campos_encriptados);
         if(errores::$error){
             return $this->error->error('Error al ejecutar sql',$resultado);
         }
