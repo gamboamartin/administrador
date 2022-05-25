@@ -2,6 +2,7 @@
 namespace base\orm;
 
 use gamboamartin\base_modelos\base_modelos;
+use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
@@ -845,8 +846,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $new_array = $this->parsea_registros_envio( r_sql: $r_sql);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al parsear registros",data:  $new_array,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al parsear registros",data:  $new_array);
         }
 
         $n_registros = $r_sql->rowCount();
@@ -1892,6 +1892,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
+     * @param array $campos_encriptados Conjunto de campos para desencriptar
      * @example
      *      $modelos_hijos = $this->genera_modelos_hijos();
     if(isset($modelos_hijos['error'])){
@@ -1901,10 +1902,27 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array registro del modelo con registros hijos asignados
      * @throws errores Errores definidos en las creaciones de hijos
      */
-    private function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql):array{
+    PUBLIC function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql,
+                                              array $campos_encriptados = array()):array{
         $new_array = array();
         while( $row = $r_sql->fetchObject()){
             $row = (array) $row;
+
+            foreach ($row as $campo=>$value){
+
+                $value_enc = $value;
+                if(in_array($campo, $campos_encriptados, true)){
+                    $value_enc = (new encriptador())->desencripta(valor: $value);
+                    if(errores::$error){
+                        return $this->error->error(mensaje: 'Error al desencriptar', data:$value_enc);
+                    }
+                    var_dump($value_enc);
+                }
+                $row[$campo] = $value_enc;
+
+            }
+
+
             if(count($modelos_hijos)>0) {
                 $row = $this->genera_registros_hijos(modelos_hijos: $modelos_hijos,row:  $row);
                 if (errores::$error) {
@@ -2482,13 +2500,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $modelos_hijos = $this->genera_modelos_hijos();
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al general modelo",data: $modelos_hijos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al general modelo",data: $modelos_hijos);
         }
         $new_array = $this->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al generar arreglo con registros',data: $new_array,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al generar arreglo con registros',data: $new_array);
         }
 
         return $new_array;

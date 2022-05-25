@@ -387,14 +387,26 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
+        //$mb ->cam
+        //$mb = new liberator($mb);
 
         $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM seccion");
         $modelos_hijos = array();
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('1', $resultado[0]['id']);
+
+        errores::$error = false;
+
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM seccion");
+        $modelos_hijos = array();
+        $campos_encriptados = array('descripcion');
+        $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
+            campos_encriptados: $campos_encriptados);
+
+        print_r($resultado);exit;
 
         errores::$error = false;
 
