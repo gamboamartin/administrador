@@ -85,6 +85,20 @@ class inicializacion{
         return $data;
     }
 
+    public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
+    {
+        foreach ($row as $campo=>$value){
+            $value_enc = $this->value_desencriptado(campo:$campo,
+                campos_encriptados: $campos_encriptados, value: $value);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al desencriptar', data:$value_enc);
+            }
+
+            $row[$campo] = $value_enc;
+        }
+        return $row;
+    }
+
     /**
      * Asigna un valor encriptado a un campo
      * @version 1.0.0
@@ -422,6 +436,19 @@ class inicializacion{
 
         return $consulta_base->estructura_bd[$modelo->tabla]['columnas'] ??
             $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla, data: $modelo->tabla);
+    }
+
+    private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
+    {
+        $value_enc = $value;
+
+        if(in_array($campo, $campos_encriptados, true)){
+            $value_enc = (new encriptador())->desencripta(valor: $value);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al desencriptar', data:$value_enc);
+            }
+        }
+        return $value_enc;
     }
 
 

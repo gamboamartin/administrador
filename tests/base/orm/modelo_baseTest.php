@@ -2,6 +2,7 @@
 namespace tests\base\orm;
 
 use base\orm\modelo_base;
+use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -405,8 +406,47 @@ class modelo_baseTest extends test {
         $campos_encriptados = array('descripcion');
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
             campos_encriptados: $campos_encriptados);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al ajustar rows', $resultado['mensaje']);
 
-        print_r($resultado);exit;
+        errores::$error = false;
+
+        $vacio = (new encriptador())->encripta('');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al encriptar vacio', data: $vacio);
+            print_r($error);exit;
+        }
+
+
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT '$vacio' as descripcion FROM seccion");
+        $modelos_hijos = array();
+        $campos_encriptados = array('descripcion');
+        $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
+            campos_encriptados: $campos_encriptados);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado[0]['descripcion']);
+
+        errores::$error = false;
+
+        $descripcion = (new encriptador())->encripta('esto es una descripcion');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al encriptar vacio', data: $vacio);
+            print_r($error);exit;
+        }
+
+
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT '$descripcion' as descripcion FROM seccion");
+        $modelos_hijos = array();
+        $campos_encriptados = array('descripcion');
+        $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
+            campos_encriptados: $campos_encriptados);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('esto es una descripcion', $resultado[0]['descripcion']);
+
 
         errores::$error = false;
 

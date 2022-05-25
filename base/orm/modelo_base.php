@@ -134,6 +134,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return trim($name_modelo);
     }
 
+    private function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
+    {
+        $row = (new inicializacion())->asigna_valor_desencriptado(campos_encriptados: $campos_encriptados,
+            row: $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al desencriptar', data:$row);
+        }
+
+
+        if(count($modelos_hijos)>0) {
+            $row = $this->genera_registros_hijos(modelos_hijos: $modelos_hijos,row:  $row);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error en registro",data: $row, params: get_defined_vars());
+            }
+        }
+        return $row;
+    }
+
     /**
      * P INT ERRORREV P ORDER
      * @param string $tabla
@@ -1908,28 +1926,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         while( $row = $r_sql->fetchObject()){
             $row = (array) $row;
 
-            foreach ($row as $campo=>$value){
-
-                $value_enc = $value;
-                if(in_array($campo, $campos_encriptados, true)){
-                    $value_enc = (new encriptador())->desencripta(valor: $value);
-                    if(errores::$error){
-                        return $this->error->error(mensaje: 'Error al desencriptar', data:$value_enc);
-                    }
-                    var_dump($value_enc);
-                }
-                $row[$campo] = $value_enc;
-
+            $row_new = $this->ajusta_row_select(campos_encriptados: $campos_encriptados,
+                modelos_hijos: $modelos_hijos, row: $row);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al ajustar rows', data:$row);
             }
 
-
-            if(count($modelos_hijos)>0) {
-                $row = $this->genera_registros_hijos(modelos_hijos: $modelos_hijos,row:  $row);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: "Error en registro",data: $row, params: get_defined_vars());
-                }
-            }
-            $new_array[] = $row;
+            $new_array[] = $row_new;
         }
 
         return $new_array;
