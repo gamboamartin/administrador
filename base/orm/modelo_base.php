@@ -849,7 +849,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion_grupo
      */
     public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                     array $hijo = array()): array|stdClass{
+                                     array $hijo = array()): array|stdClass{ 
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
