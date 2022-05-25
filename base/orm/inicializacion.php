@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use stdClass;
@@ -83,6 +84,67 @@ class inicializacion{
 
         return $data;
     }
+
+    /**
+     * Asigna un valor encriptado a un campo
+     * @param stdClass $campo_limpio debe tener obj->valor obj->campo
+     * @param array $registro Registro con el valor encriptado
+     * @return array
+     */
+    private function asigna_valor_encriptado(stdClass $campo_limpio, array $registro): array
+    {
+        $valor = (new encriptador())->encripta(valor:$campo_limpio->valor);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al encriptar valor del campo', data: $valor);
+        }
+        $registro[$campo_limpio->campo] = $campo_limpio->valor;
+        return $registro;
+    }
+
+    /**
+     * Encripta los campos indicados desde modelo->campos_encriptados
+     * @param string $campo Campo a validar si es aplicable a encriptar
+     * @param array $campos_encriptados Conjunto de campos del modelo a encriptar
+     * @param array $registro Registro a verificar
+     * @param string $valor Valor a encriptar si aplica
+     * @return array Registro con el campo encriptado
+     */
+    private function encripta_valor_registro(string $campo, array $campos_encriptados, array $registro,
+                                            string $valor): array
+    {
+        $campo_limpio = $this->limpia_valores(campo:$campo,valor:  $valor);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al limpiar valores'.$campo, data: $campo_limpio);
+        }
+
+        if(in_array($campo_limpio->campo, $campos_encriptados, true)){
+            $registro = $this->asigna_valor_encriptado(campo_limpio: $campo_limpio, registro: $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al asignar campo encriptado'.$campo, data: $registro);
+            }
+        }
+        return $registro;
+    }
+
+    /**
+     * Encripta los campos del modelo
+     * @param array $campos_encriptados conjunto de campos a encriptar
+     * @param array $registro Registro a aplicar la encriptacion
+     * @return array Registro con campos encriptados
+     */
+    public function encripta_valores_registro(array $campos_encriptados, array $registro): array
+    {
+        foreach($registro as $campo=>$valor){
+            $registro = $this->encripta_valor_registro(campo:$campo
+                , campos_encriptados: $campos_encriptados,registro:  $registro,valor:  $valor);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al asignar campo encriptado'.$campo, data: $registro);
+            }
+        }
+        return $registro;
+    }
+
+
 
 
     /**
@@ -179,6 +241,24 @@ class inicializacion{
         $complemento->params->order = '';
         $complemento->params->limit = '';
         return $complemento;
+    }
+
+    /**
+     * Funcion que limpia los valores quita elementos iniciales y finales no imprimibles
+     * @param string $campo Campo del registro del modelo a limpiar
+     * @param string $valor Valor del registro en el campo indicado
+     * @return stdClass
+     */
+    private function limpia_valores(string $campo, string $valor): stdClass
+    {
+        $campo = trim($campo);
+        $valor = trim($valor);
+
+        $data = new stdClass();
+        $data->campo = $campo;
+        $data->valor = $valor;
+        return $data;
+
     }
 
     /**

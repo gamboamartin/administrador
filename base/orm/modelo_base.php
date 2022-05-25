@@ -65,13 +65,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $this->patterns['double'] = "/^\\$?[1-9]+,?([0-9]*,?[0,9]*)*.?[0-9]{0,4}$/";
         $this->patterns['double_con_cero'] = "/^[0-9]+[0-9]*.?[0-9]{0,4}$/";
-        $this->patterns['nss'] = "/^[0-9]{11}$/";
         $this->patterns['telefono'] = "/^[0-9]{10}$/";
         $this->patterns['id'] = "/^[1-9]+[0-9]*$/";
-        $this->patterns['producto_codigo'] = "/^[0-9]{9}$/";
-        $this->patterns['clase_codigo'] = "/^[0-9]{3}$/";
-        $this->patterns['sub_clase_codigo'] = "/^[0-9]{6}$/";
-        $this->patterns['nomina_antiguedad'] = "/^P[0-9]+W$/";
+
         $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','not_in','sql_extra','filtro_fecha');
     }
 

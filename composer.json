@@ -41,6 +41,7 @@
       "ext-fileinfo": "*",
         "tomsgu/pdf-merger": "^0.3.0",
         "spatie/dropbox-api": "^1.19",
+        "gamboa.martin/encripta": "^1.0.0",
         "gamboa.martin/base_modelos": "dev-main",
         "gamboa.martin/calculo": "dev-main",
         "gamboa.martin/compresor": "dev-main",

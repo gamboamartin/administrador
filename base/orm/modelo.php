@@ -1,6 +1,8 @@
 <?php
 namespace base\orm;
+use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
+use models\campo;
 use models\seccion;
 use PDO;
 use PDOStatement;
@@ -19,30 +21,33 @@ class modelo extends modelo_base {
     public array $extension_estructura = array();
     public array $renombres = array();
     public bool $validation;
+    protected array $campos_encriptados;
 
 
     /**
      *
      * @param PDO $link Conexion a la BD
      * @param string $tabla
-     * @param array $columnas_extra
-     * @param array $campos_obligatorios
-     * @param array $tipo_campos
-     * @param array $columnas
-     * @param array $sub_querys
-     * @param bool $aplica_transaccion_inactivo
      * @param bool $aplica_bitacora
      * @param bool $aplica_seguridad
+     * @param bool $aplica_transaccion_inactivo
+     * @param array $campos_encriptados
+     * @param array $campos_obligatorios
+     * @param array $columnas
+     * @param array $columnas_extra
      * @param array $extension_estructura
+     * @param array $no_duplicados
      * @param array $renombres
+     * @param array $sub_querys
+     * @param array $tipo_campos
      * @param bool $validation
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
-                                bool $aplica_transaccion_inactivo = true, array $campos_obligatorios= array(),
-                                array $columnas = array(), array $columnas_extra = array(),
-                                array $extension_estructura = array(), array $no_duplicados = array(),
-                                array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
-                                bool $validation = false){
+                                bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
+                                array $campos_obligatorios= array(), array $columnas = array(),
+                                array $columnas_extra = array(), array $extension_estructura = array(),
+                                array $no_duplicados = array(), array $renombres = array(),
+                                array $sub_querys = array(), array $tipo_campos = array(), bool $validation = false){
 
 
         $tabla = str_replace('models\\','',$tabla);
@@ -58,6 +63,7 @@ class modelo extends modelo_base {
         $this->renombres = $renombres;
         $this->validation = $validation;
         $this->no_duplicados = $no_duplicados;
+        $this->campos_encriptados = $campos_encriptados;
 
         if(isset($_SESSION['usuario_id'])){
             $this->usuario_id = (int)$_SESSION['usuario_id'];
@@ -218,36 +224,34 @@ class modelo extends modelo_base {
         $this->status_default = 'activo';
         $registro = $this->registro_ins(registro: $this->registro,status_default: $this->status_default);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro);
         }
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
             no_duplicados: $this->no_duplicados, registro: $registro,tabla:  $this->tabla,
             tipo_campos: $this->tipo_campos);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar alta ', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
-
 
         $data_log = $this->genera_data_log();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);
         }
 
         $resultado = $this->inserta_sql(data_log: $data_log);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
         }
 
         $transacciones = $this->transacciones_default(consulta: $resultado->sql);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones);
         }
 
         $registro = $this->registro(registro_id: $this->registro_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
 
         $data = new stdClass();
@@ -269,13 +273,22 @@ class modelo extends modelo_base {
     {
         $registro = (new inicializacion())->status(registro: $registro,status_default:  $status_default);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar status ', data: $registro, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
         }
 
         $registro = (new data_format())->ajusta_campos_moneda(registro: $registro, tipo_campos: $this->tipo_campos);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro);
         }
+
+
+        $registro = (new inicializacion())->encripta_valores_registro(campos_encriptados: $this->campos_encriptados,
+            registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar campos encriptados', data: $registro);
+        }
+        
+
         $this->registro = $registro;
         return $registro;
     }
