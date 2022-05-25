@@ -269,8 +269,13 @@ class modelo extends modelo_base {
      * @param string $status_default status activo o inactivo
      * @return array
      */
-    private function registro_ins(array $registro, string $status_default): array
+    PUBLIC function registro_ins(array $registro, string $status_default): array
     {
+        $status_default = trim($status_default);
+        if($status_default === ''){
+            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
+        }
+
         $registro = (new inicializacion())->status(registro: $registro,status_default:  $status_default);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
@@ -280,7 +285,6 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro);
         }
-
 
         $registro = (new inicializacion())->encripta_valores_registro(campos_encriptados: $this->campos_encriptados,
             registro:  $registro);

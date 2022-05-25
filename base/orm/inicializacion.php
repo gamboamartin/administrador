@@ -398,8 +398,7 @@ class inicializacion{
     {
         $status_default = trim($status_default);
         if($status_default === ''){
-            return $this->error->error(mensaje: 'Error status_default no puede venir vacio',
-                data: $status_default, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
         }
 
         if(!isset($registro['status'])){

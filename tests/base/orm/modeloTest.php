@@ -236,6 +236,49 @@ class modeloTest extends test {
 
     }
 
+    public function test_registro_ins(): void
+    {
+        errores::$error = false;
+        $modelo = new seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $status_default = '';
+        $registro = array();
+        $resultado = $modelo->registro_ins($registro, $status_default);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error status_default no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $status_default = 'a';
+        $registro = array();
+        $resultado = $modelo->registro_ins($registro, $status_default);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado['status']);
+
+        errores::$error = false;
+        $modelo->campos_encriptados = array('status');
+        $status_default = 'a';
+        $registro = array();
+        $resultado = $modelo->registro_ins($registro, $status_default);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SE7WlTQsa7AceVeNzanVCg==', $resultado['status']);
+
+        errores::$error = false;
+        $modelo->campos_encriptados = array('status');
+        $status_default = 'p';
+        $registro = array();
+        $resultado = $modelo->registro_ins($registro, $status_default);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('OM+frc65i8dAfMJhbnMd9A==', $resultado['status']);
+
+        errores::$error = false;
+    }
+
 
 
     public function test_seccion_menu_id(): void
