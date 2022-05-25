@@ -18,6 +18,129 @@ class inicializacionTest extends test {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
     }
+
+    public function test_asigna_valor_encriptado(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $campo_limpio = new stdClass();
+        $registro = array();
+
+        $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar campo_limpio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo_limpio = new stdClass();
+        $campo_limpio->valor = '';
+        $campo_limpio->campo = '';
+        $registro = array();
+
+        $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar campo_limpio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo_limpio = new stdClass();
+        $campo_limpio->valor = '';
+        $campo_limpio->campo = 'a';
+        $registro = array();
+
+        $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar registro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo_limpio = new stdClass();
+        $campo_limpio->valor = '';
+        $campo_limpio->campo = 'a';
+        $registro = array();
+        $registro['a'] = 'z';
+
+        $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('PHDA/NloYgF1lc+UHzxaUw==', $resultado['a']);
+
+        errores::$error = false;
+
+        $campo_limpio = new stdClass();
+        $campo_limpio->valor = 'z';
+        $campo_limpio->campo = 'a';
+        $registro = array();
+        $registro['a'] = 'z';
+
+        $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('65RRm7OkwNx4LtwV7rJRnA==', $resultado['a']);
+        errores::$error = false;
+    }
+
+    public function test_encripta_valor_registro(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $campo = '';
+        $campos_encriptados = array();
+        $registro = array();
+        $valor = '';
+
+        $resultado = $inicializacion->encripta_valor_registro($campo, $campos_encriptados, $registro, $valor);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error campo no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+
+        $campo = 'a';
+        $campos_encriptados = array();
+        $registro = array();
+        $valor = '';
+
+        $resultado = $inicializacion->encripta_valor_registro($campo, $campos_encriptados, $registro, $valor);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar registro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campos_encriptados = array();
+        $registro = array();
+        $valor = '';
+        $registro['a'] = 'prueba';
+
+        $resultado = $inicializacion->encripta_valor_registro($campo, $campos_encriptados, $registro, $valor);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('prueba', $resultado['a']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campos_encriptados = array();
+        $registro = array();
+        $valor = '';
+        $registro['a'] = 'prueba';
+        $campos_encriptados = array('z','a');
+
+        $resultado = $inicializacion->encripta_valor_registro($campo, $campos_encriptados, $registro, $valor);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('PHDA/NloYgF1lc+UHzxaUw==', $resultado['a']);
+        errores::$error = false;
+    }
+
     public function test_init_bools(){
         errores::$error = false;
         $inicializacion = new inicializacion();
@@ -102,6 +225,31 @@ class inicializacionTest extends test {
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('x', $datos->columnas);
+        errores::$error = false;
+    }
+
+    public function test_limpia_valores(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $campo = '';
+        $valor = '';
+        $resultado = $inicializacion->limpia_valores($campo, $valor);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error campo no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+
+        $campo = 'a';
+        $valor = ' z ';
+        $resultado = $inicializacion->limpia_valores($campo, $valor);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado->campo);
+        $this->assertEquals('z',$resultado->valor);
         errores::$error = false;
     }
 

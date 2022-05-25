@@ -287,7 +287,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar campos encriptados', data: $registro);
         }
-        
+
 
         $this->registro = $registro;
         return $registro;

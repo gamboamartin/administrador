@@ -87,22 +87,42 @@ class inicializacion{
 
     /**
      * Asigna un valor encriptado a un campo
+     * @version 1.0.0
      * @param stdClass $campo_limpio debe tener obj->valor obj->campo
      * @param array $registro Registro con el valor encriptado
      * @return array
      */
     private function asigna_valor_encriptado(stdClass $campo_limpio, array $registro): array
     {
+        $keys = array('valor','campo');
+        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $campo_limpio,valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campo_limpio', data: $valida);
+        }
+
+        $keys = array('campo');
+        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $campo_limpio);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campo_limpio', data: $valida);
+        }
+
+        $keys = array($campo_limpio->campo);
+        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         $valor = (new encriptador())->encripta(valor:$campo_limpio->valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al encriptar valor del campo', data: $valor);
         }
-        $registro[$campo_limpio->campo] = $campo_limpio->valor;
+        $registro[$campo_limpio->campo] = $valor;
         return $registro;
     }
 
     /**
      * Encripta los campos indicados desde modelo->campos_encriptados
+     * @version 1.0.0
      * @param string $campo Campo a validar si es aplicable a encriptar
      * @param array $campos_encriptados Conjunto de campos del modelo a encriptar
      * @param array $registro Registro a verificar
@@ -112,6 +132,19 @@ class inicializacion{
     private function encripta_valor_registro(string $campo, array $campos_encriptados, array $registro,
                                             string $valor): array
     {
+        $campo = trim($campo);
+        $valor = trim($valor);
+
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo);
+        }
+
+        $keys = array($campo);
+        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         $campo_limpio = $this->limpia_valores(campo:$campo,valor:  $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al limpiar valores'.$campo, data: $campo_limpio);
@@ -245,14 +278,19 @@ class inicializacion{
 
     /**
      * Funcion que limpia los valores quita elementos iniciales y finales no imprimibles
+     * @version 1.0.0
      * @param string $campo Campo del registro del modelo a limpiar
      * @param string $valor Valor del registro en el campo indicado
-     * @return stdClass
+     * @return stdClass|array
      */
-    private function limpia_valores(string $campo, string $valor): stdClass
+    private function limpia_valores(string $campo, string $valor): stdClass|array
     {
         $campo = trim($campo);
         $valor = trim($valor);
+
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo);
+        }
 
         $data = new stdClass();
         $data->campo = $campo;
