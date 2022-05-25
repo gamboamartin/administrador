@@ -15,6 +15,40 @@ class modeloTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_add_column(){
+        errores::$error = false;
+
+        $modelo = new seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $alias = '';
+        $campo = '';
+        $resultado = $modelo->add_column(alias: $alias, campo: $campo);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $alias = '';
+        $campo = 'x';
+        $resultado = $modelo->add_column(alias: $alias, campo: $campo);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $alias no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $alias = 'x';
+        $campo = 'x';
+        $resultado = $modelo->add_column(alias: $alias, campo: $campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('IFNULL( SUM(x) ,0)AS x', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_coma_sql(){
         errores::$error = false;
 

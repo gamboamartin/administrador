@@ -191,15 +191,21 @@ class modelo extends modelo_base {
         return array('mensaje'=>'Registros activados con éxito','sql'=>$this->consulta);
     }
 
-    public function add_column(string $campo, string $alias): string|array
+    /**
+     * PROBADO P INT P ORDER
+     * @param string $campo
+     * @param string $alias
+     * @return string|array
+     */
+    public function add_column(string $alias, string $campo): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error $campo no puede venir vacio', $campo);
+            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo);
         }
         $alias = trim($alias);
         if($alias === ''){
-            return $this->error->error('Error $alias no puede venir vacio', $alias);
+            return $this->error->error(mensaje:'Error $alias no puede venir vacio', data: $alias);
         }
         return 'IFNULL( SUM('. $campo .') ,0)AS ' . $alias;
     }
@@ -383,7 +389,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     * PROBADO P INT P ORDER
      * @param string $columnas
      * @return string
      */
@@ -553,7 +559,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error $alias no puede venir vacio', $alias);
         }
 
-        $column = $this->add_column($campo, $alias);
+        $column = $this->add_column(alias: $alias, campo: $campo);
         if(errores::$error){
             return $this->error->error('Error al agregar columna',$column);
         }
@@ -2212,7 +2218,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error al agregar columnas',$columnas);
         }
 
-        $filtro_sql = $this->genera_and($filtro);
+        $filtro_sql = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al generar filtro',$filtro_sql);
         }
