@@ -144,7 +144,7 @@ class inicializacion{
      * @return array Registro con el campo encriptado
      */
     private function encripta_valor_registro(string $campo, array $campos_encriptados, array $registro,
-                                            string $valor): array
+                                            mixed $valor): array
     {
         $campo = trim($campo);
         $valor = trim($valor);
