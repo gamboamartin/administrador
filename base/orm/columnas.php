@@ -13,6 +13,25 @@ class columnas{
     }
 
     /**
+     *
+     * @param string $campo
+     * @param string $alias
+     * @return string|array
+     */
+    public function add_column(string $alias, string $campo): string|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo);
+        }
+        $alias = trim($alias);
+        if($alias === ''){
+            return $this->error->error(mensaje:'Error $alias no puede venir vacio', data: $alias);
+        }
+        return 'IFNULL( SUM('. $campo .') ,0)AS ' . $alias;
+    }
+
+    /**
      * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL

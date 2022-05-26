@@ -1,9 +1,8 @@
 <?php
 namespace base\orm;
-use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
-use models\campo;
 use models\seccion;
+use models\usuario;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -72,8 +71,7 @@ class modelo extends modelo_base {
 
             $data = $this->obten_columnas(tabla_original: $tabla);
             if (errores::$error) {
-                $error = $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data,
-                    params: get_defined_vars());
+                $error = $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
                 print_r($error);
                 die('Error');
             }
@@ -110,16 +108,11 @@ class modelo extends modelo_base {
         $this->aplica_transaccion_inactivo = $aplica_transaccion_inactivo;
 
         if($this->aplica_seguridad) {
-            $usuario_modelo = $this->genera_modelo(modelo: 'usuario');
-            if (errores::$error) {
-                $error = $this->error->error( 'Error al generar modelo', $usuario_modelo);
-                print_r($error);
-                die('Error');
-            }
+            $usuario_modelo = new usuario($this->link);
 
-            $seguridad = $usuario_modelo->filtro_seguridad($this->tabla);
+            $seguridad = $usuario_modelo->filtro_seguridad(tabla: $this->tabla);
             if (errores::$error) {
-                $error = $this->error->error( 'Error al obtener filtro de seguridad', $seguridad);
+                $error = $this->error->error( mensaje: 'Error al obtener filtro de seguridad', data: $seguridad);
                 print_r($error);
                 die('Error');
             }
@@ -141,8 +134,7 @@ class modelo extends modelo_base {
         $this->tabla = str_replace($namespace,'',$this->tabla);
 
         if($this->registro_id <= 0){
-            return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en '.$this->tabla,data: $this->registro_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en '.$this->tabla,data: $this->registro_id);
         }
         if(!$reactiva) {
 
@@ -156,8 +148,7 @@ class modelo extends modelo_base {
                 aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro: $registro,
                 registro_id: $this->registro_id,tabla:  $this->tabla);
             if (errores::$error) {
-                return $this->error->error(mensaje:'Error al validar transaccion activa en '.$this->tabla,data:$valida,
-                    params: get_defined_vars() );
+                return $this->error->error(mensaje:'Error al validar transaccion activa en '.$this->tabla,data:$valida);
             }
         }
         $this->consulta = "UPDATE " . $this->tabla . " SET status = 'activo' WHERE id = " . $this->registro_id;
@@ -166,8 +157,7 @@ class modelo extends modelo_base {
         $transaccion = $this->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
             registro_id: $this->registro_id);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
         }
 
         return array('mensaje'=>'Registro activado con éxito en '.$this->tabla, 'registro_id'=>$this->registro_id);
@@ -185,31 +175,11 @@ class modelo extends modelo_base {
 
         $resultado = $this->ejecuta_sql(consulta: $consulta);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $resultado, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $resultado);
         }
 
         return array('mensaje'=>'Registros activados con éxito','sql'=>$this->consulta);
     }
-
-    /**
-     * PROBADO P INT P ORDER
-     * @param string $campo
-     * @param string $alias
-     * @return string|array
-     */
-    public function add_column(string $alias, string $campo): string|array
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo);
-        }
-        $alias = trim($alias);
-        if($alias === ''){
-            return $this->error->error(mensaje:'Error $alias no puede venir vacio', data: $alias);
-        }
-        return 'IFNULL( SUM('. $campo .') ,0)AS ' . $alias;
-    }
-
 
     /**
      * P INT ERRORREV
@@ -228,10 +198,12 @@ class modelo extends modelo_base {
      */
     public function alta_bd(): array|stdClass{
         $this->status_default = 'activo';
-        $registro = $this->registro_ins(registro: $this->registro,status_default: $this->status_default);
+        $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
+            registro: $this->registro,status_default: $this->status_default, tipo_campos: $this->tipo_campos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro);
         }
+        $this->registro = $registro;
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
             no_duplicados: $this->no_duplicados, registro: $registro,tabla:  $this->tabla,
@@ -240,12 +212,12 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
 
-        $data_log = $this->genera_data_log();
+        $data_log = (new inserts())->genera_data_log(link: $this->link,registro: $this->registro,tabla: $this->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);
         }
 
-        $resultado = $this->inserta_sql(data_log: $data_log);
+        $resultado = (new inserts())->inserta_sql(data_log: $data_log, modelo: $this);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
         }
@@ -270,40 +242,6 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERRORREV
-     * @param array $registro Registro que se insertara
-     * @param string $status_default status activo o inactivo
-     * @return array
-     */
-    PUBLIC function registro_ins(array $registro, string $status_default): array
-    {
-        $status_default = trim($status_default);
-        if($status_default === ''){
-            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
-        }
-
-        $registro = (new inicializacion())->status(registro: $registro,status_default:  $status_default);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
-        }
-
-        $registro = (new data_format())->ajusta_campos_moneda(registro: $registro, tipo_campos: $this->tipo_campos);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro);
-        }
-
-        $registro = (new inicializacion())->encripta_valores_registro(campos_encriptados: $this->campos_encriptados,
-            registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar campos encriptados', data: $registro);
-        }
-
-
-        $this->registro = $registro;
-        return $registro;
-    }
-
-    /**
      * P ORDER P INT
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
@@ -316,47 +254,6 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
         }
         return $r_alta;
-    }
-
-
-
-    /**
-     * P INT P ORDER
-     * @return array
-     */
-    private function aplica_eliminacion_dependencias(): array
-    {
-        $data = array();
-        if($this->desactiva_dependientes) {
-            $elimina = $this->elimina_data_modelos_dependientes();
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al eliminar dependiente', data: $elimina,
-                    params: get_defined_vars());
-            }
-            $data = $elimina;
-        }
-        return $data;
-    }
-
-
-
-
-
-
-    /**
-     * P INT P ORDER ERROREV
-     * @param string $campos
-     * @param string $campo
-     * @return string|array
-     */
-    private function campos_alta_sql(string $campo, string $campos): string|array
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo, params: get_defined_vars());
-        }
-        $campos .= $campos === '' ? $campo : ",$campo";
-        return $campos;
     }
 
     /**
@@ -559,7 +456,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error $alias no puede venir vacio', $alias);
         }
 
-        $column = $this->add_column(alias: $alias, campo: $campo);
+        $column = (new columnas())->add_column(alias: $alias, campo: $campo);
         if(errores::$error){
             return $this->error->error('Error al agregar columna',$column);
         }
@@ -576,55 +473,6 @@ class modelo extends modelo_base {
         return $data;
     }
 
-
-
-
-
-    /**
-     * P INT P ORDER ERROREV
-     * @param bool|PDOStatement $alta_valido
-     * @param bool|PDOStatement $update_valido
-     * @param string $campos
-     * @param string $valores
-     * @return array|stdClass
-     */
-    private function data_log(bool|PDOStatement $alta_valido, string $campos, bool|PDOStatement $update_valido, string $valores): array|stdClass
-    {
-        if($alta_valido &&  $update_valido ){
-            $data_asignacion = $this->asigna_data_user_transaccion();
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al asignar datos de transaccion', data: $data_asignacion,
-                    params: get_defined_vars());
-            }
-            $campos .= $data_asignacion['campos'];
-            $valores .= $data_asignacion['valores'];
-        }
-
-        $data = new stdClass();
-        $data->campos = $campos;
-        $data->valores = $valores;
-        return $data;
-    }
-
-    /**
-     * P INT P ORDER ERROREV
-     * @return stdClass
-     */
-    private function data_para_log(): stdClass
-    {
-        $existe_alta_id = /** @lang MYSQL */
-            "SELECT count(usuario_alta_id) FROM " . $this->tabla;
-        $existe_update_id = /** @lang MYSQL */
-            "SELECT count(usuario_alta_id) FROM $this->tabla";
-
-        $alta_valido = $this->link->query($existe_alta_id);
-        $update_valido = $this->link->query($existe_update_id);
-
-        $data = new stdClass();
-        $data->alta_valido = $alta_valido;
-        $data->update_valido = $update_valido;
-        return $data;
-    }
 
     /**
      * FULL
@@ -732,16 +580,16 @@ class modelo extends modelo_base {
     /**
      * P INT P ORDER
      * Elimina un registro por el id enviado
-
      * @param int $id id del registro a eliminar
-     *
-     * @example
-     *      $registro = $this->modelo->elimina_bd($this->registro_id);
      *
      * @return array con datos del registro eliminado
      * @throws errores Si $id < 0
      * @throws errores definidas en internals
-     * @throws errores si no existe registro
+     * @throws errores si no existe registro*@throws \JsonException
+     * @throws \JsonException
+     * @example
+     *      $registro = $this->modelo->elimina_bd($this->registro_id);
+     *
      * @internal  $this->validacion->valida_transaccion_activa($this, $this->aplica_transaccion_inactivo, $this->registro_id, $this->tabla);
      * @internal  $this->obten_data();
      * @internal  $this->ejecuta_sql();
@@ -782,21 +630,20 @@ class modelo extends modelo_base {
         $consulta = $this->consulta;
         $this->transaccion = 'DELETE';
 
-        $elimina = $this->aplica_eliminacion_dependencias();
+        $elimina = (new dependencias())->aplica_eliminacion_dependencias(
+            desactiva_dependientes:$this->desactiva_dependientes,link: $this->link,
+            models_dependientes: $this->models_dependientes,registro_id: $this->registro_id,tabla: $this->tabla);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al eliminar dependiente', data:$elimina,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al eliminar dependiente', data:$elimina);
         }
 
         $resultado = $this->ejecuta_sql(consulta: $this->consulta);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql en '.$this->tabla, data:$resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al ejecutar sql en '.$this->tabla, data:$resultado);
         }
-        $bitacora = $this->bitacora(consulta: $consulta, funcion: __FUNCTION__, registro: $registro_bitacora);
+        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__,modelo: $this, registro: $registro_bitacora);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar bitacora de '.$this->tabla, data: $bitacora,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al insertar bitacora de '.$this->tabla, data: $bitacora);
         }
 
         return array('mensaje'=>'Registro eliminado con éxito', 'registro_id'=>$id);
@@ -828,101 +675,6 @@ class modelo extends modelo_base {
         }
 
         return $dels;
-
-    }
-
-    /**
-     * P INT P ORDER
-     * @param string $modelo_dependiente
-     * @return array
-     */
-    private function elimina_data_modelo(string $modelo_dependiente): array
-    {
-        $modelo_dependiente = trim($modelo_dependiente);
-        $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
-        if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida, params: get_defined_vars());
-        }
-        if($this->registro_id<=0){
-            return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',data:$this->registro_id,
-                params: get_defined_vars());
-        }
-
-        $modelo = $this->genera_modelo(modelo: $modelo_dependiente);
-        if (errores::$error) {
-            return $this->error->error(mensaje:'Error al generar modelo', data:$modelo, params: get_defined_vars());
-        }
-        $desactiva = $this->elimina_dependientes(model:  $modelo, parent_id: $this->registro_id);
-        if (errores::$error) {
-            return $this->error->error(mensaje:'Error al desactivar dependiente',data: $desactiva,
-                params: get_defined_vars());
-        }
-        return $desactiva;
-    }
-
-    /**
-     * P INT P ORDER
-     * @return array
-     */
-    private function elimina_data_modelos_dependientes(): array
-    {
-        $data = array();
-        foreach ($this->models_dependientes as $dependiente) {
-            $dependiente = trim($dependiente);
-            $valida = $this->validacion->valida_data_modelo(name_modelo: $dependiente);
-            if(errores::$error){
-                return  $this->error->error(mensaje: "Error al validar modelo",data: $valida,
-                    params: get_defined_vars());
-            }
-            if($this->registro_id<=0){
-                return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',
-                    data:$this->registro_id, params: get_defined_vars());
-            }
-            $desactiva = $this->elimina_data_modelo(modelo_dependiente: $dependiente);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al desactivar dependiente', data:$desactiva,
-                    params: get_defined_vars());
-            }
-            $data[] = $desactiva;
-        }
-        return $data;
-    }
-
-    /**
-     * P INT P ORDER
-     * @param int $parent_id
-     * @param modelo $model
-     * @return array
-     */
-    private function elimina_dependientes(modelo $model, int $parent_id): array
-    {
-        $valida = $this->validacion->valida_name_clase(tabla: $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida, params: get_defined_vars());
-        }
-        if($parent_id<=0){
-            return $this->error->error(mensaje:'Error $parent_id debe ser mayor a 0',data: $parent_id,
-                params: get_defined_vars());
-        }
-
-        $dependientes = $this->data_dependientes(parent_id: $parent_id,tabla_children:  $model->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener dependientes',data:$dependientes,
-                params: get_defined_vars());
-        }
-
-        $key_dependiente_id = $model->tabla.'_id';
-
-        $result = array();
-        foreach($dependientes as $dependiente){
-            $elimina_bd = $model->elimina_bd(id: $dependiente[$key_dependiente_id]);
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al desactivar dependiente',data:$elimina_bd,
-                    params: get_defined_vars());
-            }
-            $result[] = $elimina_bd;
-        }
-        return $result;
 
     }
 
@@ -1243,37 +995,6 @@ class modelo extends modelo_base {
         return $result;
     }
 
-
-
-    /**
-     * P INT P ORDER ERRORREV
-     * @return array|stdClass
-     */
-    private function genera_data_log(): array|stdClass
-    {
-        $sql_data_alta = $this->sql_alta_full();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql ', data: $sql_data_alta,
-                params: get_defined_vars());
-        }
-
-        $datas = $this->data_para_log();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener data log', data: $datas, params: get_defined_vars());
-        }
-
-        $data_log = $this->data_log(alta_valido: $datas->alta_valido, campos:  $sql_data_alta->campos,
-            update_valido:  $datas->update_valido,valores:  $sql_data_alta->valores);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log,
-                params: get_defined_vars());
-        }
-
-        return $data_log;
-    }
-
-
-
     /**
      * P INT P ORDER ERROREV
      * @param array $columnas
@@ -1327,8 +1048,6 @@ class modelo extends modelo_base {
     }
 
 
-
-
     /**
      * FULL
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
@@ -1357,44 +1076,6 @@ class modelo extends modelo_base {
         return $group_by_sql;
     }
 
-
-
-
-    /**
-     * P INT P ORDER ERROREV
-     * @param stdClass $data_log
-     * @return array|stdClass
-     */
-    private function inserta_sql(stdClass $data_log): array|stdClass
-    {
-        $keys = array('campos','valores');
-        foreach($keys as $key){
-            if(!isset($data_log->$key)){
-                return $this->error->error(mensaje: 'Error no existe data_log->'.$key, data: $data_log,
-                    params: get_defined_vars());
-            }
-        }
-        foreach($keys as $key){
-            if(trim($data_log->$key) === ''){
-                return $this->error->error(mensaje:'Error esta vacio data_log->'.$key, data: $data_log,
-                    params: get_defined_vars());
-            }
-        }
-
-        $this->transaccion = 'INSERT';
-
-        $sql = $this->sql_alta(campos: $data_log->campos, valores: $data_log->valores);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar sql',data:  $sql, params: get_defined_vars());
-        }
-
-        $resultado = $this->ejecuta_sql(consulta: $sql);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql',data:  $resultado,
-                params: get_defined_vars());
-        }
-        return $resultado;
-    }
 
     /**
      * PHPUNIT
@@ -1450,8 +1131,6 @@ class modelo extends modelo_base {
     }
 
 
-
-
     /**
      * PHPUNIT
      * Modifica los datos de un registro de un modelo
@@ -1459,8 +1138,9 @@ class modelo extends modelo_base {
      * @param int $id id del registro a modificar
      * @param bool $reactiva para evitar validacion de status inactivos
      * @return array resultado de la insercion
-     *@throws errores Si $limit < 0
+     * @throws errores Si $limit < 0
      * @throws errores $this->registro_upd vacio
+     * @throws \JsonException
      * @example
      *      $r_modifica_bd =  parent::modifica_bd($registro, $id, $reactiva);
      * @internal  $this->validacion->valida_transaccion_activa($this, $this->aplica_transaccion_inactivo, $this->registro_id, $this->tabla);
@@ -1510,7 +1190,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error al ejecutar sql',array($resultado,'sql'=>$this->consulta));
         }
 
-        $bitacora = $this->bitacora(consulta: $consulta, funcion: __FUNCTION__, registro: $this->registro_upd);
+        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this, registro: $this->registro_upd);
         if(errores::$error){
             return $this->error->error('Error al insertar bitacora',$bitacora);
         }
@@ -1568,8 +1248,6 @@ class modelo extends modelo_base {
         return $r_modifica;
 
     }
-
-
 
     /**
      * FULL
@@ -1947,8 +1625,6 @@ class modelo extends modelo_base {
 
     }
 
-
-
     /**
      * FULL
      * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
@@ -2081,125 +1757,6 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param string $campo
-     * @param mixed $value
-     * @return array|stdClass
-     */
-    private function slaches_campo(string $campo, mixed $value): array|stdClass
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
-        }
-        $value_es_null = false;
-        $campo = addslashes($campo);
-        try {
-            if(is_null($value)){
-                $value_es_null = true;
-                $value = 'NULL';
-            }
-            else{
-                $value = addslashes($value);
-            }
-
-        }
-        catch (Throwable  $e){
-            return $this->error->error(mensaje: 'Error al asignar value de campo '.$campo, data: $e);
-        }
-        $data = new stdClass();
-        $data->campo = $campo;
-        $data->value = $value;
-        $data->value_es_null = $value_es_null;
-        return $data;
-    }
-
-    /**
-     * P ORDER P INT ERROREV
-     * @param string $campos
-     * @param string $valores
-     * @return string|array
-     */
-    private function sql_alta(string $campos, string $valores): string|array
-    {
-        $this->tabla = trim($this->tabla);
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error $this tabla no puede venir vacio',data:  $this->tabla ,
-                params: get_defined_vars());
-        }
-        if($campos === ''){
-            return $this->error->error(mensaje:'Error campos esta vacio', data:$campos, params: get_defined_vars() );
-        }
-        if($valores === ''){
-            return $this->error->error(mensaje:'Error valores esta vacio',data: $valores, params: get_defined_vars() );
-        }
-        $this->consulta = /** @lang MYSQL */
-            'INSERT INTO '. $this->tabla.' ('.$campos.') VALUES ('.$valores.')';
-
-        return $this->consulta;
-    }
-
-    /**
-     * P INT P ORDER ERROREV
-     * @return array|stdClass
-     */
-    private function sql_alta_full(): array|stdClass
-    {
-        $campos = '';
-        $valores = '';
-        foreach ($this->registro as $campo => $value) {
-            $sql_base = $this->sql_base_alta(campo: $campo, campos:  $campos, valores:  $valores, value:  $value);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar sql ',data:  $sql_base, params: get_defined_vars());
-            }
-            $campos = $sql_base->campos;
-            $valores = $sql_base->valores;
-        }
-
-        $datas = new stdClass();
-        $datas->campos = $campos;
-        $datas->valores = $valores;
-        return $datas;
-    }
-
-    /**
-     * P INT P ORDER ERRORREV
-     * @param string $campo
-     * @param mixed $value
-     * @param string $campos
-     * @param string $valores
-     * @return array|stdClass
-     */
-    private function sql_base_alta(string $campo, string $campos, string $valores, mixed $value): array|stdClass
-    {
-        if(is_numeric($campo)){
-            return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo);
-        }
-
-        $slacheados = $this->slaches_campo(campo: $campo,value:  $value);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ajustar campo ', data:$slacheados);
-        }
-
-        $campos_r = $this->campos_alta_sql(campo:  $slacheados->campo, campos: $campos);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar campo ', data:$campos_r);
-        }
-
-        $valores_r = $this->valores_sql_alta(valores: $valores,value:  $slacheados->value,
-            value_es_null: $slacheados->value_es_null);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar valor ',data: $valores_r);
-        }
-        $data = new stdClass();
-        $data->campos = $campos_r;
-        $data->valores = $valores_r;
-        return $data;
-    }
-
-
-
-    /**
      * PRUEBAS FINALIZADAS
      * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
      * @param array $filtro
@@ -2248,6 +1805,7 @@ class modelo extends modelo_base {
      * P INT ERROREV
      * @param string $consulta texto en forma de SQL
      * @return array|stdClass
+     * @throws \JsonException
      */
     private function transacciones_default(string $consulta): array|stdClass
     {
@@ -2256,7 +1814,7 @@ class modelo extends modelo_base {
                 params: get_defined_vars());
         }
 
-        $bitacora = $this->bitacora(registro: $this->registro,funcion: __FUNCTION__,consulta: $consulta);
+        $bitacora = (new bitacoras())->bitacora(registro: $this->registro,funcion: __FUNCTION__,modelo: $this,consulta: $consulta);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora,
                 params: get_defined_vars());
@@ -2280,12 +1838,6 @@ class modelo extends modelo_base {
         $datos->session = $data_session;
         return $datos;
     }
-
-
-
-
-
-
 
     /**
      * PHPUNIT
@@ -2344,27 +1896,5 @@ class modelo extends modelo_base {
         }
         return $resultado['registros'];
     }
-
-
-    /**
-     * P INT P ORDER ERROREV
-     * @param string $valores
-     * @param string $value
-     * @param bool $value_es_null
-     * @return string|array
-     */
-    private function valores_sql_alta(string $valores, string $value, bool $value_es_null): string|array
-    {
-        $value_aj = "'$value'";
-        if($value_es_null){
-            $value_aj = $value;
-        }
-        $value_aj = trim($value_aj);
-        $valores .= $valores === '' ? (string)$value_aj : ",$value_aj";
-        return $valores;
-    }
-
-
-
 
 }

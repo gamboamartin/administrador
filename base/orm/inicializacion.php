@@ -182,7 +182,7 @@ class inicializacion{
      * @param array $registro Registro a aplicar la encriptacion
      * @return array Registro con campos encriptados
      */
-    public function encripta_valores_registro(array $campos_encriptados, array $registro): array
+    private function encripta_valores_registro(array $campos_encriptados, array $registro): array
     {
         if(count($registro) === 0){
             return $this->error->error(mensaje: 'Error el registro no puede venir vacio', data: $registro);
@@ -196,9 +196,6 @@ class inicializacion{
         }
         return $registro;
     }
-
-
-
 
     /**
      * PROBADA P ORDER P INT
@@ -404,13 +401,48 @@ class inicializacion{
     }
 
     /**
+     * P INT P ORDER ERRORREV
+     * @param array $campos_encriptados
+     * @param array $registro Registro que se insertara
+     * @param string $status_default status activo o inactivo
+     * @param array $tipo_campos
+     * @return array
+     */
+    PUBLIC function registro_ins(array $campos_encriptados, array $registro, string $status_default,
+                                 array $tipo_campos): array
+    {
+        $status_default = trim($status_default);
+        if($status_default === ''){
+            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
+        }
+
+        $registro = $this->status(registro: $registro,status_default:  $status_default);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
+        }
+
+        $registro = (new data_format())->ajusta_campos_moneda(registro: $registro, tipo_campos: $tipo_campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro);
+        }
+
+        $registro = $this->encripta_valores_registro(campos_encriptados: $campos_encriptados,
+            registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar campos encriptados', data: $registro);
+        }
+
+        return $registro;
+    }
+
+    /**
      * Asigna a un registro status default
      * @version 1.0.0
      * @param array $registro registro a insertar
      * @param string $status_default status = activo o inactivo
      * @return array
      */
-    public function status(array $registro, string $status_default): array
+    private function status(array $registro, string $status_default): array
     {
         $status_default = trim($status_default);
         if($status_default === ''){

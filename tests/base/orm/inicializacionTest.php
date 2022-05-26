@@ -144,7 +144,7 @@ class inicializacionTest extends test {
     public function test_encripta_valores_registro(){
         errores::$error = false;
         $inicializacion = new inicializacion();
-        //$inicializacion = new liberator($inicializacion);
+        $inicializacion = new liberator($inicializacion);
 
         $campos_encriptados = array();
         $registro = array();
@@ -315,10 +315,53 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_registro_ins(): void
+    {
+        errores::$error = false;
+        $modelo = new inicializacion();
+        //$modelo = new liberator($modelo);
+
+        $status_default = '';
+        $registro = array();
+        $resultado = $modelo->registro_ins(array(),$registro, $status_default, array());
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error status_default no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $status_default = 'a';
+        $registro = array();
+        $resultado = $modelo->registro_ins(array(),$registro, $status_default, array());
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado['status']);
+
+        errores::$error = false;
+        $campos_encriptados = array('status');
+        $status_default = 'a';
+        $registro = array();
+        $resultado = $modelo->registro_ins($campos_encriptados,$registro, $status_default, array());
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SE7WlTQsa7AceVeNzanVCg==', $resultado['status']);
+
+        errores::$error = false;
+        $campos_encriptados = array('status');
+        $status_default = 'p';
+        $registro = array();
+        $resultado = $modelo->registro_ins($campos_encriptados,$registro, $status_default, array());
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('OM+frc65i8dAfMJhbnMd9A==', $resultado['status']);
+
+        errores::$error = false;
+    }
+
     public function test_status(){
         errores::$error = false;
         $inicializacion = new inicializacion();
-        //$inicializacion = new liberator($inicializacion);
+        $inicializacion = new liberator($inicializacion);
 
         $registro = array();
         $status_default = '';
