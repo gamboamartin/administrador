@@ -794,10 +794,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param string $tabla
      * @param string $funcion
      * @param int $registro_id
+     * @param string $sql
      * @return array
      */
-    protected function ejecuta_transaccion(string $tabla, string $funcion, int $registro_id = -1):array{
-        $consulta = $this->consulta;
+    protected function ejecuta_transaccion(string $tabla, string $funcion, int $registro_id = -1, string $sql = ''):array{
+        $consulta =trim($sql);
+        if($sql === '') {
+            $consulta = $this->consulta;
+        }
         if($this->consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia del modelo '.$this->tabla,
                 data: $this->consulta, params: get_defined_vars());

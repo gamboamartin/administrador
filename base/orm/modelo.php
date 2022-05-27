@@ -1,6 +1,8 @@
 <?php
 namespace base\orm;
+use base\controller\activacion;
 use gamboamartin\errores\errores;
+use JsonException;
 use models\seccion;
 use models\usuario;
 use PDO;
@@ -130,32 +132,18 @@ class modelo extends modelo_base {
      * @return array
      */
     public function activa_bd(bool $reactiva = false): array{ //FIN
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
 
         if($this->registro_id <= 0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en '.$this->tabla,data: $this->registro_id);
         }
-        if(!$reactiva) {
 
-            $registro = $this->registro(registro_id: $this->registro_id);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al obtener registro '.$this->tabla,data:$registro,
-                    params: get_defined_vars());
-            }
-
-            $valida = $this->validacion->valida_transaccion_activa(
-                aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro: $registro,
-                registro_id: $this->registro_id,tabla:  $this->tabla);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al validar transaccion activa en '.$this->tabla,data:$valida);
-            }
+        $data_activacion = (new activaciones())->init_activa(modelo:$this, reactiva: $reactiva);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al generar datos de activacion '.$this->tabla,data:$data_activacion);
         }
-        $this->consulta = "UPDATE " . $this->tabla . " SET status = 'activo' WHERE id = " . $this->registro_id;
-        $this->transaccion = 'ACTIVA';
 
         $transaccion = $this->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
-            registro_id: $this->registro_id);
+            registro_id: $this->registro_id,sql: $data_activacion->consulta);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
         }
@@ -185,16 +173,17 @@ class modelo extends modelo_base {
      * P INT ERRORREV
      * inserta un registro por registro enviado
      * @return array|stdClass con datos del registro insertado
-     * @example
-     *      $entrada_modelo->registro = array('tipo_entrada_id'=>1,'almacen_id'=>1,'fecha'=>'2020-01-01',
-     *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
-     * $resultado = $entrada_modelo->alta_bd();
-     *
+     * @throws JsonException
      * @internal  $this->valida_campo_obligatorio();
      * @internal  $this->valida_estructura_campos();
      * @internal  $this->asigna_data_user_transaccion();
      * @internal  $this->bitacora($this->registro,__FUNCTION__,$consulta);
      * @uses  todo el sistema
+     * @example
+     *      $entrada_modelo->registro = array('tipo_entrada_id'=>1,'almacen_id'=>1,'fecha'=>'2020-01-01',
+     *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
+     * $resultado = $entrada_modelo->alta_bd();
+     *
      */
     public function alta_bd(): array|stdClass{
         $this->status_default = 'activo';
@@ -245,6 +234,7 @@ class modelo extends modelo_base {
      * P ORDER P INT
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
+     * @throws JsonException
      */
     public function alta_registro(array $registro):array|stdClass{ //FIN
         $this->registro = $registro;
@@ -563,7 +553,7 @@ class modelo extends modelo_base {
      * @return array
      */
     public function desactiva_todo(): array
-    { //PRUEBA COMPLETA PROTEO
+    {
 
         $consulta = /** @lang MYSQL */
             "UPDATE  $this->tabla SET status='inactivo'";
@@ -586,7 +576,7 @@ class modelo extends modelo_base {
      * @throws errores Si $id < 0
      * @throws errores definidas en internals
      * @throws errores si no existe registro*@throws \JsonException
-     * @throws \JsonException
+     * @throws JsonException
      * @example
      *      $registro = $this->modelo->elimina_bd($this->registro_id);
      *
@@ -1215,7 +1205,7 @@ class modelo extends modelo_base {
             return $this->error->error('El filtro no puede venir vacio',$filtro);
         }
 
-        $r_data = $this->filtro_and($filtro);
+        $r_data = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener registros',$r_data);
         }
@@ -1810,8 +1800,7 @@ class modelo extends modelo_base {
     private function transacciones_default(string $consulta): array|stdClass
     {
         if($this->registro_id<=0){
-            return $this->error->error(mensaje: 'Error this->registro_id debe ser mayor a 0', data: $this->registro_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error this->registro_id debe ser mayor a 0', data: $this->registro_id);
         }
 
         $bitacora = (new bitacoras())->bitacora(registro: $this->registro,funcion: __FUNCTION__,modelo: $this,consulta: $consulta);
