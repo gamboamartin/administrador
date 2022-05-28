@@ -96,6 +96,21 @@ class sql_bass{
         return $bools;
     }
 
+    /**
+     * PROBADO P INT P ORDER
+     * @param string $columnas
+     * @return string
+     */
+    public function coma_sql(string $columnas): string
+    {
+        $columnas = trim($columnas);
+        $coma = '';
+        if($columnas !== ''){
+            $coma = ' , ';
+        }
+        return $coma;
+    }
+
 
 
     /**

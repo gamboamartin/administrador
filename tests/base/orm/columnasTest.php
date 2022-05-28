@@ -912,6 +912,22 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_obten_columnas(){
+
+        errores::$error = false;
+        $col = new columnas();
+        //$col = (new liberator($col));
+        $modelo = new seccion($this->link);
+        $resultado = $col->obten_columnas($modelo,'seccion');
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('descripcion',$resultado->columnas_parseadas[1]);
+        $this->assertCount(11, $resultado->columnas_parseadas);
+        errores::$error = false;
+
+    }
+
     public function test_obten_columnas_completas(){
 
         errores::$error = false;

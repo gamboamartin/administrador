@@ -1,14 +1,11 @@
 <?php
 namespace base\orm;
-use base\controller\activacion;
 use gamboamartin\errores\errores;
 use JsonException;
 use models\seccion;
 use models\usuario;
 use PDO;
-use PDOStatement;
 use stdClass;
-use Throwable;
 
 class modelo extends modelo_base {
 
@@ -71,7 +68,7 @@ class modelo extends modelo_base {
         }
         if($tabla !=='') {
 
-            $data = $this->obten_columnas(tabla_original: $tabla);
+            $data = (new columnas())->obten_columnas(modelo:$this, tabla_original: $tabla);
             if (errores::$error) {
                 $error = $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
                 print_r($error);
@@ -130,6 +127,7 @@ class modelo extends modelo_base {
      * P INT ERRROREV P ORDER
      * @param bool $reactiva
      * @return array
+     * @throws JsonException
      */
     public function activa_bd(bool $reactiva = false): array{ //FIN
 
@@ -142,7 +140,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error al generar datos de activacion '.$this->tabla,data:$data_activacion);
         }
 
-        $transaccion = $this->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,
             registro_id: $this->registro_id,sql: $data_activacion->consulta);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
@@ -201,17 +199,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
 
-        $data_log = (new inserts())->genera_data_log(link: $this->link,registro: $this->registro,tabla: $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);
-        }
-
-        $resultado = (new inserts())->inserta_sql(data_log: $data_log, modelo: $this);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
-        }
-
-        $transacciones = $this->transacciones_default(consulta: $resultado->sql);
+        $transacciones = (new inserts())->transacciones(modelo: $this);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones);
         }
@@ -224,7 +212,7 @@ class modelo extends modelo_base {
         $data = new stdClass();
         $data->mensaje = "Registro insertado con éxito";
         $data->registro_id = $this->registro_id;
-        $data->sql = $resultado->sql;
+        $data->sql = $transacciones->sql;
         $data->registro = $registro;
 
         return $data;
@@ -244,50 +232,6 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
         }
         return $r_alta;
-    }
-
-    /**
-     * PHPUNIT
-     * @param array $campos
-     * @return array|string
-     */
-    private function columnas_suma(array $campos): array|string
-    {
-        if(count($campos)===0){
-            return $this->error->error('Error campos no puede venir vacio',$campos);
-        }
-        $columnas = '';
-        foreach($campos as $alias =>$campo){
-            if(is_numeric($alias)){
-                return $this->error->error('Error $alias no es txt $campos[alias]=campo',$campos);
-            }
-            if($campo === ''){
-                return $this->error->error('Error $campo esta vacio $campos[alias]=campo',$campos);
-            }
-
-            $data = $this->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
-            if(errores::$error){
-                return $this->error->error('Error al agregar columna',$data);
-            }
-            $columnas .= "$data->coma $data->column";
-
-        }
-        return $columnas;
-    }
-
-    /**
-     * PROBADO P INT P ORDER
-     * @param string $columnas
-     * @return string
-     */
-    private function coma_sql(string $columnas): string
-    {
-        $columnas = trim($columnas);
-        $coma = '';
-        if($columnas !== ''){
-            $coma = ' , ';
-        }
-        return $coma;
     }
 
     /**
@@ -312,8 +256,7 @@ class modelo extends modelo_base {
     {
 
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
         }
         if($offset<0){
             return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
@@ -338,47 +281,13 @@ class modelo extends modelo_base {
 
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
         }
         $filtros->params = $params;
         return $filtros;
     }
 
-    /**
-     * P ORDER P INT ERRORREV
-     * @param string $consulta
-     * @param stdClass $complemento
-     * @return string|array
-     */
-    private function consulta_full_and(stdClass $complemento, string $consulta): string|array
-    {
 
-        $consulta = trim($consulta);
-        if($consulta === ''){
-            return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data: $consulta,
-                params: get_defined_vars());
-        }
-
-        $complemento = (new where())->limpia_filtros(filtros: $complemento,keys_data_filter:  $this->columnas_extra);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al limpiar filtros',data:$complemento,
-                params: get_defined_vars());
-        }
-
-        $complemento_r = (new where())->init_params_sql(complemento: $complemento,keys_data_filter: $this->keys_data_filter);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r,
-                params: get_defined_vars());
-        }
-
-
-        $this->consulta = $consulta.$complemento_r->where.$complemento_r->sentencia.' '.$complemento_r->filtro_especial.' ';
-        $this->consulta.= $complemento_r->filtro_rango.' '.$complemento_r->filtro_fecha.' ';
-        $this->consulta.= $complemento_r->filtro_extra.' '.$complemento_r->sql_extra.' '.$complemento_r->not_in.' ';
-        $this->consulta.= $complemento_r->params->group_by.' '.$complemento_r->params->order.' ';
-        $this->consulta.= $complemento_r->params->limit.' '.$complemento_r->params->offset;
-        return $this->consulta;
-    }
 
 
 
@@ -421,47 +330,14 @@ class modelo extends modelo_base {
 
         $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
         }
 
         return (int)$result->registros[0]['total_registros'];
 
     }
 
-    /**
-     * PROBADO P ORDER P INT
-     * @param string $campo
-     * @param string $alias
-     * @param string $columnas
-     * @return array|stdClass
-     */
-    private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error('Error $campo no puede venir vacio', $campo);
-        }
-        $alias = trim($alias);
-        if($alias === ''){
-            return $this->error->error('Error $alias no puede venir vacio', $alias);
-        }
 
-        $column = (new columnas())->add_column(alias: $alias, campo: $campo);
-        if(errores::$error){
-            return $this->error->error('Error al agregar columna',$column);
-        }
-
-        $coma = $this->coma_sql(columnas: $columnas);
-        if(errores::$error){
-            return $this->error->error('Error al agregar coma',$coma);
-        }
-
-        $data = new stdClass();
-        $data->column = $column;
-        $data->coma = $coma;
-
-        return $data;
-    }
 
 
     /**
@@ -485,7 +361,7 @@ class modelo extends modelo_base {
 
         $sentencia_env = $this->sentencia_or(campo:  $campo, sentencia: $sentencia, value: $value);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql',data:$sentencia_env, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al ejecutar sql',data:$sentencia_env);
         }
         $data = new stdClass();
         $data->where = $where;
@@ -493,27 +369,12 @@ class modelo extends modelo_base {
         return $data;
     }
 
-    /**
-     * P INT P ORDER ERROREV
-     * @return  array
-     */
-    private function data_session_alta(): array
-    {
-        if($this->tabla === ''){
-            return  $this->error->error(mensaje: 'Error this->tabla esta vacia',data: $this->tabla,
-                params: get_defined_vars());
-        }
-        if($this->registro_id <=0){
-            return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id,
-                params: get_defined_vars());
-        }
-        $_SESSION['exito'][]['mensaje'] = $this->tabla.' se agrego con el id '.$this->registro_id;
-        return $_SESSION['exito'];
-    }
+
 
     /**
      * PHPUNIT
      * @return array
+     * @throws JsonException
      */
     public function desactiva_bd(): array{ //FIN
         if($this->registro_id<=0){
@@ -534,7 +395,8 @@ class modelo extends modelo_base {
         $this->consulta = /** @lang MYSQL */
             "UPDATE $tabla SET status = 'inactivo' WHERE id = $this->registro_id";
         $this->transaccion = 'DESACTIVA';
-        $transaccion = $this->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,registro_id:  $this->registro_id);
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
+            modelo: $this,registro_id:  $this->registro_id);
         if(errores::$error){
             return  $this->error->error('Error al EJECUTAR TRANSACCION',$transaccion);
         }
@@ -588,8 +450,7 @@ class modelo extends modelo_base {
      */
     public function elimina_bd(int $id): array{ //PRUEBA COMPLETA PROTEO
         if($id <= 0){
-            return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id
-                , params: get_defined_vars());
+            return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
         }
         $this->registro_id = $id;
 
@@ -643,8 +504,9 @@ class modelo extends modelo_base {
     /**
      * P INT P ORDER
      * @return string[]
+     * @throws JsonException
      */
-    public function elimina_con_filtro_and(): array{ //PRUEBA COMPLETA PROTEO
+    public function elimina_con_filtro_and(): array{
         if(count($this->filtro) === 0){
             return $this->error->error('Error no existe filtro', $this->filtro);
         }
@@ -673,7 +535,7 @@ class modelo extends modelo_base {
      * @return string[]
      */
     public function elimina_todo(): array
-    { //PRUEBA COMPLETA PROTEO
+    {
         $tabla = $this->tabla;
         $this->transaccion = 'DELETE';
         $this->consulta = /** @lang MYSQL */
@@ -729,8 +591,7 @@ class modelo extends modelo_base {
     {
         $resultado = $this->cuenta(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al contar registros',data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al contar registros',data: $resultado);
         }
         $existe = false;
         if((int)$resultado>0){
@@ -756,7 +617,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error $key no puede venir vacio', $key);
         }
         $existe = false;
-        if(isset($compare_1[$key]) && isset($compare_2[$key])) {
+        if(isset($compare_1[$key], $compare_2[$key])) {
             if ((string)$compare_1[$key] === (string)$compare_2[$key]) {
                 $existe = true;
             }
@@ -1027,9 +888,9 @@ class modelo extends modelo_base {
                 params: get_defined_vars());
         }
 
-        $sql = $this->consulta_full_and(complemento:  $complemento_sql, consulta: $consulta);
+        $sql = (new filtros())->consulta_full_and(complemento:  $complemento_sql, consulta: $consulta, modelo: $this);
         if(errores::$error){
-            return  $this->error->error(mensaje:'Error al maquetar sql',data: $sql, params: get_defined_vars());
+            return  $this->error->error(mensaje:'Error al maquetar sql',data: $sql);
         }
 
         $this->consulta = $sql;
@@ -1101,6 +962,7 @@ class modelo extends modelo_base {
      * @param array $registro
      * @param int $id
      * @return array
+     * @throws JsonException
      */
     public function limpia_campos_registro(array $registro, int $id): array
     {
@@ -1180,7 +1042,8 @@ class modelo extends modelo_base {
             return $this->error->error('Error al ejecutar sql',array($resultado,'sql'=>$this->consulta));
         }
 
-        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this, registro: $this->registro_upd);
+        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this,
+            registro: $this->registro_upd);
         if(errores::$error){
             return $this->error->error('Error al insertar bitacora',$bitacora);
         }
@@ -1194,6 +1057,7 @@ class modelo extends modelo_base {
      * @param array $filtro
      * @param array $registro
      * @return string[]
+     * @throws JsonException
      */
     public function modifica_con_filtro_and(array $filtro, array $registro): array
     {
@@ -1228,6 +1092,7 @@ class modelo extends modelo_base {
      * @param array $registro
      * @param int $id
      * @return array
+     * @throws JsonException
      */
     public function modifica_por_id(array $registro,int $id): array
     {
@@ -1301,8 +1166,8 @@ class modelo extends modelo_base {
         $this->order = array($this->tabla.'.id'=>'DESC');
         $this->limit = 1;
 
-        $resultado = $this->filtro_and(filtro: $filtro,order: $this->order,limit: 1,
-            aplica_seguridad: $aplica_seguridad);
+        $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad, filtro: $filtro, limit: 1,
+            order: $this->order);
         if(errores::$error){
             return $this->error->error('Error al obtener datos',$resultado);
         }
@@ -1355,7 +1220,7 @@ class modelo extends modelo_base {
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
         return $result;
     }
@@ -1470,7 +1335,7 @@ class modelo extends modelo_base {
         $filtro[$this->tabla.'.status'] = 'activo';
         $r_data = $this->filtro_and(filtro: $filtro, hijo: $hijo,order: $order);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al filtrar", data: $r_data, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al filtrar", data: $r_data);
         }
 
         return $r_data;
@@ -1576,8 +1441,7 @@ class modelo extends modelo_base {
     private function params_sql(array $group_by, int $limit,  int $offset, array $order): array|stdClass
     {
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
         }
         if($offset<0){
             return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
@@ -1760,7 +1624,7 @@ class modelo extends modelo_base {
             return $this->error->error('Error campos no puede venir vacio',$campos);
         }
 
-        $columnas = $this->columnas_suma($campos);
+        $columnas = (new sumas())->columnas_suma($campos);
         if(errores::$error){
             return $this->error->error('Error al agregar columnas',$columnas);
         }
@@ -1791,42 +1655,7 @@ class modelo extends modelo_base {
         return $resultado->registros[0];
     }
 
-    /**
-     * P INT ERROREV
-     * @param string $consulta texto en forma de SQL
-     * @return array|stdClass
-     * @throws \JsonException
-     */
-    private function transacciones_default(string $consulta): array|stdClass
-    {
-        if($this->registro_id<=0){
-            return $this->error->error(mensaje: 'Error this->registro_id debe ser mayor a 0', data: $this->registro_id);
-        }
 
-        $bitacora = (new bitacoras())->bitacora(registro: $this->registro,funcion: __FUNCTION__,modelo: $this,consulta: $consulta);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora,
-                params: get_defined_vars());
-        }
-
-        $r_ins = $this->ejecuta_insersion_attr(registro_id: $this->registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al insertar atributos', data: $r_ins,
-                params: get_defined_vars());
-        }
-
-        $data_session = $this->data_session_alta();
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al asignar dato de SESSION', data: $data_session,
-                params: get_defined_vars());
-        }
-
-        $datos = new stdClass();
-        $datos->bitacora = $bitacora;
-        $datos->attr = $r_ins;
-        $datos->session = $data_session;
-        return $datos;
-    }
 
     /**
      * PHPUNIT

@@ -452,21 +452,7 @@ class modelo_baseTest extends test {
 
     }
 
-    public function test_obten_columnas(){
 
-        errores::$error = false;
-        $seccion = new seccion($this->link);
-        $lib = (new liberator($seccion));
-
-        $resultado = $lib->obten_columnas('seccion');
-
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('descripcion',$resultado->columnas_parseadas[1]);
-        $this->assertCount(11, $resultado->columnas_parseadas);
-        errores::$error = false;
-
-    }
 
     public function test_obten_filtro_para_hijo(){
 

@@ -2,13 +2,8 @@
 namespace base\orm;
 
 use gamboamartin\base_modelos\base_modelos;
-use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
-use models\atributo;
-use models\bitacora;
-use models\seccion;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -48,7 +43,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public array $models_dependientes = array();
     public bool $desactiva_dependientes = false;
     public bool $elimina_dependientes = false;
-    protected array $keys_data_filter;
+    public array $keys_data_filter;
     public array $no_duplicados = array();
 
     public string $key_id = '';
@@ -152,32 +147,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    /**
-     * P INT ERRORREV P ORDER
-     * @param string $tabla
-     * @param string $funcion
-     * @param string $consulta
-     * @param int $registro_id
-     * @return array
-     */
-    private function aplica_bitacora(string $consulta, string $funcion, int $registro_id, string $tabla): array
-    {
-        $model = $this->genera_modelo(modelo: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar modelo'.$tabla,data: $model);
-        }
 
-        $registro_bitacora = $model->registro(registro_id: $registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener registro de '.$tabla,data:$registro_bitacora);
-        }
-
-        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: $funcion, modelo: $this, registro: $registro_bitacora);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al insertar bitacora de '.$tabla,data:$bitacora);
-        }
-        return $bitacora;
-    }
 
     /**
      * PHPUNIT
@@ -315,40 +285,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    /**
-     * P ORDER P INT ERROREV
-     * @param string $tabla
-     * @return array
-     */
-    private function atributos(string $tabla): array
-    {
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $tabla,
-                params: get_defined_vars());
-        }
-        $modelo_atributo = new atributo($this->link);
-        $filtro['seccion.descripcion'] = $tabla;
-        $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener atributos', data: $r_atributo,
-                params: get_defined_vars());
-        }
-        return $r_atributo->registros;
-    }
-
-
-
-
-    /**
-     * P INT P ORDER ERRORREV
-     * @return string
-     */
-    private function class_attr(): string
-    {
-        $namespace = 'models\\';
-        $clase_attr = str_replace($namespace,'',$this->tabla);
-        return 'models\\attr_'.$clase_attr;
-    }
 
 
 
@@ -514,51 +450,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-
-
     /**
      * ALFABETICO
      */
 
 
-
-
-
-    /**
-     * P ORDER P INT ERROREV
-     * @param array $atributo Registro de tipo modelo atributo
-     * @param int $registro_id
-     * @return array
-     */
-    private function data_inst_attr(array $atributo, int $registro_id): array
-    {
-        $keys = array('atributo_descripcion','atributo_id');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        $keys = array('atributo_id');
-        $valida = $this->validacion->valida_ids(keys:  $keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
-        }
-        $this->tabla = trim($this->tabla);
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error $this->tabla esta vacia',data: $this->tabla,
-                params: get_defined_vars());
-        }
-
-        $data_ins['descripcion'] = $atributo['atributo_descripcion'];
-        $data_ins['status'] = 'activo';
-        $data_ins['atributo_id'] = $atributo['atributo_id'];
-        $data_ins[$this->tabla.'_id'] = $registro_id;
-        $data_ins['valor'] = '';
-        return $data_ins;
-    }
 
 
 
@@ -714,33 +610,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    /**
-     * P INT ERRORREV
-     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @return array|string
-     */
-    protected function ejecuta_insersion_attr(int $registro_id): array|string
-    {
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id,
-                params: get_defined_vars());
-        }
-
-        $clase_attr = $this->class_attr();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener class', data: $clase_attr,
-                params: get_defined_vars());
-        }
-        if(class_exists($clase_attr)){
-
-            $r_ins = $this->inserta_data_attr(clase_attr: $clase_attr, registro_id: $registro_id);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar atributos',data:  $r_ins,
-                    params: get_defined_vars());
-            }
-        }
-        return $clase_attr;
-    }
 
     /**
      *
@@ -789,37 +658,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    /**
-     * P INT ERRORREV P ORDER
-     * @param string $tabla
-     * @param string $funcion
-     * @param int $registro_id
-     * @param string $sql
-     * @return array
-     */
-    protected function ejecuta_transaccion(string $tabla, string $funcion, int $registro_id = -1, string $sql = ''):array{
-        $consulta =trim($sql);
-        if($sql === '') {
-            $consulta = $this->consulta;
-        }
-        if($this->consulta === ''){
-            return $this->error->error(mensaje: 'La consulta no puede venir vacia del modelo '.$this->tabla,
-                data: $this->consulta, params: get_defined_vars());
-        }
-        $resultado = $this->ejecuta_sql(consulta: $consulta);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql en '.$tabla,data:$resultado,
-                params: get_defined_vars());
-        }
-        $bitacora = $this->aplica_bitacora(consulta: $consulta, funcion: $funcion, registro_id:  $registro_id,
-            tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al insertar bitacora en '.$tabla,data:$bitacora,
-                params: get_defined_vars());
-        }
-
-        return $bitacora;
-    }
 
     /**
      * PHPUNIT
@@ -1320,108 +1158,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $r_foto;
     }
 
-    /**
-     * P INT ERRORREV
-     * @param array $atributo Registro de tipo modelo atributo
-     * @param int $registro_id
-     * @param string $tabla
-     * @return array
-     */
-    private function inserta_atributo(array $atributo, int $registro_id, string $tabla): array
-    {
-        $keys = array('atributo_descripcion','atributo_id');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        $keys = array('atributo_id');
-        $valida = $this->validacion->valida_ids( keys:$keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
-        }
-
-        $data_ins = $this->data_inst_attr(atributo: $atributo,registro_id:  $registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar atributos', data: $data_ins,
-                params: get_defined_vars());
-        }
-
-        $modelo = $this->genera_modelo(modelo: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo, params: get_defined_vars());
-        }
-
-        $r_ins = $modelo->alta_registro(registro: $data_ins);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar atributos',data:  $r_ins, params: get_defined_vars());
-        }
-        return $r_ins;
-    }
-
-    /**
-     * P INT ERROREV
-     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @param string $tabla_attr
-     * @return array
-     */
-    private function inserta_atributos( int $registro_id, string $tabla_attr): array
-    {
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $this->tabla,
-                params: get_defined_vars());
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
-        }
-
-
-        $atributos = $this->atributos(tabla: $tabla_attr);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener atributos', data: $atributos,
-                params: get_defined_vars());
-        }
-
-        foreach($atributos as $atributo){
-            $r_ins = $this->inserta_atributo(atributo: $atributo,registro_id:  $registro_id,tabla:  $tabla_attr);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins,
-                    params: get_defined_vars());
-            }
-        }
-        return $atributos;
-    }
-
-
-
-    /**
-     * P INT ERROREV
-     * @param string $clase_attr
-     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @return array
-     */
-    private function inserta_data_attr(string $clase_attr, int $registro_id): array
-    {
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id,
-                params: get_defined_vars());
-        }
-
-        $model_attr = $this->genera_modelo(modelo: $clase_attr);
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo', $model_attr);
-        }
-
-        $r_ins = $this->inserta_atributos(registro_id:  $registro_id,tabla_attr:  $model_attr->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins, params: get_defined_vars());
-        }
-        return $r_ins;
-    }
 
 
 
@@ -1969,41 +1705,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    /**
-     * FULL
-     * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
-     *  variable de session para su reutilizacion futura
-     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
-     * @example
-     * $columnas_parseadas = $this->obten_columnas($tabla_original);
-     */
-    public function obten_columnas(string $tabla_original):array|stdClass{
-        $tabla_original = trim(str_replace('models\\','',$tabla_original));
-        $tabla_bd = $tabla_original;
-        $clase_modelo = 'models\\'.$tabla_original;
 
-        if($tabla_bd === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
-        }
-        if(!class_exists($clase_modelo)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo);
-        }
-
-        $se_asignaron_columnas = (new columnas())->asigna_columnas_en_session(modelo: $this, tabla_bd: $tabla_bd);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas);
-        }
-        if(!$se_asignaron_columnas){
-            $columnas_field = (new columnas())->asigna_columnas_session_new(modelo:$this, tabla_bd: $tabla_bd);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
-                    params: get_defined_vars());
-            }
-        }
-
-        return $this->data_columnas;
-    }
 
 
     /**
@@ -2188,9 +1890,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return $new_array;
     }
-
-
-
 
 }
 

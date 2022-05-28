@@ -94,6 +94,30 @@ class sql_bassTest extends test {
         errores::$error = false;
     }
 
+    public function test_coma_sql(){
+        errores::$error = false;
+
+        $sql = new sql_bass($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $columnas = '';
+        $resultado = $sql->coma_sql(columnas: $columnas);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $columnas = 'x';
+        $resultado = $sql->coma_sql(columnas: $columnas);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' , ', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_true_false(): void
     {
         errores::$error = false;

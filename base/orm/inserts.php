@@ -108,7 +108,7 @@ class inserts{
      * P INT P ORDER ERRORREV
      * @return array|stdClass
      */
-    public function genera_data_log(PDO $link, array $registro, string $tabla): array|stdClass
+    private function genera_data_log(PDO $link, array $registro, string $tabla): array|stdClass
     {
         $sql_data_alta = $this->sql_alta_full(registro: $registro);
         if(errores::$error){
@@ -131,10 +131,26 @@ class inserts{
 
     /**
      * P INT P ORDER ERROREV
+     * @return  array
+     */
+    private function data_session_alta(int $registro_id, string $tabla): array
+    {
+        if($tabla === ''){
+            return  $this->error->error(mensaje: 'Error this->tabla esta vacia',data: $tabla);
+        }
+        if($registro_id <=0){
+            return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $registro_id);
+        }
+        $_SESSION['exito'][]['mensaje'] = $tabla.' se agrego con el id '.$registro_id;
+        return $_SESSION['exito'];
+    }
+
+    /**
+     * P INT P ORDER ERROREV
      * @param stdClass $data_log
      * @return array|stdClass
      */
-    public function inserta_sql(stdClass $data_log, modelo $modelo): array|stdClass
+    private function inserta_sql(stdClass $data_log, modelo $modelo): array|stdClass
     {
         $keys = array('campos','valores');
         foreach($keys as $key){
@@ -273,6 +289,66 @@ class inserts{
         $data->campos = $campos_r;
         $data->valores = $valores_r;
         return $data;
+    }
+
+    /**
+     * @throws \JsonException
+     */
+    public function transacciones(modelo $modelo): array|stdClass
+    {
+        $data_log = $this->genera_data_log(link: $modelo->link,registro: $modelo->registro,tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);
+        }
+
+        $resultado = $this->inserta_sql(data_log: $data_log, modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
+        }
+
+        $transacciones = $this->transacciones_default(consulta: $resultado->sql, modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones);
+        }
+
+        $resultado->transacciones = $transacciones;
+
+        return $resultado;
+    }
+
+    /**
+     * P INT ERROREV
+     * @param string $consulta texto en forma de SQL
+     * @return array|stdClass
+     * @throws \JsonException
+     */
+    private function transacciones_default(string $consulta, modelo $modelo): array|stdClass
+    {
+        if($modelo->registro_id<=0){
+            return $this->error->error(mensaje: 'Error this->registro_id debe ser mayor a 0', data: $modelo->registro_id);
+        }
+
+        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $modelo,
+            registro: $modelo->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora);
+        }
+
+        $r_ins = (new atributos())->ejecuta_insersion_attr(modelo: $modelo, registro_id: $modelo->registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al insertar atributos', data: $r_ins);
+        }
+
+        $data_session = $this->data_session_alta(registro_id:$modelo->registro_id,tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al asignar dato de SESSION', data: $data_session);
+        }
+
+        $datos = new stdClass();
+        $datos->bitacora = $bitacora;
+        $datos->attr = $r_ins;
+        $datos->session = $data_session;
+        return $datos;
     }
 
     /**

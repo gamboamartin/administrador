@@ -16,6 +16,36 @@ class bitacoras{
     }
 
     /**
+     * P INT ERRORREV P ORDER
+     * @param string $tabla
+     * @param string $funcion
+     * @param string $consulta
+     * @param int $registro_id
+     * @return array
+     * @throws JsonException
+     */
+    private function aplica_bitacora(string $consulta, string $funcion, modelo $modelo, int $registro_id,
+                                     string $tabla): array
+    {
+        $model = $modelo->genera_modelo(modelo: $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar modelo'.$tabla,data: $model);
+        }
+
+        $registro_bitacora = $model->registro(registro_id: $registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al obtener registro de '.$tabla,data:$registro_bitacora);
+        }
+
+        $bitacora = $this->bitacora(consulta: $consulta, funcion: $funcion, modelo: $modelo,
+            registro: $registro_bitacora);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al insertar bitacora de '.$tabla,data:$bitacora);
+        }
+        return $bitacora;
+    }
+
+    /**
      * P INT P ORDER ERROREV
      * Devuelve un arreglo que contiene los campos necesarios para un registro en la bitacora
      *
@@ -47,7 +77,7 @@ class bitacoras{
      *      $resultado = asigna_registro_para_bitacora(array('seccion_menu_id'=>'1'),$registro_id='-1','x','x')
      *      //return array errores
      */
-    private function asigna_registro_para_bitacora(string $consulta,string $funcion, modelo_base $modelo,
+    private function asigna_registro_para_bitacora(string $consulta,string $funcion, modelo $modelo,
                                                    array $registro, array $seccion_menu): array
     {//FIN Y DOC
         if($seccion_menu['seccion_menu_id']<=0){
@@ -93,7 +123,7 @@ class bitacoras{
      * __CLASS__,$registro_bitacora);
      * $bitacora = $this->bitacora($registro_bitacora,__FUNCTION__,$consulta );
      */
-    public function bitacora(string $consulta, string $funcion, modelo_base $modelo, array $registro): array
+    public function bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array
     {
         $bitacora = array();
         if($modelo->aplica_bitacora){
@@ -116,11 +146,43 @@ class bitacoras{
                 return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
                     data: $modelo->registro_id);
             }
-            $r_bitacora = $this->genera_bitacora(consulta:  $consulta, funcion: $funcion, modelo: $modelo, registro: $registro);
+            $r_bitacora = $this->genera_bitacora(consulta:  $consulta, funcion: $funcion, modelo: $modelo,
+                registro: $registro);
             if(errores::$error){
                 return $this->error->error(mensaje:'Error al generar bitacora en '.$this->tabla,data:$r_bitacora);
             }
             $bitacora = $r_bitacora;
+        }
+
+        return $bitacora;
+    }
+
+    /**
+     * P INT ERRORREV P ORDER
+     * @param string $tabla
+     * @param string $funcion
+     * @param int $registro_id
+     * @param string $sql
+     * @return array
+     * @throws JsonException
+     */
+    public function ejecuta_transaccion(string $tabla, string $funcion,  modelo $modelo, int $registro_id = -1, string $sql = ''):array{
+        $consulta =trim($sql);
+        if($sql === '') {
+            $consulta = $modelo->consulta;
+        }
+        if($modelo->consulta === ''){
+            return $this->error->error(mensaje: 'La consulta no puede venir vacia del modelo '.$modelo->tabla,
+                data: $modelo->consulta);
+        }
+        $resultado = $modelo->ejecuta_sql(consulta: $consulta);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al ejecutar sql en '.$tabla,data:$resultado);
+        }
+        $bitacora = $this->aplica_bitacora(consulta: $consulta, funcion: $funcion,modelo: $modelo,
+            registro_id:  $registro_id, tabla: $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al insertar bitacora en '.$tabla,data:$bitacora);
         }
 
         return $bitacora;
@@ -141,7 +203,7 @@ class bitacoras{
      * @internal $this->maqueta_data_bitacora($registro,$funcion, $consulta);
      * @internal $bitacora_modelo->alta_bd();
      */
-    private function genera_bitacora(string $consulta, string $funcion, modelo_base $modelo, array $registro): array{
+    private function genera_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array{
         $namespace = 'models\\';
         $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
         $clase = $namespace.$modelo->tabla;
@@ -199,7 +261,7 @@ class bitacoras{
      * @internal $this->obten_seccion_bitacora();
      * @internal $this->asigna_registro_para_bitacora($seccion_menu,$registro,$funcion, $consulta);
      */
-    private function maqueta_data_bitacora(string $consulta, string $funcion, modelo_base $modelo, array $registro):array{
+    private function maqueta_data_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro):array{
         $namespace = 'models\\';
         $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
         $clase = $namespace.$modelo->tabla;
@@ -246,7 +308,7 @@ class bitacoras{
      * @uses modelo_basico->maqueta_data_bitacora
      * @version Falta de UT
      */
-    private function obten_seccion_bitacora(modelo_base $modelo): array
+    private function obten_seccion_bitacora(modelo $modelo): array
     {
         $namespace = 'models\\';
         $modelo->tabla = str_replace($namespace,'',$modelo->tabla);

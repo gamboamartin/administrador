@@ -101,7 +101,7 @@ class columnas{
      * @param modelo_base $modelo modelo o estructura de la base de datos
      * @return bool|array
      */
-    public function asigna_columnas_en_session(modelo_base $modelo, string $tabla_bd): bool|array
+    private function asigna_columnas_en_session(modelo_base $modelo, string $tabla_bd): bool|array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
@@ -142,7 +142,7 @@ class columnas{
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
      */
-    public function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
+    private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
@@ -747,22 +747,20 @@ class columnas{
             return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original);
         }
 
-        $data = $modelo->obten_columnas(tabla_original: $tabla_original);
+        $data = $this->obten_columnas(modelo: $modelo, tabla_original: $tabla_original);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener columnas',data:  $data);
         }
         $columnas_parseadas = $data->columnas_parseadas;
         $tabla_nombre = $modelo->obten_nombre_tabla(tabla_original: $tabla_original, tabla_renombrada: $tabla_renombrada);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener nombre de tabla', data: $tabla_nombre,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener nombre de tabla', data: $tabla_nombre);
         }
 
         $columnas_sql = $this->columnas_sql_init(columnas: $columnas, columnas_parseadas: $columnas_parseadas,
             tabla_nombre: $tabla_nombre);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas sql',data:  $columnas_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener columnas sql',data:  $columnas_sql);
         }
         return $columnas_sql;
     }
@@ -810,6 +808,41 @@ class columnas{
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $data, params: get_defined_vars());
         }
         return $data->columnas;
+    }
+
+    /**
+     * FULL
+     * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
+     *  variable de session para su reutilizacion futura
+     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
+     * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
+     * @example
+     * $columnas_parseadas = $this->obten_columnas($tabla_original);
+     */
+    public function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
+        $tabla_original = trim(str_replace('models\\','',$tabla_original));
+        $tabla_bd = $tabla_original;
+        $clase_modelo = 'models\\'.$tabla_original;
+
+        if($tabla_bd === ''){
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
+        }
+        if(!class_exists($clase_modelo)){
+            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo);
+        }
+
+        $se_asignaron_columnas = $this->asigna_columnas_en_session(modelo: $modelo, tabla_bd: $tabla_bd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas);
+        }
+        if(!$se_asignaron_columnas){
+            $columnas_field = $this->asigna_columnas_session_new(modelo:$modelo, tabla_bd: $tabla_bd);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
+            }
+        }
+
+        return $modelo->data_columnas;
     }
 
     /**
