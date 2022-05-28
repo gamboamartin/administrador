@@ -1182,15 +1182,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
 
     protected function genera_consulta_base(array $columnas = array(), $columnas_by_table = array(),
-                                            array $extension_estructura = array(),
+                                            bool $columnas_en_bruto = false, array $extension_estructura = array(),
                                             array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
         $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this, columnas_by_table:$columnas_by_table,
-            columnas_sql: $columnas_seleccionables, extension_estructura:  $extension_estructura,
-            renombres:  $renombradas);
+            columnas_en_bruto:$columnas_en_bruto, columnas_sql: $columnas_seleccionables,
+            extension_estructura:  $extension_estructura, renombres:  $renombradas);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql);
         }

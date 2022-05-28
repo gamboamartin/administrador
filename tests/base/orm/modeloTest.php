@@ -160,7 +160,7 @@ class modeloTest extends test {
         $campo = '';
         $filtros = array();
         $orden = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo,false, $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error los filtros no pueden venir vacios', $resultado['mensaje']);
@@ -171,7 +171,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros[] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error campo no pueden venir vacios', $resultado['mensaje']);
@@ -182,7 +182,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros['a'] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al ejecutar sql', $resultado['mensaje']);
@@ -193,7 +193,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros['seccion.id'] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
