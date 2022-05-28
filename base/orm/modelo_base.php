@@ -1181,13 +1181,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  modelos->accion_grupo->obten_accion_permitida
      */
 
-    protected function genera_consulta_base(array $columnas = array(), array $extension_estructura = array(),
+    protected function genera_consulta_base(array $columnas = array(), $columnas_by_table = array(),
+                                            array $extension_estructura = array(),
                                             array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
-        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
+        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this, columnas_by_table:$columnas_by_table,
             columnas_sql: $columnas_seleccionables, extension_estructura:  $extension_estructura,
             renombres:  $renombradas);
         if(errores::$error){

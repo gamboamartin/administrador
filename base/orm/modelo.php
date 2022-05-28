@@ -660,24 +660,26 @@ class modelo extends modelo_base {
      *
      *
      *
+     * @param bool $aplica_seguridad
+     * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
+     * @param array $columnas_by_table arreglo para obtener los campos especificos de una tabla, si esta seteada,
+     * no aplicara las columnas tradicionales
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
-     * @param string $tipo_filtro string numeros o textos
      * @param array $filtro_especial
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
-     * @param array $order array('tabla.campo'=>'ASC');
-     * @param int $limit numero de registros a mostrar, 0 = sin limite
-     * @param int $offset numero de registros de comienzo de datos
-     * @param array $group_by
-     * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
+     * @param array $filtro_extra
+     * @param array $filtro_fecha
      * @param array $filtro_rango
      *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
+     * @param array $group_by
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param array $filtro_extra
-     * @param string $sql_extra
-     * @param bool $aplica_seguridad
+     * @param int $limit numero de registros a mostrar, 0 = sin limite
      * @param array $not_in
-     * @param array $filtro_fecha
-     * @return array
+     * @param int $offset numero de registros de comienzo de datos
+     * @param array $order array('tabla.campo'=>'ASC');
+     * @param string $sql_extra
+     * @param string $tipo_filtro string numeros o textos
+     * @return array|stdClass
      * @example
      *      Ej 1
      *      $resultado = filtro_and();
@@ -772,8 +774,8 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @uses  todo el sistema
      */
-    public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(), array $filtro=array(),
-                               array $filtro_especial= array(), array $filtro_extra = array(),
+    public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(), $columnas_by_table = array(),
+                               array $filtro=array(), array $filtro_especial= array(), array $filtro_extra = array(),
                                array $filtro_fecha = array(), array $filtro_rango = array(), array $group_by=array(),
                                array $hijo = array(), int $limit=0,  array $not_in = array(), int $offset=0,
                                array $order = array(), string $sql_extra = '',
@@ -793,8 +795,8 @@ class modelo extends modelo_base {
                 data: $limit);
         }
 
-        $sql = $this->genera_sql_filtro(columnas: $columnas, filtro:  $filtro, filtro_especial: $filtro_especial,
-            filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango,
+        $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table:$columnas_by_table, filtro:  $filtro,
+            filtro_especial: $filtro_especial, filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango,
             group_by:  $group_by, limit:  $limit, not_in: $not_in, offset:  $offset, order: $order,
             sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro, filtro_fecha:  $filtro_fecha);
 
@@ -814,14 +816,16 @@ class modelo extends modelo_base {
     /**
      * FULL
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param array $columnas_by_table
      * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
      * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
      * @return array|stdClass
      */
-    public function filtro_or(array $columnas = array(), array $filtro = array(), array $hijo = array()):array|stdClass{
+    public function filtro_or(array $columnas = array(), array $columnas_by_table = array(), array $filtro = array(),
+                              array $hijo = array()):array|stdClass{
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura:  $this->extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            extension_estructura:  $this->extension_estructura, renombradas:  $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta, params: get_defined_vars());
         }
@@ -863,17 +867,18 @@ class modelo extends modelo_base {
      * @param array $filtro_fecha
      * @return array|string
      */
-    private function genera_sql_filtro(array $columnas, array $filtro, array $filtro_especial, array $filtro_extra,
-                                       array $filtro_rango, array $group_by, int $limit, array $not_in, int $offset,
-                                       array $order, string $sql_extra, string $tipo_filtro,
+    private function genera_sql_filtro(array $columnas, array $columnas_by_table, array $filtro,
+                                       array $filtro_especial, array $filtro_extra, array $filtro_rango,
+                                       array $group_by, int $limit, array $not_in, int $offset, array $order,
+                                       string $sql_extra, string $tipo_filtro,
                                        array $filtro_fecha = array()): array|string
     {
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura:  $this->extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table:$columnas_by_table,
+            extension_estructura:  $this->extension_estructura, renombradas:  $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
@@ -1197,7 +1202,7 @@ class modelo extends modelo_base {
      * @uses  modelo
      * @uses  operacion_controladores
      */
-    private function obten_por_id(array $columnas = array(), array $extension_estructura= array(),
+    private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(), array $extension_estructura= array(),
                                   array $hijo = array()):array|stdClass{
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id);
@@ -1207,11 +1212,10 @@ class modelo extends modelo_base {
         }
         $tabla = $this->tabla;
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas,extension_estructura: $extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            extension_estructura: $extension_estructura, renombradas:  $this->renombres);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
         }
 
         $where = " WHERE $tabla".".id = $this->registro_id ";
@@ -1372,8 +1376,8 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar and',data:$sentencia);
         }
-        $consulta = $this->genera_consulta_base(columnas: array(),extension_estructura: $this->extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: array(), columnas_by_table: array(),
+            extension_estructura: $this->extension_estructura, renombradas:  $this->renombres);
 
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar consulta',data:$consulta);

@@ -57,8 +57,7 @@ class columnas{
 
         $columnas_env = $this->integra_columnas_por_data(columnas: $columnas,resultado_columnas:  $resultado_columnas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
         return $columnas_env;
@@ -75,8 +74,7 @@ class columnas{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo no puede venir vacio', data: $atributo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error atributo no puede venir vacio', data: $atributo);
         }
         $keys = array('Type','Null');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $columna);
@@ -129,8 +127,7 @@ class columnas{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo no puede venir vacio',data:  $atributo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error atributo no puede venir vacio',data:  $atributo);
         }
         $columnas_parseadas[] = $atributo;
         return $columnas_parseadas;
@@ -347,16 +344,14 @@ class columnas{
                 columnas_parseadas: $columnas_parseadas);
             if(errores::$error){
 
-                return $this->error->error(mensaje: 'Error al obtener columnas parseadas', data: $columnas_parseadas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener columnas parseadas', data: $columnas_parseadas);
             }
 
             $columnas_completas = $this->asigna_columna_completa(atributo: $atributo,columna:
                 $columna,columnas_completas:  $columnas_completas);
             if(errores::$error){
 
-                return $this->error->error(mensaje: 'Error al obtener columnas completas', data: $columnas_completas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener columnas completas', data: $columnas_completas);
             }
         }
 
@@ -368,36 +363,61 @@ class columnas{
 
     /**
      * FULL
-     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
+     * @param array $columnas_by_table
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
+     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      */
-    private function columnas_full(array $columnas_sql, array $extension_estructura, modelo_base $modelo,
-                                   array $renombres, array $tablas_select): array|string
+    private function columnas_full(array $columnas_by_table, array $columnas_sql, array $extension_estructura,
+                                   modelo_base $modelo, array $renombres, array $tablas_select): array|string
     {
-        $columnas = $this->columnas_tablas_select(columnas_sql: $columnas_sql, modelo: $modelo,
-            tablas_select: $tablas_select);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+        $aplica_columnas_by_table = false;
+
+        if(count($columnas_by_table)>0){
+            $aplica_columnas_by_table = true;
         }
 
-        $columnas = $this->columnas_extension(columnas:  $columnas, columnas_sql: $columnas_sql,
-            extension_estructura: $extension_estructura, modelo: $modelo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                params: get_defined_vars());
+        if(!$aplica_columnas_by_table) {
+            $columnas = $this->columnas_tablas_select(columnas_sql: $columnas_sql, modelo: $modelo,
+                tablas_select: $tablas_select);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            }
+
+            $columnas = $this->columnas_extension(columnas: $columnas, columnas_sql: $columnas_sql,
+                extension_estructura: $extension_estructura, modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            }
+
+            $columnas = $this->columnas_renombre(columnas: $columnas, columnas_sql: $columnas_sql, modelo: $modelo,
+                renombres: $renombres);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            }
+
+        }
+        else{
+            /**
+             * REFACTORIZAR
+             */
+            $columnas_sql = array();
+            $tablas_select = array();
+            foreach($columnas_by_table as $tabla){
+                $tablas_select[$tabla] = false;
+            }
+
+            $columnas = $this->columnas_tablas_select(columnas_sql: $columnas_sql, modelo: $modelo,
+                tablas_select: $tablas_select);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            }
         }
 
-        $columnas = $this->columnas_renombre(columnas:  $columnas, columnas_sql:  $columnas_sql, modelo: $modelo,
-            renombres: $renombres);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas',data:  $columnas,
-                params: get_defined_vars());
-        }
 
         return $columnas;
 
@@ -416,14 +436,12 @@ class columnas{
     {
         foreach($renombres as $tabla=>$data){
             if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data);
             }
             $r_columnas = $this->carga_columna_renombre(columnas: $columnas,columnas_sql: $columnas_sql,
                 data: $data,modelo: $modelo,tabla: $tabla);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
             }
             $columnas = (string)$r_columnas;
         }
@@ -487,8 +505,7 @@ class columnas{
             $columnas_field = $this->columnas_attr(columna: $columna, columnas_completas:  $columnas_completas,
                 columnas_parseadas:  $columnas_parseadas);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
             }
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
@@ -654,8 +671,7 @@ class columnas{
         $columnas_envio = $this->columnas_envio(columnas_extra_sql: $data->columnas_extra_sql,
             columnas_sql: $data->columnas_sql);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_envio,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_envio);
         }
 
         return $columnas_envio;
@@ -858,8 +874,8 @@ class columnas{
      *@example
      *      $columnas = $this->obten_columnas_completas($columnas);
      */
-    public function obten_columnas_completas(modelo_base $modelo, array $columnas_sql = array(),
-                                             array $extension_estructura = array(),
+    public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
+                                             array $columnas_sql = array(), array $extension_estructura = array(),
                                              array $renombres = array()):array|string{
 
 
@@ -868,8 +884,9 @@ class columnas{
             return $this->error->error(mensaje: 'Error al inicializar tablas select',data:  $tablas_select);
         }
 
-        $columnas = $this->columnas_full(columnas_sql:  $columnas_sql, extension_estructura: $extension_estructura,
-            modelo: $modelo, renombres:  $renombres, tablas_select: $tablas_select);
+        $columnas = $this->columnas_full(columnas_by_table : $columnas_by_table, columnas_sql:  $columnas_sql,
+            extension_estructura: $extension_estructura, modelo: $modelo, renombres:  $renombres,
+            tablas_select: $tablas_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
