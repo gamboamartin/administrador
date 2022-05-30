@@ -47,6 +47,10 @@ class modelo extends modelo_base {
                                 array $no_duplicados = array(), array $renombres = array(),
                                 array $sub_querys = array(), array $tipo_campos = array(), bool $validation = false){
 
+        /**
+         * REFCATORIZAR
+         */
+
 
         $tabla = str_replace('models\\','',$tabla);
         parent::__construct($link);
@@ -76,6 +80,7 @@ class modelo extends modelo_base {
             }
             $this->campos_tabla = $data->columnas_parseadas;
         }
+
         $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id');
 
         foreach($campos_obligatorios_parciales as $campo){
@@ -106,17 +111,14 @@ class modelo extends modelo_base {
 
         $this->aplica_transaccion_inactivo = $aplica_transaccion_inactivo;
 
-        if($this->aplica_seguridad) {
-            $usuario_modelo = new usuario($this->link);
 
-            $seguridad = $usuario_modelo->filtro_seguridad(tabla: $this->tabla);
-            if (errores::$error) {
-                $error = $this->error->error( mensaje: 'Error al obtener filtro de seguridad', data: $seguridad);
-                print_r($error);
-                die('Error');
-            }
-            $this->filtro_seguridad = $seguridad;
+        $aplica_seguridad_filter = (new seguridad_dada())->aplica_filtro_seguridad(modelo: $this);
+        if (errores::$error) {
+            $error = $this->error->error( mensaje: 'Error al obtener filtro de seguridad', data: $aplica_seguridad_filter);
+            print_r($error);
+            die('Error');
         }
+
 
         $this->key_id = $this->tabla.'_id';
         $this->key_filtro_id = $this->tabla.'.id';
@@ -233,60 +235,6 @@ class modelo extends modelo_base {
         }
         return $r_alta;
     }
-
-    /**
-     * P INT P ORDER ERRROEV
-     * @param array $group_by
-     * @param array $order
-     * @param int $limit
-     * @param int $offset
-     * @param string $tipo_filtro
-     * @param array $filtro
-     * @param array $filtro_especial
-     * @param array $filtro_rango
-     * @param array $filtro_extra
-     * @param array $not_in
-     * @param string $sql_extra
-     * @param array $filtro_fecha
-     * @return array|stdClass
-     */
-    private function complemento_sql(array $filtro, array $filtro_especial, array $filtro_extra, array $filtro_rango,
-                                     array $group_by, int $limit, array $not_in, int $offset, array $order,
-                                     string $sql_extra, string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
-    {
-
-        if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
-        }
-        if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
-                params: get_defined_vars());
-
-        }
-        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data:$verifica_tf,
-                params: get_defined_vars());
-        }
-
-        $params = $this->params_sql(group_by: $group_by,limit:  $limit,offset:  $offset, order:  $order);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar parametros sql',data:$params);
-        }
-
-        $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra, filtro: $filtro,
-            filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha,
-            filtro_rango:  $filtro_rango, keys_data_filter: $this->keys_data_filter, not_in: $not_in,
-            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
-
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
-        }
-        $filtros->params = $params;
-        return $filtros;
-    }
-
 
 
 
@@ -889,14 +837,13 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
 
-        $complemento_sql = $this->complemento_sql(filtro:  $filtro, filtro_especial: $filtro_especial,
+        $complemento_sql = (new filtros())->complemento_sql(filtro:  $filtro, filtro_especial: $filtro_especial,
             filtro_extra: $filtro_extra, filtro_rango: $filtro_rango, group_by: $group_by, limit: $limit,
-            not_in: $not_in, offset:  $offset,order:  $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
-            filtro_fecha:  $filtro_fecha);
+            modelo: $this, not_in: $not_in, offset:  $offset,order:  $order, sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro, filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al maquetar sql',data: $complemento_sql,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al maquetar sql',data: $complemento_sql);
         }
 
         $sql = (new filtros())->consulta_full_and(complemento:  $complemento_sql, consulta: $consulta, modelo: $this);
@@ -910,33 +857,7 @@ class modelo extends modelo_base {
     }
 
 
-    /**
-     * FULL
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @return string|array
-     */
-    private function group_by_sql(array $group_by): string|array
-    {
-        $group_by_sql = '';
-        foreach ($group_by as $campo){
-            $campo = trim($campo);
-            if($campo === ''){
-                return $this->error->error(mensaje: 'Error el campo no puede venir vacio', data: $group_by,
-                    params: get_defined_vars());
-            }
-            if(is_numeric($campo)){
-                return $this->error->error(mensaje:'Error el campo debe ser un texto', data: $campo,
-                    params: get_defined_vars());
-            }
-            if($group_by_sql === ''){
-                $group_by_sql.=' GROUP BY '.$campo.' ';
-            }
-            else {
-                $group_by_sql .= ',' . $campo.' ';
-            }
-        }
-        return $group_by_sql;
-    }
+
 
 
     /**
@@ -950,23 +871,7 @@ class modelo extends modelo_base {
         return  round($iva,2);
     }
 
-    /**
-     * FULL
-     * @param int $limit
-     * @return string|array
-     */
-    private function limit_sql(int $limit): string|array
-    {
-        if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0', data: $limit,
-                params: get_defined_vars());
-        }
-        $limit_sql = '';
-        if($limit > 0){
-            $limit_sql.=' LIMIT '.$limit;
-        }
-        return $limit_sql;
-    }
+
 
     /**
      * PRUEBAS FINALIZADAS
@@ -1276,7 +1181,7 @@ class modelo extends modelo_base {
             $offset_sql =" OFFSET $this->offset ";
         }
 
-        $order_sql = $this->order_sql(order: $this->order);
+        $order_sql = (new params_sql())->order_sql(order: $this->order);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar order', data: $order_sql, params: get_defined_vars());
         }
@@ -1426,73 +1331,9 @@ class modelo extends modelo_base {
         return $resultado['registros'][0][$this->tabla.'_id'] + 1;
     }
 
-    /**
-     * FULL
-     * @param int $offset
-     * @return string|array
-     */
-    private function offset_sql(int $offset): string|array
-    {
-        if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
-                params: get_defined_vars());
 
-        }
-        $offset_sql = '';
-        if($offset >0){
-            $offset_sql.=' OFFSET '.$offset;
-        }
-        return $offset_sql;
-    }
 
-    /**
-     * FULL
-     * @param array $group_by
-     * @param array $order
-     * @param int $limit
-     * @param int $offset
-     * @return array|stdClass
-     */
-    private function params_sql(array $group_by, int $limit,  int $offset, array $order): array|stdClass
-    {
-        if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
-        }
-        if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
-                params: get_defined_vars());
 
-        }
-
-        $group_by_sql = $this->group_by_sql(group_by: $group_by);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data:$group_by_sql, params: get_defined_vars());
-        }
-
-        $order_sql = $this->order_sql(order: $order);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar order',data:$order_sql, params: get_defined_vars());
-        }
-
-        $limit_sql = $this->limit_sql(limit: $limit);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar limit',data:$limit_sql, params: get_defined_vars());
-        }
-
-        $offset_sql = $this->offset_sql(offset: $offset);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar offset',data:$offset_sql, params: get_defined_vars());
-        }
-
-        $params = new stdClass();
-        $params->group_by = $group_by_sql;
-        $params->order = $order_sql;
-        $params->limit = $limit_sql;
-        $params->offset = $offset_sql;
-
-        return $params;
-
-    }
 
     /**
      * FULL

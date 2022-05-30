@@ -1205,8 +1205,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
             columnas_seleccionables: $columnas_seleccionables);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sub querys', data: $sub_querys_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sub querys', data: $sub_querys_sql);
         }
 
 
@@ -1825,32 +1824,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $content;
     }
 
-    /**
-     *
-     * Funcion genera order en forma de sql
-     * @param array  $order con parametros para generar sentencia
-     * @version 1.0.0
-     * @return array|string cadena con order en forma de SQL
-     * @throws errores if order[campo] es un numero
-     * @example
-     * $order_sql = $this->order_sql($order);
-     * @uses modelo
-     */
-    protected function order_sql(array $order):array|string{
-        $order_sql = '';
-        foreach ($order as $campo=>$tipo_order){
-            if(is_numeric($campo)){
-                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order);
-            }
-            if($order_sql === ''){
-                $order_sql.=' ORDER BY '.$campo.' '.$tipo_order;
-            }
-            else {
-                $order_sql .= ',' . $campo.' '.$tipo_order;
-            }
-        }
-        return $order_sql;
-    }
+
 
     /**
      * FULL

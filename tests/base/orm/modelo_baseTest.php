@@ -548,30 +548,7 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-    public function test_order_sql(){
-        errores::$error = false;
 
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-        $resultado = $mb->order_sql(array());
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-        $resultado = $mb->order_sql(array('x'));
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo debe ser txt', $resultado['mensaje']);
-
-        errores::$error = false;
-        $resultado = $mb->order_sql(array('x'=>'x'));
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('ORDER BY x x', $resultado);
-        errores::$error = false;
-
-    }
 
     public function test_parsea_registros_envio(){
 

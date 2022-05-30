@@ -2,11 +2,6 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
-use models\atributo;
-use models\bitacora;
-use models\seccion;
-use PDO;
 use stdClass;
 
 class filtros{
@@ -15,6 +10,57 @@ class filtros{
     #[Pure] public function __construct(){
         $this->error = new errores();
         $this->validacion = new validaciones();
+    }
+
+    /**
+     * P INT P ORDER ERRROEV
+     * @param array $group_by
+     * @param array $order
+     * @param int $limit
+     * @param int $offset
+     * @param string $tipo_filtro
+     * @param array $filtro
+     * @param array $filtro_especial
+     * @param array $filtro_rango
+     * @param array $filtro_extra
+     * @param array $not_in
+     * @param string $sql_extra
+     * @param array $filtro_fecha
+     * @return array|stdClass
+     */
+    public function complemento_sql(array $filtro, array $filtro_especial, array $filtro_extra, array $filtro_rango,
+                                     array $group_by, int $limit, modelo $modelo, array $not_in, int $offset, array $order,
+                                     string $sql_extra, string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
+    {
+
+        if($limit<0){
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+        }
+        if($offset<0){
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+
+        }
+        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data:$verifica_tf);
+        }
+
+        $params = (new params_sql())->params_sql(group_by: $group_by,limit:  $limit,offset:  $offset, order:  $order);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar parametros sql',data:$params);
+        }
+
+        $filtros = (new where())->data_filtros_full(columnas_extra: $modelo->columnas_extra, filtro: $filtro,
+            filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha,
+            filtro_rango:  $filtro_rango, keys_data_filter: $modelo->keys_data_filter, not_in: $not_in,
+            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
+
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
+        }
+        $filtros->params = $params;
+        return $filtros;
     }
 
     /**

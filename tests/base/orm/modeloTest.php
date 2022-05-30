@@ -63,53 +63,9 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
-    public function test_group_by_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
 
-        $group_by = array();
-        $resultado = $modelo->group_by_sql($group_by);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
 
-        errores::$error = false;
-
-        $group_by = array();
-        $group_by[] = '';
-        $resultado = $modelo->group_by_sql($group_by);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $group_by = array();
-        $group_by[] = 'a';
-        $resultado = $modelo->group_by_sql($group_by);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' GROUP BY a ', $resultado);
-        errores::$error = false;
-    }
-
-    public function test_limit_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
-
-
-        $limit = '1';
-        $resultado = $modelo->limit_sql($limit);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' LIMIT 1', $resultado);
-        errores::$error = false;
-    }
 
     public function test_obten_data(): void
     {
@@ -200,35 +156,9 @@ class modeloTest extends test {
 
     }
 
-    public function test_offset_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
-        $offset = '1';
-        $resultado = $modelo->offset_sql($offset);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' OFFSET 1', $resultado);
-        errores::$error = false;
-    }
 
-    public function test_params_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
-        $group_by = array();
-        $limit = 1;
-        $offset = 1;
-        $order = array();
-        $resultado = $modelo->params_sql($group_by, $limit, $offset, $order);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_registro(): void
     {
