@@ -254,14 +254,19 @@ class columnas{
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array
      */
-    private function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
+    public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
             return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
         }
-        $consulta = "DESCRIBE $tabla_bd";
-        $result = $modelo->ejecuta_consulta(consulta: $consulta);
+
+        $sql = (new sql())->describe_table(tabla: $tabla_bd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
+        }
+
+        $result = $modelo->ejecuta_consulta(consulta: $sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
