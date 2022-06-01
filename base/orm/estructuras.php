@@ -258,8 +258,8 @@ class estructuras{
         return $data_table;
     }
 
-    
-    private function init_estructura_campo(array $campo, string $name_modelo): stdClass
+
+    private function init_estructura_campo(array $campo, string $name_modelo): stdClass 
     {
         $campo_name = $campo['Field'];
         $this->estructura_bd->$name_modelo->data_campos->$campo_name = new stdClass();
