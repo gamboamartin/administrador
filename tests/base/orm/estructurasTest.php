@@ -30,6 +30,18 @@ class estructurasTest extends test {
 
         errores::$error = false;
 
+
+        $resultado = $st->asigna_datos_estructura();
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        $this->assertTrue($resultado->accion_grupo->tiene_foraneas);
+        $this->assertNotTrue($resultado->dia->tiene_foraneas);
+
+        errores::$error = false;
+
+
+
+
     }
 
     public function test_modelos(){
