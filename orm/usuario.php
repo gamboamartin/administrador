@@ -81,35 +81,21 @@ class usuario extends modelo{ //PRUEBAS en proceso
      */
     public function filtro_seguridad(string $tabla):array{ //FIN
         $keys = array('usuario_id');
-        $valida = $this->validacion->valida_ids($_SESSION,$keys);
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
         if(errores::$error){
-            return $this->error->error('Error al validar SESSION',$valida);
+            return $this->error->error(mensaje: 'Error al validar SESSION',data: $valida);
         }
 
-        $usuario = self::usuario($_SESSION['usuario_id'], $this->link);
+        $usuario = self::usuario(usuario_id: $_SESSION['usuario_id'], link: $this->link);
         if(errores::$error){
-            return $this->error->error('Error al obtener usuario activo',$usuario);
+            return $this->error->error(mensaje: 'Error al obtener usuario activo',data: $usuario);
         }
         $filtro = array();
         $aplica_seg = true;
         if($usuario['grupo_root']==='activo') {
             $aplica_seg = false;
         }
-        if($aplica_seg) {
-            $tablas_permiso_especial = array('cliente','prospecto','prospecto_ubicacion','ubicacion');
-            if(in_array($tabla, $tablas_permiso_especial)) {
-                if ($tabla === 'cliente' || $tabla === 'prospecto') {
-                    if ($usuario['usuario_acceso_total_cliente'] === 'activo') {
-                        $aplica_seg = false;
-                    }
-                }
-                if ($tabla === 'ubicacion' || $tabla === 'prospecto_ubicacion') {
-                    if ($usuario['usuario_acceso_total_ubicaciones'] === 'activo') {
-                        $aplica_seg = false;
-                    }
-                }
-            }
-        }
+
 
         if($aplica_seg){
             $filtro['usuario_permitido_id']['campo'] = 'usuario_permitido_id';
@@ -146,7 +132,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
 
 
     /**
-     * PRUEBAS FINALIZADAS
+     * TEST
      * @param int $usuario_id
      * @param PDO $link
      * @return array

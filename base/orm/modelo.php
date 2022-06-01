@@ -1021,8 +1021,9 @@ class modelo extends modelo_base {
     }
 
     /**
-     * FULL
+     *
      * Devuelve un array con el registro buscado por this->registro_id del modelo
+     * @version 1.11.8
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param array $extension_estructura arreglo con la extension de una estructra para obtener datos de foraneas a configuracion
@@ -1038,7 +1039,8 @@ class modelo extends modelo_base {
      * @internal  $this->obten_por_id($hijo, $columnas);
      * @uses  todo el sistema
      */
-    public function obten_data(array $columnas = array(), array $extension_estructura = array(), array $hijo= array()): array{
+    public function obten_data(array $columnas = array(), array $extension_estructura = array(),
+                               array $hijo= array()): array{
         $this->row = new stdClass();
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
@@ -1047,7 +1049,8 @@ class modelo extends modelo_base {
         if(count($extension_estructura) === 0){
             $extension_estructura = $this->extension_estructura;
         }
-        $resultado = $this->obten_por_id(columnas:  $columnas, extension_estructura: $extension_estructura, hijo: $hijo);
+        $resultado = $this->obten_por_id(columnas:  $columnas, extension_estructura: $extension_estructura,
+            hijo: $hijo);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener por id en '.$this->tabla, data: $resultado);
