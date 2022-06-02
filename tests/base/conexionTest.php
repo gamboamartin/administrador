@@ -30,12 +30,13 @@ class conexionTest extends test {
 
         $paths->generales = '/var/www/html/administrador/config/generales.php';
         $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
 
         $cnx = new conexion($paths);
         $cnx = new liberator($cnx);
         $conf_database = new database();
         $conf_database->db_user = '';
-        $resultado = $cnx->conecta($conf_database);
+        $resultado = $cnx->conecta($conf_database, 'MYSQL');
 
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -46,7 +47,7 @@ class conexionTest extends test {
         $conf_database->db_user = 'x';
         $conf_database = new database();
         $conf_database->db_user = '';
-        $resultado = $cnx->conecta($conf_database);
+        $resultado = $cnx->conecta($conf_database, 'MYSQL');
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al validar conf_database',$resultado['mensaje']);
@@ -55,7 +56,7 @@ class conexionTest extends test {
 
         $conf_database = new database();
 
-        $resultado = $cnx->conecta($conf_database);
+        $resultado = $cnx->conecta($conf_database, 'MYSQL');
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);

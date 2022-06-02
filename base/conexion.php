@@ -18,20 +18,20 @@ class conexion{
      * P ORDER P INT
      * @throws JsonException
      */
-    public function __construct(stdClass $paths_conf = new stdClass()){
+    public function __construct(stdClass $paths_conf = new stdClass(), string $motor = 'MYSQL'){
         $error = new errores();
         $this->error = new errores();
 
         $valida = (new configuraciones())->valida_confs(paths_conf: $paths_conf);
         if(errores::$error){
-            $error_ = $error->error(mensaje: "Error al validar configuraciones",data:$valida, params: get_defined_vars());
+            $error_ = $error->error(mensaje: "Error al validar configuraciones",data:$valida);
             print_r($error_);
             exit;
         }
 
-        $link = $this->genera_link();
+        $link = $this->genera_link(motor: $motor);
         if(errores::$error){
-            $error_ = $error->error(mensaje: "Error al generar link",data: $link, params: get_defined_vars());
+            $error_ = $error->error(mensaje: "Error al generar link",data: $link);
             print_r($error_);
             exit;
         }
@@ -84,33 +84,47 @@ class conexion{
     }
 
     /**
-     * FULL
-     * @param database $conf_database
-     * @return PDO|array
+     * Conecta con la base de datos seleccionada
+     * @version 1.13.8
+     * @param database $conf_database Configuraciones para conectividad
+     * @param string $motor Motor puede ser MYSQL o MSSQL=>PARA SQL SERVER
+     * @return PDO|array|false
      */
-    private function conecta(database $conf_database): PDO|array
+    private function conecta(database $conf_database, string $motor): PDO|array|false
     {
+        $link = false;
         $keys = array('db_host','db_name','db_user','db_password');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
         if(errores::$error){
-            return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
         }
-        try{
-            $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
-                $conf_database->db_user, $conf_database->db_password);
+        if($motor === 'MYSQL') {
+            try {
+                $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
+                    $conf_database->db_user, $conf_database->db_password);
+            } catch (Throwable $e) {
+                return $this->error->error(mensaje: 'Error al conectar', data: $e);
+            }
         }
-        catch (Throwable $e) {
-            return $this->error->error(mensaje:  'Error al conectar',data: $e,params: get_defined_vars());
+        if($motor === 'MSSQL') {
+            try {
+                if(!isset($conf_database->db_port) || $conf_database->db_port === '' ){
+                    $conf_database->db_port = '1443';
+                }
+                $dns = "sqlsrv:server=$conf_database->db_host,1443;database=$conf_database->db_name";
+                $link = new PDO($dns, $conf_database->db_user, $conf_database->db_password);
+            } catch (Throwable $e) {
+                return $this->error->error(mensaje: 'Error al conectar', data: $e);
+            }
         }
         return $link;
     }
 
-    private function genera_link(): PDO|array
+    private function genera_link(string $motor): PDO|array
     {
         $conf_database = new database();
 
-        $link = $this->conecta(conf_database: $conf_database);
+        $link = $this->conecta(conf_database: $conf_database, motor: $motor);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al conectar",data:$link, params: get_defined_vars());
         }
