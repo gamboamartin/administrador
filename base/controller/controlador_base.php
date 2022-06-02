@@ -842,7 +842,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $filtro['elemento_lista.status'] = 'activo';
         $filtro['elemento_lista.lista'] = 'activo';
 
-        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden', filtros: $filtro,orden: 'ASC');
+        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden',
+            columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
         if(errores::$error){
             $error =  $this->errores->error(mensaje: 'Error al obtener obten_registros_filtro_and_ordenado',
                 data: $resultado, params: get_defined_vars());
@@ -859,7 +860,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $filtro['elemento_lista.filtro'] = 'activo';
         $filtro['elemento_lista.status'] = 'activo';
 
-        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden', filtros: $filtro,orden: 'ASC');
+        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden',
+            columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
 
         if(errores::$error){
             return $this->errores->error('Error al obtener registros',$resultado);
@@ -914,19 +916,17 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
     /**
-     * PRUEBAS FINALIZADAS
+     *
      * @param bool $header
+     * @param bool $ws
      * @param string $breadcrumbs
-     * @param bool $disabled
      * @param bool $aplica_form
      * @param bool $muestra_btn
-     * @param array $inputs_invisibles
-     * @param array $campos_disabled
      * @return array|string
+     * @throws JsonException
      */
-    public function modifica(bool $header , string $breadcrumbs='', bool $disabled = false, bool $aplica_form = true,
-                             bool $muestra_btn = true, array $inputs_invisibles = array(),
-                             array $campos_disabled = array() ):array|string{ //FINPROTEOCOMPLETA
+    public function modifica(bool $header, bool $ws = false, string $breadcrumbs='',
+                             bool $aplica_form = true, bool $muestra_btn = true):array|string{
 
         $namespace = 'models\\';
         $this->seccion = str_replace($namespace,'',$this->seccion);

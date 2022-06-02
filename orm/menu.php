@@ -35,7 +35,7 @@ class menu extends modelo{ //PRUEBAS FINALIZADAS
         		FROM menu 
         	INNER JOIN seccion  ON seccion.menu_id = menu.id
         	INNER JOIN accion  ON accion.seccion_id = seccion.id
-        	INNER JOIN accion_grupo AS permiso ON permiso.accion_id = accion.id
+        	INNER JOIN adm_accion_grupo AS permiso ON permiso.accion_id = accion.id
         	INNER JOIN grupo  ON grupo.id = permiso.grupo_id
         WHERE 
         	menu.status = 'activo'

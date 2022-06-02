@@ -332,13 +332,11 @@ class validaciones_directivas extends validacion{
     public function valida_selected(int $id,string $tabla, array $value):array|string{ //FIN PROT
         $namespace = 'models\\';
         $tabla = str_replace($namespace,'',$tabla);
-        $clase = 'controllers\\controlador_'.$tabla;
+
         if($tabla === ''){
             return $this->error->error('Error tabla no puede venir vacia',$tabla);
         }
-        if(!class_exists ( $clase )){
-            return $this->error->error('No existe controlador para select','controlador_'.$tabla);
-        }
+
         $key_id = $tabla . '_id';
         if(!isset($value[$key_id])){
             return $this->error->error('Error no existe $value['.$key_id.']',$value);

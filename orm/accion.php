@@ -31,8 +31,7 @@ class accion extends modelo{ //FINALIZADAS
      */
     public function acciones_permitidas(string $accion, modelo $modelo, string $seccion):array{
         if(!isset($_SESSION['grupo_id']) && $seccion !== 'session' && $accion !== 'login'){
-            return $this->error->error(mensaje: 'Error debe existir grupo_id',data: $_SESSION,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error debe existir grupo_id',data: $_SESSION);
         }
         if(isset($_SESSION['grupo_id'])&&(int)$_SESSION['grupo_id']<=0 && $seccion !== 'session' && $accion !== 'login'){
             return $this->error->error(mensaje: 'Error grupo_id debe ser mayor o igual a 0',data: $_SESSION);
@@ -46,7 +45,7 @@ class accion extends modelo{ //FINALIZADAS
             return $this->error->error(mensaje: 'Error obtener seccion_menu_id',data: $seccion_menu_id);
         }
 
-        $r_acciones = (new accion_grupo($this->link))->obten_accion_permitida(seccion_menu_id: $seccion_menu_id);
+        $r_acciones = (new adm_accion_grupo($this->link))->obten_accion_permitida(seccion_menu_id: $seccion_menu_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error obtener acciones permitidas',data: $r_acciones);
         }
@@ -120,8 +119,8 @@ class accion extends modelo{ //FINALIZADAS
         $filtro['accion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
         $filtro['seccion.status'] = 'activo';
-        $filtro['accion_grupo.grupo_id'] = $grupo_id;
-        $n_permisos = (new accion_grupo($this->link))->cuenta(filtro: $filtro);
+        $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
+        $n_permisos = (new adm_accion_grupo($this->link))->cuenta(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al contar permisos', $n_permisos);
         }
@@ -140,7 +139,7 @@ class accion extends modelo{ //FINALIZADAS
 
         $valida = $this->validacion->valida_accion_permitida(accion: $accion,seccion:  $seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
         }
 
         $grupo_id = $_SESSION['grupo_id'];
@@ -162,7 +161,7 @@ class accion extends modelo{ //FINALIZADAS
         $filtro['seccion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
 
-        $existe = (new accion_grupo($this->link))->existe(filtro: $filtro);
+        $existe = (new adm_accion_grupo($this->link))->existe(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql',data: $existe, params: get_defined_vars());
         }
@@ -283,18 +282,30 @@ class accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
-     * @param string $accion
-     * @param int $grupo_id
-     * @param string $seccion
+     * Obtiene el filtro para determinar permisos de ejecucion
+     * @version 1.12.8
+     * @param string $accion Accion a ejecutar
+     * @param int $grupo_id Grupo a verificar si tiene permiso
+     * @param string $seccion Seccion a verificar
      * @return array
      */
     private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje:'Error accion esta vacia', data: $accion);
+        }
+        if($grupo_id<=0){
+            return $this->error->error(mensaje:'Error $grupo_id debe ser mayor a 0', data: $grupo_id);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje:'Error $seccion esta vacia', data: $seccion);
+        }
         $filtro['accion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
         $filtro['seccion.status'] = 'activo';
-        $filtro['accion_grupo.grupo_id'] = $grupo_id;
+        $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
         $filtro['seccion.descripcion'] = $seccion;
         $filtro['accion.descripcion'] = $accion;
         return $filtro;
@@ -321,7 +332,7 @@ class accion extends modelo{ //FINALIZADAS
             return $this->error->error('Error al generar filtro',$filtro);
         }
 
-        $n_permisos = (new accion_grupo($this->link))->cuenta(filtro: $filtro);
+        $n_permisos = (new adm_accion_grupo($this->link))->cuenta(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al contar acciones',$n_permisos);
         }

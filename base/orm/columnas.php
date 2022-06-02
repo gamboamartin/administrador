@@ -773,8 +773,7 @@ class columnas{
             return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original);
         }
 
-        $data = $this->obten_columnas( modelo: $modelo,
-            tabla_original: $tabla_original);
+        $data = $this->obten_columnas( modelo: $modelo, tabla_original: $tabla_original);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener columnas',data:  $data);
         }

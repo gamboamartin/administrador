@@ -3,14 +3,14 @@
 /** @var PDO $link */
 
 use gamboamartin\errores\errores;
-use models\accion_grupo;
+use models\adm_accion_grupo;
 
 $etiqueta_sub_menu = trim($sub_menu['descripcion']);
 $etiqueta_sub_menu = str_replace('_',' ',$etiqueta_sub_menu);
 $etiqueta_sub_menu = ucwords($etiqueta_sub_menu);
 
-$modelo_accion_grupo = new accion_grupo($link);
-$r_action_grupo = $modelo_accion_grupo->obten_accion_permitida($sub_menu['id']);
+$modelo_accion_grupo = new adm_accion_grupo($link);
+$r_action_grupo = $modelo_accion_grupo->obten_accion_permitida(seccion_menu_id: $sub_menu['id']);
 if(errores::$error){
     $error =  $modelo_accion_grupo->error->error('Error al obtener accion permitida',$r_action_grupo);
     print_r($error);

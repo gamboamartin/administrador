@@ -6,7 +6,7 @@ use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
 
-class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
+class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false,'accion'=>$tabla,'grupo'=>$tabla,
@@ -33,7 +33,7 @@ class accion_grupo extends modelo{ //PRUEBAS COMPLETAS
 
         $filtro['accion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
-        $filtro['accion_grupo.grupo_id'] = $grupo_id;
+        $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
         $filtro['accion.seccion_id'] = $seccion_menu_id;
         $filtro['accion.visible'] = 'activo';
 

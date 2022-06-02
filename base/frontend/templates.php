@@ -662,7 +662,7 @@ class templates{
                 select_vacio_alta: $select_vacio_alta,columnas:  $columnas, llaves_valores: $llaves_valores);
 
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar html',data: $data_html, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar html',data: $data_html);
             }
 
             $html .= $data_html;

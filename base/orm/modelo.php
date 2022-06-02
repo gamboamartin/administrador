@@ -1427,8 +1427,7 @@ class modelo extends modelo_base {
     protected function seccion_menu_id(string $seccion):array|int{
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $seccion);
         }
         $filtro['seccion.descripcion'] = $seccion;
         $modelo_sm = new seccion($this->link);

@@ -328,9 +328,10 @@ class validaciones_directivasTest extends test {
         $tabla = 'a';
         $value = array();
         $resultado = $val->valida_selected($id, $tabla, $value);
+
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('No existe controlador para select', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error no existe $value[a_id]', $resultado['mensaje']);
 
         errores::$error = false;
 

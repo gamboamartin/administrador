@@ -499,8 +499,7 @@ class selects{
         $registros = $this->registros_for_select(link: $link,datos:  $datos,registros:  $registros,
             select_vacio_alta: $select_vacio_alta, filtro: $filtro,todos:  $todos,tabla:  $tabla);
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros);
         }
 
 
@@ -519,7 +518,7 @@ class selects{
 
         $datos = $this->data_html_for_select(datos: $datos);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar options',data:  $datos, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar options',data:  $datos);
 
         }
 

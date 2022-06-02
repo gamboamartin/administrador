@@ -1288,7 +1288,7 @@ class directivas extends html {
             name_input:  $campo_name,etiqueta:  $etiqueta,multiple:  $multiple,inline:  $inline);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar options', data: $datos, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar options', data: $datos);
 
         }
 

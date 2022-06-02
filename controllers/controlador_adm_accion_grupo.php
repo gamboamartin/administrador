@@ -3,11 +3,11 @@ namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
 
-use models\accion_grupo;
+use models\adm_accion_grupo;
 
-class controlador_accion_grupo extends controlador_base{
+class controlador_adm_accion_grupo extends controlador_base{
     public function __construct($link){
-        $modelo = new accion_grupo($link);
+        $modelo = new adm_accion_grupo($link);
         parent::__construct($link, $modelo);
     }
 

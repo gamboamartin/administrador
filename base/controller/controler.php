@@ -99,11 +99,9 @@ class controler{
      * @return array|string
      */
     protected function data_bread(bool $aplica_seguridad):array|string{
-        if($aplica_seguridad) {
-            if (!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
-                header('Location: index.php?seccion=session&accion=login');
-                exit;
-            }
+        if($aplica_seguridad && !isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
+            header('Location: index.php?seccion=session&accion=login');
+            exit;
         }
 
         $es_vista = false;
@@ -135,7 +133,7 @@ class controler{
             $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->link,
                 $accion_registro,$this->session_id);
             if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs, params: get_defined_vars());
+                return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs);
             }
         }
         return $breadcrumbs;

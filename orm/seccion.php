@@ -621,7 +621,7 @@ class seccion extends modelo{
                 		seccion.menu_id AS menu_id
                 		FROM seccion
                 	INNER JOIN accion  ON accion.seccion_id = seccion.id
-                	INNER JOIN accion_grupo AS permiso ON permiso.accion_id = accion.id
+                	INNER JOIN adm_accion_grupo AS permiso ON permiso.accion_id = accion.id
                 	INNER JOIN grupo  ON grupo.id = permiso.grupo_id
                 	INNER JOIN menu  ON menu.id = seccion.menu_id
                 WHERE 

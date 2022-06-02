@@ -59,7 +59,8 @@ class where{
     }
 
     /**
-     * FULL
+     * Funcion que ajusta el valor de un  campo de un registro y agregarle comillas
+     * @version 1.12.8
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] sino un string
      * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
@@ -67,7 +68,7 @@ class where{
      */
     private function campo(array|string|null $data, string $key):string|array{
         if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio",data:  $key, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error key vacio",data:  $key);
         }
         $campo = $data['campo'] ?? $key;
         return addslashes($campo);
@@ -95,7 +96,7 @@ class where{
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
 
         if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio", data: $key, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error key vacio", data: $key);
         }
         if(is_array($data) && count($data) === 0){
             return $this->error->error(mensaje:"Error datos vacio",data: $data, params: get_defined_vars());
@@ -502,8 +503,7 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
-                    params: get_defined_vars());
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro);
             }
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data, key: $key);
             if(errores::$error){

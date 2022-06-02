@@ -472,6 +472,13 @@ class inicializacion{
             $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla, data: $modelo->tabla);
     }
 
+    /**
+     * Descripta un valor de un campo seleccionado dentro de un conjunto de registros
+     * @param string $campo Campo a desencriptar de array
+     * @param array $campos_encriptados Campos definidos como encriptables de un registro
+     * @param mixed $value Valor a descriptar en caso de que aplique el camp dentro de los campos encriptados
+     * @return array|string|null
+     */
     private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
     {
         $value_enc = $value;
