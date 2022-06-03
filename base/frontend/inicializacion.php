@@ -25,12 +25,12 @@ class inicializacion{
             if(!is_array($accion)){
                 return $this->error->error('Error $acciones_asignadas[] debe ser un array', $accion);
             }
-            $keys = array('accion_descripcion');
+            $keys = array('adm_accion_descripcion');
             $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $accion);
             if(errores::$error){
                 return $this->error->error("Error al validar registro", $valida);
             }
-            $acciones[] = $accion['accion_descripcion'];
+            $acciones[] = $accion['adm_accion_descripcion'];
         }
         return $acciones;
     }

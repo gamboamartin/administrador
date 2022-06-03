@@ -13,6 +13,7 @@ use gamboamartin\plugins\exportador;
 use JsonException;
 
 use models\accion;
+use models\adm_accion;
 use models\elemento_lista;
 use models\session;
 use PDO;
@@ -674,7 +675,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al validar', data: $valida,header:  $header, ws: $ws);
         }
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
 
         $acciones = $modelo->acciones_permitidas(accion:$this->accion, modelo:$this->modelo, seccion:$this->seccion);
         if(errores::$error){
@@ -881,13 +882,13 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->retorno_error('Error al obtener campos de filtro', $campos_filtro, $header, $ws);
         }
 
-        $accion_modelo = new accion($this->link);
+        $accion_modelo = new adm_accion($this->link);
 
 
         $filtro = array();
-        $filtro['accion.status'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
         $filtro['seccion.descripcion'] = $this->seccion;
-        $filtro['accion.lista'] = 'activo';
+        $filtro['adm_accion.lista'] = 'activo';
         $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->retorno_error('Error al obtener acciones', $resultado, $header, $ws);

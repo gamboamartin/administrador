@@ -3,6 +3,7 @@ namespace base\frontend;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use models\accion;
+use models\adm_accion;
 use PDO;
 use stdClass;
 
@@ -389,19 +390,17 @@ class listas{
      */
     private function datos_accion_bd(string $accion, PDO $link, string $seccion): array
     {
-        $accion_modelo = new accion(link: $link);
+        $accion_modelo = new adm_accion(link: $link);
 
-        $filtro['accion.descripcion'] = $accion;
+        $filtro['adm_accion.descripcion'] = $accion;
         $filtro['seccion.descripcion'] =$seccion;
 
         $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener acciones', data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener acciones', data: $resultado);
         }
         if ((int)($resultado->n_registros) === 0) {
-            return $this->error->error( mensaje: 'Error no existen acciones', data:  $resultado,
-                params: get_defined_vars());
+            return $this->error->error( mensaje: 'Error no existen acciones', data:  $resultado);
         }
         return $resultado->registros[0];
     }
@@ -833,7 +832,7 @@ class listas{
     {
         $html = '';
 
-        $modelo_accion = new \models\accion(link: $link);
+        $modelo_accion = new \models\adm_accion(link: $link);
 
         foreach ($acciones as $accion){
 
@@ -849,8 +848,7 @@ class listas{
                 $link_accion = $this->asigna_datos_accion_link(accion: $accion, id: $id,seccion:  $seccion,
                     session_id: $session_id,class_link:  $class_link, link: $link);
                 if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al generar link',data: $link_accion,
-                        params: get_defined_vars());
+                    return $this->error->error(mensaje: 'Error al generar link',data: $link_accion);
                 }
                 $html.=$link_accion;
             }

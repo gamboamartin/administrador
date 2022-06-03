@@ -34,16 +34,16 @@ class menu extends modelo{ //PRUEBAS FINALIZADAS
         		menu.etiqueta_label AS etiqueta_label 
         		FROM menu 
         	INNER JOIN seccion  ON seccion.menu_id = menu.id
-        	INNER JOIN accion  ON accion.seccion_id = seccion.id
-        	INNER JOIN adm_accion_grupo AS permiso ON permiso.accion_id = accion.id
+        	INNER JOIN adm_accion  ON adm_accion.seccion_id = seccion.id
+        	INNER JOIN adm_accion_grupo AS permiso ON permiso.adm_accion_id = adm_accion.id
         	INNER JOIN grupo  ON grupo.id = permiso.grupo_id
         WHERE 
         	menu.status = 'activo'
         	AND seccion.status = 'activo'
-        	AND accion.status = 'activo' 
+        	AND adm_accion.status = 'activo' 
         	AND grupo.status = 'activo' 
         	AND permiso.grupo_id = $grupo_id 
-                AND accion.visible = 'activo'
+                AND adm_accion.visible = 'activo'
         GROUP BY menu.id
         ";
         $result = $this->link->query($consulta);

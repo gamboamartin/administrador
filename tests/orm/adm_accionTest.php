@@ -4,12 +4,10 @@ namespace tests\orm;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\accion;
-use models\session;
-use stdClass;
+use models\adm_accion;
 
 
-class accionTest extends test {
+class adm_accionTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -20,7 +18,7 @@ class accionTest extends test {
     public function test_filtro_permiso(){
 
         errores::$error = false;
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $modelo = new liberator($modelo);
         $accion = '';
         $grupo_id= -1;

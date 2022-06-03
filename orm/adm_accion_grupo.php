@@ -9,10 +9,10 @@ use stdClass;
 class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false,'accion'=>$tabla,'grupo'=>$tabla,
-            'seccion'=>'accion','menu'=>'seccion');
-        $campos_obligatorios = array('accion_id');
-        $tipo_campos['accion_id'] = 'id';
+        $columnas = array($tabla=>false,'adm_accion'=>$tabla,'grupo'=>$tabla,
+            'seccion'=>'adm_accion','menu'=>'seccion');
+        $campos_obligatorios = array('adm_accion_id');
+        $tipo_campos['adm_accion_id'] = 'id';
         $tipo_campos['grupo_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             tipo_campos:  $tipo_campos);
@@ -31,11 +31,11 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         }
         $grupo_id = $_SESSION['grupo_id'];
 
-        $filtro['accion.status'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
         $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
-        $filtro['accion.seccion_id'] = $seccion_menu_id;
-        $filtro['accion.visible'] = 'activo';
+        $filtro['adm_accion.seccion_id'] = $seccion_menu_id;
+        $filtro['adm_accion.visible'] = 'activo';
 
 
         $result = $this->filtro_and(filtro: $filtro);

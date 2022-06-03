@@ -123,7 +123,7 @@ class linksTest extends test {
 
         $accion = array();
         $accion['seccion_descripcion'] = 'a';
-        $accion['accion_descripcion'] = 'a';
+        $accion['adm_accion_descripcion'] = 'a';
         $resultado = $links->init_link($accion);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

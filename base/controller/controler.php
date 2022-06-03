@@ -6,9 +6,7 @@ use base\orm\modelo;
 use config\generales;
 use gamboamartin\errores\errores;
 
-
-use JsonException;
-use models\accion;
+use models\adm_accion;
 use PDO;
 use stdClass;
 use Throwable;
@@ -119,7 +117,7 @@ class controler{
         $breadcrumbs = '';
         if($es_vista && $aplica_seguridad) {
 
-            $accion_modelo = new accion($this->link);
+            $accion_modelo = new adm_accion($this->link);
 
             $accion_registro = $accion_modelo->accion_registro(accion:  $this->accion, seccion: $this->seccion);
             if(errores::$error){

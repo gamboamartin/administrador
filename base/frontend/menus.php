@@ -237,14 +237,14 @@ class menus{
      */
     PUBLIC function data_menu(array $etiqueta): array
     {
-        $keys = array('accion_descripcion','accion_icono');
+        $keys = array('adm_accion_descripcion','adm_accion_icono');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $etiqueta);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar etiqueta', data: $valida, params: get_defined_vars());
         }
-        $data['etiqueta'] = $etiqueta['accion_descripcion'];
-        $data['link'] = $etiqueta['accion_descripcion'];
-        $data['icon'] = $etiqueta['accion_icono'];
+        $data['etiqueta'] = $etiqueta['adm_accion_descripcion'];
+        $data['link'] = $etiqueta['adm_accion_descripcion'];
+        $data['icon'] = $etiqueta['adm_accion_icono'];
 
         return$data;
     }

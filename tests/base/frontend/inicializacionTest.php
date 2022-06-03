@@ -43,7 +43,7 @@ class inicializacionTest extends test {
 
         errores::$error = false;
         $acciones_asignadas = array();
-        $acciones_asignadas[0]['accion_descripcion'] = 'a';
+        $acciones_asignadas[0]['adm_accion_descripcion'] = 'a';
         $resultado = $inicializacion->acciones($acciones_asignadas);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);

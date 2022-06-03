@@ -263,16 +263,13 @@ class validaciones_directivas extends validacion{
     public function valida_link(array $accion): bool|array
     {
         if(count($accion)===0){
-            return $this->error->error(mensaje: 'Error accion no puede venir vacia',data: $accion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error accion no puede venir vacia',data: $accion);
         }
         if(!isset($accion['seccion_descripcion'])){
-            return $this->error->error(mensaje:'$accion[seccion_descripcion] debe existir',data:$accion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'$accion[seccion_descripcion] debe existir',data:$accion);
         }
-        if(!isset($accion['accion_descripcion'])){
-            return $this->error->error(mensaje:'$accion[accion_descripcion] debe existir',data:$accion,
-                params: get_defined_vars());
+        if(!isset($accion['adm_accion_descripcion'])){
+            return $this->error->error(mensaje:'$accion[adm_accion_descripcion] debe existir',data:$accion);
         }
         return true;
     }

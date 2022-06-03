@@ -202,7 +202,7 @@ class columnas{
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|string
      */
-    PUBLIC function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
+    private function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
                                             string $tabla): array|string
     {
 
@@ -377,7 +377,7 @@ class columnas{
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      */
-    private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
+    PUBLIC function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, modelo_base $modelo, array $renombres,
                                    array $tablas_select): array|string
     {
@@ -635,11 +635,7 @@ class columnas{
                                           modelo_base $modelo): array|string
     {
         $key = str_replace('models\\','',$key);
-        $class = 'models\\'.$key;
 
-        if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$key,data:  $key);
-        }
 
         $result = $this->ajusta_columnas_completas(columnas:  $columnas,
             columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql, modelo: $modelo,

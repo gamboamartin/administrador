@@ -4,10 +4,8 @@ use base\conexion;
 use base\frontend\directivas;
 use base\seguridad;
 use config\generales;
-use gamboamartin\controllers\controlador_session;
 use gamboamartin\errores\errores;
-use JsonException;
-use models\accion;
+use models\adm_accion;
 use models\session;
 use PDO;
 use stdClass;
@@ -27,12 +25,12 @@ class init{
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
-        $accion = (new accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+        $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
         }
         $aplica_view = false;
-        if($accion['accion_es_view'] === 'activo'){
+        if($accion['adm_accion_es_view'] === 'activo'){
             $aplica_view = true;
         }
         return $aplica_view;
@@ -302,7 +300,7 @@ class init{
      */
     public function permiso(PDO $link, seguridad $seguridad): array|seguridad
     {
-        $modelo_accion = new accion($link);
+        $modelo_accion = new adm_accion($link);
         if (isset($_SESSION['grupo_id'])) {
             $permiso = $modelo_accion->permiso(accion: $seguridad->accion, seccion: $seguridad->seccion);
             if(errores::$error){

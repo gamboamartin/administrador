@@ -7,6 +7,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\accion;
+use models\adm_accion;
 use models\seccion;
 
 
@@ -175,13 +176,13 @@ class modelo_baseTest extends test {
     public function test_genera_consulta_base(){
 
         errores::$error = false;
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $modelo = new liberator($modelo);
-        $columnas = array('accion_id');
+        $columnas = array('adm_accion_id');
         $resultado = $modelo->genera_consulta_base($columnas);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT accion.id AS accion_id   FROM accion AS accion LEFT JOIN seccion AS seccion ON seccion.id = accion.seccion_id LEFT JOIN menu AS menu ON menu.id = seccion.menu_id', $resultado);
+        $this->assertEquals('SELECT adm_accion.id AS adm_accion_id   FROM adm_accion AS adm_accion LEFT JOIN seccion AS seccion ON seccion.id = adm_accion.seccion_id LEFT JOIN menu AS menu ON menu.id = seccion.menu_id', $resultado);
         errores::$error = false;
     }
 
@@ -365,7 +366,7 @@ class modelo_baseTest extends test {
     public function test_limpia_moneda_value(){
 
         errores::$error = false;
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $modelo = new liberator($modelo);
         $value = '';
         $resultado = $modelo->limpia_moneda_value($value);

@@ -254,13 +254,13 @@ class validaciones_directivasTest extends test {
         $resultado = $val->valida_link($accion);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('$accion[accion_descripcion] debe existir', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('$accion[adm_accion_descripcion] debe existir', $resultado['mensaje']);
 
         errores::$error = false;
 
         $accion = array();
         $accion['seccion_descripcion'] = 'a';
-        $accion['accion_descripcion'] = 'a';
+        $accion['adm_accion_descripcion'] = 'a';
         $resultado = $val->valida_link($accion);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);

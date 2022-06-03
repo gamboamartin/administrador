@@ -5,7 +5,7 @@ use base\orm\joins;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\accion;
+use models\adm_accion;
 use models\seccion;
 use stdClass;
 
@@ -93,11 +93,11 @@ class joinsTest extends test {
         $tablas = 'a';
         $tablas_join = array();
         $tablas_join['seccion'] = 'b';
-        $tablas_join['accion'] = 'c';
+        $tablas_join['adm_accion'] = 'c';
         $resultado = $joins->ajusta_tablas($tablas, $tablas_join);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a LEFT JOIN seccion AS seccion ON seccion.id = b.seccion_id LEFT JOIN accion AS accion ON accion.id = c.accion_id',$resultado);
+        $this->assertEquals('a LEFT JOIN seccion AS seccion ON seccion.id = b.seccion_id LEFT JOIN adm_accion AS adm_accion ON adm_accion.id = c.adm_accion_id',$resultado);
 
         errores::$error = false;
     }
@@ -289,7 +289,7 @@ class joinsTest extends test {
         $joins = new liberator($joins);
 
 
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $extension_estructura = array();
         $tablas = '';
         $resultado = $joins->extensiones_join($extension_estructura, $modelo, $tablas);
@@ -423,7 +423,7 @@ class joinsTest extends test {
 
 
         $data = array();
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $tabla = '';
         $tablas = '';
         $resultado = $joins->join_extension($data, $modelo, $tabla, $tablas);
@@ -434,7 +434,7 @@ class joinsTest extends test {
         errores::$error = false;
 
         $data = array();
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $tabla = '';
         $tablas = '';
         $data['key'] = 'a';
@@ -448,7 +448,7 @@ class joinsTest extends test {
         errores::$error = false;
 
         $data = array();
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $tabla = 'd';
         $tablas = '';
         $data['key'] = 'a';
@@ -467,7 +467,7 @@ class joinsTest extends test {
         $joins = new liberator($joins);
 
 
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $data = array();
         $tabla_renombrada = '';
         $tablas = '';
@@ -477,7 +477,7 @@ class joinsTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al validar datos',$resultado['mensaje']);
 
         errores::$error = false;
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $data = array();
         $tabla_renombrada = 'a';
         $tablas = '';
@@ -529,11 +529,11 @@ class joinsTest extends test {
         errores::$error = false;
 
         $columnas_join = array();
-        $tabla = 'accion';
+        $tabla = 'adm_accion';
         $resultado = $joins->obten_tablas_completas($columnas_join, $tabla);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('accion AS accion',$resultado);
+        $this->assertEquals('adm_accion AS adm_accion',$resultado);
         errores::$error = false;
     }
 
@@ -543,7 +543,7 @@ class joinsTest extends test {
         $joins = new liberator($joins);
 
 
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $renombradas = array();
         $tablas = '';
         $resultado = $joins->renombres_join($modelo, $renombradas, $tablas);
@@ -659,7 +659,7 @@ class joinsTest extends test {
         //$joins = new liberator($joins);
 
 
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $renombradas = array();
         $columnas = array();
         $extension_estructura = array();
@@ -671,7 +671,7 @@ class joinsTest extends test {
 
         errores::$error = false;
 
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $renombradas = array();
         $columnas = array();
         $extension_estructura = array();

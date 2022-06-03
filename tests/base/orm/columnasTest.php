@@ -434,7 +434,7 @@ class columnasTest extends test {
 
         errores::$error = false;
         $col = new columnas();
-        $col = new liberator($col);
+        //$col = new liberator($col);
 
 
         $extension_estructura = array();
@@ -449,7 +449,7 @@ class columnasTest extends test {
 
         errores::$error = false;
         $extension_estructura = array();
-        $tablas_select = array('accion'=>'seccion');
+        $tablas_select = array('adm_accion'=>'seccion');
         $columnas_sql = array();
         $modelo = new seccion($this->link);
         $renombres = array();
@@ -459,11 +459,11 @@ class columnasTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('accion.descripcion AS accion_descripcion',$resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_accion.descripcion AS adm_accion_descripcion',$resultado);
 
         errores::$error = false;
         $extension_estructura = array();
-        $tablas_select = array('accion'=>false);
+        $tablas_select = array('adm_accion'=>false);
         $columnas_sql = array();
         $modelo = new seccion($this->link);
         $renombres = array();
@@ -849,9 +849,10 @@ class columnasTest extends test {
         $columnas_sql = array();
         $key = '';
         $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, $key, $modelo);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe el modelo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al integrar columnas', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -862,7 +863,7 @@ class columnasTest extends test {
         $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, $key, $modelo);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe el modelo a', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al integrar columnas', $resultado['mensaje']);
 
         errores::$error = false;
 

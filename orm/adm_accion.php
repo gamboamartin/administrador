@@ -6,7 +6,7 @@ use PDO;
 use stdClass;
 
 
-class accion extends modelo{ //FINALIZADAS
+class adm_accion extends modelo{ //FINALIZADAS
     /**
      * DEBUG INI
      * accion constructor.
@@ -14,7 +14,7 @@ class accion extends modelo{ //FINALIZADAS
      */
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false, 'seccion'=>'accion', 'menu'=>'seccion');
+        $columnas = array($tabla=>false, 'seccion'=>$tabla, 'menu'=>'seccion');
         $campos_obligatorios = array('seccion_id','visible','inicio','lista');
         $tipo_campos['seccion_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas:  $columnas,
@@ -116,7 +116,7 @@ class accion extends modelo{ //FINALIZADAS
             return $_SESSION['n_permisos'];
         }
 
-        $filtro['accion.status'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
         $filtro['seccion.status'] = 'activo';
         $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
@@ -155,9 +155,9 @@ class accion extends modelo{ //FINALIZADAS
         $filtro = array();
         $filtro['seccion.descripcion'] = $seccion;
         $filtro['grupo.id'] = $grupo_id;
-        $filtro['accion.visible'] = 'inactivo';
-        $filtro['accion.descripcion'] = $accion;
-        $filtro['accion.status'] = 'activo';
+        $filtro['adm_accion.visible'] = 'inactivo';
+        $filtro['adm_accion.descripcion'] = $accion;
+        $filtro['adm_accion.status'] = 'activo';
         $filtro['seccion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
 
@@ -186,7 +186,7 @@ class accion extends modelo{ //FINALIZADAS
         }
 
         $filtro['seccion.descripcion'] = strtolower(trim($seccion));
-        $filtro['accion.descripcion'] = strtolower(trim($accion));
+        $filtro['adm_accion.descripcion'] = strtolower(trim($accion));
 
         return $filtro;
     }
@@ -302,12 +302,12 @@ class accion extends modelo{ //FINALIZADAS
         if($seccion === ''){
             return $this->error->error(mensaje:'Error $seccion esta vacia', data: $seccion);
         }
-        $filtro['accion.status'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
         $filtro['grupo.status'] = 'activo';
         $filtro['seccion.status'] = 'activo';
         $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
         $filtro['seccion.descripcion'] = $seccion;
-        $filtro['accion.descripcion'] = $accion;
+        $filtro['adm_accion.descripcion'] = $accion;
         return $filtro;
     }
 
@@ -329,7 +329,7 @@ class accion extends modelo{ //FINALIZADAS
     {
         $filtro = $this->filtro_permiso(accion: $accion,grupo_id:  $grupo_id, seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro',$filtro);
+            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro);
         }
 
         $n_permisos = (new adm_accion_grupo($this->link))->cuenta(filtro: $filtro);
