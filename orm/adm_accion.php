@@ -354,12 +354,12 @@ class adm_accion extends modelo{ //FINALIZADAS
 
         $consulta = "SELECT 
                       seccion.descripcion AS seccion_descripcion,
-                      accion.descripcion AS accion_descripcion,
-                      accion.icono as accion_icono
-                    FROM accion 
-                      INNER JOIN accion_grupo ON accion_grupo.accion_id = accion.id
-                      INNER JOIN seccion ON seccion.id = accion.seccion_id
-                      WHERE accion_grupo.grupo_id = $grupo_id AND accion.inicio = 'activo'";
+                      adm_accion.descripcion AS adm_accion_descripcion,
+                      adm_accion.icono as adm_accion_icono
+                    FROM adm_accion 
+                      INNER JOIN adm_accion_grupo ON adm_accion_grupo.accion_id = adm_accion.id
+                      INNER JOIN seccion ON seccion.id = adm_accion.seccion_id
+                      WHERE adm_accion_grupo.grupo_id = $grupo_id AND adm_accion.inicio = 'activo'";
 
         $resultado = $this->ejecuta_consulta(consulta: $consulta,campos_encriptados:  $this->campos_encriptados);
         if(errores::$error){
