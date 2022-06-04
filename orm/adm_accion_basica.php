@@ -4,7 +4,7 @@ namespace models;
 use base\orm\modelo;
 use PDO;
 
-class accion_basica extends modelo{
+class adm_accion_basica extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=> false);

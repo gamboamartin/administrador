@@ -24,16 +24,14 @@ class activacion{
      */
     public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array{
         if($registro_id <= 0){
-            return $this->error->error(mensaje: 'Error id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0',data: $registro_id);
 
         }
         $modelo->registro_id = $registro_id;
 
         $registro = $modelo->registro(registro_id: $registro_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro',data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
         }
 
         $valida = $this->validacion->valida_transaccion_activa(

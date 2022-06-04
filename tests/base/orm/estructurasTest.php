@@ -49,7 +49,7 @@ class estructurasTest extends test {
         $resultado = $st->modelos();
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('campo',$resultado[5]);
+        $this->assertEquals('dia',$resultado[5]);
 
         errores::$error = false;
 
