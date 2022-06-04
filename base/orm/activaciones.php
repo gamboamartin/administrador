@@ -2,9 +2,6 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
-use models\bitacora;
-use models\seccion;
 use stdClass;
 
 class activaciones{
@@ -15,6 +12,12 @@ class activaciones{
         $this->validacion = new validaciones();
     }
 
+    /**
+     * Inicializa la transaccion de activacion, y valida que el modelo sea aplicable a dicha transaccion
+     * @param modelo $modelo Modelo a normalizar, debe ser una estructura de la base de datos
+     * @param bool $reactiva Si no es aplicable la reactivacion retornara error
+     * @return array|stdClass obj->consulta, obj->transaccion y obj->name_model
+     */
     public function init_activa(modelo $modelo, bool $reactiva): array|stdClass
     {
         $name_model = $this->normaliza_name_model(modelo:$modelo);
@@ -34,6 +37,13 @@ class activaciones{
         return $data_activacion;
     }
 
+    /**
+     * Genera el SQL para la activacion de un registro validado ue el modelo permita que se puedan
+     * ejecutar cambios de activacion
+     * @param modelo $modelo Modelo a verificar validacion
+     * @param bool $reactiva Si no es aplicable la reactivacion retornara error
+     * @return array|stdClass Obj->consulta, Obj->transaccion
+     */
     private function maqueta_activacion(modelo $modelo, bool $reactiva): array|stdClass
     {
         $valida = $this->verifica_reactivacion(modelo:$modelo,reactiva:  $reactiva);
@@ -53,18 +63,41 @@ class activaciones{
         return $data;
     }
 
+    /**
+     * Funcion que normaliza el nombre de un modelo de la forma namespace
+     * @version 1.16.9
+     * @param modelo $modelo Modelo a normalizar, debe ser una estructura de la base de datos
+     * @return array|string string con nombre de la tabla normalizada como la clase en forma de namespace
+     */
     private function normaliza_name_model(modelo $modelo): array|string
     {
+        $modelo->tabla = trim($modelo->tabla);
+        if($modelo->tabla === ''){
+            return $this->error->error(mensaje:'Error el atributo tabla del modelo '.$modelo->tabla.' Esta vacio',
+                data:$modelo->tabla);
+        }
         $namespace = 'models\\';
         $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
         return $modelo->tabla;
     }
 
+    /**
+     * Genera el SQL de status 0 'activo
+     * Esta funcion pasarla a la clase sql
+     * @param int $registro_id Identificador del registro a aplicar el update
+     * @param string $tabla Tabla donde se aplicara el update
+     * @return string SQL en forma de UPDATE
+     */
     private function sql_activa(int $registro_id, string $tabla): string
     {
         return "UPDATE " . $tabla . " SET status = 'activo' WHERE id = " . $registro_id;
     }
 
+    /**
+     * Valida que la transaccion cuando en el modelo valida transaccion activa sea true bloquee la transaccion
+     * @param modelo $modelo Modelo a verificar validacion
+     * @return bool|array Verdadero sila configuracion es valida
+     */
     private function valida_activacion(modelo $modelo): bool|array
     {
         $registro = $modelo->registro(registro_id: $modelo->registro_id);
@@ -81,6 +114,12 @@ class activaciones{
         return $valida;
     }
 
+    /**
+     * Valida que la transaccion cuando en el modelo valida transaccion activa sea true bloquee la transaccion
+     * @param modelo $modelo Modelo a verificar validacion
+     * @param bool $reactiva Si no es aplicable la reactivacion retornara error
+     * @return bool|array Verdadero si es correcta la validacion
+     */
     private function verifica_reactivacion(modelo $modelo,bool $reactiva): bool|array
     {
         $valida = true;

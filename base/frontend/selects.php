@@ -87,24 +87,24 @@ class selects{
     {
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
-            return  $this->error->error("Error al validar modelo",$valida);
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
         }
 
         $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_modelo);
         if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $modelo);
+            return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
         if(!$todos) {
             $resultado = $modelo->obten_registros_activos(order: array(),filtro:  $filtro);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
             }
         }
         else{
             $resultado = $modelo->obten_registros();
             if (errores::$error) {
-                return $this->error->error('Error al obtener registros del modelo '.$modelo->tabla, $resultado);
+                return $this->error->error(mensaje: 'Error al obtener registros del modelo '.$modelo->tabla,
+                    data: $resultado);
             }
         }
         return $resultado;

@@ -139,7 +139,8 @@ class modelo extends modelo_base {
 
         $data_activacion = (new activaciones())->init_activa(modelo:$this, reactiva: $reactiva);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al generar datos de activacion '.$this->tabla,data:$data_activacion);
+            return $this->error->error(mensaje:'Error al generar datos de activacion '.$this->tabla,
+                data:$data_activacion);
         }
 
         $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,

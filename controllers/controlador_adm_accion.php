@@ -3,10 +3,10 @@ namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
 use JsonException;
-use models\accion;
+use models\adm_accion;
 use PDO;
 
-class controlador_accion extends controlador_base{
+class controlador_adm_accion extends controlador_base{
     public string $busca_accion = '';
     public string $btn_envia = '';
     public string $form_ini = '';
@@ -18,7 +18,7 @@ class controlador_accion extends controlador_base{
      * @throws JsonException
      */
     public function __construct(PDO $link){
-        $modelo = new accion($link);
+        $modelo = new adm_accion($link);
         parent::__construct($link, $modelo);
         $this->directiva = new html_accion();
     }
@@ -30,11 +30,10 @@ class controlador_accion extends controlador_base{
      * @return array|$this
      * @throws JsonException
      */
-    public function encuentra_accion(bool $header):array|controlador_accion{
+    public function encuentra_accion(bool $header):array|controlador_adm_accion{
         $template = parent::alta(header: false);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: "Error al cargar template",data:  $template,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: "Error al cargar template",data:  $template);
             if(!$header){
                 return $error;
             }

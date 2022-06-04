@@ -165,41 +165,6 @@ class controler{
         return $resultado;
     }
 
-
-    /**
-     *
-     * @param string $name_modelo
-     * @return array
-     */
-    public function data_galeria(string $name_modelo):array{
-        $name_modelo = trim($name_modelo);
-        $valida = $this->validacion->valida_data_modelo($name_modelo);
-        if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al validar entrada para generacion de modelo en '.$name_modelo,
-                data: $valida, params: get_defined_vars());
-        }
-        if($this->registro_id<=0){
-            return  $this->errores->error('Error registro_id debe ser mayor a 0 ',$this->registro_id);
-        }
-        $this->tabla = trim($this->tabla);
-        if($this->tabla === ''){
-            return  $this->errores->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-
-        $r_foto = $this->modelo->get_data_img($name_modelo,$this->registro_id);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener fotos',$r_foto);
-        }
-
-        $data = (new normalizacion())->maqueta_data_galeria(controler: $this, r_fotos: $r_foto,tabla: $name_modelo);
-        if(errores::$error){
-            return $this->errores->error('Error al maquetar galeria',$data);
-        }
-        return $data;
-    }
-
-
-
     /**
      * P ORDER P INT ERROREV
      * @param array $data_para_boton

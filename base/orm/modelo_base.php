@@ -141,7 +141,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(count($modelos_hijos)>0) {
             $row = $this->genera_registros_hijos(modelos_hijos: $modelos_hijos,row:  $row);
             if (errores::$error) {
-                return $this->error->error(mensaje: "Error en registro",data: $row, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error en registro",data: $row);
             }
         }
         return $row;
@@ -247,8 +247,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
+     *
      * Funcion que asigna un registro encontrado para hijos en las diferentes consultas
+     * @version 1.16.9
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
      * @param array $filtro datos para la obtencion de los registros a filtrar
@@ -263,21 +264,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function asigna_registros_hijo(array $filtro, string $name_modelo, string $nombre_estructura, array $row):array{
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida);
         }
         if($nombre_estructura === ''){
-            return  $this->error->error('Error nombre estructura no puede venir vacia',$nombre_estructura);
+            return  $this->error->error(mensaje: 'Error nombre estructura no puede venir vacia',
+                data: $nombre_estructura);
         }
 
         $modelo = $this->genera_modelo(modelo: $name_modelo);
         if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo);
+            return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo);
         }
         $data = $modelo->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar registro hijos', data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar registro hijos', data: $data);
         }
         $row[$nombre_estructura] = $data->registros;
 
@@ -1217,8 +1217,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
+     *
      * Funcion que genera un modelo a partir del nombre
+     * @version 1.15.9
      *
      * @param string $modelo txt con el nombre del modelo a crear
      * @example
@@ -1236,7 +1237,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $modelo = trim($modelo);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida, params: get_defined_vars());
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
         }
         return new $modelo($this->link);
     }
@@ -1299,8 +1300,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que asigna los registros encontrados de hijos en un registro
+     * @version 1.16.9
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
      * @param array $data_modelo datos de parametrizacion de datos para la ejecucion de obtencion de los registros
@@ -1317,24 +1319,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function genera_registro_hijo(array $data_modelo, string $name_modelo, array $row):array{
         if(!isset($data_modelo['nombre_estructura'])){
             return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                data: $data_modelo, params: get_defined_vars());
+                data: $data_modelo);
         }
         $filtro = $this->obten_filtro_para_hijo(data_modelo: $data_modelo,row: $row);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error filtro",data: $filtro, params: get_defined_vars());
+            return  $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
         $row = $this->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
             nombre_estructura: $data_modelo['nombre_estructura'],row: $row);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row);
         }
         return $row;
     }
 
     /**
-     * FULL
+     *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
+     * @version 1.16.9
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
      * @example
@@ -1347,19 +1349,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function genera_registros_hijos(array $modelos_hijos, array $row):array{
         foreach($modelos_hijos as $name_modelo=>$data_modelo){
             if(!is_array($data_modelo)){
-                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos);
             }
 
             if(!isset($data_modelo['nombre_estructura'])){
                 return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                    data: $data_modelo, params: get_defined_vars());
+                    data: $data_modelo);
             }
 
             $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo,
                 row: $row);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row);
             }
 
         }

@@ -85,6 +85,12 @@ class inicializacion{
         return $data;
     }
 
+    /**
+     * Desencripta un conjunto de valores de un registro
+     * @param array $campos_encriptados Campos a desencriptar del registro
+     * @param array $row Registro para la desencriptacion
+     * @return array Registro con los campos aplicables desencriptados
+     */
     public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
     {
         foreach ($row as $campo=>$value){
@@ -474,6 +480,7 @@ class inicializacion{
 
     /**
      * Descripta un valor de un campo seleccionado dentro de un conjunto de registros
+     * @version 1.15.9
      * @param string $campo Campo a desencriptar de array
      * @param array $campos_encriptados Campos definidos como encriptables de un registro
      * @param mixed $value Valor a descriptar en caso de que aplique el camp dentro de los campos encriptados

@@ -1,6 +1,7 @@
 <?php
 namespace tests\base\orm;
 
+use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 
 use base\orm\inicializacion;
@@ -403,6 +404,83 @@ class inicializacionTest extends test {
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado['models\\seccion']);
+        errores::$error = false;
+    }
+
+    public function test_value_desencriptado(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $campo = '';
+        $campos_encriptados = array();
+        $value = '';
+
+        $resultado = $inicializacion->value_desencriptado($campo, $campos_encriptados, $value);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $campo = '';
+        $campos_encriptados = array();
+        $campos_encriptados[] = '';
+        $value = '';
+
+        $resultado = $inicializacion->value_desencriptado($campo, $campos_encriptados, $value);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al desencriptar', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = '';
+        $campos_encriptados = array();
+        $campos_encriptados[] = 'a';
+        $value = '';
+
+        $resultado = $inicializacion->value_desencriptado($campo, $campos_encriptados, $value);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campos_encriptados = array();
+        $campos_encriptados[] = 'a';
+        $value = '';
+
+        $resultado = $inicializacion->value_desencriptado($campo, $campos_encriptados, $value);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al desencriptar', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campos_encriptados = array();
+        $campos_encriptados[] = 'a';
+        $value = 'z';
+
+        $resultado = $inicializacion->value_desencriptado($campo, $campos_encriptados, $value);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al desencriptar', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $value_enc = (new encriptador())->encripta('z');
+        $campo = 'a';
+        $campos_encriptados = array();
+        $campos_encriptados[] = 'a';
+        $value = $value_enc;
+
+        $resultado = $inicializacion->value_desencriptado($campo, $campos_encriptados, $value);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z', $resultado);
         errores::$error = false;
     }
 
