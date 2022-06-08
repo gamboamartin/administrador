@@ -4,7 +4,7 @@ use base\orm\modelo;
 
 use PDO;
 
-class bitacora extends modelo{
+class adm_bitacora extends modelo{
     /**
      * DEBUG INI
      * bitacora constructor.

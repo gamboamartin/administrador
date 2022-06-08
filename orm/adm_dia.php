@@ -4,7 +4,7 @@ use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 
-class dia extends modelo{
+class adm_dia extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);

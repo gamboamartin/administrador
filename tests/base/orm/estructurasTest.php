@@ -35,7 +35,7 @@ class estructurasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         $this->assertTrue($resultado->adm_accion_grupo->tiene_foraneas);
-        $this->assertNotTrue($resultado->dia->tiene_foraneas);
+        $this->assertNotTrue($resultado->adm_dia->tiene_foraneas);
 
         errores::$error = false;
 
@@ -49,7 +49,7 @@ class estructurasTest extends test {
         $resultado = $st->modelos();
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('dia',$resultado[5]);
+        $this->assertEquals('adm_dia',$resultado[5]);
 
         errores::$error = false;
 

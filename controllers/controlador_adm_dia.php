@@ -1,12 +1,12 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\bitacora;
+use models\adm_dia;
 
-class controlador_bitacora extends controlador_base{
+
+class controlador_adm_dia extends controlador_base{
     public function __construct($link){
-        $modelo = new bitacora($link);
+        $modelo = new adm_dia($link);
         parent::__construct($link, $modelo);
     }
-
 }

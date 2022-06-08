@@ -40,12 +40,18 @@ class activaciones{
     /**
      * Genera el SQL para la activacion de un registro validado ue el modelo permita que se puedan
      * ejecutar cambios de activacion
+     * @version 1.17.9
      * @param modelo $modelo Modelo a verificar validacion
      * @param bool $reactiva Si no es aplicable la reactivacion retornara error
      * @return array|stdClass Obj->consulta, Obj->transaccion
      */
     private function maqueta_activacion(modelo $modelo, bool $reactiva): array|stdClass
     {
+        if($modelo->registro_id <=0){
+            return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id);
+        }
+
         $valida = $this->verifica_reactivacion(modelo:$modelo,reactiva:  $reactiva);
         if (errores::$error) {
             return $this->error->error(mensaje:'Error al validar transaccion activa en '.$modelo->tabla,data:$valida);
@@ -86,20 +92,34 @@ class activaciones{
      * Esta funcion pasarla a la clase sql
      * @param int $registro_id Identificador del registro a aplicar el update
      * @param string $tabla Tabla donde se aplicara el update
-     * @return string SQL en forma de UPDATE
+     * @return string|array SQL en forma de UPDATE
+     * @version 1.17.9
      */
-    private function sql_activa(int $registro_id, string $tabla): string
+    private function sql_activa(int $registro_id, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return  $this->error->error(mensaje: 'Error  la tabla esta vacia', data: $tabla);
+        }
+        if($registro_id<=0){
+            return  $this->error->error(mensaje: 'Error $registro_id debe ser mayor a 0', data: $registro_id);
+        }
         return "UPDATE " . $tabla . " SET status = 'activo' WHERE id = " . $registro_id;
     }
 
     /**
      * Valida que la transaccion cuando en el modelo valida transaccion activa sea true bloquee la transaccion
+     * @version 1.17.9
      * @param modelo $modelo Modelo a verificar validacion
      * @return bool|array Verdadero sila configuracion es valida
      */
     private function valida_activacion(modelo $modelo): bool|array
     {
+        if($modelo->registro_id <=0){
+            return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id);
+        }
+
         $registro = $modelo->registro(registro_id: $modelo->registro_id);
         if (errores::$error) {
             return $this->error->error(mensaje:'Error al obtener registro '.$modelo->tabla,data:$registro);
@@ -116,17 +136,24 @@ class activaciones{
 
     /**
      * Valida que la transaccion cuando en el modelo valida transaccion activa sea true bloquee la transaccion
+     * @version 1.17.9
      * @param modelo $modelo Modelo a verificar validacion
      * @param bool $reactiva Si no es aplicable la reactivacion retornara error
      * @return bool|array Verdadero si es correcta la validacion
      */
     private function verifica_reactivacion(modelo $modelo,bool $reactiva): bool|array
     {
+        if($modelo->registro_id <=0){
+            return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id);
+        }
+
         $valida = true;
         if(!$reactiva) {
             $valida = $this->valida_activacion(modelo: $modelo);
             if (errores::$error) {
-                return $this->error->error(mensaje:'Error al validar transaccion activa en '.$modelo->tabla,data:$valida);
+                return $this->error->error(mensaje:'Error al validar transaccion activa en '.$modelo->tabla,
+                    data:$valida);
             }
         }
         return $valida;
