@@ -1251,7 +1251,7 @@ class where{
     /**
      *
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * @version 
+     * @version
      * $data[(string)campo] $data[(string)value] sino un string
      * @return string|array
      */

@@ -237,9 +237,6 @@ class modelo extends modelo_base {
         return $r_alta;
     }
 
-
-
-
     /**
      * P INT P ORDER ERRORREV
      * @param array $filtro
@@ -285,9 +282,6 @@ class modelo extends modelo_base {
         return (int)$result->registros[0]['total_registros'];
 
     }
-
-
-
 
     /**
      * FULL
