@@ -178,7 +178,7 @@ class adm_accion extends modelo{ //FINALIZADAS
      * @param string $accion
      * @return array
      */
-    private function filtro_accion_seccion(string $seccion, string $accion):array{
+    private function filtro_accion_seccion(string $accion, string $seccion, ):array{
 
         $valida = $this->validacion->seccion_accion( accion: $accion, seccion: $seccion);
         if(errores::$error){
@@ -192,24 +192,24 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param string $seccion
      * @param string $accion
      * @return array|stdClass
      */
-    private function accion_seccion(string $seccion, string $accion):array|stdClass{
+    private function accion_seccion(string $accion, string $seccion ):array|stdClass{
         $valida = $this->validacion->seccion_accion(accion:  $accion, seccion: $seccion);
         if(errores::$error){
-            return  $this->error->error('Error al validar seccion',$valida);
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
         }
 
-        $filtro = $this->filtro_accion_seccion(seccion: $seccion, accion: $accion);
+        $filtro = $this->filtro_accion_seccion(accion: $accion, seccion: $seccion );
         if(errores::$error){
-            return  $this->error->error('Error al obtener filtros',$filtro);
+            return  $this->error->error(mensaje: 'Error al obtener filtros',data: $filtro);
         }
         $r_accion = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return  $this->error->error('Error al obtener acciones',$r_accion);
+            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
         }
         return $r_accion;
     }
@@ -271,7 +271,7 @@ class adm_accion extends modelo{ //FINALIZADAS
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
         }
-        $r_accion = $this->accion_seccion(seccion: $seccion,accion: $accion);
+        $r_accion = $this->accion_seccion(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
         }
