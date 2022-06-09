@@ -4,11 +4,11 @@ namespace tests\orm;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\session;
+use models\adm_session;
 use stdClass;
 
 
-class sessionTest extends test {
+class adm_sessionTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -19,7 +19,7 @@ class sessionTest extends test {
     public function test_init_session(){
 
         errores::$error = false;
-        $session = new session($this->link);
+        $session = new adm_session($this->link);
         $session = new liberator($session);
         $session_id = '';
         $resultado = $session->init_session($session_id);
@@ -41,7 +41,7 @@ class sessionTest extends test {
     public function test_obten_filtro_session(){
 
         errores::$error = false;
-        $session = new session($this->link);
+        $session = new adm_session($this->link);
         //$inicializacion = new liberator($inicializacion);
         $resultado = $session->obten_filtro_session('');
         $this->assertIsArray($resultado);
@@ -67,7 +67,7 @@ class sessionTest extends test {
 
         errores::$error = false;
         unset($_GET['session_id']);
-        $session = new session($this->link);
+        $session = new adm_session($this->link);
         $session = new liberator($session);
         $resultado = $session->session_activa();
         $this->assertIsBool($resultado);

@@ -84,10 +84,10 @@ class inicializacionTest extends test {
 
         errores::$error = false;
         $elementos_lista = array();
-        $elementos_lista[0]['elemento_lista_descripcion'] = 'a';
-        $elementos_lista[0]['elemento_lista_tipo'] = 'b';
-        $elementos_lista[0]['elemento_lista_representacion'] = 'c';
-        $elementos_lista[0]['elemento_lista_etiqueta'] = 'd';
+        $elementos_lista[0]['adm_elemento_lista_descripcion'] = 'a';
+        $elementos_lista[0]['adm_elemento_lista_tipo'] = 'b';
+        $elementos_lista[0]['adm_elemento_lista_representacion'] = 'c';
+        $elementos_lista[0]['adm_elemento_lista_etiqueta'] = 'd';
 
         $resultado = $inicializacion->asigna_datos_campo($elementos_lista);
         $this->assertIsObject( $resultado);
@@ -123,10 +123,10 @@ class inicializacionTest extends test {
         errores::$error = false;
 
         $elementos_lista = array();
-        $elementos_lista[0]['elemento_lista_descripcion'] = 'h';
-        $elementos_lista[0]['elemento_lista_tipo'] = 'h';
-        $elementos_lista[0]['elemento_lista_representacion'] = 'h';
-        $elementos_lista[0]['elemento_lista_etiqueta'] = 'h';
+        $elementos_lista[0]['adm_elemento_lista_descripcion'] = 'h';
+        $elementos_lista[0]['adm_elemento_lista_tipo'] = 'h';
+        $elementos_lista[0]['adm_elemento_lista_representacion'] = 'h';
+        $elementos_lista[0]['adm_elemento_lista_etiqueta'] = 'h';
         $resultado = $inicializacion->campos_lista($elementos_lista);
         $this->assertIsObject( $resultado);
         $this->assertNotEmpty($resultado->campos);
@@ -153,9 +153,9 @@ class inicializacionTest extends test {
         errores::$error = false;
 
         $registro = array();
-        $registro['elemento_lista_descripcion'] = 'prueba';
-        $registro['elemento_lista_tipo'] = 'prueba';
-        $registro['elemento_lista_representacion'] = 'prueba';
+        $registro['adm_elemento_lista_descripcion'] = 'prueba';
+        $registro['adm_elemento_lista_tipo'] = 'prueba';
+        $registro['adm_elemento_lista_representacion'] = 'prueba';
         $resultado = $inicializacion->datos_campo($registro);
         $this->assertIsArray( $resultado);
         $this->assertStringContainsStringIgnoringCase('prueba', $resultado['nombre_campo']);

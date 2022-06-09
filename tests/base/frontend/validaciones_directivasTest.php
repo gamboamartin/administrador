@@ -174,8 +174,8 @@ class validaciones_directivasTest extends test {
 
         errores::$error = false;
         $registro = array();
-        $registro['elemento_lista_descripcion'] = 'a';
-        $registro['elemento_lista_tipo'] = 'a';
+        $registro['adm_elemento_lista_descripcion'] = 'a';
+        $registro['adm_elemento_lista_tipo'] = 'a';
         $resultado = $val->valida_elemento_lista_template($registro);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);

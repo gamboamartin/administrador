@@ -55,7 +55,7 @@ class seguridadTest extends test {
         $resultado = $seg->init_menu_login();
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('session',$resultado->seccion);
+        $this->assertEquals('adm_session',$resultado->seccion);
         $this->assertEquals('login',$resultado->accion);
         $this->assertNotTrue($resultado->menu);
         errores::$error = false;

@@ -59,34 +59,35 @@ class inicializacion{
         }
 
 
-        $data['cols'] = $datas->campo['elemento_lista_cols'];
+        $data['cols'] = $datas->campo['adm_elemento_lista_cols'];
         $data['disabled'] = $datas->campo['disabled'];
         $data['con_label'] = $datas->bools['con_label'];
         $data['required'] = $datas->bools['required'];
-        $data['tipo'] = $datas->campo['elemento_lista_tipo'];
+        $data['tipo'] = $datas->campo['adm_elemento_lista_tipo'];
         $data['llaves_foraneas'] = $datas->datos->llaves;
         $data['vista'] = array($datas->datos->vista);
         $data['ln'] = $datas->bools['ln'];
-        $data['tabla_foranea'] = $datas->campo['elemento_lista_tabla_externa'];
+        $data['tabla_foranea'] = $datas->campo['adm_elemento_lista_tabla_externa'];
         $data['columnas'] = $datas->datos->columnas;
         $data['pattern'] = $datas->datos->pattern;
         $data['select_vacio_alta'] = $datas->bools['select_vacio_alta'];
-        $data['etiqueta'] = $datas->campo['elemento_lista_etiqueta'];
+        $data['etiqueta'] = $datas->campo['adm_elemento_lista_etiqueta'];
         $data['campo_tabla_externa'] = $datas->datos->tabla_externa;
-        $data['campo_name'] = $datas->campo['elemento_lista_campo'];
-        $data['campo'] = $datas->campo['elemento_lista_descripcion'];
+        $data['campo_name'] = $datas->campo['adm_elemento_lista_campo'];
+        $data['campo'] = $datas->campo['adm_elemento_lista_descripcion'];
         $data['tabla_externa_renombrada'] = $datas->datos->externa_renombrada;
         $data['data_extra'] = $datas->datos->valor_extra;
         $data['separador_select_columnas'] = $datas->datos->separador;
         $data['representacion'] = $datas->datos->representacion;
         $data['css_id'] = $datas->datos->css_id;
-        $data['elemento_lista_id'] =$datas->campo['elemento_lista_id'];
+        $data['adm_elemento_lista_id'] =$datas->campo['adm_elemento_lista_id'];
 
         return $data;
     }
 
     /**
      * Desencripta un conjunto de valores de un registro
+     * @version 1.18.9
      * @param array $campos_encriptados Campos a desencriptar del registro
      * @param array $row Registro para la desencriptacion
      * @return array Registro con los campos aplicables desencriptados
@@ -94,6 +95,13 @@ class inicializacion{
     public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
     {
         foreach ($row as $campo=>$value){
+            if(is_numeric($campo)){
+                $fix = ' El campo dentro de row debe ser un texto no numerico puede ser id, registro etc, no puede ';
+                $fix .= ' ser 0 o 1 o cualquier numero, ejemplo de envio de row puede ser $row[x] o';
+                $fix.= ' $row[cualquier texto no numerico] no puede ser row[0] o row[cualquier numero]';
+                return $this->error->error(mensaje: 'Error el campo debe ser un texto', data:$campo, fix: $fix);
+            }
+
             $value_enc = $this->value_desencriptado(campo:$campo,
                 campos_encriptados: $campos_encriptados, value: $value);
             if(errores::$error){
@@ -488,6 +496,11 @@ class inicializacion{
      */
     private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
     {
+        if(is_numeric($campo)){
+            $fix = ' El campo debe ser un texto no numerico puede ser id, registro etc, no puede ser 0 o 1 o cualquier 
+            numero';
+            return $this->error->error(mensaje: 'Error el campo debe ser un texto', data:$campo, fix: $fix);
+        }
         $value_enc = $value;
 
         if(in_array($campo, $campos_encriptados, true)){

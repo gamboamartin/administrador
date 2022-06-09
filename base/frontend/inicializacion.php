@@ -51,15 +51,15 @@ class inicializacion{
             if(!is_array($registro)){
                 return $this->error->error('Error $elementos_lista[] debe ser un array', $registro);
             }
-            if(!isset($registro['elemento_lista_representacion'])){
-                $registro['elemento_lista_representacion'] = '';
+            if(!isset($registro['adm_elemento_lista_representacion'])){
+                $registro['adm_elemento_lista_representacion'] = '';
             }
 
             $valida = $this->validacion->valida_elemento_lista_template(registro: $registro);
             if(errores::$error){
                 return $this->error->error("Error al validar registro", $valida);
             }
-            $keys = array('elemento_lista_etiqueta');
+            $keys = array('adm_elemento_lista_etiqueta');
             $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
             if(errores::$error){
                 return $this->error->error("Error al validar registro", $valida);
@@ -70,7 +70,7 @@ class inicializacion{
                 return $this->error->error('Error al inicializar $datos_campo', $datos_campo);
             }
             $campos[] = $datos_campo;
-            $etiqueta_campos[] = $registro['elemento_lista_etiqueta'];
+            $etiqueta_campos[] = $registro['adm_elemento_lista_etiqueta'];
         }
 
         $data = new stdClass();
@@ -118,17 +118,17 @@ class inicializacion{
      */
     private function datos_campo(array $registro): array
     {
-        if(!isset($registro['elemento_lista_representacion'])){
-            $registro['elemento_lista_representacion'] = '';
+        if(!isset($registro['adm_elemento_lista_representacion'])){
+            $registro['adm_elemento_lista_representacion'] = '';
         }
         $valida = $this->validacion->valida_elemento_lista_template($registro);
         if(errores::$error){
             return $this->error->error("Error al validar registro", $valida);
         }
 
-        $datos_campo['nombre_campo'] = $registro['elemento_lista_descripcion'];
-        $datos_campo['tipo'] = $registro['elemento_lista_tipo'];
-        $datos_campo['representacion'] = $registro['elemento_lista_representacion'];
+        $datos_campo['nombre_campo'] = $registro['adm_elemento_lista_descripcion'];
+        $datos_campo['tipo'] = $registro['adm_elemento_lista_tipo'];
+        $datos_campo['representacion'] = $registro['adm_elemento_lista_representacion'];
 
         return $datos_campo;
     }
@@ -152,7 +152,7 @@ class inicializacion{
         if(errores::$error){
             return $this->error->error('Error al limpiar txt', $seccion);
         }
-        $campo = $this->limpia_minus($elemento_lista, 'elemento_lista_campo');
+        $campo = $this->limpia_minus($elemento_lista, 'adm_elemento_lista_campo');
         if(errores::$error){
             return $this->error->error('Error al limpiar txt', $campo);
         }

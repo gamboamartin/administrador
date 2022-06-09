@@ -20,6 +20,23 @@ class inicializacionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_valor_desencriptado(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+
+        $campos_encriptados = array();
+        $row = array();
+        $row['a'] = 'PHDA/NloYgF1lc+UHzxaUw==';
+        $campos_encriptados[] = 'a';
+        $resultado = $inicializacion->asigna_valor_desencriptado($campos_encriptados, $row);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado['a']);
+        errores::$error = false;
+    }
+
     public function test_asigna_valor_encriptado(){
         errores::$error = false;
         $inicializacion = new inicializacion();

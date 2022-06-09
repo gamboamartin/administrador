@@ -31,7 +31,7 @@ class elementosTest extends test {
 
         errores::$error = false;
         $campo = array();
-        $campo['elemento_lista_campo_tabla_externa'] = 'a';
+        $campo['adm_elemento_lista_campo_tabla_externa'] = 'a';
 
         $resultado = $elementos->data_campo_tabla_externa($campo);
         $this->assertIsString($resultado);

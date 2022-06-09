@@ -30,10 +30,10 @@ class adm_accion extends modelo{ //FINALIZADAS
      * @return array
      */
     public function acciones_permitidas(string $accion, modelo $modelo, string $seccion):array{
-        if(!isset($_SESSION['grupo_id']) && $seccion !== 'session' && $accion !== 'login'){
+        if(!isset($_SESSION['grupo_id']) && $seccion !== 'adm_session' && $accion !== 'login'){
             return $this->error->error(mensaje: 'Error debe existir grupo_id',data: $_SESSION);
         }
-        if(isset($_SESSION['grupo_id'])&&(int)$_SESSION['grupo_id']<=0 && $seccion !== 'session' && $accion !== 'login'){
+        if(isset($_SESSION['grupo_id'])&&(int)$_SESSION['grupo_id']<=0 && $seccion !== 'adm_session' && $accion !== 'login'){
             return $this->error->error(mensaje: 'Error grupo_id debe ser mayor o igual a 0',data: $_SESSION);
         }
         $seccion = trim($seccion);
@@ -273,10 +273,10 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
         $r_accion = $this->accion_seccion(seccion: $seccion,accion: $accion);
         if(errores::$error){
-            return  $this->error->error('Error al obtener acciones',$r_accion);
+            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
         }
         if($r_accion->n_registros===0) {
-            return  $this->error->error('Error no existen acciones',$r_accion);
+            return  $this->error->error(mensaje: 'Error no existen acciones',data: $r_accion);
         }
         return $r_accion->registros[0];
     }

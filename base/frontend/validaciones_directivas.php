@@ -124,7 +124,7 @@ class validaciones_directivas extends validacion{
      */
     public function valida_elemento_lista_template(array $registro): array|bool
     {
-        $keys = array('elemento_lista_descripcion','elemento_lista_tipo');
+        $keys = array('adm_elemento_lista_descripcion','adm_elemento_lista_tipo');
         $valida = $this->valida_existencia_keys(keys:  $keys, registro: $registro);
         if(errores::$error){
             return $this->error->error("Error al validar registro", $valida);

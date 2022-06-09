@@ -40,6 +40,24 @@ class usuarioTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al obtener usuario', $resultado['mensaje']);
         errores::$error = false;
 
+        $_SESSION['usuario_id'] = 1;
+
+        $del_usuario = $modelo->elimina_bd(2);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar usuario', $del_usuario);
+            print_r($error);
+            die('Error');
+        }
+
+
+        $usuario_ins['id'] = 2;
+        $usuario_ins['grupo_id'] = 2;
+        $r_alta_usuario = $modelo->alta_registro($usuario_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al dar de alta usuario', $r_alta_usuario);
+            print_r($error);
+            die('Error');
+        }
 
         $usuario_id = 2;
 

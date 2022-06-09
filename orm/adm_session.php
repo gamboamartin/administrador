@@ -12,7 +12,7 @@ use PDO;
 use stdClass;
 use Throwable;
 
-class session extends modelo{//PRUEBAS FINALIZADAS
+class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false, 'usuario'=>$tabla,'grupo'=>'usuario');
@@ -24,10 +24,10 @@ class session extends modelo{//PRUEBAS FINALIZADAS
      * @return array
      */
     public function asigna_acciones_iniciales():array{
-        $accion_modelo = new accion($this->link);
+        $accion_modelo = new adm_accion($this->link);
         $resultado = $accion_modelo->obten_acciones_iniciales();
         if(errores::$error){
-            return $this->error->error('Error al obtener acciones iniciales',$resultado);
+            return $this->error->error(mensaje: 'Error al obtener acciones iniciales',data: $resultado);
         }
         return $resultado['registros'];
     }
@@ -116,8 +116,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     {
         $session_id = trim($session_id);
         if($session_id === ''){
-            return $this->error->error(mensaje: 'Error session_id esta vacia',data:  $session_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error session_id esta vacia',data:  $session_id);
         }
 
         try{
@@ -125,7 +124,7 @@ class session extends modelo{//PRUEBAS FINALIZADAS
             session_start();
         }
         catch (Throwable $e){
-            return $this->error->error(mensaje:'Error al iniciar session', data: $e, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al iniciar session', data: $e);
         }
 
         return $session_id;
@@ -153,16 +152,16 @@ class session extends modelo{//PRUEBAS FINALIZADAS
     public function carga_data_session(): array
     {
         $session_id = $_GET['session_id'] ?? '';
-        $filtro['session.name'] = $session_id;
+        $filtro['adm_session.name'] = $session_id;
         $r_session = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener session',data: $r_session, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener session',data: $r_session);
         }
         $session = array();
         if((int)$r_session->n_registros === 1){
             $session = $this->asigna_data_session(r_session: $r_session);
             if(errores::$error){
-                return $this->error->error(mensaje:'Error al asignar session',data: $session, params: get_defined_vars());
+                return $this->error->error(mensaje:'Error al asignar session',data: $session);
             }
         }
         return $session;

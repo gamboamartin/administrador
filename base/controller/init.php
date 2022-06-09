@@ -6,7 +6,7 @@ use base\seguridad;
 use config\generales;
 use gamboamartin\errores\errores;
 use models\adm_accion;
-use models\session;
+use models\adm_session;
 use PDO;
 use stdClass;
 use Throwable;
@@ -71,6 +71,7 @@ class init{
 
     /**
      * Aqui se determina que view se va a utilizar para el frontend
+     * v1.18.9
      * @param bool $aplica_view Si view es activo se buscara un archivo valido
      * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
      * @return string|array retorna el path para include
@@ -98,7 +99,7 @@ class init{
         $con = new conexion();
         $link = conexion::$link;
 
-        $session = (new session($link))->carga_data_session();
+        $session = (new adm_session($link))->carga_data_session();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar session',data: $session);
 
@@ -309,7 +310,7 @@ class init{
             }
 
             if (!$permiso) {
-                $seguridad->seccion = 'session';
+                $seguridad->seccion = 'adm_session';
                 $seguridad->accion = 'denegado';
             }
 

@@ -9,7 +9,7 @@ use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
 
-class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
+class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
 
     /**
      * DEBUG INI
@@ -227,11 +227,11 @@ class elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista);
         }
 
-        $filtro['elemento_lista.status'] = 'activo';
+        $filtro['adm_elemento_lista.status'] = 'activo';
         $filtro['seccion.descripcion'] = $tabla;
-        $filtro['elemento_lista.'.$vista] = 'activo';
+        $filtro['adm_elemento_lista.'.$vista] = 'activo';
 
-        $resultado = $this->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden',
+        $resultado = $this->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
             columnas_en_bruto: false, filtros: $filtro, orden: 'ASC');
 
         if(errores::$error){

@@ -14,15 +14,15 @@ use config\generales;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
 use JsonException;
-use models\session;
+use models\adm_session;
 use models\usuario;
 use PDO;
 use stdClass;
 
 
-class controlador_session extends controlador_base{
+class controlador_adm_session extends controlador_base{
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass()){
-        $modelo = new session($link);
+        $modelo = new adm_session($link);
         parent::__construct(link: $link, modelo: $modelo,paths_conf:  $paths_conf);
 
     }
@@ -52,7 +52,7 @@ class controlador_session extends controlador_base{
         if((int)$datos_usuario['grupo_id']<=0){
             return $this->errores->error(mensaje:'Error datos de grupo_id debe ser mayor a 0',data:$datos_usuario);
         }
-        $session_modelo = new session($this->link);
+        $session_modelo = new adm_session($this->link);
         $session_insertar['name'] = (new generales())->session_id;
         $session_insertar['usuario_id'] = $datos_usuario['usuario_id'];
         $session_insertar['fecha'] = date('Y-m-d');
@@ -113,7 +113,7 @@ class controlador_session extends controlador_base{
                 echo $json;
                 exit;
             }
-            header("Location: ./index.php?seccion=session&accion=login&mensaje=$datos_validos[mensaje]&tipo_mensaje=error");
+            header("Location: ./index.php?seccion=adm_session&accion=login&mensaje=$datos_validos[mensaje]&tipo_mensaje=error");
             exit;
         }
         return false;
@@ -155,7 +155,7 @@ class controlador_session extends controlador_base{
             return $this->retorno_error(mensaje: 'Error al eliminar session', data: $del, header: $header,
                 ws: $ws);
         }
-        header('Location: index.php?seccion=session&accion=login');
+        header('Location: index.php?seccion=adm_session&accion=login');
         exit;
     }
 
@@ -214,7 +214,7 @@ class controlador_session extends controlador_base{
             return $this->retorno_error('Error al dar de alta session', $r_alta, $header, $ws);
         }
 
-        header("Location: ./index.php?seccion=session&accion=inicio&mensaje=Bienvenido&tipo_mensaje=exito&session_id=".(new generales())->session_id);
+        header("Location: ./index.php?seccion=adm_session&accion=inicio&mensaje=Bienvenido&tipo_mensaje=exito&session_id=".(new generales())->session_id);
         exit;
     }
 

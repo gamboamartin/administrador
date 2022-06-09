@@ -26,7 +26,7 @@
     <div class="left">
       <img src="img/logo_login.png" width="140"><br>
     </div>
-    <form class="form-signin" method="post" action="./index.php?seccion=session&accion=loguea">
+    <form class="form-signin" method="post" action="./index.php?seccion=adm_session&accion=loguea">
       <h4><span>Bienvenido</span></h4>
       <p>Sistema de Control Inmobiliario.</p>
       <div class="floating-label">

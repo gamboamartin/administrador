@@ -12,10 +12,9 @@ use gamboamartin\errores\errores;
 use gamboamartin\plugins\exportador;
 use JsonException;
 
-use models\accion;
 use models\adm_accion;
-use models\elemento_lista;
-use models\session;
+use models\adm_elemento_lista;
+use models\adm_session;
 use PDO;
 use stdClass;
 use validacion\confs\configuraciones;
@@ -105,7 +104,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $_SESSION['registro_en_proceso'][$this->seccion] = $_POST;
         }
 
-        if(isset($_GET['tipo_mensaje'], $_GET['accion']) && $_GET['accion'] === 'alta' && $_GET['tipo_mensaje'] === 'error'){
+        if(isset($_GET['tipo_mensaje'], $_GET['adm_accion']) && $_GET['adm_accion'] === 'alta' && $_GET['tipo_mensaje'] === 'error'){
             $this->registros_alta = true;
         }
         $this->directivas_extra = array();
@@ -115,7 +114,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $inputs_busca = $this->directiva->panel_busca(campo_busca: $this->campo_busca,
             valor_busca_fault: $this->valor_busca_fault);
         if(errores::$error){
-            $error = $this->errores->error('Error al generar datos de busqueda',$inputs_busca);
+            $error = $this->errores->error(mensaje: 'Error al generar datos de busqueda',data: $inputs_busca);
             print_r($error);
             die('Error');
         }
@@ -128,10 +127,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $aplica_seguridad = (new generales())->aplica_seguridad;
         if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){
             if(!isset($_GET['seccion'])){
-                $_GET['seccion'] = 'session';
+                $_GET['seccion'] = 'adm_session';
             }
-            if($_GET['seccion'] !== 'session' &&  $_GET['accion'] !== 'login'){
-                header('Location: index.php?seccion=session&accion=login');
+            if($_GET['seccion'] !== 'adm_session' &&  $_GET['accion'] !== 'login'){
+                header('Location: index.php?seccion=adm_session&accion=login');
                 exit;
             }
 
@@ -241,7 +240,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $elm = new elemento_lista($this->link);
+        $elm = new adm_elemento_lista($this->link);
 
 
         $template = new templates($this->link);
@@ -251,8 +250,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $campos = $elm->obten_campos(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
         if(errores::$error){
-            return  $this->retorno_error(mensaje: 'Error al obtener campos',data: $campos,header: $header,ws: false,
-                params: get_defined_vars());
+            return  $this->retorno_error(mensaje: 'Error al obtener campos',data: $campos,header: $header,ws: false);
         }
 
         $alta_html = $template->alta(aplica_form: true, directivas_extra: $this->directivas_extra,
@@ -262,15 +260,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             campos_invisibles: $this->campos_invisibles);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar template alta', data: $alta_html, header: $header,
-                ws: false, params: get_defined_vars());
+                ws: false);
         }
         $this->alta_html = $alta_html;
         $directiva = new directivas();
         $btn = $directiva->btn_enviar(label: 'Agrega',name: 'btn_agrega',value: 'btn_agrega',stilo: 'success');
 
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar btn', data: $btn , header: $header, ws: false,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al generar btn', data: $btn , header: $header, ws: false);
 
         }
         $this->btn = $btn;
@@ -462,7 +459,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                     die('Error');
                 }
                 foreach($data as $campo=>$value) {
-                    $elm = (new elemento_lista($this->link));
+                    $elm = (new adm_elemento_lista($this->link));
                     if(errores::$error){
                         $error =  $this->errores->error('Error al generar modelo',$elm);
                         print_r($error);
@@ -679,8 +676,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $acciones = $modelo->acciones_permitidas(accion:$this->accion, modelo:$this->modelo, seccion:$this->seccion);
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener accion', data: $acciones, header: $header, ws: $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al obtener accion', data: $acciones, header: $header, ws: $ws);
         }
 
         $pag_seleccionada = 1;
@@ -690,12 +686,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $filtro_btn = (new normalizacion())->filtro_btn(controler: $this);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al obtener filtro de boton', data: $filtro_btn,
-                header: $header, ws: $ws, params: get_defined_vars());
+                header: $header, ws: $ws);
         }
 
-        $elm = new elemento_lista($this->link);
+        $elm = new adm_elemento_lista($this->link);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar modelo',data: $elm, params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al generar modelo',data: $elm);
             if(!$header){
                 return $error;
             }
@@ -706,13 +702,13 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         $filtro['seccion.descripcion'] = trim($this->seccion);
-        $filtro['elemento_lista.lista'] = 'activo';
-        $filtro['elemento_lista.status'] = 'activo';
+        $filtro['adm_elemento_lista.lista'] = 'activo';
+        $filtro['adm_elemento_lista.status'] = 'activo';
 
         $r_elementos = $elm->filtro_and(filtro:$filtro);
 
         if(errores::$error){
-            $error = $this->errores->error(mensaje: "Error al filtrar",data: $r_elementos, params: get_defined_vars());
+            $error = $this->errores->error(mensaje: "Error al filtrar",data: $r_elementos);
             if(!$header){
                 return $error;
             }
@@ -727,11 +723,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $status_encontrado = false;
         $id_encontrado = false;
         foreach ($elementos as $elemento){
-            $columnas_mostrables[] = $elemento['elemento_lista_descripcion'];
-            if(trim($elemento['elemento_lista_descripcion']) === $this->seccion.'_status'){
+            $columnas_mostrables[] = $elemento['adm_elemento_lista_descripcion'];
+            if(trim($elemento['adm_elemento_lista_descripcion']) === $this->seccion.'_status'){
                 $status_encontrado = true;
             }
-            if(trim($elemento['elemento_lista_descripcion']) === $this->seccion.'_id'){
+            if(trim($elemento['adm_elemento_lista_descripcion']) === $this->seccion.'_id'){
                 $id_encontrado = true;
             }
         }
@@ -742,7 +738,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $columnas_mostrables[] = $this->seccion.'_id';
         }
 
-        $session_modelo = new session($this->link);
+        $session_modelo = new adm_session($this->link);
 
 
         $filtro = $session_modelo->obten_filtro_session(seccion:$this->seccion);
@@ -754,8 +750,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $registros = $this->obten_registros_para_lista(filtro:  $filtro, limit: 15,
             pag_seleccionada:  $pag_seleccionada,columnas: $columnas_mostrables, filtro_btn: $filtro_btn);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al obtener registros',data: $registros,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al obtener registros',data: $registros);
             if(!$header){
                 return $error;
             }
@@ -764,14 +759,15 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             exit;
         }
 
+
         $filtro = $session_modelo->obten_filtro_session(seccion:$this->seccion);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener filtro',data: $filtro, params: get_defined_vars());
+            return $this->errores->error(mensaje: 'Error al obtener filtro',data: $filtro);
         }
 
         $filtros =    (new normalizacion())->genera_filtro_modelado(controler:  $this, filtro: $filtro);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al $filtros',data: $filtros, params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al $filtros',data: $filtros);
             if(!$header){
                 return $error;
             }
@@ -835,15 +831,15 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         $n_paginas = ceil((int)$n_registros / 15);
-        $elm = new elemento_lista($this->link);
+        $elm = new adm_elemento_lista($this->link);
 
 
         $filtro = array();
         $filtro['seccion.descripcion'] = $this->seccion;
-        $filtro['elemento_lista.status'] = 'activo';
-        $filtro['elemento_lista.lista'] = 'activo';
+        $filtro['adm_elemento_lista.status'] = 'activo';
+        $filtro['adm_elemento_lista.lista'] = 'activo';
 
-        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden',
+        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
             columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
         if(errores::$error){
             $error =  $this->errores->error(mensaje: 'Error al obtener obten_registros_filtro_and_ordenado',
@@ -858,10 +854,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $filtro = array();
         $filtro['seccion.descripcion'] = $this->seccion;
-        $filtro['elemento_lista.filtro'] = 'activo';
-        $filtro['elemento_lista.status'] = 'activo';
+        $filtro['adm_elemento_lista.filtro'] = 'activo';
+        $filtro['adm_elemento_lista.status'] = 'activo';
 
-        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'elemento_lista.orden',
+        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
             columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
 
         if(errores::$error){
@@ -903,8 +899,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template',data: $lista_html,header: $header,ws: $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al generar template',data: $lista_html,header: $header,ws: $ws);
         }
 
         $this->lista_html = $lista_html;
@@ -958,7 +953,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->registro = $resultado;
 
-        $elm = new elemento_lista($this->link);
+        $elm = new adm_elemento_lista($this->link);
 
 
 
@@ -1165,7 +1160,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     {
         $filtro_btn = $_GET['filtro_btn'] ?? array();
 
-        $session_modelo = new session($this->link);
+        $session_modelo = new adm_session($this->link);
 
 
         $filtro = $session_modelo->obten_filtro_session(seccion: $this->seccion);
@@ -1183,7 +1178,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        $elm = new elemento_lista($this->link);
+        $elm = new adm_elemento_lista($this->link);
 
 
         $exportador = new exportador();

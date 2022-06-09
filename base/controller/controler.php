@@ -57,8 +57,8 @@ class controler{
     public function __construct(){
         $generals = (new generales());
         if(!isset($_SESSION['grupo_id']) && $generals->aplica_seguridad){
-            if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
-                $url = 'index.php?seccion=session&accion=login';
+            if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {
+                $url = 'index.php?seccion=adm_session&accion=login';
                 header('Location: '.$url);
             }
         }
@@ -97,8 +97,8 @@ class controler{
      * @return array|string
      */
     protected function data_bread(bool $aplica_seguridad):array|string{
-        if($aplica_seguridad && !isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
-            header('Location: index.php?seccion=session&accion=login');
+        if($aplica_seguridad && !isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {
+            header('Location: index.php?seccion=adm_session&accion=login');
             exit;
         }
 
@@ -111,7 +111,7 @@ class controler{
         if(file_exists($file_view_base)){
             $es_vista = true;
         }
-        if($this->seccion === 'session' && $this->accion === 'login'){
+        if($this->seccion === 'adm_session' && $this->accion === 'login'){
             $es_vista = false;
         }
         $breadcrumbs = '';

@@ -3,10 +3,10 @@ namespace tests\orm;
 
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
-use models\elemento_lista;
+use models\adm_elemento_lista;
 
 
-class elemento_listaTest extends test {
+class adm_elemento_listaTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -17,7 +17,7 @@ class elemento_listaTest extends test {
     public function test_elementos_lista(){
 
         errores::$error = false;
-        $el = new elemento_lista($this->link);
+        $el = new adm_elemento_lista($this->link);
         //$inicializacion = new liberator($inicializacion);
 
         $vista = '';
@@ -50,7 +50,7 @@ class elemento_listaTest extends test {
     public function test_filtro_el(){
 
         errores::$error = false;
-        $el = new elemento_lista($this->link);
+        $el = new adm_elemento_lista($this->link);
         //$inicializacion = new liberator($inicializacion);
         $campo = '';
         $seccion = '';

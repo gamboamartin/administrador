@@ -35,9 +35,9 @@ class validaciones extends validacion{
      */
     public function valida_campo_envio(array $bools, array $campo): bool|array
     {
-        $keys = array('elemento_lista_campo','elemento_lista_cols','elemento_lista_tipo',
-            'elemento_lista_tabla_externa',
-            'elemento_lista_etiqueta','elemento_lista_descripcion','elemento_lista_id');
+        $keys = array('adm_elemento_lista_campo','adm_elemento_lista_cols','adm_elemento_lista_tipo',
+            'adm_elemento_lista_tabla_externa', 'adm_elemento_lista_etiqueta','adm_elemento_lista_descripcion',
+            'adm_elemento_lista_id');
         $valida = $this->valida_existencia_keys( keys: $keys, registro: $campo);
         if(errores::$error){
             return $this->error->error("Error al validar campo", $valida);

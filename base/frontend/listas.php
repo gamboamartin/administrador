@@ -235,8 +235,7 @@ class listas{
         $keys = array('representacion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida);
         }
 
         $dato = $this->init_dato_campo(campo: $campo,registro: $registro);
@@ -267,10 +266,8 @@ class listas{
         $keys = array('representacion','nombre_campo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida);
         }
-
 
         if(!isset($registro[$campo['nombre_campo']])){
             $registro[$campo['nombre_campo']] = '';
