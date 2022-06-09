@@ -845,13 +845,9 @@ class columnas{
     public function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
         $tabla_original = trim(str_replace('models\\','',$tabla_original));
         $tabla_bd = $tabla_original;
-        $clase_modelo = 'models\\'.$tabla_original;
 
         if($tabla_bd === ''){
             return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
-        }
-        if(!class_exists($clase_modelo)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo);
         }
 
         $se_asignaron_columnas = $this->asigna_columnas_en_session(modelo: $modelo, tabla_bd: $tabla_bd);
