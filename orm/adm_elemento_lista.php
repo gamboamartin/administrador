@@ -2,6 +2,7 @@
 namespace models;
 use base\controller\valida_controller;
 use base\orm\modelo;
+use base\orm\modelo_base;
 use base\orm\sql_bass;
 use gamboamartin\errores\errores;
 
@@ -338,7 +339,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @uses templates
      * @internal  $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
      */
-    public function obten_campos(array $estructura_bd, modelo $modelo, string $vista): array{
+    public function obten_campos(array $estructura_bd, modelo_base $modelo, string $vista): array{
 
         $estructura_bd = $this->genera_estructura_bd(estructura_bd:  $estructura_bd, modelo: $modelo,vista: $vista);
         if(errores::$error){
