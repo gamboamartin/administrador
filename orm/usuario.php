@@ -5,6 +5,7 @@ use base\orm\modelo;
 use gamboamartin\errores\errores;
 
 
+use JsonException;
 use PDO;
 
 class usuario extends modelo{ //PRUEBAS en proceso
@@ -16,47 +17,25 @@ class usuario extends modelo{ //PRUEBAS en proceso
     public function __construct(PDO $link){
         
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false,'grupo'=>$tabla);
+        $columnas = array($tabla=>false,'adm_grupo'=>$tabla);
         parent::__construct(link: $link,tabla: $tabla,columnas: $columnas);
     }
 
 
-    public function alta_usuario(array $grupo, string $es_prospectador, string $es_cerrador){
-        $data_usuario = $this->asigna_data_usuario($grupo,$es_prospectador,$es_cerrador);
-        if(errores::$error){
-            return $this->error->error('Error al asignar datos de usuario',$data_usuario);
-        }
+    /**
+     * @throws JsonException
+     */
+    public function alta_usuario(): array|int
+    {
 
         $r_usuario_alta_bd = $this->alta_bd();
-        if(isset($r_usuario_alta_bd['error'])){
-            return $this->error->error('Error al insertar usuario',$r_usuario_alta_bd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar usuario',data: $r_usuario_alta_bd);
         }
-        return $r_usuario_alta_bd['registro_id'];
+        return (int)$r_usuario_alta_bd->registro_id;
     }
 
 
-    /**
-     * 
-     * @param array $grupo
-     * @param string $es_prospectador
-     * @param string $es_cerrador
-     * @return array
-     */
-    public function asigna_data_usuario(array $grupo, string $es_prospectador, string $es_cerrador): array
-    {
-        $this->registro['user'] = $_POST['usuario'];
-        $this->registro['password'] = $_POST['password'];
-        $this->registro['email'] = $_POST['email'];
-        $this->registro['grupo_id'] = $grupo['grupo_id'];
-        $this->registro['status'] = 'activo';
-        $this->registro['acceso_total_cliente'] = 'inactivo';
-        $this->registro['es_prospectador'] = $es_prospectador;
-        $this->registro['es_cerrador'] = $es_cerrador;
-        $this->registro['es_responsable_compra'] = 'inactivo';
-        $this->registro['acceso_total_ubicaciones'] = 'activo';
-
-        return $this->registro;
-    }
 
     /**
      * PHPUNIT
@@ -115,7 +94,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
      */
     public function data_grupo(array $filtro): array
     {
-        $grupo_modelo = new grupo($this->link);
+        $grupo_modelo = new adm_grupo($this->link);
         $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener grupo',$r_grupo);
@@ -123,10 +102,10 @@ class usuario extends modelo{ //PRUEBAS en proceso
         if((int)$r_grupo['n_registros'] === 0){
             return $this->error->error('Error al obtener grupo no existe',$r_grupo);
         }
-        if((int)$r_grupo['n_registros'] > 1){
+        if((int)$r_grupo->n_registros > 1){
             return $this->error->error('Error al obtener grupo inconsistencia existe mas de uno',$r_grupo);
         }
-        return $r_grupo['registros'][0];
+        return $r_grupo->registros[0];
     }
 
 

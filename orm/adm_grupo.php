@@ -5,7 +5,7 @@ use gamboamartin\errores\errores;
 
 use PDO;
 
-class grupo extends modelo{
+class adm_grupo extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);

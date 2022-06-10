@@ -15,7 +15,8 @@ class usuarioTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_usuario(){
+    public function test_usuario(): void
+    {
 
         errores::$error = false;
         $modelo = new usuario($this->link);
@@ -42,22 +43,32 @@ class usuarioTest extends test {
 
         $_SESSION['usuario_id'] = 1;
 
-        $del_usuario = $modelo->elimina_bd(2);
+        $existe_usuario = $modelo->existe(array('usuario.id'=>2));
         if(errores::$error){
-            $error = (new errores())->error('Error al eliminar usuario', $del_usuario);
+            $error = (new errores())->error('Error al validar usuario', $existe_usuario);
             print_r($error);
             die('Error');
         }
 
+        if($existe_usuario) {
+
+            $del_usuario = $modelo->elimina_bd(2);
+            if (errores::$error) {
+                $error = (new errores())->error('Error al eliminar usuario', $del_usuario);
+                print_r($error);
+                die('Error');
+            }
+        }
 
         $usuario_ins['id'] = 2;
-        $usuario_ins['grupo_id'] = 2;
+        $usuario_ins['adm_grupo_id'] = 2;
         $r_alta_usuario = $modelo->alta_registro($usuario_ins);
-        if(errores::$error){
+        if (errores::$error) {
             $error = (new errores())->error('Error al dar de alta usuario', $r_alta_usuario);
             print_r($error);
             die('Error');
         }
+
 
         $usuario_id = 2;
 

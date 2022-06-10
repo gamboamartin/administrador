@@ -132,6 +132,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
      * hijos
+     * @version 1.22.10
      * @param array $campos_encriptados Conjunto de campos a encriptar desencriptar declarados en el modelo en ejecucion
      * @param array $modelos_hijos Conjunto de modelos que dependen del modelo en ejecucion
      * @param array $row Registro a integrar elementos encriptados o con dependientes
@@ -1357,12 +1358,23 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function genera_registros_hijos(array $modelos_hijos, array $row):array{
         foreach($modelos_hijos as $name_modelo=>$data_modelo){
             if(!is_array($data_modelo)){
-                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos);
+                $fix = '$modelos_hijos debe ser un array asociativo de la siguiente forma';
+                $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
+                $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
+                $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
+                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, fix: $fix);
             }
 
             if(!isset($data_modelo['nombre_estructura'])){
                 return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
                     data: $data_modelo);
+            }
+            if(!is_string($name_modelo)){
+                $fix = '$modelos_hijos debe ser un array asociativo de la siguiente forma';
+                $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
+                $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
+                $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
+                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo);
             }
 
             $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo,
@@ -1737,16 +1749,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     private function obten_filtro_para_hijo(array $data_modelo, array $row):array{
         if(!isset($data_modelo['filtros'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
         if(!isset($data_modelo['filtros_con_valor'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros_con_valor] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
         if(!is_array($data_modelo['filtros'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
         if(!is_array($data_modelo['filtros_con_valor'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros_con_valor como array data_modelo[filtros_con_valor] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
 
         $filtros = $data_modelo['filtros'];
@@ -1754,7 +1770,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $filtro = $this->filtro_para_hijo(filtros: $filtros,row: $row);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error filtro",data: $filtro, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
 
         foreach($filtros_con_valor as $campo_filtro=>$value){

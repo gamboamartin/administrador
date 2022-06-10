@@ -391,7 +391,7 @@ class modelo extends modelo_base {
      * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
      * @uses  todo el sistema
      */
-    public function elimina_bd(int $id): array{ //PRUEBA COMPLETA PROTEO
+    public function elimina_bd(int $id): array{
         if($id <= 0){
             return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
         }
@@ -399,8 +399,7 @@ class modelo extends modelo_base {
 
         $registro = $this->registro(registro_id: $this->registro_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro' .$this->tabla, data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registro' .$this->tabla, data: $registro);
 
         }
 
@@ -408,8 +407,7 @@ class modelo extends modelo_base {
             aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro:  $registro,
             registro_id:  $this->registro_id, tabla:  $this->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar transaccion activa en' .$this->tabla,data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al validar transaccion activa en' .$this->tabla,data: $valida);
 
         }
 

@@ -55,7 +55,7 @@ class adm_sessionTest extends test {
 
         errores::$error = false;
 
-        $resultado = $session->obten_filtro_session('grupo');
+        $resultado = $session->obten_filtro_session('adm_grupo');
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 

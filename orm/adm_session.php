@@ -15,7 +15,7 @@ use Throwable;
 class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false, 'usuario'=>$tabla,'grupo'=>'usuario');
+        $columnas = array($tabla=>false, 'usuario'=>$tabla,'adm_grupo'=>'usuario');
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
     }
 

@@ -19,6 +19,26 @@ class modelo_baseTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_ajusta_row_select(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $campos_encriptados = array('z');
+        $modelos_hijos = array();
+        $modelos_hijos['adm_dia']['nombre_estructura'] = 'adm_accion';
+        $modelos_hijos['adm_dia']['filtros'] = array();
+        $modelos_hijos['adm_dia']['filtros_con_valor'] = array();
+        $row = array();
+        $row['z'] = 'PHDA/NloYgF1lc+UHzxaUw==';
+        $resultado = $mb->ajusta_row_select($campos_encriptados, $modelos_hijos, $row);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
     public function test_asigna_registros_hijo(){

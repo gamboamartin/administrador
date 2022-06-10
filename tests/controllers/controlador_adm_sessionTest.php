@@ -1,15 +1,12 @@
 <?php
 namespace tests\controllers;
 
-use controllers\controlador_session;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use JsonException;
 use stdClass;
 
 
-class controlador_sessionTest extends test {
+class controlador_adm_sessionTest extends test {
     public errores $errores;
     private stdClass $paths_conf;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
