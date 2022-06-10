@@ -317,7 +317,7 @@ class init{
             $n_acciones = $modelo_accion->cuenta_acciones();
             if(errores::$error){
                 session_destroy();
-                return $modelo_accion->error->error('Error al contar acciones permitidas',$n_acciones);
+                return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $n_acciones);
             }
             if ((int)$n_acciones === 0) {
                 session_destroy();

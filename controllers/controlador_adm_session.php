@@ -46,10 +46,10 @@ class controlador_adm_session extends controlador_base{
         if(!isset($datos_usuario['usuario_id'])){
             return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
         }
-        if(!isset($datos_usuario['grupo_id'])){
+        if(!isset($datos_usuario['adm_grupo_id'])){
             return $this->errores->error(mensaje:'Error datos de grupo_id no existe',data:$datos_usuario);
         }
-        if((int)$datos_usuario['grupo_id']<=0){
+        if((int)$datos_usuario['adm_grupo_id']<=0){
             return $this->errores->error(mensaje:'Error datos de grupo_id debe ser mayor a 0',data:$datos_usuario);
         }
         $session_modelo = new adm_session($this->link);
@@ -189,7 +189,7 @@ class controlador_adm_session extends controlador_base{
         }
 
         $_SESSION['activa'] = 1;
-        $_SESSION['grupo_id'] = $usuario['grupo_id'];
+        $_SESSION['grupo_id'] = $usuario['adm_grupo_id'];
         $_SESSION['usuario_id'] = $usuario['usuario_id'];
 
 
@@ -239,7 +239,7 @@ class controlador_adm_session extends controlador_base{
         else{
             $datos_usuario = $usuarios['registros'];
             $_SESSION['activa'] = 1;
-            $_SESSION['grupo_id'] = $datos_usuario[0]['grupo_id'];
+            $_SESSION['adm_grupo_id'] = $datos_usuario[0]['adm_grupo_id'];
             $_SESSION['usuario_id'] = $datos_usuario[0]['id'];
 
 
@@ -256,7 +256,7 @@ class controlador_adm_session extends controlador_base{
                 exit;
             }
 
-            $resultado['session_id'] = SESSION_ID;
+            $resultado['session_id'] = (new generales())->session_id;
         }
         header("Content-Type: application/json");
 

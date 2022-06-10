@@ -63,7 +63,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     {
         $_SESSION['numero_empresa'] = 1;
         $_SESSION['activa'] = 1;
-        $_SESSION['grupo_id'] = $r_session->registros[0]['grupo_id'];
+        $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
         $_SESSION['usuario_id'] = $r_session->registros[0]['usuario_id'];
         return $_SESSION;
     }

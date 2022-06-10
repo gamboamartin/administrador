@@ -622,13 +622,13 @@ class seccion extends modelo{
                 		FROM seccion
                 	INNER JOIN adm_accion  ON adm_accion.seccion_id = seccion.id
                 	INNER JOIN adm_accion_grupo AS permiso ON permiso.adm_accion_id = adm_accion.id
-                	INNER JOIN grupo  ON grupo.id = permiso.grupo_id
+                	INNER JOIN adm_grupo  ON adm_grupo.id = permiso.adm_grupo_id
                 	INNER JOIN menu  ON menu.id = seccion.menu_id
                 WHERE 
                 	seccion.status = 'activo' 
                 	AND adm_accion.status = 'activo' 
-                	AND grupo.status = 'activo' 
-                	AND permiso.grupo_id = $grupo_id $where_menu
+                	AND adm_grupo.status = 'activo' 
+                	AND permiso.adm_grupo_id = $grupo_id $where_menu
                         AND adm_accion.visible = 'activo'
                 GROUP BY seccion.id
                 ";
@@ -636,7 +636,7 @@ class seccion extends modelo{
 	    $n_registros = $result->rowCount();
 
 	    if($this->link->errorInfo()[1]){
-	        return $this->error->error('Error al ejecutar sql',array($this->link->errorInfo(),$consulta));
+	        return $this->error->error(mensaje: 'Error al ejecutar sql',data: array(array($this->link->errorInfo(),$consulta)));
 	    }
 
 	    $new_array = array();

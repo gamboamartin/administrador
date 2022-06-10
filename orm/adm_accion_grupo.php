@@ -9,11 +9,11 @@ use stdClass;
 class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false,'adm_accion'=>$tabla,'grupo'=>$tabla,
+        $columnas = array($tabla=>false,'adm_accion'=>$tabla,'adm_grupo'=>$tabla,
             'seccion'=>'adm_accion','menu'=>'seccion');
         $campos_obligatorios = array('adm_accion_id');
         $tipo_campos['adm_accion_id'] = 'id';
-        $tipo_campos['grupo_id'] = 'id';
+        $tipo_campos['adm_grupo_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             tipo_campos:  $tipo_campos);
     }
@@ -32,8 +32,8 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         $grupo_id = $_SESSION['grupo_id'];
 
         $filtro['adm_accion.status'] = 'activo';
-        $filtro['grupo.status'] = 'activo';
-        $filtro['adm_accion_grupo.grupo_id'] = $grupo_id;
+        $filtro['adm_grupo.status'] = 'activo';
+        $filtro['adm_accion_grupo.adm_grupo_id'] = $grupo_id;
         $filtro['adm_accion.seccion_id'] = $seccion_menu_id;
         $filtro['adm_accion.visible'] = 'activo';
 
@@ -60,15 +60,15 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
             return $this->error->error('Error $grupo_id debe ser mayor a 0',$grupo_id);
         }
 
-        $filtro['accion.id'] =$accion_id;
-        $filtro['grupo.id'] =$grupo_id;
+        $filtro['adm_accion.id'] =$accion_id;
+        $filtro['adm_grupo.id'] =$grupo_id;
 
-        $r_accion_grupo = $this->filtro_and($filtro);
+        $r_accion_grupo = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener accion grupo',$r_accion_grupo);
         }
 
-        if((int)$r_accion_grupo['n_registros'] !==1){
+        if((int)$r_accion_grupo->n_registros !==1){
             return $this->error->error('Error al obtener accion grupo n registros incongruente',$r_accion_grupo);
         }
         $this->registro_id = (int)$r_accion_grupo['registros'][0]['accion_grupo_id'];

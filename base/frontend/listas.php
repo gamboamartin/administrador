@@ -93,17 +93,17 @@ class listas{
                                               string $class_link, PDO $link): array|string
     {
         if ($accion === '') {
-            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion);
         }
         $directiva = new directivas();
         $datos_accion = $this->datos_accion(accion: $accion, seccion: $seccion,link:  $link);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion);
         }
 
         $link_accion = $directiva->genera_link_accion(accion:$datos_accion, id: $id,session_id:  $session_id, class_link: $class_link);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar link',data:$link_accion, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar link',data:$link_accion);
         }
 
         return $link_accion;
@@ -837,8 +837,7 @@ class listas{
             $acciones_permitidas = $modelo_accion->obten_accion_permitida_session(seccion:$seccion, accion:$accion);
 
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $acciones_permitidas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $acciones_permitidas);
             }
 
             if ($acciones_permitidas) {

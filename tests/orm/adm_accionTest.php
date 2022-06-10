@@ -53,7 +53,7 @@ class adm_accionTest extends test {
         $resultado = $modelo->filtro_permiso($accion, $grupo_id, $seccion);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1, $resultado['adm_accion_grupo.grupo_id']);
+        $this->assertEquals(1, $resultado['adm_accion_grupo.adm_grupo_id']);
 
 
 
