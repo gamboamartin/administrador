@@ -71,7 +71,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
         }
         $filtro = array();
         $aplica_seg = true;
-        if($usuario['grupo_root']==='activo') {
+        if($usuario['adm_grupo_root']==='activo') {
             $aplica_seg = false;
         }
 

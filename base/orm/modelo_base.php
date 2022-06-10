@@ -567,8 +567,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que ejecuta un query de tipo select
+     * @version 1.24.12
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param string $consulta Consulta en forma de SQL para su ejecucion directa
      * @param array $campos_encriptados Campos encriptados de un modelo
