@@ -34,6 +34,7 @@ class columnas{
     /**
      * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
+     * @param bool $columnas_en_bruto
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
@@ -58,7 +59,7 @@ class columnas{
 
         $columnas_env = $this->integra_columnas_por_data(columnas: $columnas,resultado_columnas:  $resultado_columnas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas_env);
         }
 
         return $columnas_env;

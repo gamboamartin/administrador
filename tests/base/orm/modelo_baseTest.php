@@ -409,8 +409,7 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        //$mb ->cam
-        //$mb = new liberator($mb);
+        $mb = new liberator($mb);
 
         $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM seccion");
         $modelos_hijos = array();

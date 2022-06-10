@@ -1440,8 +1440,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
+     * @version 1.24.10
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @param array $campos_encriptados Conjunto de campos para desencriptar
@@ -1454,7 +1455,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array registro del modelo con registros hijos asignados
      * @throws errores Errores definidos en las creaciones de hijos
      */
-    PUBLIC function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql,
+    private function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql,
                                               array $campos_encriptados = array()):array{
         $new_array = array();
         while( $row = $r_sql->fetchObject()){

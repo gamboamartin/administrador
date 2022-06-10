@@ -124,7 +124,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
         $usuario_modelo->registro_id = $usuario_id;
         $usuario = $usuario_modelo->obten_data();
         if(errores::$error){
-            return (new errores())->error('Error al obtener usuario',$usuario);
+            return (new errores())->error(mensaje: 'Error al obtener usuario',data: $usuario);
         }
 
         return $usuario;
