@@ -614,8 +614,7 @@ class columnas{
 
         $columnas_extra_sql = $this->genera_columnas_extra(columnas: $columnas, modelo: $modelo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql);
         }
 
         $data = new stdClass();
@@ -627,6 +626,7 @@ class columnas{
     /**
      * FULL
      * @param string $columnas
+     * @param bool $columnas_en_bruto
      * @param array $columnas_sql
      * @param string $key
      * @param modelo_base $modelo
@@ -642,7 +642,7 @@ class columnas{
             columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql, modelo: $modelo,
             tabla: $key,tabla_renombrada:  '');
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $result);
         }
         return (string)$result;
     }

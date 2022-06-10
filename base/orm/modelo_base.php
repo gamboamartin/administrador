@@ -1853,8 +1853,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
+     *
      * Funcion que asigna y genera los registros encontrados en un query
+     * @version 1.23.12
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @param array $campos_encriptados Campos encriptados de un modelo
      * @example
