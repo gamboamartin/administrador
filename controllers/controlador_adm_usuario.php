@@ -2,11 +2,12 @@
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use gamboamartin\errores\errores;
-use models\usuario;
+use models\adm_usuario;
 
-class controlador_usuario extends controlador_base{
+
+class controlador_adm_usuario extends controlador_base{
     public function __construct($link){
-        $modelo = new usuario($link);
+        $modelo = new adm_usuario($link);
         parent::__construct($link, $modelo);
     }
 
@@ -96,7 +97,7 @@ class controlador_usuario extends controlador_base{
 
     public function alta_cerrador_bd(bool $header){
         $this->link->beginTransaction();
-        $usuario_modelo = new usuario($this->link);
+        $usuario_modelo = new adm_usuario($this->link);
         $data = $usuario_modelo->alta_cerrador_bd();
         if(errores::$error){
             $this->link->rollBack();
@@ -199,7 +200,7 @@ class controlador_usuario extends controlador_base{
 
     public function alta_prospectador_bd(bool $header){
         $this->link->beginTransaction();
-        $usuario_modelo = new usuario($this->link);
+        $usuario_modelo = new adm_usuario($this->link);
         $data = $usuario_modelo->alta_prospectador_bd();
         if(isset($data['error'])){
             $this->link->rollBack();

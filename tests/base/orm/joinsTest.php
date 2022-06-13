@@ -6,6 +6,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
+use models\adm_seccion;
 use models\seccion;
 use stdClass;
 
@@ -92,12 +93,12 @@ class joinsTest extends test {
         errores::$error = false;
         $tablas = 'a';
         $tablas_join = array();
-        $tablas_join['seccion'] = 'b';
+        $tablas_join['adm_seccion'] = 'b';
         $tablas_join['adm_accion'] = 'c';
         $resultado = $joins->ajusta_tablas($tablas, $tablas_join);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a LEFT JOIN seccion AS seccion ON seccion.id = b.seccion_id LEFT JOIN adm_accion AS adm_accion ON adm_accion.id = c.adm_accion_id',$resultado);
+        $this->assertEquals('a LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = b.adm_seccion_id LEFT JOIN adm_accion AS adm_accion ON adm_accion.id = c.adm_accion_id',$resultado);
 
         errores::$error = false;
     }
@@ -224,12 +225,12 @@ class joinsTest extends test {
 
         errores::$error = false;
         $tabla_join = array();
-        $tabla_join['tabla_base'] = 'seccion';
-        $tabla_join['tabla_enlace'] = 'seccion';
+        $tabla_join['tabla_base'] = 'adm_seccion';
+        $tabla_join['tabla_enlace'] = 'adm_seccion';
         $resultado = $joins->data_para_join($tabla_join);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals(' LEFT JOIN seccion AS seccion ON seccion.id = seccion.seccion_id',$resultado);
+        $this->assertEquals(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = adm_seccion.adm_seccion_id',$resultado);
         errores::$error = false;
     }
 
@@ -258,11 +259,11 @@ class joinsTest extends test {
         errores::$error = false;
 
         $tabla_join = 'z';
-        $key = 'seccion';
+        $key = 'adm_seccion';
         $resultado = $joins->data_para_join_esp($key, $tabla_join);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals(' LEFT JOIN seccion AS seccion ON seccion.id = z.seccion_id',$resultado);
+        $this->assertEquals(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = z.adm_seccion_id',$resultado);
 
         errores::$error = false;
     }
@@ -274,12 +275,12 @@ class joinsTest extends test {
 
 
         $tabla_join = 'x';
-        $key = 'seccion';
+        $key = 'adm_seccion';
         $tablas = '';
         $resultado = $joins->data_tabla_sql($key, $tabla_join, $tablas);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals(' LEFT JOIN seccion AS seccion ON seccion.id = x.seccion_id',$resultado);
+        $this->assertEquals(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = x.adm_seccion_id',$resultado);
         errores::$error = false;
     }
 
@@ -304,12 +305,12 @@ class joinsTest extends test {
         $joins = new joins();
         $joins = new liberator($joins);
 
-        $tabla = 'seccion';
-        $tabla_enlace = 'seccion';
+        $tabla = 'adm_seccion';
+        $tabla_enlace = 'adm_seccion';
         $resultado = $joins->genera_join($tabla, $tabla_enlace);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertStringContainsStringIgnoringCase(' LEFT JOIN seccion AS seccion ON seccion.id = seccion.seccion_id',$resultado);
+        $this->assertStringContainsStringIgnoringCase(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = adm_seccion.adm_seccion_id',$resultado);
         errores::$error = false;
     }
 
@@ -370,11 +371,11 @@ class joinsTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al validar',$resultado['mensaje']);
         errores::$error = false;
 
-        $resultado = $join->genera_join_renombrado('x','id','LEFT','x','seccion','seccion');
+        $resultado = $join->genera_join_renombrado('x','id','LEFT','x','adm_seccion','adm_seccion');
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertStringContainsStringIgnoringCase(' LEFT JOIN seccion AS x ON x.id = seccion.x',$resultado);
+        $this->assertStringContainsStringIgnoringCase(' LEFT JOIN adm_seccion AS x ON x.id = adm_seccion.x',$resultado);
         errores::$error = false;
 
 
@@ -607,7 +608,7 @@ class joinsTest extends test {
 
         $campo_renombrado = '';
         $campo_tabla_base_id = '';
-        $class = 'models\\seccion';
+        $class = 'models\\adm_seccion';
         $renombrada = '';
         $tabla = 'a';
         $tabla_enlace = 'c';
@@ -621,15 +622,15 @@ class joinsTest extends test {
 
         $campo_renombrado = 'x';
         $campo_tabla_base_id = '';
-        $class = 'models\\seccion';
+        $class = 'models\\adm_seccion';
         $renombrada = 'z';
-        $tabla = 'seccion';
-        $tabla_enlace = 'seccion';
+        $tabla = 'adm_seccion';
+        $tabla_enlace = 'adm_seccion';
         $resultado = $joins->sql_join(campo_renombrado: $campo_renombrado,campo_tabla_base_id:  $campo_tabla_base_id,
             class: $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals(' LEFT JOIN seccion AS z ON z.id = seccion.x',$resultado);
+        $this->assertEquals(' LEFT JOIN adm_seccion AS z ON z.id = adm_seccion.x',$resultado);
 
         errores::$error = false;
     }
@@ -639,7 +640,7 @@ class joinsTest extends test {
         $joins = new joins();
         $joins = new liberator($joins);
         $data = array();
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $tabla = 'd';
         $tabla_renombrada = 'd';
         $data['key'] = 'a';
@@ -675,11 +676,11 @@ class joinsTest extends test {
         $renombradas = array();
         $columnas = array();
         $extension_estructura = array();
-        $tabla = 'seccion';
+        $tabla = 'adm_seccion';
         $resultado = $joins->tablas($columnas, $extension_estructura, $modelo, $renombradas, $tabla);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('seccion AS seccion',$resultado);
+        $this->assertEquals('adm_seccion AS adm_seccion',$resultado);
         errores::$error = false;
     }
 
@@ -700,12 +701,12 @@ class joinsTest extends test {
 
         $tabla_join = array();
         $tablas = '';
-        $tabla_join['tabla_base'] = 'seccion';
-        $tabla_join['tabla_enlace'] = 'seccion';
+        $tabla_join['tabla_base'] = 'adm_seccion';
+        $tabla_join['tabla_enlace'] = 'adm_seccion';
         $resultado = $joins->tablas_join_base($tabla_join, $tablas);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals(' LEFT JOIN seccion AS seccion ON seccion.id = seccion.seccion_id',$resultado);
+        $this->assertEquals(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = adm_seccion.adm_seccion_id',$resultado);
         errores::$error = false;
     }
 
@@ -725,12 +726,12 @@ class joinsTest extends test {
         errores::$error = false;
 
         $tabla_join = 'b';
-        $key = 'seccion';
+        $key = 'adm_seccion';
         $tablas = '';
         $resultado = $joins->tablas_join_esp($key, $tabla_join, $tablas);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertStringContainsStringIgnoringCase(' LEFT JOIN seccion AS seccion ON seccion.id = b.seccion_id',$resultado);
+        $this->assertStringContainsStringIgnoringCase(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = b.adm_seccion_id',$resultado);
         errores::$error = false;
     }
 

@@ -25,8 +25,8 @@ class estructurasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         $this->assertTrue($resultado->adm_accion->data_campos->id->es_primaria);
-        $this->assertTrue($resultado->adm_accion->data_campos->seccion_id->es_foranea);
-        $this->assertEquals('seccion',$resultado->adm_accion->data_campos->seccion_id->tabla_foranea);
+        $this->assertTrue($resultado->adm_accion->data_campos->adm_seccion_id->es_foranea);
+        $this->assertEquals('adm_seccion',$resultado->adm_accion->data_campos->adm_seccion_id->tabla_foranea);
 
         errores::$error = false;
 

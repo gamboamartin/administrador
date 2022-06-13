@@ -5,7 +5,7 @@ use gamboamartin\errores\errores;
 
 use PDO;
 
-class mes extends modelo{
+class adm_mes extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);
@@ -15,7 +15,7 @@ class mes extends modelo{
 
     public function hoy(){
         $mes = date('m');
-        $filtro['mes.codigo'] = $mes;
+        $filtro['adm_mes.codigo'] = $mes;
         $r_mes = $this->filtro_and($filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener mes', $r_mes);

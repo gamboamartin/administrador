@@ -3,13 +3,13 @@
 /** @var PDO $link */
 
 use gamboamartin\errores\errores;
-use models\seccion;
+use models\adm_seccion;
 
 
 $etiqueta_menu = trim($menu['descripcion']);
 $etiqueta_menu = str_replace('_',' ',$etiqueta_menu);
 $etiqueta_menu = ucwords($etiqueta_menu);
-$modelo_seccion_menu = new seccion($link);
+$modelo_seccion_menu = new adm_seccion($link);
 $r_sub_menu = $modelo_seccion_menu->obten_submenu_permitido($menu['id']);
 if(errores::$error){
     $error = $modelo_seccion_menu->error->error('Error al obtener sub menu',$r_sub_menu);

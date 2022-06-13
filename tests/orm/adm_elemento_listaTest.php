@@ -30,7 +30,7 @@ class adm_elemento_listaTest extends test {
         errores::$error = false;
 
         $vista = '';
-        $tabla = 'seccion';
+        $tabla = 'adm_seccion';
         $resultado = $el->elementos_lista($tabla, $vista);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -39,7 +39,7 @@ class adm_elemento_listaTest extends test {
         errores::$error = false;
 
         $vista = 'lista';
-        $tabla = 'seccion';
+        $tabla = 'adm_seccion';
         $resultado = $el->elementos_lista($tabla, $vista);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

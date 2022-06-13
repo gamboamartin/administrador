@@ -356,19 +356,18 @@ class joins{
             tabla_enlace:  $init->tabla_enlace);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar ', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar ', data: $valida);
         }
 
         $id_renombrada = $this->id_renombrada(campo_tabla_base_id: $campo_tabla_base_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'El al obtener renombrada ',data:  $id_renombrada,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'El al obtener renombrada ',data:  $id_renombrada);
         }
 
         $data_rename = $this->data_for_rename(id_renombrada: $id_renombrada,init: $init,join: $join,
             renombrada: $renombrada);
         if(errores::$error){
-            return $this->error->error(mensaje: 'El al obtener datos ', data: $data_rename, params: get_defined_vars());
+            return $this->error->error(mensaje: 'El al obtener datos ', data: $data_rename);
         }
 
 

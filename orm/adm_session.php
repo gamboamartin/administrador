@@ -15,7 +15,7 @@ use Throwable;
 class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false, 'usuario'=>$tabla,'adm_grupo'=>'usuario');
+        $columnas = array($tabla=>false, 'adm_usuario'=>$tabla,'adm_grupo'=>'adm_usuario');
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
     }
 
@@ -64,7 +64,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $_SESSION['numero_empresa'] = 1;
         $_SESSION['activa'] = 1;
         $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
-        $_SESSION['usuario_id'] = $r_session->registros[0]['usuario_id'];
+        $_SESSION['usuario_id'] = $r_session->registros[0]['adm_usuario_id'];
         return $_SESSION;
     }
 
@@ -170,7 +170,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function carga_sessiones_fijas(): array|stdClass
     {
         $result = new stdClass();
-        $r_usuarios = (new usuario($this->link))->obten_registros_activos();
+        $r_usuarios = (new adm_usuario($this->link))->obten_registros_activos();
         $usuarios = $r_usuarios['registros'];
         foreach($usuarios as $usuario){
             $continua = $this->continua_carga($usuario);

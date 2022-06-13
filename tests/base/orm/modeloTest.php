@@ -4,7 +4,8 @@ namespace tests\src;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\seccion;
+use models\adm_seccion;
+
 
 
 class modeloTest extends test {
@@ -24,7 +25,7 @@ class modeloTest extends test {
     public function test_data_sentencia(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
 
@@ -53,7 +54,7 @@ class modeloTest extends test {
     public function test_filtro_or(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
 
         $resultado = $modelo->filtro_or();
@@ -70,12 +71,12 @@ class modeloTest extends test {
     public function test_obten_data(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
         $resultado = $modelo->obten_data();
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el id debe ser mayor a 0 en el modelo seccion', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error el id debe ser mayor a 0 en el modelo adm_seccion', $resultado['mensaje']);
 
         errores::$error = false;
         $modelo->registro_id = 1;
@@ -89,7 +90,7 @@ class modeloTest extends test {
     public function test_obten_por_id(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
         $resultado = $modelo->obten_por_id();
@@ -109,7 +110,7 @@ class modeloTest extends test {
     public function test_obten_registros_filtro_and_ordenado(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
 
 
@@ -145,10 +146,10 @@ class modeloTest extends test {
 
         errores::$error = false;
 
-        $campo = 'seccion.id';
+        $campo = 'adm_seccion.id';
         $filtros = array();
         $orden = '';
-        $filtros['seccion.id'] = '';
+        $filtros['adm_seccion.id'] = '';
         $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -163,7 +164,7 @@ class modeloTest extends test {
     public function test_registro(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
         $resultado = $modelo->registro(registro_id: 1);
         $this->assertIsArray( $resultado);
@@ -176,7 +177,7 @@ class modeloTest extends test {
     public function test_seccion_menu_id(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
         $seccion = '';
@@ -197,7 +198,7 @@ class modeloTest extends test {
 
         errores::$error = false;
 
-        $seccion = 'seccion';
+        $seccion = 'adm_seccion';
         $resultado = $modelo->seccion_menu_id($seccion);
         $this->assertIsInt( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -211,7 +212,7 @@ class modeloTest extends test {
     public function test_sentencia_or(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
         $campo = '';

@@ -5,7 +5,7 @@ use base\orm\modelo;
 
 use PDO;
 
-class minuto extends modelo{
+class adm_minuto extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);

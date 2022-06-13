@@ -216,7 +216,7 @@ class links{
      */
     private function init_link(array $accion): array|stdClass
     {
-        $keys = array('seccion_descripcion','adm_accion_descripcion');
+        $keys = array('adm_seccion_descripcion','adm_accion_descripcion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $accion',data:  $valida, params: get_defined_vars());
@@ -226,7 +226,7 @@ class links{
         if(!isset($accion['adm_accion_icono'])){
             $accion['adm_accion_icono'] = '';
         }
-        $seccion_envio = $accion['seccion_descripcion'];
+        $seccion_envio = $accion['adm_seccion_descripcion'];
         $accion_descripcion_envio = $accion['adm_accion_descripcion'];
         $title = (new etiquetas())->title(txt: $accion_descripcion_envio);
         if(errores::$error){

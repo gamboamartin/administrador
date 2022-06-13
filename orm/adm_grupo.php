@@ -20,7 +20,7 @@ class adm_grupo extends modelo{
      */
     public function grupos_root(): array
     {
-        $filtro['grupo.root'] = 'activo';
+        $filtro['adm_grupo.root'] = 'activo';
         $r_grupo = $this->filtro_and($filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener grupos root',$r_grupo);

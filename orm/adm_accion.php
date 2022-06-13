@@ -14,9 +14,9 @@ class adm_accion extends modelo{ //FINALIZADAS
      */
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false, 'seccion'=>$tabla, 'menu'=>'seccion');
-        $campos_obligatorios = array('seccion_id','visible','inicio','lista');
-        $tipo_campos['seccion_id'] = 'id';
+        $columnas = array($tabla=>false, 'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
+        $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista');
+        $tipo_campos['adm_seccion_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas:  $columnas,
             tipo_campos:  $tipo_campos );
         $this->validacion = new \validacion\accion();
@@ -76,25 +76,24 @@ class adm_accion extends modelo{ //FINALIZADAS
                 params: get_defined_vars());
         }
 
-        $grupo_modelo = new grupo($this->link);
-        $filtro['grupo.root']['campo'] = 'grupo.root';
-        $filtro['grupo.root']['value'] = 'activo';
+        $grupo_modelo = new adm_grupo($this->link);
+        $filtro['adm_grupo.root']['campo'] = 'adm_grupo.root';
+        $filtro['adm_grupo.root']['value'] = 'activo';
 
         $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener grupo',data: $r_grupo, params: get_defined_vars());
         }
         $grupos = $r_grupo->registros;
-        $accion_grupo_modelo = new accion_grupo($this->link);
+        $accion_grupo_modelo = new adm_accion_grupo($this->link);
 
         foreach($grupos as $grupo){
-            $accion_grupo_modelo->registro['accion_id'] = $r_alta_bd->registro_id;
-            $accion_grupo_modelo->registro['grupo_id'] = $grupo['grupo_id'];
+            $accion_grupo_modelo->registro['adm_accion_id'] = $r_alta_bd->registro_id;
+            $accion_grupo_modelo->registro['adm_grupo_id'] = $grupo['adm_grupo_id'];
             $accion_grupo_modelo->registro['status'] = 'activo';
             $r_accion_grupo = $accion_grupo_modelo->alta_bd();
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar accion a root',data: $r_accion_grupo,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al insertar accion a root',data: $r_accion_grupo);
             }
         }
 
@@ -118,7 +117,7 @@ class adm_accion extends modelo{ //FINALIZADAS
 
         $filtro['adm_accion.status'] = 'activo';
         $filtro['adm_grupo.status'] = 'activo';
-        $filtro['seccion.status'] = 'activo';
+        $filtro['adm_seccion.status'] = 'activo';
         $filtro['adm_accion_grupo.adm_grupo_id'] = $grupo_id;
         $n_permisos = (new adm_accion_grupo($this->link))->cuenta(filtro: $filtro);
         if(errores::$error){
@@ -153,12 +152,12 @@ class adm_accion extends modelo{ //FINALIZADAS
 
 
         $filtro = array();
-        $filtro['seccion.descripcion'] = $seccion;
+        $filtro['adm_seccion.descripcion'] = $seccion;
         $filtro['adm_grupo.id'] = $grupo_id;
         $filtro['adm_accion.visible'] = 'inactivo';
         $filtro['adm_accion.descripcion'] = $accion;
         $filtro['adm_accion.status'] = 'activo';
-        $filtro['seccion.status'] = 'activo';
+        $filtro['adm_seccion.status'] = 'activo';
         $filtro['adm_grupo.status'] = 'activo';
 
         $existe = (new adm_accion_grupo($this->link))->existe(filtro: $filtro);
@@ -185,7 +184,7 @@ class adm_accion extends modelo{ //FINALIZADAS
             return  $this->error->error('Error al validar seccion',$valida);
         }
 
-        $filtro['seccion.descripcion'] = strtolower(trim($seccion));
+        $filtro['adm_seccion.descripcion'] = strtolower(trim($seccion));
         $filtro['adm_accion.descripcion'] = strtolower(trim($accion));
 
         return $filtro;
@@ -304,9 +303,9 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
         $filtro['adm_accion.status'] = 'activo';
         $filtro['adm_grupo.status'] = 'activo';
-        $filtro['seccion.status'] = 'activo';
+        $filtro['adm_seccion.status'] = 'activo';
         $filtro['adm_accion_grupo.adm_grupo_id'] = $grupo_id;
-        $filtro['seccion.descripcion'] = $seccion;
+        $filtro['adm_seccion.descripcion'] = $seccion;
         $filtro['adm_accion.descripcion'] = $accion;
         return $filtro;
     }
@@ -353,13 +352,13 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
 
         $consulta = "SELECT 
-                      seccion.descripcion AS seccion_descripcion,
+                      adm_seccion.descripcion AS adm_seccion_descripcion,
                       adm_accion.descripcion AS adm_accion_descripcion,
                       adm_accion.icono as adm_accion_icono
                     FROM adm_accion 
-                      INNER JOIN adm_accion_grupo ON adm_accion_grupo.accion_id = adm_accion.id
-                      INNER JOIN seccion ON seccion.id = adm_accion.seccion_id
-                      WHERE adm_accion_grupo.grupo_id = $grupo_id AND adm_accion.inicio = 'activo'";
+                      INNER JOIN adm_accion_grupo ON adm_accion_grupo.adm_accion_id = adm_accion.id
+                      INNER JOIN adm_seccion ON adm_seccion.id = adm_accion.adm_seccion_id
+                      WHERE adm_accion_grupo.adm_grupo_id = $grupo_id AND adm_accion.inicio = 'activo'";
 
         $resultado = $this->ejecuta_consulta(consulta: $consulta,campos_encriptados:  $this->campos_encriptados);
         if(errores::$error){

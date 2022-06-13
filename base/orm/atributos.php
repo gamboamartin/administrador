@@ -28,7 +28,7 @@ class atributos{
             return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $tabla);
         }
         $modelo_atributo = new atributo($link);
-        $filtro['seccion.descripcion'] = $tabla;
+        $filtro['adm_seccion.descripcion'] = $tabla;
         $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener atributos', data: $r_atributo);
@@ -55,7 +55,7 @@ class atributos{
      */
     private function data_inst_attr(array $atributo, modelo $modelo, int $registro_id): array
     {
-        $keys = array('atributo_descripcion','atributo_id');
+        $keys = array('adm_atributo_descripcion','adm_atributo_id');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $atributo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
@@ -73,9 +73,9 @@ class atributos{
             return $this->error->error(mensaje: 'Error $this->tabla esta vacia',data: $modelo->tabla);
         }
 
-        $data_ins['descripcion'] = $atributo['atributo_descripcion'];
+        $data_ins['descripcion'] = $atributo['adm_atributo_descripcion'];
         $data_ins['status'] = 'activo';
-        $data_ins['atributo_id'] = $atributo['atributo_id'];
+        $data_ins['adm_atributo_id'] = $atributo['adm_atributo_id'];
         $data_ins[$modelo->tabla.'_id'] = $registro_id;
         $data_ins['valor'] = '';
         return $data_ins;

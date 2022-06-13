@@ -8,7 +8,7 @@ use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
 
-class seccion extends modelo{
+class adm_seccion extends modelo{
     /**
      * DEBUG INI
      * seccion_menu constructor.
@@ -16,8 +16,8 @@ class seccion extends modelo{
      */
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false, 'menu'=>$tabla);
-        $campos_obligatorios = array('status','descripcion','menu_id');
+        $columnas = array($tabla=>false, 'adm_menu'=>$tabla);
+        $campos_obligatorios = array('status','descripcion','adm_menu_id');
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas);
     }
 
@@ -611,26 +611,26 @@ class seccion extends modelo{
 
 	    $grupo_id = $_SESSION['grupo_id'];
 
-	    $where_menu = " AND seccion.menu_id = $menu_id";
+	    $where_menu = " AND adm_seccion.adm_menu_id = $menu_id";
 
 	    $consulta = "SELECT 
-               		seccion.id AS id ,
-                		seccion.icono AS icono,
-                		seccion.descripcion AS descripcion,
-                		seccion.etiqueta_label AS etiqueta_label,
-                		seccion.menu_id AS menu_id
-                		FROM seccion
-                	INNER JOIN adm_accion  ON adm_accion.seccion_id = seccion.id
+               		adm_seccion.id AS id ,
+                		adm_seccion.icono AS icono,
+                		adm_seccion.descripcion AS descripcion,
+                		adm_seccion.etiqueta_label AS etiqueta_label,
+                		adm_seccion.adm_menu_id AS menu_id
+                		FROM adm_seccion
+                	INNER JOIN adm_accion  ON adm_accion.adm_seccion_id = adm_seccion.id
                 	INNER JOIN adm_accion_grupo AS permiso ON permiso.adm_accion_id = adm_accion.id
                 	INNER JOIN adm_grupo  ON adm_grupo.id = permiso.adm_grupo_id
-                	INNER JOIN menu  ON menu.id = seccion.menu_id
+                	INNER JOIN adm_menu  ON adm_menu.id = adm_seccion.adm_menu_id
                 WHERE 
-                	seccion.status = 'activo' 
+                	adm_seccion.status = 'activo' 
                 	AND adm_accion.status = 'activo' 
                 	AND adm_grupo.status = 'activo' 
                 	AND permiso.adm_grupo_id = $grupo_id $where_menu
                         AND adm_accion.visible = 'activo'
-                GROUP BY seccion.id
+                GROUP BY adm_seccion.id
                 ";
 	    $result = $this->link->query($consulta);
 	    $n_registros = $result->rowCount();

@@ -3,11 +3,11 @@ namespace tests\orm;
 
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
-use models\elemento_lista;
-use models\usuario;
+use models\adm_session;
+use models\adm_usuario;
 
 
-class usuarioTest extends test {
+class adm_usuarioTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -19,12 +19,12 @@ class usuarioTest extends test {
     {
 
         errores::$error = false;
-        $modelo = new usuario($this->link);
+        $modelo = new adm_usuario($this->link);
         //$inicializacion = new liberator($inicializacion);
 
         $usuario_id = -1;
 
-        $resultado = usuario::usuario($usuario_id, $this->link);
+        $resultado = adm_usuario::usuario($usuario_id, $this->link);
 
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -35,7 +35,7 @@ class usuarioTest extends test {
 
         $usuario_id = 9999999999999999;
 
-        $resultado = usuario::usuario($usuario_id, $this->link);
+        $resultado = adm_usuario::usuario($usuario_id, $this->link);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al obtener usuario', $resultado['mensaje']);
@@ -43,7 +43,7 @@ class usuarioTest extends test {
 
         $_SESSION['usuario_id'] = 1;
 
-        $existe_usuario = $modelo->existe(array('usuario.id'=>2));
+        $existe_usuario = $modelo->existe(array('adm_usuario.id'=>2));
         if(errores::$error){
             $error = (new errores())->error('Error al validar usuario', $existe_usuario);
             print_r($error);
@@ -51,6 +51,13 @@ class usuarioTest extends test {
         }
 
         if($existe_usuario) {
+
+            $del_session = (new adm_session($this->link))->elimina_todo();
+            if (errores::$error) {
+                $error = (new errores())->error('Error al eliminar $del_session', $del_session);
+                print_r($error);
+                die('Error');
+            }
 
             $del_usuario = $modelo->elimina_bd(2);
             if (errores::$error) {
@@ -72,10 +79,10 @@ class usuarioTest extends test {
 
         $usuario_id = 2;
 
-        $resultado = usuario::usuario($usuario_id, $this->link);
+        $resultado = adm_usuario::usuario($usuario_id, $this->link);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('2', $resultado['usuario_id']);
+        $this->assertEquals('2', $resultado['adm_usuario_id']);
 
 
 

@@ -148,7 +148,7 @@ class inicializacion{
 
     private function limpia_datas_minus(array $elemento_lista): array|stdClass
     {
-        $seccion = $this->limpia_minus($elemento_lista, 'seccion_descripcion');
+        $seccion = $this->limpia_minus($elemento_lista, 'adm_seccion_descripcion');
         if(errores::$error){
             return $this->error->error('Error al limpiar txt', $seccion);
         }

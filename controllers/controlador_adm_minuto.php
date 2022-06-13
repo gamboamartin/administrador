@@ -1,11 +1,12 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\minuto;
+use models\adm_minuto;
 
-class controlador_minuto extends controlador_base{
+
+class controlador_adm_minuto extends controlador_base{
     public function __construct($link){
-        $modelo = new minuto($link);
+        $modelo = new adm_minuto($link);
         parent::__construct($link, $modelo);
     }
 }

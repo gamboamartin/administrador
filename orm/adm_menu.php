@@ -4,7 +4,7 @@ namespace models;
 use base\orm\modelo;
 use PDO;
 
-class menu extends modelo{ //PRUEBAS FINALIZADAS
+class adm_menu extends modelo{ //PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);
@@ -28,23 +28,23 @@ class menu extends modelo{ //PRUEBAS FINALIZADAS
         $grupo_id = $_SESSION['grupo_id'];	
 
         $consulta = "SELECT 
-        		menu.id AS id ,
-        		menu.icono AS icono,
-        		menu.descripcion AS descripcion,
-        		menu.etiqueta_label AS etiqueta_label 
-        		FROM menu 
-        	INNER JOIN seccion  ON seccion.menu_id = menu.id
-        	INNER JOIN adm_accion  ON adm_accion.seccion_id = seccion.id
+        		adm_menu.id AS id ,
+        		adm_menu.icono AS icono,
+        		adm_menu.descripcion AS descripcion,
+        		adm_menu.etiqueta_label AS etiqueta_label 
+        		FROM adm_menu 
+        	INNER JOIN adm_seccion  ON adm_seccion.adm_menu_id = adm_menu.id
+        	INNER JOIN adm_accion  ON adm_accion.adm_seccion_id = adm_seccion.id
         	INNER JOIN adm_accion_grupo AS permiso ON permiso.adm_accion_id = adm_accion.id
         	INNER JOIN adm_grupo  ON adm_grupo.id = permiso.adm_grupo_id
         WHERE 
-        	menu.status = 'activo'
-        	AND seccion.status = 'activo'
+        	adm_menu.status = 'activo'
+        	AND adm_seccion.status = 'activo'
         	AND adm_accion.status = 'activo' 
         	AND adm_grupo.status = 'activo' 
         	AND permiso.adm_grupo_id = $grupo_id 
                 AND adm_accion.visible = 'activo'
-        GROUP BY menu.id
+        GROUP BY adm_menu.id
         ";
         $result = $this->link->query($consulta);
         if($this->link->errorInfo()[1]){

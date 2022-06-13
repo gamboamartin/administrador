@@ -390,7 +390,7 @@ class listas{
         $accion_modelo = new adm_accion(link: $link);
 
         $filtro['adm_accion.descripcion'] = $accion;
-        $filtro['seccion.descripcion'] =$seccion;
+        $filtro['adm_seccion.descripcion'] =$seccion;
 
         $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if (errores::$error) {

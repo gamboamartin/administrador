@@ -701,7 +701,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $filtro['seccion.descripcion'] = trim($this->seccion);
+        $filtro['adm_seccion.descripcion'] = trim($this->seccion);
         $filtro['adm_elemento_lista.lista'] = 'activo';
         $filtro['adm_elemento_lista.status'] = 'activo';
 
@@ -835,7 +835,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         $filtro = array();
-        $filtro['seccion.descripcion'] = $this->seccion;
+        $filtro['adm_seccion.descripcion'] = $this->seccion;
         $filtro['adm_elemento_lista.status'] = 'activo';
         $filtro['adm_elemento_lista.lista'] = 'activo';
 
@@ -853,7 +853,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         $filtro = array();
-        $filtro['seccion.descripcion'] = $this->seccion;
+        $filtro['adm_seccion.descripcion'] = $this->seccion;
         $filtro['adm_elemento_lista.filtro'] = 'activo';
         $filtro['adm_elemento_lista.status'] = 'activo';
 
@@ -883,7 +883,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $filtro = array();
         $filtro['adm_accion.status'] = 'activo';
-        $filtro['seccion.descripcion'] = $this->seccion;
+        $filtro['adm_seccion.descripcion'] = $this->seccion;
         $filtro['adm_accion.lista'] = 'activo';
         $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){

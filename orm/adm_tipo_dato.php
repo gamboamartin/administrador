@@ -5,7 +5,7 @@ namespace models;
 use base\orm\modelo;
 use PDO;
 
-class tipo_dato extends modelo{
+class adm_tipo_dato extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);

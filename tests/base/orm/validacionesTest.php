@@ -68,9 +68,10 @@ class validacionesTest extends test {
         $tabla = '';
         $data['nombre_original'] = 'a';
         $resultado = $val->valida_data_columna($data, $tabla);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe el modelo models\a', $resultado['mensaje']);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
         $data = array();
@@ -431,9 +432,9 @@ class validacionesTest extends test {
 
 
         $campo_renombrado = 'e';
-        $tabla = 'models\\seccion';
-        $class = 'models\\seccion';
-        $class_enlace = 'models\\seccion';
+        $tabla = 'models\\adm_seccion';
+        $class = 'models\\adm_seccion';
+        $class_enlace = 'models\\adm_seccion';
         $join = 'INNER';
         $renombrada = 'c';
         $tabla_enlace = 'd';

@@ -8,7 +8,7 @@ use gamboamartin\errores\errores;
 use JsonException;
 use PDO;
 
-class usuario extends modelo{ //PRUEBAS en proceso
+class adm_usuario extends modelo{ //PRUEBAS en proceso
     /**
      * DEBUG INI
      * usuario constructor.
@@ -120,7 +120,7 @@ class usuario extends modelo{ //PRUEBAS en proceso
        if($usuario_id <=0){
            return (new errores())->error('Error usuario_id debe ser mayor a 0',$usuario_id);
        }
-        $usuario_modelo = new usuario($link);
+        $usuario_modelo = new adm_usuario($link);
         $usuario_modelo->registro_id = $usuario_id;
         $usuario = $usuario_modelo->obten_data();
         if(errores::$error){
@@ -143,9 +143,9 @@ class usuario extends modelo{ //PRUEBAS en proceso
                 seccion_header: $seccion_header, accion_header: $accion_header);
         }
 
-        $filtro['usuario.user'] = $usuario;
-        $filtro['usuario.password'] = $password;
-        $filtro['usuario.status'] = 'activo';
+        $filtro['adm_usuario.user'] = $usuario;
+        $filtro['adm_usuario.password'] = $password;
+        $filtro['adm_usuario.status'] = 'activo';
         $r_usuario = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener usuario',data: $r_usuario,

@@ -7,7 +7,8 @@ use gamboamartin\errores\errores;
 use base\orm\inicializacion;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\seccion;
+use models\adm_seccion;
+
 use stdClass;
 
 
@@ -416,11 +417,11 @@ class inicializacionTest extends test {
         $inicializacion = new inicializacion();
         //$inicializacion = new liberator($inicializacion);
 
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $resultado = $inicializacion->tablas_select($modelo);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado['models\\seccion']);
+        $this->assertEquals('', $resultado['models\\adm_seccion']);
         errores::$error = false;
     }
 

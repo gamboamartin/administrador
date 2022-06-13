@@ -2,6 +2,7 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JsonException;
+use models\adm_seccion;
 use models\seccion;
 use models\usuario;
 use PDO;
@@ -1424,21 +1425,19 @@ class modelo extends modelo_base {
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $seccion);
         }
-        $filtro['seccion.descripcion'] = $seccion;
-        $modelo_sm = new seccion($this->link);
+        $filtro['adm_seccion.descripcion'] = $seccion;
+        $modelo_sm = new adm_seccion($this->link);
 
         $r_seccion_menu = $modelo_sm->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener seccion menu',data: $r_seccion_menu,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener seccion menu',data: $r_seccion_menu);
         }
         if((int)$r_seccion_menu->n_registros === 0){
-            return $this->error->error(mensaje: 'Error al obtener seccion menu no existe',data: $r_seccion_menu,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener seccion menu no existe',data: $r_seccion_menu);
         }
 
         $registros = $r_seccion_menu->registros[0];
-        $seccion_menu_id = $registros['seccion_id'];
+        $seccion_menu_id = $registros['adm_seccion_id'];
         return (int)$seccion_menu_id;
     }
 

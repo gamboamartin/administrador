@@ -265,8 +265,8 @@ class validaciones_directivas extends validacion{
         if(count($accion)===0){
             return $this->error->error(mensaje: 'Error accion no puede venir vacia',data: $accion);
         }
-        if(!isset($accion['seccion_descripcion'])){
-            return $this->error->error(mensaje:'$accion[seccion_descripcion] debe existir',data:$accion);
+        if(!isset($accion['adm_seccion_descripcion'])){
+            return $this->error->error(mensaje:'$accion[adm_seccion_descripcion] debe existir',data:$accion);
         }
         if(!isset($accion['adm_accion_descripcion'])){
             return $this->error->error(mensaje:'$accion[adm_accion_descripcion] debe existir',data:$accion);
@@ -301,9 +301,7 @@ class validaciones_directivas extends validacion{
         if($tabla === ''){
             return  $this->error->error(mensaje: "Error tabla vacia",data: $tabla);
         }
-        if(!class_exists ( $class)){
-            return  $this->error->error(mensaje:"Error la clase es invalida",data:'controlador_'.$tabla);
-        }
+
         if(!method_exists($class,$accion)){
             return  $this->error->error(mensaje:"Error la accion es invalida",data:array('controlador_'.$tabla,$accion));
         }

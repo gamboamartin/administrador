@@ -73,9 +73,7 @@ class validaciones extends validacion{
         if(is_numeric($tabla)){
             return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje:'Error no existe el modelo '.$class, data: $data);
-        }
+
         return true;
     }
 
@@ -314,36 +312,27 @@ class validaciones extends validacion{
                                      string $renombrada, string $tabla, string $tabla_enlace): bool|array
     {
         if($tabla === ''){
-            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla,
-                params: get_defined_vars());
+            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
         }
         if($join === ''){
-            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla);
         }
         if($renombrada === ''){
-            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla);
         }
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla);
         }
         if($campo_renombrado === ''){
-            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla);
         }
         if(!class_exists($class)){
             return $this->error->error(mensaje:'El no existe el modelo '.$class,data: $class);
         }
         if(trim($join) !=='LEFT' && trim($join) !=='RIGHT' && trim($join) !=='INNER'){
-            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join,
-                params: get_defined_vars());
+            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join);
         }
-        if(!class_exists($class_enlace)){
-            return $this->error->error(mensaje:'El no existe el modelo '.$class_enlace,data: $class_enlace,
-                params: get_defined_vars());
-        }
+
         return true;
     }
 

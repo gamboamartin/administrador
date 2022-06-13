@@ -10,7 +10,7 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false,'adm_accion'=>$tabla,'adm_grupo'=>$tabla,
-            'seccion'=>'adm_accion','menu'=>'seccion');
+            'adm_seccion'=>'adm_accion','adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('adm_accion_id');
         $tipo_campos['adm_accion_id'] = 'id';
         $tipo_campos['adm_grupo_id'] = 'id';
@@ -34,7 +34,7 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         $filtro['adm_accion.status'] = 'activo';
         $filtro['adm_grupo.status'] = 'activo';
         $filtro['adm_accion_grupo.adm_grupo_id'] = $grupo_id;
-        $filtro['adm_accion.seccion_id'] = $seccion_menu_id;
+        $filtro['adm_accion.adm_seccion_id'] = $seccion_menu_id;
         $filtro['adm_accion.visible'] = 'activo';
 
 

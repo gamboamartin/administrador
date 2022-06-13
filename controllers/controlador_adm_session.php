@@ -15,7 +15,7 @@ use base\controller\controlador_base;
 use gamboamartin\errores\errores;
 use JsonException;
 use models\adm_session;
-use models\usuario;
+use models\adm_usuario;
 use PDO;
 use stdClass;
 
@@ -37,13 +37,13 @@ class controlador_adm_session extends controlador_base{
         if(count($datos_usuario) === 0){
             return $this->errores->error(mensaje: 'Error datos de usuario estan vacios',data: $datos_usuario);
         }
-        if(!isset($datos_usuario['usuario_id'])){
+        if(!isset($datos_usuario['adm_usuario_id'])){
             return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
         }
-        if((int)$datos_usuario['usuario_id']<=0){
+        if((int)$datos_usuario['adm_usuario_id']<=0){
             return $this->errores->error(mensaje:'Error datos de usuario_id debe ser mayor a 0',data:$datos_usuario);
         }
-        if(!isset($datos_usuario['usuario_id'])){
+        if(!isset($datos_usuario['adm_usuario_id'])){
             return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
         }
         if(!isset($datos_usuario['adm_grupo_id'])){
@@ -54,7 +54,7 @@ class controlador_adm_session extends controlador_base{
         }
         $session_modelo = new adm_session($this->link);
         $session_insertar['name'] = (new generales())->session_id;
-        $session_insertar['usuario_id'] = $datos_usuario['usuario_id'];
+        $session_insertar['adm_usuario_id'] = $datos_usuario['adm_usuario_id'];
         $session_insertar['fecha'] = date('Y-m-d');
         $session_insertar['numero_empresa'] = 1;
         $session_insertar['fecha_ultima_ejecucion'] = time();
@@ -177,7 +177,7 @@ class controlador_adm_session extends controlador_base{
 
         $_SESSION['numero_empresa'] = 1;
 
-        $modelo_usuario = new usuario($this->link);
+        $modelo_usuario = new adm_usuario($this->link);
         $usuario = $modelo_usuario->valida_usuario_password(password:  $_POST['password'], usuario: $_POST['user']);
         if(errores::$error){
             if($seccion_header !== '' && $accion_header !== '' && $header) {
@@ -190,7 +190,7 @@ class controlador_adm_session extends controlador_base{
 
         $_SESSION['activa'] = 1;
         $_SESSION['grupo_id'] = $usuario['adm_grupo_id'];
-        $_SESSION['usuario_id'] = $usuario['usuario_id'];
+        $_SESSION['usuario_id'] = $usuario['adm_usuario_id'];
 
 
         $data_get = (new init())->asigna_session_get();
@@ -228,7 +228,7 @@ class controlador_adm_session extends controlador_base{
 
         $_SESSION['numero_empresa'] = 1;
 
-        $modelo_usuario = new usuario($this->link);
+        $modelo_usuario = new adm_usuario($this->link);
         $usuarios = $modelo_usuario->valida_usuario_password(password: $_POST['password'] , usuario: $_POST['user']);
 
         if($usuarios['error']){

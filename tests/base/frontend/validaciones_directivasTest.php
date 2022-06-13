@@ -111,7 +111,7 @@ class validaciones_directivasTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al validar seccion', $resultado['mensaje']);
 
         errores::$error = false;
-        $seccion = 'seccion';
+        $seccion = 'adm_seccion';
         $accion = '';
         $resultado = $val->valida_datos_accion($accion, $seccion);
         $this->assertIsArray($resultado);
@@ -119,7 +119,7 @@ class validaciones_directivasTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error la accion esta vacia', $resultado['mensaje']);
 
         errores::$error = false;
-        $seccion = 'seccion';
+        $seccion = 'adm_seccion';
         $accion = 'a';
         $resultado = $val->valida_datos_accion($accion, $seccion);
         $this->assertIsBool($resultado);
@@ -245,12 +245,12 @@ class validaciones_directivasTest extends test {
         $resultado = $val->valida_link($accion);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('$accion[seccion_descripcion] debe existir', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('$accion[adm_seccion_descripcion] debe existir', $resultado['mensaje']);
 
         errores::$error = false;
 
         $accion = array();
-        $accion['seccion_descripcion'] = 'a';
+        $accion['adm_seccion_descripcion'] = 'a';
         $resultado = $val->valida_link($accion);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -259,7 +259,7 @@ class validaciones_directivasTest extends test {
         errores::$error = false;
 
         $accion = array();
-        $accion['seccion_descripcion'] = 'a';
+        $accion['adm_seccion_descripcion'] = 'a';
         $accion['adm_accion_descripcion'] = 'a';
         $resultado = $val->valida_link($accion);
         $this->assertIsBool($resultado);
@@ -286,10 +286,10 @@ class validaciones_directivasTest extends test {
         $resultado = $val->valida_metodos(accion:  $accion, tabla: $tabla);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error la clase es invalida', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error la accion es invalida', $resultado['mensaje']);
 
         errores::$error = false;
-        $tabla = 'minuto';
+        $tabla = 'adm_minuto';
         $accion = '';
         $resultado = $val->valida_metodos(accion:  $accion, tabla: $tabla);
 
@@ -298,7 +298,7 @@ class validaciones_directivasTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error la accion es invalida', $resultado['mensaje']);
 
         errores::$error = false;
-        $tabla = 'minuto';
+        $tabla = 'adm_minuto';
         $accion = 'alta';
         $resultado = $val->valida_metodos(accion:  $accion, tabla: $tabla);
         $this->assertIsBool( $resultado);

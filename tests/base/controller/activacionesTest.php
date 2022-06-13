@@ -33,17 +33,29 @@ class activacionesTest extends test {
 
         $modelo->registro_id = 1;
 
-        $r_del_dia = $modelo->elimina_bd(1);
+
+        $existe = $modelo->existe(array('adm_campo.id'=>1));
         if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al eliminar dia', data: $r_del_dia);
+            $error = (new errores())->error(mensaje: 'Error al validar adm campo ', data: $existe);
             print_r($error);
             die('Error');
         }
 
+
+        if($existe) {
+
+            $r_del_campo = $modelo->elimina_bd(1);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar dia ', data: $r_del_campo);
+                print_r($error);
+                die('Error');
+            }
+        }
+
         $registro['id'] = 1;
         $registro['descripcion'] = 1;
-        $registro['seccion_id'] = 1;
-        $registro['tipo_dato_id'] = 1;
+        $registro['adm_seccion_id'] = 1;
+        $registro['adm_tipo_dato_id'] = 1;
         $r_alta_campo = $modelo->alta_registro($registro);
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al insertar campo', data: $r_alta_campo);

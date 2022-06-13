@@ -12,7 +12,7 @@ class adm_dia extends modelo{
     }
     public function hoy(){
         $dia = date('d');
-        $filtro['dia.codigo'] = $dia;
+        $filtro['adm_dia.codigo'] = $dia;
         $r_dia = $this->filtro_and($filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener dia', $r_dia);

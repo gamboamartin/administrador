@@ -19,7 +19,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      */
     public function __construct(PDO $link){
         $tabla = __CLASS__;
-        $columnas = array($tabla=>false,'seccion'=>$tabla, 'menu'=>'seccion');
+        $columnas = array($tabla=>false,'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('orden','etiqueta','filtro','campo','alta','modifica','tipo','cols','lista');
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);
     }
@@ -33,7 +33,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             return $this->error->error(mensaje: 'Error orden debe existir',data: $this->registro,
                 params: get_defined_vars());
         }
-        if(!isset($this->registro['seccion_id'])){
+        if(!isset($this->registro['adm_seccion_id'])){
             return $this->error->error(mensaje: 'Error seccion_menu_id debe existir',data: $this->registro,
                 params: get_defined_vars());
         }
@@ -50,7 +50,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         $seccion_menu_id = $this->registro['seccion_id'];
 
         $consulta = /** @lang text */
-            "SELECT *FROM elemento_lista WHERE seccion_id=$seccion_menu_id AND orden >=$orden AND id <> $registro_id ORDER BY orden ASC";
+            "SELECT *FROM adm_elemento_lista WHERE adm_seccion_id=$seccion_menu_id AND orden >=$orden AND id <> $registro_id ORDER BY orden ASC";
 
         $resultado = $this->link->query($consulta);
 
@@ -59,7 +59,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             $id = $row['id'];
             $orden++;
             $consulta = /** @lang text */
-                "UPDATE elemento_lista SET orden='$orden' WHERE id = $id";
+                "UPDATE adm_elemento_lista SET orden='$orden' WHERE id = $id";
             $this->link->query($consulta);
         }
 
@@ -75,7 +75,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         $filtro['elemento_lista.encabezado'] = 'activo';
 
         $resultado = $this->obten_registros_filtro_and_ordenado($filtro,
-            'elemento_lista.orden','ASC');
+            'adm_elemento_lista.orden','ASC');
         if(errores::$error){
             return $this->error->error('Error al obtener registros',$resultado);
         }
@@ -100,7 +100,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             return $this->error->error('Error no existe la clase',$seccion);
         }
 
-        $seccion_menu_id = (new seccion($this->link))->seccion_menu_id($seccion);
+        $seccion_menu_id = (new adm_seccion($this->link))->seccion_menu_id($seccion);
         if(errores::$error){
             return $this->error->error('Error al obtener seccion_menu_id',$seccion_menu_id);
         }
@@ -121,9 +121,9 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         if($seccion_menu_id<=0){
             return $this->error->error('Error $seccion_menu_id debe ser mayor a 0',$seccion_menu_id);
         }
-        $filtro['elemento_lista.seccion_menu_id'] = $seccion_menu_id;
-        $filtro['elemento_lista.alta'] = 'activo';
-        $filtro['elemento_lista.modifica'] = 'activo';
+        $filtro['adm_elemento_lista.adm_seccion_menu_id'] = $seccion_menu_id;
+        $filtro['adm_elemento_lista.alta'] = 'activo';
+        $filtro['adm_elemento_lista.modifica'] = 'activo';
         $r_elemento_lista = $this->filtro_and(filtro: $filtro, order: array('elemento_lista.orden'=>'ASC'));
         if(errores::$error){
             return $this->error->error('Error al obtener elementos',$r_elemento_lista);
@@ -145,10 +145,10 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
             return $this->error->error('Error al validar datos',$valida);
         }
 
-        $filtro_el['elemento_lista.tabla_externa'] = $tabla_externa;
-        $filtro_el['elemento_lista.campo'] = $campo;
-        $filtro_el['elemento_lista.filtro'] = 'activo';
-        $filtro_el['seccion.descripcion'] = $seccion;
+        $filtro_el['adm_elemento_lista.tabla_externa'] = $tabla_externa;
+        $filtro_el['adm_elemento_lista.campo'] = $campo;
+        $filtro_el['adm_elemento_lista.filtro'] = 'activo';
+        $filtro_el['adm_seccion.descripcion'] = $seccion;
         return $filtro_el;
     }
 
@@ -229,7 +229,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         }
 
         $filtro['adm_elemento_lista.status'] = 'activo';
-        $filtro['seccion.descripcion'] = $tabla;
+        $filtro['adm_seccion.descripcion'] = $tabla;
         $filtro['adm_elemento_lista.'.$vista] = 'activo';
 
         $resultado = $this->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
