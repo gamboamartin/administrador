@@ -1157,10 +1157,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     /**
      *
      * @param bool $header
+     * @param bool $ws
      * @return array|string
      * @throws JsonException
      */
-    public function xls_lista(bool $header): array|string
+    public function xls_lista(bool $header = true, bool $ws = false): array|string
     {
         $filtro_btn = $_GET['filtro_btn'] ?? array();
 
@@ -1172,7 +1173,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->errores->error('Error al obtener filtro',$filtro);
         }
 
-        $registros = $this->obten_registros_para_lista( limit: 0,pag_seleccionada: 1,filtro: $filtro,filtro_btn: $filtro_btn);
+        $registros = $this->obten_registros_para_lista(filtro: $filtro, limit: 0,pag_seleccionada: 1,filtro_btn: $filtro_btn);
         if(errores::$error){
             $error =  $this->errores->error('Error al generar resultado filtrado',$registros);
             if(!$header){
@@ -1187,7 +1188,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $exportador = new exportador();
 
-        $campos = $elm->obten_campos(modelo: $this->modelo,vista: 'lista', estructura_bd: array());
+        $campos = $elm->obten_campos(estructura_bd: array(), modelo: $this->modelo,vista: 'lista');
         if(errores::$error){
             return   $this->errores->error('Error al obtener campos',$campos);
         }
@@ -1201,7 +1202,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        $campos = $elm->obten_campos(modelo: $this->modelo,vista: 'lista',estructura_bd:  array());
+        $campos = $elm->obten_campos(estructura_bd:  array(), modelo: $this->modelo,vista: 'lista');
         if(errores::$error){
             return   $this->errores->error('Error al obtener campos',$campos);
         }
