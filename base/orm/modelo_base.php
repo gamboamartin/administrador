@@ -411,7 +411,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         $consulta = /** @lang MYSQL */
-            'SELECT count(*) AS existe FROM usuario WHERE usuario.id = '.$this->usuario_id;
+            'SELECT count(*) AS existe FROM adm_usuario WHERE adm_usuario.id = '.$this->usuario_id;
         $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
 
         if(errores::$error){
