@@ -4,11 +4,9 @@ use base\conexion;
 use base\frontend\directivas;
 use base\seguridad;
 use config\generales;
-use gamboamartin\controllers\controlador_session;
 use gamboamartin\errores\errores;
-use JsonException;
-use models\accion;
-use models\session;
+use models\adm_accion;
+use models\adm_session;
 use PDO;
 use stdClass;
 use Throwable;
@@ -27,12 +25,12 @@ class init{
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
-        $accion = (new accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+        $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
         }
         $aplica_view = false;
-        if($accion['accion_es_view'] === 'activo'){
+        if($accion['adm_accion_es_view'] === 'activo'){
             $aplica_view = true;
         }
         return $aplica_view;
@@ -73,6 +71,7 @@ class init{
 
     /**
      * Aqui se determina que view se va a utilizar para el frontend
+     * v1.18.9
      * @param bool $aplica_view Si view es activo se buscara un archivo valido
      * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
      * @return string|array retorna el path para include
@@ -100,7 +99,7 @@ class init{
         $con = new conexion();
         $link = conexion::$link;
 
-        $session = (new session($link))->carga_data_session();
+        $session = (new adm_session($link))->carga_data_session();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar session',data: $session);
 
@@ -302,7 +301,7 @@ class init{
      */
     public function permiso(PDO $link, seguridad $seguridad): array|seguridad
     {
-        $modelo_accion = new accion($link);
+        $modelo_accion = new adm_accion($link);
         if (isset($_SESSION['grupo_id'])) {
             $permiso = $modelo_accion->permiso(accion: $seguridad->accion, seccion: $seguridad->seccion);
             if(errores::$error){
@@ -311,14 +310,14 @@ class init{
             }
 
             if (!$permiso) {
-                $seguridad->seccion = 'session';
+                $seguridad->seccion = 'adm_session';
                 $seguridad->accion = 'denegado';
             }
 
             $n_acciones = $modelo_accion->cuenta_acciones();
             if(errores::$error){
                 session_destroy();
-                return $modelo_accion->error->error('Error al contar acciones permitidas',$n_acciones);
+                return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $n_acciones);
             }
             if ((int)$n_acciones === 0) {
                 session_destroy();

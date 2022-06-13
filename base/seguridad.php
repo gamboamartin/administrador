@@ -3,7 +3,7 @@ namespace base;
 
 use config\generales;
 use gamboamartin\errores\errores;
-use models\session;
+use models\adm_session;
 use PDO;
 use stdClass;
 
@@ -29,7 +29,7 @@ class seguridad{
         }
 
         if(!$this->seccion){
-            $this->seccion = 'session';
+            $this->seccion = 'adm_session';
             $this->accion = "inicio";
             if(!isset($_SESSION['activa']) && $aplica_seguridad){
                 $this->accion = "login";
@@ -37,8 +37,8 @@ class seguridad{
         }
 
 
-        if(($this->seccion === 'session') && $this->accion === 'login' && isset($_SESSION['activa']) && $aplica_seguridad) {
-            $this->seccion = 'session';
+        if(($this->seccion === 'adm_session') && $this->accion === 'login' && isset($_SESSION['activa']) && $aplica_seguridad) {
+            $this->seccion = 'adm_session';
             $this->accion = 'inicio';
         }
 
@@ -46,7 +46,7 @@ class seguridad{
             $this->menu = true;
         }
 
-        if(!isset($_SESSION['activa']) && ($this->seccion !== 'session') && $this->accion !== 'loguea' && $aplica_seguridad) {
+        if(!isset($_SESSION['activa']) && ($this->seccion !== 'adm_session') && $this->accion !== 'loguea' && $aplica_seguridad) {
 
             $data = $this->init_menu_login();
             if(errores::$error){
@@ -58,7 +58,7 @@ class seguridad{
 
         }
 
-        if($this->seccion === 'session' && $this->accion === 'inicio' && $aplica_seguridad){
+        if($this->seccion === 'adm_session' && $this->accion === 'inicio' && $aplica_seguridad){
 
             $accion = $this->init_accion();
             if(errores::$error){
@@ -78,8 +78,8 @@ class seguridad{
      */
     public function elimina_session(PDO $link): bool|array
     {
-        $filtro = array('session.name'=>(new generales())->session_id);
-        $session_modelo = new session($link);
+        $filtro = array('adm_session.name'=>(new generales())->session_id);
+        $session_modelo = new adm_session($link);
 
         $r_session = $session_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
@@ -88,7 +88,7 @@ class seguridad{
         $elimina = true;
         if((int)$r_session->n_registros === 1){
             $session = $r_session->registros[0];
-            if($session['session_permanente'] === 'activo'){
+            if($session['adm_session_permanente'] === 'activo'){
                 $elimina = false;
             }
         }
@@ -126,7 +126,7 @@ class seguridad{
     private function init_menu_login(): stdClass
     {
         $this->menu = false;
-        $this->seccion = "session";
+        $this->seccion = "adm_session";
         $this->accion = "login";
 
         $data = new stdClass();
@@ -150,7 +150,7 @@ class seguridad{
             if(errores::$error){
                 return $this->error->error("Error al eliminar registro", $data);
             }
-            header('Location: index.php?seccion=session&accion=login');
+            header('Location: index.php?seccion=adm_session&accion=login');
         }
     }
 

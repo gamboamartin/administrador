@@ -35,9 +35,9 @@ class validaciones extends validacion{
      */
     public function valida_campo_envio(array $bools, array $campo): bool|array
     {
-        $keys = array('elemento_lista_campo','elemento_lista_cols','elemento_lista_tipo',
-            'elemento_lista_tabla_externa',
-            'elemento_lista_etiqueta','elemento_lista_descripcion','elemento_lista_id');
+        $keys = array('adm_elemento_lista_campo','adm_elemento_lista_cols','adm_elemento_lista_tipo',
+            'adm_elemento_lista_tabla_externa', 'adm_elemento_lista_etiqueta','adm_elemento_lista_descripcion',
+            'adm_elemento_lista_id');
         $valida = $this->valida_existencia_keys( keys: $keys, registro: $campo);
         if(errores::$error){
             return $this->error->error("Error al validar campo", $valida);
@@ -73,9 +73,7 @@ class validaciones extends validacion{
         if(is_numeric($tabla)){
             return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje:'Error no existe el modelo '.$class, data: $data);
-        }
+
         return true;
     }
 
@@ -314,36 +312,27 @@ class validaciones extends validacion{
                                      string $renombrada, string $tabla, string $tabla_enlace): bool|array
     {
         if($tabla === ''){
-            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla,
-                params: get_defined_vars());
+            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
         }
         if($join === ''){
-            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla);
         }
         if($renombrada === ''){
-            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla);
         }
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla);
         }
         if($campo_renombrado === ''){
-            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla);
         }
         if(!class_exists($class)){
             return $this->error->error(mensaje:'El no existe el modelo '.$class,data: $class);
         }
         if(trim($join) !=='LEFT' && trim($join) !=='RIGHT' && trim($join) !=='INNER'){
-            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join,
-                params: get_defined_vars());
+            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join);
         }
-        if(!class_exists($class_enlace)){
-            return $this->error->error(mensaje:'El no existe el modelo '.$class_enlace,data: $class_enlace,
-                params: get_defined_vars());
-        }
+
         return true;
     }
 

@@ -324,7 +324,7 @@ class templates{
             if(in_array($campo_name,$campos_disabled,false)){
                 $disabled = true;
             }
-            $key = in_array($input['elemento_lista_id'], $valores_default, false);
+            $key = in_array($input['adm_elemento_lista_id'], $valores_default, false);
             if(false !== $key){
                 $valor = $valores_default['default'];
             }
@@ -348,8 +348,7 @@ class templates{
                 columnas: $input['columnas'], llaves_foraneas: $input['llaves_foraneas'],vistas: array('alta'),
                 accion: $accion,campos_invisibles: $campos_invisibles);
             if(errores::$error){
-                return  $this->error->error(mensaje: 'Error al generar campos',data: $data_html,
-                    params: get_defined_vars());
+                return  $this->error->error(mensaje: 'Error al generar campos',data: $data_html);
             }
             $html .= $data_html;
         }
@@ -662,7 +661,7 @@ class templates{
                 select_vacio_alta: $select_vacio_alta,columnas:  $columnas, llaves_valores: $llaves_valores);
 
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar html',data: $data_html, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar html',data: $data_html);
             }
 
             $html .= $data_html;
@@ -955,11 +954,11 @@ class templates{
 
             $elemento = array(
                 'campo_filtro'=>$campo_filtro,
-                'tabla_externa'=>$elemento_lista['elemento_lista_tabla_externa'],
-                'campo'=>$elemento_lista['elemento_lista_campo'],
-                'etiqueta'=>$elemento_lista['elemento_lista_etiqueta'],
+                'tabla_externa'=>$elemento_lista['adm_elemento_lista_tabla_externa'],
+                'campo'=>$elemento_lista['adm_elemento_lista_campo'],
+                'etiqueta'=>$elemento_lista['adm_elemento_lista_etiqueta'],
                 'columnas'=> '' ,
-                'tipo' => $elemento_lista['elemento_lista_tipo']);
+                'tipo' => $elemento_lista['adm_elemento_lista_tipo']);
             $this->campos_filtro[] = $elemento;
         }
         return $this->campos_filtro;

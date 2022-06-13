@@ -40,7 +40,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Ajusta el nombre de un modelo para generarlo modo namespace
+     * @version 1.12.8
      * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace Tabla de enlace de un join
      * @return array|stdClass
@@ -49,25 +50,21 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla);
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace);
         }
 
         $data_model_tabla = $this->ajusta_name_model(tabla: $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_model_tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_model_tabla);
         }
 
         $data_model_tabla_enl = $this->ajusta_name_model(tabla:$tabla_enlace);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_model_tabla_enl,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_model_tabla_enl);
         }
 
         $data = new stdClass();
@@ -173,7 +170,7 @@ class joins{
 
         $data_join = $this->data_join(tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar data',data:  $data_join, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar data',data:  $data_join);
         }
 
         $data = $this->genera_join(tabla: $data_join->tabla_base, tabla_enlace: $data_join->tabla_enlace,
@@ -308,7 +305,7 @@ class joins{
         $tabla_enlace = str_replace('models\\','',$tabla_enlace);
 
         if($tabla === ''){
-            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla, params: get_defined_vars());
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
         }
         if($tabla_enlace === ''){
             return $this->error->error(mensaje: 'El $tabla_enlace no puede ir vacio', data: $tabla_enlace,
@@ -351,7 +348,7 @@ class joins{
 
         $init = $this->init_renombre(tabla: $tabla, tabla_enlace:$tabla_enlace);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar ', data: $init, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al inicializar ', data: $init);
         }
 
         $valida = (new validaciones())->valida_renombres(campo_renombrado: $campo_renombrado, class: $init->class,
@@ -359,19 +356,18 @@ class joins{
             tabla_enlace:  $init->tabla_enlace);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar ', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar ', data: $valida);
         }
 
         $id_renombrada = $this->id_renombrada(campo_tabla_base_id: $campo_tabla_base_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'El al obtener renombrada ',data:  $id_renombrada,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'El al obtener renombrada ',data:  $id_renombrada);
         }
 
         $data_rename = $this->data_for_rename(id_renombrada: $id_renombrada,init: $init,join: $join,
             renombrada: $renombrada);
         if(errores::$error){
-            return $this->error->error(mensaje: 'El al obtener datos ', data: $data_rename, params: get_defined_vars());
+            return $this->error->error(mensaje: 'El al obtener datos ', data: $data_rename);
         }
 
 
@@ -468,8 +464,7 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla);
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
@@ -524,8 +519,7 @@ class joins{
             return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
         }
         if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe la clase '.$tabla,data:  $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe la clase '.$tabla,data:  $tabla);
         }
         $tablas = $tabla.' AS '.$tabla;
         $tablas_join = $columnas_join;
@@ -580,7 +574,7 @@ class joins{
         $join = 'LEFT';
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error $tabla esta vacia',data:  $tabla, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla esta vacia',data:  $tabla);
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){

@@ -18,7 +18,7 @@ class data_format{
     }
 
     /**
-     *  P INT P ORDER ERRORREV
+     * Funcion ajusta los campos en formato moneda previo a la insersion, los limpia y los integra como double
      * @param array $registro Registro donde se ajustaran los valores
      * @param array $tipo_campos Son los tipos de campos declarados en el modelo
      * @return array

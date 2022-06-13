@@ -106,7 +106,7 @@ class selectsTest extends test {
         errores::$error = false;
 
         $filtro = array();
-        $name_modelo = 'seccion';
+        $name_modelo = 'adm_seccion';
 
         $resultado = $sl->data_bd(false, $this->link, $name_modelo, $filtro);
 
@@ -117,7 +117,7 @@ class selectsTest extends test {
         errores::$error = false;
 
         $filtro = array();
-        $name_modelo = 'seccion';
+        $name_modelo = 'adm_seccion';
 
         $resultado = $sl->data_bd(true, $this->link, $name_modelo, $filtro);
         $this->assertIsObject( $resultado);

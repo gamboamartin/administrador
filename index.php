@@ -8,7 +8,7 @@ use gamboamartin\errores\errores;
 
 $data = (new init())->index(aplica_seguridad: true);
 if(errores::$error){
-    $error = (new errores())->error(mensaje: 'Error al inicializar datos',data:  $data, params: get_defined_vars());
+    $error = (new errores())->error(mensaje: 'Error al inicializar datos',data:  $data);
     print_r($error);
     die('Error');
 }

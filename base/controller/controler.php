@@ -6,9 +6,7 @@ use base\orm\modelo;
 use config\generales;
 use gamboamartin\errores\errores;
 
-
-use JsonException;
-use models\accion;
+use models\adm_accion;
 use PDO;
 use stdClass;
 use Throwable;
@@ -59,8 +57,8 @@ class controler{
     public function __construct(){
         $generals = (new generales());
         if(!isset($_SESSION['grupo_id']) && $generals->aplica_seguridad){
-            if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
-                $url = 'index.php?seccion=session&accion=login';
+            if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {
+                $url = 'index.php?seccion=adm_session&accion=login';
                 header('Location: '.$url);
             }
         }
@@ -99,11 +97,9 @@ class controler{
      * @return array|string
      */
     protected function data_bread(bool $aplica_seguridad):array|string{
-        if($aplica_seguridad) {
-            if (!isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'session' && $_GET['accion'] !== 'login') {
-                header('Location: index.php?seccion=session&accion=login');
-                exit;
-            }
+        if($aplica_seguridad && !isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {
+            header('Location: index.php?seccion=adm_session&accion=login');
+            exit;
         }
 
         $es_vista = false;
@@ -115,13 +111,13 @@ class controler{
         if(file_exists($file_view_base)){
             $es_vista = true;
         }
-        if($this->seccion === 'session' && $this->accion === 'login'){
+        if($this->seccion === 'adm_session' && $this->accion === 'login'){
             $es_vista = false;
         }
         $breadcrumbs = '';
         if($es_vista && $aplica_seguridad) {
 
-            $accion_modelo = new accion($this->link);
+            $accion_modelo = new adm_accion($this->link);
 
             $accion_registro = $accion_modelo->accion_registro(accion:  $this->accion, seccion: $this->seccion);
             if(errores::$error){
@@ -135,7 +131,7 @@ class controler{
             $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->link,
                 $accion_registro,$this->session_id);
             if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs, params: get_defined_vars());
+                return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs);
             }
         }
         return $breadcrumbs;
@@ -168,41 +164,6 @@ class controler{
 
         return $resultado;
     }
-
-
-    /**
-     *
-     * @param string $name_modelo
-     * @return array
-     */
-    public function data_galeria(string $name_modelo):array{
-        $name_modelo = trim($name_modelo);
-        $valida = $this->validacion->valida_data_modelo($name_modelo);
-        if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al validar entrada para generacion de modelo en '.$name_modelo,
-                data: $valida, params: get_defined_vars());
-        }
-        if($this->registro_id<=0){
-            return  $this->errores->error('Error registro_id debe ser mayor a 0 ',$this->registro_id);
-        }
-        $this->tabla = trim($this->tabla);
-        if($this->tabla === ''){
-            return  $this->errores->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-
-        $r_foto = $this->modelo->get_data_img($name_modelo,$this->registro_id);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener fotos',$r_foto);
-        }
-
-        $data = (new normalizacion())->maqueta_data_galeria(controler: $this, r_fotos: $r_foto,tabla: $name_modelo);
-        if(errores::$error){
-            return $this->errores->error('Error al maquetar galeria',$data);
-        }
-        return $data;
-    }
-
-
 
     /**
      * P ORDER P INT ERROREV

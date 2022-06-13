@@ -7,6 +7,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\accion;
+use models\adm_accion;
 use models\seccion;
 
 
@@ -16,6 +17,26 @@ class modelo_baseTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_ajusta_row_select(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $campos_encriptados = array('z');
+        $modelos_hijos = array();
+        $modelos_hijos['adm_dia']['nombre_estructura'] = 'adm_accion';
+        $modelos_hijos['adm_dia']['filtros'] = array();
+        $modelos_hijos['adm_dia']['filtros_con_valor'] = array();
+        $row = array();
+        $row['z'] = 'PHDA/NloYgF1lc+UHzxaUw==';
+        $resultado = $mb->ajusta_row_select($campos_encriptados, $modelos_hijos, $row);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
 
@@ -63,10 +84,10 @@ class modelo_baseTest extends test {
 
 
         errores::$error = false;
-        $name_modelo = 'seccion';
+        $name_modelo = 'adm_seccion';
         $filtro = array();
         $row = array();
-        $nombre_estructura = 'seccion';
+        $nombre_estructura = 'adm_seccion';
 
         $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
             nombre_estructura: $nombre_estructura,row:  $row);
@@ -74,7 +95,7 @@ class modelo_baseTest extends test {
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1', $resultado['seccion'][0]['seccion_id']);
+        $this->assertEquals('1', $resultado['adm_seccion'][0]['adm_seccion_id']);
 
         errores::$error = false;
 
@@ -104,7 +125,7 @@ class modelo_baseTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al ejecutar sql', $resultado['mensaje']);
 
         errores::$error = false;
-        $consulta = 'SELECT *FROM seccion';
+        $consulta = 'SELECT *FROM adm_seccion';
 
         $resultado = $mb->ejecuta_sql($consulta);
         $this->assertIsObject( $resultado);
@@ -175,13 +196,13 @@ class modelo_baseTest extends test {
     public function test_genera_consulta_base(){
 
         errores::$error = false;
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $modelo = new liberator($modelo);
-        $columnas = array('accion_id');
+        $columnas = array('adm_accion_id');
         $resultado = $modelo->genera_consulta_base($columnas);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT accion.id AS accion_id   FROM accion AS accion LEFT JOIN seccion AS seccion ON seccion.id = accion.seccion_id LEFT JOIN menu AS menu ON menu.id = seccion.menu_id', $resultado);
+        $this->assertEquals('SELECT adm_accion.id AS adm_accion_id   FROM adm_accion AS adm_accion LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = adm_accion.adm_seccion_id LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id', $resultado);
         errores::$error = false;
     }
 
@@ -204,7 +225,7 @@ class modelo_baseTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al validar modelo', $resultado['mensaje']);
 
         errores::$error = false;
-        $modelo = 'seccion';
+        $modelo = 'adm_seccion';
         $resultado = $mb->genera_modelo($modelo);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -275,11 +296,11 @@ class modelo_baseTest extends test {
         $data_modelo['nombre_estructura'] = 'x';
         $data_modelo['filtros'] = array();
         $data_modelo['filtros_con_valor'] = array();
-        $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'seccion',row: $row);
+        $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'adm_seccion',row: $row);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1', $resultado['x'][0]['seccion_id']);
+        $this->assertEquals('1', $resultado['x'][0]['adm_seccion_id']);
         errores::$error = false;
 
     }
@@ -347,15 +368,15 @@ class modelo_baseTest extends test {
         errores::$error = false;
         $modelos_hijos = array();
         $row = array();
-        $modelos_hijos['seccion'] = array();
-        $modelos_hijos['seccion']['nombre_estructura'] = 'ne';
-        $modelos_hijos['seccion']['filtros'] = array();
-        $modelos_hijos['seccion']['filtros_con_valor'] = array();
+        $modelos_hijos['adm_seccion'] = array();
+        $modelos_hijos['adm_seccion']['nombre_estructura'] = 'ne';
+        $modelos_hijos['adm_seccion']['filtros'] = array();
+        $modelos_hijos['adm_seccion']['filtros_con_valor'] = array();
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1', $resultado['ne'][0]['seccion_id']);
+        $this->assertEquals('1', $resultado['ne'][0]['adm_seccion_id']);
         errores::$error = false;
 
 
@@ -365,7 +386,7 @@ class modelo_baseTest extends test {
     public function test_limpia_moneda_value(){
 
         errores::$error = false;
-        $modelo = new accion($this->link);
+        $modelo = new adm_accion($this->link);
         $modelo = new liberator($modelo);
         $value = '';
         $resultado = $modelo->limpia_moneda_value($value);
@@ -388,10 +409,9 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        //$mb ->cam
-        //$mb = new liberator($mb);
+        $mb = new liberator($mb);
 
-        $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM seccion");
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM adm_seccion");
         $modelos_hijos = array();
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql);
 
@@ -401,7 +421,7 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
 
-        $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM seccion");
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT *FROM adm_seccion");
         $modelos_hijos = array();
         $campos_encriptados = array('descripcion');
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
@@ -419,7 +439,7 @@ class modelo_baseTest extends test {
         }
 
 
-        $r_sql =  $this->link->query(/** @lang text */ "SELECT '$vacio' as descripcion FROM seccion");
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT '$vacio' as descripcion FROM adm_seccion");
         $modelos_hijos = array();
         $campos_encriptados = array('descripcion');
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
@@ -437,7 +457,7 @@ class modelo_baseTest extends test {
         }
 
 
-        $r_sql =  $this->link->query(/** @lang text */ "SELECT '$descripcion' as descripcion FROM seccion");
+        $r_sql =  $this->link->query(/** @lang text */ "SELECT '$descripcion' as descripcion FROM adm_seccion");
         $modelos_hijos = array();
         $campos_encriptados = array('descripcion');
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
@@ -452,21 +472,7 @@ class modelo_baseTest extends test {
 
     }
 
-    public function test_obten_columnas(){
 
-        errores::$error = false;
-        $seccion = new seccion($this->link);
-        $lib = (new liberator($seccion));
-
-        $resultado = $lib->obten_columnas('seccion');
-
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('descripcion',$resultado->columnas_parseadas[1]);
-        $this->assertCount(11, $resultado->columnas_parseadas);
-        errores::$error = false;
-
-    }
 
     public function test_obten_filtro_para_hijo(){
 
@@ -562,30 +568,7 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-    public function test_order_sql(){
-        errores::$error = false;
 
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-        $resultado = $mb->order_sql(array());
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-        $resultado = $mb->order_sql(array('x'));
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo debe ser txt', $resultado['mensaje']);
-
-        errores::$error = false;
-        $resultado = $mb->order_sql(array('x'=>'x'));
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('ORDER BY x x', $resultado);
-        errores::$error = false;
-
-    }
 
     public function test_parsea_registros_envio(){
 
@@ -593,7 +576,7 @@ class modelo_baseTest extends test {
         $mb = new modelo_base($this->link);
         $mb = new liberator($mb);
 
-        $r_sql = $this->link->query(/** @lang text */ 'SELECT *FROM seccion');
+        $r_sql = $this->link->query(/** @lang text */ 'SELECT *FROM adm_seccion');
         $resultado = $mb->parsea_registros_envio($r_sql);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

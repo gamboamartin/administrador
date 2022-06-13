@@ -124,7 +124,7 @@ class validaciones_directivas extends validacion{
      */
     public function valida_elemento_lista_template(array $registro): array|bool
     {
-        $keys = array('elemento_lista_descripcion','elemento_lista_tipo');
+        $keys = array('adm_elemento_lista_descripcion','adm_elemento_lista_tipo');
         $valida = $this->valida_existencia_keys(keys:  $keys, registro: $registro);
         if(errores::$error){
             return $this->error->error("Error al validar registro", $valida);
@@ -263,16 +263,13 @@ class validaciones_directivas extends validacion{
     public function valida_link(array $accion): bool|array
     {
         if(count($accion)===0){
-            return $this->error->error(mensaje: 'Error accion no puede venir vacia',data: $accion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error accion no puede venir vacia',data: $accion);
         }
-        if(!isset($accion['seccion_descripcion'])){
-            return $this->error->error(mensaje:'$accion[seccion_descripcion] debe existir',data:$accion,
-                params: get_defined_vars());
+        if(!isset($accion['adm_seccion_descripcion'])){
+            return $this->error->error(mensaje:'$accion[adm_seccion_descripcion] debe existir',data:$accion);
         }
-        if(!isset($accion['accion_descripcion'])){
-            return $this->error->error(mensaje:'$accion[accion_descripcion] debe existir',data:$accion,
-                params: get_defined_vars());
+        if(!isset($accion['adm_accion_descripcion'])){
+            return $this->error->error(mensaje:'$accion[adm_accion_descripcion] debe existir',data:$accion);
         }
         return true;
     }
@@ -304,9 +301,7 @@ class validaciones_directivas extends validacion{
         if($tabla === ''){
             return  $this->error->error(mensaje: "Error tabla vacia",data: $tabla);
         }
-        if(!class_exists ( $class)){
-            return  $this->error->error(mensaje:"Error la clase es invalida",data:'controlador_'.$tabla);
-        }
+
         if(!method_exists($class,$accion)){
             return  $this->error->error(mensaje:"Error la accion es invalida",data:array('controlador_'.$tabla,$accion));
         }
@@ -332,13 +327,11 @@ class validaciones_directivas extends validacion{
     public function valida_selected(int $id,string $tabla, array $value):array|string{ //FIN PROT
         $namespace = 'models\\';
         $tabla = str_replace($namespace,'',$tabla);
-        $clase = 'controllers\\controlador_'.$tabla;
+
         if($tabla === ''){
             return $this->error->error('Error tabla no puede venir vacia',$tabla);
         }
-        if(!class_exists ( $clase )){
-            return $this->error->error('No existe controlador para select','controlador_'.$tabla);
-        }
+
         $key_id = $tabla . '_id';
         if(!isset($value[$key_id])){
             return $this->error->error('Error no existe $value['.$key_id.']',$value);

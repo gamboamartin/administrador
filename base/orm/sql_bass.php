@@ -44,17 +44,15 @@ class sql_bass{
     private function asigna_booleanos(array $bools, array $bools_asignar, array $campo):array{
         foreach($bools_asignar as $bool){
             if($bool === ''){
-                return $this->error->error(mensaje: 'Error $bool no puede venir vacia',data: $bools_asignar,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $bool no puede venir vacia',data: $bools_asignar);
             }
-            $key = 'elemento_lista_'.$bool;
+            $key = 'adm_elemento_lista_'.$bool;
             if(!isset($campo[$key])){
-                return $this->error->error(mensaje: 'Error $campo['.$key.'] debe existir',data: $campo,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $campo['.$key.'] debe existir',data: $campo);
             }
             $data = $this->asigna_data_bool(bool: $bool, bools:  $bools,campo: $campo);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar bool',data: $data, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar bool',data: $data);
             }
             $bools = $data;
         }
@@ -79,21 +77,34 @@ class sql_bass{
      */
     private function asigna_data_bool(string $bool, array $bools, array $campo):array{
         if($bool === ''){
-            return $this->error->error(mensaje: 'Error $bool no puede venir vacia',data: $bool,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $bool no puede venir vacia',data: $bool);
         }
-        $key = 'elemento_lista_'.$bool;
+        $key = 'adm_elemento_lista_'.$bool;
         if(!isset($campo[$key])){
-            return $this->error->error(mensaje: 'Error $campo[elemento_lista_'.$bool.'] debe existir',data: $campo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $campo[adm_elemento_lista_'.$bool.'] debe existir',data: $campo);
         }
         $data = $this->true_false(campo: $campo, key:$bool);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar bool',data:$data, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar bool',data:$data);
         }
         $bools[$bool] = $data;
 
         return $bools;
+    }
+
+    /**
+     * PROBADO P INT P ORDER
+     * @param string $columnas
+     * @return string
+     */
+    public function coma_sql(string $columnas): string
+    {
+        $columnas = trim($columnas);
+        $coma = '';
+        if($columnas !== ''){
+            $coma = ' , ';
+        }
+        return $coma;
     }
 
 
@@ -113,19 +124,18 @@ class sql_bass{
      * @internal $this->asigna_booleanos($bools_asignar,$campo,$bools);
      */
     private function genera_bools(array $campo, array $campos_obligatorios):array{
-        if(!isset($campo['elemento_lista_campo'])){
-            return $this->error->error(mensaje: 'Error no existe $campo[elemento_lista_campo]',data: $campo,
-                params: get_defined_vars());
+        if(!isset($campo['adm_elemento_lista_campo'])){
+            return $this->error->error(mensaje: 'Error no existe $campo[adm_elemento_lista_campo]',data: $campo);
         }
         $required = false;
-        if(in_array($campo['elemento_lista_campo'], $campos_obligatorios, true)){
+        if(in_array($campo['adm_elemento_lista_campo'], $campos_obligatorios, true)){
             $required = true;
         }
         $bools = array('required'=>$required);
         $bools_asignar = array('ln','con_label','select_vacio_alta');
         $bools = $this->asigna_booleanos(bools: $bools, bools_asignar: $bools_asignar,campo: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar bools',data: $bools, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar bools',data: $bools);
         }
 
         return $bools;
@@ -152,8 +162,8 @@ class sql_bass{
         if(errores::$error){
             return $this->error->error('Error al validar estructura',$valida);
         }
-        $estructura_bd[$tabla]['campos'][$campo['elemento_lista_campo']] = $campo_envio;
-        $estructura_bd[$tabla]['campos_completos'][$campo['elemento_lista_tabla_externa'].'_'.$campo['elemento_lista_campo']] = $campo_envio;
+        $estructura_bd[$tabla]['campos'][$campo['adm_elemento_lista_campo']] = $campo_envio;
+        $estructura_bd[$tabla]['campos_completos'][$campo['adm_elemento_lista_tabla_externa'].'_'.$campo['adm_elemento_lista_campo']] = $campo_envio;
 
         return $estructura_bd;
     }
@@ -165,10 +175,10 @@ class sql_bass{
      */
     private function valida_estructura(array $campo): bool|array
     {
-        if(!isset($campo['elemento_lista_campo'])){
+        if(!isset($campo['adm_elemento_lista_campo'])){
             return $this->error->error('Error no existe $campo[elemento_lista_campo]',$campo);
         }
-        if(!isset($campo['elemento_lista_tabla_externa'])){
+        if(!isset($campo['adm_elemento_lista_tabla_externa'])){
             return $this->error->error('Error no existe $campo[elemento_lista_tabla_externa]',$campo);
         }
         return true;
@@ -198,16 +208,15 @@ class sql_bass{
 
     private function genera_estructura_init(array $campo, array $campos_obligatorios,  array $estructura_bd,
                                             string $tabla, string $vista):array{
-        if(!isset($campo['elemento_lista_campo'])){
-            return $this->error->error(mensaje: 'Error no existe $campo[elemento_lista_campo]',data: $campo,
-                params: get_defined_vars());
+        if(!isset($campo['adm_elemento_lista_campo'])){
+            return $this->error->error(mensaje: 'Error no existe $campo[adm_elemento_lista_campo]',data: $campo);
         }
         $bools = $this->genera_bools(campo: $campo,campos_obligatorios: $campos_obligatorios);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar bools',data: $bools, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar bools',data: $bools);
         }
-        if(!isset($campo['elemento_lista_css_id'])){
-            $campo['elemento_lista_css_id'] = '';
+        if(!isset($campo['adm_elemento_lista_css_id'])){
+            $campo['adm_elemento_lista_css_id'] = '';
         }
 
         $valor_extra = $this->valor_extra(campo: $campo);
@@ -215,15 +224,15 @@ class sql_bass{
             return $this->error->error('Error al obtener valor_extra',$valor_extra);
         }
 
-        if(isset($campo['elemento_lista_representacion']) && (string)$campo['elemento_lista_representacion']!==''){
-            $elemento_lista_representacion =(string)$campo['elemento_lista_representacion'];
+        if(isset($campo['adm_elemento_lista_representacion']) && (string)$campo['adm_elemento_lista_representacion']!==''){
+            $elemento_lista_representacion =(string)$campo['adm_elemento_lista_representacion'];
         }
         else{
             $elemento_lista_representacion = '';
         }
         $representacion = $elemento_lista_representacion;
 
-        if(!isset($campo['elemento_lista_pattern'])){
+        if(!isset($campo['adm_elemento_lista_pattern'])){
             $campo['elemento_lista_pattern'] = '';
         }
 
@@ -246,8 +255,8 @@ class sql_bass{
      */
     private function valor_extra(array $campo):mixed{
         $valor_extra = array();
-        if(isset($campo['elemento_lista_valor_extra']) && (string)$campo['elemento_lista_valor_extra']!==''){
-            $valor_extra = json_decode($campo['elemento_lista_valor_extra'], true, 512, JSON_THROW_ON_ERROR);
+        if(isset($campo['adm_elemento_lista_valor_extra']) && (string)$campo['adm_elemento_lista_valor_extra']!==''){
+            $valor_extra = json_decode($campo['adm_elemento_lista_valor_extra'], true, 512, JSON_THROW_ON_ERROR);
         }
         return $valor_extra;
     }
@@ -283,9 +292,9 @@ class sql_bass{
     private function inicializa_estructura(array $bools, array $campo, array $estructura_bd, string $representacion,
                                            string $tabla, array $valor_extra, string $vista):array{
 
-        $keys = array('elemento_lista_campo','elemento_lista_cols','elemento_lista_tipo',
-            'elemento_lista_tabla_externa',
-            'elemento_lista_etiqueta','elemento_lista_descripcion','elemento_lista_id');
+        $keys = array('adm_elemento_lista_campo','adm_elemento_lista_cols','adm_elemento_lista_tipo',
+            'adm_elemento_lista_tabla_externa', 'adm_elemento_lista_etiqueta','adm_elemento_lista_descripcion',
+            'adm_elemento_lista_id');
 
         $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $campo);
         if(errores::$error){
@@ -333,14 +342,12 @@ class sql_bass{
 
         foreach ($estructura_init as $campo){
             if(!is_array($campo)){
-                return $this->error->error(mensaje: 'Error al campo debe ser un array',data: $estructura_init,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al campo debe ser un array',data: $estructura_init);
             }
             $estructura_bd = $this->genera_estructura_init(campo: $campo,campos_obligatorios: $campos_obligatorios,
                 estructura_bd:  $estructura_bd, tabla: $tabla, vista: $vista);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd);
             }
 
         }
@@ -366,12 +373,11 @@ class sql_bass{
     private function true_false(array $campo, string $key):array|bool{
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key no puede venir vacio',data: $key, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error key no puede venir vacio',data: $key);
         }
-        $key_row = 'elemento_lista_'.$key;
+        $key_row = 'adm_elemento_lista_'.$key;
         if(!isset($campo[$key_row])){
-            return $this->error->error(mensaje:'Error $campo[elemento_lista_'.$key.'] debe existir',data:$campo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $campo[adm_elemento_lista_'.$key.'] debe existir',data:$campo);
         }
         $data = false;
         if($campo[$key_row] === 'activo'){

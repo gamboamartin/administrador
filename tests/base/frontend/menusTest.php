@@ -55,8 +55,8 @@ class menusTest extends test {
         errores::$error = false;
 
         $etiqueta = array();
-        $etiqueta['accion_descripcion'] = 'a';
-        $etiqueta['accion_icono'] = 'a';
+        $etiqueta['adm_accion_descripcion'] = 'a';
+        $etiqueta['adm_accion_icono'] = 'a';
         $resultado = $m->data_menu($etiqueta);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);

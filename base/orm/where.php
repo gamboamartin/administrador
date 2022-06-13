@@ -59,7 +59,8 @@ class where{
     }
 
     /**
-     * FULL
+     * Funcion que ajusta el valor de un  campo de un registro y agregarle comillas
+     * @version 1.12.8
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] sino un string
      * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
@@ -67,7 +68,7 @@ class where{
      */
     private function campo(array|string|null $data, string $key):string|array{
         if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio",data:  $key, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error key vacio",data:  $key);
         }
         $campo = $data['campo'] ?? $key;
         return addslashes($campo);
@@ -95,21 +96,19 @@ class where{
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
 
         if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio", data: $key, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error key vacio", data: $key);
         }
         if(is_array($data) && count($data) === 0){
-            return $this->error->error(mensaje:"Error datos vacio",data: $data, params: get_defined_vars());
+            return $this->error->error(mensaje:"Error datos vacio",data: $data);
         }
         $datas = new stdClass();
         $datas->campo = $this->campo(data: $data,key:  $key);
         if(errores::$error){
-            return $this->error->error(mensaje:"Error al maquetar campo",data: $datas->campo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:"Error al maquetar campo",data: $datas->campo);
         }
         $datas->value = $this->value(data: $data);
         if(errores::$error){
-            return $this->error->error(mensaje:"Error al validar maquetacion",data: $datas->value,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:"Error al validar maquetacion",data: $datas->value);
         }
         if(isset($data['es_sq']) && $data['es_sq']){
             $datas->campo = $columnas_extra[$key];
@@ -502,8 +501,7 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
-                    params: get_defined_vars());
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro);
             }
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data, key: $key);
             if(errores::$error){
@@ -1251,8 +1249,9 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
+     * @version
      * $data[(string)campo] $data[(string)value] sino un string
      * @return string|array
      */
@@ -1262,10 +1261,10 @@ class where{
             $value = trim($data['value']);
         }
         if(is_array($data) && count($data) === 0){
-            return $this->error->error(mensaje: "Error datos vacio",data: $data, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error datos vacio",data: $data);
         }
         if(is_array($data) && !isset($data['value'])){
-            return $this->error->error(mensaje:"Error no existe valor",data: $data, params: get_defined_vars());
+            return $this->error->error(mensaje:"Error no existe valor",data: $data);
         }
         return addslashes($value);
     }

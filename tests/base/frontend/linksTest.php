@@ -122,8 +122,8 @@ class linksTest extends test {
         errores::$error = false;
 
         $accion = array();
-        $accion['seccion_descripcion'] = 'a';
-        $accion['accion_descripcion'] = 'a';
+        $accion['adm_seccion_descripcion'] = 'a';
+        $accion['adm_accion_descripcion'] = 'a';
         $resultado = $links->init_link($accion);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

@@ -48,7 +48,7 @@ class sql_bassTest extends test {
         $bools_asignar = array();
         $bools = array();
         $bools_asignar[] = 'z';
-        $campo['elemento_lista_z'] = 'b';
+        $campo['adm_elemento_lista_z'] = 'b';
 
         $resultado = $sql->asigna_booleanos($bools, $bools_asignar, $campo);
         $this->assertIsArray( $resultado);
@@ -79,17 +79,41 @@ class sql_bassTest extends test {
         $resultado = $sql->asigna_data_bool($bool, $bools, $campo);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo[elemento_lista_a] debe existir', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error $campo[adm_elemento_lista_a] debe existir', $resultado['mensaje']);
 
         errores::$error = false;
 
         $campo = array();
         $bool = 'a';
         $bools = array();
-        $campo['elemento_lista_a'] = 'z';
+        $campo['adm_elemento_lista_a'] = 'z';
         $resultado = $sql->asigna_data_bool($bool, $bools, $campo);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    public function test_coma_sql(){
+        errores::$error = false;
+
+        $sql = new sql_bass($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $columnas = '';
+        $resultado = $sql->coma_sql(columnas: $columnas);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $columnas = 'x';
+        $resultado = $sql->coma_sql(columnas: $columnas);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' , ', $resultado);
 
         errores::$error = false;
     }
@@ -117,14 +141,14 @@ class sql_bassTest extends test {
         $resultado = $sql->true_false($campo, $key);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo[elemento_lista_a]', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error $campo[adm_elemento_lista_a]', $resultado['mensaje']);
 
         errores::$error = false;
 
 
         $campo = array();
         $key = 'a';
-        $campo['elemento_lista_a'] = 'activo';
+        $campo['adm_elemento_lista_a'] = 'activo';
         $resultado = $sql->true_false($campo, $key);
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -135,7 +159,7 @@ class sql_bassTest extends test {
 
         $campo = array();
         $key = 'a';
-        $campo['elemento_lista_a'] = 'inactivo';
+        $campo['adm_elemento_lista_a'] = 'inactivo';
         $resultado = $sql->true_false($campo, $key);
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);

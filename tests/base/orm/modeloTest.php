@@ -4,7 +4,8 @@ namespace tests\src;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\seccion;
+use models\adm_seccion;
+
 
 
 class modeloTest extends test {
@@ -15,114 +16,16 @@ class modeloTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_add_column(){
-        errores::$error = false;
-
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
-
-        $alias = '';
-        $campo = '';
-        $resultado = $modelo->add_column(alias: $alias, campo: $campo);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $alias = '';
-        $campo = 'x';
-        $resultado = $modelo->add_column(alias: $alias, campo: $campo);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $alias no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $alias = 'x';
-        $campo = 'x';
-        $resultado = $modelo->add_column(alias: $alias, campo: $campo);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('IFNULL( SUM(x) ,0)AS x', $resultado);
-
-        errores::$error = false;
-    }
-
-    public function test_coma_sql(){
-        errores::$error = false;
-
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
 
-        $columnas = '';
-        $resultado = $modelo->coma_sql(columnas: $columnas);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
 
-        errores::$error = false;
 
-        $columnas = 'x';
-        $resultado = $modelo->coma_sql(columnas: $columnas);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' , ', $resultado);
 
-        errores::$error = false;
-    }
-
-    public function test_data_campo_suma(){
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
-
-        $alias = '';
-        $campo = '';
-        $columnas = '';
-        $resultado = $modelo->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $alias = '';
-        $campo = 'x';
-        $columnas = '';
-        $resultado = $modelo->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $alias no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $alias = 'x';
-        $campo = 'x';
-        $columnas = '';
-        $resultado = $modelo->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('IFNULL( SUM(x) ,0)AS x', $resultado->column);
-
-        errores::$error = false;
-
-        $alias = 'x';
-        $campo = 'x';
-        $columnas = 'x';
-        $resultado = $modelo->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' , ', $resultado->coma);
-
-        errores::$error = false;
-    }
 
     public function test_data_sentencia(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
 
@@ -151,7 +54,7 @@ class modeloTest extends test {
     public function test_filtro_or(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
 
         $resultado = $modelo->filtro_or();
@@ -161,63 +64,19 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
-    public function test_group_by_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
 
-        $group_by = array();
-        $resultado = $modelo->group_by_sql($group_by);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
 
-        errores::$error = false;
-
-        $group_by = array();
-        $group_by[] = '';
-        $resultado = $modelo->group_by_sql($group_by);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $group_by = array();
-        $group_by[] = 'a';
-        $resultado = $modelo->group_by_sql($group_by);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' GROUP BY a ', $resultado);
-        errores::$error = false;
-    }
-
-    public function test_limit_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
-
-
-        $limit = '1';
-        $resultado = $modelo->limit_sql($limit);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' LIMIT 1', $resultado);
-        errores::$error = false;
-    }
 
     public function test_obten_data(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
         $resultado = $modelo->obten_data();
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el id debe ser mayor a 0 en el modelo seccion', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error el id debe ser mayor a 0 en el modelo adm_seccion', $resultado['mensaje']);
 
         errores::$error = false;
         $modelo->registro_id = 1;
@@ -231,7 +90,7 @@ class modeloTest extends test {
     public function test_obten_por_id(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
         $resultado = $modelo->obten_por_id();
@@ -251,14 +110,14 @@ class modeloTest extends test {
     public function test_obten_registros_filtro_and_ordenado(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
 
 
         $campo = '';
         $filtros = array();
         $orden = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo,false, $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error los filtros no pueden venir vacios', $resultado['mensaje']);
@@ -269,7 +128,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros[] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error campo no pueden venir vacios', $resultado['mensaje']);
@@ -280,58 +139,32 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros['a'] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al ejecutar sql', $resultado['mensaje']);
 
         errores::$error = false;
 
-        $campo = 'seccion.id';
+        $campo = 'adm_seccion.id';
         $filtros = array();
         $orden = '';
-        $filtros['seccion.id'] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, $filtros, $orden);
+        $filtros['adm_seccion.id'] = '';
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
 
     }
 
-    public function test_offset_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
-        $offset = '1';
-        $resultado = $modelo->offset_sql($offset);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' OFFSET 1', $resultado);
-        errores::$error = false;
-    }
 
-    public function test_params_sql(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
 
-        $group_by = array();
-        $limit = 1;
-        $offset = 1;
-        $order = array();
-        $resultado = $modelo->params_sql($group_by, $limit, $offset, $order);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_registro(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
         $resultado = $modelo->registro(registro_id: 1);
         $this->assertIsArray( $resultado);
@@ -340,55 +173,11 @@ class modeloTest extends test {
 
     }
 
-    public function test_registro_ins(): void
-    {
-        errores::$error = false;
-        $modelo = new seccion($this->link);
-        $modelo = new liberator($modelo);
-
-        $status_default = '';
-        $registro = array();
-        $resultado = $modelo->registro_ins($registro, $status_default);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error status_default no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $status_default = 'a';
-        $registro = array();
-        $resultado = $modelo->registro_ins($registro, $status_default);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado['status']);
-
-        errores::$error = false;
-        $modelo->campos_encriptados = array('status');
-        $status_default = 'a';
-        $registro = array();
-        $resultado = $modelo->registro_ins($registro, $status_default);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SE7WlTQsa7AceVeNzanVCg==', $resultado['status']);
-
-        errores::$error = false;
-        $modelo->campos_encriptados = array('status');
-        $status_default = 'p';
-        $registro = array();
-        $resultado = $modelo->registro_ins($registro, $status_default);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('OM+frc65i8dAfMJhbnMd9A==', $resultado['status']);
-
-        errores::$error = false;
-    }
-
-
 
     public function test_seccion_menu_id(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
         $seccion = '';
@@ -409,7 +198,7 @@ class modeloTest extends test {
 
         errores::$error = false;
 
-        $seccion = 'seccion';
+        $seccion = 'adm_seccion';
         $resultado = $modelo->seccion_menu_id($seccion);
         $this->assertIsInt( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -423,7 +212,7 @@ class modeloTest extends test {
     public function test_sentencia_or(): void
     {
         errores::$error = false;
-        $modelo = new seccion($this->link);
+        $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
         $campo = '';

@@ -3,6 +3,7 @@ namespace base\frontend;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use models\accion;
+use models\adm_accion;
 use PDO;
 use stdClass;
 
@@ -92,17 +93,17 @@ class listas{
                                               string $class_link, PDO $link): array|string
     {
         if ($accion === '') {
-            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion);
         }
         $directiva = new directivas();
         $datos_accion = $this->datos_accion(accion: $accion, seccion: $seccion,link:  $link);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion);
         }
 
         $link_accion = $directiva->genera_link_accion(accion:$datos_accion, id: $id,session_id:  $session_id, class_link: $class_link);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar link',data:$link_accion, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar link',data:$link_accion);
         }
 
         return $link_accion;
@@ -234,8 +235,7 @@ class listas{
         $keys = array('representacion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida);
         }
 
         $dato = $this->init_dato_campo(campo: $campo,registro: $registro);
@@ -266,10 +266,8 @@ class listas{
         $keys = array('representacion','nombre_campo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida);
         }
-
 
         if(!isset($registro[$campo['nombre_campo']])){
             $registro[$campo['nombre_campo']] = '';
@@ -389,19 +387,17 @@ class listas{
      */
     private function datos_accion_bd(string $accion, PDO $link, string $seccion): array
     {
-        $accion_modelo = new accion(link: $link);
+        $accion_modelo = new adm_accion(link: $link);
 
-        $filtro['accion.descripcion'] = $accion;
-        $filtro['seccion.descripcion'] =$seccion;
+        $filtro['adm_accion.descripcion'] = $accion;
+        $filtro['adm_seccion.descripcion'] =$seccion;
 
         $resultado = $accion_modelo->filtro_and(filtro: $filtro);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener acciones', data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener acciones', data: $resultado);
         }
         if ((int)($resultado->n_registros) === 0) {
-            return $this->error->error( mensaje: 'Error no existen acciones', data:  $resultado,
-                params: get_defined_vars());
+            return $this->error->error( mensaje: 'Error no existen acciones', data:  $resultado);
         }
         return $resultado->registros[0];
     }
@@ -833,7 +829,7 @@ class listas{
     {
         $html = '';
 
-        $modelo_accion = new \models\accion(link: $link);
+        $modelo_accion = new \models\adm_accion(link: $link);
 
         foreach ($acciones as $accion){
 
@@ -841,16 +837,14 @@ class listas{
             $acciones_permitidas = $modelo_accion->obten_accion_permitida_session(seccion:$seccion, accion:$accion);
 
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $acciones_permitidas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $acciones_permitidas);
             }
 
             if ($acciones_permitidas) {
                 $link_accion = $this->asigna_datos_accion_link(accion: $accion, id: $id,seccion:  $seccion,
                     session_id: $session_id,class_link:  $class_link, link: $link);
                 if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al generar link',data: $link_accion,
-                        params: get_defined_vars());
+                    return $this->error->error(mensaje: 'Error al generar link',data: $link_accion);
                 }
                 $html.=$link_accion;
             }

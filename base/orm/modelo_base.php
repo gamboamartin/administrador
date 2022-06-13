@@ -2,13 +2,8 @@
 namespace base\orm;
 
 use gamboamartin\base_modelos\base_modelos;
-use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
-use models\atributo;
-use models\bitacora;
-use models\seccion;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -48,7 +43,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public array $models_dependientes = array();
     public bool $desactiva_dependientes = false;
     public bool $elimina_dependientes = false;
-    protected array $keys_data_filter;
+    public array $keys_data_filter;
     public array $no_duplicados = array();
 
     public string $key_id = '';
@@ -134,6 +129,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return trim($name_modelo);
     }
 
+    /**
+     * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
+     * hijos
+     * @version 1.22.10
+     * @param array $campos_encriptados Conjunto de campos a encriptar desencriptar declarados en el modelo en ejecucion
+     * @param array $modelos_hijos Conjunto de modelos que dependen del modelo en ejecucion
+     * @param array $row Registro a integrar elementos encriptados o con dependientes
+     * @return array Registro con los datos ajustados tanto en la encriptacion como de sus dependientes
+     */
     private function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
     {
         $row = (new inicializacion())->asigna_valor_desencriptado(campos_encriptados: $campos_encriptados,
@@ -146,41 +150,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(count($modelos_hijos)>0) {
             $row = $this->genera_registros_hijos(modelos_hijos: $modelos_hijos,row:  $row);
             if (errores::$error) {
-                return $this->error->error(mensaje: "Error en registro",data: $row, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error en registro",data: $row);
             }
         }
         return $row;
     }
 
-    /**
-     * P INT ERRORREV P ORDER
-     * @param string $tabla
-     * @param string $funcion
-     * @param string $consulta
-     * @param int $registro_id
-     * @return array
-     */
-    private function aplica_bitacora(string $consulta, string $funcion, int $registro_id, string $tabla): array
-    {
-        $model = $this->genera_modelo(modelo: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar modelo'.$tabla,data: $model,
-                params: get_defined_vars());
-        }
 
-        $registro_bitacora = $model->registro(registro_id: $registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener registro de '.$tabla,data:$registro_bitacora,
-                params: get_defined_vars());
-        }
-
-        $bitacora = $this->bitacora(consulta: $consulta, funcion: $funcion, registro: $registro_bitacora);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al insertar bitacora de '.$tabla,data:$bitacora,
-                params: get_defined_vars());
-        }
-        return $bitacora;
-    }
 
     /**
      * PHPUNIT
@@ -275,99 +251,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $ceros;
     }
 
-    /**
-     * P INT P ORDER ERROREV
-     * Devuelve un arreglo con las columnas y el valor del ID del usuario
-     *
-     * @return array
-     *
-     * @example
-     *      $data_asignacion = $this->asigna_data_user_transaccion();
-     *
-     * @uses modelos->alta_bd();
-     */
-    protected function asigna_data_user_transaccion(): array
-    {//FIN
-        if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error no existe usuario',data: $_SESSION, params: get_defined_vars());
-        }
-        if($_SESSION['usuario_id'] <= 0){
-            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id'],
-                params: get_defined_vars());
-        }
 
-        $usuario_alta_id = $_SESSION['usuario_id'];
-        $usuario_upd_id = $_SESSION['usuario_id'];
-        $campos = ',usuario_alta_id,usuario_update_id';
-        $valores = ','.$usuario_alta_id.','.$usuario_upd_id;
 
-        return array('campos'=>$campos,'valores'=>$valores);
-    }
+
 
     /**
-     * P INT P ORDER ERROREV
-     * Devuelve un arreglo que contiene los campos necesarios para un registro en la bitacora
      *
-     * @param array $seccion_menu es un arreglo que indica a que parte del catalogo pertenece la accion
-     * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
-     * @param string $funcion es una cadena que indica que funcion o accion se utilizo
-     * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
-     * realiza la accion que se utilizo
-     * @return array
-     * @throws errores Si $seccion_menu es menor o igual a 0
-     * @throws errores Si $funcion es una cadena vacia
-     * @throws errores Si $consulta es una cadena vacia
-     * @throws errores|JsonException Si $registro_id es menor o igual a 0*@throws \JsonException
-     * @example
-     *      $resultado = asigna_registro_para_bitacora('seccion_menu_id'=>'1'),array('x'),'x','x');
-     *      //return $registro_data = array('seccion_menu_id'=>'1','status'=>'activo','registro'=>'json_encode($registro)',
-     *      'usuario_id'=>'$_SESSION['usuario_id']','transaccion'=>'x','sql_data'=>'x','valor_id'=>'$this->registro_id');
-     *
-     * @example
-     *      $resultado = asigna_registro_para_bitacora(array('seccion_menu_id'=>'-1'),array('x'),'x','x')
-     *      //return array errores
-     * @example
-     *      $resultado = asigna_registro_para_bitacora(array('seccion_menu_id'=>'1'),array('x'),'','x')
-     *      //return array errores
-     * @example
-     *      $resultado = asigna_registro_para_bitacora(array('seccion_menu_id'=>'1'),array('x'),'x','')
-     *      //return array errores
-     * @example
-     *      $resultado = asigna_registro_para_bitacora(array('seccion_menu_id'=>'1'),$registro_id='-1','x','x')
-     *      //return array errores
-     */
-    private function asigna_registro_para_bitacora(string $consulta,string $funcion, array $registro, array $seccion_menu): array
-    {//FIN Y DOC
-        if($seccion_menu['seccion_menu_id']<=0){
-            return$this->error->error(mensaje: 'Error el id de $seccion_menu[\'seccion_menu_id\'] no puede ser menor a 0',
-                data: $seccion_menu['seccion_menu_id'], params: get_defined_vars());
-        }
-        if($funcion === ''){
-            return $this->error->error(mensaje: 'Error $funcion no puede venir vacia',data:$funcion,
-                params: get_defined_vars());
-        }
-        if($consulta === ''){
-            return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data:$consulta,
-                params: get_defined_vars());
-        }
-        if($this->registro_id<=0){
-            return $this->error->error(mensaje: 'Error el id de $this->registro_id no puede ser menor a 0',
-                data:$this->registro_id, params: get_defined_vars());
-        }
-        $registro_data['seccion_menu_id'] = $seccion_menu['seccion_menu_id'];
-        $registro_data['status'] = 'activo';
-        $registro_data['registro'] = json_encode($registro, JSON_THROW_ON_ERROR);
-        $registro_data['usuario_id'] = $_SESSION['usuario_id'];
-        $registro_data['transaccion'] = $funcion;
-        $registro_data['sql_data'] = $consulta;
-        $registro_data['valor_id'] = $this->registro_id;
-
-        return $registro_data;
-    }
-
-    /**
-     * FULL
      * Funcion que asigna un registro encontrado para hijos en las diferentes consultas
+     * @version 1.16.9
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
      * @param array $filtro datos para la obtencion de los registros a filtrar
@@ -382,21 +273,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function asigna_registros_hijo(array $filtro, string $name_modelo, string $nombre_estructura, array $row):array{
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida);
         }
         if($nombre_estructura === ''){
-            return  $this->error->error('Error nombre estructura no puede venir vacia',$nombre_estructura);
+            return  $this->error->error(mensaje: 'Error nombre estructura no puede venir vacia',
+                data: $nombre_estructura);
         }
 
         $modelo = $this->genera_modelo(modelo: $name_modelo);
         if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo);
+            return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo);
         }
         $data = $modelo->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar registro hijos', data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar registro hijos', data: $data);
         }
         $row[$nombre_estructura] = $data->registros;
 
@@ -404,93 +294,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    /**
-     * P ORDER P INT ERROREV
-     * @param string $tabla
-     * @return array
-     */
-    private function atributos(string $tabla): array
-    {
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $tabla,
-                params: get_defined_vars());
-        }
-        $modelo_atributo = new atributo($this->link);
-        $filtro['seccion.descripcion'] = $tabla;
-        $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener atributos', data: $r_atributo,
-                params: get_defined_vars());
-        }
-        return $r_atributo->registros;
-    }
-
-    /**
-     * P INT P ORDER ERRORREV
-     * Inserta una transaccion de bitacora
-     * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
-     * @param string $funcion es una cadena que indica que funcion o accion se utilizo
-     * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
-     * realiza la accion que se utilizo
-     * @return array resultados de inserciones de bitacora
-     * @example
-     *      $registro_bitacora = $this->obten_data();
-     * if(isset($registro_bitacora['error'])){
-     * return $this->error->error('Error al obtener registro',
-     * __CLASS__,$registro_bitacora);
-     * $bitacora = $this->bitacora($registro_bitacora,__FUNCTION__,$consulta );
-     * @internal  $this->genera_bitacora($registro,$funcion, $consulta)
-     * @uses   modelo
-     */
-    protected function bitacora(string $consulta, string $funcion, array $registro): array
-    {
-        $bitacora = array();
-        if($this->aplica_bitacora){
-            $namespace = 'models\\';
-            $this->tabla = str_replace($namespace,'',$this->tabla);
-            $clase = $namespace.$this->tabla;
-            if($this->tabla === ''){
-                return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla,
-                    params: get_defined_vars());
-            }
-            if(!class_exists($clase)){
-                return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
-                    params: get_defined_vars());
-            }
-            if($funcion === ''){
-                return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion,
-                    params: get_defined_vars());
-            }
-            if($consulta === ''){
-                return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta,
-                    params: get_defined_vars());
-            }
-            if($this->registro_id<=0){
-                return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
-                    data: $this->registro_id, params: get_defined_vars());
-            }
-            $r_bitacora = $this->genera_bitacora(consulta:  $consulta, funcion: $funcion, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al generar bitacora en '.$this->tabla,data:$r_bitacora,
-                    params: get_defined_vars());
-            }
-            $bitacora = $r_bitacora;
-        }
-
-        return $bitacora;
-    }
-
-
-    /**
-     * P INT P ORDER ERRORREV
-     * @return string
-     */
-    private function class_attr(): string
-    {
-        $namespace = 'models\\';
-        $clase_attr = str_replace($namespace,'',$this->tabla);
-        return 'models\\attr_'.$clase_attr;
-    }
 
 
 
@@ -608,7 +411,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         $consulta = /** @lang MYSQL */
-            'SELECT count(*) AS existe FROM usuario WHERE usuario.id = '.$this->usuario_id;
+            'SELECT count(*) AS existe FROM adm_usuario WHERE adm_usuario.id = '.$this->usuario_id;
         $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
 
         if(errores::$error){
@@ -656,81 +459,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-
-
     /**
      * ALFABETICO
      */
 
 
-
-    /**
-     * P INT P ORDER
-     * @param int $parent_id
-     * @param string $tabla_children
-     * @return array
-     */
-    protected function data_dependientes(int $parent_id, string $tabla_children): array
-    {
-        $valida = $this->validacion->valida_name_clase(tabla: $this->tabla);
-        if(errores::$error){
-            return $this->error->error('Error al validar tabla',$valida);
-        }
-        if($parent_id<=0){
-            return $this->error->error('Error $parent_id debe ser mayor a 0',$parent_id);
-        }
-
-        $modelo_children = $this->genera_modelo(modelo: $tabla_children);
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo_children);
-        }
-
-
-        $key_id = $this->tabla.'.id';
-        $filtro[$key_id] = $parent_id;
-
-        $result = $modelo_children->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error('Error al obtener dependientes',$result);
-        }
-        return $result['registros'];
-    }
-
-    /**
-     * P ORDER P INT ERROREV
-     * @param array $atributo Registro de tipo modelo atributo
-     * @param int $registro_id
-     * @return array
-     */
-    private function data_inst_attr(array $atributo, int $registro_id): array
-    {
-        $keys = array('atributo_descripcion','atributo_id');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        $keys = array('atributo_id');
-        $valida = $this->validacion->valida_ids(keys:  $keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
-        }
-        $this->tabla = trim($this->tabla);
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error $this->tabla esta vacia',data: $this->tabla,
-                params: get_defined_vars());
-        }
-
-        $data_ins['descripcion'] = $atributo['atributo_descripcion'];
-        $data_ins['status'] = 'activo';
-        $data_ins['atributo_id'] = $atributo['atributo_id'];
-        $data_ins[$this->tabla.'_id'] = $registro_id;
-        $data_ins['valor'] = '';
-        return $data_ins;
-    }
 
 
 
@@ -804,7 +537,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error('Error $parent_id debe ser mayor a 0',$parent_id);
         }
 
-        $dependientes = $this->data_dependientes($parent_id, $tabla_dep);
+        $dependientes = (new dependencias())->data_dependientes(link: $this->link,parent_id: $parent_id,
+            tabla: $this->tabla, tabla_children: $tabla_dep);
         if(errores::$error){
             return $this->error->error('Error al obtener dependientes',$dependientes);
         }
@@ -833,8 +567,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que ejecuta un query de tipo select
+     * @version 1.24.12
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param string $consulta Consulta en forma de SQL para su ejecucion directa
      * @param array $campos_encriptados Campos encriptados de un modelo
@@ -849,7 +584,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion_grupo
      */
     public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                     array $hijo = array()): array|stdClass{ 
+                                     array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
@@ -885,33 +620,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    /**
-     * P INT ERRORREV
-     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @return array|string
-     */
-    protected function ejecuta_insersion_attr(int $registro_id): array|string
-    {
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id,
-                params: get_defined_vars());
-        }
-
-        $clase_attr = $this->class_attr();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener class', data: $clase_attr,
-                params: get_defined_vars());
-        }
-        if(class_exists($clase_attr)){
-
-            $r_ins = $this->inserta_data_attr(clase_attr: $clase_attr, registro_id: $registro_id);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar atributos',data:  $r_ins,
-                    params: get_defined_vars());
-            }
-        }
-        return $clase_attr;
-    }
 
     /**
      *
@@ -933,7 +641,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses modelo
      * @url http://doc.ciproteo.com:3443/en/home/Sistemas/Manuales/Tecnicos/modelo_basico/ejecuta_sql
      */
-    protected function ejecuta_sql(string $consulta):array|stdClass{
+    public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
             return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla);
         }
@@ -960,33 +668,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    /**
-     * P INT ERRORREV P ORDER
-     * @param string $tabla
-     * @param string $funcion
-     * @param int $registro_id
-     * @return array
-     */
-    protected function ejecuta_transaccion(string $tabla, string $funcion, int $registro_id = -1):array{
-        $consulta = $this->consulta;
-        if($this->consulta === ''){
-            return $this->error->error(mensaje: 'La consulta no puede venir vacia del modelo '.$this->tabla,
-                data: $this->consulta, params: get_defined_vars());
-        }
-        $resultado = $this->ejecuta_sql(consulta: $consulta);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql en '.$tabla,data:$resultado,
-                params: get_defined_vars());
-        }
-        $bitacora = $this->aplica_bitacora(consulta: $consulta, funcion: $funcion, registro_id:  $registro_id,
-            tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al insertar bitacora en '.$tabla,data:$bitacora,
-                params: get_defined_vars());
-        }
-
-        return $bitacora;
-    }
 
     /**
      * PHPUNIT
@@ -1415,65 +1096,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-    /**
-     * P INT P ORDER ERROREV
-     * Inserta un registro de bitacora de la tabla afectada
-     * @param array $registro es el registro afectado por la accion del sistema
-     * @param string $funcion es la funcion que se aplica sobre el registro
-     * @param string $consulta el la sentencia sql de la funcion aplicada
-     * @return array con registro de insersion de bitacora
-     * @throws errores definidos en internals
-     * @example
-     *     $r_bitacora = $this->genera_bitacora($registro,$funcion, $consulta);
-     * @uses modelo_basico->bitacora
-     * @internal $this->maqueta_data_bitacora($registro,$funcion, $consulta);
-     * @internal $bitacora_modelo->alta_bd();
-     */
-    private function genera_bitacora(string $consulta, string $funcion, array $registro): array{
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio', data: $this->tabla,
-                params: get_defined_vars());
-        }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
-                params: get_defined_vars());
-        }
-        if($funcion === ''){
-            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion,
-                params: get_defined_vars());
-        }
-        if($consulta === ''){
-            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta,
-                params: get_defined_vars());
-        }
-        if($this->registro_id<=0){
-            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
-                data:$this->registro_id, params: get_defined_vars());
-        }
 
-        $bitacora_modelo = (new bitacora($this ->link));
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener bitacora',data:$bitacora_modelo,
-                params: get_defined_vars());
-        }
-
-
-        $bitacora_modelo->registro = $this->maqueta_data_bitacora(consulta:  $consulta, funcion: $funcion,
-            registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener MAQUETAR REGISTRO PARA BITACORA',
-                data:$bitacora_modelo->registro, params: get_defined_vars());
-        }
-        $r_bitacora = $bitacora_modelo->alta_bd();
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al insertar bitacora',data:$r_bitacora,
-                params: get_defined_vars());
-        }
-        return $r_bitacora;
-    }
 
     /**
      * P INT P ORDER
@@ -1491,7 +1114,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
         }
 
-        $elemento_lista = $this->genera_modelo(modelo: 'elemento_lista');
+        $elemento_lista = $this->genera_modelo(modelo: 'adm_elemento_lista');
         if(errores::$error){
             return $this->error->error('Error al generar modelo',$elemento_lista);
         }
@@ -1545,108 +1168,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $r_foto;
     }
 
-    /**
-     * P INT ERRORREV
-     * @param array $atributo Registro de tipo modelo atributo
-     * @param int $registro_id
-     * @param string $tabla
-     * @return array
-     */
-    private function inserta_atributo(array $atributo, int $registro_id, string $tabla): array
-    {
-        $keys = array('atributo_descripcion','atributo_id');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        $keys = array('atributo_id');
-        $valida = $this->validacion->valida_ids( keys:$keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida, params: get_defined_vars());
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
-        }
-
-        $data_ins = $this->data_inst_attr(atributo: $atributo,registro_id:  $registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar atributos', data: $data_ins,
-                params: get_defined_vars());
-        }
-
-        $modelo = $this->genera_modelo(modelo: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo, params: get_defined_vars());
-        }
-
-        $r_ins = $modelo->alta_registro(registro: $data_ins);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar atributos',data:  $r_ins, params: get_defined_vars());
-        }
-        return $r_ins;
-    }
-
-    /**
-     * P INT ERROREV
-     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @param string $tabla_attr
-     * @return array
-     */
-    private function inserta_atributos( int $registro_id, string $tabla_attr): array
-    {
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $this->tabla,
-                params: get_defined_vars());
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id,
-                params: get_defined_vars());
-        }
-
-
-        $atributos = $this->atributos(tabla: $tabla_attr);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener atributos', data: $atributos,
-                params: get_defined_vars());
-        }
-
-        foreach($atributos as $atributo){
-            $r_ins = $this->inserta_atributo(atributo: $atributo,registro_id:  $registro_id,tabla:  $tabla_attr);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins,
-                    params: get_defined_vars());
-            }
-        }
-        return $atributos;
-    }
-
-
-
-    /**
-     * P INT ERROREV
-     * @param string $clase_attr
-     * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @return array
-     */
-    private function inserta_data_attr(string $clase_attr, int $registro_id): array
-    {
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id,
-                params: get_defined_vars());
-        }
-
-        $model_attr = $this->genera_modelo(modelo: $clase_attr);
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo', $model_attr);
-        }
-
-        $r_ins = $this->inserta_atributos(registro_id:  $registro_id,tabla_attr:  $model_attr->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins, params: get_defined_vars());
-        }
-        return $r_ins;
-    }
 
 
 
@@ -1670,15 +1191,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  modelos->accion_grupo->obten_accion_permitida
      */
 
-    protected function genera_consulta_base(array $columnas = array(), array $extension_estructura = array(),
+    protected function genera_consulta_base(array $columnas = array(), $columnas_by_table = array(),
+                                            bool $columnas_en_bruto = false, array $extension_estructura = array(),
                                             array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
-        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
-            columnas_sql: $columnas_seleccionables, extension_estructura:  $extension_estructura,
-            renombres:  $renombradas);
+        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this, columnas_by_table:$columnas_by_table,
+            columnas_en_bruto:$columnas_en_bruto, columnas_sql: $columnas_seleccionables,
+            extension_estructura:  $extension_estructura, renombres:  $renombradas);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql);
         }
@@ -1693,8 +1215,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
             columnas_seleccionables: $columnas_seleccionables);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sub querys', data: $sub_querys_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sub querys', data: $sub_querys_sql);
         }
 
 
@@ -1706,8 +1227,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
+     *
      * Funcion que genera un modelo a partir del nombre
+     * @version 1.15.9
      *
      * @param string $modelo txt con el nombre del modelo a crear
      * @example
@@ -1725,7 +1247,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $modelo = trim($modelo);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida, params: get_defined_vars());
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
         }
         return new $modelo($this->link);
     }
@@ -1788,8 +1310,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que asigna los registros encontrados de hijos en un registro
+     * @version 1.16.9
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
      * @param array $data_modelo datos de parametrizacion de datos para la ejecucion de obtencion de los registros
@@ -1806,24 +1329,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function genera_registro_hijo(array $data_modelo, string $name_modelo, array $row):array{
         if(!isset($data_modelo['nombre_estructura'])){
             return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                data: $data_modelo, params: get_defined_vars());
+                data: $data_modelo);
         }
         $filtro = $this->obten_filtro_para_hijo(data_modelo: $data_modelo,row: $row);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error filtro",data: $filtro, params: get_defined_vars());
+            return  $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
         $row = $this->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
             nombre_estructura: $data_modelo['nombre_estructura'],row: $row);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row);
         }
         return $row;
     }
 
     /**
-     * FULL
+     *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
+     * @version 1.16.9
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
      * @example
@@ -1836,19 +1359,29 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function genera_registros_hijos(array $modelos_hijos, array $row):array{
         foreach($modelos_hijos as $name_modelo=>$data_modelo){
             if(!is_array($data_modelo)){
-                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, params: get_defined_vars());
+                $fix = '$modelos_hijos debe ser un array asociativo de la siguiente forma';
+                $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
+                $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
+                $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
+                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, fix: $fix);
             }
 
             if(!isset($data_modelo['nombre_estructura'])){
                 return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                    data: $data_modelo, params: get_defined_vars());
+                    data: $data_modelo);
+            }
+            if(!is_string($name_modelo)){
+                $fix = '$modelos_hijos debe ser un array asociativo de la siguiente forma';
+                $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
+                $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
+                $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
+                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo);
             }
 
             $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo,
                 row: $row);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row);
             }
 
         }
@@ -1908,8 +1441,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
+     * @version 1.24.10
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @param array $campos_encriptados Conjunto de campos para desencriptar
@@ -1922,7 +1456,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array registro del modelo con registros hijos asignados
      * @throws errores Errores definidos en las creaciones de hijos
      */
-    PUBLIC function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql,
+    private function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql,
                                               array $campos_encriptados = array()):array{
         $new_array = array();
         while( $row = $r_sql->fetchObject()){
@@ -1940,63 +1474,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $new_array;
     }
 
-    /**
-     * P INT P ORDER ERRORREV
-     * Genera un array para insertarlo en la bitacora
-     *
-     * @param array $registro registro afectado
-     * @param string $funcion funcion de modelo
-     * @param string $consulta sql ejecutado
-     *
-     * @example
-     *      $this->maqueta_data_bitacora($registro,$funcion, $consulta);
-     *
-     * @return array registro afectado
-     * @throws errores definidos en internal
-     * @uses modelo_basico->genera_bitacora
-     * @internal $this->obten_seccion_bitacora();
-     * @internal $this->asigna_registro_para_bitacora($seccion_menu,$registro,$funcion, $consulta);
-     */
-    private function maqueta_data_bitacora(string $consulta, string $funcion, array $registro):array{
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla,
-                params: get_defined_vars());
-        }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
-                params: get_defined_vars());
-        }
-        if($funcion === ''){
-            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion,
-                params: get_defined_vars());
-        }
-        if($consulta === ''){
-            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta,
-                params: get_defined_vars());
-        }
-        if($this->registro_id<=0){
-            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
-                data:$this->registro_id, params: get_defined_vars());
-        }
-        $seccion_menu = $this->obten_seccion_bitacora();
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener seccion', data:$seccion_menu,
-                params: get_defined_vars());
-        }
 
-        $registro = $this->asigna_registro_para_bitacora(consulta: $consulta, funcion: $funcion, registro: $registro,
-            seccion_menu: $seccion_menu);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener MAQUETAR REGISTRO PARA BITACORA', data:$registro,
-                params: get_defined_vars());
-        }
-
-
-        return $registro;
-    }
 
 
 
@@ -2250,41 +1728,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    /**
-     * FULL
-     * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
-     *  variable de session para su reutilizacion futura
-     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
-     * @example
-     * $columnas_parseadas = $this->obten_columnas($tabla_original);
-     */
-    public function obten_columnas(string $tabla_original):array|stdClass{
-        $tabla_original = trim(str_replace('models\\','',$tabla_original));
-        $tabla_bd = $tabla_original;
-        $clase_modelo = 'models\\'.$tabla_original;
 
-        if($tabla_bd === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
-        }
-        if(!class_exists($clase_modelo)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$clase_modelo,data:  $clase_modelo);
-        }
-
-        $se_asignaron_columnas = (new columnas())->asigna_columnas_en_session(modelo: $this, tabla_bd: $tabla_bd);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas);
-        }
-        if(!$se_asignaron_columnas){
-            $columnas_field = (new columnas())->asigna_columnas_session_new(modelo:$this, tabla_bd: $tabla_bd);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
-                    params: get_defined_vars());
-            }
-        }
-
-        return $this->data_columnas;
-    }
 
 
     /**
@@ -2307,16 +1751,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     private function obten_filtro_para_hijo(array $data_modelo, array $row):array{
         if(!isset($data_modelo['filtros'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
         if(!isset($data_modelo['filtros_con_valor'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros_con_valor] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
         if(!is_array($data_modelo['filtros'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
         if(!is_array($data_modelo['filtros_con_valor'])){
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, params: get_defined_vars());
+            $fix = 'En data_modelo debe existir un key filtros_con_valor como array data_modelo[filtros_con_valor] = array()';
+            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
         }
 
         $filtros = $data_modelo['filtros'];
@@ -2324,7 +1772,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $filtro = $this->filtro_para_hijo(filtros: $filtros,row: $row);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error filtro",data: $filtro, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
 
         foreach($filtros_con_valor as $campo_filtro=>$value){
@@ -2362,53 +1810,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return $tabla_nombre;
     }
-
-    /**
-     * P INT P ORDER ERROREV
-     * Funcion que obtiene el registro de seccion menu para aplicacion de una bitacora
-     * @example
-    $seccion_menu = $this->obten_seccion_bitacora();
-     * @return array registro de seccion menu encontrado
-     * @throws errores definidos en filtro and
-     * @throws errores si no se encontro registro
-     * @internal  $seccion_menu_modelo->filtro_and($filtro);
-     * @uses modelo_basico->maqueta_data_bitacora
-     * @version Falta de UT
-     */
-    private function obten_seccion_bitacora(): array
-    {
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla,
-                params: get_defined_vars());
-        }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase,
-                params: get_defined_vars());
-        }
-
-        $seccion_menu_modelo = (new seccion($this->link));
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar modelo',data:$seccion_menu_modelo,
-                params: get_defined_vars());
-        }
-
-
-        $filtro['seccion_menu.descripcion'] = $this->tabla;
-        $r_seccion_menu = $seccion_menu_modelo->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener seccion menu',data:$r_seccion_menu,
-                params: get_defined_vars());
-        }
-        if((int)$r_seccion_menu['n_registros'] === 0){
-            return $this->error->error(mensaje:'Error no existe la seccion menu',data:$r_seccion_menu,
-                params: get_defined_vars());
-        }
-        return $r_seccion_menu['registros'][0];
-    }
-
 
 
     /**
@@ -2450,36 +1851,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $content;
     }
 
-    /**
-     *
-     * Funcion genera order en forma de sql
-     * @param array  $order con parametros para generar sentencia
-     * @version 1.0.0
-     * @return array|string cadena con order en forma de SQL
-     * @throws errores if order[campo] es un numero
-     * @example
-     * $order_sql = $this->order_sql($order);
-     * @uses modelo
-     */
-    protected function order_sql(array $order):array|string{
-        $order_sql = '';
-        foreach ($order as $campo=>$tipo_order){
-            if(is_numeric($campo)){
-                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order);
-            }
-            if($order_sql === ''){
-                $order_sql.=' ORDER BY '.$campo.' '.$tipo_order;
-            }
-            else {
-                $order_sql .= ',' . $campo.' '.$tipo_order;
-            }
-        }
-        return $order_sql;
-    }
+
 
     /**
-     * FULL
+     *
      * Funcion que asigna y genera los registros encontrados en un query
+     * @version 1.23.12
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @param array $campos_encriptados Campos encriptados de un modelo
      * @example
@@ -2516,9 +1893,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return $new_array;
     }
-
-
-
 
 }
 

@@ -1,7 +1,7 @@
 <?php /** @var stdClass $data */
 
 use gamboamartin\errores\errores;
-use models\menu; ?>
+use models\adm_menu;?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -43,7 +43,7 @@ echo $data->css_custom; ?>
     <div class="collapse navbar-collapse" id="main_nav">
         <?php if($data->menu){
 
-            $modelo_menu = new menu($data->link);
+            $modelo_menu = new adm_menu($data->link);
             $r_menu = $modelo_menu->obten_menu_permitido();
             if(errores::$error){
                 $error = $modelo_menu->error->error('Error al obtener menu',$r_menu);

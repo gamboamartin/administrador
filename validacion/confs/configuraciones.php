@@ -24,13 +24,12 @@ class configuraciones extends validacion {
         }
         $valida = $this->valida_conf_composer(tipo_conf: $tipo_conf);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar $tipo_conf.php",data:$valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al validar $tipo_conf.php",data:$valida);
         }
         return true;
     }
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * Valida las configuraciones para ejecutar el sistema
      * @throws JsonException
      */
     public function valida_confs(stdClass $paths_conf): bool|array
@@ -74,7 +73,8 @@ class configuraciones extends validacion {
     }
 
     /**
-     * TODO Valida que existan los arvhos de configuracion necesarios para arrancar el sistema
+     * Valida que existan los archivos de configuracion necesarios para arrancar el sistema
+     * @version 1.13.8
      * @param stdClass $paths_conf rutas de los archivos conf
      * @param string $tipo_conf tipos de configuraciones
      * @return bool|array

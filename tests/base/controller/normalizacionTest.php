@@ -6,6 +6,7 @@ use base\controller\normalizacion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_seccion;
 use models\seccion;
 
 
@@ -90,9 +91,9 @@ class normalizacionTest extends test {
 
         errores::$error = false;
         $controler = new controler();
-        $controler->modelo = new seccion($this->link);
-        $controler->seccion = 'seccion';
-        $controler->tabla = 'seccion';
+        $controler->modelo = new adm_seccion($this->link);
+        $controler->seccion = 'adm_seccion';
+        $controler->tabla = 'adm_seccion';
         $registro = array();
         $registro['a'] = 1;
 
@@ -252,7 +253,7 @@ class normalizacionTest extends test {
 
         $controler->seccion = 'a';
         $key = 'c';
-        $controler->modelo = new seccion($this->link);
+        $controler->modelo = new adm_seccion($this->link);
         $resultado = $nm->obten_key_envio($controler, $key);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);

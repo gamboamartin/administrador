@@ -18,17 +18,17 @@ class elementos{
      */
     public function campo_tabla_externa(array $campo): string|array
     {
-        $keys = array('elemento_lista_campo');
+        $keys = array('adm_elemento_lista_campo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
             return $this->error->error("Error al validar campo", $valida);
         }
 
-        $aplica_el_campo = !isset($campo['elemento_lista_campo_tabla_externa'])
-            ||(string)$campo['elemento_lista_campo_tabla_externa']==='';
+        $aplica_el_campo = !isset($campo['adm_elemento_lista_campo_tabla_externa'])
+            ||(string)$campo['adm_elemento_lista_campo_tabla_externa']==='';
 
         if($aplica_el_campo){
-            $campo_tabla_externa = $campo['elemento_lista_campo'];
+            $campo_tabla_externa = $campo['adm_elemento_lista_campo'];
         }
         else{
             $campo_tabla_externa = $this->data_campo_tabla_externa($campo);
@@ -46,11 +46,11 @@ class elementos{
      */
     public function columnas_elemento_lista(array $campo): string
     {
-        if(!isset($campo['elemento_lista_columnas']) ||(string)$campo['elemento_lista_columnas']===''){
+        if(!isset($campo['adm_elemento_lista_columnas']) ||(string)$campo['adm_elemento_lista_columnas']===''){
             $elemento_lista_columnas = '';
         }
         else{
-            $elemento_lista_columnas = $campo['elemento_lista_columnas'];
+            $elemento_lista_columnas = $campo['adm_elemento_lista_columnas'];
         }
         return $elemento_lista_columnas;
     }
@@ -62,12 +62,12 @@ class elementos{
      */
     private function data_campo_tabla_externa(array $campo): array|string
     {
-        $keys = array('elemento_lista_campo_tabla_externa');
+        $keys = array('adm_elemento_lista_campo_tabla_externa');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
             return $this->error->error("Error al validar campo", $valida);
         }
-        return (string)$campo['elemento_lista_campo_tabla_externa'];
+        return (string)$campo['adm_elemento_lista_campo_tabla_externa'];
     }
 
     /**
@@ -77,11 +77,11 @@ class elementos{
      */
     public function elemento_lista_css_id(array $campo): string
     {
-        if(!isset($campo['elemento_lista_css_id']) ||(string)$campo['elemento_lista_css_id']===''){
+        if(!isset($campo['adm_elemento_lista_css_id']) ||(string)$campo['adm_elemento_lista_css_id']===''){
             $elemento_lista_css_id = '';
         }
         else{
-            $elemento_lista_css_id = $campo['elemento_lista_css_id'];
+            $elemento_lista_css_id = $campo['adm_elemento_lista_css_id'];
         }
         return $elemento_lista_css_id;
     }
@@ -93,11 +93,11 @@ class elementos{
      */
     public function llaves_valores(array $campo): string
     {
-        if(!isset($campo['elemento_lista_llaves_valores']) ||(string)$campo['elemento_lista_llaves_valores']===''){
+        if(!isset($campo['adm_elemento_lista_llaves_valores']) ||(string)$campo['adm_elemento_lista_llaves_valores']===''){
             $elemento_lista_llaves_valores = '';
         }
         else{
-            $elemento_lista_llaves_valores = $campo['elemento_lista_llaves_valores'];
+            $elemento_lista_llaves_valores = $campo['adm_elemento_lista_llaves_valores'];
         }
         return $elemento_lista_llaves_valores;
     }
@@ -109,11 +109,11 @@ class elementos{
      */
     public function pattern(array $campo): string
     {
-        if(!isset($campo['elemento_lista_pattern']) ||(string)$campo['elemento_lista_pattern']===''){
+        if(!isset($campo['adm_elemento_lista_pattern']) ||(string)$campo['adm_elemento_lista_pattern']===''){
             $elemento_lista_pattern = '';
         }
         else{
-            $elemento_lista_pattern = $campo['elemento_lista_pattern'];
+            $elemento_lista_pattern = $campo['adm_elemento_lista_pattern'];
         }
         return $elemento_lista_pattern;
     }
@@ -125,11 +125,11 @@ class elementos{
      */
     public function separador_columnas(array $campo): string
     {
-        if(!isset($campo['elemento_lista_separador_select_columnas']) ||(string)$campo['elemento_lista_separador_select_columnas']===''){
+        if(!isset($campo['adm_elemento_lista_separador_select_columnas']) ||(string)$campo['adm_elemento_lista_separador_select_columnas']===''){
             $elemento_lista_separador_select_columnas = '';
         }
         else{
-            $elemento_lista_separador_select_columnas = $campo['elemento_lista_separador_select_columnas'];
+            $elemento_lista_separador_select_columnas = $campo['adm_elemento_lista_separador_select_columnas'];
         }
         return $elemento_lista_separador_select_columnas;
     }
@@ -141,11 +141,11 @@ class elementos{
      */
     public function tabla_ext_renombrada(array $campo): string
     {
-        if(!isset($campo['elemento_lista_tabla_externa_renombrada']) ||(string)$campo['elemento_lista_tabla_externa_renombrada']===''){
+        if(!isset($campo['adm_elemento_lista_tabla_externa_renombrada']) ||(string)$campo['adm_elemento_lista_tabla_externa_renombrada']===''){
             $elemento_lista_tabla_externa_renombrada = '';
         }
         else{
-            $elemento_lista_tabla_externa_renombrada = $campo['elemento_lista_tabla_externa_renombrada'];
+            $elemento_lista_tabla_externa_renombrada = $campo['adm_elemento_lista_tabla_externa_renombrada'];
         }
         return $elemento_lista_tabla_externa_renombrada;
     }

@@ -1288,7 +1288,7 @@ class directivas extends html {
             name_input:  $campo_name,etiqueta:  $etiqueta,multiple:  $multiple,inline:  $inline);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar options', data: $datos, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar options', data: $datos);
 
         }
 
@@ -1634,7 +1634,7 @@ class directivas extends html {
     {
         $etiqueta_campo_busca = (new etiquetas())->etiqueta_campo_vista(campo_busca: $campo_busca);
         if(errores::$error){
-            return $this->errores->error('Error al generar etiqueta',$etiqueta_campo_busca);
+            return $this->errores->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_campo_busca);
         }
 
         $inputs_busca = $this->busqueda_base(campo_busca: $campo_busca, etiqueta_campo_busca: $etiqueta_campo_busca,

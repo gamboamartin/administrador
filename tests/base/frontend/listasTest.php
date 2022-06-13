@@ -298,13 +298,13 @@ class listasTest extends test {
 
         errores::$error = false;
         $registro = array();
-        $seccion = 'seccion';
+        $seccion = 'adm_seccion';
         $registro[] = '';
         $resultado = $ls->footer_registro($registro, $seccion);
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('inactivo', $resultado->registro['seccion_status']);
+        $this->assertEquals('inactivo', $resultado->registro['adm_seccion_status']);
 
         errores::$error = false;
     }
@@ -589,7 +589,7 @@ class listasTest extends test {
         errores::$error = false;
         $campos = array();
         $registro = array();
-        $seccion = 'seccion';
+        $seccion = 'adm_seccion';
         $registro[] = '';
         $resultado = $ls->tr_data($campos, $registro, $seccion);
         $this->assertIsString( $resultado);

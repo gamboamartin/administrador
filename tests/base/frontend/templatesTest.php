@@ -48,10 +48,10 @@ class templatesTest extends test {
 
         errores::$error = false;
         $elementos_lista = array();
-        $elementos_lista[0]['elemento_lista_descripcion'] = 'a';
-        $elementos_lista[0]['elemento_lista_tipo'] = 'a';
-        $elementos_lista[0]['elemento_lista_representacion'] = 'a';
-        $elementos_lista[0]['elemento_lista_etiqueta'] = 'a';
+        $elementos_lista[0]['adm_elemento_lista_descripcion'] = 'a';
+        $elementos_lista[0]['adm_elemento_lista_tipo'] = 'a';
+        $elementos_lista[0]['adm_elemento_lista_representacion'] = 'a';
+        $elementos_lista[0]['adm_elemento_lista_etiqueta'] = 'a';
         $resultado = $tmp->campos_lista($elementos_lista);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
