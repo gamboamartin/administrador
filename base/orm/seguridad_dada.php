@@ -1,7 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
-use models\usuario;
+use models\adm_usuario;
 
 class seguridad_dada{
     private errores $error;
@@ -24,7 +24,7 @@ class seguridad_dada{
 
     private function filtro_seguridad(modelo $modelo): array
     {
-        $usuario_modelo = new usuario($modelo->link);
+        $usuario_modelo = new adm_usuario($modelo->link);
 
         $seguridad = $usuario_modelo->filtro_seguridad(tabla: $modelo->tabla);
         if (errores::$error) {
