@@ -172,9 +172,10 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
-     * @param string $seccion
-     * @param string $accion
+     * Funcion para generar un filtro con seccion y accion
+     * @version 1.48.14
+     * @param string $seccion Seccion o modelo o tabla
+     * @param string $accion accion de ejecucion
      * @return array
      */
     private function filtro_accion_seccion(string $accion, string $seccion, ):array{

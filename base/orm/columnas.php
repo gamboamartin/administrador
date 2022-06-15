@@ -376,6 +376,7 @@ class columnas{
     /**
      * FULL
      * @param array $columnas_by_table
+     * @param bool $columnas_en_bruto
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
@@ -575,8 +576,9 @@ class columnas{
 
     /**
      * FULL
-     * @param array $columnas_sql
-     * @param modelo_base $modelo
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      */
@@ -636,12 +638,13 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param string $columnas
-     * @param bool $columnas_en_bruto
-     * @param array $columnas_sql
-     * @param string $key
-     * @param modelo_base $modelo
+     * Funcion que genera las columnas de una tabla junto con sus relaciones
+     * @version 1.48.14
+     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param string $key Tabla a verificar obtencion de sql
+     * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @return array|string
      */
     private function genera_columna_tabla(string $columnas, bool $columnas_en_bruto, array $columnas_sql, string $key,

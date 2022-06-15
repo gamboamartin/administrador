@@ -15,6 +15,30 @@ class adm_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_filtro_accion_seccion(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $accion = '';
+        $seccion= '';
+        $resultado = $modelo->filtro_accion_seccion($accion, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar seccion', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $accion = 'c';
+        $seccion= 'a';
+        $resultado = $modelo->filtro_accion_seccion($accion, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado['adm_seccion.descripcion']);
+        $this->assertEquals('c', $resultado['adm_accion.descripcion']);
+        errores::$error = false;
+    }
+
     public function test_filtro_permiso(){
 
         errores::$error = false;

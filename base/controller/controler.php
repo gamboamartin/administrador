@@ -52,6 +52,8 @@ class controler{
     public string $session_id;
     public string $url_base;
     public string $titulo_lista = '';
+    public int $n_registros = 0;
+    public string $fecha_hoy;
 
 
 
@@ -87,6 +89,8 @@ class controler{
 
         $this->path_base = $generals->path_base;
         $this->session_id = $generals->session_id;
+
+        $this->fecha_hoy = date('Y-m-d H:i:s');
 
 
     }
