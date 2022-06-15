@@ -166,18 +166,17 @@ class listas{
     private function campos_lista_html(array $etiqueta_campos, string $seccion): array|string
     {
         if(count($etiqueta_campos) === 0){
-            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos);
         }
         $html = '';
         foreach($etiqueta_campos as $campo){
             $campo = trim($campo);
             if($campo === '' ){
-                return $this->error->error('Error campo no puede venir vacio',$campo);
+                return $this->error->error(mensaje: 'Error campo no puede venir vacio',data: $campo);
             }
             $campo_ajustado = $this->parsea_ths_html(campo:  $campo, seccion: $seccion);
             if(errores::$error){
-                return $this->error->error('Error al ajustar campos',$campo_ajustado);
+                return $this->error->error(mensaje: 'Error al ajustar campos',data: $campo_ajustado);
             }
             $html .=$campo_ajustado;
         }
@@ -591,12 +590,12 @@ class listas{
 
         $td_acciones_html = $this->td_acciones_html();
         if(errores::$error){
-            return $this->error->error('Error al generar td',$td_acciones_html);
+            return $this->error->error(mensaje: 'Error al generar td',data: $td_acciones_html);
         }
 
         $campos_lista_html = $this->campos_lista_html(etiqueta_campos: $etiqueta_campos,seccion:  $seccion);
         if(errores::$error){
-            return $this->error->error('Error al ajustar campos',$campos_lista_html);
+            return $this->error->error(mensaje: 'Error al ajustar campos',data: $campos_lista_html);
         }
 
         return $td_acciones_html.$campos_lista_html;
@@ -753,7 +752,7 @@ class listas{
         }
         $html = $this->genera_campos_elementos_lista(etiqueta_campos: $etiqueta_campos, seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar campos',$html);
+            return $this->error->error(mensaje: 'Error al generar campos',data: $html);
         }
         $html .= '<th class="no-print">ACCIONES</th>';
         return $html;
@@ -993,15 +992,15 @@ class listas{
     }
 
     /**
-     * PROBADO P ORDER P INT
-     * @param string $seccion
-     * @param string $campo
+     * Parsea elementos para mostrarse en lista
+     * @param string $seccion Seccion o modelo de ejecucion
+     * @param string $campo Campo a mostrar
      * @return array|string
      */
     private function parsea_ths_html(string $campo, string $seccion):array|string{
         $campo = trim($campo);
         if($campo === '' ){
-            return $this->error->error('Error campo no puede venir vacio',$campo);
+            return $this->error->error(mensaje: 'Error campo no puede venir vacio',data: $campo);
         }
         $html = '';
         $campo_sin_tabla = str_replace($seccion,' ', $campo);
@@ -1117,7 +1116,8 @@ class listas{
     }
 
     /**
-     * PROBADO P ORDER P INT
+     * Genera un td con acciones
+     * @version 1.33.14
      * @return string
      */
     private function td_acciones_html(): string

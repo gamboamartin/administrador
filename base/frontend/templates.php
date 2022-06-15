@@ -695,10 +695,6 @@ class templates{
     {
 
 
-        if(count($etiqueta_campos) === 0){
-            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos);
-        }
-
         $filtro_boton_seleccionado_html = '';
         if(count($filtro_boton_seleccionado)>0){
             $key_filtro = key($filtro_boton_seleccionado);
@@ -711,7 +707,7 @@ class templates{
 
         $ths = (new listas())->genera_th(etiqueta_campos:  $etiqueta_campos, seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar ths',$ths);
+            return $this->error->error(mensaje: 'Error al generar ths',data: $ths);
         }
 
 
