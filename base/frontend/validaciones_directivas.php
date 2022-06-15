@@ -118,8 +118,9 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO P ORDER P INT
-     * @param array $registro
+     * Funcion que valida la existencia de campos de un elemento para lista
+     * @version 1.28.14
+     * @param array $registro Registro de tipo elemento lista
      * @return array|bool
      */
     public function valida_elemento_lista_template(array $registro): array|bool
@@ -127,7 +128,7 @@ class validaciones_directivas extends validacion{
         $keys = array('adm_elemento_lista_descripcion','adm_elemento_lista_tipo');
         $valida = $this->valida_existencia_keys(keys:  $keys, registro: $registro);
         if(errores::$error){
-            return $this->error->error("Error al validar registro", $valida);
+            return $this->error->error(mensaje: "Error al validar registro", data: $valida);
         }
         return $valida;
     }

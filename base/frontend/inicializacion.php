@@ -112,8 +112,9 @@ class inicializacion{
     }
 
     /**
-     * PROBADO P ORDER P INT
-     * @param array $registro
+     * Asigna datos para el mostrado en la lista de un registro basado en elementos lista
+     * @version 1.24.14
+     * @param array $registro Registro de tipo elemento lista
      * @return array
      */
     private function datos_campo(array $registro): array
@@ -123,7 +124,7 @@ class inicializacion{
         }
         $valida = $this->validacion->valida_elemento_lista_template($registro);
         if(errores::$error){
-            return $this->error->error("Error al validar registro", $valida);
+            return $this->error->error(mensaje: "Error al validar registro",data:  $valida);
         }
 
         $datos_campo['nombre_campo'] = $registro['adm_elemento_lista_descripcion'];

@@ -27,7 +27,7 @@ class templatesTest extends test {
 
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error elemento_lista no puede venir vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al generar campos lista', $resultado['mensaje']);
 
         errores::$error = false;
         $elementos_lista = array();
