@@ -595,7 +595,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Obtiene las columnas para la ejecucion de un SELECT
+     * @version 1.46.14
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
