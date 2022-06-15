@@ -72,16 +72,16 @@ class listasTest extends test {
         $ls = new listas();
         $ls = new liberator($ls);
         $etiqueta_campos = array();
-        $seccion = '';
+        $seccion = 'a';
         $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $etiqueta_campos esta vacio', $resultado['mensaje']);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('', $resultado);
 
         errores::$error = false;
 
         $etiqueta_campos = array();
-        $seccion = '';
+        $seccion = 'a';
         $etiqueta_campos[] = '';
         $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
         $this->assertIsArray( $resultado);
@@ -91,7 +91,7 @@ class listasTest extends test {
         errores::$error = false;
 
         $etiqueta_campos = array();
-        $seccion = '';
+        $seccion = 'A';
         $etiqueta_campos[] = 'a';
         $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
         $this->assertIsString( $resultado);
@@ -306,6 +306,21 @@ class listasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('inactivo', $resultado->registro['adm_seccion_status']);
 
+        errores::$error = false;
+    }
+
+    public function test_genera_campos_elementos_lista(): void
+    {
+        errores::$error = false;
+        $ls = new listas();
+        $ls = new liberator($ls);
+        $etiqueta_campos = array();
+        $seccion = 'a';
+        $etiqueta_campos[] = 'a';
+        $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<th class='text-uppercase text-truncate td-90'> </th>", $resultado);
         errores::$error = false;
     }
 

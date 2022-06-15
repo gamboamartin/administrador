@@ -166,8 +166,9 @@ class listas{
      */
     private function campos_lista_html(array $etiqueta_campos, string $seccion): array|string
     {
-        if(count($etiqueta_campos) === 0){
-            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos);
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia',data: $seccion);
         }
         $html = '';
         foreach($etiqueta_campos as $campo){
@@ -578,7 +579,8 @@ class listas{
 
 
     /**
-     * Falta probar Funcion que genera los elementos para un listado
+     * Funcion que genera los elementos para un listado
+     * @version 1.36.14
      * @param string $seccion Seccion en ejecucion
      * @param array $etiqueta_campos campos para ajustar la lista
      * @return array|string
