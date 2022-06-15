@@ -25,9 +25,9 @@ class templatesTest extends test {
         $elementos_lista = array();
         $resultado = $tmp->campos_lista($elementos_lista);
 
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar campos lista', $resultado['mensaje']);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
         $elementos_lista = array();
