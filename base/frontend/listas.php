@@ -456,12 +456,12 @@ class listas{
 
         $registro = $this->registro_status(registro: $registro, seccion: $seccion );
         if(errores::$error){
-            return $this->error->error('Error al asignar status en registro',$registro);
+            return $this->error->error(mensaje: 'Error al asignar status en registro',data: $registro);
         }
 
         $td_acciones = $this->td_acciones();
         if(errores::$error){
-            return $this->error->error('Error al generar td de acciones',$td_acciones);
+            return $this->error->error(mensaje: 'Error al generar td de acciones',data: $td_acciones);
         }
 
         $data = new stdClass();
@@ -964,9 +964,7 @@ class listas{
      */
     private function panel_completo(array $campos,  int $id, array $registro, string $seccion): array|string
     {
-        if(count($campos) === 0){
-            return $this->error->error(mensaje: 'Error los campos de lista no pueden venir vacios',data: $campos);
-        }
+
         $html = '';
         $status = $registro[$seccion . '_status'];
         if((string)$status === ''){
@@ -1175,7 +1173,7 @@ class listas{
 
         $footer = $this->footer_registro(registro: $registro, seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar footer',$footer);
+            return $this->error->error(mensaje: 'Error al generar footer',data: $footer);
         }
 
         return $footer->td_acciones.$row_html.$footer->td_acciones;

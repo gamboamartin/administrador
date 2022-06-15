@@ -188,14 +188,14 @@ class validaciones_directivas extends validacion{
     public function valida_footer_row(array $registro, string $seccion): bool|array
     {
         if(count($registro)===0){
-            return $this->error->error('Error registro viene vacio',$registro);
+            return $this->error->error(mensaje: 'Error registro viene vacio',data: $registro);
         }
         if($seccion === ''){
-            return $this->error->error('Error seccion viene vacia',$registro);
+            return $this->error->error(mensaje: 'Error seccion viene vacia',data: $registro);
         }
         $valida = $this->valida_name_clase(tabla: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al validar seccion',$valida);
+            return $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
         }
         return true;
     }
