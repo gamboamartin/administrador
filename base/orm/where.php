@@ -480,8 +480,9 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql
+     * @version 1.26.14
      * @param array $columnas_extra
      * @param array $filtro parametros para maquetar filtro[data] =  $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
@@ -498,7 +499,7 @@ class where{
      * @uses $this->modifica_con_filtro_and
      * @uses $this->suma
      */
-    public function genera_and(array $columnas_extra, array $filtro):array|string{ //DEBUG
+    public function genera_and(array $columnas_extra, array $filtro):array|string{
         $sentencia = '';
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){

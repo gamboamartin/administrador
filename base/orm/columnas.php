@@ -236,8 +236,7 @@ class columnas{
             $columnas_field = $this->columnas_field(atributo: $atributo, campo: $campo, columna: $columna,
                 columnas_completas: $columnas_completas, columnas_parseadas:  $columnas_parseadas);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
             }
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
@@ -250,7 +249,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Funcion para obtener las columnas de manera nativa
+     * @version 1.26.14
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array
@@ -510,8 +510,7 @@ class columnas{
         $columnas_completas = array();
         foreach($columnas as $columna ){
             if(!is_array($columna)){
-                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas);
             }
             $columnas_field = $this->columnas_attr(columna: $columna, columnas_completas:  $columnas_completas,
                 columnas_parseadas:  $columnas_parseadas);
