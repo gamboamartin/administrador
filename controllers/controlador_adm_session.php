@@ -12,7 +12,9 @@ use base\controller\init;
 use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
+use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use JsonException;
 use models\adm_session;
 use models\adm_usuario;
@@ -175,10 +177,36 @@ class controlador_adm_session extends controlador_base{
 
         }
 
+        // REFACTORIZAR
+        $conf_generales = new generales();
+        $keys = array('encripta_md5');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_generales,valida_vacio: false);
+        if(errores::$error){
+            $mensaje = 'Error al validar init';
+            if($seccion_header !== '' && $accion_header !== '' && $header) {
+                header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
+                exit;
+            }
+            return $this->retorno_error(mensaje: 'Error al validar init',data:  $valida, header: $header,ws:  $ws);
+        }
+
+        $password =  $_POST['password'];
+        if($conf_generales->encripta_md5){
+            $password = (new encriptador())->encripta_md5($_POST['password']);
+            if(errores::$error){
+                $mensaje = 'Error al encriptar password';
+                if($seccion_header !== '' && $accion_header !== '' && $header) {
+                    header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
+                    exit;
+                }
+                return $this->retorno_error(mensaje: 'Error al encriptar password',data:  $password, header: $header,ws:  $ws);
+            }
+        }
+
         $_SESSION['numero_empresa'] = 1;
 
         $modelo_usuario = new adm_usuario($this->link);
-        $usuario = $modelo_usuario->valida_usuario_password(password:  $_POST['password'], usuario: $_POST['user']);
+        $usuario = $modelo_usuario->valida_usuario_password(password: $password, usuario: $_POST['user']);
         if(errores::$error){
             if($seccion_header !== '' && $accion_header !== '' && $header) {
                 $mensaje = $usuario['mensaje'];
