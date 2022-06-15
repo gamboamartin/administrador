@@ -182,12 +182,15 @@ class controlador_adm_session extends controlador_base{
         $keys = array('encripta_md5');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_generales,valida_vacio: false);
         if(errores::$error){
-            $mensaje = 'Error al validar init';
+            $mensaje = 'Error no existe atributo encripta_md5 en generales';
             if($seccion_header !== '' && $accion_header !== '' && $header) {
                 header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
-            return $this->retorno_error(mensaje: 'Error al validar init',data:  $valida, header: $header,ws:  $ws);
+            $fix = ' El atributo de encripta_md5 debe de ser de tipo de dato bool declarado en el archivo de ';
+            $fix .= 'generales.php como false si no requires que encripte y true si necesitas que encripte. ';
+            return $this->errores->error(mensaje: "Error no existe atributo encripta_md5 en generales", data: $valida,
+                fix: $fix);
         }
 
         $password =  $_POST['password'];
