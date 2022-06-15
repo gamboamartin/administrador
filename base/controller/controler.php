@@ -51,6 +51,7 @@ class controler{
     public string $path_base;
     public string $session_id;
     public string $url_base;
+    public string $titulo_lista = '';
 
 
 
@@ -65,7 +66,7 @@ class controler{
 
         $init = (new init())->init_data_controler(controler: $this);
         if(errores::$error){
-            $error =  $this->errores->error('Error al inicializar',$init);
+            $error =  $this->errores->error(mensaje: 'Error al inicializar',data: $init);
             print_r($error);
             exit;
         }
@@ -121,7 +122,7 @@ class controler{
 
             $accion_registro = $accion_modelo->accion_registro(accion:  $this->accion, seccion: $this->seccion);
             if(errores::$error){
-                return  $this->errores->error('Error al obtener acciones',$accion_registro);
+                return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $accion_registro);
             }
             $acciones =  $accion_modelo->acciones_permitidas(seccion: $this->seccion,accion: $this->accion,modelo: $this->modelo);
             if(errores::$error){

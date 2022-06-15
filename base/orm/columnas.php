@@ -226,10 +226,11 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param array $columna
-     * @param array $columnas_parseadas
-     * @param array $columnas_completas
+     * Genera las columnas de un atributo de la base de datos
+     * @version 1.41.14
+     * @param array $columna Columna con datos detallados de un DESCRIBE
+     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT
+     * @param array $columnas_completas Todas las columnas ajustadas
      * @return array|stdClass
      */
     private function columnas_attr(array $columna, array $columnas_completas, array $columnas_parseadas): array|stdClass
@@ -339,7 +340,7 @@ class columnas{
      * Asigna las columnas para ser utilizadas en la transacciones de SELECT
      * @version 1.27.14
      * @param string $campo Nombre del campo del modelo
-     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT1
+     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT
      * @param string|null $atributo Atributo de la base de datos
      * @param array $columna Columna con datos detallados de un DESCRIBE
      * @param array $columnas_completas Todas las columnas ajustadas

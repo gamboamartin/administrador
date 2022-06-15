@@ -181,9 +181,10 @@ class init{
     }
 
     /**
-     * TODO
+     *
      * Se inicializan datos base para controler
-     * @param controler $controler
+     * @version 1.41.14
+     * @param controler $controler Controlador en ejecucion
      * @return controler
      */
     public function init_data_controler(controler $controler): controler

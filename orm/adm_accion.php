@@ -172,7 +172,7 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param string $seccion
      * @param string $accion
      * @return array
