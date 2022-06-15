@@ -43,13 +43,13 @@ class inicializacion{
     private function asigna_datos_campo(array $elementos_lista): array|stdClass
     {
         if(count($elementos_lista) === 0){
-            return $this->error->error("Error elemento_lista no puede venir vacio", $elementos_lista);
+            return $this->error->error(mensaje: "Error elemento_lista no puede venir vacio",data:  $elementos_lista);
         }
         $campos = array();
         $etiqueta_campos = array();
         foreach ($elementos_lista as $registro){
             if(!is_array($registro)){
-                return $this->error->error('Error $elementos_lista[] debe ser un array', $registro);
+                return $this->error->error(mensaje: 'Error $elementos_lista[] debe ser un array',data:  $registro);
             }
             if(!isset($registro['adm_elemento_lista_representacion'])){
                 $registro['adm_elemento_lista_representacion'] = '';
@@ -57,17 +57,17 @@ class inicializacion{
 
             $valida = $this->validacion->valida_elemento_lista_template(registro: $registro);
             if(errores::$error){
-                return $this->error->error("Error al validar registro", $valida);
+                return $this->error->error(mensaje: "Error al validar registro", data: $valida);
             }
             $keys = array('adm_elemento_lista_etiqueta');
             $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
             if(errores::$error){
-                return $this->error->error("Error al validar registro", $valida);
+                return $this->error->error(mensaje: "Error al validar registro",data:  $valida);
             }
 
-            $datos_campo = $this->datos_campo($registro);
+            $datos_campo = $this->datos_campo(registro: $registro);
             if(errores::$error){
-                return $this->error->error('Error al inicializar $datos_campo', $datos_campo);
+                return $this->error->error(mensaje: 'Error al inicializar $datos_campo', data: $datos_campo);
             }
             $campos[] = $datos_campo;
             $etiqueta_campos[] = $registro['adm_elemento_lista_etiqueta'];
@@ -95,17 +95,11 @@ class inicializacion{
      * @return stdClass|array
      */
     public function campos_lista(array $elementos_lista): stdClass|array{
-        if(count($elementos_lista) === 0){
-            return $this->error->error("Error elemento_lista no puede venir vacio", $elementos_lista);
-        }
-
 
         $data = $this->asigna_datos_campo(elementos_lista: $elementos_lista);
         if(errores::$error){
-            return $this->error->error('Error al inicializar $datos', $data);
+            return $this->error->error(mensaje: 'Error al inicializar $datos',data:  $data);
         }
-
-
 
         return $data;
 
