@@ -785,20 +785,18 @@ class listas{
      */
     public function lista(string $campo_id, array $campos, array $registros, string $seccion): array|string
     {
-        if(count($campos) === 0){
-            return $this->error->error('Error los campos de lista no pueden venir vacios',$campos);
-        }
+
         $html = '';
         foreach ($registros as $key => $registro) {
             $key_id = $seccion . '_id';
             if(!isset($registro[$key_id])){
-                return $this->error->error('Error no existe campo $registro['.$seccion . '_id]',$registro);
+                return $this->error->error(mensaje: 'Error no existe campo $registro['.$seccion . '_id]',data: $registro);
             }
 
             $panel_html = $this->panel_completo(campos: $campos, id:  $registro[$campo_id], registro: $registro,
                 seccion: $seccion);
             if(errores::$error){
-                return $this->error->error('Error al generar panel html',$panel_html);
+                return $this->error->error(mensaje: 'Error al generar panel html',data: $panel_html);
             }
             $html .= $panel_html;
         }
@@ -935,15 +933,16 @@ class listas{
     }
 
     /**
-     * P ORDER P INT PROBADO
-     * @param string $status
+     * Ajusta el panel si es inactivo como rojo
+     * @version 1.37.14
+     * @param string $status Status del registro
      * @return array|string
      */
     private function obten_panel(string $status): array|string
     {
         $status = trim($status);
         if($status === ''){
-            return $this->error->error('Error status debe tener datos',$status);
+            return $this->error->error(mensaje: 'Error status debe tener datos',data: $status);
         }
         if($status === 'activo'){
             $panel_class = '';
@@ -966,7 +965,7 @@ class listas{
     private function panel_completo(array $campos,  int $id, array $registro, string $seccion): array|string
     {
         if(count($campos) === 0){
-            return $this->error->error('Error los campos de lista no pueden venir vacios',$campos);
+            return $this->error->error(mensaje: 'Error los campos de lista no pueden venir vacios',data: $campos);
         }
         $html = '';
         $status = $registro[$seccion . '_status'];
@@ -975,12 +974,12 @@ class listas{
         }
         $panel_class = $this->obten_panel(status: $status);
         if(errores::$error){
-            return $this->error->error('Error al generar panel',$panel_class);
+            return $this->error->error(mensaje: 'Error al generar panel',data: $panel_class);
         }
         $registro_html = $this->registro( campos: $campos, id:  $id, panel_class: $panel_class,registro:  $registro,
             seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar registro',$registro_html);
+            return $this->error->error(mensaje: 'Error al generar registro',data: $registro_html);
         }
         $html .=$registro_html;
 
@@ -1021,12 +1020,12 @@ class listas{
     private function registro(array $campos, int $id, string $panel_class, array $registro, string $seccion): array|string
     {
         if(count($campos) === 0){
-            return $this->error->error('Error los campos de lista no pueden venir vacios',$campos);
+            return $this->error->error(mensaje: 'Error los campos de lista no pueden venir vacios',data: $campos);
         }
 
         $tr_data = $this->tr_data(campos: $campos,registro: $registro, seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar tr',$tr_data);
+            return $this->error->error(mensaje: 'Error al generar tr',data: $tr_data);
         }
         $key_status = $seccion.'_status';
         $status = $registro[$key_status];

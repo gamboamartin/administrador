@@ -757,7 +757,7 @@ class templates{
         $lista_html = (new listas())->lista(campo_id:  $campo_id, campos:  $campos, registros: $registros,
             seccion: $seccion);
         if(errores::$error){
-            return $this->error->error('Error al generar lista',$lista_html);
+            return $this->error->error(mensaje: 'Error al generar lista',data: $lista_html);
         }
 
 
