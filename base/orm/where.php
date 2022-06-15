@@ -75,7 +75,8 @@ class where{
     }
 
     /**
-     * FULL
+     * Funcion que asigna valor default en comparacion para filtro
+     * @version 1.25.14
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
      * @param string $default
@@ -86,7 +87,8 @@ class where{
     }
 
     /**
-     * FULL
+     * Funcion para asignar el valor de una comparacion para filtro
+     * @version 1.25.14
      * @param array $columnas_extra
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
@@ -505,20 +507,17 @@ class where{
             }
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data, key: $key);
             if(errores::$error){
-                return $this->error->error(mensaje:"Error al maquetar campo",data:$data_comparacion,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:"Error al maquetar campo",data:$data_comparacion);
             }
 
             $comparacion = $this->comparacion(data: $data,default: '=');
             if(errores::$error){
-                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion);
             }
 
             $operador = $data['operador'] ?? ' AND ';
             if(trim($operador) !=='AND' && trim($operador) !=='OR'){
-                return $this->error->error(mensaje:'El operador debe ser AND u OR',data:$operador,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'El operador debe ser AND u OR',data:$operador);
             }
 
             $data_sql = "$data_comparacion->campo $comparacion '$data_comparacion->value'";
@@ -1249,9 +1248,8 @@ class where{
     }
 
     /**
-     *
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * @version
+     * @version 1.25.14
      * $data[(string)campo] $data[(string)value] sino un string
      * @return string|array
      */

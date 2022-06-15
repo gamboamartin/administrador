@@ -214,21 +214,16 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
          * REFACTOR
          */
         $this->seccion = str_replace('models\\','',$this->seccion);
-        $class_model = 'models\\'.$this->seccion;
+
         if($this->seccion === ''){
             return $this->retorno_error(mensaje: "Error la seccion esta vacia",data:  $this->seccion, header: $header,
-                ws: false, params: get_defined_vars());
+                ws: false);
         }
         if($this->accion === ''){
             return $this->retorno_error(mensaje: "Error la accion esta vacia",data:  $this->accion,header:  $header,
-                ws:false, params: get_defined_vars());
+                ws:false);
 
         }
-        if(!class_exists($class_model)){
-            return $this->retorno_error(mensaje: "Error la seccion es invalida", data: $class_model, header: $header,
-                ws:  false, params: get_defined_vars());
-        }
-
 
         $this->valores['status'] = 'activo';
 
