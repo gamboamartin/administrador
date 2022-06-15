@@ -578,16 +578,13 @@ class listas{
 
 
     /**
-     * P ORDER P INT
-     * @param string $seccion
-     * @param array $etiqueta_campos
+     * Falta probar Funcion que genera los elementos para un listado
+     * @param string $seccion Seccion en ejecucion
+     * @param array $etiqueta_campos campos para ajustar la lista
      * @return array|string
      */
     private function genera_campos_elementos_lista(array $etiqueta_campos, string $seccion):array|string{
 
-        if(count($etiqueta_campos) === 0){
-            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos);
-        }
 
         $td_acciones_html = $this->td_acciones_html();
         if(errores::$error){
