@@ -414,10 +414,10 @@ class listas{
         $seccion = str_replace($namespace,'',$seccion);
         $clase = $namespace.$seccion;
         if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion);
         }
         if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
+            return $this->error->error(mensaje: 'Error no existe la clase '.$clase,data: $clase);
         }
         $filtro = $this->obten_filtros_session(seccion: $seccion);
         if(errores::$error){
@@ -638,12 +638,11 @@ class listas{
         $inputs_filtro_html = '';
         foreach($campos_filtro as $campo) {
             if(!is_array($campo)){
-                return $this->error->error(mensaje: 'Error campo debe ser un array',data: $campo,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error campo debe ser un array',data: $campo);
             }
             $input_text = $this->genera_input_text_filtro(campo: $campo,filtro: $filtro);
             if(errores::$error){
-                return $this->error->error('Error al generar input',$input_text);
+                return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
             }
             $inputs_filtro_html .= $input_text;
         }
@@ -708,14 +707,14 @@ class listas{
         $keys = array('etiqueta','tabla_externa','campo');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar campo',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar campo',data: $valida);
         }
         $etiqueta = $campo['etiqueta'];
         $value = $filtro[$campo['tabla_externa']][$campo['campo']]['value']??false;
 
         $input_text = $this->genera_text_filtro_lista(campo: $campo,etiqueta: $etiqueta,value: $value);
         if(errores::$error){
-            return $this->error->error('Error al generar input',$input_text);
+            return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
         }
 
         return $input_text;
@@ -736,7 +735,7 @@ class listas{
             cols: 2,value: $value,required: false,etiqueta: $etiqueta, data_extra: array(), clases_css: $clases_css,
             ids_css: $ids_css,size: 'sm');
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input',data: $input_text, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
         }
         return $input_text;
     }

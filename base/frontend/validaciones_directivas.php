@@ -152,11 +152,11 @@ class validaciones_directivas extends validacion{
      */
     public function valida_elementos_base_input(int $cols, string $tabla):array|bool{
         if($tabla === ''){
-            return $this->error->error(mensaje: "Error tabla vacia", data: $tabla, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error tabla vacia", data: $tabla);
         }
         $valida = $this->valida_cols(cols: $cols);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar columnas", data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al validar columnas", data: $valida);
         }
 
         return true;

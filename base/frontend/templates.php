@@ -694,13 +694,9 @@ class templates{
                                    array $botones_filtros = array(), array $filtro_boton_seleccionado = array()): array|string
     {
 
-        if(count($campos) === 0){
-            return $this->error->error(mensaje: 'Error los campos de lista no pueden venir vacios',data: $campos,
-                params: get_defined_vars());
-        }
+
         if(count($etiqueta_campos) === 0){
-            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos);
         }
 
         $filtro_boton_seleccionado_html = '';

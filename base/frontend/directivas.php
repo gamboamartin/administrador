@@ -894,13 +894,13 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar", data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al validar", data: $valida);
         }
         if($aplica_etiqueta) {
             $etiqueta = str_replace('_',' ',$etiqueta);
             $etiqueta_valida = $this->validacion->letra_numero_espacio(txt: $etiqueta);
             if (!$etiqueta_valida) {
-                return $this->error->error("Error etiqueta invalida", $etiqueta);
+                return $this->error->error(mensaje: "Error etiqueta invalida", data: $etiqueta);
             }
         }
 
