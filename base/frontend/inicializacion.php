@@ -36,15 +36,14 @@ class inicializacion{
     }
 
     /**
-     * PROBADO P ORDER P INT
-     * @param array $elementos_lista
+     * Ajusta los elementos para ser mostrados en lista
+     * @version 1.30.14
+     * @param array $elementos_lista Registro de tipo elemento lista
      * @return array|stdClass
      */
     private function asigna_datos_campo(array $elementos_lista): array|stdClass
     {
-        if(count($elementos_lista) === 0){
-            return $this->error->error(mensaje: "Error elemento_lista no puede venir vacio",data:  $elementos_lista);
-        }
+
         $campos = array();
         $etiqueta_campos = array();
         foreach ($elementos_lista as $registro){
@@ -90,8 +89,11 @@ class inicializacion{
         return $datas->seccion . '.' . $datas->campo;
     }
     /**
-     * PROBADO P ORDER P INT
-     * @param array $elementos_lista
+     * Obtiene los campos para ser mostrados en una lista
+     * @version 1.30.14
+     * @param array $elementos_lista Registro de tipo elementos para lista
+     *
+     *
      * @return stdClass|array
      */
     public function campos_lista(array $elementos_lista): stdClass|array{

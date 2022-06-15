@@ -865,7 +865,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $campos = $template->campos_lista(elementos_lista: $elementos_lista);
         if(errores::$error){
-            return $this->retorno_error('Error al obtener campos', $campos, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener campos', data: $campos,header:  $header,ws:  $ws);
         }
 
         $campos_filtro = $template->obten_campos_filtro(elementos_lista: $elementos_lista_filtro);

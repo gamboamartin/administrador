@@ -61,9 +61,9 @@ class inicializacionTest extends test {
         $elementos_lista = array();
         $resultado = $inicializacion->asigna_datos_campo($elementos_lista);
 
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error elemento_lista no puede venir vacio', $resultado['mensaje']);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
 
 
         errores::$error = false;
@@ -108,8 +108,9 @@ class inicializacionTest extends test {
         //$inicializacion = new liberator($inicializacion);
         $elementos_lista = array();
         $resultado = $inicializacion->campos_lista($elementos_lista);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
 
         errores::$error = false;
 

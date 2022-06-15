@@ -143,8 +143,9 @@ class templates{
     }
 
     /**
-     * PROBADO P ORDER P INT
-     * @param array $elementos_lista
+     * Genera los campos para una lista basado en elementos de lista
+     * @version 1.30.14
+     * @param array $elementos_lista Registros de tipo elementos de lista
      * @return array|stdClass
      */
     public function campos_lista(array $elementos_lista): array|stdClass
@@ -152,7 +153,7 @@ class templates{
 
         $campos_lista = (new inicializacion())->campos_lista(elementos_lista: $elementos_lista);
         if(errores::$error){
-            return $this->error->error('Error al generar campos lista',$campos_lista);
+            return $this->error->error(mensaje: 'Error al generar campos lista',data: $campos_lista);
         }
         return $campos_lista;
 
