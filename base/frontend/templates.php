@@ -149,9 +149,7 @@ class templates{
      */
     public function campos_lista(array $elementos_lista): array|stdClass
     {
-        if(count($elementos_lista) === 0){
-            return $this->error->error("Error elemento_lista no puede venir vacio", $elementos_lista);
-        }
+
         $campos_lista = (new inicializacion())->campos_lista(elementos_lista: $elementos_lista);
         if(errores::$error){
             return $this->error->error('Error al generar campos lista',$campos_lista);
