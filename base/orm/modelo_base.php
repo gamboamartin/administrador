@@ -617,10 +617,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->sql = $consulta;
 
         foreach ($data->registros as $row){
-            $row_obj = new stdClass();
-            foreach ($row as $campo=>$value){
-                $row_obj->$campo = $value;
-            }
+            $row_obj = (object)$row;
             $data->registros_obj[] = $row_obj;
         }
 
@@ -1791,8 +1788,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * FULL
+     *
      * Funcion que obtiene con base en la tabla renombrada si tabla renombrada no es vacia cambia el nombre a tabla original
+     * @version 1.45.14
      * @param string $tabla_original nombre del modelo
      * @param string $tabla_renombrada nombre a renombrar tabla
      * @example

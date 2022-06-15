@@ -34,7 +34,7 @@ class columnas{
     /**
      * FULL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param bool $columnas_en_bruto
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
@@ -462,11 +462,13 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * Funcion que genera una columna en forma de sql para ser utilizada en un SELECT
+     * @version 1.45.14
      * @param string $columnas_sql columnas en forma de sql
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
      * @param string $columna_parseada columna ajustada para ser anexada al sql
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param string $alias_columnas columna ajustada para ser anexada al sql como un alias
      * @example
     $columnas_sql = $this->columnas_sql($columnas_sql,$tabla_nombre,$columna_parseada,$alias_columnas);
@@ -479,7 +481,7 @@ class columnas{
                                   string $columnas_sql, string $tabla_nombre):array|string{
 
         /**
-         * REFCATORIZAR
+         * REFACTORIZAR
          */
         if($tabla_nombre === ''){
             return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre);
@@ -534,11 +536,13 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
+     * @version 1.45.14
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
      * @param array $columnas_parseadas arreglo con datos para la creacion de las columnas en sql
      * @param array $columnas columnas inicializadas a mostrar a peticion
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @example
     $columnas_parseadas = $this->obten_columnas($tabla_original);
     $tabla_nombre = $this->obten_nombre_tabla($tabla_renombrada,$tabla_original);
@@ -593,6 +597,7 @@ class columnas{
     /**
      * FULL
      * @param array $columnas columnas inicializadas a mostrar a peticion
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
@@ -656,6 +661,7 @@ class columnas{
      * FULL
      * Genera las columnas en forma de sql para ser utilizado en un SELECT
      *
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
@@ -690,9 +696,10 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT obtenidas de
      *      this->columnas_extra this->columnas_extra debe ser un conjunto de subquerys
+     * @version 1.45.14
      * @param array $columnas columnas a mostrar y obtener en el sql
      * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
      * @throws errores subquerys mal formados
@@ -710,15 +717,13 @@ class columnas{
             }
             if(is_numeric($sub_query)){
                 return $this->error->error(mensaje: 'Error el key debe ser el nombre de la subquery',
-                    data: $columnas_extra, params: get_defined_vars());
+                    data: $columnas_extra);
             }
             if((string)$sub_query === ''){
-                return $this->error->error(mensaje:'Error el key no puede venir vacio', data: $columnas_extra,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error el key no puede venir vacio', data: $columnas_extra);
             }
             if((string)$sql === ''){
-                return $this->error->error(mensaje:'Error el sql no puede venir vacio', data: $columnas_extra,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error el sql no puede venir vacio', data: $columnas_extra);
             }
             $columnas_sql .= $columnas_sql === ''?"$sql AS $sub_query":",$sql AS $sub_query";
         }
@@ -752,12 +757,14 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
+     * @version 1.45.14
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada nombre para renombre de la tabla
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @example
     $columnas_sql = $this->genera_columnas_tabla($tabla_original,$tabla_renombrada, $columnas);
      * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
