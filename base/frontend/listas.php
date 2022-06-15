@@ -158,9 +158,10 @@ class listas{
     }
 
     /**
-     * PROBADO P ORDER P INT
-     * @param array $etiqueta_campos
-     * @param string $seccion
+     * ajusta los campos para ser mostrados en una lista
+     * @version 1.34.14
+     * @param array $etiqueta_campos Conjunto de etiqueta a mostrar en un th
+     * @param string $seccion Seccion en ejecucion
      * @return array|string
      */
     private function campos_lista_html(array $etiqueta_campos, string $seccion): array|string
@@ -585,7 +586,7 @@ class listas{
     private function genera_campos_elementos_lista(array $etiqueta_campos, string $seccion):array|string{
 
         if(count($etiqueta_campos) === 0){
-            return $this->error->error('Error $etiqueta_campos esta vacio',$etiqueta_campos);
+            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos);
         }
 
         $td_acciones_html = $this->td_acciones_html();
@@ -746,10 +747,7 @@ class listas{
      * @return array|string
      */
     public function genera_th(array $etiqueta_campos, string $seccion):array|string{
-        if(count($etiqueta_campos) === 0){
-            return $this->error->error(mensaje: 'Error $etiqueta_campos esta vacio',data: $etiqueta_campos
-                , params: get_defined_vars());
-        }
+
         $html = $this->genera_campos_elementos_lista(etiqueta_campos: $etiqueta_campos, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar campos',data: $html);
@@ -993,6 +991,7 @@ class listas{
 
     /**
      * Parsea elementos para mostrarse en lista
+     * @version 1.34.14
      * @param string $seccion Seccion o modelo de ejecucion
      * @param string $campo Campo a mostrar
      * @return array|string
