@@ -138,8 +138,9 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
+     * @version 1.44.14
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
      */
@@ -725,8 +726,9 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
+     * @version 1.44.14
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
      */
@@ -839,9 +841,10 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
      *  variable de session para su reutilizacion futura
+     * @version 1.44.14
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
      * @example

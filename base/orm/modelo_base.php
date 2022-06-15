@@ -617,8 +617,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->sql = $consulta;
 
         foreach ($data->registros as $row){
-            $row = (object)$row;
-            $data->registros_obj[] = $row;
+            $row_obj = new stdClass();
+            foreach ($row as $campo=>$value){
+                $row_obj->$campo = $value;
+            }
+            $data->registros_obj[] = $row_obj;
         }
 
         return $data;
@@ -1805,7 +1808,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         if(trim($tabla_original)==='' && trim($tabla_renombrada) === ''){
             return $this->error->error(mensaje: 'Error no pueden venir vacios todos los parametros',
-                data: $tabla_renombrada, params: get_defined_vars());
+                data: $tabla_renombrada);
         }
         if($tabla_renombrada!==''){
             $tabla_nombre = $tabla_renombrada;
