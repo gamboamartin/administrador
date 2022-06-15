@@ -32,7 +32,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Genera las columnas sql para un select
+     * @version 1.47.14
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
@@ -212,15 +213,14 @@ class columnas{
 
         $valida = $this->validacion->valida_data_columna(data: $data,tabla:  $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar data', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
 
         $r_columnas = $this->ajusta_columnas_completas(columnas:  $columnas,columnas_en_bruto: false,
             columnas_sql:  $columnas_sql, modelo: $modelo, tabla: $data['nombre_original'], tabla_renombrada: $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
         return (string)$r_columnas;
@@ -283,9 +283,10 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param string $columnas_extra_sql
-     * @param string $columnas_sql
+     * Funcion que genera el sql de columnas en forma de texto para campos SELECT
+     * @version 1.47.14
+     * @param string $columnas_extra_sql Columnas que vienen de modelo->columnas_extra
+     * @param string $columnas_sql Columnas que vienen de modelo->columnas de cada tabla
      * @return string
      */
     private function columnas_envio(string $columnas_extra_sql, string $columnas_sql): string
@@ -659,9 +660,9 @@ class columnas{
     }
 
     /**
-     * FULL
-     * Genera las columnas en forma de sql para ser utilizado en un SELECT
      *
+     * Genera las columnas en forma de sql para ser utilizado en un SELECT
+     * @version 1.47.14
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos

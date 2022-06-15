@@ -40,14 +40,14 @@ class validaciones extends validacion{
             'adm_elemento_lista_id');
         $valida = $this->valida_existencia_keys( keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar campo", $valida);
+            return $this->error->error(mensaje: "Error al validar campo", data: $valida);
         }
 
         $keys = array('con_label','required','ln','select_vacio_alta');
 
         $valida = $this->valida_existencia_keys(keys:  $keys, registro: $bools);
         if(errores::$error){
-            return $this->error->error("Error al validar bools", $valida);
+            return $this->error->error(mensaje: "Error al validar bools", data: $valida);
         }
 
         return true;
