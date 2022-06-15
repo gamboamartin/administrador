@@ -66,7 +66,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Asigna los valor de una columna obtenida de un DESCRIBE para su uso en la maquetacion de SELECT
+     * @version 1.27.14
      * @param string $atributo
      * @param array $columna
      * @param array $columnas_completas
@@ -120,9 +121,10 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param array $columnas_parseadas
-     * @param string $atributo
+     * Asigna los atributos de una tabla en un array para su uso en la maquetacion de un select
+     * @version 1.27.14
+     * @param array $columnas_parseadas Columnas ajustadas paar uso en SELECT
+     * @param string $atributo Columna a asignar en columnas parseadas
      * @return array
      */
     private function asigna_columnas_parseadas(string $atributo, array $columnas_parseadas): array
@@ -236,8 +238,7 @@ class columnas{
             $columnas_field = $this->columnas_field(atributo: $atributo, campo: $campo, columna: $columna,
                 columnas_completas: $columnas_completas, columnas_parseadas:  $columnas_parseadas);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
             }
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
@@ -250,7 +251,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Funcion para obtener las columnas de manera nativa
+     * @version 1.26.14
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array
@@ -334,12 +336,13 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param string $campo
-     * @param array $columnas_parseadas
-     * @param string|null $atributo
-     * @param array $columna
-     * @param array $columnas_completas
+     * Asigna las columnas para ser utilizadas en la transacciones de SELECT
+     * @version 1.27.14
+     * @param string $campo Nombre del campo del modelo
+     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT1
+     * @param string|null $atributo Atributo de la base de datos
+     * @param array $columna Columna con datos detallados de un DESCRIBE
+     * @param array $columnas_completas Todas las columnas ajustadas
      * @return array|stdClass
      */
     private function columnas_field(string|null $atributo, string $campo, array $columna, array $columnas_completas,
@@ -510,8 +513,7 @@ class columnas{
         $columnas_completas = array();
         foreach($columnas as $columna ){
             if(!is_array($columna)){
-                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas);
             }
             $columnas_field = $this->columnas_attr(columna: $columna, columnas_completas:  $columnas_completas,
                 columnas_parseadas:  $columnas_parseadas);

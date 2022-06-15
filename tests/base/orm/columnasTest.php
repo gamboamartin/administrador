@@ -322,7 +322,7 @@ class columnasTest extends test {
 
         errores::$error = false;
         $col = new columnas();
-        $col = new liberator($col);
+        //$col = new liberator($col);
         $tabla_bd = '';
         $modelo = new adm_seccion($this->link);
         $resultado = $col->columnas_bd_native($modelo,$tabla_bd);
