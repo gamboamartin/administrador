@@ -375,7 +375,7 @@ class columnas{
 
     /**
      * FULL
-     * @param array $columnas_by_table
+     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
@@ -575,7 +575,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Genera las columnas para un sql con joins
+     * @version 1.49.14
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo Modelo o tabla de aplicacion
@@ -891,6 +892,7 @@ class columnas{
      * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
      * @param array $renombres conjunto de columnas renombradas
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
+     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @return array|string sql con las columnas para un SELECT
      * @throws errores definidos en la maquetacion de las columnas
      * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe

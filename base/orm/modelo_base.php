@@ -1182,6 +1182,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param array $renombradas columnas estructura tabla ligadas renombradas
+     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @return array|string string en forma de sql con los datos para la ejecucion de SELECT
      * @throws errores definidos en la formacion del SQL
      * @functions $this->obten_columnas_completas($columnas);

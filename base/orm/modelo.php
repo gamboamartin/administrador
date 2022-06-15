@@ -761,7 +761,8 @@ class modelo extends modelo_base {
     /**
      * FULL
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $columnas_by_table
+     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
+     * @param bool $columnas_en_bruto
      * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
      * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
      * @return array|stdClass
