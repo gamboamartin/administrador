@@ -1371,18 +1371,25 @@ class modelo extends modelo_base {
      * @param bool $aplica_seguridad
      * @param int $limit
      * @param array $order
-     * @return array
+     * @param bool $return_obj
+     * @return array|stdClass
      */
-    public function registros(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0, array $order = array()):array{
+    public function registros(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0,
+                              array $order = array(), bool $return_obj = false):array|stdClass{
 
         $this->order = $order;
         $resultado =$this->obten_registros(aplica_seguridad:$aplica_seguridad,  columnas:$columnas, limit: $limit);
 
         if(errores::$error){
-            return $this->error->error('Error al obtener registros activos',$resultado);
+            return $this->error->error(mensaje: 'Error al obtener registros activos',data: $resultado);
         }
         $this->registros = $resultado->registros;
-        return $this->registros;
+        $registros = $resultado->registros;
+        if($return_obj){
+            $registros = $resultado->registros_obj;
+        }
+
+        return $registros;
     }
 
     /**

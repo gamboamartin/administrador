@@ -504,8 +504,9 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param array $columnas
+     * Integra las columnas para un select
+     * @version 1.43.14
+     * @param array $columnas Conjunto de columnas a parsear
      * @return array|stdClass
      */
     private function columnas_sql_array(array $columnas): array|stdClass
