@@ -180,9 +180,10 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO P INT P ORDER
-     * @param array $registro
-     * @param string $seccion
+     * Valida datos para las acciones de un row
+     * @version 1.39.14
+     * @param array $registro Registro de lista
+     * @param string $seccion Seccion en ejecucion
      * @return bool|array
      */
     public function valida_footer_row(array $registro, string $seccion): bool|array

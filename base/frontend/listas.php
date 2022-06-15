@@ -1017,9 +1017,6 @@ class listas{
      */
     private function registro(array $campos, int $id, string $panel_class, array $registro, string $seccion): array|string
     {
-        if(count($campos) === 0){
-            return $this->error->error(mensaje: 'Error los campos de lista no pueden venir vacios',data: $campos);
-        }
 
         $tr_data = $this->tr_data(campos: $campos,registro: $registro, seccion: $seccion);
         if(errores::$error){
@@ -1041,7 +1038,7 @@ class listas{
     {
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error('Error seccion esta vacia',$seccion);
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion);
         }
 
         $key_status = $seccion.'_status';
@@ -1089,12 +1086,12 @@ class listas{
     {
         $boton_acciones = (new botones())->boton_acciones_list();
         if(errores::$error){
-            return $this->error->error('Error al generar boton',$boton_acciones);
+            return $this->error->error(mensaje: 'Error al generar boton',data: $boton_acciones);
         }
 
         $td = $this->td_acciones_base($boton_acciones);
         if(errores::$error){
-            return $this->error->error('Error al generar td',$td);
+            return $this->error->error(mensaje: 'Error al generar td',data: $td);
         }
 
 
