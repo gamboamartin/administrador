@@ -1155,11 +1155,17 @@ class modelo extends modelo_base {
      * @uses  TODO EL SISTEMA
      */
     public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
-                                    bool $columnas_en_bruto = false, string $group_by = '', int $limit = 0,
-                                    string $sql_extra=''): array|stdClass{
+                                    bool $columnas_en_bruto = false, array $group_by = array(), int $limit = 0,
+                                    bool $return_objects = false, string $sql_extra=''): array|stdClass{
 
-        if($group_by !== ''){
-            $group_by =" GROUP BY $group_by ";
+        /**
+         * RAFACTORIZAR
+         */
+
+
+        $group_by_sql = (new params_sql())->group_by_sql(group_by: $group_by);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar group_by', data: $group_by_sql);
         }
 
         $limit_sql = '';
@@ -1180,7 +1186,7 @@ class modelo extends modelo_base {
 
         $order_sql = (new params_sql())->order_sql(order: $this->order);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar order', data: $order_sql, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar order', data: $order_sql);
         }
 
 
@@ -1199,16 +1205,15 @@ class modelo extends modelo_base {
             extension_estructura: $this->extension_estructura, renombradas: $this->renombres);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta_base,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta_base);
         }
 
-        $consulta = $consulta_base.' '.$sql_extra.' '.$seguridad.' '.$group_by.' '.$order_sql.' '.$limit_sql.' '.$offset_sql;
+        $consulta = $consulta_base.' '.$sql_extra.' '.$seguridad.' '.$group_by_sql.' '.$order_sql.' '.$limit_sql.' '.$offset_sql;
 
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar consulta', data: $result, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ejecutar consulta', data: $result);
         }
         $this->transaccion = '';
 

@@ -11,11 +11,12 @@ class params_sql{
     }
 
     /**
-     * FULL
+     * Genera Group By para sql
+     * @version 1.42.14
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @return string|array
      */
-    private function group_by_sql(array $group_by): string|array
+    public function group_by_sql(array $group_by): string|array
     {
         $group_by_sql = '';
         foreach ($group_by as $campo){

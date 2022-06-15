@@ -616,6 +616,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->n_registros = (int)$n_registros;
         $data->sql = $consulta;
 
+        foreach ($data->registros as $row){
+            $row = (object)$row;
+            $data->registros_obj[] = $row;
+        }
+
         return $data;
 
     }

@@ -23,7 +23,7 @@ class params_sqlTest extends test {
     {
         errores::$error = false;
         $ps = new params_sql();
-        $ps = new liberator($ps);
+       // $ps = new liberator($ps);
 
 
         $group_by = array();
