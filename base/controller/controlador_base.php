@@ -938,19 +938,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al asignar datos',data:  $resultado,
-                params: get_defined_vars());
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
+            return $this->retorno_error(mensaje: 'Error al asignar datos',data:  $resultado,header: $header,ws: $ws);
         }
         $this->registro = $resultado;
 
         $elm = new adm_elemento_lista($this->link);
-
-
 
         $template = new templates($this->link);
 

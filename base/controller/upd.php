@@ -14,31 +14,27 @@ class upd{
     }
 
     /**
-     * ERRORREV
-     * @param controler $controler
+     * Funcion que obtiene los datos de un registro a modificar
+     * @version 1.50.14
+     * @param controler $controler Controlador en ejecucion
      * @return array
      */
 
     public function asigna_datos_modifica(controler $controler):array{
         $namespace = 'models\\';
         $controler->seccion = str_replace($namespace,'', $controler->seccion);
-        $clase = $namespace.$controler->seccion;
+
         if($controler->seccion === ''){
-            return$this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $controler->seccion,
-                params: get_defined_vars());
+            return$this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $controler->seccion);
         }
         if($controler->registro_id<=0){
-            return  $this->error->error(mensaje:'Error registro_id debe sr mayor a 0', data:$controler->registro_id,
-                params: get_defined_vars());
-        }
-        if(!class_exists($clase)){
-            return  $this->error->error(mensaje:'Error no existe la clase', data:$clase, params: get_defined_vars());
+            return  $this->error->error(mensaje:'Error registro_id debe sr mayor a 0', data:$controler->registro_id);
         }
 
         $controler->modelo->registro_id = $controler->registro_id;
         $resultado = $controler->modelo->obten_data();
         if(errores::$error){
-            return  $this->error->error(mensaje:'Error al obtener datos', data:$resultado, params: get_defined_vars());
+            return  $this->error->error(mensaje:'Error al obtener datos', data:$resultado);
         }
         return $resultado;
     }
