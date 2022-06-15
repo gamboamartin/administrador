@@ -66,7 +66,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Asigna los valor de una columna obtenida de un DESCRIBE para su uso en la maquetacion de SELECT
+     * @version 1.27.14
      * @param string $atributo
      * @param array $columna
      * @param array $columnas_completas
@@ -120,9 +121,10 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param array $columnas_parseadas
-     * @param string $atributo
+     * Asigna los atributos de una tabla en un array para su uso en la maquetacion de un select
+     * @version 1.27.14
+     * @param array $columnas_parseadas Columnas ajustadas paar uso en SELECT
+     * @param string $atributo Columna a asignar en columnas parseadas
      * @return array
      */
     private function asigna_columnas_parseadas(string $atributo, array $columnas_parseadas): array
@@ -334,12 +336,13 @@ class columnas{
     }
 
     /**
-     * FULL
-     * @param string $campo
-     * @param array $columnas_parseadas
-     * @param string|null $atributo
-     * @param array $columna
-     * @param array $columnas_completas
+     * Asigna las columnas para ser utilizadas en la transacciones de SELECT
+     * @version 1.27.14
+     * @param string $campo Nombre del campo del modelo
+     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT1
+     * @param string|null $atributo Atributo de la base de datos
+     * @param array $columna Columna con datos detallados de un DESCRIBE
+     * @param array $columnas_completas Todas las columnas ajustadas
      * @return array|stdClass
      */
     private function columnas_field(string|null $atributo, string $campo, array $columna, array $columnas_completas,
