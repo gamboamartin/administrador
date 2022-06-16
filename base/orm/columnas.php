@@ -257,6 +257,10 @@ class columnas{
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
+     * @version 1.55.16
+     * @example Si $aplica_columnas_by_table es true debe haber columnas_by_table con
+     * datos columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] =nombre_tabla
+     * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
      * @return array|string
      */
     private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
@@ -264,6 +268,12 @@ class columnas{
                               array $tablas_select): array|string
     {
         if(!$aplica_columnas_by_table) {
+
+            if(count($columnas_by_table) > 0){
+                $fix = 'Si !$aplica_columnas_by_table $columnas_by_table debe ser vacio';
+                return $this->error->error(mensaje: 'Error columnas_by_table tiene datos', data: $columnas_by_table,
+                    fix: $fix);
+            }
 
             $columnas = $this->columnas_base(columnas_en_bruto: $columnas_en_bruto,columnas_sql: $columnas_sql,
                 extension_estructura: $extension_estructura,modelo: $modelo,renombres: $renombres,
@@ -274,13 +284,25 @@ class columnas{
 
         }
         else{
-
+            if(count($columnas_by_table) === 0){
+                $fix = 'Si $aplica_columnas_by_table es true debe haber columnas_by_table con datos';
+                $fix .= ' columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = ';
+                $fix.= "nombre_tabla";
+                return $this->error->error(mensaje: 'Error columnas_by_table esta vacia', data: $columnas_by_table,
+                    fix: $fix);
+            }
             $columnas = $this->columnas_by_table(columnas_by_table: $columnas_by_table,
                 columnas_en_bruto: $columnas_en_bruto,modelo: $modelo);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar columnas by table', data: $columnas);
             }
         }
+
+        $columnas = trim($columnas);
+        if($columnas === ''){
+            return $this->error->error(mensaje: 'Error ninguna configuracion es aceptable', data: $columnas);
+        }
+
         return $columnas;
     }
 
@@ -496,7 +518,7 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Obtiene las columnas para un SELECT
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
@@ -505,9 +527,10 @@ class columnas{
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
+     * @version 1.55.16
      * @return array|string
      */
-    PUBLIC function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
+    private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, modelo_base $modelo, array $renombres,
                                    array $tablas_select): array|string
     {
@@ -1021,7 +1044,7 @@ class columnas{
     }
 
     /**
-     * FULL
+     *
      * Genera las columnas en forma de sql para ser utilizado en un SELECT de todas las columnas unidas por el modelo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
@@ -1031,6 +1054,7 @@ class columnas{
      * @return array|string sql con las columnas para un SELECT
      * @throws errores definidos en la maquetacion de las columnas
      * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe
+     * @version 1.55.16
      *@example
      *      $columnas = $this->obten_columnas_completas($columnas);
      */

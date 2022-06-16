@@ -298,7 +298,8 @@ class validaciones extends validacion{
 
     /**
      * FULL
-     * @param string $campo_renombrado
+     * Funcion para validar que la entrada de datos en renombres sea la correcta
+     * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
      * @param string $class
      * @param string $class_enlace
      * @param string $join

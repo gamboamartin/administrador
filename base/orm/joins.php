@@ -177,7 +177,7 @@ class joins{
             campo_renombrado: $data_join->campo_renombrado, campo_tabla_base_id: $data_join->campo_tabla_base_id,
             renombrada: $data_join->tabla_renombre);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar join', data: $data, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar join', data: $data);
         }
         return $data;
     }
@@ -308,14 +308,13 @@ class joins{
             return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
         }
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'El $tabla_enlace no puede ir vacio', data: $tabla_enlace,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'El $tabla_enlace no puede ir vacio', data: $tabla_enlace);
         }
 
         $sql = $this->sql_join(campo_renombrado: $campo_renombrado, campo_tabla_base_id: $campo_tabla_base_id,
             class:  $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al genera sql',data:  $sql, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al genera sql',data:  $sql);
         }
 
         return $sql;
@@ -514,19 +513,16 @@ class joins{
      */
     public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
         $tabla = str_replace('models\\','',$tabla);
-        $class = 'models\\'.$tabla;
         if($tabla === ''){
             return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe la clase '.$tabla,data:  $tabla);
-        }
+
         $tablas = $tabla.' AS '.$tabla;
         $tablas_join = $columnas_join;
 
         $tablas = $this->ajusta_tablas(tablas: $tablas, tablas_join: $tablas_join);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar data join', data: $tablas, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar data join', data: $tablas);
         }
         return $tablas;
     }
@@ -578,8 +574,7 @@ class joins{
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'Error $tabla_enlace esta vacia', data: $tabla_enlace,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla_enlace esta vacia', data: $tabla_enlace);
         }
 
         if($renombrada !==''){
@@ -587,12 +582,12 @@ class joins{
                 campo_tabla_base_id: $campo_tabla_base_id,join: $join, renombrada: $renombrada,tabla: $tabla,
                 tabla_enlace: $tabla_enlace);
             if(errores::$error ){
-                return $this->error->error(mensaje: 'Error al generar sql', data: $sql, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
             }
         }
         else {
             if(!class_exists($class)){
-                return $this->error->error(mensaje: 'No existe la clase', data: $class, params: get_defined_vars());
+                return $this->error->error(mensaje: 'No existe la clase', data: $class);
             }
             $sql = ' '.$join.' JOIN ' . $tabla . ' AS ' . $tabla . ' ON ' . $tabla . '.id = ' . $tabla_enlace . '.'
                 . $tabla . '_id';
@@ -653,22 +648,22 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'La tabla no puede ir vacia',data:  $tabla, params: get_defined_vars());
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia',data:  $tabla);
         }
         $tablas = $this->obten_tablas_completas(columnas_join:  $columnas, tabla: $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener tablas',data:  $tablas, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener tablas',data:  $tablas);
         }
 
         $tablas = $this->extensiones_join(extension_estructura: $extension_estructura, modelo: $modelo,
             tablas:  $tablas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar join',data:  $tablas, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
         }
 
         $tablas = $this->renombres_join(modelo:$modelo,renombradas: $renombradas, tablas: $tablas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar join', data: $tablas, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar join', data: $tablas);
         }
         return $tablas;
     }

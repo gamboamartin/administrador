@@ -523,9 +523,10 @@ class joinsTest extends test {
         $columnas_join = array();
         $tabla = 'a';
         $resultado = $joins->obten_tablas_completas($columnas_join, $tabla);
-        $this->assertTrue(errores::$error);
-        $this->assertIsArray($resultado);
-        $this->assertStringContainsStringIgnoringCase('Error no existe la clase a',$resultado['mensaje']);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        
 
         errores::$error = false;
 

@@ -312,6 +312,30 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_columnas(): void
+    {
+        errores::$error = false;
+        $col = new columnas();
+        $col = new liberator($col);
+        $modelo = new adm_seccion($this->link);
+        $columnas_sql = array();
+        $aplica_columnas_by_table = false;
+        $columnas_by_table = array();
+        $columnas_en_bruto = true;
+        $extension_estructura = array();
+        $renombres = array();
+        $tablas_select = array('adm_seccion'=>false,'adm_accion'=>'adm_seccion');
+
+        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,
+            $extension_estructura, $modelo, $renombres, $tablas_select);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.etiqueta_label AS etiqueta_label,', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_columnas_attr(){
 
         errores::$error = false;
@@ -527,7 +551,7 @@ class columnasTest extends test {
 
         errores::$error = false;
         $col = new columnas();
-        //$col = new liberator($col);
+        $col = new liberator($col);
 
 
         $extension_estructura = array();
@@ -536,9 +560,10 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $resultado = $col->columnas_full( array(), false,$columnas_sql, $extension_estructura, $modelo, $renombres, $tablas_select);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+
 
         errores::$error = false;
         $extension_estructura = array();
