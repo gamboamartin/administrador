@@ -97,19 +97,20 @@ class valida_controller extends base_modelos{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * Valida que la entrada post modifica cumpla con lo minimo necesario
+     * @version 1.56.17
      * @return bool|array
      */
     public function valida_post_modifica(): bool|array
     {
         if(!isset($_POST)){
-            return $this->error->error('POST Debe existir',$_GET);
+            return $this->error->error(mensaje: 'POST Debe existir',data: $_GET);
         }
         if(!is_array($_POST)){
-            return $this->error->error('POST Debe ser un array',$_POST);
+            return $this->error->error(mensaje: 'POST Debe ser un array',data: $_POST);
         }
         if(count($_POST)===0){
-            return $this->error->error('POST Debe tener info',$_POST);
+            return $this->error->error(mensaje: 'POST Debe tener info',data: $_POST);
         }
         return true;
     }

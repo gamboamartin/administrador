@@ -394,12 +394,12 @@ class normalizacion{
     {
         $valida = $this->validacion->valida_post_modifica();
         if(errores::$error){
-            return $this->error->error('Error al validar POST',$valida);
+            return $this->error->error(mensaje: 'Error al validar POST',data: $valida);
         }
 
         $controler->registros = $this->procesa_registros_alta(registro: $registro,controler:  $controler);
         if(errores::$error){
-            return $this->error->error('Error al procesar registros',$controler->registros);
+            return $this->error->error(mensaje: 'Error al procesar registros',data: $controler->registros);
         }
         $controler->modelo->registro_id = $controler->registro_id;
         return $controler->registros;
@@ -526,20 +526,17 @@ class normalizacion{
      */
     private function obten_key_envio(controler $controler, string $key):array|string{
         if($controler->seccion === ''){
-            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia', data: $controler->seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia', data: $controler->seccion);
         }
         if($key === ''){
-            return $this->error->error(mensaje: 'Error la $key no puede venir vacia',data: $key,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error la $key no puede venir vacia',data: $key);
         }
         $pos = strpos($key,$controler->seccion.'_');
         $key_envio = $key;
         if((int)$pos === 0) {
             $key_envio = $controler->modelo->str_replace_first(content: $key, from:$controler->seccion . '_', to: '');
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error nal obtener key',data: $key_envio,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error nal obtener key',data: $key_envio);
             }
         }
 
@@ -554,12 +551,10 @@ class normalizacion{
      */
     private function procesa_registros_alta(controler $controler, array $registro): array{
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data: $registro);
         }
         if($controler->seccion === ''){
-            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia', data: $controler->seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia', data: $controler->seccion);
         }
 
         if(isset($registro['btn_modifica'])){
@@ -567,8 +562,7 @@ class normalizacion{
         }
         $registros = $this->trim_arreglo(arreglo: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar arreglo',data: $registros,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar arreglo',data: $registros);
         }
         $registro_envio = $this->genera_registros_envio(controler: $controler, registros: $registros);
         if(errores::$error){
@@ -576,8 +570,7 @@ class normalizacion{
         }
 
         if(count($registro_envio) === 0){
-            return $this->error->error(mensaje: 'Error no se asignaron registros',data: $registro_envio,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no se asignaron registros',data: $registro_envio);
         }
 
 
@@ -609,20 +602,19 @@ class normalizacion{
     }
 
     /**
-     * FULL
-     * @param array $arreglo
+     * Limpia los elementos de un arreglo
+     * @version 1.56.17
+     * @param array $arreglo Arreglo a limpiar
      * @return array
      */
     private function trim_arreglo(array $arreglo): array{
         if(count($arreglo) === 0){
-            return $this->error->error(mensaje: 'Error el arreglo no puede venir vacio',data: $arreglo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el arreglo no puede venir vacio',data: $arreglo);
         }
         $data = array();
         foreach ($arreglo as $key => $value) {
             if(is_array($value)){
-                return $this->error->error(mensaje: 'Error $value debe ser un string',data: array($key,$value),
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $value debe ser un string',data: array($key,$value));
             }
             if ((string)$value !== '') {
                 $data[$key] = trim($value);

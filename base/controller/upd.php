@@ -3,6 +3,7 @@ namespace base\controller;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 use stdClass;
 
 class upd{
@@ -44,6 +45,7 @@ class upd{
      * @param controler $controler
      * @param array $registro_upd
      * @return array|stdClass
+     * @throws JsonException
      */
     public function modifica_bd_base(controler $controler, array $registro_upd): array|stdClass
     {

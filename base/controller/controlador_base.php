@@ -986,10 +986,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      *
      * @param bool $header
      * @param bool $ws
-     * @return array
+     * @return array|stdClass
      * @throws JsonException
      */
-    public function modifica_bd(bool $header, bool $ws): array{
+    public function modifica_bd(bool $header, bool $ws): array|stdClass{
         $namespace = 'models\\';
         $this->seccion = str_replace($namespace,'',$this->seccion);
         $clase = $namespace.$this->seccion;
