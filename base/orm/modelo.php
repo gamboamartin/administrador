@@ -3,8 +3,6 @@ namespace base\orm;
 use gamboamartin\errores\errores;
 use JsonException;
 use models\adm_seccion;
-use models\seccion;
-use models\usuario;
 use PDO;
 use stdClass;
 
@@ -21,6 +19,7 @@ class modelo extends modelo_base {
     public array $renombres = array();
     public bool $validation;
     protected array $campos_encriptados;
+    public array $campos_no_upd = array();
 
 
     /**
@@ -40,13 +39,15 @@ class modelo extends modelo_base {
      * @param array $sub_querys
      * @param array $tipo_campos
      * @param bool $validation
+     * @param array $campos_no_upd Conjunto de campos no modificables, por default id
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
                                 array $campos_obligatorios= array(), array $columnas = array(),
                                 array $columnas_extra = array(), array $extension_estructura = array(),
                                 array $no_duplicados = array(), array $renombres = array(),
-                                array $sub_querys = array(), array $tipo_campos = array(), bool $validation = false){
+                                array $sub_querys = array(), array $tipo_campos = array(), bool $validation = false,
+                                array $campos_no_upd = array()){
 
         /**
          * REFCATORIZAR
@@ -67,6 +68,11 @@ class modelo extends modelo_base {
         $this->validation = $validation;
         $this->no_duplicados = $no_duplicados;
         $this->campos_encriptados = $campos_encriptados;
+        $this->campos_no_upd = $campos_no_upd;
+
+        if(!in_array('id', $this->campos_no_upd, true)){
+            $this->campos_no_upd[] = 'id';
+        }
 
         if(isset($_SESSION['usuario_id'])){
             $this->usuario_id = (int)$_SESSION['usuario_id'];
@@ -312,8 +318,6 @@ class modelo extends modelo_base {
         $data->sentencia = $sentencia_env;
         return $data;
     }
-
-
 
     /**
      * PHPUNIT
@@ -853,8 +857,6 @@ class modelo extends modelo_base {
 
 
 
-
-
     /**
      * PHPUNIT
      * @param float $sub_total
@@ -915,6 +917,13 @@ class modelo extends modelo_base {
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
+
+        foreach ($this->campos_no_upd as $campo_no_upd){
+            if(array_key_exists($campo_no_upd, $registro)){
+                unset($registro[$campo_no_upd]);
+            }
+        }
+
         $this->registro_upd = $registro;
         $this->registro_id = $id;
         if($id <=0){
@@ -923,6 +932,10 @@ class modelo extends modelo_base {
         if(count($this->registro_upd) === 0){
             return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
         }
+
+
+
+
         if(!$reactiva) {
             $valida = $this->validacion->valida_transaccion_activa(
                 aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo,

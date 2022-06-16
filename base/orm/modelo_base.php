@@ -50,6 +50,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public string $key_filtro_id = '';
 
 
+
     /**
      * @param PDO $link Conexion a la BD
      */

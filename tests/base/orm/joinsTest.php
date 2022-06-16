@@ -526,7 +526,7 @@ class joinsTest extends test {
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        
+
 
         errores::$error = false;
 

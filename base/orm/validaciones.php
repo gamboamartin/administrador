@@ -300,16 +300,14 @@ class validaciones extends validacion{
      * FULL
      * Funcion para validar que la entrada de datos en renombres sea la correcta
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
-     * @param string $class
-     * @param string $class_enlace
      * @param string $join
      * @param string $renombrada
      * @param string $tabla
      * @param string $tabla_enlace
      * @return bool|array
      */
-    public function valida_renombres(string $campo_renombrado, string $class, string $class_enlace, string $join,
-                                     string $renombrada, string $tabla, string $tabla_enlace): bool|array
+    public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
+                                     string $tabla, string $tabla_enlace): bool|array
     {
         if($tabla === ''){
             return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
@@ -326,9 +324,7 @@ class validaciones extends validacion{
         if($campo_renombrado === ''){
             return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje:'El no existe el modelo '.$class,data: $class);
-        }
+
         if(trim($join) !=='LEFT' && trim($join) !=='RIGHT' && trim($join) !=='INNER'){
             return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join);
         }

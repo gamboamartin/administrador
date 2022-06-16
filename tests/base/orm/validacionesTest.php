@@ -392,7 +392,7 @@ class validacionesTest extends test {
             $tabla, $tabla_enlace);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('El join no puede ir vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('La tabla no puede ir vacia', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -409,7 +409,7 @@ class validacionesTest extends test {
 
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('El $renombrada no puede ir vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('El join no puede ir vacio', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -426,7 +426,7 @@ class validacionesTest extends test {
 
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('El $campo_renombrado no puede ir vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('El join no puede ir vacio', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -438,8 +438,7 @@ class validacionesTest extends test {
         $join = 'INNER';
         $renombrada = 'c';
         $tabla_enlace = 'd';
-        $resultado = $val->valida_renombres($campo_renombrado, $class, $class_enlace, $join, $renombrada,
-            $tabla, $tabla_enlace);
+        $resultado = $val->valida_renombres($campo_renombrado, $join, $renombrada, $tabla, $tabla_enlace);
 
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);

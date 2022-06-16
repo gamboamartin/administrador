@@ -350,8 +350,8 @@ class joins{
             return $this->error->error(mensaje: 'Error al inicializar ', data: $init);
         }
 
-        $valida = (new validaciones())->valida_renombres(campo_renombrado: $campo_renombrado, class: $init->class,
-            class_enlace: $init->class_enlace,join:  $join, renombrada: $renombrada,tabla:  $init->tabla,
+        $valida = (new validaciones())->valida_renombres(campo_renombrado: $campo_renombrado,join:  $join,
+            renombrada: $renombrada,tabla:  $init->tabla,
             tabla_enlace:  $init->tabla_enlace);
 
         if(errores::$error){
@@ -454,9 +454,10 @@ class joins{
     }
 
     /**
-     * FULL
+     * Inicializa los datos para un rename de sql
      * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace Tabla de enlace de un join
+     * @version 1.56.16
      * @return stdClass|array
      */
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
@@ -467,14 +468,12 @@ class joins{
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace);
         }
 
         $data_models = $this->ajusta_name_models(tabla: $tabla, tabla_enlace: $tabla_enlace);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_models,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ajustar nombre del modelo', data: $data_models);
         }
 
         $data = new stdClass();
