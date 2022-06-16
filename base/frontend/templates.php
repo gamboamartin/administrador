@@ -921,7 +921,9 @@ class templates{
             $html .= '</form>';
         }
 
-        $html.= file_get_contents($path_base.'views/_templates/__footer_section.php');
+        if((new generales())->sistema === 'administrador') {
+            $html .= file_get_contents($path_base . 'views/_templates/__footer_section.php');
+        }
 
         return $html;
     }
