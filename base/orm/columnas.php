@@ -384,10 +384,17 @@ class columnas{
      * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo o tabla de aplicacion
+     * @version 1.54.16
      * @return array|string
      */
     private function columnas_by_table(array $columnas_by_table, bool $columnas_en_bruto, modelo_base $modelo): array|string
     {
+        if(count($columnas_by_table) === 0){
+            $fix = 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"';
+            return $this->error->error(mensaje: 'Error debe columnas_by_table esta vacia', data: $columnas_by_table,
+                fix: $fix);
+        }
+
         $init = $this->init_columnas_by_table(columnas_by_table: $columnas_by_table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializa datos de columnas by table', data: $init);

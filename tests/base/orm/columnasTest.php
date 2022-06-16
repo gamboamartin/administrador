@@ -7,6 +7,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_seccion;
 
+use models\adm_usuario;
 use stdClass;
 
 
@@ -402,6 +403,38 @@ class columnasTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('id', $resultado[0]['Field']);
+        errores::$error = false;
+    }
+
+    public function test_columnas_by_table(): void
+    {
+        errores::$error = false;
+
+        $mb = new columnas();
+        $mb = new liberator($mb);
+
+        $columnas_by_table =  array();
+        $columnas_by_table[] = 'adm_usuario';
+        $columnas_en_bruto = true;
+        $modelo = new adm_usuario($this->link);
+
+        $resultado = $mb->columnas_by_table($columnas_by_table, $columnas_en_bruto, $modelo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('adm_usuario.id AS id, adm_usuario.user AS user', $resultado);
+
+        errores::$error = false;
+
+
+        $columnas_by_table =  array();
+        $columnas_by_table[] = 'adm_usuario';
+        $columnas_en_bruto = false;
+        $modelo = new adm_usuario($this->link);
+
+        $resultado = $mb->columnas_by_table($columnas_by_table, $columnas_en_bruto, $modelo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('adm_usuario.id AS adm_usuario_id, adm_usuario.user AS adm_usuario_user', $resultado);
         errores::$error = false;
     }
 
