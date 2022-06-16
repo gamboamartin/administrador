@@ -27,7 +27,7 @@ class controler{
     public array $registro = array();
     public string $tabla = '';
     public string $accion = '';
-    public array $inputs = array();
+    public array|stdClass $inputs = array();
     public directivas $directiva;
     public string $breadcrumbs = '';
     public array $registros = array();

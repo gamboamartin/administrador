@@ -343,20 +343,17 @@ class validaciones extends validacion{
     {
         $key = trim($key);
         if(is_numeric($key)){
-            return $this->error->error(mensaje: 'Error el key no puede ser un numero', data: $key,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el key no puede ser un numero', data: $key);
         }
         if($key === ''){
             return $this->error->error(mensaje:'Error key esta vacio', data:$key);
         }
         $tabla_join = trim($tabla_join);
         if(is_numeric($tabla_join)){
-            return $this->error->error(mensaje:'Error el $tabla_join no puede ser un numero',data: $tabla_join,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error el $tabla_join no puede ser un numero',data: $tabla_join);
         }
         if($tabla_join === ''){
-            return $this->error->error(mensaje:'Error $tabla_join esta vacio',data: $tabla_join,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $tabla_join esta vacio',data: $tabla_join);
         }
         return true;
     }

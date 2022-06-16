@@ -157,7 +157,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Genera los datos para proceder con la configuracion de un JOIN en sql
+     * @version 1.59.17
      * @param array $tabla_join Datos para hacer join con tablas
      * @return array|string
      */
@@ -283,9 +284,9 @@ class joins{
     }
 
     /**
-     * FULL
-     * Funcion para determinar un JOIN entre dos tablas para SQL
      *
+     * Funcion para determinar un JOIN entre dos tablas para SQL
+     * @version 1.59.17
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
      * @param string $tabla  tabla para la ejecucion del JOIN
      * @param string $renombrada renombre de tabla para su salida en sql
@@ -555,12 +556,13 @@ class joins{
     }
 
     /**
-     * FULL
+     * Genera los JOINS necesarios de una tabla
+     * @version 1.59.17
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
-     * @param string $renombrada
-     * @param string $tabla
-     * @param string $tabla_enlace
+     * @param string $renombrada renombre de tabla para su salida en sql
+     * @param string $tabla  tabla para la ejecucion del JOIN
+     * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
      * @return array|string
      */
     private function sql_join(string $campo_renombrado, string $campo_tabla_base_id, string $renombrada, string $tabla,
@@ -667,7 +669,8 @@ class joins{
 
 
     /**
-     * FULL
+     * Genera la configuracion base de JOINS
+     * @version 1.59.17
      * @param array $tabla_join Datos para hacer join con tablas
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -702,11 +705,11 @@ class joins{
 
         $valida = (new validaciones())->valida_tabla_join(key: $key, tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar join', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar join', data: $valida);
         }
         $data = $this->data_para_join_esp(key: $key, tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar join',data:  $data, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar join',data:  $data);
         }
         $tablas .=  $data;
         return $tablas;
