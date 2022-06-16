@@ -302,7 +302,7 @@ class normalizacion{
 
     /**
      * P INT P ORDER ERRORREV
-     * @param array $registros
+     * @param array $registros Conjunto de datos a parsear
      * @param controler $controler Controlador de ejecucion
      * @return array
      */
@@ -514,8 +514,9 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Obtiene el ker de envio reemplazando valores de prefijos de tablas
+     * @version 1.57.17
      * @param controler $controler Controlador de ejecucion
      * @param string $key Key a ejecutar cambio
      * @return array|string key parseado

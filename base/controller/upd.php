@@ -51,7 +51,7 @@ class upd{
     {
         $init = (new normalizacion())->init_upd_base(controler: $controler, registro: $registro_upd);
         if(errores::$error){
-            return $this->error->error('Error al inicializar',$init);
+            return $this->error->error(mensaje: 'Error al inicializar',data: $init);
         }
 
         $registro = $controler->modelo->registro($controler->registro_id);
