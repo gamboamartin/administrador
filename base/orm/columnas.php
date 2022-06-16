@@ -47,7 +47,9 @@ class columnas{
                                                string $tabla_renombrada): array|string
     {
         $tabla = str_replace('models\\','',$tabla);
-
+        if(is_numeric($tabla)){
+            return $this->error->error(mensaje: 'Error $tabla no puede ser un numero',data:  $tabla);
+        }
 
         $resultado_columnas = $this->genera_columnas_consulta(columnas_en_bruto:$columnas_en_bruto,modelo: $modelo,
             tabla_original: $tabla, tabla_renombrada: $tabla_renombrada, columnas: $columnas_sql);
@@ -61,6 +63,22 @@ class columnas{
         }
 
         return $columnas_env;
+    }
+
+    /**
+     * Valida si aplica columnas de una sola tabla o de un join inicial al modelo
+     * @version 1.56.16
+     * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
+     * @return bool
+     */
+    private function aplica_columnas_by_table(array $columnas_by_table): bool
+    {
+        $aplica_columnas_by_table = false;
+
+        if(count($columnas_by_table)>0){
+            $aplica_columnas_by_table = true;
+        }
+        return $aplica_columnas_by_table;
     }
 
     /**
@@ -148,6 +166,9 @@ class columnas{
         if($tabla_bd === ''){
             return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
         }
+        if(is_numeric($tabla_bd)){
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
+        }
 
         $columnas_field = $this->genera_columnas_field(modelo:$modelo, tabla_bd: $tabla_bd);
         if(errores::$error){
@@ -225,6 +246,45 @@ class columnas{
     }
 
     /**
+     * Obtiene las columnas para un select dependiendo de si aplica o no una tabla o todas
+     * @param bool $aplica_columnas_by_table Si aplica columnas by table solo se tra la info de las columnas
+     * cargadas en el array
+     * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
+     * logica natural de dependencias
+     * @param modelo_base $modelo Modelo o tabla de aplicacion
+     * @param array $renombres Conjunto de tablas para renombrar
+     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
+     * @return array|string
+     */
+    private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
+                              array $columnas_sql, array $extension_estructura, modelo_base $modelo, array $renombres,
+                              array $tablas_select): array|string
+    {
+        if(!$aplica_columnas_by_table) {
+
+            $columnas = $this->columnas_base(columnas_en_bruto: $columnas_en_bruto,columnas_sql: $columnas_sql,
+                extension_estructura: $extension_estructura,modelo: $modelo,renombres: $renombres,
+                tablas_select: $tablas_select);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas base', data: $columnas);
+            }
+
+        }
+        else{
+
+            $columnas = $this->columnas_by_table(columnas_by_table: $columnas_by_table,
+                columnas_en_bruto: $columnas_en_bruto,modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas by table', data: $columnas);
+            }
+        }
+        return $columnas;
+    }
+
+    /**
      * Genera las columnas de un atributo de la base de datos
      * @version 1.41.14
      * @param array $columna Columna con datos detallados de un DESCRIBE
@@ -251,6 +311,42 @@ class columnas{
     }
 
     /**
+     * Genera las columnas en forma de SQL para un select con todas las configuracion nativas de un modelo
+     * @version 1.56.16
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
+     * logica natural de dependencias
+     * @param modelo_base $modelo Modelo o tabla de aplicacion
+     * @param array $renombres Conjunto de tablas para renombrar
+     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
+     * @return array|string
+     */
+    private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, array $extension_estructura,
+                                   modelo_base $modelo, array $renombres, array $tablas_select): array|string
+    {
+        $columnas = $this->columnas_tablas_select(columnas_en_bruto:$columnas_en_bruto,
+            columnas_sql: $columnas_sql, modelo: $modelo, tablas_select: $tablas_select);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+        }
+
+        $columnas = $this->columnas_extension(columnas: $columnas, columnas_sql: $columnas_sql,
+            extension_estructura: $extension_estructura, modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+        }
+
+        $columnas = $this->columnas_renombre(columnas: $columnas, columnas_sql: $columnas_sql, modelo: $modelo,
+            renombres: $renombres);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+        }
+
+        return $columnas;
+    }
+
+    /**
      * Funcion para obtener las columnas de manera nativa
      * @version 1.26.14
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
@@ -262,6 +358,9 @@ class columnas{
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
             return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
+        }
+        if(is_numeric($tabla_bd)){
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
         }
 
         $sql = (new sql())->describe_table(tabla: $tabla_bd);
@@ -278,6 +377,28 @@ class columnas{
         }
 
         return $result->registros;
+    }
+
+    /**
+     * Obtiene un SQL solo con las columnas de una tabla
+     * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
+     * @param modelo_base $modelo Modelo o tabla de aplicacion
+     * @return array|string
+     */
+    private function columnas_by_table(array $columnas_by_table, bool $columnas_en_bruto, modelo_base $modelo): array|string
+    {
+        $init = $this->init_columnas_by_table(columnas_by_table: $columnas_by_table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializa datos de columnas by table', data: $init);
+        }
+
+        $columnas = $this->columnas_tablas_select(columnas_en_bruto:$columnas_en_bruto,
+            columnas_sql: $init->columnas_sql, modelo: $modelo, tablas_select: $init->tablas_select);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+        }
+        return $columnas;
     }
 
     /**
@@ -383,47 +504,19 @@ class columnas{
                                    array $extension_estructura, modelo_base $modelo, array $renombres,
                                    array $tablas_select): array|string
     {
-        $aplica_columnas_by_table = false;
 
-        if(count($columnas_by_table)>0){
-            $aplica_columnas_by_table = true;
+        $aplica_columnas_by_table = $this->aplica_columnas_by_table(columnas_by_table: $columnas_by_table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al verificar aplicacion de columnas',
+                data: $aplica_columnas_by_table);
         }
 
-        if(!$aplica_columnas_by_table) {
-            $columnas = $this->columnas_tablas_select(columnas_en_bruto:$columnas_en_bruto,
-                columnas_sql: $columnas_sql, modelo: $modelo, tablas_select: $tablas_select);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
-            }
-
-            $columnas = $this->columnas_extension(columnas: $columnas, columnas_sql: $columnas_sql,
-                extension_estructura: $extension_estructura, modelo: $modelo);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
-            }
-
-            $columnas = $this->columnas_renombre(columnas: $columnas, columnas_sql: $columnas_sql, modelo: $modelo,
-                renombres: $renombres);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
-            }
-
-        }
-        else{
-            /**
-             * REFACTORIZAR
-             */
-            $columnas_sql = array();
-            $tablas_select = array();
-            foreach($columnas_by_table as $tabla){
-                $tablas_select[$tabla] = false;
-            }
-
-            $columnas = $this->columnas_tablas_select(columnas_en_bruto:$columnas_en_bruto, columnas_sql: $columnas_sql,
-                modelo: $modelo, tablas_select: $tablas_select);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
-            }
+        $columnas = $this->columnas(aplica_columnas_by_table: $aplica_columnas_by_table,
+            columnas_by_table: $columnas_by_table,columnas_en_bruto: $columnas_en_bruto,
+            columnas_sql: $columnas_sql,extension_estructura: $extension_estructura,modelo: $modelo,
+            renombres: $renombres,tablas_select: $tablas_select);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
 
@@ -433,7 +526,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Genera las columnas con renombre para integrarlas en un SELECT
+     * @version 1.52.16
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
@@ -582,6 +676,11 @@ class columnas{
     {
         $columnas = '';
         foreach ($tablas_select as $key=>$tabla_select){
+
+            if(is_numeric($key)){
+                return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key);
+            }
+
             $result = $this->genera_columna_tabla(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
                 columnas_sql:  $columnas_sql,key:  $key, modelo: $modelo);
             if(errores::$error){
@@ -606,12 +705,12 @@ class columnas{
                                              string $tabla_original, string $tabla_renombrada): array|stdClass
     {
         $tabla_original = str_replace('models\\','',$tabla_original);
-        $class = 'models\\'.$tabla_original;
+
         if($tabla_original === ''){
             return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original);
+        if(is_numeric($tabla_original)){
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original);
         }
 
         $columnas_sql = $this->genera_columnas_tabla( columnas_en_bruto: $columnas_en_bruto, modelo: $modelo,
@@ -646,7 +745,9 @@ class columnas{
                                           modelo_base $modelo): array|string
     {
         $key = str_replace('models\\','',$key);
-
+        if(is_numeric($key)){
+            return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key);
+        }
 
         $result = $this->ajusta_columnas_completas(columnas:  $columnas,
             columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql, modelo: $modelo,
@@ -673,10 +774,9 @@ class columnas{
     private function genera_columnas_consulta(bool $columnas_en_bruto, modelo_base $modelo, string $tabla_original,
                                               string $tabla_renombrada, array $columnas = array()):array|string{
         $tabla_original = str_replace('models\\','',$tabla_original);
-        $class = 'models\\'.$tabla_original;
 
-        if(!class_exists($class)){
-            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original,data: $tabla_original);
+        if(is_numeric($tabla_original)){
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original);
         }
 
         $data = $this->data_for_columnas_envio(columnas:$columnas, columnas_en_bruto:$columnas_en_bruto,
@@ -743,6 +843,9 @@ class columnas{
         if($tabla_bd === ''){
             return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
         }
+        if(is_numeric($tabla_bd)){
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
+        }
 
         $columnas = $this->columnas_bd_native(modelo:$modelo, tabla_bd: $tabla_bd);
         if(errores::$error){
@@ -775,13 +878,15 @@ class columnas{
     private function genera_columnas_tabla(bool $columnas_en_bruto,modelo_base $modelo, string $tabla_original,
                                            string $tabla_renombrada, array $columnas = array()):array|string{
         $tabla_original = str_replace('models\\','',$tabla_original);
-        $class = 'models\\'.$tabla_original;
+
         if($tabla_original === ''){
             return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje: 'Error no existe el modelo '.$tabla_original, data: $tabla_original);
+
+        if(is_numeric($tabla_original)){
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original);
         }
+
 
         $data = $this->obten_columnas( modelo: $modelo, tabla_original: $tabla_original);
         if(errores::$error){
@@ -800,6 +905,25 @@ class columnas{
             return $this->error->error(mensaje: 'Error al obtener columnas sql',data:  $columnas_sql);
         }
         return $columnas_sql;
+    }
+
+    /**
+     * Inicializa los datos necesarios pa integrar las columnas puras de una sola tabla
+     * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
+     * @return stdClass obj->columnas_sql obj->tablas_select
+     */
+    private function init_columnas_by_table(array $columnas_by_table): stdClass
+    {
+        $columnas_sql = array();
+        $tablas_select = array();
+        foreach($columnas_by_table as $tabla){
+            $tablas_select[$tabla] = false;
+        }
+
+        $data = new stdClass();
+        $data->columnas_sql = $columnas_sql;
+        $data->tablas_select = $tablas_select;
+        return $data;
     }
 
     /**
@@ -863,6 +987,9 @@ class columnas{
 
         if($tabla_bd === ''){
             return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
+        }
+        if(is_numeric($tabla_bd)){
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
         }
 
         $se_asignaron_columnas = $this->asigna_columnas_en_session(modelo: $modelo, tabla_bd: $tabla_bd);
