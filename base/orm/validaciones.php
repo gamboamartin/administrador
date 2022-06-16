@@ -54,8 +54,9 @@ class validaciones extends validacion{
     }
 
     /**
-     * FULL
+     * Valida la tabla de una columnas
      * @param array $data Datos para la maquetacion del JOIN
+     * @version 1.51.14
      * @param string $tabla Tabla o estructura de la base de datos modelo o seccion
      * @return bool|array
      */
@@ -68,8 +69,6 @@ class validaciones extends validacion{
             return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
-        $data['nombre_original'] = str_replace('models\\','',$data['nombre_original']);
-        $class = 'models\\'.$data['nombre_original'];
         if(is_numeric($tabla)){
             return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla);
         }

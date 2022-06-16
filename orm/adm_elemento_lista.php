@@ -238,9 +238,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros filtrados', data: $resultado);
         }
-        if((int)$resultado->n_registros === 0){
-            return   $this->error->error(mensaje: 'Error al obtener registros filtrados',data: $resultado);
-        }
+
 
         return $resultado;
     }

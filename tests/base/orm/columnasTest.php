@@ -66,7 +66,7 @@ class columnasTest extends test {
             columnas_sql:  $columnas_sql, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe el modelo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al generar columnas', $resultado['mensaje']);
 
         errores::$error = false;
         $tabla = 'adm_seccion';
@@ -400,7 +400,7 @@ class columnasTest extends test {
         $resultado = $col->columnas_extension($columnas, $columnas_sql, $extension_estructura,$modelo);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe el modelo a', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al integrar columnas', $resultado['mensaje']);
 
         errores::$error = false;
         $extension_estructura = array();

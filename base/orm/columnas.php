@@ -47,11 +47,8 @@ class columnas{
                                                string $tabla_renombrada): array|string
     {
         $tabla = str_replace('models\\','',$tabla);
-        $class = 'models\\'.$tabla;
 
-        if(!class_exists($class)){
-            return  $this->error->error(mensaje: 'Error no existe el modelo '.$tabla,data: $tabla);
-        }
+
         $resultado_columnas = $this->genera_columnas_consulta(columnas_en_bruto:$columnas_en_bruto,modelo: $modelo,
             tabla_original: $tabla, tabla_renombrada: $tabla_renombrada, columnas: $columnas_sql);
         if(errores::$error){
@@ -199,7 +196,8 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Carga a un string de forma SQL los campos SELECTS
+     * @version 1.51.14
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $data Datos para la maquetacion del JOIN
@@ -304,12 +302,13 @@ class columnas{
     }
 
     /**
-     * FULL
+     * Genera las columnas de una extension de base de datos
+     * @version 1.51.14
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
-     * @param array $columnas_sql
-     * @param string $columnas
-     * @param modelo_base $modelo
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
+     * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @return array|string
      */
     private function columnas_extension(string $columnas, array $columnas_sql, array $extension_estructura,
@@ -318,14 +317,9 @@ class columnas{
         $columnas_env = $columnas;
         foreach($extension_estructura as $tabla=>$data){
             $tabla = str_replace('models\\','',$tabla);
-            $class = 'models\\'.$tabla;
             if(is_numeric($tabla)){
                 return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
                     data: $extension_estructura);
-            }
-            if(!class_exists($class)){
-                return $this->error->error(mensaje:'Error no existe el modelo '.$tabla, data:$tabla,
-                    params: get_defined_vars());
             }
 
             $columnas_env = $this->ajusta_columnas_completas(columnas:  $columnas, columnas_en_bruto: false,
