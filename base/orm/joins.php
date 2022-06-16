@@ -74,7 +74,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Ajusta las tablas para JOIN
+     * @version 1.60.17
      * @param string $tablas Tablas en forma de SQL
      * @param array $tablas_join Datos para hacer join con tablas
      * @return array|string
@@ -185,8 +186,9 @@ class joins{
     }
 
     /**
-     * FULL
-     * @param string $key
+     * Obtiene los parametros necesarios para generar un join
+     * @version 1.60.17
+     * @param string $key Tabla left
      * @param string $tabla_join Datos para hacer join con tablas
      * @return array|string
      */
@@ -197,19 +199,20 @@ class joins{
 
         $valida = (new validaciones())->valida_tabla_join(key: $key, tabla_join: $tabla_join);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar join', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar join', data: $valida);
         }
 
         $data = $this->genera_join(tabla:$key, tabla_enlace: $tabla_join );
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar join', data:$data, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar join', data:$data);
         }
         return $data;
     }
 
     /**
-     * FULL
-     * @param string $key
+     *
+     * @param string $key Tabla LEFT
+     * @version 1.60.17
      * @param array|string $tabla_join Datos para hacer join con tablas
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -244,23 +247,19 @@ class joins{
         $tablas_env = $tablas;
         foreach($extension_estructura as $tabla=>$data){
             if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
             }
             $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
             if(errores::$error){
-                return $this->error->error(mensaje:'Error al validar data', data:$valida,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error al validar data', data:$valida);
             }
             if(is_numeric($tabla)){
-                return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
             }
 
             $tablas_env = $this->join_extension(data: $data, modelo: $modelo,tabla:  $tabla, tablas: $tablas);
             if(errores::$error){
-                return $this->error->error(mensaje:'Error al generar join',data: $tablas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error al generar join',data: $tablas);
             }
             $tablas = (string)$tablas_env;
         }
@@ -501,9 +500,9 @@ class joins{
     }
 
     /**
-     * FULL
-     * Funcion para determinar un JOINs entre dos p mas tablas para SQL
      *
+     * Funcion para determinar un JOINs entre dos p mas tablas para SQL
+     * @version 1.60.17
      * @param string $tabla  tabla para la ejecucion del JOIN
      * @param array $columnas_join  array con conjunto de tablas para join
      * @example
@@ -692,10 +691,11 @@ class joins{
     }
 
     /**
-     * FULL
-     * @param string $key
-     * @param string $tabla_join
-     * @param string $tablas
+     *
+     * @param string $key Key tabla
+     * @version 1.60.17
+     * @param string $tabla_join Tabla para join
+     * @param string $tablas conjunto de tablas previamente cargadas
      * @return array|string
      */
     private function tablas_join_esp(string $key, string $tabla_join, string $tablas): array|string
