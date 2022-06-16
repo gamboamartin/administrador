@@ -54,6 +54,7 @@ class controler{
     public string $titulo_lista = '';
     public int $n_registros = 0;
     public string $fecha_hoy;
+    public stdClass $row_upd;
 
 
 

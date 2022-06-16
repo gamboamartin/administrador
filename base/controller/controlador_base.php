@@ -970,6 +970,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $this->modifica_html = $modifica_html;
 
+        $registro_puro = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true,
+            retorno_obj: true);
+        if(errores::$error){
+           return $this->retorno_error(mensaje: 'Error al obtener registro', data: $registro_puro,
+               header: $header,ws:  $ws);
+        }
+
+        $this->row_upd =  $registro_puro;
 
         return $this->modifica_html;
     }

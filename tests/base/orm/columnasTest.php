@@ -978,6 +978,25 @@ class columnasTest extends test {
 
     }
 
+    public function test_init_columnas_by_table(): void
+    {
+        errores::$error = false;
+
+        $mb = new columnas();
+        $mb = new liberator($mb);
+
+        $columnas_by_table =  array();
+        $columnas_by_table[] = 'a';
+        $columnas_by_table[] = 'b';
+        $resultado = $mb->init_columnas_by_table($columnas_by_table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado->columnas_sql);
+        $this->assertEquals(false,$resultado->tablas_select['a']);
+        $this->assertEquals(false,$resultado->tablas_select['b']);
+        errores::$error = false;
+    }
+
     public function test_integra_columnas(){
         errores::$error = false;
         $mb = new columnas();

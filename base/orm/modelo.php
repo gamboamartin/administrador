@@ -1034,8 +1034,8 @@ class modelo extends modelo_base {
      * @internal  $this->obten_por_id($hijo, $columnas);
      * @uses  todo el sistema
      */
-    public function obten_data(array $columnas = array(), array $extension_estructura = array(),
-                               array $hijo= array()): array{
+    public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
+                               array $extension_estructura = array(), array $hijo= array()): array{
         $this->row = new stdClass();
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
@@ -1044,8 +1044,8 @@ class modelo extends modelo_base {
         if(count($extension_estructura) === 0){
             $extension_estructura = $this->extension_estructura;
         }
-        $resultado = $this->obten_por_id(columnas:  $columnas, extension_estructura: $extension_estructura,
-            hijo: $hijo);
+        $resultado = $this->obten_por_id(columnas:  $columnas, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura, hijo: $hijo);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener por id en '.$this->tabla, data: $resultado);
@@ -1335,31 +1335,36 @@ class modelo extends modelo_base {
     }
 
 
-
-
-
     /**
      *
      * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
      * estructura
-     * @version 1.15.9
      * @param int $registro_id $id Identificador del registro
      * @param array $columnas columnas a obtener del registro
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
+     * @param bool $columnas_en_bruto
      * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas
      * a configuracion
-     * @return array
+     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
+     * @param bool $retorno_obj
+     * @return array|stdClass
+     * @version 1.15.9
      */
-    public function registro(int $registro_id, array $columnas = array(), array $extension_estructura = array(),
-                             array $hijo = array()):array{
+    public function registro(int $registro_id, array $columnas = array(), bool $columnas_en_bruto = false,
+                             array $extension_estructura = array(), array $hijo = array(),
+                             bool $retorno_obj = false):array|stdClass{
         if($registro_id <=0){
             return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
                 data: $registro_id);
         }
         $this->registro_id = $registro_id;
-        $registro = $this->obten_data(columnas: $columnas, extension_estructura: $extension_estructura, hijo: $hijo);
+        $registro = $this->obten_data(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura, hijo: $hijo);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
+        }
+
+        if($retorno_obj){
+            $registro = (object)$registro;
         }
 
         return $registro;

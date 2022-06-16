@@ -910,10 +910,17 @@ class columnas{
     /**
      * Inicializa los datos necesarios pa integrar las columnas puras de una sola tabla
      * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
-     * @return stdClass obj->columnas_sql obj->tablas_select
+     * @return stdClass|array obj->columnas_sql obj->tablas_select
+     * @example $columnas_by_table[] = 'adm_accion'
+     * @version 1.53.16
      */
-    private function init_columnas_by_table(array $columnas_by_table): stdClass
+    private function init_columnas_by_table(array $columnas_by_table): stdClass|array
     {
+        if(count($columnas_by_table) === 0){
+            $fix = 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"';
+            return $this->error->error(mensaje: 'Error debe columnas_by_table esta vacia', data: $columnas_by_table,
+                fix: $fix);
+        }
         $columnas_sql = array();
         $tablas_select = array();
         foreach($columnas_by_table as $tabla){
