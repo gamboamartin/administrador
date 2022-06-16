@@ -297,13 +297,14 @@ class validaciones extends validacion{
     }
 
     /**
-     * FULL
+     *
      * Funcion para validar que la entrada de datos en renombres sea la correcta
+     * @version 1.58.17
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
-     * @param string $join
-     * @param string $renombrada
-     * @param string $tabla
-     * @param string $tabla_enlace
+     * @param string $join string tipo de join INNER O LEFT O ETC
+     * @param string $renombrada renombre de tabla para su salida en sql
+     * @param string $tabla  tabla para la ejecucion del JOIN
+     * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
      * @return bool|array
      */
     public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
@@ -326,7 +327,7 @@ class validaciones extends validacion{
         }
 
         if(trim($join) !=='LEFT' && trim($join) !=='RIGHT' && trim($join) !=='INNER'){
-            return $this->error->error('Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join);
+            return $this->error->error(mensaje: 'Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join);
         }
 
         return true;

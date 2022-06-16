@@ -128,12 +128,13 @@ class joins{
     }
 
     /**
-     * FULL
-     * @param string $id_renombrada
-     * @param stdClass $init
-     * @param string $join
-     * @param string $renombrada
-     * @return stdClass|array
+     *
+     * @param string $id_renombrada LLave de tabla a nivel sql
+     * @param stdClass $init obj->tabla obj->class obj->tabla_enlace obj->class_enlace
+     * @param string $join Elemento de union SQL LEFT RIGTH O INNER
+     * @param string $renombrada Nombre a asignar en AS
+     * @version 1.58.17
+     * @return stdClass|array obj->join_tabla obj->on_join obj->asignacion_tabla
      */
     private function data_for_rename(string $id_renombrada, stdClass $init, string $join,
                                     string $renombrada): stdClass|array
@@ -141,7 +142,7 @@ class joins{
         $keys = array('tabla','tabla_enlace');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $init);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $init',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar $init',data: $valida);
         }
 
         $join_tabla = $join.' JOIN '.$init->tabla;
@@ -266,8 +267,9 @@ class joins{
     }
 
     /**
-     * FULL
-     * @param string $campo_tabla_base_id
+     * Asigna el id de sql para generar join
+     * @version 1.58.17
+     * @param string $campo_tabla_base_id Campo id de la tabla a enlazar
      * @return string
      */
     private function id_renombrada(string $campo_tabla_base_id): string
@@ -301,7 +303,6 @@ class joins{
                                  string $campo_tabla_base_id = '', string $renombrada = '' ):array|string{
 
         $tabla = str_replace('models\\','',$tabla);
-        $class = 'models\\'.$tabla;
         $tabla_enlace = str_replace('models\\','',$tabla_enlace);
 
         if($tabla === ''){
@@ -312,7 +313,7 @@ class joins{
         }
 
         $sql = $this->sql_join(campo_renombrado: $campo_renombrado, campo_tabla_base_id: $campo_tabla_base_id,
-            class:  $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
+            renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al genera sql',data:  $sql);
         }
@@ -321,9 +322,9 @@ class joins{
     }
 
     /**
-     * FULL
-     * Funcion para determinar un JOIN entre dos tablas para SQL
      *
+     * Funcion para determinar un JOIN entre dos tablas para SQL
+     * @version 1.58.17
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
      * @param string $join string tipo de join INNER O LEFT O ETC
      * @param string $tabla  tabla para la ejecucion del JOIN
@@ -458,7 +459,7 @@ class joins{
      * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace Tabla de enlace de un join
      * @version 1.56.16
-     * @return stdClass|array
+     * @return stdClass|array obj->tabla obj->class obj->tabla_enlace obj->class_enlace
      */
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
     {
@@ -555,16 +556,15 @@ class joins{
 
     /**
      * FULL
-     * @param string $campo_renombrado
-     * @param string $campo_tabla_base_id
-     * @param string $class
+     * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
+     * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
      * @param string $renombrada
      * @param string $tabla
      * @param string $tabla_enlace
      * @return array|string
      */
-    private function sql_join(string $campo_renombrado, string $campo_tabla_base_id, string $class, string $renombrada,
-                              string $tabla, string $tabla_enlace): array|string
+    private function sql_join(string $campo_renombrado, string $campo_tabla_base_id, string $renombrada, string $tabla,
+                              string $tabla_enlace): array|string
     {
         $join = 'LEFT';
         $tabla = trim($tabla);
@@ -585,9 +585,7 @@ class joins{
             }
         }
         else {
-            if(!class_exists($class)){
-                return $this->error->error(mensaje: 'No existe la clase', data: $class);
-            }
+
             $sql = ' '.$join.' JOIN ' . $tabla . ' AS ' . $tabla . ' ON ' . $tabla . '.id = ' . $tabla_enlace . '.'
                 . $tabla . '_id';
         }

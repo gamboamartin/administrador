@@ -574,7 +574,7 @@ class joinsTest extends test {
 
         $this->assertTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertStringContainsStringIgnoringCase('Error $tabla esta vacia',$resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al llamar datos',$resultado['mensaje']);
 
         errores::$error = false;
 
@@ -588,7 +588,7 @@ class joinsTest extends test {
             class: $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         $this->assertTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertStringContainsStringIgnoringCase('Error $tabla esta vacia',$resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al llamar datos',$resultado['mensaje']);
 
         errores::$error = false;
 
@@ -603,18 +603,18 @@ class joinsTest extends test {
 
         $this->assertTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertStringContainsStringIgnoringCase('Error $tabla_enlace esta vacia',$resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al llamar datos',$resultado['mensaje']);
 
         errores::$error = false;
 
         $campo_renombrado = '';
         $campo_tabla_base_id = '';
-        $class = 'models\\adm_seccion';
+
         $renombrada = '';
         $tabla = 'a';
         $tabla_enlace = 'c';
         $resultado = $joins->sql_join(campo_renombrado: $campo_renombrado,campo_tabla_base_id:  $campo_tabla_base_id,
-            class: $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
+             renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals(' LEFT JOIN a AS a ON a.id = c.a_id',$resultado);
@@ -623,12 +623,12 @@ class joinsTest extends test {
 
         $campo_renombrado = 'x';
         $campo_tabla_base_id = '';
-        $class = 'models\\adm_seccion';
+
         $renombrada = 'z';
         $tabla = 'adm_seccion';
         $tabla_enlace = 'adm_seccion';
         $resultado = $joins->sql_join(campo_renombrado: $campo_renombrado,campo_tabla_base_id:  $campo_tabla_base_id,
-            class: $class, renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
+             renombrada: $renombrada, tabla: $tabla, tabla_enlace: $tabla_enlace);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals(' LEFT JOIN adm_seccion AS z ON z.id = adm_seccion.x',$resultado);
