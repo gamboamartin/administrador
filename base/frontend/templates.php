@@ -1,6 +1,7 @@
 <?php
 namespace base\frontend;
 
+use config\generales;
 use gamboamartin\errores\errores;
 
 use JetBrains\PhpStorm\Pure;
@@ -891,11 +892,11 @@ class templates{
                 ";
         }
 
-
-
         $html .=$breadcrumbs;
+        if((new generales())->sistema === 'administrador'){
+            $html.= file_get_contents($path_base.'views/_templates/__header_section.php');
+        }
 
-        $html.= file_get_contents($path_base.'views/_templates/__header_section.php');
         $html .= "<div class='form-row modifica'>";
         $campos_modificables = $this->genera_campos_modificables(valores_filtrados: $valores_filtrados,
             campos_alta: $campos_alta,registro: $registro);
