@@ -6,21 +6,28 @@ use gamboamartin\errores\errores;
 class exito_html extends base_html {
     private errores $error;
     public function __construct(){
+        parent::__construct();
         $this->error = new errores();
     }
 
-    public function boton_exito(): string
+    /**
+     * Genera un boton para un alert
+     * @return string
+     * @version 1.68.17
+     */
+    private function boton_exito(): string
     {
         return '<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>';
     }
 
     /**
      * Asigna el mensaje de exito a un p
-     * @version 1.67.17
      * @param array $mensaje_exito Datos con mensaje
+     * @param bool $html Si html retorna con html sino puro texto
      * @return string|array
+     * @version 1.67.17
      */
-    private function mensaje(array $mensaje_exito): string|array
+    private function mensaje(array $mensaje_exito, bool $html = true): string|array
     {
         $keys = array('mensaje');
         $valida = (new validaciones())->valida_existencia_keys(keys: $keys, registro: $mensaje_exito);
@@ -28,17 +35,22 @@ class exito_html extends base_html {
             $fix = 'Debe existir mensaje_exito[mensaje]';
             return $this->error->error(mensaje: 'Error al integrar mensaje', data: $valida, fix: $fix);
         }
+        $mensaje = '<p class="mb-0">'.$mensaje_exito['mensaje'] . '</p>';
+        if(!$html){
+            $mensaje = $mensaje_exito['mensaje'];
+        }
 
-        return '<p class="mb-0">'.$mensaje_exito['mensaje'] . '</p>';
+        return $mensaje;
     }
 
     /**
      * Integra el trazado de todos los mensajes de exito
-     * @version 1.67.17
      * @param array $mensajes_exito Conjunto de mensajes cargados en un SESSION
+     * @param bool $con_html Si con html retorna con html si no puro texto
      * @return array|string
+     * @version 1.67.17
      */
-    private function mensajes(array $mensajes_exito): array|string
+    private function mensajes(array $mensajes_exito, bool $con_html = true): array|string
     {
         $html = '';
         foreach ($mensajes_exito as $mensaje_exito) {
@@ -54,7 +66,7 @@ class exito_html extends base_html {
                 $fix .= 'Debe existir mensaje_exito[mensaje]';
                 return $this->error->error(mensaje: 'Error al integrar mensaje', data: $valida, fix: $fix);
             }
-            $mensaje_html = $this->mensaje(mensaje_exito: $mensaje_exito);
+            $mensaje_html = $this->mensaje(mensaje_exito: $mensaje_exito, html: $con_html);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar mensaje', data: $mensaje_html);
             }
@@ -63,7 +75,7 @@ class exito_html extends base_html {
         return $html;
     }
 
-    public function mensajes_full(): array|string
+    public function mensajes_full(bool $html = true): array|string
     {
         $mensajes_exito = $_SESSION['exito'] ?? array();
 
@@ -74,26 +86,26 @@ class exito_html extends base_html {
 
             $head_html = (new exito_html())->head(titulo: 'Exito');
             if(errores::$error){
-                return $this->error->error('Error al generar head', $head_html);
+                return $this->error->error(mensaje: 'Error al generar head',data:  $head_html);
             }
             $exito_html  .=    $head_html;
 
             $boton = (new exito_html())->boton_exito();
             if(errores::$error){
-                return $this->error->error('Error al generar boton', $boton);
+                return $this->error->error(mensaje: 'Error al generar boton',data:  $boton);
             }
 
             $exito_html.=  $boton;
 
-            $mensaje_html = (new exito_html())->mensajes_collapse(mensajes_exito: $mensajes_exito);
+            $mensaje_html = (new exito_html())->mensajes_collapse(mensajes_exito: $mensajes_exito, html: $html);
             if(errores::$error){
-                return $this->error->error('Error al generar mensaje', $mensaje_html);
+                return $this->error->error(mensaje: 'Error al generar mensaje',data:  $mensaje_html);
 
             }
 
             $close_btn = (new base_html())->close_btn();
             if(errores::$error){
-                return $this->error->error('Error al generar boton', $close_btn);
+                return $this->error->error(mensaje: 'Error al generar boton', data: $close_btn);
 
             }
 
@@ -104,6 +116,11 @@ class exito_html extends base_html {
             if (isset($_SESSION['exito'])) {
                 unset($_SESSION['exito']);
             }
+            if(!$html){
+                $exito_transaccion.=$mensaje_html;
+            }
+
+
         }
 
         return $exito_transaccion;
@@ -115,14 +132,18 @@ class exito_html extends base_html {
      * @param array $mensajes_exito Conjunto de mensajes obtenidos se SESSION
      * @return array|string Salida html de mensajes en success
      */
-    private function mensajes_collapse(array $mensajes_exito): array|string
+    private function mensajes_collapse(array $mensajes_exito, bool $html = true): array|string
     {
 
-        $mensajes = $this->mensajes(mensajes_exito: $mensajes_exito);
+        $mensajes = $this->mensajes(mensajes_exito: $mensajes_exito, con_html: $html);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar mensajes', data: $mensajes);
         }
-        return  '<div class="collapse" id="msj_exito">'.$mensajes.'</div>';
+        $msjs = '<div class="collapse" id="msj_exito">'.$mensajes.'</div>';
+        if(!$html){
+            $msjs = $mensajes;
+        }
+        return  $msjs;
 
     }
 

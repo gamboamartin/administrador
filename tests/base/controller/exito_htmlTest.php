@@ -16,6 +16,21 @@ class exito_htmlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_boton_exito(): void
+    {
+
+        errores::$error = false;
+
+        $html = new exito_html();
+        $html = new liberator($html);
+
+        $resultado = $html->boton_exito();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>',$resultado);
+        errores::$error = false;
+    }
+
     public function test_mensaje(): void
     {
 
