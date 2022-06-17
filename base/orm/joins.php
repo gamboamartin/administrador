@@ -236,7 +236,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Genera los JOINS de extensiones de tablas 1 a 1
+     * @version 1.63.17
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tablas Tablas en JOIN SQL
@@ -375,7 +376,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Genera los JOINS de una extension 1 a 1
+     * @version 1.63.17
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tabla Tabla en LEFT
@@ -409,7 +411,7 @@ class joins{
 
     /**
      * FULL
-     * @param array $data
+     * @param array $data $data[enlace,nombre_original,key_enlace] Datos para JOIN
      * @param modelo_base $modelo
      * @param string $tabla_renombrada
      * @param string $tablas
@@ -530,7 +532,7 @@ class joins{
 
     /**
      * FULL
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo en ejecucion
      * @param array $renombradas
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
@@ -594,7 +596,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Genera el SQL PARA joins
+     * @version 1.63.17
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tabla Tabla en LEFT

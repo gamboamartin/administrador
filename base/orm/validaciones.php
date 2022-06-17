@@ -155,29 +155,25 @@ class validaciones extends validacion{
 
     /**
      * FULL
-     * @param array $data
+     * @param array $data $data[enlace,nombre_original] Datos para JOIN
      * @param string $tabla_renombrada
      * @return bool|array
      */
     public function valida_keys_renombre(array $data, string $tabla_renombrada): bool|array
     {
         if(!isset($data['enlace'])){
-            return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data);
         }
         if(!isset($data['nombre_original'])){
-            return $this->error->error(mensaje:'Error data[nombre_original] debe existir', data:$data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[nombre_original] debe existir', data:$data);
         }
         $data['nombre_original'] = trim($data['nombre_original']);
         if($data['nombre_original'] === ''){
-            return $this->error->error(mensaje:'Error data[nombre_original] no puede venir vacia',data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[nombre_original] no puede venir vacia',data: $data);
         }
         $tabla_renombrada = trim($tabla_renombrada);
         if($tabla_renombrada === ''){
-            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada);
         }
         return true;
     }
