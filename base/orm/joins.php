@@ -410,14 +410,16 @@ class joins{
 
 
     /**
-     * FULL
+     * Genera joins renombrados
+     * @version 1.66.17
      * @param array $data $data[enlace,nombre_original,key_enlace] Datos para JOIN
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tabla_renombrada nombre nuevo de la tabla
      * @param string $tablas Conjunto de tablas cargadas en SQL
      * @return array|string
      */
-    private function join_renombres(array $data, modelo_base $modelo, string $tabla_renombrada, string $tablas): array|string
+    private function join_renombres(array $data, modelo_base $modelo, string $tabla_renombrada,
+                                    string $tablas): array|string
     {
         $namespace = 'models\\';
         $tabla_renombrada = str_replace($namespace,'',$tabla_renombrada);
@@ -435,13 +437,13 @@ class joins{
 
         $valida = (new validaciones())->valida_keys_sql(data: $data,tabla:  $modelo->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar data',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al validar data',data: $valida);
         }
 
 
         $left_join = $this->left_join_str(tablas: $tablas);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar join', data:$left_join, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar join', data:$left_join);
         }
 
         $tablas.=$left_join;
@@ -449,7 +451,7 @@ class joins{
         $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $data['nombre_original'],
             tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar sql',data: $str_join, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar sql',data: $str_join);
         }
 
         $tablas .= ' '.$str_join;
@@ -531,7 +533,8 @@ class joins{
     }
 
     /**
-     * FULL
+     * Genera renombres de tablas en sql
+     * @version 1.66.17
      * @param modelo_base $modelo Modelo en ejecucion
      * @param array $renombradas conjunto de tablas renombradas
      * @param string $tablas Tablas en JOIN SQL
@@ -631,12 +634,13 @@ class joins{
     }
 
     /**
-     * FULL
+     * Obtiene los joins de todas las tablas de un modelo
+     * @version 1.66.17
      * @param array $columnas conjunto de tablas para realizar los joins
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param modelo_base $modelo Modelo en ejecucion
      * @param array $renombradas conjunto de tablas renombradas
-     * @param string $tabla
+     * @param string $tabla Tabla con el nombre original
      * @return array|string
      */
     public function tablas(array $columnas, array $extension_estructura, modelo_base $modelo, array $renombradas,

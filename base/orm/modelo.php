@@ -292,17 +292,17 @@ class modelo extends modelo_base {
 
     /**
      * FULL
-     * @param string $where
-     * @param string $sentencia
-     * @param string $campo
-     * @param string $value
+     * @param string $where palabra WHERE si vacio lo genera
+     * @param string $sentencia Sentencias previamenete cargadas
+     * @param string $campo Campo a cargar filtro de or en SQL
+     * @param string $value Valor a comparar
      * @return array|stdClass
      */
     private function data_sentencia(string $campo, string $sentencia, string $value, string $where): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo);
         }
 
         if($where === ''){
@@ -779,15 +779,14 @@ class modelo extends modelo_base {
             columnas_en_bruto: $columnas_en_bruto, extension_estructura:  $this->extension_estructura,
             renombradas:  $this->renombres);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
         $where = '';
         $sentencia = '';
         foreach($filtro as $campo=>$value){
             $data_sentencia = $this->data_sentencia(campo:  $campo,sentencia:  $sentencia,value:  $value, where: $where);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar data sentencia',data: $data_sentencia,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar data sentencia',data: $data_sentencia);
             }
             $where = $data_sentencia->where;
             $sentencia = $data_sentencia->sentencia;
@@ -796,7 +795,7 @@ class modelo extends modelo_base {
 
         $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $result, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
         }
 
         return $result;
@@ -1473,17 +1472,18 @@ class modelo extends modelo_base {
     }
 
     /**
-     * FULL
-     * @param string $sentencia
-     * @param string $campo
-     * @param string $value
+     *
+     * @param string $sentencia Sentencias previamenete cargadas
+     * @version 1.66.17
+     * @param string $campo Campo a cargar filtro de or en SQL
+     * @param string $value Valor a comparar
      * @return string|array
      */
     private function sentencia_or(string $campo,  string $sentencia, string $value): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo);
         }
         $or = '';
         if($sentencia !== ''){

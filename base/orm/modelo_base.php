@@ -1176,8 +1176,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * FULL
      * Funcion que genera el SQL para un SELECT
+     * @version 1.66.17
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto
@@ -1213,7 +1213,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
             modelo: $this, renombradas: $renombradas, tabla: $this->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar joins', data: $tablas, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar joins', data: $tablas);
         }
 
         $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,

@@ -1080,31 +1080,30 @@ class columnas{
     }
 
     /**
-     * FULL
-     * Devuelve un conjunto de campos obtenidos de this->sub_querys
      *
-     * @param string $columnas
-     * @param modelo_base $modelo
-     * @param array $columnas_seleccionables
+     * Devuelve un conjunto de campos obtenidos de this->sub_querys
+     * @version 1.66.17
+     * @param string $columnas columnas previamente generadas en SQL
+     * @param modelo_base $modelo Modelos en ejecucion
+     * @param array $columnas_seleccionables Conjunto de columnas a generar subquerys
      *
      * @return array|string
      * @example
      *      $sub_querys_sql = $this->sub_querys($columnas);
      */
-    public function sub_querys(string $columnas, modelo_base $modelo, array $columnas_seleccionables = array()):array|string{
+    public function sub_querys(string $columnas, modelo_base $modelo,
+                               array $columnas_seleccionables = array()):array|string{
         $sub_querys_sql = '';
         foreach($modelo->sub_querys as $alias => $sub_query){
             if($sub_query === ''){
                 return $this->error->error(mensaje: "Error el sub query no puede venir vacio",
-                    data: $modelo->sub_querys, params: get_defined_vars());
+                    data: $modelo->sub_querys);
             }
             if(trim($alias) === ''){
-                return $this->error->error(mensaje:"Error el alias no puede venir vacio", data:$modelo->sub_querys,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:"Error el alias no puede venir vacio", data:$modelo->sub_querys);
             }
             if(is_numeric($alias)){
-                return $this->error->error(mensaje:"Error el alias no puede ser un numero", data:$modelo->sub_querys,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:"Error el alias no puede ser un numero", data:$modelo->sub_querys);
             }
             if((count($columnas_seleccionables) > 0) && !in_array($alias, $columnas_seleccionables, true)) {
                 continue;
