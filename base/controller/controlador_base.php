@@ -1140,22 +1140,17 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     /**
      * @throws JsonException
      */
-    public function status(bool $header, bool $ws){
+    public function status(bool $header, bool $ws): array|stdClass
+    {
         $upd = $this->modelo->status('status', $this->registro_id);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al cambiar status',data:  $upd,header:  $header,ws:  $ws);
         }
         $_SESSION['exito'][]['mensaje'] = 'Se ajusto el estatus de manera el registro con el id '.$this->registro_id;
-        if($header){
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-        if($ws){
-            header('Content-Type: application/json');
-            echo json_encode($upd, JSON_THROW_ON_ERROR);
-            exit;
-        }
+
+        $this->header_out(result: $upd, header: $header,ws:  $ws);
+
+
         return $upd;
     }
 

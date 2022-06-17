@@ -186,6 +186,23 @@ class sql_bassTest extends test {
         errores::$error = false;
     }
 
+    public function test_valor_extra(): void
+    {
+        errores::$error = false;
+
+        $sql = new sql_bass($this->link);
+        $sql = new liberator($sql);
+
+
+        $campo = array();
+
+        $campo['adm_elemento_lista_campo'] = 'a';
+
+        $resultado = $sql->valor_extra($campo);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
 

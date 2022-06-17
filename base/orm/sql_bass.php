@@ -221,7 +221,7 @@ class sql_bass{
 
         $valor_extra = $this->valor_extra(campo: $campo);
         if(errores::$error){
-            return $this->error->error('Error al obtener valor_extra',$valor_extra);
+            return $this->error->error(mensaje: 'Error al obtener valor_extra',data: $valor_extra);
         }
 
         if(isset($campo['adm_elemento_lista_representacion']) && (string)$campo['adm_elemento_lista_representacion']!==''){
@@ -248,8 +248,9 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER
+     *
      * @param array $campo
+     * @version 1.74.17
      * @return mixed
      */
     private function valor_extra(array $campo):mixed{

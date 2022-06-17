@@ -297,6 +297,26 @@ class controler{
         return new $class($this->link);
     }
 
+    protected function header_out(mixed $result, bool $header, bool $ws): void
+    {
+        if($header){
+            $retorno = $_SERVER['HTTP_REFERER'];
+            header('Location:'.$retorno);
+            exit;
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($result, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                $error = $this->errores->error(mensaje: 'Error al dar salida JSON', data: $e);
+                var_dump($error);
+            }
+            exit;
+        }
+    }
+
 
 
     /**
