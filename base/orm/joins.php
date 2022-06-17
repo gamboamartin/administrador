@@ -378,7 +378,7 @@ class joins{
      * FULL
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
      * @param modelo_base $modelo Modelo en ejecucion
-     * @param string $tabla
+     * @param string $tabla Tabla en LEFT
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
      */
@@ -486,8 +486,9 @@ class joins{
     }
 
     /**
-     * FULL
+     * Integra LEFT JOIN en SQL
      * @param string $tablas Tablas en JOIN SQL
+     * @version 1.62.17
      * @return string
      */
     private function left_join_str(string $tablas): string
@@ -596,8 +597,8 @@ class joins{
      * FULL
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
      * @param modelo_base $modelo Modelo en ejecucion
-     * @param string $tabla
-     * @param string $tabla_renombrada
+     * @param string $tabla Tabla en LEFT
+     * @param string $tabla_renombrada  Tabla con nuevo nombre se aplica en AS
      * @return string|array
      */
     private function string_sql_join( array $data, modelo_base $modelo, string $tabla, string $tabla_renombrada): string|array
@@ -630,7 +631,7 @@ class joins{
      * FULL
      * @param array $columnas conjunto de tablas para realizar los joins
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
-     * @param modelo_base $modelo
+     * @param modelo_base $modelo Modelo en ejecucion
      * @param array $renombradas
      * @param string $tabla
      * @return array|string

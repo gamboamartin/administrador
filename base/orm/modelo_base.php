@@ -1175,22 +1175,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-
     /**
      * FULL
      * Funcion que genera el SQL para un SELECT
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
+     * @param bool $columnas_en_bruto
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param array $renombradas columnas estructura tabla ligadas renombradas
-     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @return array|string string en forma de sql con los datos para la ejecucion de SELECT
-     * @throws errores definidos en la formacion del SQL
      * @functions $this->obten_columnas_completas($columnas);
      * @functions $consulta_base->obten_tablas_completas($tabla, $this->columnas);
      * @functions $sub_querys_sql = $this->sub_querys($columnas);
-     * @throws errores $tabla_original no es una clase o modelo
-     *@example
+     * @example
      * $consulta = $this->genera_consulta_base($columnas);
      * @uses  $this->filtro_and
      * @uses  $this->obten_por_id
