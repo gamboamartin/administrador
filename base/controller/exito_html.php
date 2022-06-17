@@ -81,21 +81,27 @@ class exito_html extends base_html {
 
         $exito_transaccion = '';
         if(count($mensajes_exito)>0) {
-
-            $exito_html =   '<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">';
+            $exito_html = '';
+            if($html) {
+                $exito_html = '<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">';
+            }
 
             $head_html = (new exito_html())->head(titulo: 'Exito');
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar head',data:  $head_html);
             }
-            $exito_html  .=    $head_html;
+            if($html) {
+                $exito_html .= $head_html;
+            }
 
             $boton = (new exito_html())->boton_exito();
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar boton',data:  $boton);
             }
 
-            $exito_html.=  $boton;
+            if($html) {
+                $exito_html .= $boton;
+            }
 
             $mensaje_html = (new exito_html())->mensajes_collapse(mensajes_exito: $mensajes_exito, html: $html);
             if(errores::$error){
@@ -110,9 +116,11 @@ class exito_html extends base_html {
             }
 
             $exito_html.= $mensaje_html;
-            $exito_html.= $close_btn;
-            $exito_html .=      '</div>';
-            $exito_transaccion = $exito_html;
+            if($html) {
+                $exito_html .= $close_btn;
+                $exito_html .= '</div>';
+                $exito_transaccion = $exito_html;
+            }
             if (isset($_SESSION['exito'])) {
                 unset($_SESSION['exito']);
             }

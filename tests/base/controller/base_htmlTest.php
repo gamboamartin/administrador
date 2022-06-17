@@ -16,6 +16,22 @@ class base_htmlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_close_btn(): void
+    {
+
+        errores::$error = false;
+
+        $html = new base_html();
+        //$html = new liberator($html);
+
+
+        $resultado = $html->close_btn();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_head(): void
     {
 

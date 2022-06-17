@@ -163,12 +163,12 @@ class errores_html extends base_html {
 
         $close_btn = $this->close_btn();
         if(errores::$error){
-            return $this->error->error('Error al generar boton close', $close_btn);
+            return $this->error->error(mensaje: 'Error al generar boton close', data: $close_btn);
         }
 
         $detalle_btn = (new errores_html())->detalle_btn();
         if(errores::$error){
-            return $this->error->error('Error al generar boton detalle', $detalle_btn);
+            return $this->error->error(mensaje: 'Error al generar boton detalle',data:  $detalle_btn);
 
         }
 

@@ -7,6 +7,12 @@ class base_html{
     public function __construct(){
         $this->error = new errores();
     }
+
+    /**
+     * Genera boton close para alert
+     * @version 1.71.17
+     * @return string
+     */
     public function close_btn(): string
     {
         return '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
