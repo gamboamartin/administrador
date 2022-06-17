@@ -8,7 +8,7 @@ class mensajes{
     public function __construct(){
         $this->error = new errores();
     }
-    public function data(): array|stdClass
+    public function data(bool $con_html = true): array|stdClass
     {
         $errores_transaccion = (new errores_html())->errores_transaccion();
         if(errores::$error){
@@ -16,7 +16,7 @@ class mensajes{
 
         }
 
-        $exito_transaccion = (new exito_html())->mensajes_full();
+        $exito_transaccion = (new exito_html())->mensajes_full(html: $con_html);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar mensajes de exito', data: $exito_transaccion);
         }

@@ -56,6 +56,7 @@ class controler{
     public string $fecha_hoy;
     public stdClass $row_upd;
     public string $mensaje_exito = '';
+    public bool $msj_con_html = true;
 
 
 
@@ -94,7 +95,7 @@ class controler{
 
         $this->fecha_hoy = date('Y-m-d H:i:s');
 
-        $mensajes = (new mensajes())->data();
+        $mensajes = (new mensajes())->data(con_html: $this->msj_con_html);
         if(errores::$error){
             $error =  $this->errores->error(mensaje: 'Error al cargar mensajes',data: $mensajes);
             print_r($error);

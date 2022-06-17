@@ -1,5 +1,6 @@
 <?php
 namespace base\controller;
+use base\orm\validaciones;
 use gamboamartin\errores\errores;
 
 class errores_html extends base_html {
@@ -63,10 +64,16 @@ class errores_html extends base_html {
     /**
      * Obtiene el html basado en un array de errores de la clase errores
      * @param array $error_previo Error de la clase errores
-     * @return string
+     * @return string|array
+     * @version 1.70.17
      */
-    private function error_previo(array $error_previo): string
+    private function error_previo(array $error_previo): string|array
     {
+        $keys = array('mensaje','line','function','class');
+        $valida = (new validaciones())->valida_existencia_keys(keys: $keys,registro:  $error_previo,valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
         $html = $error_previo['mensaje'] ;
         $html .= ' Line '.$error_previo['line'] ;
         $html .= ' Funcion  '.$error_previo['function'] ;
