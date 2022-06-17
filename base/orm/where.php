@@ -546,19 +546,17 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
-                    params: get_defined_vars());
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro);
             }
 
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data,key:  $key);
             if(errores::$error){
-                return $this->error->error(mensaje: "Error al maquetar",data:$data_comparacion,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: "Error al maquetar",data:$data_comparacion);
             }
 
             $comparacion = $this->comparacion(data: $data,default: 'LIKE');
             if(errores::$error){
-                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion, params: get_defined_vars());
+                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion);
             }
 
             $txt = '%';

@@ -778,8 +778,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $n_registros = $this->modelo->cuenta(filtro: $filtros,tipo_filtro: 'textos',filtro_especial:  $filtro_especial);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al contar registros',data: $n_registros,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al contar registros',data: $n_registros);
             if(!$header){
                 return $error;
             }
@@ -790,8 +789,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $filtro_html = $this->directiva->format_filtro_base_html(filtro: $filtros);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al $filtro_html',data: $filtro_html,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al $filtro_html',data: $filtro_html);
             if(!$header){
                 return $error;
             }
@@ -810,8 +808,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $botones_filtro = $this->obten_botones_para_filtro();
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $botones_filtro,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $botones_filtro);
 
             if(!$header){
                 return $error;
@@ -834,7 +831,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
         if(errores::$error){
             $error =  $this->errores->error(mensaje: 'Error al obtener obten_registros_filtro_and_ordenado',
-                data: $resultado, params: get_defined_vars());
+                data: $resultado);
             print_r($error);
             die('Error');
 

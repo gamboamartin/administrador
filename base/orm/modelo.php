@@ -1275,7 +1275,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * FULL
+     *
      * Devuelve un conjunto de registros ordenados con filtro
      * @param array $filtros filtros para generar AND en el resultado
      * @param string $campo campo de orden
@@ -1291,6 +1291,7 @@ class modelo extends modelo_base {
      * @internal  $this->genera_and();
      * @internal this->genera_consulta_base();
      * @internal $this->ejecuta_consulta();
+     * @version 1.72.17
      */
     public function obten_registros_filtro_and_ordenado(string $campo, bool $columnas_en_bruto,
                                                         array $filtros, string $orden):array|stdClass{
