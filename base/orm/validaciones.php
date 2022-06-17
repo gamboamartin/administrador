@@ -2,6 +2,7 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
+use stdClass;
 
 class validaciones extends validacion{
 
@@ -183,8 +184,8 @@ class validaciones extends validacion{
 
     /**
      * FULL
-     * @param array $data
-     * @param string $tabla
+     * @param array $data data[key,enlace,key_enlace]
+     * @param string $tabla Tabla en ejecucion
      * @return bool|array
      */
     public function valida_keys_sql(array $data, string $tabla): bool|array
@@ -193,27 +194,22 @@ class validaciones extends validacion{
             return $this->error->error(mensaje: 'Error data[key] debe existir en '.$tabla, data: $data);
         }
         if(!isset($data['enlace'])){
-            return $this->error->error(mensaje:'Error data[enlace] debe existir',data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[enlace] debe existir',data: $data);
         }
         if(!isset($data['key_enlace'])){
-            return $this->error->error(mensaje:'Error data[key_enlace] debe existir',data: $data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[key_enlace] debe existir',data: $data);
         }
         $data['key'] = trim($data['key']);
         $data['enlace'] = trim($data['enlace']);
         $data['key_enlace'] = trim($data['key_enlace']);
         if($data['key'] === ''){
-            return $this->error->error(mensaje:'Error data[key] esta vacio '.$tabla, data:$data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[key] esta vacio '.$tabla, data:$data);
         }
         if($data['enlace'] === ''){
-            return $this->error->error(mensaje:'Error data[enlace] esta vacio '.$tabla, data:$data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[enlace] esta vacio '.$tabla, data:$data);
         }
         if($data['key_enlace'] === ''){
-            return $this->error->error(mensaje:'Error data[key_enlace] esta vacio '.$tabla, data:$data,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error data[key_enlace] esta vacio '.$tabla, data:$data);
         }
         return true;
     }

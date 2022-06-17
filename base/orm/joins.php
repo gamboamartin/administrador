@@ -210,7 +210,7 @@ class joins{
     }
 
     /**
-     *
+     * Obtiene las tablas para hacer un join
      * @param string $key Tabla LEFT
      * @version 1.60.17
      * @param array|string $tabla_join Datos para hacer join con tablas
@@ -237,9 +237,9 @@ class joins{
 
     /**
      * FULL
-     * @param array $extension_estructura
-     * @param modelo_base $modelo
-     * @param string $tablas
+     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $tablas Tablas en JOIN SQL
      * @return array|string
      */
     private function extensiones_join(array $extension_estructura, modelo_base $modelo, string $tablas): array|string
@@ -376,10 +376,10 @@ class joins{
 
     /**
      * FULL
-     * @param array $data
-     * @param modelo_base $modelo
+     * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
+     * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tabla
-     * @param string $tablas
+     * @param string $tablas Tablas en JOIN SQL
      * @return array|string
      */
     private function join_extension(array $data, modelo_base $modelo, string $tabla, string $tablas): array|string
@@ -387,19 +387,19 @@ class joins{
 
         $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar data',data:  $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
         }
 
         $left_join = $this->left_join_str(tablas: $tablas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar join', data:$left_join, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar join', data:$left_join);
         }
 
         $tablas.=$left_join;
 
         $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql', data:$str_join, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sql', data:$str_join);
         }
 
         $tablas .= ' '.$str_join;
@@ -487,7 +487,7 @@ class joins{
 
     /**
      * FULL
-     * @param string $tablas
+     * @param string $tablas Tablas en JOIN SQL
      * @return string
      */
     private function left_join_str(string $tablas): string
@@ -531,7 +531,7 @@ class joins{
      * FULL
      * @param modelo_base $modelo
      * @param array $renombradas
-     * @param string $tablas
+     * @param string $tablas Tablas en JOIN SQL
      * @return array|string
      */
     private function renombres_join(modelo_base $modelo, array $renombradas, string $tablas): array|string
@@ -539,14 +539,12 @@ class joins{
         $tablas_env = $tablas;
         foreach($renombradas as $tabla_renombrada=>$data){
             if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data
-                    , params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
             }
             $tablas_env = $this->join_renombres(data: $data,modelo: $modelo, tabla_renombrada: $tabla_renombrada,
                 tablas:  $tablas);
             if(errores::$error){
-                return $this->error->error(mensaje:'Error al generar join', data:$tablas_env,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error al generar join', data:$tablas_env);
             }
             $tablas = (string)$tablas_env;
 
@@ -596,8 +594,8 @@ class joins{
 
     /**
      * FULL
-     * @param array $data
-     * @param modelo_base $modelo
+     * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
+     * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tabla
      * @param string $tabla_renombrada
      * @return string|array
@@ -606,27 +604,23 @@ class joins{
     {
         $valida = (new validaciones())->valida_keys_sql(data:$data, tabla: $modelo->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar data', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
         $tabla = trim($tabla);
         $tabla_renombrada = trim($tabla_renombrada);
 
         if($tabla === ''){
-            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla);
         }
         if($tabla_renombrada === ''){
-            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada);
         }
 
         if(is_numeric($tabla)){
-            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
         }
         if(is_numeric($tabla_renombrada)){
-            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
         }
 
         return "$tabla AS $tabla_renombrada  ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]";
@@ -635,7 +629,7 @@ class joins{
     /**
      * FULL
      * @param array $columnas conjunto de tablas para realizar los joins
-     * @param array $extension_estructura
+     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param modelo_base $modelo
      * @param array $renombradas
      * @param string $tabla
