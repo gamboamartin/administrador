@@ -5,16 +5,20 @@ use gamboamartin\errores\errores;
 class errores_html extends base_html {
     private errores $error;
     public function __construct(){
+        parent::__construct();
         $this->error = new errores();
     }
 
 
-
+    /**
+     * @param array $errores_previos Conjunto de errores
+     * @return array|string
+     */
     private function contenido_modal(array $errores_previos): array|string
     {
         $errores_previos_html = $this->errores_previos(errores_previos: $errores_previos);
         if(errores::$error){
-            return $this->error->error('Error al maquetar errores', $errores_previos_html);
+            return $this->error->error(mensaje: 'Error al maquetar errores',data:  $errores_previos_html);
         }
 
         $modal_btns = $this->modal_btns();
@@ -25,11 +29,15 @@ class errores_html extends base_html {
         return $errores_previos_html.$modal_btns;
     }
 
+    /**
+     * @param array $errores_previos Conjunto de errores
+     * @return array|string
+     */
     private function data_modal_error(array $errores_previos): array|string
     {
         $head_error = $this->head(titulo: 'Error');
         if(errores::$error){
-            return $this->error->error('Error al generar head', $head_error);
+            return $this->error->error(mensaje: 'Error al generar head', data: $head_error);
         }
 
 
@@ -52,8 +60,11 @@ class errores_html extends base_html {
         return '<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#msj_error">Detalle</button>';
     }
 
-
-
+    /**
+     * Obtiene el html basado en un array de errores de la clase errores
+     * @param array $error_previo Error de la clase errores
+     * @return string
+     */
     private function error_previo(array $error_previo): string
     {
         $html = $error_previo['mensaje'] ;
@@ -70,13 +81,18 @@ class errores_html extends base_html {
         return $html;
     }
 
+    /**
+     * Genera las errores basado en el conjunto de errores de la clase errores
+     * @param array $errores_previos Conjunto de errores
+     * @return array|string
+     */
     private function errores_previos(array $errores_previos): array|string
     {
         $errores_html = '';
         foreach ($errores_previos as $error_previo) {
             $html = $this->error_previo(error_previo: $error_previo);
             if(errores::$error){
-                return $this->error->error('Error al maquetar error', $html);
+                return $this->error->error(mensaje: 'Error al maquetar error', data: $html);
             }
             $errores_html.=$html."<br><br>";
 
@@ -110,7 +126,7 @@ class errores_html extends base_html {
 
             $data_modal_error = (new errores_html())->data_modal_error(errores_previos: $errores_previos);
             if(errores::$error){
-                return $this->error->error('Error al generar errores', $data_modal_error);
+                return $this->error->error(mensaje: 'Error al generar errores', data: $data_modal_error);
             }
             $errores_html.=$data_modal_error;
 

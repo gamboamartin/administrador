@@ -12,13 +12,13 @@ class mensajes{
     {
         $errores_transaccion = (new errores_html())->errores_transaccion();
         if(errores::$error){
-            return $this->error->error('Error al generar errores', $errores_transaccion);
+            return $this->error->error(mensaje: 'Error al generar errores', data: $errores_transaccion);
 
         }
 
         $exito_transaccion = (new exito_html())->mensajes_full();
         if(errores::$error){
-            return $this->error->error('Error al generar mensajes de exito', $exito_transaccion);
+            return $this->error->error(mensaje: 'Error al generar mensajes de exito', data: $exito_transaccion);
         }
 
         $data = new stdClass();

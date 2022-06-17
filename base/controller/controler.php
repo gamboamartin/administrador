@@ -55,6 +55,7 @@ class controler{
     public int $n_registros = 0;
     public string $fecha_hoy;
     public stdClass $row_upd;
+    public string $mensaje_exito = '';
 
 
 
@@ -93,6 +94,14 @@ class controler{
 
         $this->fecha_hoy = date('Y-m-d H:i:s');
 
+        $mensajes = (new mensajes())->data();
+        if(errores::$error){
+            $error =  $this->errores->error(mensaje: 'Error al cargar mensajes',data: $mensajes);
+            print_r($error);
+            exit;
+        }
+
+        $this->mensaje_exito = $mensajes->exito_msj;
 
     }
 
