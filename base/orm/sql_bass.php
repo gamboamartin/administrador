@@ -21,9 +21,9 @@ class sql_bass{
 
 
     /**
-     * FULL
-     * Funcion asignar true o false a un conjunto de campos para su utilizacion en vistas
      *
+     * Funcion asignar true o false a un conjunto de campos para su utilizacion en vistas
+     * @version 1.64.17
      * @param array $campo  campo a utilizar
      * @param array $bools  valores de campos a inicializar
      * @param array $bools_asignar  valores de campos para aplicar asignacion de bool
@@ -61,9 +61,9 @@ class sql_bass{
     }
 
     /**
-     * FULL
-     * Funcion asignar true o false a un campo para su utilizacion en vistas
      *
+     * Funcion asignar true o false a un campo para su utilizacion en vistas
+     * @version 1.64.17
      * @param string $bool key de campo
      * @param array $campo  campo a utilizar
      * @param array $bools  valores de campos a inicializar
@@ -357,9 +357,9 @@ class sql_bass{
 
 
     /**
-     * FULL
-     * Funcion para determinar TRUE O FALSE a campo para elemento lista
      *
+     * Funcion para determinar TRUE O FALSE a campo para elemento lista
+     * @version 1.64.17
      * @param string $key  key de elemento lista a validar
      * @param array $campo  campo a validar
      * @example

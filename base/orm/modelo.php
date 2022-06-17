@@ -1538,6 +1538,33 @@ class modelo extends modelo_base {
         return $resultado->registros[0];
     }
 
+    /**
+     * @throws JsonException
+     */
+    public function status(string $campo, int $registro_id): array|stdClass
+    {
+        $registro = $this->registro(registro_id: $registro_id,columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
+        }
+
+        $status_actual = $registro->$campo;
+        $status_nuevo = 'activo';
+
+        if($status_actual === 'activo'){
+            $status_nuevo = 'inactivo';
+        }
+
+        $registro_upd[$campo] = $status_nuevo;
+
+        $upd = $this->modifica_bd(registro: $registro_upd,id: $registro_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualizar registro',data: $upd);
+        }
+
+        return $upd;
+
+    }
 
 
     /**
