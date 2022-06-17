@@ -1117,12 +1117,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function genera_campos_update(): array|string
     {
         if(count($this->registro_upd) === 0){
-            return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
         }
 
         $elemento_lista = $this->genera_modelo(modelo: 'adm_elemento_lista');
         if(errores::$error){
-            return $this->error->error('Error al generar modelo',$elemento_lista);
+            return $this->error->error(mensaje: 'Error al generar modelo',data: $elemento_lista);
         }
 
 

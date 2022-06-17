@@ -5,6 +5,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
+use Throwable;
 
 
 class sql_bass{
@@ -110,9 +111,9 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER ERROR
-     * Funcion para la generacion de booleanos para su utilizacion en vistas
      *
+     * Funcion para la generacion de booleanos para su utilizacion en vistas
+     * @version 1.73.17
      * @param array $campo campo de la vista
      * @param array $campos_obligatorios  campos para la asignacion de booleanos
      * @example
@@ -195,7 +196,6 @@ class sql_bass{
      * @param string $vista vista en la que se aplicaran los ajustes
      * @return array conjunto de elementos para ser utilizados en views
      * @throws errores definidos en internals*@throws JsonException
-     * @throws JsonException
      * @example
      *      foreach ($estructura_init as $campo){
      * $estructura = $this->genera_estructura_init($campo,$campos_obligatorios,$vista,$tabla);
@@ -251,12 +251,17 @@ class sql_bass{
      * P INT P ORDER
      * @param array $campo
      * @return mixed
-     * @throws JsonException
      */
     private function valor_extra(array $campo):mixed{
         $valor_extra = array();
         if(isset($campo['adm_elemento_lista_valor_extra']) && (string)$campo['adm_elemento_lista_valor_extra']!==''){
-            $valor_extra = json_decode($campo['adm_elemento_lista_valor_extra'], true, 512, JSON_THROW_ON_ERROR);
+            try {
+                $valor_extra = json_decode($campo['adm_elemento_lista_valor_extra'], true, 512,
+                    JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                return $this->error->error('Error al generar json',$e);
+            }
         }
         return $valor_extra;
     }
@@ -332,7 +337,7 @@ class sql_bass{
     $estructura = $this->maqueta_estructuras($estructura_init,$campos_obligatorios,$vista,$tabla);
      *
      * @return array con datos para su utilizacion en views
-     * @throws errores|JsonException definidos en internals
+     * @throws errores definidos en internals
      * @uses consultas_base->genera_estructura_tabla
      * @internal  $this->genera_estructura_init($campo,$campos_obligatorios,$vista,$tabla);
      */

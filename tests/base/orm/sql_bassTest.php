@@ -7,8 +7,6 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
-
-
 class sql_bassTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
@@ -115,6 +113,26 @@ class sql_bassTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(' , ', $resultado);
 
+        errores::$error = false;
+    }
+
+    public function test_genera_bools(): void
+    {
+        errores::$error = false;
+
+        $sql = new sql_bass($this->link);
+        $sql = new liberator($sql);
+
+
+        $campo = array();
+        $campos_obligatorios = array();
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $campo['adm_elemento_lista_ln'] = 'a';
+        $campo['adm_elemento_lista_con_label'] = 'a';
+        $campo['adm_elemento_lista_select_vacio_alta'] = 'a';
+        $resultado = $sql->genera_bools($campo, $campos_obligatorios);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 

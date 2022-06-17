@@ -929,18 +929,15 @@ class modelo extends modelo_base {
             return $this->error->error('Error el id debe ser mayor a 0',$id);
         }
         if(count($this->registro_upd) === 0){
-            return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
         }
-
-
-
 
         if(!$reactiva) {
             $valida = $this->validacion->valida_transaccion_activa(
                 aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo,
                 registro:  $registro, registro_id: $this->registro_id,tabla:  $this->tabla);
             if (errores::$error) {
-                return $this->error->error('Error al validar transaccion activa',$valida);
+                return $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida);
             }
         }
         $campos_sql = $this->genera_campos_update();

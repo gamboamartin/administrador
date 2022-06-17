@@ -206,7 +206,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @param bool $ws
      * @return array|string
-     * @throws JsonException
      */
     public function alta(bool $header, bool $ws = false):array|string{
 
@@ -1146,6 +1145,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al cambiar status',data:  $upd,header:  $header,ws:  $ws);
         }
+        $_SESSION['exito'][]['mensaje'] = 'Se ajusto el estatus de manera el registro con el id '.$this->registro_id;
         if($header){
             $retorno = $_SERVER['HTTP_REFERER'];
             header('Location:'.$retorno);
