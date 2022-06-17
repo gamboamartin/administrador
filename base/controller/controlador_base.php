@@ -376,8 +376,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $resultado;
     }
 
-
-
     /**
      * P INT
      * @param bool $header
@@ -490,8 +488,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         return $_SESSION;
     }
-
-
 
     /**
      *
@@ -1143,6 +1139,27 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             exit;
         }
         return $r_modifica;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function status(bool $header, bool $ws){
+        $upd = $this->modelo->status('status', $this->registro_id);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al cambiar status',data:  $upd,header:  $header,ws:  $ws);
+        }
+        if($header){
+            $retorno = $_SERVER['HTTP_REFERER'];
+            header('Location:'.$retorno);
+            exit;
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            echo json_encode($upd, JSON_THROW_ON_ERROR);
+            exit;
+        }
+        return $upd;
     }
 
     /**

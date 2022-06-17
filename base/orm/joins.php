@@ -412,9 +412,9 @@ class joins{
     /**
      * FULL
      * @param array $data $data[enlace,nombre_original,key_enlace] Datos para JOIN
-     * @param modelo_base $modelo
-     * @param string $tabla_renombrada
-     * @param string $tablas
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $tabla_renombrada nombre nuevo de la tabla
+     * @param string $tablas Conjunto de tablas cargadas en SQL
      * @return array|string
      */
     private function join_renombres(array $data, modelo_base $modelo, string $tabla_renombrada, string $tablas): array|string
@@ -424,7 +424,7 @@ class joins{
 
         $valida = (new validaciones())->valida_keys_renombre(data:$data,tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $data['nombre_original'] = trim($data['nombre_original']);
@@ -533,7 +533,7 @@ class joins{
     /**
      * FULL
      * @param modelo_base $modelo Modelo en ejecucion
-     * @param array $renombradas
+     * @param array $renombradas conjunto de tablas renombradas
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
      */
@@ -635,7 +635,7 @@ class joins{
      * @param array $columnas conjunto de tablas para realizar los joins
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param modelo_base $modelo Modelo en ejecucion
-     * @param array $renombradas
+     * @param array $renombradas conjunto de tablas renombradas
      * @param string $tabla
      * @return array|string
      */

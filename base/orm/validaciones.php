@@ -156,7 +156,7 @@ class validaciones extends validacion{
     /**
      * FULL
      * @param array $data $data[enlace,nombre_original] Datos para JOIN
-     * @param string $tabla_renombrada
+     * @param string $tabla_renombrada nombre nuevo de la tabla
      * @return bool|array
      */
     public function valida_keys_renombre(array $data, string $tabla_renombrada): bool|array
