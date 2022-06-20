@@ -33,6 +33,41 @@ class inicializacion{
     }
 
     /**
+     * Ajusta los elementos de un row a modificar para comparar los campos con valores que ya esten en base de datos
+     * no seas actualizados
+     * @version 1.78.18
+     * @param string $campo Campo del modelo en ejecucion
+     * @param modelo $modelo Modelo en ejecucion
+     * @param stdClass $registro_previo Registro antes de ser modificado
+     * @param string|null $value_upd Valor que se pretende modificar
+     * @return array
+     */
+    public function ajusta_registro_upd(string $campo, modelo $modelo, stdClass $registro_previo,
+                                        string|null $value_upd): array
+    {
+        $value_upd = trim($value_upd);
+        $campo = trim($campo);
+
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error el campo esta vacio', data:$campo);
+        }
+
+        $keys = array($campo);
+        $valida = (new validaciones())->valida_existencia_keys(keys: $keys, registro: $registro_previo,
+            valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro_previo', data:$valida);
+        }
+
+        $value_previo = trim($registro_previo->$campo);
+
+        if($value_previo === $value_upd){
+            unset($modelo->registro_upd[$campo]);
+        }
+        return $modelo->registro_upd;
+    }
+
+    /**
      * P INT P ORDER
      * @param array $campo Campo a validar elementos
      * @param array $bools

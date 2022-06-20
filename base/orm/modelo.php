@@ -919,12 +919,11 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error('Error al inicializar',$init);
         }
-        
+
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd);
         if(errores::$error){
             return $this->error->error('Error al validar datos',$valida);
         }
-
 
         $registro_previo = $this->registro(registro_id: $id,columnas_en_bruto: true,retorno_obj: true);
         if(errores::$error){
@@ -932,13 +931,10 @@ class modelo extends modelo_base {
         }
 
         foreach ($this->registro_upd as $campo=>$value_upd){
-            $value_upd = trim($value_upd);
-            $campo = trim($campo);
-
-            $value_previo = trim($registro_previo->$campo);
-
-            if($value_previo === $value_upd){
-                unset($this->registro_upd[$campo]);
+            $ajusta = (new inicializacion())->ajusta_registro_upd(campo: $campo,modelo:  $this,
+                registro_previo: $registro_previo,value_upd:  $value_upd);
+            if(errores::$error){
+                return $this->error->error('Error al ajustar elemento',$ajusta);
             }
         }
 

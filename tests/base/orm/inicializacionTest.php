@@ -21,6 +21,43 @@ class inicializacionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_ajusta_registro_upd(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+
+        $registro_previo = new stdClass();
+        $registro_previo->z = 'z';
+
+        $modelo = new adm_seccion($this->link);
+        $campo = 'z';
+        $value_upd = 'z';
+        $modelo->registro_upd['z'] = 'z';
+        $resultado = $inicializacion->ajusta_registro_upd($campo, $modelo, $registro_previo, $value_upd);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+
+
+        $registro_previo = new stdClass();
+        $registro_previo->z = 'z';
+
+        $modelo = new adm_seccion($this->link);
+        $campo = 'z';
+        $value_upd = 'd';
+        $modelo->registro_upd['z'] = 'z';
+        $resultado = $inicializacion->ajusta_registro_upd($campo, $modelo, $registro_previo, $value_upd);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_asigna_valor_desencriptado(){
         errores::$error = false;
         $inicializacion = new inicializacion();
