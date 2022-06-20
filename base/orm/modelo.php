@@ -886,7 +886,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error("Error al modificar", $r_modifica);
         }
-        $registro = $this->registro($id);
+        $registro = $this->registro(registro_id: $id);
         if(errores::$error){
             return $this->error->error("Error al obtener registro", $registro);
         }
@@ -901,10 +901,8 @@ class modelo extends modelo_base {
      * @param array $registro registro con datos a modificar
      * @param int $id id del registro a modificar
      * @param bool $reactiva para evitar validacion de status inactivos
-     * @return array resultado de la insercion
-     * @throws errores Si $limit < 0
-     * @throws errores $this->registro_upd vacio
-     * @throws \JsonException
+     * @return array|stdClass resultado de la insercion
+     * @throws JsonException
      * @example
      *      $r_modifica_bd =  parent::modifica_bd($registro, $id, $reactiva);
      * @internal  $this->validacion->valida_transaccion_activa($this, $this->aplica_transaccion_inactivo, $this->registro_id, $this->tabla);
@@ -917,10 +915,9 @@ class modelo extends modelo_base {
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
 
-        foreach ($this->campos_no_upd as $campo_no_upd){
-            if(array_key_exists($campo_no_upd, $registro)){
-                unset($registro[$campo_no_upd]);
-            }
+        $registro = (new columnas())->campos_no_upd(campos_no_upd: $this->campos_no_upd, registro: $registro);
+        if(errores::$error){
+            return $this->error->error('Error al ajustar camp no upd',$registro);
         }
 
         $this->registro_upd = $registro;

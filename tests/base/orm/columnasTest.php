@@ -402,6 +402,22 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_campos_no_upd(){
+
+        errores::$error = false;
+        $col = new columnas();
+        //$col = new liberator($col);
+        $registro = array();
+        $campos_no_upd = array();
+        $registro['a'] = 'x';
+        $campos_no_upd[] = 'a';
+        $resultado = $col->campos_no_upd($campos_no_upd, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
     public function test_columnas_bd_native(){
 
         errores::$error = false;

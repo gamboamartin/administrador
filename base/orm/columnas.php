@@ -217,6 +217,34 @@ class columnas{
     }
 
     /**
+     * Elimina los campos no actualizables de un modelo
+     * @version 1.76.17
+     * @param array $campos_no_upd viene de modelo campos_no_upd
+     * @param array $registro Arreglo de tipo registro a modificar
+     * @return array Registro ajustado
+     */
+    public function campos_no_upd(array $campos_no_upd, array $registro): array
+    {
+        foreach ($campos_no_upd as $campo_no_upd){
+            $campo_no_upd = trim($campo_no_upd);
+            if($campo_no_upd === ''){
+                $fix = 'Se tiene que mandar un campo del modelo indicado';
+                $fix .= ' $campo_no_upd[] debe ser un campo ejemplo $campo_no_upd[] = status';
+                return $this->error->error(mensaje: 'Error $campo_no_upd esta vacio', data: $campo_no_upd, fix: $fix);
+            }
+            if(is_numeric($campo_no_upd)){
+                $fix = 'Se tiene que mandar un campo del modelo indicado';
+                $fix .= ' $campo_no_upd[] debe ser un campo ejemplo $campo_no_upd[] = status';
+                return $this->error->error(mensaje: 'Error $campo_no_upd debe ser un texto', data: $campo_no_upd, fix: $fix);
+            }
+            if(array_key_exists($campo_no_upd, $registro)){
+                unset($registro[$campo_no_upd]);
+            }
+        }
+        return $registro;
+    }
+
+    /**
      * Carga a un string de forma SQL los campos SELECTS
      * @version 1.51.14
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
