@@ -17,6 +17,21 @@ class errores_htmlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_detalle_btn(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $resultado = $html->detalle_btn();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#msj_error">Detalle</button>',$resultado);
+        errores::$error = false;
+    }
+
     public function test_error_previo(): void
     {
 

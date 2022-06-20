@@ -56,6 +56,11 @@ class errores_html extends base_html {
         return $head_error.$contenido_modal.$mensaje_error_detalle;
     }
 
+    /**
+     * Genera un boton de detalle collapse
+     * @version 1.85.19
+     * @return string
+     */
     private function detalle_btn(): string
     {
         return '<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#msj_error">Detalle</button>';

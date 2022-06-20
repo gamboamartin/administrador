@@ -56,6 +56,7 @@ class controler{
     public string $fecha_hoy;
     public stdClass $row_upd;
     public string $mensaje_exito = '';
+    public string $mensaje_warning = '';
     public bool $msj_con_html = true;
 
 
@@ -103,6 +104,7 @@ class controler{
         }
 
         $this->mensaje_exito = $mensajes->exito_msj;
+        $this->mensaje_warning = $mensajes->warning_msj;
 
     }
 
