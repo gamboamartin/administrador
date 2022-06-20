@@ -2,6 +2,7 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 use PDO;
 use stdClass;
 
@@ -66,7 +67,7 @@ class dependencias{
 
         $result = $modelo_children->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener dependientes',$result);
+            return $this->error->error(mensaje: 'Error al obtener dependientes',data: $result);
         }
         return $result->registros;
     }
@@ -74,6 +75,9 @@ class dependencias{
     /**
      * P INT P ORDER
      * @param string $modelo_dependiente
+     * @param PDO $link
+     * @param int $registro_id
+     * @param string $tabla
      * @return array
      */
     private function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
@@ -137,6 +141,7 @@ class dependencias{
      * @param int $parent_id
      * @param string $tabla
      * @return array
+     * @throws JsonException
      */
     private function elimina_dependientes(modelo $model, int $parent_id, string $tabla): array
     {

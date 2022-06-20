@@ -280,7 +280,6 @@ class controler{
     }
 
 
-
     /**
      * PHPUNIT
      * @param string $name
@@ -318,8 +317,6 @@ class controler{
             exit;
         }
     }
-
-
 
     /**
      * P INT P ORDER ERROREV

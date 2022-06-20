@@ -38,8 +38,9 @@ class params_sql{
     }
 
     /**
-     * FULL
-     * @param int $limit
+     * Genera un limit para sql
+     * @version 1.91.19
+     * @param int $limit Numero de registros a mostrar
      * @return string|array
      */
     private function limit_sql(int $limit): string|array
@@ -76,7 +77,7 @@ class params_sql{
      * FULL
      * @param array $group_by
      * @param array $order
-     * @param int $limit
+     * @param int $limit Numero de registros a mostrar
      * @param int $offset
      * @return array|stdClass
      */

@@ -14,17 +14,18 @@ class filtros{
 
     /**
      * P INT P ORDER ERRROEV
-     * @param array $group_by
-     * @param array $order
-     * @param int $limit
-     * @param int $offset
-     * @param string $tipo_filtro
      * @param array $filtro
      * @param array $filtro_especial
-     * @param array $filtro_rango
      * @param array $filtro_extra
+     * @param array $filtro_rango
+     * @param array $group_by
+     * @param int $limit Numero de registros a mostrar
+     * @param modelo $modelo
      * @param array $not_in
+     * @param int $offset
+     * @param array $order
      * @param string $sql_extra
+     * @param string $tipo_filtro
      * @param array $filtro_fecha
      * @return array|stdClass
      */

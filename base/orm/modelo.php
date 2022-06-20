@@ -418,8 +418,7 @@ class modelo extends modelo_base {
 
         $registro_bitacora = $this->obten_data();
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener registro en '.$this->tabla, data:$registro_bitacora,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al obtener registro en '.$this->tabla, data:$registro_bitacora);
         }
         $tabla = $this->tabla;
         $this->consulta = /** @lang MYSQL */
@@ -804,17 +803,19 @@ class modelo extends modelo_base {
     /**
      * P INT P ORDER ERROREV
      * @param array $columnas
-     * @param array $group_by
-     * @param array $order
-     * @param int $limit
-     * @param int $offset
-     * @param string $tipo_filtro
+     * @param array $columnas_by_table
+     * @param bool $columnas_en_bruto
      * @param array $filtro
      * @param array $filtro_especial
-     * @param array $filtro_rango
      * @param array $filtro_extra
+     * @param array $filtro_rango
+     * @param array $group_by
+     * @param int $limit Numero de registros a mostrar
      * @param array $not_in
+     * @param int $offset
+     * @param array $order
      * @param string $sql_extra
+     * @param string $tipo_filtro
      * @param array $filtro_fecha
      * @return array|string
      */

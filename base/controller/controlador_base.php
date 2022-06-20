@@ -536,12 +536,13 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     * PHPUNIT
+     *
      * @param bool $header
      * @param bool $ws
      * @return array
+     * @throws JsonException
      */
-    public function elimina_bd(bool $header, bool $ws): array{ //FINPROTEOCOMPLETA
+    public function elimina_bd(bool $header, bool $ws): array{
         $transacion_previa = false;
         if($this->link->inTransaction()){
             $transacion_previa = true;
@@ -579,6 +580,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             return $this->retorno_error('Error al eliminar', $registro, $header, $ws);
         }
+
+        $_SESSION['exito'][]['mensaje'] = 'Se elimino registro de '.$this->tabla.' de manera exitosa id: '.$this->registro_id;
 
         if(!$transacion_previa) {
             $this->link->commit();
