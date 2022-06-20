@@ -22,7 +22,7 @@ class filtros{
      * @param int $limit Numero de registros a mostrar
      * @param modelo $modelo
      * @param array $not_in
-     * @param int $offset
+     * @param int $offset Numero de inicio de registros
      * @param array $order
      * @param string $sql_extra
      * @param string $tipo_filtro

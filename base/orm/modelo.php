@@ -812,7 +812,7 @@ class modelo extends modelo_base {
      * @param array $group_by
      * @param int $limit Numero de registros a mostrar
      * @param array $not_in
-     * @param int $offset
+     * @param int $offset Numero de inicio de registros
      * @param array $order
      * @param string $sql_extra
      * @param string $tipo_filtro

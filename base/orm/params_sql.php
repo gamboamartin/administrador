@@ -56,8 +56,9 @@ class params_sql{
     }
 
     /**
-     * FULL
-     * @param int $offset
+     * Obtiene un offset para sql
+     * @version 1.92.19
+     * @param int $offset Numero de inicio de registros
      * @return string|array
      */
     private function offset_sql(int $offset): string|array
@@ -78,7 +79,7 @@ class params_sql{
      * @param array $group_by
      * @param array $order
      * @param int $limit Numero de registros a mostrar
-     * @param int $offset
+     * @param int $offset Numero de inicio de registros
      * @return array|stdClass
      */
     public function params_sql(array $group_by, int $limit,  int $offset, array $order): array|stdClass

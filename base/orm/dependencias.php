@@ -79,6 +79,7 @@ class dependencias{
      * @param int $registro_id
      * @param string $tabla
      * @return array
+     * @throws JsonException
      */
     private function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
     {

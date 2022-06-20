@@ -561,7 +561,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             if(!$transacion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error('Error al obtener registro', $registro, $header, $ws);
+            return $this->retorno_error(mensaje: 'Error al obtener registro', data: $registro,header:  $header,ws:  $ws);
         }
 
         $valida = $this->validacion->valida_transaccion_activa(
