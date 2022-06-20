@@ -968,6 +968,7 @@ class modelo extends modelo_base {
             }
 
             $consulta = $sql;
+            $this->consulta = $consulta;
 
             $this->transaccion = 'UPDATE';
             $this->registro_id = $id;

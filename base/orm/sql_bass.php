@@ -239,7 +239,7 @@ class sql_bass{
         $estructura_bd = $this->inicializa_estructura(bools:  $bools, campo: $campo, estructura_bd:  $estructura_bd,
             representacion: $representacion, tabla: $tabla,valor_extra: $valor_extra, vista: $vista);
         if(errores::$error){
-            return $this->error->error('Error al generar estructura',$estructura_bd);
+            return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd);
         }
 
 
@@ -304,7 +304,7 @@ class sql_bass{
 
         $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar campo", $valida);
+            return $this->error->error(mensaje: "Error al validar campo", data: $valida);
         }
 
         $campo_envio = (new inicializacion())->maqueta_campo_envio(bools:  $bools, campo: $campo,

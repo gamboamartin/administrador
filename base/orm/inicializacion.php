@@ -467,7 +467,7 @@ class inicializacion{
 
         $elemento_lista_columnas = (new elementos())->columnas_elemento_lista(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al asignar columnas", $elemento_lista_columnas);
+            return $this->error->error(mensaje: "Error al asignar columnas",data:  $elemento_lista_columnas);
         }
 
         $elemento_lista_llaves_valores = (new elementos())->llaves_valores(campo: $campo);

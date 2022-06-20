@@ -56,7 +56,8 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     * Valida el elemento de tabla externa exista y sea un string
+     * @version 1.82.19
      * @param array $campo Campo a validar elementos
      * @return array|string
      */

@@ -1129,7 +1129,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $campos = $elemento_lista->obten_campos(estructura_bd:array(), modelo:$this,vista:'modifica');
         if(errores::$error){
-            return $this->error->error('Error al obtener campos',$campos);
+            return $this->error->error(mensaje: 'Error al obtener campos',data: $campos);
         }
 
         $campos = $this->obten_campos_update();
