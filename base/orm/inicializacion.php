@@ -16,6 +16,43 @@ class inicializacion{
     }
 
     /**
+     * Ajusta los campos de un registro si estos no tienen campo los quitar del upd
+     * @version 1.79.17
+     * @param int $id Identificador del registro
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array Registro ajustado
+     */
+    public function ajusta_campos_upd(int $id, modelo $modelo): array
+    {
+        if($id <=0){
+            return  $this->error->error(mensaje: 'Error al obtener registro $id debe ser mayor a 0',
+                data: $id);
+        }
+
+        $registro_previo = $modelo->registro(registro_id: $id,columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro previo',data: $registro_previo);
+        }
+
+        foreach ($modelo->registro_upd as $campo=>$value_upd){
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje:'Error el campo del row esta vacio',data:$campo);
+            }
+            if(is_numeric($campo)){
+                return $this->error->error(mensaje:'Error el campo no puede ser un numero',data:$campo);
+            }
+
+            $ajusta = $this->ajusta_registro_upd(campo: $campo,modelo:  $modelo,
+                registro_previo: $registro_previo,value_upd:  $value_upd);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
+            }
+        }
+        return $modelo->registro_upd;
+    }
+
+    /**
      * P ORDER P INT ERRORREV
      * @param stdClass $complemento
      * @return array|stdClass
@@ -25,8 +62,7 @@ class inicializacion{
         if(!isset($complemento->params)){
             $complemento = $this->init_params(complemento: $complemento);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar params',data: $complemento,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al inicializar params',data: $complemento);
             }
         }
         return $complemento;
@@ -42,7 +78,7 @@ class inicializacion{
      * @param string|null $value_upd Valor que se pretende modificar
      * @return array
      */
-    public function ajusta_registro_upd(string $campo, modelo $modelo, stdClass $registro_previo,
+    private function ajusta_registro_upd(string $campo, modelo $modelo, stdClass $registro_previo,
                                         string|null $value_upd): array
     {
         $value_upd = trim($value_upd);
@@ -66,6 +102,8 @@ class inicializacion{
         }
         return $modelo->registro_upd;
     }
+
+
 
     /**
      * P INT P ORDER
@@ -513,6 +551,27 @@ class inicializacion{
         }
 
         return $registro;
+    }
+
+    /**
+     * Inicializa el resultado en warning cuando no hay elementos a modifcar
+     * @version 1.79.17
+     * @param int $id Identificador del registro
+     * @param array $registro_upd Registro limpio en upd
+     * @param stdClass $resultado Resultado previamente inicializado
+     * @return stdClass
+     */
+    public function result_warning_upd(int $id, array $registro_upd, stdClass $resultado): stdClass
+    {
+        $mensaje = 'Info no hay elementos a modificar';
+        $resultado->mensaje = $mensaje;
+        $resultado->sql = '';
+        $resultado->result = '';
+        $resultado->registro = $registro_upd;
+        $resultado->registro_id = $id;
+        $resultado->salida = 'warning';
+
+        return $resultado;
     }
 
     /**

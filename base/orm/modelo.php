@@ -917,38 +917,29 @@ class modelo extends modelo_base {
 
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
-            return $this->error->error('Error al inicializar',$init);
+            return $this->error->error(mensaje: 'Error al inicializar',data: $init);
         }
 
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd);
         if(errores::$error){
-            return $this->error->error('Error al validar datos',$valida);
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
         }
 
-        $registro_previo = $this->registro(registro_id: $id,columnas_en_bruto: true,retorno_obj: true);
+        $ajusta = (new inicializacion())->ajusta_campos_upd(id:$id, modelo: $this);
         if(errores::$error){
-            return $this->error->error('Error al obtener registro previo',$registro_previo);
-        }
-
-        foreach ($this->registro_upd as $campo=>$value_upd){
-            $ajusta = (new inicializacion())->ajusta_registro_upd(campo: $campo,modelo:  $this,
-                registro_previo: $registro_previo,value_upd:  $value_upd);
-            if(errores::$error){
-                return $this->error->error('Error al ajustar elemento',$ajusta);
-            }
+            return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
         }
 
         $resultado = new stdClass();
         $ejecuta_upd = true;
         if(count($this->registro_upd) === 0){
             $ejecuta_upd = false;
-            $mensaje = 'Info no hay elementos a modificar';
 
-            $resultado->mensaje = $mensaje;
-            $resultado->sql = '';
-            $resultado->result = '';
-            $resultado->registro = $this->registro_upd;
-            $resultado->registro_id = $id;
+            $resultado = (new inicializacion())->result_warning_upd(id:$id,
+                registro_upd: $this->registro_upd,resultado:  $resultado);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
+            }
         }
 
         if(!$ejecuta_upd) {

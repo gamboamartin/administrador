@@ -671,6 +671,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->result = $result;
         $data->registro = $this->registro;
         $data->registro_id = $this->registro_id;
+        $data->salida = 'exito';
         return $data;
     }
 

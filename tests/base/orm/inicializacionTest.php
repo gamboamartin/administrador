@@ -21,10 +21,65 @@ class inicializacionTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_ajusta_registro_upd(){
+    public function test_ajusta_campos_upd(){
         errores::$error = false;
         $inicializacion = new inicializacion();
         //$inicializacion = new liberator($inicializacion);
+
+        $modelo = new adm_seccion($this->link);
+        $id = 1;
+        $resultado = $inicializacion->ajusta_campos_upd($id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_upd['status'] = '';
+        $id = 1;
+        $resultado = $inicializacion->ajusta_campos_upd($id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado['status']);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_upd['status'] = 'z';
+        $id = 1;
+        $resultado = $inicializacion->ajusta_campos_upd($id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z',$resultado['status']);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_upd['status'] = 'activo';
+        $id = 1;
+        $resultado = $inicializacion->ajusta_campos_upd($id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_upd['status'] = 'inactivo';
+        $id = 1;
+        $resultado = $inicializacion->ajusta_campos_upd($id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('inactivo',$resultado['status']);
+
+        errores::$error = false;
+    }
+
+    public function test_ajusta_registro_upd(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
 
 
         $registro_previo = new stdClass();
@@ -428,6 +483,26 @@ class inicializacionTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('OM+frc65i8dAfMJhbnMd9A==', $resultado['status']);
 
+        errores::$error = false;
+    }
+
+    public function test_result_warning_upd(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+        $registro_upd = array();
+        $id = 1;
+        $resultado = new stdClass();
+        $resultado = $inicializacion->result_warning_upd($id, $registro_upd, $resultado);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Info no hay elementos a modificar', $resultado->mensaje);
+        $this->assertEquals('', $resultado->sql);
+        $this->assertEquals('', $resultado->result);
+        $this->assertEquals(1, $resultado->registro_id);
+        $this->assertEquals('warning', $resultado->salida);
+        $this->assertEmpty( $resultado->registro);
         errores::$error = false;
     }
 
