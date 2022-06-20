@@ -158,8 +158,9 @@ class params_inputs{
     }
 
     /**
-     * PROBADO PARAMS ORDER P INT
-     * @param bool $disabled
+     * Genera disabled html para inputs
+     * @version 1.86.19
+     * @param bool $disabled Si disabled retorna text disabled
      * @return string
      */
     public function disabled_html(bool $disabled): string

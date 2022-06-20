@@ -228,7 +228,7 @@ class directivas extends html {
      * @param string $campo
      * @param int $cols
      * @param string $valor
-     * @param bool $disabled
+     * @param bool $disabled Si disabled retorna text disabled
      * @param bool $ln
      * @param string $etiqueta
      * @param string $css_id
@@ -270,7 +270,7 @@ class directivas extends html {
 
         $disabled_html = (new params_inputs())->disabled_html(disabled: $disabled);
         if(errores::$error){
-            return $this->error->error('Error al generar disabled',$disabled_html);
+            return $this->error->error(mensaje: 'Error al generar disabled',data: $disabled_html);
         }
 
         $data_chk = (new checkboxes())->data_chk(campo: $campo, checked_html: $params_base->checked_html,
@@ -368,22 +368,7 @@ class directivas extends html {
         echo '</div>';
     }
 
-    /**
-     * NO SE MUEVE
-     * @param int $valor
-     * @param PDO $link
-     * @param array $empleados
-     * @param int $cols
-     * @return array|string
-     */
-    public function empleado_id(int $valor, PDO $link, array $empleados, int $cols = 6):array|string{
 
-        $input = $this->select_empleado_id_tipo( $valor, $link, $empleados, $cols);
-        if(errores::$error){
-            return $this->errores->error("Error al generar input empleado", $input);
-        }
-        return $input;
-    }
 
     /**
      * P INT
@@ -1687,18 +1672,6 @@ class directivas extends html {
         return $html;
     }
 
-    /**
-     * PROBADO-PARAMS ORDER P INT
-     * @return array|string
-     */
-    public function recaptura(): array|string
-    {
-        $input = $this->checkbox(campo: 'recaptura',disabled: true,etiqueta: 'Recaptura',ln: false);
-        if(errores::$error){
-            return $this->errores->error('Error al generar input',$input);
-        }
-        return $input;
-    }
 
     /**
      * NO SE MUEVE
@@ -1714,7 +1687,7 @@ class directivas extends html {
             disabled: false, ln:false,etiqueta: "empleado",css_id: '', data_extra: array(),tabla: "empleado",
             columnas: $columnas, link: $link,registros: $empleados);
         if(errores::$error){
-            return $this->errores->error("Error al generar input empleado", $input);
+            return $this->errores->error(mensaje: "Error al generar input empleado", data: $input);
         }
         return $input;
     }

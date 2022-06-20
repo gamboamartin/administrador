@@ -40,24 +40,5 @@ class directivasTest extends test {
 
     }
 
-    public function test_recaptura(): void
-    {
-        errores::$error = false;
-        $dir = new directivas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $resultado = $dir->recaptura();
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<input type='checkbox'", $resultado);
-        $this->assertStringContainsStringIgnoringCase("type='button'>Recaptura", $resultado);
-
-        errores::$error = false;
-
-
-
-    }
-
 
 }
