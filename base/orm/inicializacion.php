@@ -34,7 +34,7 @@ class inicializacion{
 
     /**
      * P INT P ORDER
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @param array $bools
      * @param stdClass $datos
      * @return array
@@ -229,7 +229,7 @@ class inicializacion{
 
     /**
      * PROBADA P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return array
      */
     PUBLIC function init_campo(array $campo): array
@@ -246,7 +246,7 @@ class inicializacion{
 
     /**
      * P INT P ORDER
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @param array $bools
      * @param stdClass $datos
      * @return array|stdClass

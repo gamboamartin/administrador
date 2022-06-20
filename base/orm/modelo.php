@@ -932,41 +932,77 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
         }
 
-        if(!$reactiva) {
-            $valida = $this->validacion->valida_transaccion_activa(
-                aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo,
-                registro:  $registro, registro_id: $this->registro_id,tabla:  $this->tabla);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida);
+
+        $registro_previo = $this->registro(registro_id: $id,columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error('Error al obtener registro previo',$registro_previo);
+        }
+
+        foreach ($this->registro_upd as $campo=>$value_upd){
+            $value_upd = trim($value_upd);
+            $campo = trim($campo);
+
+            $value_previo = trim($registro_previo->$campo);
+
+            if($value_previo === $value_upd){
+                unset($this->registro_upd[$campo]);
             }
         }
-        $campos_sql = $this->genera_campos_update();
-        if(errores::$error){
-            return $this->error->error('Error al obtener campos',$campos_sql);
-        }
-        $this->campos_sql = $campos_sql;
-        $campos_sql = $this->agrega_usuario_session();
-        if(errores::$error){
-            return $this->error->error('Error al AGREGAR USER',$campos_sql);
-        }
-        $this->campos_sql .= ','.$campos_sql;
-        $this->consulta = 'UPDATE '. $this->tabla.' SET '.$this->campos_sql."  WHERE id = $id";
-        $consulta = $this->consulta;
 
-        $this->transaccion = 'UPDATE';
-        $this->registro_id = $id;
+        $resultado = new stdClass();
+        $ejecuta_upd = true;
+        if(count($this->registro_upd) === 0){
+            $ejecuta_upd = false;
+            $mensaje = 'Info no hay elementos a modificar';
 
-        $resultado = $this->ejecuta_sql($this->consulta);
-
-        if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',array($resultado,'sql'=>$this->consulta));
+            $resultado->mensaje = $mensaje;
+            $resultado->sql = '';
+            $resultado->result = '';
+            $resultado->registro = $this->registro_upd;
+            $resultado->registro_id = $id;
         }
 
-        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this,
-            registro: $this->registro_upd);
-        if(errores::$error){
-            return $this->error->error('Error al insertar bitacora',$bitacora);
+        if(!$ejecuta_upd) {
+
+            if (!$reactiva) {
+                $valida = $this->validacion->valida_transaccion_activa(
+                    aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo,
+                    registro: $registro, registro_id: $this->registro_id, tabla: $this->tabla);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $valida);
+                }
+            }
+            $campos_sql = $this->genera_campos_update();
+            if (errores::$error) {
+                return $this->error->error('Error al obtener campos', $campos_sql);
+            }
+            $this->campos_sql = $campos_sql;
+            $campos_sql = $this->agrega_usuario_session();
+            if (errores::$error) {
+                return $this->error->error('Error al AGREGAR USER', $campos_sql);
+            }
+
+
+            $this->campos_sql .= ',' . $campos_sql;
+            $this->consulta = 'UPDATE ' . $this->tabla . ' SET ' . $this->campos_sql . "  WHERE id = $id";
+            $consulta = $this->consulta;
+
+            $this->transaccion = 'UPDATE';
+            $this->registro_id = $id;
+
+            $resultado = $this->ejecuta_sql($this->consulta);
+
+            if (errores::$error) {
+                return $this->error->error('Error al ejecutar sql', array($resultado, 'sql' => $this->consulta));
+            }
+
+            $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this,
+                registro: $this->registro_upd);
+            if (errores::$error) {
+                return $this->error->error('Error al insertar bitacora', $bitacora);
+            }
         }
+
 
 
         return $resultado;

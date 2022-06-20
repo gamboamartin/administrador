@@ -13,7 +13,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string|array
      */
     public function campo_tabla_externa(array $campo): string|array
@@ -31,7 +31,7 @@ class elementos{
             $campo_tabla_externa = $campo['adm_elemento_lista_campo'];
         }
         else{
-            $campo_tabla_externa = $this->data_campo_tabla_externa($campo);
+            $campo_tabla_externa = $this->data_campo_tabla_externa(campo: $campo);
             if(errores::$error){
                 return $this->error->error("Error al obtener campo tabla externa", $campo_tabla_externa);
             }
@@ -41,7 +41,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string
      */
     public function columnas_elemento_lista(array $campo): string
@@ -57,7 +57,7 @@ class elementos{
 
     /**
      * P ORDER P INT PROBADO
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return array|string
      */
     private function data_campo_tabla_externa(array $campo): array|string
@@ -72,7 +72,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string
      */
     public function elemento_lista_css_id(array $campo): string
@@ -88,7 +88,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string
      */
     public function llaves_valores(array $campo): string
@@ -104,7 +104,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string
      */
     public function pattern(array $campo): string
@@ -120,7 +120,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string
      */
     public function separador_columnas(array $campo): string
@@ -136,7 +136,7 @@ class elementos{
 
     /**
      * P ORDER P INT
-     * @param array $campo
+     * @param array $campo Campo a validar elementos
      * @return string
      */
     public function tabla_ext_renombrada(array $campo): string

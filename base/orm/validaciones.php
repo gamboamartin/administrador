@@ -29,9 +29,9 @@ class validaciones extends validacion{
     }
 
     /**
-     * P ORDER P INT
-     * @param array $campo
-     * @param array $bools
+     * Valida loa campos de un elemento lista
+     * @param array $campo Campo a validar elementos
+     * @param array $bools Campos de tipo bool activo inactivo
      * @return bool|array
      */
     public function valida_campo_envio(array $bools, array $campo): bool|array
