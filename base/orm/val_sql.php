@@ -153,6 +153,15 @@ class val_sql extends validaciones {
         return $data;
     }
 
+    public function tabla(string $tabla): bool|array
+    {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+        }
+        return true;
+    }
+
     /**
      * P INT P ORDER PROBADO ERRORREV
      * @param array $registro

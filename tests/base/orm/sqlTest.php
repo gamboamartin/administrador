@@ -28,7 +28,7 @@ class sqlTest extends test {
         $resultado = $sql->describe_table($tabla);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla esta vacia',$resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar tabla',$resultado['mensaje']);
 
         errores::$error = false;
 
@@ -37,6 +37,22 @@ class sqlTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('DESCRIBE a',$resultado);
+        errores::$error = false;
+    }
+
+    public function test_update(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $campos_sql = 'a';
+        $id = '1';
+        $tabla = 'a';
+        $resultado = $sql->update($campos_sql, $id, $tabla);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('UPDATE a SET a  WHERE id = 1',$resultado);
         errores::$error = false;
     }
 

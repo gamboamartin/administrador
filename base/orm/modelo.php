@@ -935,6 +935,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje:'Error al verificar actualizacion',data:$ejecuta_upd);
         }
+
         $resultado = $ejecuta_upd->resultado;
 
 
@@ -948,6 +949,7 @@ class modelo extends modelo_base {
                     return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $valida);
                 }
             }
+
             $campos_sql = $this->genera_campos_update();
             if (errores::$error) {
                 return $this->error->error('Error al obtener campos', $campos_sql);
@@ -958,10 +960,14 @@ class modelo extends modelo_base {
                 return $this->error->error('Error al AGREGAR USER', $campos_sql);
             }
 
-
             $this->campos_sql .= ',' . $campos_sql;
-            $this->consulta = 'UPDATE ' . $this->tabla . ' SET ' . $this->campos_sql . "  WHERE id = $id";
-            $consulta = $this->consulta;
+
+            $sql = (new sql())->update(campos_sql: $this->campos_sql, id:$id, tabla: $this->tabla);
+            if (errores::$error) {
+                return $this->error->error('Error al generar sql', $sql);
+            }
+
+            $consulta = $sql;
 
             $this->transaccion = 'UPDATE';
             $this->registro_id = $id;
