@@ -244,6 +244,7 @@ class columnas{
         return $registro;
     }
 
+
     /**
      * Carga a un string de forma SQL los campos SELECTS
      * @version 1.51.14

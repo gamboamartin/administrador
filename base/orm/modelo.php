@@ -952,12 +952,12 @@ class modelo extends modelo_base {
 
             $campos_sql = $this->genera_campos_update();
             if (errores::$error) {
-                return $this->error->error('Error al obtener campos', $campos_sql);
+                return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql);
             }
             $this->campos_sql = $campos_sql;
             $campos_sql = $this->agrega_usuario_session();
             if (errores::$error) {
-                return $this->error->error('Error al AGREGAR USER', $campos_sql);
+                return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
             }
 
             $this->campos_sql .= ',' . $campos_sql;

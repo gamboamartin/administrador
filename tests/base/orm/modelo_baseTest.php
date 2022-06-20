@@ -383,28 +383,6 @@ class modelo_baseTest extends test {
     }
 
 
-    public function test_limpia_moneda_value(){
-
-        errores::$error = false;
-        $modelo = new adm_accion($this->link);
-        $modelo = new liberator($modelo);
-        $value = '';
-        $resultado = $modelo->limpia_moneda_value($value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-        $value = '$$,,00';
-        $resultado = $modelo->limpia_moneda_value($value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('00', $resultado);
-        errores::$error = false;
-    }
-
-
     public function test_maqueta_arreglo_registros(){
 
         errores::$error = false;

@@ -1135,7 +1135,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $campos = $this->obten_campos_update();
 
         if(errores::$error){
-            return $this->error->error('Error al obtener campos',$campos);
+            return $this->error->error(mensaje: 'Error al obtener campos',data: $campos);
         }
 
         return $campos;
@@ -1589,7 +1589,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(!isset($params->value)){
             return $this->error->error('Error no existe params->value', $params);
         }
-        $campos .= $campos == "" ? "$params->campo = $params->value" : ", $params->campo = $params->value";
+        $campos .= $campos === "" ? "$params->campo = $params->value" : ", $params->campo = $params->value";
         return $campos;
     }
 
@@ -1601,14 +1601,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     private function params_data_update(string $campo, string|float|int|null $value): array|stdClass
     {
-        $value = $this->value_moneda(campo: $campo, value: $value);
+        $value_ = $value;
+        $value_ = (new monedas())->value_moneda(campo: $campo, modelo: $this, value: $value_);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar value', $value);
+            return $this->error->error('Error al limpiar value', $value_);
         }
 
-        $data = $this->slaches_value(campo: $campo,value:  $value);
+        $data = $this->slaches_value(campo: $campo,value:  $value_);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar value', $value);
+            return $this->error->error('Error al limpiar value', $value_);
         }
 
         $data->value = $this->value_null(value: $data->value);
@@ -1658,81 +1659,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return $data;
     }
-
-    /**
-     * P ORDER P INT
-     * @param string $campo
-     * @param string|float|int|null $value
-     * @return float|array|int|string|null
-     */
-    private function value_moneda(string $campo, string|float|int|null $value): float|array|int|string|null
-    {
-        $tipos_moneda = array('double','double_con_cero');
-        if(array_key_exists($campo, $this->tipo_campos)){
-            $value = $this->reasigna_value_moneda(campo: $campo,tipos_moneda:  $tipos_moneda,value:  $value);
-            if (errores::$error) {
-                return $this->error->error('Error al limpiar value', $value);
-            }
-        }
-        return $value;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param string $campo
-     * @param array $tipos_moneda
-     * @param string|int|float|null $value
-     * @return float|array|int|string|null
-     */
-    private function reasigna_value_moneda(string $campo, array $tipos_moneda, string|int|float|null $value): float|array|int|string|null
-    {
-        if($campo === ''){
-            return $this->error->error('Error campo no puede venir vacio', $campo);
-        }
-        if(!isset($this->tipo_campos[$campo])){
-            return $value;
-        }
-        $tipo_dato = $this->tipo_campos[$campo];
-        $value = $this->limpia_monedas_values(tipo_dato: $tipo_dato,tipos_moneda:  $tipos_moneda,value:  $value);
-        if (errores::$error) {
-            return $this->error->error('Error al limpiar value', $value);
-        }
-        return $value;
-    }
-
-    /**
-     * P INT P ORDER
-     * @param string $tipo_dato
-     * @param array $tipos_moneda
-     * @param int|string|float|null $value
-     * @return float|array|int|string|null
-     */
-    private function limpia_monedas_values(string $tipo_dato, array $tipos_moneda, int|string|float|null $value): float|array|int|string|null
-    {
-        if(in_array($tipo_dato, $tipos_moneda, true)) {
-            $value = $this->limpia_moneda_value(value: $value);
-            if (errores::$error) {
-                return $this->error->error('Error al limpiar value', $value);
-            }
-        }
-        return $value;
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param string|int|float|null $value
-     * @return string|int|float|null
-     */
-    private function limpia_moneda_value(string|int|float|null $value): string|int|float|null
-    {
-        if($value === null){
-            return null;
-        }
-        $value = trim($value);
-        return str_replace(array('$', ','), '', $value);
-
-    }
-
 
 
 
