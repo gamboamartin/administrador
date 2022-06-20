@@ -309,6 +309,23 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_upd(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+
+        $registro = array();
+        $registro[] = '';
+        $modelo = new adm_seccion($this->link);
+        $id = 1;
+        $resultado = $inicializacion->init_upd($id, $modelo, $registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_limpia_valores(){
         errores::$error = false;
         $inicializacion = new inicializacion();

@@ -351,4 +351,22 @@ class validaciones extends validacion{
         }
         return true;
     }
+
+    /**
+     * Valida los elementos basicos de un upd
+     * @version 1.77.17
+     * @param int $id Identificador a modificar
+     * @param array $registro_upd Registro a modificar
+     * @return array|bool
+     */
+    public function valida_upd_base(int $id, array $registro_upd): bool|array
+    {
+        if($id <=0){
+            return $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $id);
+        }
+        if(count($registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $registro_upd);
+        }
+        return true;
+    }
 }

@@ -308,6 +308,37 @@ class inicializacion{
     }
 
     /**
+     * Inicializa los datos minimos necesarios para un upd
+     * @version 1.77.17
+     * @param int $id Identificador del modelo a actualizar
+     * @param modelo $modelo Modelo en ejecucion
+     * @param array $registro Registro a con datos a actualizar
+     * @return array|stdClass
+     */
+    public function init_upd(int $id, modelo $modelo, array $registro): array|stdClass
+    {
+        $registro = (new columnas())->campos_no_upd(campos_no_upd: $modelo->campos_no_upd, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ajustar camp no upd',data: $registro);
+        }
+
+
+        $modelo->registro_upd = $registro;
+        $modelo->registro_id = $id;
+
+        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd);
+        if(errores::$error){
+            return $this->error->error('Error al validar datos',$valida);
+        }
+
+        $data = new stdClass();
+        $data->registro_upd = $modelo->registro_upd;
+        $data->id = $modelo->registro_id;
+
+        return $data;
+    }
+
+    /**
      * Funcion que limpia los valores quita elementos iniciales y finales no imprimibles
      * @version 1.0.0
      * @param string $campo Campo del registro del modelo a limpiar

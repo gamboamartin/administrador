@@ -483,4 +483,38 @@ class validacionesTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_upd_base(): void
+    {
+        errores::$error = false;
+        $val = new validaciones();
+        //$val = new liberator($val);
+
+        $registro_upd = array();
+        $id = -1;
+        $resultado = $val->valida_upd_base($id, $registro_upd);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('id', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro_upd = array();
+        $id = 1;
+        $resultado = $val->valida_upd_base($id, $registro_upd);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('El registro no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro_upd = array();
+        $id = 1;
+        $registro_upd[] = '';
+        $resultado = $val->valida_upd_base($id, $registro_upd);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
 }

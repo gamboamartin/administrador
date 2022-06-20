@@ -915,18 +915,14 @@ class modelo extends modelo_base {
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
 
-        $registro = (new columnas())->campos_no_upd(campos_no_upd: $this->campos_no_upd, registro: $registro);
+        $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
-            return $this->error->error('Error al ajustar camp no upd',$registro);
+            return $this->error->error('Error al inicializar',$init);
         }
-
-        $this->registro_upd = $registro;
-        $this->registro_id = $id;
-        if($id <=0){
-            return $this->error->error('Error el id debe ser mayor a 0',$id);
-        }
-        if(count($this->registro_upd) === 0){
-            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
+        
+        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd);
+        if(errores::$error){
+            return $this->error->error('Error al validar datos',$valida);
         }
 
 
