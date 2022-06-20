@@ -930,19 +930,15 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
         }
 
-        $resultado = new stdClass();
-        $ejecuta_upd = true;
-        if(count($this->registro_upd) === 0){
-            $ejecuta_upd = false;
 
-            $resultado = (new inicializacion())->result_warning_upd(id:$id,
-                registro_upd: $this->registro_upd,resultado:  $resultado);
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
-            }
+        $ejecuta_upd = (new upd())->ejecuta_upd(id:$id,modelo:  $this);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al verificar actualizacion',data:$ejecuta_upd);
         }
+        $resultado = $ejecuta_upd->resultado;
 
-        if(!$ejecuta_upd) {
+
+        if(!$ejecuta_upd->ejecuta_upd) {
 
             if (!$reactiva) {
                 $valida = $this->validacion->valida_transaccion_activa(
