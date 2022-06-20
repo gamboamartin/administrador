@@ -8,7 +8,7 @@ class valida_controller extends base_modelos{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param controler $controler
+     * @param controler $controler Controlador en ejecucion
      * @return bool|array
      */
     public function valida_clase(controler $controler): bool|array
@@ -16,11 +16,11 @@ class valida_controller extends base_modelos{
         $clase = (new normalizacion())->clase_model(controler: $controler);
         if(errores::$error){
 
-            return $this->error->error(mensaje: 'Error al obtener clase', data: $clase, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener clase', data: $clase);
         }
 
         if(!class_exists($clase)){
-            return $this->error->error(mensaje: 'Error no existe la clase', data: $clase, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe la clase', data: $clase);
 
         }
         return true;

@@ -120,15 +120,15 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
-     * @param controler $controler
+     * Asigna el valor modo namespace controller a controlador en ejecucion
+     * @version 1.88.19
+     * @param controler $controler Controlador en ejecucion
      * @return string|array
      */
     public function clase_model(controler $controler): string|array
     {
         if($controler->seccion === ''){
-            return $this->error->error(mensaje: 'Error this->seccion esta vacio',data:  $controler->seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error this->seccion esta vacio',data:  $controler->seccion);
         }
         $namespace = 'models\\';
         $controler->seccion = str_replace($namespace,'',$controler->seccion);

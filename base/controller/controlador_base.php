@@ -294,8 +294,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al validar clase', data: $valida, header: $header, ws: $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al validar clase', data: $valida, header: $header, ws: $ws);
         }
 
         if($this->tabla===''){
@@ -303,7 +302,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                 $this->link->rollBack();
             }
             return $this->retorno_error(mensaje: 'Error seccion por get debe existir',data:  $_GET, header: $header,
-                ws:  $ws, params: get_defined_vars());
+                ws:  $ws);
         }
 
         $limpia = (new normalizacion())->limpia_post_alta();
@@ -311,8 +310,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al limpiar POST', data: $limpia,header:  $header,ws:  $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al limpiar POST', data: $limpia,header:  $header,ws:  $ws);
         }
 
         $valida = $this->validacion->valida_post_alta();
@@ -320,8 +318,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al validar POST', data: $valida,header:  $header,ws:  $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al validar POST', data: $valida,header:  $header,ws:  $ws);
         }
 
 
@@ -330,7 +327,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                 $this->link->rollBack();
             }
             return $this->retorno_error(mensaje: 'Error al seccion no puede venir vacia',data:  $this->seccion,
-                header: $header, ws: $ws, params: get_defined_vars());
+                header: $header, ws: $ws);
         }
 
 
@@ -340,8 +337,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al insertar', data: $resultado, header: $header,ws:  $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al insertar', data: $resultado, header: $header,ws:  $ws);
 
         }
 
@@ -358,8 +354,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al limpiar SESSION', data: $limpia, header: $header,ws:  $ws,
-                params: get_defined_vars());
+            return $this->retorno_error(mensaje: 'Error al limpiar SESSION', data: $limpia, header: $header,ws:  $ws);
         }
 
         if($header){
