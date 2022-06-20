@@ -90,6 +90,7 @@ class errores_html extends base_html {
 
     /**
      * Genera las errores basado en el conjunto de errores de la clase errores
+     * @version 1.84.19
      * @param array $errores_previos Conjunto de errores
      * @return array|string
      */
@@ -97,6 +98,16 @@ class errores_html extends base_html {
     {
         $errores_html = '';
         foreach ($errores_previos as $error_previo) {
+            if(!is_array($error_previo)){
+                return $this->error->error(mensaje: 'Error $errores_previos[] debe ser un array',
+                    data: $errores_previos);
+            }
+            $keys = array('mensaje','line','function','class');
+            $valida = (new validaciones())->valida_existencia_keys(keys: $keys,registro:  $error_previo,
+                valida_vacio: false);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+            }
             $html = $this->error_previo(error_previo: $error_previo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al maquetar error', data: $html);

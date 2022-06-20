@@ -37,4 +37,24 @@ class errores_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_errores_previos(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $errores_previos = array();
+        $errores_previos[0]['mensaje'] = 'a';
+        $errores_previos[0]['line'] = 'a';
+        $errores_previos[0]['function'] = 'a';
+        $errores_previos[0]['class'] = 'a';
+        $resultado = $html->errores_previos($errores_previos);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a Line a Funcion  a Class a<br><br>',$resultado);
+        errores::$error = false;
+    }
+
 }

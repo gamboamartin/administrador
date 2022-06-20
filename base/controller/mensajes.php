@@ -21,9 +21,15 @@ class mensajes{
             return $this->error->error(mensaje: 'Error al generar mensajes de exito', data: $exito_transaccion);
         }
 
+        $warning_transaccion = (new warning_html())->mensajes();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar mensajes de warning', data: $warning_transaccion);
+        }
+
         $data = new stdClass();
         $data->error_msj = $errores_transaccion;
         $data->exito_msj = $exito_transaccion;
+        $data->warning_msj = $warning_transaccion;
         return $data;
     }
 }
