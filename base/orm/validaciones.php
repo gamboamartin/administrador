@@ -30,6 +30,7 @@ class validaciones extends validacion{
 
     /**
      * Valida loa campos de un elemento lista
+     * @version 1.82.18
      * @param array $campo Campo a validar elementos
      * @param array $bools Campos de tipo bool activo inactivo
      * @return bool|array

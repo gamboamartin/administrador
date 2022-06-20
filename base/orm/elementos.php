@@ -21,7 +21,7 @@ class elementos{
         $keys = array('adm_elemento_lista_campo');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar campo", $valida);
+            return $this->error->error(mensaje: "Error al validar campo", data: $valida);
         }
 
         $aplica_el_campo = !isset($campo['adm_elemento_lista_campo_tabla_externa'])
@@ -33,7 +33,7 @@ class elementos{
         else{
             $campo_tabla_externa = $this->data_campo_tabla_externa(campo: $campo);
             if(errores::$error){
-                return $this->error->error("Error al obtener campo tabla externa", $campo_tabla_externa);
+                return $this->error->error(mensaje: "Error al obtener campo tabla externa",data:  $campo_tabla_externa);
             }
         }
         return $campo_tabla_externa;
@@ -65,7 +65,7 @@ class elementos{
         $keys = array('adm_elemento_lista_campo_tabla_externa');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar campo", $valida);
+            return $this->error->error(mensaje: "Error al validar campo", data: $valida);
         }
         return (string)$campo['adm_elemento_lista_campo_tabla_externa'];
     }

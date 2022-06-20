@@ -455,14 +455,14 @@ class inicializacion{
 
         $valida = $this->validacion->valida_campo_envio(bools: $bools, campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al validar campo", $valida);
+            return $this->error->error(mensaje: "Error al validar campo", data: $valida);
         }
 
         $datos = new stdClass();
 
         $campo_tabla_externa = (new elementos())->campo_tabla_externa(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al obtener campo_tabla_externa", $campo_tabla_externa);
+            return $this->error->error(mensaje: "Error al obtener campo_tabla_externa",data:  $campo_tabla_externa);
         }
 
         $elemento_lista_columnas = (new elementos())->columnas_elemento_lista(campo: $campo);

@@ -50,6 +50,35 @@ class validacionesTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_campo_envio(): void
+    {
+        errores::$error = false;
+        $val = new validaciones();
+        //$val = new liberator($val);
+
+        $bools = array();
+        $campo = array();
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $campo['adm_elemento_lista_cols'] = 'a';
+        $campo['adm_elemento_lista_tipo'] = 'a';
+        $campo['adm_elemento_lista_tabla_externa'] = 'a';
+        $campo['adm_elemento_lista_etiqueta'] = 'a';
+        $campo['adm_elemento_lista_descripcion'] = 'a';
+        $campo['adm_elemento_lista_id'] = 'a';
+        $campo['con_label'] = 'a';
+
+        $bools['con_label'] = 'a';
+        $bools['required'] = 'a';
+        $bools['ln'] = 'a';
+        $bools['select_vacio_alta'] = 'a';
+
+        $resultado = $val->valida_campo_envio($bools, $campo);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_data_columna(): void
     {
         errores::$error = false;

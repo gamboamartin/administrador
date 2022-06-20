@@ -939,7 +939,7 @@ class modelo extends modelo_base {
         $resultado = $ejecuta_upd->resultado;
 
 
-        if(!$ejecuta_upd->ejecuta_upd) {
+        if($ejecuta_upd->ejecuta_upd) {
 
             if (!$reactiva) {
                 $valida = $this->validacion->valida_transaccion_activa(
