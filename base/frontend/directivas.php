@@ -1008,7 +1008,7 @@ class directivas extends html {
      * @param string $llaves_valores
      * @param int $cols
      * @param mixed $valor
-     * @param bool $required
+     * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param string $etiqueta
      * @param string $css_id

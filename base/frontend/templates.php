@@ -255,7 +255,7 @@ class templates{
      * @param string $campo_name
      * @param int $cols
      * @param mixed $valor
-     * @param bool $required
+     * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param bool $ln
      * @param string $etiqueta
@@ -332,7 +332,7 @@ class templates{
             $keys = array('data_extra','required');
             $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $input);
             if(errores::$error){
-                return  $this->error->error('Error al validar input',$valida);
+                return  $this->error->error(mensaje: 'Error al validar input',data: $valida);
             }
 
             if(!isset($input['llaves_foraneas'])){
@@ -381,7 +381,7 @@ class templates{
      *
      * @example
      *      $$data_html = $this->genera_dato_html();
-     *
+     * @param bool $required indica si es requerido o no
      * @return array|string html con info del input a mostrar
      * @throws errores $campo vacio
      * @throws errores $cols <0
@@ -616,7 +616,7 @@ class templates{
      * @param string $campo_name
      * @param int $cols
      * @param mixed $valor
-     * @param bool $required
+     * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param bool $ln
      * @param string $etiqueta

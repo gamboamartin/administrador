@@ -431,9 +431,10 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param bool $required
-     * @return string
+     * Genera required en forma html para ser integrado en un input
+     * @version 1.87.19
+     * @param bool $required indica si es requerido o no
+     * @return string required en caso true o vacio en false
      */
     public function required_html(bool $required): string
     {
