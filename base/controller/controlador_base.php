@@ -349,7 +349,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $this->link->commit();
         }
 
-        $limpia = (new normalizacion())->limpia_registro_en_proceso(); 
+        $limpia = (new normalizacion())->limpia_registro_en_proceso();
         if(errores::$error){
             if(!$transaccion_previa) {
                 $this->link->rollBack();
