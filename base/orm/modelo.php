@@ -976,13 +976,13 @@ class modelo extends modelo_base {
             $resultado = $this->ejecuta_sql($this->consulta);
 
             if (errores::$error) {
-                return $this->error->error('Error al ejecutar sql', array($resultado, 'sql' => $this->consulta));
+                return $this->error->error(mensaje: 'Error al ejecutar sql',data:  array($resultado, 'sql' => $this->consulta));
             }
 
             $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this,
                 registro: $this->registro_upd);
             if (errores::$error) {
-                return $this->error->error('Error al insertar bitacora', $bitacora);
+                return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora);
             }
         }
 

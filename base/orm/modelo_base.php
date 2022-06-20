@@ -663,7 +663,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $this->registro_id = $this->link->lastInsertId();
         }
 
-        $mensaje = 'Exito';
+        $mensaje = 'Exito al ejecutar sql del modelo '.$this->tabla. ' transaccion '.$this->transaccion;
 
         $data = new stdClass();
         $data->mensaje = $mensaje;

@@ -301,7 +301,8 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera los datos para ejecutar una transaccion
+     * @version 1.83.19
      * @param array $registros Conjunto de datos a parsear
      * @param controler $controler Controlador de ejecucion
      * @return array
@@ -309,6 +310,12 @@ class normalizacion{
     private function genera_registros_envio(controler $controler, array $registros):array{
         $registro_envio = array();
         foreach ($registros as $key=>$value){
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error la $key no puede venir vacia',data: $key);
+            }
+            if(is_numeric($key)){
+                return $this->error->error(mensaje: 'Error la $key debe ser un string valido',data: $key);
+            }
             $key_envio = $this->obten_key_envio(controler:  $controler, key: $key);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error generar  key', data: $key_envio);
@@ -531,6 +538,9 @@ class normalizacion{
         }
         if($key === ''){
             return $this->error->error(mensaje: 'Error la $key no puede venir vacia',data: $key);
+        }
+        if(is_numeric($key)){
+            return $this->error->error(mensaje: 'Error la $key debe ser un string valido',data: $key);
         }
         $pos = strpos($key,$controler->seccion.'_');
         $key_envio = $key;

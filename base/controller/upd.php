@@ -56,19 +56,19 @@ class upd{
 
         $registro = $controler->modelo->registro($controler->registro_id);
         if(errores::$error){
-            return $this->error->error('Error al obtener registro',$registro);
+            return $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
         }
 
         $valida = $this->validacion->valida_transaccion_activa(
             aplica_transaccion_inactivo: $controler->modelo->aplica_transaccion_inactivo, registro: $registro,
             registro_id:  $controler->modelo->registro_id, tabla: $controler->modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar transaccion activa',$valida);
+            return $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida);
         }
 
         $resultado = $controler->modelo->modifica_bd(registro: $registro_upd, id:$controler->registro_id);
         if(errores::$error){
-            return $this->error->error('Error al modificar registro',$resultado);
+            return $this->error->error(mensaje: 'Error al modificar registro',data: $resultado);
         }
 
         return $resultado;

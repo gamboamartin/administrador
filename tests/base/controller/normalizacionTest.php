@@ -128,6 +128,33 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_registros_envio(): void
+    {
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+        $controler = new controler('', '');
+
+        $registros = array();
+        $resultado = $nm->genera_registros_envio($controler, $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $controler = new controler('', '');
+        $controler->seccion = 'x';
+        $controler->modelo = new adm_seccion($this->link);
+        $registros = array();
+        $registros['a'] = '';
+        $resultado = $nm->genera_registros_envio($controler, $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+        errores::$error = false;
+    }
+
     public function test_init_controler(){
         errores::$error = false;
         $nm = new normalizacion();

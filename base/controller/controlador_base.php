@@ -1110,7 +1110,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $r_modifica = (new upd())->modifica_bd_base(controler: $this,registro_upd:  $_POST);
 
         if(errores::$error){
-            $error = $this->errores->error('Error al modificar registro',$r_modifica);
+            $error = $this->errores->error(mensaje: 'Error al modificar registro',data: $r_modifica);
 
             if(!$header){
                 return $error;
