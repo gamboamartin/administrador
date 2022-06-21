@@ -56,6 +56,7 @@ class controler{
     public string $mensaje_warning = '';
     public bool $msj_con_html = true;
     public string $accion_titulo = '';
+    public string $seccion_titulo;
 
 
 
@@ -105,6 +106,8 @@ class controler{
         $this->mensaje_warning = $mensajes->warning_msj;
 
         $this->accion_titulo = ucwords($this->accion);
+        $this->seccion_titulo = str_replace('_', ' ', $this->seccion);
+        $this->seccion_titulo = ucwords($this->seccion_titulo);
 
     }
 

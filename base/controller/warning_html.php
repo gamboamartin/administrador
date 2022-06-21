@@ -106,7 +106,4 @@ class warning_html extends base_html {
     }
 
 
-
-
-
 }
