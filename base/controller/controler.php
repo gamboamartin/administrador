@@ -21,8 +21,6 @@ class controler{
 
     public valida_controller $validacion;
 
-
-
     public PDO $link ;
     public array $registro = array();
     public string $tabla = '';
@@ -38,7 +36,6 @@ class controler{
     public array $filtro = array();
 
 
-    public array $clientes = array();
     public string $campo_busca = 'registro_id';
     public string $valor_busca_fault = '';
     public string $btn_busca = '';
@@ -58,6 +55,7 @@ class controler{
     public string $mensaje_exito = '';
     public string $mensaje_warning = '';
     public bool $msj_con_html = true;
+    public string $accion_titulo = '';
 
 
 
@@ -105,6 +103,8 @@ class controler{
 
         $this->mensaje_exito = $mensajes->exito_msj;
         $this->mensaje_warning = $mensajes->warning_msj;
+
+        $this->accion_titulo = ucwords($this->accion);
 
     }
 

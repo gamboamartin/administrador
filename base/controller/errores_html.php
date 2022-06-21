@@ -174,6 +174,10 @@ class errores_html extends base_html {
         return '<div class="collapse" id="msj_error">'.$errores_previos_detalle."</div>";
     }
 
+    /**
+     * Genera los botones de un modal para alerts de errores
+     * @return array|string
+     */
     private function modal_btns(): array|string
     {
 
