@@ -68,6 +68,10 @@ class warning_html extends base_html {
     {
         $mensajes_warning = $_SESSION['warning'] ?? array();
 
+        if(!is_array($mensajes_warning)){
+            return $this->error->error(mensaje: 'Error $_SESSION[warning] debe ser un array', data: $mensajes_warning);
+        }
+
         $warning_transaccion = $this->warning_transaccion(mensajes_warning: $mensajes_warning);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al cargar mensaje', data: $warning_transaccion);
