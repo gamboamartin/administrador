@@ -12,7 +12,8 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     * Obtiene los campos de una tabla para ser mostrados en lista
+     * @version 1.93.19
      * @param array $campo Campo a validar elementos
      * @return string|array
      */

@@ -904,7 +904,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $aplica_form
      * @param bool $muestra_btn
      * @return array|string
-     * @throws JsonException
      */
     public function modifica(bool $header, bool $ws = false, string $breadcrumbs='',
                              bool $aplica_form = true, bool $muestra_btn = true):array|string{

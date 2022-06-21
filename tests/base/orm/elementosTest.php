@@ -16,7 +16,24 @@ class elementosTest extends test {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
     }
-    public function test_data_campo_tabla_externa(){
+
+    public function test_campo_tabla_externa(): void
+    {
+        errores::$error = false;
+        $elementos = new elementos();
+        //$elementos = new liberator($elementos);
+
+        $campo = array();
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $resultado = $elementos->campo_tabla_externa($campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_data_campo_tabla_externa(): void
+    {
         errores::$error = false;
         $elementos = new elementos();
         $elementos = new liberator($elementos);
