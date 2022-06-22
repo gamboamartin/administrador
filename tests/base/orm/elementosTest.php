@@ -32,6 +32,20 @@ class elementosTest extends test {
         errores::$error = false;
     }
 
+    public function test_columnas_elemento_lista(): void
+    {
+        errores::$error = false;
+        $elementos = new elementos();
+        //$elementos = new liberator($elementos);
+
+        $campo = array();
+        $resultado = $elementos->columnas_elemento_lista($campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+        errores::$error = false;
+    }
+
     public function test_data_campo_tabla_externa(): void
     {
         errores::$error = false;

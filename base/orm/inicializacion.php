@@ -117,7 +117,7 @@ class inicializacion{
 
         $datas = $this->init_data(bools:  $bools, campo: $campo,datos:  $datos);
         if(errores::$error){
-            return $this->error->error('Error al inicializa $datos',$datas);
+            return $this->error->error(mensaje: 'Error al inicializa $datos',data: $datas);
         }
 
         if(!is_array($datas->datos->valor_extra)){
@@ -328,7 +328,7 @@ class inicializacion{
     {
         $campo = $this->init_campo(campo: $campo);
         if(errores::$error){
-            return $this->error->error('Error al inicializa $campo',$campo);
+            return $this->error->error(mensaje: 'Error al inicializa $campo',data: $campo);
         }
 
         $bools = $this->init_bools(bools: $bools);
@@ -511,7 +511,7 @@ class inicializacion{
 
         $datos = $this->asigna_data_campo(bools: $bools, campo: $campo, datos: $datos);
         if(errores::$error){
-            return $this->error->error("Error al asignar datos",$datos);
+            return $this->error->error(mensaje: "Error al asignar datos",data: $datos);
         }
 
         return $datos;

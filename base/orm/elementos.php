@@ -41,7 +41,8 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     * Carga las columnas de un elemento para select
+     * @version 1.96.21
      * @param array $campo Campo a validar elementos
      * @return string
      */
