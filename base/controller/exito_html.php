@@ -79,6 +79,10 @@ class exito_html extends base_html {
     {
         $mensajes_exito = $_SESSION['exito'] ?? array();
 
+        if(!is_array($mensajes_exito)){
+            return $this->error->error(mensaje: 'Error $mensajes_exito debe ser un array',data:  $mensajes_exito);
+        }
+
         $exito_transaccion = '';
         if(count($mensajes_exito)>0) {
             $exito_html = '';
