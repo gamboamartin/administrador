@@ -276,6 +276,7 @@ class columnas{
 
     /**
      * Obtiene las columnas para un select dependiendo de si aplica o no una tabla o todas
+     * @version 1.97.21
      * @param bool $aplica_columnas_by_table Si aplica columnas by table solo se tra la info de las columnas
      * cargadas en el array
      * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
@@ -292,7 +293,7 @@ class columnas{
      * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
      * @return array|string
      */
-    private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
+    PUBLIC function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
                               array $columnas_sql, array $extension_estructura, modelo_base $modelo, array $renombres,
                               array $tablas_select): array|string
     {
@@ -549,7 +550,7 @@ class columnas{
     /**
      * Obtiene las columnas para un SELECT
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto
+     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias

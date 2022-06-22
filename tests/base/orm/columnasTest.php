@@ -365,7 +365,7 @@ class columnasTest extends test {
 
     }
 
-    public function test_aplica_columnas_base(){
+    public function test_columnas_base(){
         errores::$error = false;
         $col = new columnas();
         $col = new liberator($col);
@@ -417,6 +417,8 @@ class columnasTest extends test {
         $this->assertEmpty($resultado);
         errores::$error = false;
     }
+
+
 
     public function test_columnas_bd_native(){
 
