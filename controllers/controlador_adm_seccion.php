@@ -75,45 +75,6 @@ class controlador_adm_seccion extends controlador_base{
             die('Error');
         }
 
-        $seccion_menu_id = $this->registro_id;
-        $r_accion_basica = $this->accion_basica_modelo->obten_registros_activos();
-        if (errores::$error){
-            $this->link->rollBack();
-            $error =   $this->errores->error(mensaje: 'Error al obtener datos del registro',data: $r_accion_basica);
-
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        $acciones_basicas = $r_accion_basica->registros;
-        $accion = array();
-        foreach ($acciones_basicas as $accion_basica) {
-            $accion['descripcion'] = $accion_basica['adm_accion_basica_descripcion'];
-            $accion['icono'] = $accion_basica['adm_accion_basica_icono'];
-            $accion['visible'] = $accion_basica['adm_accion_basica_visible'];
-            $accion['seguridad'] = $accion_basica['adm_accion_basica_seguridad'];
-            $accion['inicio'] = $accion_basica['adm_accion_basica_inicio'];
-            $accion['lista'] = $accion_basica['adm_accion_basica_lista'];
-            $accion['status'] = $accion_basica['adm_accion_basica_status'];
-            $accion['adm_seccion_id'] = $seccion_menu_id;
-            $this->accion_modelo->registro = $accion;
-            $r_alta_accion = $this->accion_modelo->alta_bd();
-
-            if (errores::$error){
-                $this->link->rollBack();
-                $error =   $this->errores->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_accion);
-
-                if(!$header){
-                    return $error;
-                }
-
-                print_r($error);
-                die('Error');
-            }
-        }
         $this->link->commit();
 
         if($header){

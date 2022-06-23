@@ -2,6 +2,7 @@
 namespace models;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
+use JsonException;
 use PDO;
 use stdClass;
 
@@ -54,13 +55,11 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * inserta un registro de ti po accion y agrega permisos a usuarios de tipo root
+     * @return array|stdClass con datos del registro insertado
+     * @throws JsonException
      * @example
      *      $r_alta_accion = $this->accion_modelo->alta_bd();
      *
-     * @return array con datos del registro insertado
-     * @throws errores count($this->registro) === 0
-     * @throws errores si algun key de registro es numerico
-     * @throws errores definidos en internals
      * @internal  $this->valida_campo_obligatorio();
      * @internal  $this->valida_estructura_campos();
      * @internal  $this->asigna_data_user_transaccion();
