@@ -47,6 +47,7 @@ class estructurasTest extends test {
         $st = new estructuras($this->link);
         $st = new liberator($st);
         $resultado = $st->modelos();
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
         $this->assertEquals('adm_dia',$resultado[5]);

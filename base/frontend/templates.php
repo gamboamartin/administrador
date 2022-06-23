@@ -287,7 +287,7 @@ class templates{
         }
         $etiqueta_valida = $this->validacion->letra_numero_espacio(txt: $etiqueta);
         if(!$etiqueta_valida){
-            return $this->error->error('Error etiqueta no es valida',$etiqueta);
+            return $this->error->error(mensaje: 'Error etiqueta no es valida',data: $etiqueta);
         }
         $filtro = $valores_filtrados[$campo_name] ?? array();
 
@@ -298,7 +298,7 @@ class templates{
             columnas: $columnas,llaves_valores: $llaves_foraneas,filtro: $filtro,vistas: $vistas,accion: $accion);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar html',data: $html, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar html',data: $html);
         }
 
         return $html;
@@ -436,8 +436,7 @@ class templates{
                 data_extra: $data_extra);
 
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html);
             }
         }
         if($tipo === 'numero') {
@@ -473,7 +472,8 @@ class templates{
                 data_extra: $data_extra,css_id:  $css_id);
 
             if(errores::$error){
-                return  $this->error->error('Error al obtener select columnas del modelo '.$tabla_foranea,$data_html);
+                return  $this->error->error(mensaje: 'Error al obtener select columnas del modelo '.$tabla_foranea,
+                    data: $data_html);
             }
 
         }

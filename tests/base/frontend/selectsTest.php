@@ -101,7 +101,7 @@ class selectsTest extends test {
         $resultado = $sl->data_bd(false, $this->link, $name_modelo, $filtro);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar modelo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -143,14 +143,13 @@ class selectsTest extends test {
 
         errores::$error = false;
         $valor = '';
-        $tabla = 'a';
+        $tabla = 'adm_mes';
         $data_extra = array();
         $data_con_valor = array();
         $columnas = array();
         $resultado = $sl->data_for_select($columnas,$data_con_valor, $data_extra,$tabla,$valor);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar estructura de input', $resultado['mensaje']);
+        $this->assertIsObject( $resultado);
+
 
         errores::$error = false;
         $valor = '';

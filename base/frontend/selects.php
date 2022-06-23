@@ -34,16 +34,16 @@ class selects{
         return $campo_name_html;
     }
     /**
-     * FULL
-     * @param string $tabla
+     * Obtiene los elementos base para un select
+     * @param string $tabla Tabla en ejecucion
+     * @version 1.97.23
      * @return array
      */
     PUBLIC function columnas_base_select(string $tabla): array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
         }
         $columnas[] = $tabla.'_id';
         $columnas[] = $tabla.'_codigo';
@@ -61,15 +61,13 @@ class selects{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
         }
         if(count($columnas) === 0){
 
             $columnas = $this->columnas_base_select(tabla: $tabla);
             if(errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar columnas base',data:  $columnas,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar columnas base',data:  $columnas);
             }
         }
         return $columnas;
@@ -124,8 +122,7 @@ class selects{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
         }
 
         $datos = new stdClass();
@@ -136,14 +133,12 @@ class selects{
 
         $columnas = $this->columnas_input_select(columnas: $columnas,tabla:  $tabla);
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas);
         }
 
         $valida = $this->validacion->valida_estructura_input_base(columnas: $columnas,tabla: $tabla);
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar estructura de input', data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar estructura de input', data: $valida);
         }
 
         $datos->columnas = $columnas;
@@ -284,12 +279,11 @@ class selects{
 
         $resultado = $this->data_bd(todos: $todos,link:  $link,name_modelo:  $name_modelo,filtro:  $filtro);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
         }
 
         if(count($resultado->registros) === 0){
-            return $this->error->error('Error no existen registros del modelo '.$name_modelo, $resultado);
+            return $this->error->error(mensaje: 'Error no existen registros del modelo '.$name_modelo,data:  $resultado);
         }
         return $resultado->registros;
     }
@@ -491,8 +485,7 @@ class selects{
         $datos = $this->data_for_select(columnas:$columnas, data_con_valor: $data_con_valor, data_extra:$data_extra,
             tabla: $tabla ,valor: $valor );
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener datos para columnas',data:  $datos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener datos para columnas',data:  $datos);
         }
 
 
@@ -553,13 +546,13 @@ class selects{
             $registros = $this->data_select($todos, $link, $name_modelo, $filtro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros del modelo '.$name_modelo,
-                    data: $registros, params: get_defined_vars());
+                    data: $registros);
             }
         }
         elseif(count($filtro)>0) {
             $registros = $this->registros_activos($link,$name_modelo,$filtro);
             if(errores::$error){
-                return $this->error->error('Error al obtener registros', $registros);
+                return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
             }
         }
 
@@ -734,17 +727,15 @@ class selects{
                                           array $filtro, bool $todos, string $tabla): array
     {
         if(!isset($datos->tabla)){
-            return $this->error->error(mensaje: 'Error no existe tabla en datos',data: $datos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe tabla en datos',data: $datos);
         }
         if(trim($datos->tabla) === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data: $datos, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data: $datos);
         }
 
         $registros = $this->registros_select($registros, $select_vacio_alta, $filtro, $todos,$tabla, $link);
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros);
         }
 
         return $registros;
@@ -766,8 +757,7 @@ class selects{
         if(count($registros)===0 ) {
             $registros = $this->obten_registros_select($select_vacio_alta, $filtro, $name_modelo, $link,$todos);
             if(errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener registros '.$name_modelo,data: $registros,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener registros '.$name_modelo,data: $registros);
             }
         }
         return $registros;

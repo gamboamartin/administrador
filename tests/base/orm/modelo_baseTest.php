@@ -59,16 +59,17 @@ class modelo_baseTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al validar entrada para modelo', $resultado['mensaje']);
 
         errores::$error = false;
-        $name_modelo = 'x';
+        $name_modelo = 'adm_accion_grupo';
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
         $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
             nombre_estructura: $nombre_estructura,row:  $row);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar entrada para modelo', $resultado['mensaje']);
-        $this->assertStringContainsStringIgnoringCase('Error modelo', $resultado['data']['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error nombre estructura no puede venir vacia', $resultado['mensaje']);
+
 
         errores::$error = false;
         $name_modelo = 'pais';
@@ -79,7 +80,7 @@ class modelo_baseTest extends test {
             nombre_estructura: $nombre_estructura,row:  $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar entrada para modelo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error nombre estructura no puede venir vacia', $resultado['mensaje']);
 
 
 
@@ -218,11 +219,11 @@ class modelo_baseTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error al validar modelo', $resultado['mensaje']);
 
         errores::$error = false;
-        $modelo = 'a';
+        $modelo = 'adm_accion';
         $resultado = $mb->genera_modelo($modelo);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar modelo', $resultado['mensaje']);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
         $modelo = 'adm_seccion';
@@ -289,7 +290,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'x',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al asignar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
 
 
         errores::$error = false;

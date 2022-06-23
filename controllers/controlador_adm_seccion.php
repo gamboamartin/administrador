@@ -4,12 +4,12 @@ use base\controller\controlador_base;
 use base\frontend\templates;
 use gamboamartin\errores\errores;
 use JsonException;
-use models\accion;
-use models\accion_basica;
-use models\seccion;
+use models\adm_accion;
+use models\adm_accion_basica;
+use models\adm_seccion;
 
 
-class controlador_seccion extends controlador_base{
+class controlador_adm_seccion extends controlador_base{
     public $operaciones_controlador;
     public $accion_modelo;
     public $accion_basica_modelo;
@@ -20,13 +20,13 @@ class controlador_seccion extends controlador_base{
 
     public function __construct($link){
 
-        $modelo = new seccion($link);
+        $modelo = new adm_seccion($link);
 
         parent::__construct($link, $modelo);
 
-        $this->accion_modelo = new accion($link);
-        $this->accion_basica_modelo = new accion_basica($link);
-        $this->seccion_menu_modelo = new seccion($link);
+        $this->accion_modelo = new adm_accion($link);
+        $this->accion_basica_modelo = new adm_accion_basica($link);
+        $this->seccion_menu_modelo = new adm_seccion($link);
         $this->template_accion = new templates($link,'accion');
 
     }
@@ -34,7 +34,7 @@ class controlador_seccion extends controlador_base{
     public function asigna_accion(){
         $breadcrumbs = array('lista', 'alta');
 
-        $accion_modelo = new accion($this->link);
+        $accion_modelo = new adm_accion($this->link);
         if(errores::$error){
             return  $this->errores->error(mensaje: 'Error al generar modelo',data: $accion_modelo,
                 params: get_defined_vars());
