@@ -476,9 +476,9 @@ class controler{
      */
     private function filtra(array $filtros): array
     {
-        $r_modelo = $this->modelo->filtro_and($filtros,'numeros',array(),array(),0,0,array());
+        $r_modelo = $this->modelo->filtro_and(filtro: $filtros,filtro_especial: array());
         if(errores::$error){
-            return $this->errores->error('Error al obtener datos',$r_modelo);
+            return $this->errores->error(mensaje: 'Error al obtener datos',data: $r_modelo);
         }
         return $r_modelo;
     }
@@ -495,26 +495,26 @@ class controler{
      * @throws errores $filtro_boton_lista===''
      * @uses  controler
      */
-    private function obten_registros_para_boton_filtro(string $filtro_boton_lista):array{ //FIN
+    private function obten_registros_para_boton_filtro(string $filtro_boton_lista):array{
         $filtro_boton_lista = str_replace('models\\','', $filtro_boton_lista);
         $class = 'models\\'.$filtro_boton_lista;
         if($filtro_boton_lista===''){
             return $this->errores->error(mensaje: 'Error $filtro_boton_lista no puede venir vacio',
-                data: $filtro_boton_lista, params: get_defined_vars());
+                data: $filtro_boton_lista);
 
         }
         if(!class_exists($class)){
             return  $this->errores->error(mensaje: 'Error modelo no existe '.$filtro_boton_lista,
-                data: $filtro_boton_lista, params: get_defined_vars());
+                data: $filtro_boton_lista);
         }
         $modelo_filtro_btns = $this->modelo->genera_modelo(modelo:$filtro_boton_lista);
         if(errores::$error){
-            return  $this->errores->error('Error al generar modelo', $modelo_filtro_btns);
+            return  $this->errores->error(mensaje: 'Error al generar modelo', data: $modelo_filtro_btns);
         }
         $registros_botones_filtro = $modelo_filtro_btns->obten_registros();
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener registros de filtro',
-                data:  $registros_botones_filtro, params: get_defined_vars());
+                data:  $registros_botones_filtro);
         }
         return $registros_botones_filtro;
     }

@@ -1172,12 +1172,14 @@ class modelo extends modelo_base {
     /**
      * P INT P ORDER ERROREV
      * Obtiene todos los registros de un modelo
-     * @param string $sql_extra
-     * @param string $group_by
-     * @param array $columnas
      * @param bool $aplica_seguridad Si aplica seguridad se integra usuario_permitido_id el cual debe existir en los
      * registros
+     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param bool $columnas_en_bruto
+     * @param array $group_by
      * @param int $limit
+     * @param bool $return_objects
+     * @param string $sql_extra
      * @return array|stdClass conjunto de registros obtenidos
      * @example
      *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
@@ -1198,16 +1200,16 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar group_by', data: $group_by_sql);
         }
 
-        $limit_sql = '';
-
         if($this->limit > 0){
-            $limit_sql =" LIMIT $this->limit ";
+            $limit = $this->limit;
         }
-        else{
-            if($limit > 0){
-                $limit_sql =" LIMIT $limit ";
-            }
+
+        $limit_sql = (new params_sql())->limit_sql($limit);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener limit sql', data: $limit_sql);
         }
+
+
 
         $offset_sql = '';
         if($this->offset > 0){
@@ -1349,7 +1351,7 @@ class modelo extends modelo_base {
      * @return array|int
      */
     public function obten_ultimo_registro(): int|array
-    {//PRUEBA COMPLETA PROTEO
+    {
         $this->order = array($this->tabla.'.id'=>'DESC');
         $this->limit = 1;
         $resultado = $this->obten_registros();

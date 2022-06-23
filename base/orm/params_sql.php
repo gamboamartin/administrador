@@ -43,7 +43,7 @@ class params_sql{
      * @param int $limit Numero de registros a mostrar
      * @return string|array
      */
-    private function limit_sql(int $limit): string|array
+    public function limit_sql(int $limit): string|array
     {
         if($limit<0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0', data: $limit);
