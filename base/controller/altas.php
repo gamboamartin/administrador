@@ -25,8 +25,7 @@ class altas{
 
         $resultado = $controler->modelo->alta_bd();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al dar de alta registros', data: $resultado,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al dar de alta registros', data: $resultado);
         }
 
         return $resultado;

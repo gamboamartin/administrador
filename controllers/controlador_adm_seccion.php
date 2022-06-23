@@ -2,6 +2,7 @@
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use base\frontend\templates;
+use config\generales;
 use gamboamartin\errores\errores;
 use JsonException;
 use models\adm_accion;
@@ -36,8 +37,7 @@ class controlador_adm_seccion extends controlador_base{
 
         $accion_modelo = new adm_accion($this->link);
         if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al generar modelo',data: $accion_modelo,
-                params: get_defined_vars());
+            return  $this->errores->error(mensaje: 'Error al generar modelo',data: $accion_modelo);
         }
 
         $accion_registro = $accion_modelo->accion_registro($this->seccion, $this->accion);
@@ -67,7 +67,7 @@ class controlador_adm_seccion extends controlador_base{
         $r_alta_bd = parent::alta_bd(false, false);
         if(errores::$error){
             $this->link->rollBack();
-            $error =   $this->errores->error(mensaje: 'Error al dar de alta registro',data: $r_alta_bd, params: get_defined_vars());
+            $error =   $this->errores->error(mensaje: 'Error al dar de alta registro',data: $r_alta_bd);
             if(!$header){
                 return $error;
             }
@@ -79,8 +79,7 @@ class controlador_adm_seccion extends controlador_base{
         $r_accion_basica = $this->accion_basica_modelo->obten_registros_activos();
         if (errores::$error){
             $this->link->rollBack();
-            $error =   $this->errores->error(mensaje: 'Error al obtener datos del registro',data: $r_accion_basica,
-                params: get_defined_vars());
+            $error =   $this->errores->error(mensaje: 'Error al obtener datos del registro',data: $r_accion_basica);
 
             if(!$header){
                 return $error;
@@ -92,21 +91,20 @@ class controlador_adm_seccion extends controlador_base{
         $acciones_basicas = $r_accion_basica->registros;
         $accion = array();
         foreach ($acciones_basicas as $accion_basica) {
-            $accion['descripcion'] = $accion_basica['accion_basica_descripcion'];
-            $accion['icono'] = $accion_basica['accion_basica_icono'];
-            $accion['visible'] = $accion_basica['accion_basica_visible'];
-            $accion['seguridad'] = $accion_basica['accion_basica_seguridad'];
-            $accion['inicio'] = $accion_basica['accion_basica_inicio'];
-            $accion['lista'] = $accion_basica['accion_basica_lista'];
-            $accion['status'] = $accion_basica['accion_basica_status'];
-            $accion['seccion_id'] = $seccion_menu_id;
+            $accion['descripcion'] = $accion_basica['adm_accion_basica_descripcion'];
+            $accion['icono'] = $accion_basica['adm_accion_basica_icono'];
+            $accion['visible'] = $accion_basica['adm_accion_basica_visible'];
+            $accion['seguridad'] = $accion_basica['adm_accion_basica_seguridad'];
+            $accion['inicio'] = $accion_basica['adm_accion_basica_inicio'];
+            $accion['lista'] = $accion_basica['adm_accion_basica_lista'];
+            $accion['status'] = $accion_basica['adm_accion_basica_status'];
+            $accion['adm_seccion_id'] = $seccion_menu_id;
             $this->accion_modelo->registro = $accion;
             $r_alta_accion = $this->accion_modelo->alta_bd();
 
             if (errores::$error){
                 $this->link->rollBack();
-                $error =   $this->errores->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_accion,
-                    params: get_defined_vars());
+                $error =   $this->errores->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_accion);
 
                 if(!$header){
                     return $error;
@@ -119,7 +117,7 @@ class controlador_adm_seccion extends controlador_base{
         $this->link->commit();
 
         if($header){
-            header('Location: index.php?seccion=seccion_menu&accion=lista&mensaje=Agreado con éxito&tipo_mensaje=exito&session_id=' . SESSION_ID);
+            header('Location: index.php?seccion=seccion_menu&accion=lista&mensaje=Agreado con éxito&tipo_mensaje=exito&session_id=' . (new generales())->session_id);
             exit;
         }
         return $r_alta_bd;
