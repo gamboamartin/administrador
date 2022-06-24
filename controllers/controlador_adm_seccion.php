@@ -8,6 +8,8 @@ use JsonException;
 use models\adm_accion;
 use models\adm_accion_basica;
 use models\adm_seccion;
+use PDO;
+use stdClass;
 
 
 class controlador_adm_seccion extends controlador_base{
@@ -19,11 +21,11 @@ class controlador_adm_seccion extends controlador_base{
     public $template_accion;
 
 
-    public function __construct($link){
+    public function __construct(PDO $link, stdClass $paths_conf = new stdClass()){
 
         $modelo = new adm_seccion($link);
 
-        parent::__construct($link, $modelo);
+        parent::__construct(link: $link,modelo:  $modelo, paths_conf: $paths_conf);
 
         $this->accion_modelo = new adm_accion($link);
         $this->accion_basica_modelo = new adm_accion_basica($link);
@@ -78,7 +80,7 @@ class controlador_adm_seccion extends controlador_base{
         $this->link->commit();
 
         if($header){
-            header('Location: index.php?seccion=seccion_menu&accion=lista&mensaje=Agreado con éxito&tipo_mensaje=exito&session_id=' . (new generales())->session_id);
+            header('Location: index.php?seccion=adm_seccion&accion=lista&mensaje=Agreado con éxito&tipo_mensaje=exito&session_id=' . (new generales())->session_id);
             exit;
         }
         return $r_alta_bd;

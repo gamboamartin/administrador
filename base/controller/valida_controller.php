@@ -7,7 +7,8 @@ use gamboamartin\errores\errores;
 class valida_controller extends base_modelos{
 
     /**
-     * P ORDER P INT ERRORREV
+     * Valida que los datos de una seccion de un controlador sean validos
+     * @version 1.98.25
      * @param controler $controler Controlador en ejecucion
      * @return bool|array
      */
@@ -19,10 +20,6 @@ class valida_controller extends base_modelos{
             return $this->error->error(mensaje: 'Error al obtener clase', data: $clase);
         }
 
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje: 'Error no existe la clase', data: $clase);
-
-        }
         return true;
     }
 
@@ -53,28 +50,25 @@ class valida_controller extends base_modelos{
     /**
      * P ORDER P INT ERROREV
      * @param string $clase
-     * @param controler $controler
+     * @param controler $controler Controlador en ejecucion
      * @param array $registro
      * @return bool|array
      */
     public function valida_in_alta(string $clase, controler $controler, array $registro): bool|array
     {
         if($controler->tabla === ''){
-            return $this->error->error(mensaje: 'Error  tabla no puede venir vacia',data:  $controler->tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error  tabla no puede venir vacia',data:  $controler->tabla);
         }
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data:  $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data:  $registro);
         }
 
         if($controler->seccion === ''){
-            return $this->error->error(mensaje:'Error la seccion no puede venir vacia',data: $controler->seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error la seccion no puede venir vacia',data: $controler->seccion);
 
         }
         if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase',data: $clase, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error no existe la clase',data: $clase);
         }
 
         return true;

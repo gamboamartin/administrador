@@ -373,20 +373,18 @@ class normalizacion{
     {
         $clase = $this->name_class(seccion: $controler->seccion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener name clase', data: $clase, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener name clase', data: $clase);
         }
         $controler->seccion = $clase;
 
         $valida = $this->validacion->valida_in_alta(clase:  $clase,controler: $controler, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar entrada de datos', data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar entrada de datos', data: $valida);
         }
 
         $registro = $this->limpia_btn_post(registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar registro', data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar registro', data: $registro);
         }
         return $registro;
     }
@@ -430,7 +428,8 @@ class normalizacion{
     }
 
     /**
-     * FULL
+     * Limpia los elementos de los botones
+     * @version 1.98.25
      * @return array
      */
     public function limpia_post_alta(): array
@@ -505,15 +504,14 @@ class normalizacion{
 
     /**
      * FULL
-     * @param string $seccion
+     * @param string $seccion Seccion en ejecucion
      * @return string|array
      */
     private function name_class(string $seccion): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion no puede venir vacia',data:  $seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error seccion no puede venir vacia',data:  $seccion);
         }
         $namespace = 'models\\';
         $seccion = str_replace($namespace,'',$seccion);
