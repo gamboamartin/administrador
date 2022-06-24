@@ -7,6 +7,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\accion;
+use models\adm_accion;
 use models\seccion;
 use stdClass;
 
@@ -23,7 +24,7 @@ class params_sqlTest extends test {
     {
         errores::$error = false;
         $ps = new params_sql();
-       // $ps = new liberator($ps);
+        $ps = new liberator($ps);
 
 
         $group_by = array();
@@ -112,15 +113,35 @@ class params_sqlTest extends test {
     {
         errores::$error = false;
         $ps = new params_sql();
-        $ps = new liberator($ps);
+        //$ps = new liberator($ps);
 
         $group_by = array();
         $limit = 1;
         $offset = 1;
         $order = array();
-        $resultado = $ps->params_sql($group_by, $limit, $offset, $order);
+        $aplica_seguridad = false;
+        $modelo = new adm_accion($this->link);
+        $sql_where_previo = '';
+        $resultado = $ps->params_sql($aplica_seguridad, $group_by, $limit, $modelo, $offset, $order, $sql_where_previo);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+        $ps = new params_sql();
+        //$ps = new liberator($ps);
+
+        $group_by = array();
+        $limit = 1;
+        $offset = 1;
+        $order = array('x'=>'a');
+        $aplica_seguridad = false;
+        $modelo = new adm_accion($this->link);
+        $sql_where_previo = '';
+        $resultado = $ps->params_sql($aplica_seguridad, $group_by, $limit, $modelo, $offset, $order, $sql_where_previo);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' ORDER BY x a',$resultado->order);
+
         errores::$error = false;
     }
 

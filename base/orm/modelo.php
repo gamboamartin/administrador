@@ -836,10 +836,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
 
-        $complemento_sql = (new filtros())->complemento_sql(filtro:  $filtro, filtro_especial: $filtro_especial,
-            filtro_extra: $filtro_extra, filtro_rango: $filtro_rango, group_by: $group_by, limit: $limit,
-            modelo: $this, not_in: $not_in, offset:  $offset,order:  $order, sql_extra: $sql_extra,
-            tipo_filtro: $tipo_filtro, filtro_fecha:  $filtro_fecha);
+        $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false,filtro:  $filtro,
+            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango,
+            group_by: $group_by, limit: $limit, modelo: $this, not_in: $not_in, offset:  $offset,order:  $order,
+            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data: $complemento_sql);
@@ -1190,57 +1190,21 @@ class modelo extends modelo_base {
                                     bool $columnas_en_bruto = false, array $group_by = array(), int $limit = 0,
                                     bool $return_objects = false, string $sql_extra=''): array|stdClass{
 
-        /**
-         * RAFACTORIZAR
-         */
-
-
-        $group_by_sql = (new params_sql())->group_by_sql(group_by: $group_by);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar group_by', data: $group_by_sql);
-        }
-
         if($this->limit > 0){
             $limit = $this->limit;
         }
 
-        $limit_sql = (new params_sql())->limit_sql($limit);
+
+        $base = (new sql())->sql_select_init(aplica_seguridad: $aplica_seguridad,columnas:  $columnas,
+            columnas_en_bruto:  $columnas_en_bruto,extension_estructura:  $this->extension_estructura,
+            group_by: $group_by, limit: $limit,modelo:  $this,offset:  $this->offset,order:  $this->order,
+            renombres: $this->renombres, sql_where_previo: $sql_extra);
+
+        $consulta = (new sql())->sql_select(consulta_base:$base->consulta_base,params_base:  $base->params,
+            sql_extra: $sql_extra);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener limit sql', data: $limit_sql);
+            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta);
         }
-
-
-
-        $offset_sql = '';
-        if($this->offset > 0){
-            $offset_sql =" OFFSET $this->offset ";
-        }
-
-        $order_sql = (new params_sql())->order_sql(order: $this->order);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar order', data: $order_sql);
-        }
-
-
-        $seguridad = '';
-        if($aplica_seguridad){
-            $where = '';
-            if($sql_extra ===''){
-                $where = ' WHERE ';
-            }
-
-            $sq_seg = $this->columnas_extra['usuario_permitido_id'];
-            $seguridad = " $where ($sq_seg) = $_SESSION[usuario_id] ";
-        }
-
-        $consulta_base = $this->genera_consulta_base(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $this->extension_estructura, renombradas: $this->renombres);
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta_base);
-        }
-
-        $consulta = $consulta_base.' '.$sql_extra.' '.$seguridad.' '.$group_by_sql.' '.$order_sql.' '.$limit_sql.' '.$offset_sql;
 
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);

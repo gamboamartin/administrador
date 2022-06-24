@@ -10,13 +10,24 @@ class params_sql{
         $this->error = new errores();
     }
 
+    private function asigna_seguridad_data(modelo $modelo, string $sql_where_previo): array|string
+    {
+        $where = $this->where(sql_where_previo: $sql_where_previo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
+        }
+
+        $sq_seg = $modelo->columnas_extra['usuario_permitido_id'];
+        return " $where ($sq_seg) = $_SESSION[usuario_id] ";
+    }
+
     /**
      * Genera Group By para sql
      * @version 1.42.14
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @return string|array
      */
-    public function group_by_sql(array $group_by): string|array
+    private function group_by_sql(array $group_by): string|array
     {
         $group_by_sql = '';
         foreach ($group_by as $campo){
@@ -43,7 +54,7 @@ class params_sql{
      * @param int $limit Numero de registros a mostrar
      * @return string|array
      */
-    public function limit_sql(int $limit): string|array
+    private function limit_sql(int $limit): string|array
     {
         if($limit<0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0', data: $limit);
@@ -76,13 +87,17 @@ class params_sql{
 
     /**
      * FULL
+     * @param bool $aplica_seguridad
      * @param array $group_by
-     * @param array $order
      * @param int $limit Numero de registros a mostrar
+     * @param modelo $modelo
      * @param int $offset Numero de inicio de registros
+     * @param array $order
+     * @param string $sql_where_previo
      * @return array|stdClass
      */
-    public function params_sql(array $group_by, int $limit,  int $offset, array $order): array|stdClass
+    public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, modelo $modelo,  int $offset,
+                               array $order, string $sql_where_previo): array|stdClass
     {
         if($limit<0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
@@ -112,11 +127,18 @@ class params_sql{
             return $this->error->error(mensaje:'Error al generar offset',data:$offset_sql);
         }
 
+        $seguridad = $this->seguridad(aplica_seguridad:$aplica_seguridad, modelo: $modelo,
+            sql_where_previo:  $sql_where_previo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
+        }
+
         $params = new stdClass();
         $params->group_by = $group_by_sql;
         $params->order = $order_sql;
         $params->limit = $limit_sql;
         $params->offset = $offset_sql;
+        $params->seguridad = $seguridad;
 
         return $params;
 
@@ -133,7 +155,7 @@ class params_sql{
      * $order_sql = $this->order_sql($order);
      * @uses modelo
      */
-    public function order_sql(array $order):array|string{
+    private function order_sql(array $order):array|string{
         $order_sql = '';
         foreach ($order as $campo=>$tipo_order){
             if(is_numeric($campo)){
@@ -147,6 +169,27 @@ class params_sql{
             }
         }
         return $order_sql;
+    }
+
+    private function seguridad(bool $aplica_seguridad, modelo $modelo, string $sql_where_previo): array|string
+    {
+        $seguridad = '';
+        if($aplica_seguridad){
+            $seguridad = $this->asigna_seguridad_data(modelo:$modelo, sql_where_previo: $sql_where_previo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
+            }
+        }
+        return $seguridad;
+    }
+
+    private function where(string $sql_where_previo): string
+    {
+        $where = '';
+        if($sql_where_previo ===''){
+            $where = ' WHERE ';
+        }
+        return $where;
     }
 
 }

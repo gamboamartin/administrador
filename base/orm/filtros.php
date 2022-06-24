@@ -14,6 +14,7 @@ class filtros{
 
     /**
      * P INT P ORDER ERRROEV
+     * @param bool $aplica_seguridad
      * @param array $filtro
      * @param array $filtro_especial
      * @param array $filtro_extra
@@ -29,9 +30,10 @@ class filtros{
      * @param array $filtro_fecha
      * @return array|stdClass
      */
-    public function complemento_sql(array $filtro, array $filtro_especial, array $filtro_extra, array $filtro_rango,
-                                     array $group_by, int $limit, modelo $modelo, array $not_in, int $offset, array $order,
-                                     string $sql_extra, string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
+    public function complemento_sql(bool $aplica_seguridad, array $filtro, array $filtro_especial,
+                                    array $filtro_extra, array $filtro_rango, array $group_by, int $limit,
+                                    modelo $modelo, array $not_in, int $offset, array $order, string $sql_extra,
+                                    string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
     {
 
         if($limit<0){
@@ -46,7 +48,8 @@ class filtros{
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data:$verifica_tf);
         }
 
-        $params = (new params_sql())->params_sql(group_by: $group_by,limit:  $limit,offset:  $offset, order:  $order);
+        $params = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad, group_by: $group_by,
+            limit:  $limit,modelo: $modelo,offset:  $offset, order:  $order,sql_where_previo: $sql_extra);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar parametros sql',data:$params);
         }

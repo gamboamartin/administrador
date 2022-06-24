@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use stdClass;
 
 class sql{
     private errores $error;
@@ -24,9 +25,42 @@ class sql{
         return "DESCRIBE $tabla";
     }
 
+
+
     public function show_tables(): string
     {
         return "SHOW TABLES";
+    }
+
+    public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string
+    {
+        $consulta = $consulta_base.' '.$sql_extra.' '.$params_base->seguridad.' ';
+        $consulta.= $params_base->group_by.' '.$params_base->order.' '.$params_base->limit.' '.$params_base->offset;
+        return $consulta;
+    }
+
+    public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
+                                    array $extension_estructura, array $group_by, int $limit, modelo $modelo,
+                                    int $offset, array $order, array $renombres,
+                                    string $sql_where_previo): array|stdClass
+    {
+        $params_base = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by: $group_by,
+            limit:  $limit,modelo: $modelo, offset: $offset, order: $order,sql_where_previo: $sql_where_previo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener parametros base', data: $params_base);
+        }
+
+        $consulta_base = $modelo->genera_consulta_base(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura, renombradas: $renombres);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta_base);
+        }
+
+        $data = new stdClass();
+        $data->params = $params_base;
+        $data->consulta_base = $consulta_base;
+        return $data;
     }
 
     /**
