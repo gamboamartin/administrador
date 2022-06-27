@@ -57,6 +57,12 @@ class controler{
     public bool $msj_con_html = true;
     public string $accion_titulo = '';
     public string $seccion_titulo;
+    public string $link_alta = '';
+    public string $link_alta_bd = '';
+    public string $link_elimina_bd = '';
+    public string $link_lista = '';
+    public string $link_modifica = '';
+    public string $link_modifica_bd = '';
 
 
 
