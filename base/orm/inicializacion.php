@@ -301,11 +301,12 @@ class inicializacion{
     }
 
     /**
-     * PROBADA P ORDER P INT
+     * Inicializa un campo a todo vacio
+     * @version 1.104.25
      * @param array $campo Campo a validar elementos
      * @return array
      */
-    PUBLIC function init_campo(array $campo): array
+    private function init_campo(array $campo): array
     {
         $keys = array('elemento_lista_cols','elemento_lista_tipo','elemento_lista_tabla_externa',
             'elemento_lista_etiqueta','elemento_lista_campo','elemento_lista_descripcion','elemento_lista_id');
@@ -333,7 +334,7 @@ class inicializacion{
 
         $bools = $this->init_bools(bools: $bools);
         if(errores::$error){
-            return $this->error->error('Error al inicializa $bools',$bools);
+            return $this->error->error(mensaje: 'Error al inicializa $bools',data: $bools);
         }
 
         $datos = $this->init_datos(datos: $datos);
@@ -472,30 +473,30 @@ class inicializacion{
 
         $elemento_lista_llaves_valores = (new elementos())->llaves_valores(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al generar llaves", $elemento_lista_llaves_valores);
+            return $this->error->error(mensaje: "Error al generar llaves", data: $elemento_lista_llaves_valores);
         }
 
         $elemento_lista_pattern = (new elementos())->pattern(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al generar pattern", $elemento_lista_pattern);
+            return $this->error->error(mensaje: "Error al generar pattern",data:  $elemento_lista_pattern);
         }
 
 
         $elemento_lista_tabla_externa_renombrada = (new elementos())->tabla_ext_renombrada(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al generar tabla externa", $elemento_lista_tabla_externa_renombrada);
+            return $this->error->error(mensaje: "Error al generar tabla externa",data:  $elemento_lista_tabla_externa_renombrada);
         }
 
 
         $elemento_lista_separador_select_columnas = (new elementos())->separador_columnas(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al generar separador", $elemento_lista_separador_select_columnas);
+            return $this->error->error(mensaje: "Error al generar separador",data:  $elemento_lista_separador_select_columnas);
         }
 
 
         $elemento_lista_css_id = (new elementos())->elemento_lista_css_id(campo: $campo);
         if(errores::$error){
-            return $this->error->error("Error al obtener $elemento_lista_css_id", $elemento_lista_css_id);
+            return $this->error->error(mensaje: "Error al obtener $elemento_lista_css_id",data:  $elemento_lista_css_id);
         }
 
         $datos->tabla_externa = $campo_tabla_externa;

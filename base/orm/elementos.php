@@ -92,6 +92,7 @@ class elementos{
     /**
      *
      * Asigna los elementos para obtener las llaves en forma json para select
+     * @version 1.104.25
      * @param array $campo Campo a validar elementos
      * @return string
      */
