@@ -63,6 +63,10 @@ class controler{
     public string $link_lista = '';
     public string $link_modifica = '';
     public string $link_modifica_bd = '';
+    public string $include_inputs_alta = '';
+    public string $include_inputs_modifica = '';
+    public string $include_lista_row = '';
+    public string $include_lista_thead= '';
 
 
 
