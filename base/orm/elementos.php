@@ -90,7 +90,8 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     *
+     * Asigna los elementos para obtener las llaves en forma json para select
      * @param array $campo Campo a validar elementos
      * @return string
      */
