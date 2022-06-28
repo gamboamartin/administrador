@@ -651,7 +651,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     /**
      * P INT
      * @param bool $header Si header se mostrara la info en el navegador de manera directa
-     * @param bool $ws
+     * @param bool $ws Se ejecutara via web service con salida json
      * @return array
      */
     public function lista(bool $header, bool $ws = false): array{

@@ -80,7 +80,7 @@ class html  {
             return $this->error->error('Error al genera base input', $params);
         }
 
-        $html = $this->integra_html_input(tipo: $tipo, size: $size, params: $params);
+        $html = $this->integra_html_input(params: $params, size: $size, tipo: $tipo);
         if(errores::$error){
             return $this->error->error('Error al integrar html', $html);
         }
@@ -147,7 +147,7 @@ class html  {
      * @param stdClass $params
      * @return string|array
      */
-    private function integra_html_input(string $tipo, string $size, stdClass $params): string|array
+    private function integra_html_input(stdClass $params, string $size, string $tipo): string|array
     {
         $tipo = trim($tipo);
         if($tipo === ''){

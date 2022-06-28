@@ -10,6 +10,11 @@ class params_sql{
         $this->error = new errores();
     }
 
+    /**
+     * @param modelo $modelo
+     * @param string $sql_where_previo Sql previo
+     * @return array|string
+     */
     private function asigna_seguridad_data(modelo $modelo, string $sql_where_previo): array|string
     {
         $where = $this->where(sql_where_previo: $sql_where_previo);
@@ -93,7 +98,7 @@ class params_sql{
      * @param modelo $modelo
      * @param int $offset Numero de inicio de registros
      * @param array $order
-     * @param string $sql_where_previo
+     * @param string $sql_where_previo Sql previo
      * @return array|stdClass
      */
     public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, modelo $modelo,  int $offset,
@@ -171,6 +176,12 @@ class params_sql{
         return $order_sql;
     }
 
+    /**
+     * @param bool $aplica_seguridad
+     * @param modelo $modelo
+     * @param string $sql_where_previo Sql previo
+     * @return array|string
+     */
     private function seguridad(bool $aplica_seguridad, modelo $modelo, string $sql_where_previo): array|string
     {
         $seguridad = '';
@@ -183,6 +194,11 @@ class params_sql{
         return $seguridad;
     }
 
+    /**
+     * Asigna where a un sql
+     * @param string $sql_where_previo Sql previo
+     * @return string
+     */
     private function where(string $sql_where_previo): string
     {
         $where = '';

@@ -163,7 +163,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * @param bool $aplica_etiqueta
      * @param string $etiqueta
      * @return bool|array

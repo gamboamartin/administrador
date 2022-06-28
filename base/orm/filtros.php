@@ -25,7 +25,7 @@ class filtros{
      * @param array $not_in
      * @param int $offset Numero de inicio de registros
      * @param array $order
-     * @param string $sql_extra
+     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro
      * @param array $filtro_fecha
      * @return array|stdClass

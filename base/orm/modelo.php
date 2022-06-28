@@ -623,7 +623,7 @@ class modelo extends modelo_base {
      * @param array $not_in
      * @param int $offset numero de registros de comienzo de datos
      * @param array $order array('tabla.campo'=>'ASC');
-     * @param string $sql_extra
+     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro string numeros o textos
      * @return array|stdClass
      * @example
@@ -814,7 +814,7 @@ class modelo extends modelo_base {
      * @param array $not_in
      * @param int $offset Numero de inicio de registros
      * @param array $order
-     * @param string $sql_extra
+     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro
      * @param array $filtro_fecha
      * @return array|string

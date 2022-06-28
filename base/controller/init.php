@@ -79,6 +79,12 @@ class init{
         return $existe;
     }
 
+    /**
+     * Obtiene los datos de un template de una accion
+     * @param string $accion
+     * @param string $seccion
+     * @return array|stdClass
+     */
     private function data_include_base(string $accion, string $seccion): array|stdClass
     {
         $data_include = $this->include_action_local_base_data(accion: $accion);
@@ -169,9 +175,20 @@ class init{
         if($accion === ''){
             return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
         }
+
+        if(!isset((new views())->ruta_template_base)){
+            return $this->error->error(mensaje: 'Error debe existir views->ruta_template_base', data: (new views()));
+        }
+
         return (new views())->ruta_template_base.'views/'.$seccion.'/'. $accion . '.php';
     }
 
+    /**
+     * Obtiene el include de una view para un template
+     * @version 1.105.26
+     * @param string $accion Accion a verificar template
+     * @return string|array
+     */
     private function include_action_template_base(string $accion): string|array
     {
 
@@ -179,6 +196,11 @@ class init{
         if($accion === ''){
             return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
         }
+
+        if(!isset((new views())->ruta_template_base)){
+            return $this->error->error(mensaje: 'Error debe existir views->ruta_template_base', data: (new views()));
+        }
+
         return (new views())->ruta_template_base.'views/vista_base/' . $accion . '.php';
     }
 
@@ -222,6 +244,12 @@ class init{
         }
         return $data;
     }
+
+    /**
+     * Obtiene el template de una vista
+     * @param string $accion
+     * @return array|stdClass
+     */
     private function include_action_template_base_data(string $accion): array|stdClass
     {
         $include_action = $this->include_action_template_base(accion: $accion);
@@ -235,6 +263,12 @@ class init{
         return $data;
     }
 
+    /**
+     * Obtiene la ruta de un template
+     * @param string $accion
+     * @param string $seccion
+     * @return array|stdClass
+     */
     private function include_template(string $accion, string $seccion): array|stdClass
     {
         $data_include = $this->include_action_template_data(accion: $accion, seccion: $seccion);
@@ -250,6 +284,11 @@ class init{
         return $data_include;
     }
 
+    /**
+     * Obtiene la ruta de un template basado en una accion
+     * @param string $accion
+     * @return array|stdClass
+     */
     private function include_template_base(string $accion): array|stdClass
     {
         $data_include = $this->include_action_template_base_data(accion: $accion);
@@ -262,6 +301,12 @@ class init{
         return $data_include;
     }
 
+    /**
+     * Obtiene los datos de un template
+     * @param string $accion
+     * @param string $seccion
+     * @return array|stdClass
+     */
     private function include_view(string $accion, string $seccion): array|stdClass
     {
         $data_include = $this->include_action_local_data(accion: $accion,seccion: $seccion);
