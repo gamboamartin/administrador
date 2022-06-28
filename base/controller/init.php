@@ -4,6 +4,7 @@ use base\conexion;
 use base\frontend\directivas;
 use base\seguridad;
 use config\generales;
+use config\views;
 use gamboamartin\errores\errores;
 use models\adm_accion;
 use models\adm_session;
@@ -69,6 +70,44 @@ class init{
         return $_GET;
     }
 
+    private function existe_include(string $include_action): bool
+    {
+        $existe = false;
+        if (file_exists($include_action)) {
+            $existe = true;
+        }
+        return $existe;
+    }
+
+    private function data_include_base(string $accion, string $seccion): array|stdClass
+    {
+        $data_include = $this->include_action_local_base_data(accion: $accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include local base', data: $data_include);
+        }
+        if(!$data_include->existe){
+            $data_include = $this->include_template(accion: $accion,seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
+            }
+        }
+        return $data_include;
+    }
+
+    private function genera_salida(string $include_action): array|stdClass
+    {
+        $existe = $this->existe_include(include_action:$include_action);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar include', data: $include_action);
+        }
+
+        $data = $this->output_include(existe: $existe,include_action: $include_action);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar salida', data: $data);
+        }
+        return $data;
+    }
+
     /**
      * Aqui se determina que view se va a utilizar para el frontend
      * v1.18.9
@@ -78,18 +117,165 @@ class init{
      */
     private function include_action(bool $aplica_view, seguridad $seguridad): string|array
     {
-        $include_action = '';
+        $data_include = new stdClass();
+        $data_include->include_action = '';
         if($aplica_view) {
-            $include_action = './views/' . $seguridad->seccion . '/' . $seguridad->accion . '.php';
-            if (!file_exists($include_action)) {
-                $include_action = './views/vista_base/' . $seguridad->accion . '.php';
-            }
-            if (!file_exists($include_action)) {
-                return $this->error->error(mensaje: 'Error no existe la view', data: $include_action);
+            $data_include = $this->include_view(accion: $seguridad->accion,seccion: $seguridad->seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener include local', data: $data_include);
             }
         }
 
-        return $include_action;
+        return $data_include->include_action;
+    }
+
+    /**
+     * Genera la ruta de un include para acciones local
+     * @param string $accion Accion a verificar
+     * @param string $seccion Seccion a verificar
+     * @return string|array
+     * @version 1.105.25
+     */
+    private function include_action_local(string $accion, string $seccion): string|array
+    {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+        return './views/' . $seccion . '/' . $accion . '.php';
+    }
+
+    private function include_action_local_base(string $accion): string|array
+    {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
+        return './views/vista_base/' . $accion . '.php';
+    }
+
+    private function include_action_template(string $accion, string $seccion): string|array
+    {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+        return (new views())->ruta_template_base.'views/'.$seccion.'/'. $accion . '.php';
+    }
+
+    private function include_action_template_base(string $accion): string|array
+    {
+
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+        return (new views())->ruta_template_base.'views/vista_base/' . $accion . '.php';
+    }
+
+    private function include_action_local_data(string $accion, string $seccion): array|stdClass
+    {
+        $include_action = $this->include_action_local(accion: $accion,seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include local', data: $include_action);
+        }
+
+        $data = $this->genera_salida(include_action:$include_action);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar salida', data: $data);
+        }
+
+        return $data;
+    }
+
+    private function include_action_local_base_data(string $accion): stdClass
+    {
+        $include_action = $this->include_action_local_base(accion: $accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include local base', data: $include_action);
+        }
+        $data = $this->genera_salida(include_action:$include_action);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar salida', data: $data);
+        }
+        return $data;
+    }
+
+    private function include_action_template_data(string $accion, string $seccion): array|stdClass
+    {
+        $include_action = $this->include_action_template(accion: $accion, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include template', data: $include_action);
+        }
+        $data = $this->genera_salida(include_action:$include_action);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar salida', data: $data);
+        }
+        return $data;
+    }
+    private function include_action_template_base_data(string $accion): array|stdClass
+    {
+        $include_action = $this->include_action_template_base(accion: $accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include template base', data: $include_action);
+        }
+        $data = $this->genera_salida(include_action:$include_action);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar salida', data: $data);
+        }
+        return $data;
+    }
+
+    private function include_template(string $accion, string $seccion): array|stdClass
+    {
+        $data_include = $this->include_action_template_data(accion: $accion, seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
+        }
+        if(!$data_include->existe){
+            $data_include = $this->include_template_base(accion: $accion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
+            }
+        }
+        return $data_include;
+    }
+
+    private function include_template_base(string $accion): array|stdClass
+    {
+        $data_include = $this->include_action_template_base_data(accion: $accion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
+        }
+        if(!$data_include->existe){
+            return $this->error->error(mensaje: 'Error no existe la view', data: $data_include);
+        }
+        return $data_include;
+    }
+
+    private function include_view(string $accion, string $seccion): array|stdClass
+    {
+        $data_include = $this->include_action_local_data(accion: $accion,seccion: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener include local', data: $data_include);
+        }
+
+        if (!$data_include->existe) {
+            $data_include = $this->data_include_base(accion: $accion,seccion: $seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener include local base', data: $data_include);
+            }
+        }
+        return $data_include;
     }
 
     /**
@@ -240,6 +426,14 @@ class init{
         }
 
         return $name_ctl;
+    }
+
+    private function output_include(bool $existe, string $include_action): stdClass
+    {
+        $data = new stdClass();
+        $data->existe = $existe;
+        $data->include_action = $include_action;
+        return $data;
     }
 
     /**

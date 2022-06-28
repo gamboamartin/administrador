@@ -47,7 +47,23 @@ class initTest extends test {
         $resultado = $init->include_action(true, $seguridad);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe la view',$resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al obtener include local',$resultado['mensaje']);
+        errores::$error = false;
+    }
+
+    public function test_include_action_local(){
+
+        errores::$error = false;
+        unset($_SESSION);
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'a';
+        $seccion = 'a';
+        $resultado = $init->include_action_local($accion, $seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('./views/a/a.php',$resultado);
         errores::$error = false;
     }
 
