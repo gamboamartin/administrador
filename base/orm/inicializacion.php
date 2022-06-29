@@ -289,7 +289,7 @@ class inicializacion{
      * @param array $bools
      * @return array
      */
-    PUBLIC function init_bools(array $bools): array
+    private function init_bools(array $bools): array
     {
         $keys = array('con_label','required','ln','select_vacio_alta', 'disabled');
         foreach ($keys as $key){

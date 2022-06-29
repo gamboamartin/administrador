@@ -317,7 +317,7 @@ class inicializacionTest extends test {
     public function test_init_bools(){
         errores::$error = false;
         $inicializacion = new inicializacion();
-        //$inicializacion = new liberator($inicializacion);
+        $inicializacion = new liberator($inicializacion);
 
         $bools = array();
         $bools[] = '';

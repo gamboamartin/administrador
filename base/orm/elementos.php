@@ -74,7 +74,7 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     * Integra el id de tipo css para un input
      * @param array $campo Campo a validar elementos
      * @return string
      */
@@ -108,7 +108,7 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     * Asigna el pattern para un input
      * @param array $campo Campo a validar elementos
      * @return string
      */
@@ -124,7 +124,7 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     * Asigna el separador puesto entre columnas para se mostrado en select
      * @param array $campo Campo a validar elementos
      * @return string
      */
@@ -140,7 +140,7 @@ class elementos{
     }
 
     /**
-     * P ORDER P INT
+     * Asigna el valor d ela tabla si esta renombrada
      * @param array $campo Campo a validar elementos
      * @return string
      */
