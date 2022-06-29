@@ -69,7 +69,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * Devuelve una cadena que comprueba la existencia del usuario que realiza la modificacion asignando su id a la
      * columna usuario_update_id
      *
@@ -395,9 +395,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT
+     * P INT P ORDER
      * Devuelve una variable de tipo booleana que indica si el usuario existe o no
      *
+     * @param array $campos_encriptados
      * @return bool|array
      * @example
      *      $existe_user = $this->usuario_existente();

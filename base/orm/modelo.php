@@ -897,7 +897,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * PHPUNIT
+     *
      * Modifica los datos de un registro de un modelo
      * @param array $registro registro con datos a modificar
      * @param int $id id del registro a modificar
@@ -974,7 +974,7 @@ class modelo extends modelo_base {
             $this->transaccion = 'UPDATE';
             $this->registro_id = $id;
 
-            $resultado = $this->ejecuta_sql($this->consulta);
+            $resultado = $this->ejecuta_sql(consulta: $this->consulta);
 
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al ejecutar sql',data:  array($resultado, 'sql' => $this->consulta));

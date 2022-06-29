@@ -21,7 +21,7 @@ class filtros{
      * @param array $filtro_rango
      * @param array $group_by
      * @param int $limit Numero de registros a mostrar
-     * @param modelo $modelo
+     * @param modelo $modelo modelo en ejecucion
      * @param array $not_in
      * @param int $offset Numero de inicio de registros
      * @param array $order

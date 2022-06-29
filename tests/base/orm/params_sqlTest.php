@@ -145,6 +145,29 @@ class params_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_where(): void
+    {
+        errores::$error = false;
+        $ps = new params_sql();
+        $ps = new liberator($ps);
+
+
+        $sql_where_previo = '';
+        $resultado = $ps->where($sql_where_previo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' WHERE ',$resultado);
+
+        errores::$error = false;
+
+        $sql_where_previo = 'a';
+        $resultado = $ps->where($sql_where_previo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+        errores::$error = false;
+    }
+
 
 
 }

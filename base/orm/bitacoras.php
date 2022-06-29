@@ -3,6 +3,8 @@ namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
+use models\adm_bitacora;
+use models\adm_seccion;
 use models\bitacora;
 use models\seccion;
 use stdClass;
@@ -224,7 +226,7 @@ class bitacoras{
                 data:$modelo->registro_id);
         }
 
-        $bitacora_modelo = (new bitacora($modelo ->link));
+        $bitacora_modelo = (new adm_bitacora($modelo ->link));
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener bitacora',data:$bitacora_modelo);
         }
@@ -320,7 +322,7 @@ class bitacoras{
             return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase);
         }
 
-        $seccion_menu_modelo = (new seccion($modelo->link));
+        $seccion_menu_modelo = (new adm_seccion($modelo->link));
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar modelo',data:$seccion_menu_modelo);
         }

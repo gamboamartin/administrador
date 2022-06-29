@@ -11,7 +11,7 @@ class params_sql{
     }
 
     /**
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo a validar
      * @param string $sql_where_previo Sql previo
      * @return array|string
      */
@@ -91,11 +91,11 @@ class params_sql{
     }
 
     /**
-     * FULL
+     *
      * @param bool $aplica_seguridad
      * @param array $group_by
      * @param int $limit Numero de registros a mostrar
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo a validar
      * @param int $offset Numero de inicio de registros
      * @param array $order
      * @param string $sql_where_previo Sql previo
@@ -178,7 +178,7 @@ class params_sql{
 
     /**
      * @param bool $aplica_seguridad
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo a validar
      * @param string $sql_where_previo Sql previo
      * @return array|string
      */
@@ -196,6 +196,7 @@ class params_sql{
 
     /**
      * Asigna where a un sql
+     * @version 1.106.26
      * @param string $sql_where_previo Sql previo
      * @return string
      */
