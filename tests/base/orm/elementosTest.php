@@ -103,4 +103,17 @@ class elementosTest extends test {
         errores::$error = false;
     }
 
+    public function test_separador_columnas(): void
+    {
+        errores::$error = false;
+        $elementos = new elementos();
+        //$elementos = new liberator($elementos);
+
+        $campo = array();
+        $resultado = $elementos->separador_columnas($campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+    }
+
 }

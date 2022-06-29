@@ -126,6 +126,7 @@ class elementos{
 
     /**
      * Asigna el separador puesto entre columnas para se mostrado en select
+     * @version 1.110.27
      * @param array $campo Campo a validar elementos
      * @return string
      */
