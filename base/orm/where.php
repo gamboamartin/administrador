@@ -153,7 +153,7 @@ class where{
      * @param array $filtro_especial
      * @param array $filtro_rango
      * @param array $filtro_extra
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra
      * @param array $filtro_fecha
      * @return array|stdClass
@@ -742,7 +742,7 @@ class where{
      * @param array $filtro_especial
      * @param array $filtro_rango
      * @param array $filtro_extra
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra
      * @param array $filtro_fecha
      * @return array|stdClass
@@ -754,35 +754,30 @@ class where{
     {
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
         $sentencia = $this->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
             tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia);
         }
 
         $filtro_especial_sql = $this->filtro_especial_sql(filtro_especial: $filtro_especial);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql);
         }
         $filtro_rango_sql = $this->filtro_rango_sql(filtro_rango: $filtro_rango);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql);
         }
         $filtro_extra_sql = $this->filtro_extra_sql(filtro_extra: $filtro_extra);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtro extra',data:$filtro_extra_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtro extra',data:$filtro_extra_sql);
         }
 
         $not_in_sql = $this->genera_not_in_sql(not_in: $not_in);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql);
         }
 
         $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
@@ -796,7 +791,7 @@ class where{
             keys_data_filter:  $keys_data_filter,not_in_sql:  $not_in_sql, sentencia: $sentencia,
             sql_extra:  $sql_extra,filtro_fecha_sql:  $filtro_fecha_sql);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros);
         }
 
 
@@ -806,7 +801,7 @@ class where{
 
     /**
      * P INT P ORDER ERRORREV
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @return array|string
      */
     private function genera_not_in(array $not_in): array|string
@@ -814,27 +809,26 @@ class where{
         $keys = array('llave','values');
         $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $not_in);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
         }
 
         $llave = $not_in['llave'];
         $values = $not_in['values'];
 
         if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
         }
 
         $not_in_sql = $this->not_in_sql(llave:  $llave, values:$values);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql);
         }
         return $not_in_sql;
     }
 
     /**
      * P INT P ORDER ERRORREV
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @return array|string
      */
     private function genera_not_in_sql(array $not_in): array|string
@@ -844,11 +838,11 @@ class where{
             $keys = array('llave','values');
             $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $not_in);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar not_in',data: $valida, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
             }
             $not_in_sql = $this->genera_not_in(not_in: $not_in);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql);
             }
 
         }
@@ -1014,7 +1008,7 @@ class where{
 
     /**
      * FULL
-     * @param array $values
+     * @param array $values Valores a ajustar en sql in
      * @param string $llave
      * @return array|string
      */
@@ -1022,13 +1016,13 @@ class where{
     {
         $llave = trim($llave);
         if($llave === ''){
-            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave);
         }
 
         $not_in_sql = '';
         $values_sql = $this->values_sql_in(values:$values);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
         }
 
         if($values_sql!==''){
@@ -1268,8 +1262,8 @@ class where{
 
     /**
      * FULL
-     * @param string $value
-     * @param string $values_sql
+     * @param string $value Valor a reasignar coma
+     * @param string $values_sql Valores previos sql
      * @return array|stdClass
      */
     private function value_coma(string $value, string $values_sql): array|stdClass
@@ -1277,7 +1271,7 @@ class where{
         $values_sql = trim($values_sql);
         $value = trim($value);
         if($value === ''){
-            return $this->error->error(mensaje: 'Error value esta vacio',data: $value, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error value esta vacio',data: $value);
         }
 
         $coma = '';
@@ -1293,7 +1287,7 @@ class where{
 
     /**
      * FULL
-     * @param array $values
+     * @param array $values Valores a ajustar en sql in
      * @return string|array
      */
     private function values_sql_in(array $values): string|array
@@ -1302,8 +1296,7 @@ class where{
         foreach ($values as $value){
             $data = $this->value_coma(value:$value, values_sql: $values_sql);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error obtener datos de value',data: $data,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error obtener datos de value',data: $data);
             }
             $values_sql.="$data->coma$data->value";
         }

@@ -617,10 +617,10 @@ class modelo extends modelo_base {
      * @param array $filtro_fecha
      * @param array $filtro_rango
      *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
-     * @param array $group_by
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param int $limit numero de registros a mostrar, 0 = sin limite
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param int $offset numero de registros de comienzo de datos
      * @param array $order array('tabla.campo'=>'ASC');
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
@@ -809,9 +809,9 @@ class modelo extends modelo_base {
      * @param array $filtro_especial
      * @param array $filtro_extra
      * @param array $filtro_rango
-     * @param array $group_by
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param int $offset Numero de inicio de registros
      * @param array $order
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
@@ -1199,6 +1199,10 @@ class modelo extends modelo_base {
             columnas_en_bruto:  $columnas_en_bruto,extension_estructura:  $this->extension_estructura,
             group_by: $group_by, limit: $limit,modelo:  $this,offset:  $this->offset,order:  $this->order,
             renombres: $this->renombres, sql_where_previo: $sql_extra);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar datos', data: $base);
+        }
 
         $consulta = (new sql())->sql_select(consulta_base:$base->consulta_base,params_base:  $base->params,
             sql_extra: $sql_extra);

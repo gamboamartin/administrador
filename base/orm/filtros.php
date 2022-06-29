@@ -19,10 +19,10 @@ class filtros{
      * @param array $filtro_especial
      * @param array $filtro_extra
      * @param array $filtro_rango
-     * @param array $group_by
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
      * @param modelo $modelo modelo en ejecucion
-     * @param array $not_in
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param int $offset Numero de inicio de registros
      * @param array $order
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE

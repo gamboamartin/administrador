@@ -12,6 +12,7 @@ class params_sql{
 
     /**
      * Asigna un where con seguridad por datos a sql
+     * @version 1.109.27
      * @param modelo $modelo Modelo a validar
      * @param string $sql_where_previo Sql previo
      * @return array|string
@@ -94,7 +95,7 @@ class params_sql{
     /**
      *
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param array $group_by
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
      * @param modelo $modelo Modelo a validar
      * @param int $offset Numero de inicio de registros
