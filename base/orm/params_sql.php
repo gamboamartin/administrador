@@ -11,6 +11,7 @@ class params_sql{
     }
 
     /**
+     * Asigna un where con seguridad por datos a sql
      * @param modelo $modelo Modelo a validar
      * @param string $sql_where_previo Sql previo
      * @return array|string
@@ -92,7 +93,7 @@ class params_sql{
 
     /**
      *
-     * @param bool $aplica_seguridad
+     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $group_by
      * @param int $limit Numero de registros a mostrar
      * @param modelo $modelo Modelo a validar
@@ -177,7 +178,7 @@ class params_sql{
     }
 
     /**
-     * @param bool $aplica_seguridad
+     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param modelo $modelo Modelo a validar
      * @param string $sql_where_previo Sql previo
      * @return array|string

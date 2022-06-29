@@ -14,7 +14,7 @@ class filtros{
 
     /**
      * P INT P ORDER ERRROEV
-     * @param bool $aplica_seguridad
+     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro
      * @param array $filtro_especial
      * @param array $filtro_extra
