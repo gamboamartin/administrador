@@ -88,4 +88,19 @@ class elementosTest extends test {
         errores::$error = false;
     }
 
+    public function test_pattern(): void
+    {
+        errores::$error = false;
+        $elementos = new elementos();
+        //$elementos = new liberator($elementos);
+
+        $campo = array();
+
+        $resultado = $elementos->pattern($campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+        errores::$error = false;
+    }
+
 }

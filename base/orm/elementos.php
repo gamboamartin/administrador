@@ -109,6 +109,7 @@ class elementos{
 
     /**
      * Asigna el pattern para un input
+     * @version 1.108.26
      * @param array $campo Campo a validar elementos
      * @return string
      */
