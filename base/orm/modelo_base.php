@@ -90,18 +90,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function agrega_usuario_session(): array|string
     {
         if($this->usuario_id <=0){
-            return $this->error->error('Error usuario invalido',$this->usuario_id);
+            return $this->error->error(mensaje: 'Error usuario invalido',data: $this->usuario_id);
         }
 
         if($this->campos_sql === ''){
-            return $this->error->error('campos no puede venir vacio',$this->campos_sql);
+            return $this->error->error(mensaje: 'campos no puede venir vacio',data: $this->campos_sql);
         }
         $existe_user = $this->usuario_existente();
         if(errores::$error){
-            return $this->error->error('Error validar existencia de usuario',$existe_user);
+            return $this->error->error(mensaje: 'Error validar existencia de usuario',data: $existe_user);
         }
         if(!$existe_user){
-            return $this->error->error('Error no existe usuario',array($existe_user,$this->campos_sql, $this->usuario_id));
+            return $this->error->error(mensaje: 'Error no existe usuario',data: array($existe_user,$this->campos_sql, $this->usuario_id));
         }
 
         $this->campos_sql .= ',usuario_update_id=' . $this->usuario_id;
@@ -398,7 +398,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * P INT P ORDER
      * Devuelve una variable de tipo booleana que indica si el usuario existe o no
      *
-     * @param array $campos_encriptados
+     * @param array $campos_encriptados Campos a validar desencripctacion encriptacion
      * @return bool|array
      * @example
      *      $existe_user = $this->usuario_existente();
@@ -409,7 +409,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function usuario_existente(array $campos_encriptados = array()): bool|array
     {
         if($this->usuario_id <=0){
-            return $this->error->error('Error usuario invalido',$this->usuario_id);
+            return $this->error->error(mensaje: 'Error usuario invalido',data: $this->usuario_id);
         }
 
         $consulta = /** @lang MYSQL */
@@ -417,7 +417,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
 
         if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$r_usuario_existente);
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $r_usuario_existente);
         }
 
         $usuario_existente = $r_usuario_existente->registros[0];
