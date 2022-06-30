@@ -1,4 +1,9 @@
 <?php
+/**
+ * @author Martin Gamboa Vazquez
+ * Clase definida para activar elementos en la base de datos
+ * @version 1.110.27
+ */
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
@@ -6,20 +11,50 @@ use stdClass;
 
 class activaciones{
     private errores $error;
-    private validaciones $validacion;
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validaciones();
     }
 
     /**
      * Inicializa la transaccion de activacion, y valida que el modelo sea aplicable a dicha transaccion
+     * @version 1.110.27
      * @param modelo $modelo Modelo a normalizar, debe ser una estructura de la base de datos
      * @param bool $reactiva Si no es aplicable la reactivacion retornara error
      * @return array|stdClass obj->consulta, obj->transaccion y obj->name_model
+     * @example
+     *  $activaciones = new activaciones();
+     *  $modelo = new adm_accion();
+     *  $modelo->registro_id = 1;
+     *  $reactiva = true;
+     *  $init_activa = $activaciones->init_activa(modelo:$modelo, reactiva:$reactiva);
+     *  print_r($init_activa);
+     *      stdClass Object
+     *      (
+     *          [consulta] => UPDATE adm_accion_grupo SET status = 'activo' WHERE id = 1
+     *          [transaccion] => ACTIVA
+     *          [name_model] => adm_accion_grupo
+     *      )'
+     *
+     * @example Verifica que exista el registro y que el modelo permita la actualizacion de activacion
+     *  $activaciones = new activaciones();
+     *  $modelo = new adm_accion();
+     *  $modelo->registro_id = 1;
+     *  $reactiva = false;
+     *  $init_activa = $activaciones->init_activa(modelo:$modelo, reactiva:$reactiva);
+     *  print_r($init_activa);
+     *      stdClass Object
+     *      (
+     *          [consulta] => UPDATE adm_accion_grupo SET status = 'activo' WHERE id = 1
+     *          [transaccion] => ACTIVA
+     *          [name_model] => adm_accion_grupo
      */
     public function init_activa(modelo $modelo, bool $reactiva): array|stdClass
     {
+        if($modelo->registro_id <=0){
+            return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id);
+        }
+
         $name_model = $this->normaliza_name_model(modelo:$modelo);
         if (errores::$error) {
             return $this->error->error(mensaje:'Error al normalizar modelo '.$modelo->tabla,data:$name_model);

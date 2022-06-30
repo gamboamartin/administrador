@@ -1,5 +1,5 @@
 <?php
-namespace tests\base\controller;
+namespace tests\base;
 
 use base\controller\normalizacion;
 use base\orm\activaciones;
@@ -18,6 +18,21 @@ class activacionesTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_init_activa()
+    {
+        errores::$error = false;
+        $act = new activaciones();
+        //$act = new liberator($act);
+
+        $modelo = new adm_accion_grupo($this->link);
+        $modelo->registro_id = 1;
+        $reactiva = true;
+        $resultado = $act->init_activa($modelo, $reactiva);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
     /**

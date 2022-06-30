@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 
@@ -19,6 +20,11 @@ class params_sql{
      */
     private function asigna_seguridad_data(modelo $modelo, string $sql_where_previo): array|string
     {
+        $valida = $this->valida_seguridad(modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
+        }
+
         $where = $this->where(sql_where_previo: $sql_where_previo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar where', data: $where);
@@ -179,6 +185,8 @@ class params_sql{
     }
 
     /**
+     * Genera la seguridad de datos por usuario
+     * @version 1.110.27
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param modelo $modelo Modelo a validar
      * @param string $sql_where_previo Sql previo
@@ -188,12 +196,34 @@ class params_sql{
     {
         $seguridad = '';
         if($aplica_seguridad){
+
+            $valida = $this->valida_seguridad(modelo: $modelo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
+            }
+
             $seguridad = $this->asigna_seguridad_data(modelo:$modelo, sql_where_previo: $sql_where_previo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
             }
         }
         return $seguridad;
+    }
+
+    private function valida_seguridad(modelo $modelo): bool|array
+    {
+        $keys = array('usuario_permitido_id');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,
+            registro: $modelo->columnas_extra,valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
+        }
+        $keys = array('usuario_id');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $_SESSION);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
+        }
+        return true;
     }
 
     /**

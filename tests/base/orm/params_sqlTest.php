@@ -145,6 +145,46 @@ class params_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_seguridad(): void
+    {
+        errores::$error = false;
+        $ps = new params_sql();
+        //$ps = new liberator($ps);
+
+        $aplica_seguridad = false;
+        $modelo = new adm_accion($this->link);
+        $sql_where_previo = '';
+        $resultado = $ps->seguridad($aplica_seguridad, $modelo, $sql_where_previo);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty(trim($resultado));
+
+        errores::$error = false;
+
+        $aplica_seguridad = true;
+        $modelo = new adm_accion($this->link);
+        $modelo->columnas_extra['usuario_permitido_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $sql_where_previo = '';
+        $resultado = $ps->seguridad($aplica_seguridad, $modelo, $sql_where_previo);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('  WHERE  (1) = 1 ',$resultado);
+
+        errores::$error = false;
+
+        $aplica_seguridad = true;
+        $modelo = new adm_accion($this->link);
+        $modelo->columnas_extra['usuario_permitido_id'] = 1;
+        $_SESSION['usuario_id'] = 1;
+        $sql_where_previo = 'x';
+        $resultado = $ps->seguridad($aplica_seguridad, $modelo, $sql_where_previo);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('  (1) = 1 ',$resultado);
+        errores::$error = false;
+    }
+
     public function test_where(): void
     {
         errores::$error = false;
