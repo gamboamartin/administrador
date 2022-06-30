@@ -105,7 +105,7 @@ class params_sql{
      * @param int $limit Numero de registros a mostrar
      * @param modelo $modelo Modelo a validar
      * @param int $offset Numero de inicio de registros
-     * @param array $order
+     * @param array  $order con parametros para generar sentencia
      * @param string $sql_where_previo Sql previo
      * @return array|stdClass
      */

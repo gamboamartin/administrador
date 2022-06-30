@@ -149,7 +149,7 @@ class params_sqlTest extends test {
     {
         errores::$error = false;
         $ps = new params_sql();
-        //$ps = new liberator($ps);
+        $ps = new liberator($ps);
 
         $aplica_seguridad = false;
         $modelo = new adm_accion($this->link);

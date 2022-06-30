@@ -24,7 +24,7 @@ class filtros{
      * @param modelo $modelo modelo en ejecucion
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param int $offset Numero de inicio de registros
-     * @param array $order
+     * @param array  $order con parametros para generar sentencia
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro
      * @param array $filtro_fecha
