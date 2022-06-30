@@ -734,7 +734,13 @@ class columnas{
     private function columnas_tablas_select(bool $columnas_en_bruto, array $columnas_sql, modelo_base $modelo,
                                             array $tablas_select): array|string
     {
+        if($columnas_en_bruto){
+            $tablas_select = array();
+            $tablas_select[$modelo->tabla] = $modelo->tabla;
+        }
+
         $columnas = '';
+
         foreach ($tablas_select as $key=>$tabla_select){
 
             if(is_numeric($key)){

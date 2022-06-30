@@ -26,7 +26,7 @@ class filtros{
      * @param int $offset Numero de inicio de registros
      * @param array  $order con parametros para generar sentencia
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
-     * @param string $tipo_filtro
+     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha
      * @return array|stdClass
      */
