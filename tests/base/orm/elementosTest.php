@@ -116,4 +116,18 @@ class elementosTest extends test {
         $this->assertEquals('', $resultado);
     }
 
+    public function test_tabla_ext_renombrada(): void
+    {
+        errores::$error = false;
+        $elementos = new elementos();
+        //$elementos = new liberator($elementos);
+
+        $campo = array();
+
+        $resultado = $elementos->tabla_ext_renombrada($campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+    }
+
 }

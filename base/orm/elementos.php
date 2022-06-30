@@ -143,12 +143,14 @@ class elementos{
 
     /**
      * Asigna el valor d ela tabla si esta renombrada
+     * @version  1.113.28
      * @param array $campo Campo a validar elementos
      * @return string
      */
     public function tabla_ext_renombrada(array $campo): string
     {
-        if(!isset($campo['adm_elemento_lista_tabla_externa_renombrada']) ||(string)$campo['adm_elemento_lista_tabla_externa_renombrada']===''){
+        if(!isset($campo['adm_elemento_lista_tabla_externa_renombrada'])
+            ||(string)$campo['adm_elemento_lista_tabla_externa_renombrada']===''){
             $elemento_lista_tabla_externa_renombrada = '';
         }
         else{
