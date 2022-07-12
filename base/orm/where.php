@@ -269,36 +269,33 @@ class where{
         $filtro_extra_sql = '';
         foreach($filtro_extra as $data_filtro){
             if(!is_array($data_filtro)){
-                return $this->error->error(mensaje: 'Error $data_filtro debe ser un array',data: $filtro_extra,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $data_filtro debe ser un array',data: $filtro_extra);
             }
             $campo = key($data_filtro);
             $campo = trim($campo);
 
             if(!isset($data_filtro[$campo]['operador'])){
                 return $this->error->error(mensaje:'Error data_filtro['.$campo.'][operador] debe existir',
-                    data:$data_filtro, params: get_defined_vars());
+                    data:$data_filtro);
             }
 
             $operador = $data_filtro[$campo]['operador'];
             if($operador===''){
-                return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador);
             }
 
             if(!isset($data_filtro[$campo]['valor'])){
                 return $this->error->error(mensaje:'Error data_filtro['.$campo.'][valor] debe existir',
-                    data:$data_filtro, params: get_defined_vars());
+                    data:$data_filtro);
             }
             if(!isset($data_filtro[$campo]['comparacion'])){
                 return $this->error->error(mensaje:'Error data_filtro['.$campo.'][comparacion] debe existir',
-                    data:$data_filtro, params: get_defined_vars());
+                    data:$data_filtro);
             }
 
             $valor = $data_filtro[$campo]['valor'];
             if($valor===''){
-                return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor);
             }
             $comparacion = $data_filtro[$campo]['comparacion'];
             $condicion = $campo.$operador.$valor;
@@ -366,8 +363,9 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
+     * @version 1.130.30
      *
      * @param array $filtro_rango
      *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
