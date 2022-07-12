@@ -23,7 +23,6 @@ class updTest extends test {
     }
 
     /**
-     * @throws JsonException
      */
     public function test_asigna_datos_modifica(): void
     {

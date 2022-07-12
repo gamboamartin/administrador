@@ -620,11 +620,10 @@ class where{
         else{
             if(!isset($filtro_esp[$campo]['comparacion'])){
                 return $this->error->error(mensaje: 'Error $filtro_esp[$campo][\'comparacion\'] debe existir',
-                    data: $filtro_esp, params: get_defined_vars());
+                    data: $filtro_esp);
             }
             if(trim($data_sql) === ''){
-                return $this->error->error(mensaje:'Error $data_sql no puede venir vacio', data:$data_sql,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'Error $data_sql no puede venir vacio', data:$data_sql);
             }
 
             $filtro_especial_sql .= ' '.$filtro_esp[$campo]['comparacion'].' '.$data_sql;
@@ -946,10 +945,10 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * Genera la condicion sql de un filtro especial
      *
-     *
+     * @version 1.127.29
      *
      * @param string $campo campo de una tabla tabla.campo
      * @param array $filtro filtro a validar

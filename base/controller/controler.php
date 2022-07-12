@@ -211,7 +211,7 @@ class controler{
      *      //filtro[tabla.id] = $_GET['tabla_id']
      * @return array
      */
-    protected function asigna_filtro_get(array $keys): array
+    private function asigna_filtro_get(array $keys): array
     {
 
         $filtro = array();
@@ -344,6 +344,29 @@ class controler{
         }
 
         return $resultado->registros;
+    }
+
+    /**
+     * Generacion de metodo para ser utilizado en cualquier llamada get con filtros
+     * @param bool $header
+     * @param array $keys
+     * @param bool $ws
+     * @return array|stdClass
+     */
+    protected function get(bool $header, array $keys, bool $ws): array|stdClass
+    {
+        $filtro = $this->asigna_filtro_get($keys);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar filtros',data:  $filtro,header: $header,ws: $ws);
+
+        }
+
+        $salida = (new salida_data())->salida_get(controler: $this,filtro:  $filtro,header:  $header,ws:  $ws);
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al generar salida',data:  $salida,header: $header,ws: $ws);
+
+        }
+        return $salida;
     }
 
     /**
