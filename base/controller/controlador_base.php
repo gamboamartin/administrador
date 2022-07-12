@@ -69,8 +69,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $valida = (new configuraciones())->valida_confs(paths_conf:$paths_conf);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al validar configuraciones',data: $valida,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje: 'Error al validar configuraciones',data: $valida);
             print_r($error);
             die('Error');
         }
@@ -128,6 +127,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){
             if(!isset($_GET['seccion'])){
                 $_GET['seccion'] = 'adm_session';
+            }
+            if(!isset($_GET['accion'])){
+                $_GET['accion'] = 'login';
             }
             if($_GET['seccion'] !== 'adm_session' &&  $_GET['accion'] !== 'login'){
                 header('Location: index.php?seccion=adm_session&accion=login');

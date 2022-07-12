@@ -16,7 +16,6 @@ class conexion{
 
     /**
      * P ORDER P INT
-     * @throws JsonException
      */
     public function __construct(stdClass $paths_conf = new stdClass(), string $motor = 'MYSQL'){
         $error = new errores();

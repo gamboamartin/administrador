@@ -4,12 +4,12 @@ use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JsonException;
 use stdClass;
+use Throwable;
 
 class configuraciones extends validacion {
 
     /**
      * P ORDER P INT PROBADO ERRORREV
-     * @throws JsonException
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
@@ -30,7 +30,6 @@ class configuraciones extends validacion {
     }
     /**
      * Valida las configuraciones para ejecutar el sistema
-     * @throws JsonException
      */
     public function valida_confs(stdClass $paths_conf): bool|array
     {
@@ -50,24 +49,26 @@ class configuraciones extends validacion {
 
     /**
      * P ORDER P INT PROBADO ERROREV
-     * @throws JsonException
      */
     private function valida_conf_composer(string $tipo_conf): bool|array
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
-            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf);
         }
 
         if(!class_exists("config\\$tipo_conf")){
 
             $data_composer['autoload']['psr-4']['config\\'] = "config/";
-            $llave_composer = json_encode($data_composer, JSON_THROW_ON_ERROR);
+            try {
+                $llave_composer = json_encode($data_composer, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                return $this->error->error(mensaje: $mensaje,data: $e);
+            }
 
             $mensaje = "Agrega el registro $llave_composer en composer.json despues ejecuta composer update";
-            return $this->error->error(mensaje: $mensaje,data: '',
-                params: get_defined_vars());
+            return $this->error->error(mensaje: $mensaje,data: '');
         }
         return true;
     }
