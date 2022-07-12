@@ -139,13 +139,11 @@ class val_sql extends validaciones {
     {
         $key_r = $this->txt_valido(txt:$key);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error en key de tipo campo', data: $key,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error en key de tipo campo', data: $key);
         }
         $tipo_campo_r = $this->txt_valido(txt:$tipo_campo);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error en $tipo_campo de tipo campo',data: $tipo_campo,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error en $tipo_campo de tipo campo',data: $tipo_campo);
         }
         $data = new stdClass();
         $data->key = $key_r;
@@ -173,8 +171,7 @@ class val_sql extends validaciones {
         foreach($tipo_campos as $key =>$tipo_campo){
             $valida_campos = $this->verifica_tipo_dato(key: $key,registro: $registro,tipo_campo: $tipo_campo);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar campos', data: $valida_campos,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al validar campos', data: $valida_campos);
             }
         }
 
@@ -192,12 +189,10 @@ class val_sql extends validaciones {
         $txt = trim($txt);
 
         if($txt === ''){
-            return $this->error->error(mensaje: 'Error el $txt no puede venir vacio', data: $txt,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el $txt no puede venir vacio', data: $txt);
         }
         if(is_numeric($txt)){
-            return $this->error->error(mensaje: 'Error el $txt es numero debe se un string', data: $txt,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el $txt es numero debe se un string', data: $txt);
         }
         return $txt;
     }
@@ -357,21 +352,19 @@ class val_sql extends validaciones {
 
         $v_tipo_campos = $this->tipo_campos(registro:$registro, tipo_campos: $tipo_campos);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo de campo', data: $v_tipo_campos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo de campo', data: $v_tipo_campos);
         }
         $v_obligatorios = $this->obligatorios(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo de campo', data: $v_obligatorios,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo de campo', data: $v_obligatorios);
         }
         $v_ids = $this->ids(keys_ids: $keys_ids,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar id', data: $v_ids, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar id', data: $v_ids);
         }
         $v_checked = $this->checked(keys_checked: $keys_checked,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar checked', data: $v_checked, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar checked', data: $v_checked);
         }
 
 
@@ -408,13 +401,12 @@ class val_sql extends validaciones {
     {
         $data = $this->limpia_data_tipo_campo(key: $key, tipo_campo: $tipo_campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar dato',data:  $data, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar dato',data:  $data);
         }
 
         $valida_campos = $this->valida_pattern_campo(key: $key, registro:  $registro, tipo_campo: $tipo_campo);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar campos', data:$valida_campos,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al validar campos', data:$valida_campos);
         }
         return true;
     }
