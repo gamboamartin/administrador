@@ -146,7 +146,7 @@ class where{
 
     /**
      * P INT P ORDER ERRROREV
-     * @param array $columnas_extra
+     * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter
      * @param string $tipo_filtro
      * @param array $filtro
@@ -532,7 +532,7 @@ class where{
     /**
      * FULL
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
-     * @param array $columnas_extra
+     * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $filtro filtros para la maquetacion de filtros
      * @return array|string Sentencia del lado WHERE aplicado con %% para textos
      * @example
@@ -734,7 +734,7 @@ class where{
 
     /**
      * P INT P ORDER ERRROEV
-     * @param array $columnas_extra
+     * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter
      * @param string $tipo_filtro
      * @param array $filtro
@@ -853,6 +853,7 @@ class where{
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE o =
      * @param string $tipo_filtro numeros = textos LIKE
      * @param array $filtro parametros para generar sentencia
+     * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @return array|string con sentenccia en SQL
      * @throws errores $this->filtro[key] es un numero
      * @example
