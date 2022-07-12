@@ -13,7 +13,32 @@ class salida_data{
     }
 
     /**
+     * Genera la salida general de una funcion de tipo controller para ejecucion de cliente
+     * @param bool $header
+     * @param array|stdClass $result
+     * @param bool $ws
+     * @return array|stdClass|void
      */
+    public function salida(bool $header, array|stdClass $result, bool $ws){
+        if($header){
+            $retorno = $_SERVER['HTTP_REFERER'];
+            header('Location:'.$retorno);
+            exit;
+        }
+        if($ws){
+            header('Content-Type: application/json');
+            try {
+                echo json_encode($result, JSON_THROW_ON_ERROR);
+            }
+            catch (Throwable $e){
+                return $this->error->error(mensaje: 'Error al maquetar estados',data:  $e);
+            }
+            exit;
+        }
+        return $result;
+    }
+
+
     public function salida_ws(controler $controlador, string $include_action, seguridad $seguridad): bool|string
     {
         $out = true;

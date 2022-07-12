@@ -521,6 +521,10 @@ class init{
         return $data_i;
     }
 
+    /**
+     * Inicializa los elementos para salida de un controller
+     * @return stdClass
+     */
     private function init_params(): stdClass
     {
 
