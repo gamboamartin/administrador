@@ -39,13 +39,36 @@ class controllerTest extends test {
         $keys['campo'] = 'a';
         $resultado = $ctl->asigna_filtro_get($keys);
         $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
+        $this->assertTrue(errores::$error);
+
 
         errores::$error = false;
 
         $keys = array();
         $keys['pais'] = 'id';
+        $_GET['pais_id'] = 1;
+        $resultado = $ctl->asigna_filtro_get($keys);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+
+        errores::$error = false;
+
+
+
+        $keys = array();
+        $keys['pais'] = array();
+        $_GET['pais_id'] = 1;
+        $resultado = $ctl->asigna_filtro_get($keys);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+
+
+        $keys = array();
+        $keys['pais'] = array('id');
         $_GET['pais_id'] = 1;
         $resultado = $ctl->asigna_filtro_get($keys);
         $this->assertIsArray($resultado);

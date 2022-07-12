@@ -72,4 +72,19 @@ class errores_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_modal_btns(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $resultado = $html->modal_btns();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('<button type="button" class="close" data-dismiss="alert" aria-label="Close">',$resultado);
+        errores::$error = false;
+    }
+
 }

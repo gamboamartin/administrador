@@ -176,6 +176,7 @@ class errores_html extends base_html {
 
     /**
      * Genera los botones de un modal para alerts de errores
+     * @version 1.118.28
      * @return array|string
      */
     private function modal_btns(): array|string

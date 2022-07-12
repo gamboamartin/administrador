@@ -204,20 +204,31 @@ class controler{
     /**
      * @param array $keys Keys a verificar para asignacion de filtros via GET
      * @version 1.117.28
+     * @example
+     *      $keys['tabla'] = array('id','descripcion');
+     *      $filtro = $ctl->asigna_filtro_get(keys:$keys);
+     *      print_r($filtro);
+     *      //filtro[tabla.id] = $_GET['tabla_id']
      * @return array
      */
     protected function asigna_filtro_get(array $keys): array
     {
 
         $filtro = array();
-        foreach ($keys as $tabla=>$campo){
-            $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        foreach ($keys as $tabla=>$campos){
+            if(!is_array($campos)){
+                return $this->errores->error(mensaje: 'Error los campos deben ser un array', data: $campos);
             }
-            $filtro = $this->asigna_filtro(campo: $campo,filtro: $filtro,tabla: $tabla);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar filtro',data: $filtro);
+            foreach ($campos as $campo) {
+
+                $valida = $this->valida_data_filtro(campo: $campo, tabla: $tabla);
+                if (errores::$error) {
+                    return $this->errores->error(mensaje: 'Error al validar filtro', data: $valida);
+                }
+                $filtro = $this->asigna_filtro(campo: $campo, filtro: $filtro, tabla: $tabla);
+                if (errores::$error) {
+                    return $this->errores->error(mensaje: 'Error al generar filtro', data: $filtro);
+                }
             }
         }
         return $filtro;
