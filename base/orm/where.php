@@ -987,13 +987,13 @@ class where{
 
         $valida = (new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar filtro', data: $valida);
         }
 
         $keys = array('valor');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $filtro[$campo]);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar filtro',  data:$valida, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al validar filtro',  data:$valida);
         }
 
         $data_sql = $campo . $filtro[$campo]['operador'] . "'" . $filtro[$campo]['valor'] . "'";

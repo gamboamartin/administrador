@@ -499,7 +499,7 @@ class controler{
     }
 
     /**
-     *
+     * Genera salida para eventos controller
      * @param string $mensaje Mensaje a mostrar
      * @param errores|array|string|stdClass $data Complemento y/o detalle de error
      * @param bool $header si header retorna error en navegador y corta la operacion
@@ -507,7 +507,7 @@ class controler{
      * @param array $params
      * @return array
      */
-    protected function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
+    public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
     {
         $error = $this->errores->error(mensaje: $mensaje,data:  $data, params: $params);
         if($ws){

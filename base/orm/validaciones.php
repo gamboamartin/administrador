@@ -79,8 +79,8 @@ class validaciones extends validacion{
     }
 
     /**
-     * FULL
-     * @param string $campo
+     * Valida que los datos de un filtro especial sean correctos para la integracion de un WHERE
+     * @param string $campo Campo en ejecucion para integrarlo al filtro
      * @param array $filtro
      * @return bool|array
      */
