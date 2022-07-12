@@ -189,9 +189,9 @@ class where{
     }
 
     /**
-     * FULL
-     * Genera las condiciones sql de un filtro especial
      *
+     * Genera las condiciones sql de un filtro especial
+     * @version 1.130.30
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *
      * @example
@@ -235,7 +235,8 @@ class where{
                     data: $filtro_esp);
             }
 
-            $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,filtro_especial_sql: $filtro_especial_sql);
+            $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,
+                filtro_especial_sql: $filtro_especial_sql);
             if(errores::$error){
                 return $this->error->error(mensaje:"Error filtro", data: $filtro_especial_sql);
             }
@@ -570,9 +571,9 @@ class where{
     }
 
     /**
-     * FULL
-     * Genera la condicion sql de un filtro especial
      *
+     * Genera la condicion sql de un filtro especial
+     * @version 1.130.30
      *
      *
      * @param string $filtro_especial_sql //condicion en forma de sql
@@ -633,9 +634,9 @@ class where{
     }
 
     /**
-     * FULL
-     * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      *
+     * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
+     * @version 1.130.30
      * @param string $campo
      *                  Opcion 1.-Si valor_es_campo = false,
      *                      El valor definido debe ser un campo de la base de datos con la siguiente forma tabla.campo
@@ -664,7 +665,7 @@ class where{
      * @throws errores Si filtro[valor2] = vacio
      */
     PUBLIC function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
-                                              bool $valor_campo = false):array|string{ //DOC DEBUG
+                                              bool $valor_campo = false):array|string{
         $campo = trim($campo);
         if($campo === ''){
             return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
@@ -1024,9 +1025,9 @@ class where{
     }
 
     /**
-     * FULL
-     * Genera la condicion sql de un filtro especial
      *
+     * Genera la condicion sql de un filtro especial
+     * @version 1.130.30
      * @param string $filtro_especial_sql //condicion en forma de sql
      * @param array $filtro_esp //array con datos del filtro $filtro_esp[tabla.campo]= array('operador'=>'AND','valor'=>'x');
      *
@@ -1098,9 +1099,9 @@ class where{
     }
 
     /**
-     * FULL
-     * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      *
+     * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
+     * @version 1.130.30
      * @access public
      * @param string $filtro_rango_sql debe ser un sql con una condicion
      * @param string $condicion debe ser un sql con una condicion
