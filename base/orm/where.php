@@ -232,13 +232,12 @@ class where{
             if(!is_array($filtro_esp)){
 
                 return $this->error->error(mensaje: "Error filtro debe ser un array filtro_especial[] = array()",
-                    data: $filtro_esp, params: get_defined_vars());
+                    data: $filtro_esp);
             }
 
             $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,filtro_especial_sql: $filtro_especial_sql);
             if(errores::$error){
-                return $this->error->error(mensaje:"Error filtro", data: $filtro_especial_sql,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:"Error filtro", data: $filtro_especial_sql);
             }
         }
         return $filtro_especial_sql;
@@ -530,8 +529,9 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
+     * @version 1.123.29
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $filtro filtros para la maquetacion de filtros
      * @return array|string Sentencia del lado WHERE aplicado con %% para textos
@@ -849,16 +849,17 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE o =
      * @param string $tipo_filtro numeros = textos LIKE
      * @param array $filtro parametros para generar sentencia
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
-     * @return array|string con sentenccia en SQL
+     * @return array|string con sentencia en SQL
      * @throws errores $this->filtro[key] es un numero
      * @example
      *      $sentencia = $this->genera_sentencia_base($tipo_filtro);
      * @uses modelo
+     * @version 1.123.29
      */
     private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
@@ -1067,16 +1068,16 @@ class where{
 
         $valida =(new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro_esp);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error en filtro ", data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error en filtro ", data: $valida);
         }
         $data_sql = $this->maqueta_filtro_especial(campo: $campo,filtro: $filtro_esp);
         if(errores::$error){
-            return $this->error->error(mensaje:"Error filtro", data:$data_sql, params: get_defined_vars());
+            return $this->error->error(mensaje:"Error filtro", data:$data_sql);
         }
         $filtro_especial_sql_r = $this->genera_filtro_especial(campo:  $campo, data_sql: $data_sql,
             filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
         if(errores::$error){
-            return $this->error->error(mensaje:"Error filtro",data: $filtro_especial_sql_r, params: get_defined_vars());
+            return $this->error->error(mensaje:"Error filtro",data: $filtro_especial_sql_r);
         }
 
         return $filtro_especial_sql_r;

@@ -87,22 +87,19 @@ class validaciones extends validacion{
     public function valida_data_filtro_especial(string $campo, array $filtro): bool|array
     {
         if($campo === ''){
-            return $this->error->error(mensaje: "Error campo vacio", data: $campo, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error campo vacio", data: $campo);
         }
         if(!isset($filtro[$campo]['valor_es_campo']) && is_numeric($campo)){
-            return $this->error->error(mensaje:'Error el campo debe ser un string $filtro[campo]', data:$filtro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error el campo debe ser un string $filtro[campo]', data:$filtro);
         }
         if(!isset($filtro[$campo]['operador'])){
-            return $this->error->error(mensaje:'Error debe existir $filtro[campo][operador]', data:$filtro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error debe existir $filtro[campo][operador]', data:$filtro);
         }
         if(!isset($filtro[$campo]['valor'])){
             $filtro[$campo]['valor'] = '';
         }
         if(is_array($filtro[$campo]['valor'])){
-            return $this->error->error(mensaje:'Error $filtro['.$campo.'][\'valor\'] debe ser un dato', data:$filtro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $filtro['.$campo.'][\'valor\'] debe ser un dato', data:$filtro);
         }
         return true;
     }
