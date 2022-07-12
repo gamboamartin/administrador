@@ -66,15 +66,13 @@ class normalizacion{
     {
         $registro_r = $this->init_registro(controler: $controler,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar registro', data: $registro_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar registro', data: $registro_r);
         }
 
         $registro_ins = $this->procesa_registros_alta(controler: $controler, registro: $registro_r);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al procesar registros',data:  $registro_ins,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al procesar registros',data:  $registro_ins);
         }
         $controler->modelo->registro = $registro_ins;
 
@@ -503,7 +501,8 @@ class normalizacion{
     }
 
     /**
-     * FULL
+     * Genera un modelo en forma de namespace
+     * @version 1.115.28
      * @param string $seccion Seccion en ejecucion
      * @return string|array
      */

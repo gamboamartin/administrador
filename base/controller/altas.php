@@ -2,6 +2,7 @@
 namespace base\controller;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 use stdClass;
 
 class altas{
@@ -15,6 +16,7 @@ class altas{
      * @param array $registro Registro que se insertara
      * @param controler $controler Controlador de ejecucion
      * @return array|stdClass
+     * @throws JsonException
      */
     public function alta_base(array $registro, controler $controler): array|stdClass{
 

@@ -260,13 +260,12 @@ class val_sql extends validaciones {
             registro: $registro,tabla:  $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error el campo al validar campos obligatorios de registro '.$tabla,
-                data: $valida_campo_obligatorio, params: get_defined_vars());
+                data: $valida_campo_obligatorio);
         }
 
         $valida_estructura = (new val_sql())->valida_estructura_campos(registro: $registro, tipo_campos: $tipo_campos);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura);
         }
         return true;
     }
@@ -308,14 +307,13 @@ class val_sql extends validaciones {
     {
         $valida = (new validaciones())->valida_alta_bd(registro: $registro,tabla:  $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar alta ',data:  $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar alta ',data:  $valida);
         }
 
         $valida_estructura = $this->verifica_estructura(campos_obligatorios: $campos_obligatorios,
             registro: $registro,tabla: $tabla,tipo_campos: $tipo_campos);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura);
         }
 
         foreach($no_duplicados as $campo){
@@ -325,12 +323,10 @@ class val_sql extends validaciones {
 
             $existe = $modelo->existe(filtro:$filtro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe);
             }
             if($existe){
-                return $this->error->error(mensaje: 'Error ya existe un registro con el campo '.$campo, data: $existe,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error ya existe un registro con el campo '.$campo, data: $existe);
             }
         }
 

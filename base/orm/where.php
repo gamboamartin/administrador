@@ -164,26 +164,25 @@ class where{
     {
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
         $filtros = $this->genera_filtros_sql(columnas_extra: $columnas_extra, filtro:  $filtro,
             filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_rango:  $filtro_rango,
             keys_data_filter: $keys_data_filter, not_in: $not_in, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
             filtro_fecha: $filtro_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtros', data:$filtros, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtros', data:$filtros);
         }
 
 
         $where = $this->where(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar where',data:$where, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar where',data:$where);
         }
 
         $filtros = $this->filtros_full(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros);
         }
         $filtros->where = $where;
         return $filtros;
@@ -535,7 +534,7 @@ class where{
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
      * @param array $columnas_extra
      * @param array $filtro filtros para la maquetacion de filtros
-     * @return array|string
+     * @return array|string Sentencia del lado WHERE aplicado con %% para textos
      * @example
      *      $sentencia = $this->genera_and_textos($this->filtro);
      * @uses modelo_basico
@@ -863,20 +862,19 @@ class where{
     private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
         $sentencia = '';
         if($tipo_filtro === 'numeros') {
             $sentencia = $this->genera_and(columnas_extra: $columnas_extra, filtro: $filtro);
             if(errores::$error){
-                return $this->error->error(mensaje: "Error en and",data:$sentencia, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error en and",data:$sentencia);
             }
         }
         elseif ($tipo_filtro==='textos'){
             $sentencia = $this->genera_and_textos(columnas_extra: $columnas_extra,filtro: $filtro);
             if(errores::$error){
-                return $this->error->error(mensaje: "Error en texto",data:$sentencia, params: get_defined_vars());
+                return $this->error->error(mensaje: "Error en texto",data:$sentencia);
             }
         }
         return $sentencia;
