@@ -100,6 +100,7 @@ class params_sql{
 
     /**
      * Obtiene los parametros necesarios para la ejecucion de un SELECT
+     * @version 1.120.29
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar

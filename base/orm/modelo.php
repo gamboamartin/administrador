@@ -1264,8 +1264,9 @@ class modelo extends modelo_base {
     /**
      *
      * Devuelve un conjunto de registros ordenados con filtro
-     * @param array $filtros filtros para generar AND en el resultado
      * @param string $campo campo de orden
+     * @param bool $columnas_en_bruto
+     * @param array $filtros filtros para generar AND en el resultado
      * @param string $orden metodo ordenamiento ASC DESC
      * @return array|stdClass conjunto de registros
      * @example

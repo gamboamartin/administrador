@@ -89,7 +89,7 @@ class where{
     /**
      * Funcion para asignar el valor de una comparacion para filtro
      * @version 1.25.14
-     * @param array $columnas_extra
+     * @param array $columnas_extra Columnas en forma de Subquery para se ejecutado en un SELECT
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
      * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
@@ -482,7 +482,7 @@ class where{
      *
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql
      * @version 1.26.14
-     * @param array $columnas_extra
+     * @param array $columnas_extra Columnas en forma de Subquery para se ejecutado en un SELECT
      * @param array $filtro parametros para maquetar filtro[data] =  $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
      * @return array|string
