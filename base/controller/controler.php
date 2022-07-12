@@ -168,6 +168,75 @@ class controler{
         return $breadcrumbs;
     }
 
+    private function asigna_filtro(string $campo, array $filtro, string $tabla): array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+        $key_get = $this->key_get(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar key',data: $key_get);
+        }
+
+        $filtro = $this->asigna_filtro_existe(campo: $campo,filtro: $filtro,key_get: $key_get,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar filtro',data: $filtro);
+        }
+        return $filtro;
+    }
+
+    private function asigna_filtro_existe(string $campo, array $filtro, string $key_get, string $tabla): array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+        if(isset($_GET[$key_get])){
+            $filtro = $this->asigna_key_filter(campo: $campo,filtro: $filtro,key_get: $key_get,tabla: $tabla);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar filtro',data: $filtro);
+            }
+        }
+        return $filtro;
+    }
+
+    /**
+     * @param array $keys Keys a verificar para asignacion de filtros via GET
+     * @version 1.117.28
+     * @return array
+     */
+    protected function asigna_filtro_get(array $keys): array
+    {
+
+        $filtro = array();
+        foreach ($keys as $tabla=>$campo){
+            $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+            }
+            $filtro = $this->asigna_filtro(campo: $campo,filtro: $filtro,tabla: $tabla);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al generar filtro',data: $filtro);
+            }
+        }
+        return $filtro;
+    }
+
+    private function asigna_key_filter(string $campo, array $filtro, string $key_get, string $tabla): array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+        $key_filter = $this->key_filter(campo:$campo,tabla:  $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al generar filtro',data: $key_filter);
+        }
+        $filtro[$key_filter] = $_GET[$key_get];
+        return $filtro;
+    }
+
 
     /**
      * P INT P ORDER ERROREV
@@ -183,14 +252,13 @@ class controler{
                                       array $orders): array|stdClass{
         if($limit < 0){
             return $this->errores->error(
-                mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',data: $limit,
-                params: get_defined_vars());
+                mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',data: $limit);
         }
 
         $resultado = $this->modelo->filtro_and(columnas: $columnas, filtro: $filtro, filtro_especial: $filtro_especial,
             group_by: array(), limit: $limit, offset: $offset, order: $orders, tipo_filtro: 'textos');
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al filtrar',data: $resultado, params: get_defined_vars());
+            return $this->errores->error(mensaje: 'Error al filtrar',data: $resultado);
         }
 
         return $resultado;
@@ -311,6 +379,26 @@ class controler{
         return new $class($this->link);
     }
 
+    private function key_get(string $campo, string $tabla): string|array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+
+        return $tabla.'_'.$campo;
+    }
+
+    private function key_filter(string $campo, string $tabla): string|array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+        return $tabla.'.'.$campo;
+    }
+
+
     protected function header_out(mixed $result, bool $header, bool $ws): void
     {
         if($header){
@@ -349,8 +437,7 @@ class controler{
                 $data_btn = $this->genera_data_btn(data_para_boton: $data_para_boton,
                     filtro_boton_lista: $filtro_boton_lista['tabla']);
                 if(errores::$error){
-                    return  $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $data_btn,
-                        params: get_defined_vars());
+                    return  $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $data_btn);
                 }
                 $botones_filtro[$filtro_boton_lista['tabla']][] = $data_btn;
             }
@@ -445,7 +532,7 @@ class controler{
         }
 
         if($aplica_header){
-            $liga = './index.php?seccion='.$seccion_header.'&accion='.$accion_header.'&registro_id='.$_GET['registro_id'].'&session_id='.SESSION_ID;
+            $liga = './index.php?seccion='.$seccion_header.'&accion='.$accion_header.'&registro_id='.$_GET['registro_id'].'&session_id='.$this->session_id;
             header("Location: $liga");
             exit;
         }
@@ -600,6 +687,19 @@ class controler{
 
 
         return count($registros);
+    }
+
+    private function valida_data_filtro(string $campo, string $tabla): bool|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->errores->error(mensaje: 'Error $campo esta vacio',data: $campo);
+        }
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->errores->error(mensaje: 'Error $tabla esta vacio',data: $tabla);
+        }
+        return true;
     }
 
 
