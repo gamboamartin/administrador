@@ -245,8 +245,9 @@ class where{
     }
 
     /**
-     * FULL
+     *
      * Funcion que genera las condiciones de sql de un filtro extra
+     * @version 1.132.30
      *
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
@@ -1250,7 +1251,7 @@ class where{
     }
 
     /**
-     * FULL
+     * Genera comas o values para ser utilizados en un SELECT
      * @param string $value Valor a reasignar coma
      * @param string $values_sql Valores previos sql
      * @return array|stdClass
