@@ -625,7 +625,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $r_modelo['registros'];
     }
 
-    public function get_out(bool $header, bool $ws): array
+    public function get(bool $header, bool $ws): array
     {
         $valida = $this->validacion->valida_filtros();
         if(errores::$error){

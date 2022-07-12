@@ -353,7 +353,7 @@ class controler{
      * @param bool $ws
      * @return array|stdClass
      */
-    protected function get(bool $header, array $keys, bool $ws): array|stdClass
+    protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {
         $filtro = $this->asigna_filtro_get($keys);
         if(errores::$error){
