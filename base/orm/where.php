@@ -398,21 +398,17 @@ class where{
         $filtro_rango_sql = '';
         foreach ($filtro_rango as $campo=>$filtro){
             if(!is_array($filtro)){
-                return  $this->error->error(mensaje: 'Error $filtro debe ser un array',data: $filtro,
-                    params: get_defined_vars());
+                return  $this->error->error(mensaje: 'Error $filtro debe ser un array',data: $filtro);
             }
             if(!isset($filtro['valor1'])){
-                return  $this->error->error(mensaje:'Error $filtro[valor1] debe existir',data:$filtro,
-                    params: get_defined_vars());
+                return  $this->error->error(mensaje:'Error $filtro[valor1] debe existir',data:$filtro);
             }
             if(!isset($filtro['valor2'])){
-                return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro,
-                    params: get_defined_vars());
+                return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro);
             }
             $campo = trim($campo);
             if(is_numeric($campo)){
-                return  $this->error->error(mensaje:'Error campo debe ser un string',data:$campo,
-                    params: get_defined_vars());
+                return  $this->error->error(mensaje:'Error campo debe ser un string',data:$campo);
             }
             $valor_campo = false;
 
@@ -422,8 +418,7 @@ class where{
             $filtro_rango_sql = $this->genera_filtro_rango_base(campo: $campo,filtro: $filtro,
                 filtro_rango_sql: $filtro_rango_sql,valor_campo: $valor_campo);
             if(errores::$error){
-                return  $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql,
-                    params: get_defined_vars());
+                return  $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql);
             }
         }
 
@@ -673,14 +668,12 @@ class where{
                                               bool $valor_campo = false):array|string{ //DOC DEBUG
         $campo = trim($campo);
         if($campo === ''){
-            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
         }
         $keys = array('valor1','valor2');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $filtro);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar filtro',data: $valida,
-                params: get_defined_vars());
+            return  $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
 
         $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
@@ -690,8 +683,7 @@ class where{
         }
         $filtro_rango_sql_r = $this->setea_filtro_rango(condicion: $condicion, filtro_rango_sql: $filtro_rango_sql);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error $filtro_rango_sql al setear',data: $filtro_rango_sql_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $filtro_rango_sql al setear',data: $filtro_rango_sql_r);
         }
 
         return $filtro_rango_sql_r;
@@ -1131,9 +1123,8 @@ class where{
 
         if(trim($filtro_rango_sql) !=='' && trim($condicion) === ''){
 
-            return  $this->error->error(
-                'Error if filtro_rango tiene info $condicion no puede venir vacio',get_defined_vars(),
-                get_defined_vars());
+            return  $this->error->error(mensaje: 'Error if filtro_rango tiene info $condicion no puede venir vacio',
+                data: $filtro_rango_sql);
         }
 
         $and = '';

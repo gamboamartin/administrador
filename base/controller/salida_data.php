@@ -20,7 +20,7 @@ class salida_data{
      * @param bool $ws
      * @return array|stdClass|void
      */
-    public function salida(bool $header, array|stdClass $result, bool $ws){
+    private function salida(bool $header, array|stdClass $result, bool $ws){
         if($header){
             $retorno = $_SERVER['HTTP_REFERER'];
             header('Location:'.$retorno);

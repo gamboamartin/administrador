@@ -80,8 +80,9 @@ class validaciones extends validacion{
 
     /**
      * Valida que los datos de un filtro especial sean correctos para la integracion de un WHERE
+     *
      * @param string $campo Campo en ejecucion para integrarlo al filtro
-     * @param array $filtro
+     * @param array $filtro Filtro a ajustar de manera recursiva
      * @return bool|array
      */
     public function valida_data_filtro_especial(string $campo, array $filtro): bool|array
