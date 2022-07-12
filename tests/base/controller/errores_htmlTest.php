@@ -17,6 +17,26 @@ class errores_htmlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_contenido_modal(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $errores_previos = array();
+        $errores_previos[0]['mensaje'] = 'a';
+        $errores_previos[0]['line'] = 'a';
+        $errores_previos[0]['function'] = 'a';
+        $errores_previos[0]['class'] = 'a';
+        $resultado = $html->contenido_modal($errores_previos);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('<button type="button" class="btn btn-danger" data-toggle="collapse" data-target="#msj_error">Detalle</button>',$resultado);
+        errores::$error = false;
+    }
+
     public function test_detalle_btn(): void
     {
 

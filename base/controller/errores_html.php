@@ -13,6 +13,7 @@ class errores_html extends base_html {
 
     /**
      * @param array $errores_previos Conjunto de errores
+     * @version 1.118.29
      * @return array|string
      */
     private function contenido_modal(array $errores_previos): array|string

@@ -20,7 +20,7 @@ class controlador_adm_accion extends controlador_base{
     public function __construct(PDO $link){
         $modelo = new adm_accion($link);
         parent::__construct($link, $modelo);
-        $this->directiva = new html_accion();
+       // $this->directiva = new html_accion();
     }
 
 
@@ -125,7 +125,7 @@ class controlador_adm_accion extends controlador_base{
         $filtro['menu.descripcion'] = $_POST['busca_accion'];
 
 
-        $accion_modelo = new accion($this->link);
+        $accion_modelo = new adm_accion($this->link);
         $resultado = $accion_modelo->filtro_or(filtro: $filtro);
         if(errores::$error){
             $error = $this->errores->error(mensaje: "Error al obtener acciones", data: $resultado,

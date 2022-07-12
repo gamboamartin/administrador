@@ -56,7 +56,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param string $campo_busca
      * @param string $valor_busca_fault
      * @param stdClass $paths_conf
-     * @throws JsonException
      */
     public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
                                 string   $campo_busca = 'registro_id', string $valor_busca_fault = '',
