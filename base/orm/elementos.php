@@ -75,6 +75,7 @@ class elementos{
 
     /**
      * Integra el id de tipo css para un input
+     * @version 1.132.30
      * @param array $campo Campo a validar elementos
      * @return string
      */

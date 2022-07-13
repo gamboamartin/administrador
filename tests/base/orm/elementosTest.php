@@ -74,6 +74,20 @@ class elementosTest extends test {
 
     }
 
+    public function test_elemento_lista_css_id(): void
+    {
+        errores::$error = false;
+        $elementos = new elementos();
+        //$elementos = new liberator($elementos);
+
+        $campo = array();
+        $resultado = $elementos->elemento_lista_css_id($campo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+        errores::$error = false;
+    }
+
     public function test_llaves_valores(): void
     {
         errores::$error = false;

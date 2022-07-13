@@ -108,7 +108,7 @@ class inicializacion{
     /**
      * P INT P ORDER
      * @param array $campo Campo a validar elementos
-     * @param array $bools
+     * @param array $bools conjunto de campos de tipo bool en bd activo o inactivo
      * @param stdClass $datos
      * @return array
      */
@@ -286,7 +286,7 @@ class inicializacion{
 
     /**
      * PROBADA P ORDER P INT
-     * @param array $bools
+     * @param array $bools conjunto de campos de tipo bool en bd activo o inactivo
      * @return array
      */
     private function init_bools(array $bools): array
@@ -321,7 +321,7 @@ class inicializacion{
     /**
      * P INT P ORDER
      * @param array $campo Campo a validar elementos
-     * @param array $bools
+     * @param array $bools conjunto de campos de tipo bool en bd activo o inactivo
      * @param stdClass $datos
      * @return array|stdClass
      */
