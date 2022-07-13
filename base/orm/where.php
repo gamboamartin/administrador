@@ -155,7 +155,7 @@ class where{
      * @param array $filtro_extra
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|stdClass
      */
     public function data_filtros_full(array $columnas_extra, array $filtro, array $filtro_especial, array $filtro_extra,
@@ -314,7 +314,7 @@ class where{
 
     /**
      * P ORDER P INT ERROREV
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
     private function filtro_fecha(array $filtro_fecha):array|string{
@@ -322,8 +322,7 @@ class where{
 
         $filtro_fecha_sql = $this->filtro_fecha_base(filtro_fecha: $filtro_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener sql',data: $filtro_fecha_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al obtener sql',data: $filtro_fecha_sql);
         }
 
         if($filtro_fecha_sql !==''){
@@ -335,7 +334,7 @@ class where{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
     private function filtro_fecha_base(array $filtro_fecha): array|string
@@ -734,7 +733,7 @@ class where{
      * @param array $filtro_extra
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|stdClass
      */
     private function genera_filtros_sql(array $columnas_extra, array $filtro, array $filtro_especial,
@@ -790,7 +789,8 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera un not in para sql
+     * @version 1.135.31
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @return array|string
      */
@@ -1188,7 +1188,7 @@ class where{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param array $fil_fecha
+     * @param array $fil_fecha Filtro fecha a validar
      * @return bool|array
      */
     private function valida_filtro_fecha(array $fil_fecha): bool|array

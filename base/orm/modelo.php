@@ -614,7 +614,7 @@ class modelo extends modelo_base {
      * @param array $filtro_especial
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
      * @param array $filtro_extra
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @param array $filtro_rango
      *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
@@ -816,7 +816,7 @@ class modelo extends modelo_base {
      * @param array  $order con parametros para generar sentencia
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,

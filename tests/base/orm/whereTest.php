@@ -377,6 +377,23 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_not_in(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $not_in = array();
+        $not_in['llave'] = 'a';
+        $not_in['values'] = array('z','f');
+        $resultado = $wh->genera_not_in($not_in);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( "a NOT IN (z ,f)", $resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_sentencia_base(){
         errores::$error = false;
         $wh = new where();
@@ -392,6 +409,7 @@ class whereTest extends test {
         $this->assertEquals( "", $resultado);
 
     }
+
     public function test_maqueta_filtro_especial(): void
     {
         errores::$error = false;

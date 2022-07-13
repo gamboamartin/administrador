@@ -27,7 +27,7 @@ class filtros{
      * @param array  $order con parametros para generar sentencia
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
-     * @param array $filtro_fecha
+     * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|stdClass
      */
     public function complemento_sql(bool $aplica_seguridad, array $filtro, array $filtro_especial,
