@@ -123,7 +123,7 @@ class where{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param array $fil_fecha
+     * @param array $fil_fecha Filtro a generar
      * @return stdClass|array
      */
     private function data_filtro_fecha(array $fil_fecha): stdClass|array
@@ -131,7 +131,7 @@ class where{
 
         $valida = $this->valida_data_filtro_fecha(fil_fecha: $fil_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida);
         }
 
         $campo_1 = $fil_fecha['campo_1'];
@@ -882,22 +882,22 @@ class where{
     {
         $valida = $this->valida_data_filtro_fecha(fil_fecha: $fil_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida);
         }
 
         $data = $this->data_filtro_fecha(fil_fecha: $fil_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar datos',data:$data, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar datos',data:$data);
         }
 
         $and = $this->and_filtro_fecha(filtro_fecha_sql: $filtro_fecha_sql);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener and',data:$and, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al obtener and',data:$and);
         }
 
         $sql = $this->sql_fecha(and:$and,data:  $data);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener sql',data:$sql, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al obtener sql',data:$sql);
         }
         return $sql;
     }
@@ -1167,8 +1167,8 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param array $fil_fecha
+     * Valida los datos de una fecha
+     * @param array $fil_fecha Filtro a validar
      * @return bool|array
      */
     private function valida_data_filtro_fecha(array $fil_fecha): bool|array
@@ -1176,11 +1176,11 @@ class where{
         $keys = array('campo_1','campo_2','fecha');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
         $valida = $this->validacion->valida_fecha(fecha: $fil_fecha['fecha']);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar fecha',data:$valida, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al validar fecha',data:$valida);
         }
         return true;
     }
