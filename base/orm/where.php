@@ -342,18 +342,17 @@ class where{
         $filtro_fecha_sql = '';
         foreach ($filtro_fecha as $fil_fecha){
             if(!is_array($fil_fecha)){
-                return $this->error->error(mensaje: 'Error $fil_fecha debe ser un array',data: $fil_fecha,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error $fil_fecha debe ser un array',data: $fil_fecha);
             }
 
             $valida = $this->valida_filtro_fecha(fil_fecha: $fil_fecha);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
             }
 
             $sql = $this->genera_sql_filtro_fecha(fil_fecha: $fil_fecha, filtro_fecha_sql: $filtro_fecha_sql);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener sql',data: $sql, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al obtener sql',data: $sql);
             }
 
             $filtro_fecha_sql.= $sql;
@@ -771,8 +770,7 @@ class where{
 
         $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql);
         }
 
         $filtros = $this->genera_filtros_iniciales(filtro_especial_sql:  $filtro_especial_sql,
@@ -1188,7 +1186,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
+     * Valida los datos de un filtro de tipo fecha
      * @param array $fil_fecha Filtro fecha a validar
      * @return bool|array
      */
@@ -1198,13 +1196,13 @@ class where{
         $keys = array('campo_1','campo_2','fecha');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
 
         $keys = array('fecha');
         $valida = $this->validacion->fechas_in_array(data:  $fil_fecha, keys: $keys);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
         return true;
     }
