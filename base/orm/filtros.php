@@ -70,7 +70,7 @@ class filtros{
     /**
      * P ORDER P INT ERRORREV
      * @param string $consulta
-     * @param stdClass $complemento
+     * @param stdClass $complemento Complemento de filtros a integrar en un select
      * @return string|array
      */
     public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array

@@ -926,9 +926,9 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERRORREV
-     * @param stdClass $filtros
-     * @param array $keys_data_filter
+     * Limpia los elementos para usar en un filtro
+     * @param stdClass $filtros Filtros a limpiar o inicializar
+     * @param array $keys_data_filter kes de los filtros
      * @return stdClass
      */
     public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass
@@ -1333,7 +1333,7 @@ class where{
 
         $filtros = $this->limpia_filtros(filtros: $filtros,keys_data_filter:  $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros);
         }
         $where='';
         foreach($keys_data_filter as $key){
