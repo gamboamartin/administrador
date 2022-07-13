@@ -111,9 +111,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
 
     /**
-     * TEST
-     * @param int $usuario_id
-     * @param PDO $link
+     * Obtiene un usuario por id
+     * @version 1.138.31
+     * @param int $usuario_id Usuario a obtener
+     * @param PDO $link Conexion a base de datos
      * @return array
      */
     public static function usuario(int $usuario_id, PDO $link):array{
