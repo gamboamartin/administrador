@@ -55,10 +55,11 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     /**
      * Genera un filtro en forma de array para integrarlo a la seguridad de datos
+     * @version 1.141.31
      * @param string $tabla
      * @return array
      */
-    public function filtro_seguridad(string $tabla):array{ //FIN
+    public function filtro_seguridad(string $tabla):array{
         $keys = array('usuario_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
         if(errores::$error){

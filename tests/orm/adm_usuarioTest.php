@@ -15,6 +15,21 @@ class adm_usuarioTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_filtro_seguridad(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $resultado = $modelo->filtro_seguridad('');
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_usuario(): void
     {
 
