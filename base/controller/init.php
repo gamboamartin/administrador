@@ -523,6 +523,7 @@ class init{
 
     /**
      * Inicializa los elementos para salida de un controller
+     * @version 1.133.31
      * @return stdClass
      */
     private function init_params(): stdClass

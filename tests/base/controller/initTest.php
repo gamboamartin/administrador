@@ -96,6 +96,22 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_params(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $resultado = $init->init_params();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado->ws);
+        $this->assertTrue($resultado->header);
+        $this->assertNotTrue($resultado->view);
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */

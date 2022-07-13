@@ -79,7 +79,7 @@ class salida_data{
 
         try {
             if ($params->ws && ($seguridad->accion === 'denegado')) {
-                $out = json_encode(array('mensaje' => $_GET['mensaje'], 'error' => True), JSON_THROW_ON_ERROR);
+                $out = json_encode(array('mensaje' => 'Denegado', 'error' => True), JSON_THROW_ON_ERROR);
             }
             if ($params->ws) {
                 $out = json_encode($data, JSON_THROW_ON_ERROR);
