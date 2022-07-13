@@ -998,9 +998,10 @@ class where{
     }
 
     /**
-     * FULL
+     * Genera los elementos not in de un sql
+     * @version 1.134.31
      * @param array $values Valores a ajustar en sql in
-     * @param string $llave
+     * @param string $llave campo a aplicar not in
      * @return array|string
      */
     private function not_in_sql(string $llave, array $values): array|string
@@ -1252,6 +1253,7 @@ class where{
 
     /**
      * Genera comas o values para ser utilizados en un SELECT
+     * @version 1.134.31
      * @param string $value Valor a reasignar coma
      * @param string $values_sql Valores previos sql
      * @return array|stdClass
@@ -1276,7 +1278,8 @@ class where{
     }
 
     /**
-     * FULL
+     * Obtiene los valores de un sql para generar un where
+     * @version 1.134.31
      * @param array $values Valores a ajustar en sql in
      * @return string|array
      */
