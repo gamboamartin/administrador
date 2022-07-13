@@ -1187,6 +1187,7 @@ class where{
 
     /**
      * Valida los datos de un filtro de tipo fecha
+     * @version 1.143.31
      * @param array $fil_fecha Filtro fecha a validar
      * @return bool|array
      */

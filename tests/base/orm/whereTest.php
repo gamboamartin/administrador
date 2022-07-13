@@ -551,6 +551,26 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_filtro_fecha(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $fil_fecha = array();
+        $fil_fecha['campo_1'] = 'a';
+        $fil_fecha['campo_2'] = array('z','f');
+        $fil_fecha['fecha'] = '2020-01-01';
+        $resultado = $wh->valida_filtro_fecha($fil_fecha);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_value(){
         errores::$error = false;
         $wh = new where();
