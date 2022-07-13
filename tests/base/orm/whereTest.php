@@ -394,6 +394,24 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_not_in_sql(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $not_in = array();
+        $not_in['llave'] = 'a';
+        $not_in['values'] = array('z','f','d');
+        $resultado = $wh->genera_not_in_sql($not_in);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "a NOT IN (z ,f ,d)", $resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_sentencia_base(){
         errores::$error = false;
         $wh = new where();

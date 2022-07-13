@@ -817,7 +817,8 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera el SQL a aplicar en un where en forma de NOT IN
+     * @version 1.137.31
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @return array|string
      */
