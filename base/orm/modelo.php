@@ -291,7 +291,8 @@ class modelo extends modelo_base {
     }
 
     /**
-     * FULL
+     * Genera los datos de una sentencia para WHERE EN SQL
+     * @version 1.147.31
      * @param string $where palabra WHERE si vacio lo genera
      * @param string $sentencia Sentencias previamenete cargadas
      * @param string $campo Campo a cargar filtro de or en SQL
