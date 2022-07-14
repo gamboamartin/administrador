@@ -1147,19 +1147,17 @@ class where{
         $keys = array('fecha','campo_1','campo_2');
         foreach($keys as $key){
             if(!isset($data->$key)){
-                return $this->error->error(mensaje: 'error no existe $data->'.$key, data: $data,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'error no existe $data->'.$key, data: $data);
             }
             if(trim($data->$key) === ''){
-                return $this->error->error(mensaje:'error esta vacio $data->'.$key, data:$data,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje:'error esta vacio $data->'.$key, data:$data);
             }
         }
         $keys = array('fecha');
         foreach($keys as $key){
             $valida = $this->validacion->valida_fecha(fecha: $data->$key);
             if(errores::$error){
-                return $this->error->error(mensaje:'error al validar '.$key,data: $valida, params: get_defined_vars());
+                return $this->error->error(mensaje:'error al validar '.$key,data: $valida);
             }
         }
 
@@ -1168,6 +1166,7 @@ class where{
 
     /**
      * Valida los datos de una fecha
+     * @version 1.146.31
      * @param array $fil_fecha Filtro a validar
      * @return bool|array
      */
