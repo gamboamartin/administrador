@@ -285,7 +285,8 @@ class inicializacion{
     }
 
     /**
-     * PROBADA P ORDER P INT
+     * Inicializa valores booleanos
+     * @version 1.148.31
      * @param array $bools conjunto de campos de tipo bool en bd activo o inactivo
      * @return array
      */
@@ -350,8 +351,9 @@ class inicializacion{
     }
 
     /**
-     * PROBADA P ORDER P INT
-     * @param stdClass $datos
+     * Inicializa datos para campos
+     * @version 1.148.31
+     * @param stdClass $datos Datos a verificar
      * @return stdClass
      */
     private function init_datos(stdClass $datos): stdClass
