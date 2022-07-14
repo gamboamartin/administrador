@@ -101,7 +101,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error validar existencia de usuario',data: $existe_user);
         }
         if(!$existe_user){
-            return $this->error->error(mensaje: 'Error no existe usuario',data: array($existe_user,$this->campos_sql, $this->usuario_id));
+            return $this->error->error(mensaje: 'Error no existe usuario',
+                data: array($existe_user,$this->campos_sql, $this->usuario_id));
         }
 
         $this->campos_sql .= ',usuario_update_id=' . $this->usuario_id;
@@ -395,9 +396,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
-     * Devuelve una variable de tipo booleana que indica si el usuario existe o no
      *
+     * Devuelve una variable de tipo booleana que indica si el usuario existe o no
+     * @version 1.145.31
      * @param array $campos_encriptados Campos a validar desencripctacion encriptacion
      * @return bool|array
      * @example
@@ -409,7 +410,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function usuario_existente(array $campos_encriptados = array()): bool|array
     {
         if($this->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido',data: $this->usuario_id);
+            return $this->error->error(mensaje: 'Error usuario invalido o no cargado deberia exitir 
+            $modelo->usuario_id mayor  a 0',data: $this->usuario_id);
         }
 
         $consulta = /** @lang MYSQL */

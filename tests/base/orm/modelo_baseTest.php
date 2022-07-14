@@ -594,6 +594,20 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_usuario_existente(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $mb->usuario_id = 100;
+        $resultado = $mb->usuario_existente();
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
 
