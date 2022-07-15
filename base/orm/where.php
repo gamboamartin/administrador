@@ -1392,6 +1392,8 @@ class where{
 
     /**
      * P ORDER P INT ERROREV
+     * CONVIERTE EN MAYUSCULAS EL ELEMENTO WHERE EN SQL
+     * @version 1.
      * @param stdClass $complemento
      * @return array|stdClass
      */

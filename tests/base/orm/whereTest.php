@@ -807,7 +807,25 @@ class whereTest extends test {
 
     }
 
+    public function test_where_mayus(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
 
+        $complemento = new stdClass();
+        $resultado = $wh->where_mayus(complemento: $complemento);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->isEmpty($resultado);
+        $this->assertObjectHasAttribute("where", $resultado , "No existe la key where");
+
+        $complemento = new stdClass();
+        $complemento->where = 'a';
+        $resultado = $wh->where_mayus(complemento: $complemento);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error where mal aplicado', $resultado['mensaje']);
+    }
 
 
 }
