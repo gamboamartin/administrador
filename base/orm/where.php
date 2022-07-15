@@ -122,7 +122,8 @@ class where{
 
 
     /**
-     * P ORDER P INT ERRORREV
+     * Genera los datos de una fecha en forma de objeto
+     * @version 1.149.31
      * @param array $fil_fecha Filtro a generar
      * @return stdClass|array
      */

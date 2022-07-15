@@ -138,6 +138,21 @@ class whereTest extends test {
 
     }
 
+    public function test_data_filtro_fecha(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $fil_fecha = array('campo_1'=>'a','campo_2'=>2, 'fecha'=>'2020-01-01');
+        $resultado = $wh->data_filtro_fecha($fil_fecha);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->campo_1);
+        $this->assertEquals(2, $resultado->campo_2);
+        $this->assertEquals('2020-01-01', $resultado->fecha);
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_sql(){
         errores::$error = false;
         $wh = new where();
