@@ -926,14 +926,18 @@ class where{
     }
 
     /**
-     * Limpia los elementos para usar en un filtro
+     * Limpia los elementos para usar en un filtro para WHERE en SQL
      * @param stdClass $filtros Filtros a limpiar o inicializar
      * @param array $keys_data_filter kes de los filtros
-     * @return stdClass
+     * @return stdClass|array
      */
-    public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass
+    public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
         foreach($keys_data_filter as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error el key esta vacio', data: $keys_data_filter);
+            }
             if(!isset($filtros->$key)){
                 $filtros->$key = '';
             }

@@ -467,6 +467,56 @@ class whereTest extends test {
 
     }
 
+    public function test_limpia_filtros(){
+        errores::$error = false;
+        $wh = new where();
+        //$wh = new liberator($wh);
+
+        $filtros = new stdClass();
+        $keys_data_filter = array();
+        $resultado = $wh->limpia_filtros($filtros, $keys_data_filter);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->isEmpty($resultado);
+
+        errores::$error = false;
+
+        $filtros = new stdClass();
+        $keys_data_filter = array();
+        $keys_data_filter[] = '';
+        $resultado = $wh->limpia_filtros($filtros, $keys_data_filter);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase( "Error el key esta vacio", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $filtros = new stdClass();
+        $keys_data_filter = array();
+        $keys_data_filter['z'] = 'd';
+        $resultado = $wh->limpia_filtros($filtros, $keys_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( '', $resultado->d);
+        errores::$error = false;
+
+
+        $filtros = new stdClass();
+        $filtros->d = ' x ';
+        $keys_data_filter = array();
+        $keys_data_filter['z'] = 'd';
+        $resultado = $wh->limpia_filtros($filtros, $keys_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( 'x', $resultado->d);
+        print_r($resultado);
+        errores::$error = false;
+
+
+
+    }
+
     public function test_maqueta_filtro_especial(): void
     {
         errores::$error = false;
