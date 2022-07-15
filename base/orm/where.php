@@ -35,7 +35,7 @@ class where{
 
     /**
      * P INT P ORDER ERROREV
-     * @param string $sentencia
+     * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql
      * @param string $filtro_rango_sql
      * @param string $filtro_extra_sql
@@ -690,7 +690,7 @@ class where{
 
     /**
      * P INT P ORDER ERROREV
-     * @param string $sentencia
+     * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql
      * @param string $filtro_rango_sql
      * @param string $filtro_extra_sql
