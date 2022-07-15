@@ -1139,9 +1139,10 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param string $and
-     * @param stdClass $data
+     * Genera el sql de una fecha
+     * @version 1.151.31
+     * @param string $and AND O ''
+     * @param stdClass $data Datos de fecha
      * @return string|array
      */
     private function sql_fecha(string $and, stdClass $data): string|array

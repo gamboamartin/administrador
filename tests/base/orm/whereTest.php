@@ -5,6 +5,7 @@ use base\orm\where;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 
 class whereTest extends test {
@@ -586,6 +587,24 @@ class whereTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a AND z', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_sql_fecha(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $and = '';
+        $data = new stdClass();
+        $data->fecha = '2020-01-01';
+        $data->campo_1 = 'a';
+        $data->campo_2 = 'a';
+        $resultado = $wh->sql_fecha($and, $data);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("('2020-01-01' >= a AND '2020-01-01' <= a)",$resultado);
         errores::$error = false;
     }
 
