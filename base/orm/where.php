@@ -19,8 +19,9 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param string $filtro_fecha_sql
+     * Asigna and  A FILTRO
+     * @version 1.150.31
+     * @param string $filtro_fecha_sql Filtro en forma de sql
      * @return string
      */
     private function and_filtro_fecha(string $filtro_fecha_sql): string
