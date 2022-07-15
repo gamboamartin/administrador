@@ -927,8 +927,9 @@ class where{
 
     /**
      * Limpia los elementos para usar en un filtro para WHERE en SQL
+     * @version 1.52.31
      * @param stdClass $filtros Filtros a limpiar o inicializar
-     * @param array $keys_data_filter kes de los filtros
+     * @param array $keys_data_filter keys de los filtros
      * @return stdClass|array
      */
     public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
@@ -1404,8 +1405,7 @@ class where{
             $complemento->where = strtoupper($complemento->where);
         }
         if($complemento->where!=='' && $complemento->where !=='WHERE'){
-            return $this->error->error(mensaje: 'Error where mal aplicado',data: $complemento->where,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error where mal aplicado',data: $complemento->where);
         }
         return $complemento;
     }
