@@ -875,7 +875,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
+     * Genera un filtro de fecha para sql
      * @param array $fil_fecha
      * @param string $filtro_fecha_sql
      * @return array|string
