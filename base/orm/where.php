@@ -876,8 +876,8 @@ class where{
 
     /**
      * Genera un filtro de fecha para sql
-     * @param array $fil_fecha
-     * @param string $filtro_fecha_sql
+     * @param array $fil_fecha Filtro a validar
+     * @param string $filtro_fecha_sql Filtro a generar
      * @return array|string
      */
     private function genera_sql_filtro_fecha(array $fil_fecha, string $filtro_fecha_sql): array|string
