@@ -15,6 +15,22 @@ class estructurasTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_data_modelo(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $modelos = array();
+        $name_db = 'a';
+        $row = array();
+        $row['Tables_in_a'] = 'a';
+        $resultado = $st->asigna_data_modelo($modelos, $name_db, $row);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_asigna_datos_estructura(): void
     {
         errores::$error = false;

@@ -64,6 +64,7 @@ class estructuras{
 
     /**
      * Asigna el nombre de una tabla a un array
+     * @version 1.165.33
      * @param array $modelos Modelos obtenidos de una base de datos
      * @param string $name_db Nombre de la base de datos
      * @param array $row Registro de show tables
@@ -71,10 +72,23 @@ class estructuras{
      */
     private function asigna_data_modelo(array $modelos, string $name_db, array $row): array
     {
+        $name_db = trim($name_db);
+        if($name_db === ''){
+            return $this->error->error(mensaje: 'Error name db esta vacio', data: $name_db);
+        }
+
         $key = $this->key_table(name_db: $name_db);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar key', data: $key);
         }
+
+        if(!isset($row[$key])){
+            return $this->error->error(mensaje: 'Error no existe $row[$key] ', data: $key);
+        }
+        if(trim($row[$key]) === ''){
+            return $this->error->error(mensaje: 'Error esta vacio $row[$key] ', data: $key);
+        }
+
         $data = $row[$key];
         $modelos[] = $data;
         return $modelos;
@@ -348,7 +362,7 @@ class estructuras{
 
     /**
      * @param string $name_db Nombre de la base de datos
-     * @param array $rows
+     * @param array $rows Conjunto de tablas de show tables
      * @return array
      */
     private function maqueta_modelos(string $name_db, array $rows): array
