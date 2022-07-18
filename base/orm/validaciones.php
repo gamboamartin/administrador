@@ -9,7 +9,7 @@ class validaciones extends validacion{
 
     public function existe_tabla(PDO $link, string $tabla): bool|array
     {
-        $tablas = (new estructuras(link: $link))->get_tables_sql();
+        $tablas = (new estructuras(link: $link))->modelos();
         if(errores::$error){
             return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
         }

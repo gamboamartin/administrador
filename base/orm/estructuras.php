@@ -229,7 +229,7 @@ class estructuras{
     }
 
 
-    public function get_tables_sql(): array
+    private function get_tables_sql(): array
     {
         $sql = (new sql())->show_tables();
         if(errores::$error){
@@ -297,7 +297,7 @@ class estructuras{
      * Funcion que obtiene todas las tablas de una base de datos del sistema en ejecucion
      * @return array|stdClass
      */
-    private function modelos(): array|stdClass
+    public function modelos(): array|stdClass
     {
 
         $rows = $this->get_tables_sql();
