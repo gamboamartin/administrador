@@ -20,7 +20,7 @@ class estructurasTest extends test {
         errores::$error = false;
         $st = new estructuras($this->link);
         //$st = new liberator($st);
-        $resultado = $st->asigna_datos_estructura();
+        $resultado = $st->asigna_datos_estructura('administrador');
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
@@ -31,7 +31,7 @@ class estructurasTest extends test {
         errores::$error = false;
 
 
-        $resultado = $st->asigna_datos_estructura();
+        $resultado = $st->asigna_datos_estructura('administrador');
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         $this->assertTrue($resultado->adm_accion_grupo->tiene_foraneas);
@@ -58,7 +58,7 @@ class estructurasTest extends test {
         errores::$error = false;
         $st = new estructuras($this->link);
         $st = new liberator($st);
-        $resultado = $st->modelos();
+        $resultado = $st->modelos('administrador');
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);

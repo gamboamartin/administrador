@@ -35,9 +35,9 @@ class estructuras{
     }
 
 
-    public function asigna_datos_estructura(): array|stdClass
+    public function asigna_datos_estructura(string $name_db): array|stdClass
     {
-        $modelos = $this->modelos();
+        $modelos = $this->modelos(name_db: $name_db);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener modelos', data: $modelos);
         }
@@ -59,9 +59,9 @@ class estructuras{
     }
 
 
-    private function asigna_data_modelo(array $modelos, array $row): array
+    private function asigna_data_modelo(array $modelos, string $name_db, array $row): array
     {
-        $key = $this->key_table();
+        $key = $this->key_table(name_db: $name_db);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar key', data: $key);
         }
@@ -299,9 +299,10 @@ class estructuras{
 
     /**
      * Funcion que obtiene todas las tablas de una base de datos del sistema en ejecucion
+     * @param string $name_db
      * @return array|stdClass
      */
-    public function modelos(): array|stdClass
+    public function modelos(string $name_db): array|stdClass
     {
 
         $rows = $this->get_tables_sql();
@@ -309,7 +310,7 @@ class estructuras{
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $rows);
         }
 
-        $modelos = $this->maqueta_modelos(rows: $rows);
+        $modelos = $this->maqueta_modelos(name_db: $name_db, rows: $rows);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar modelos', data: $modelos);
         }
@@ -318,17 +319,22 @@ class estructuras{
 
     }
 
-    private function key_table(): string
+    /**
+     *
+     * @param string $name_db Nombre de la base de datso en ejecucion
+     * @return string
+     */
+    private function key_table(string $name_db): string
     {
         $pref = 'Tables_in_';
-        return $pref.(new generales())->sistema;
+        return $pref.$name_db;
     }
 
-    private function maqueta_modelos(array $rows): array
+    private function maqueta_modelos(string $name_db, array $rows): array
     {
         $modelos = array();
         foreach ($rows as $row){
-            $modelos = $this->asigna_data_modelo(modelos:$modelos,row: $row);
+            $modelos = $this->asigna_data_modelo(modelos:$modelos, name_db: $name_db,row: $row);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar modelo', data: $modelos);
             }
