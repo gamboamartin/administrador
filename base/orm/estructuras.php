@@ -35,6 +35,10 @@ class estructuras{
     }
 
 
+    /**
+     * @param string $name_db Nombre de la base de datos
+     * @return array|stdClass
+     */
     public function asigna_datos_estructura(string $name_db): array|stdClass
     {
         $modelos = $this->modelos(name_db: $name_db);
@@ -58,7 +62,13 @@ class estructuras{
         return $estructura_bd;
     }
 
-
+    /**
+     * Asigna el nombre de una tabla a un array
+     * @param array $modelos Modelos obtenidos de una base de datos
+     * @param string $name_db Nombre de la base de datos
+     * @param array $row Registro de show tables
+     * @return array
+     */
     private function asigna_data_modelo(array $modelos, string $name_db, array $row): array
     {
         $key = $this->key_table(name_db: $name_db);
@@ -299,7 +309,7 @@ class estructuras{
 
     /**
      * Funcion que obtiene todas las tablas de una base de datos del sistema en ejecucion
-     * @param string $name_db
+     * @param string $name_db Nombre de la base de datos
      * @return array|stdClass
      */
     public function modelos(string $name_db): array|stdClass
@@ -322,9 +332,10 @@ class estructuras{
     /**
      *
      * @param string $name_db Nombre de la base de datos en ejecucion
-     * @return string
+     * @version 1.163.33
+     * @return string|array
      */
-    PUBLIC function key_table(string $name_db): string|array
+    private function key_table(string $name_db): string|array
     {
         $name_db = trim($name_db);
         if($name_db === ''){
@@ -335,6 +346,11 @@ class estructuras{
         return $pref.$name_db;
     }
 
+    /**
+     * @param string $name_db Nombre de la base de datos
+     * @param array $rows
+     * @return array
+     */
     private function maqueta_modelos(string $name_db, array $rows): array
     {
         $modelos = array();

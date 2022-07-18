@@ -7,6 +7,12 @@ use PDO;
 
 class validaciones extends validacion{
 
+    /**
+     * @param PDO $link
+     * @param string $name_bd Nombre de la base de datos
+     * @param string $tabla
+     * @return bool|array
+     */
     public function existe_tabla(PDO $link, string$name_bd, string $tabla): bool|array
     {
         $tablas = (new estructuras(link: $link))->modelos(name_db: $name_bd);
