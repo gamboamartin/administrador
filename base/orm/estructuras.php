@@ -321,11 +321,16 @@ class estructuras{
 
     /**
      *
-     * @param string $name_db Nombre de la base de datso en ejecucion
+     * @param string $name_db Nombre de la base de datos en ejecucion
      * @return string
      */
-    private function key_table(string $name_db): string
+    PUBLIC function key_table(string $name_db): string|array
     {
+        $name_db = trim($name_db);
+        if($name_db === ''){
+            return $this->error->error(mensaje: 'Error name db esta vacio', data: $name_db);
+        }
+
         $pref = 'Tables_in_';
         return $pref.$name_db;
     }

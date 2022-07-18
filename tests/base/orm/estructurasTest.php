@@ -54,6 +54,17 @@ class estructurasTest extends test {
         errores::$error = false;
     }
 
+    public function test_key_table(){
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $resultado = $st->key_table('a');
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('Tables_in_a',$resultado);
+        errores::$error = false;
+    }
+
     public function test_modelos(){
         errores::$error = false;
         $st = new estructuras($this->link);
