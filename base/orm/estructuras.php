@@ -228,7 +228,7 @@ class estructuras{
         return $estructura_bd;
     }
 
-    private function get_tables_sql(): array
+    public function get_tables_sql(): array
     {
         $sql = (new sql())->show_tables();
         if(errores::$error){

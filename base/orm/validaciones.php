@@ -2,9 +2,28 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use stdClass;
+use PDO;
+
 
 class validaciones extends validacion{
+
+    public function existe_tabla(PDO $link, string $tabla): bool|array
+    {
+        $tablas = (new estructuras(link: $link))->get_tables_sql();
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
+        }
+
+        $existe = false;
+        foreach ($tablas as $tabla_existente){
+            if($tabla_existente === $tabla){
+                $existe = true;
+                break;
+            }
+        }
+        return $existe;
+
+    }
 
     /**
      * P INT P ORDER PROBADO ERRORREV
@@ -15,14 +34,12 @@ class validaciones extends validacion{
     public function valida_alta_bd(array $registro, string $tabla): bool|array
     {
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error registro no puede venir vacio', data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error registro no puede venir vacio', data: $registro);
         }
 
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error $tabla esta vacia'.$tabla, data: $tabla,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $tabla esta vacia'.$tabla, data: $tabla);
         }
 
         return true;
