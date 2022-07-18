@@ -228,7 +228,11 @@ class estructuras{
         return $estructura_bd;
     }
 
-
+    /**
+     * Obtiene las tablas de una base de datos completa
+     * @version 1.162.31
+     * @return array
+     */
     private function get_tables_sql(): array
     {
         $sql = (new sql())->show_tables();

@@ -42,6 +42,18 @@ class estructurasTest extends test {
 
     }
 
+    public function test_get_tables_sql(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $resultado = $st->get_tables_sql();
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_modelos(){
         errores::$error = false;
         $st = new estructuras($this->link);
