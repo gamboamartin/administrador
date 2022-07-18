@@ -21,6 +21,32 @@ class conexionTest extends test {
     /**
      * @throws JsonException
      */
+    public function test_asigna_set_names(): void
+    {
+        errores::$error = false;
+
+        $paths = new stdClass();
+
+
+        $paths->generales = '/var/www/html/administrador/config/generales.php';
+        $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
+
+        $cnx = new conexion($paths);
+        $cnx = new liberator($cnx);
+
+        $set_name = 'utf8';
+        $resultado = $cnx->asigna_set_names(conexion::$link, $set_name);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+
+    }
+
+    /**
+     * @throws JsonException
+     */
     public function test_conecta(): void
     {
         errores::$error = false;

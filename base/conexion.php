@@ -41,13 +41,23 @@ class conexion{
 
     /**
      * Asigna la codificacion de caracteres para MYSQL
+     * @version 1.158.32
      * @param PDO $link Conexion a base de datos
      * @param string $set_name Codificacion de caracteres
-     * @return PDO
+     * @return PDO|array
      */
-    private function asigna_set_names(PDO $link, string $set_name): PDO
+    private function asigna_set_names(PDO $link, string $set_name): PDO|array
     {
-        $link->query("SET NAMES '$set_name'");
+        $set_name = trim($set_name);
+        if($set_name === ''){
+            return $this->error->error(mensaje: 'Error $set_name no puede venir vacio',data:$link);
+        }
+        try {
+            $link->query("SET NAMES '$set_name'");
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al ejecutar SQL',data:$e);
+        }
         return $link;
     }
 
@@ -94,12 +104,12 @@ class conexion{
 
     /**
      * Conecta con la base de datos seleccionada
-     * @version 1.13.8
-     * @param database $conf_database Configuraciones para conectividad
+     * @param database|stdClass $conf_database Configuraciones para conectividad
      * @param string $motor Motor puede ser MYSQL o MSSQL=>PARA SQL SERVER
      * @return PDO|array|false
+     * @version 1.13.8
      */
-    private function conecta(database $conf_database, string $motor): PDO|array|false
+    private function conecta(database|stdClass $conf_database, string $motor): PDO|array|false
     {
         $link = false;
         $keys = array('db_host','db_name','db_user','db_password');
@@ -129,10 +139,8 @@ class conexion{
         return $link;
     }
 
-    private function genera_link(string $motor): PDO|array
+    private function conexion(stdClass|database $conf_database, string $motor): PDO|array
     {
-        $conf_database = new database();
-
         $link = $this->conecta(conf_database: $conf_database, motor: $motor);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al conectar",data:$link);
@@ -154,6 +162,30 @@ class conexion{
         $link = $this->usa_base_datos(link: $link, db_name: $conf_database->db_name);
         if(errores::$error){
             return $this->error->error(mensaje: "Error usar base de datos", data:$link);
+        }
+
+        return $link;
+    }
+
+    private function genera_link(string $motor): PDO|array
+    {
+        $conf_database = new database();
+
+        $link = $this->conexion(conf_database: $conf_database,motor:  $motor);
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al conectar",data:$link);
+        }
+
+
+        return $link;
+    }
+
+    public function genera_link_custom(stdClass $conf_database, string $motor): PDO|array
+    {
+
+        $link = $this->conexion(conf_database: $conf_database,motor:  $motor);
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al conectar",data:$link);
         }
 
         return $link;
