@@ -228,6 +228,7 @@ class estructuras{
         return $estructura_bd;
     }
 
+
     public function get_tables_sql(): array
     {
         $sql = (new sql())->show_tables();

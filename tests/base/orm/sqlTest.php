@@ -40,6 +40,19 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_show_tables(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $tabla = '';
+        $resultado = $sql->show_tables($tabla);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SHOW TABLES',$resultado);
+    }
+
     public function test_update(): void
     {
         errores::$error = false;

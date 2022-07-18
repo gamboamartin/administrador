@@ -25,8 +25,11 @@ class sql{
         return "DESCRIBE $tabla";
     }
 
-
-
+    /**
+     * Genera el sql para show tables
+     * @version 1.160.31
+     * @return string
+     */
     public function show_tables(): string
     {
         return "SHOW TABLES";
