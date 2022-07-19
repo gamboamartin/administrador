@@ -85,7 +85,7 @@ class estructurasTest extends test {
     {
         errores::$error = false;
         $st = new estructuras($this->link);
-        //$st = new liberator($st);
+        $st = new liberator($st);
 
         $name_db = 'a';
         $rows = array();
