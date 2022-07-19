@@ -362,11 +362,12 @@ class estructuras{
 
     /**
      * Funcion que retorna todas las tablas de una base de datos
+     * @version 1.167.33
      * @param string $name_db Nombre de la base de datos
      * @param array $rows Conjunto de tablas de show tables
      * @return array
      */
-    private function maqueta_modelos(string $name_db, array $rows): array
+    PUBLIC function maqueta_modelos(string $name_db, array $rows): array
     {
         $modelos = array();
         foreach ($rows as $row){
