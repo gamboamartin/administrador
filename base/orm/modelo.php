@@ -548,6 +548,16 @@ class modelo extends modelo_base {
 
     }
 
+    public function existe_by_id(int $registro_id): bool|array
+    {
+        $filtro[$this->tabla.'.id'] = $registro_id;
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener pais remoto', data: $existe);
+        }
+        return $existe;
+    }
+
     /**
      * PHPUNIT
      * Funcion para validar si existe un valor de un key de un array dentro de otro array
