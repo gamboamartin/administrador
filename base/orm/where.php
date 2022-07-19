@@ -336,6 +336,7 @@ class where{
 
     /**
      * P ORDER P INT ERRORREV
+     * Obtiene los filtros en forma sql de una fecha
      * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
@@ -876,6 +877,7 @@ class where{
 
     /**
      * Genera un filtro de fecha para sql
+     * @version 1.170.33
      * @param array $fil_fecha Filtro a validar
      * @param string $filtro_fecha_sql Filtro a generar
      * @return array|string
