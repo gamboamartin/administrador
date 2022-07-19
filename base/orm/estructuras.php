@@ -361,6 +361,7 @@ class estructuras{
     }
 
     /**
+     * Funcion que retorna todas las tablas de una base de datos
      * @param string $name_db Nombre de la base de datos
      * @param array $rows Conjunto de tablas de show tables
      * @return array
