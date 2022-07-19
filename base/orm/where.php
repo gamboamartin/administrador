@@ -335,8 +335,9 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
+     *
      * Obtiene los filtros en forma sql de una fecha
+     * @version 1.171.33
      * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
