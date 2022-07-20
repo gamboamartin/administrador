@@ -528,7 +528,7 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals( 'x', $resultado->d);
-        print_r($resultado);
+
         errores::$error = false;
 
 

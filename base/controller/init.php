@@ -451,7 +451,7 @@ class init{
     /**
      * P INT P ORDER
      * Retorna del nombre de cun controlador para su creacion posterior
-     * @param string $seccion
+     * @param string $seccion Seccion en ejecucion
      * @return string|array
      */
     private function name_controler(string $seccion): string|array
@@ -460,6 +460,9 @@ class init{
         $namespace = '';
         if($sistema === 'administrador'){
             $namespace = 'gamboamartin\\';
+        }
+        if($sistema === 'organigrama'){
+            $namespace = 'gamboamartin\\organigrama';
         }
 
         $name_ctl = 'controlador_'.$seccion;
