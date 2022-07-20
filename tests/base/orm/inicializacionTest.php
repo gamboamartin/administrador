@@ -381,6 +381,22 @@ class inicializacionTest extends test {
 
     }
 
+    public function test_init_data(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+
+        $bools = array();
+        $campo = array();
+        $datos = new stdClass();
+
+        $resultado = $inicializacion->init_data($bools, $campo, $datos);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_init_datos(): void
     {
         errores::$error = false;

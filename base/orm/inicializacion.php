@@ -320,13 +320,14 @@ class inicializacion{
     }
 
     /**
-     * P INT P ORDER
+     *
      * @param array $campo Campo a validar elementos
+     * @version 1.172.33
      * @param array $bools conjunto de campos de tipo bool en bd activo o inactivo
-     * @param stdClass $datos
+     * @param stdClass $datos Datos a verificar
      * @return array|stdClass
      */
-    private function init_data( array $bools, array $campo, stdClass $datos): array|stdClass
+    PUBLIC function init_data( array $bools, array $campo, stdClass $datos): array|stdClass
     {
         $campo = $this->init_campo(campo: $campo);
         if(errores::$error){
