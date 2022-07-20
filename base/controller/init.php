@@ -39,8 +39,8 @@ class init{
 
     /**
      * P INT P ORDER
-     * @param PDO $link
-     * @param string $seccion
+     * @param PDO $link Conexion a base de datos
+     * @param string $seccion Seccion en ejecucion
      * @return controler|array
      */
     public function controller(PDO $link, string $seccion):controler|array{
@@ -469,9 +469,7 @@ class init{
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
-        if($sistema === 'tg_empresa'){
-            $namespace = 'gamboamartin\\organigrama\\';
-        }
+
 
         $name_ctl = 'controlador_'.$seccion;
         $name_ctl = str_replace($namespace.'controllers\\','',$name_ctl);
