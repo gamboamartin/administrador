@@ -1187,7 +1187,7 @@ class modelo extends modelo_base {
      * registros
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param bool $columnas_en_bruto
-     * @param array $group_by
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit
      * @param bool $return_objects
      * @param string $sql_extra

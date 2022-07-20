@@ -42,6 +42,21 @@ class sql{
         return $consulta;
     }
 
+    /**
+     * Funcion que inicializa los elementos de un SQL para sus where
+     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
+     * @param array $columnas
+     * @param bool $columnas_en_bruto
+     * @param array $extension_estructura
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
+     * @param int $limit
+     * @param modelo $modelo
+     * @param int $offset
+     * @param array $order
+     * @param array $renombres
+     * @param string $sql_where_previo
+     * @return array|stdClass
+     */
     public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
                                     array $extension_estructura, array $group_by, int $limit, modelo $modelo,
                                     int $offset, array $order, array $renombres,
