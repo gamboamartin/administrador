@@ -455,7 +455,7 @@ class init{
      * @param string $seccion Seccion en ejecucion
      * @return string|array
      */
-    PUBLIC function name_controler(string $seccion): string|array
+    private function name_controler(string $seccion): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -467,6 +467,9 @@ class init{
             $namespace = 'gamboamartin\\';
         }
         if($sistema === 'organigrama'){
+            $namespace = 'gamboamartin\\organigrama\\';
+        }
+        if($sistema === 'tg_empresa'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
 
