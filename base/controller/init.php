@@ -449,20 +449,25 @@ class init{
     }
 
     /**
-     * P INT P ORDER
+     *
      * Retorna del nombre de cun controlador para su creacion posterior
+     * @version 1.176.33
      * @param string $seccion Seccion en ejecucion
      * @return string|array
      */
-    private function name_controler(string $seccion): string|array
+    PUBLIC function name_controler(string $seccion): string|array
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia ',data: $seccion);
+        }
         $sistema = (new generales())->sistema;
         $namespace = '';
         if($sistema === 'administrador'){
             $namespace = 'gamboamartin\\';
         }
         if($sistema === 'organigrama'){
-            $namespace = 'gamboamartin\\organigrama';
+            $namespace = 'gamboamartin\\organigrama\\';
         }
 
         $name_ctl = 'controlador_'.$seccion;

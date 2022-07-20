@@ -112,6 +112,21 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_name_controler(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $seccion = 'adm_seccion';
+        $resultado = $init->name_controler($seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('gamboamartin\controllers\controlador_adm_seccion',$resultado);
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */
