@@ -273,9 +273,9 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER
-     * Funcion para inicializar estructura para vistas
      *
+     * Funcion para inicializar estructura para vistas
+     * @version 1.187.34
      * @param string $tabla  tabla para la inicializacion de la estructura
      * @param array $campo  datos del campo a inicializar
      * @param string $vista  vista donde de aplica la estructura
@@ -310,6 +310,7 @@ class sql_bass{
         if(errores::$error){
             return $this->error->error(mensaje: "Error al validar campo", data: $valida);
         }
+
 
         $campo_envio = (new inicializacion())->maqueta_campo_envio(bools:  $bools, campo: $campo,
             representacion: $representacion, valor_extra: $valor_extra, vista: $vista);

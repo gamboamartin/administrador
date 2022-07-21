@@ -157,6 +157,45 @@ class sql_bassTest extends test {
         errores::$error = false;
     }
 
+    public function test_inicializa_estructura(): void
+    {
+        errores::$error = false;
+
+        $sql = new sql_bass($this->link);
+        $sql = new liberator($sql);
+
+
+        $campo = array();
+        $bools = array();
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $campo['adm_elemento_lista_ln'] = 'a';
+        $campo['adm_elemento_lista_con_label'] = 'a';
+        $campo['adm_elemento_lista_select_vacio_alta'] = 'a';
+        $campo['adm_elemento_lista_cols'] = 'a';
+        $campo['adm_elemento_lista_tipo'] = 'a';
+        $campo['adm_elemento_lista_tabla_externa'] = 'a';
+        $campo['adm_elemento_lista_etiqueta'] = 'a';
+        $campo['adm_elemento_lista_descripcion'] = 'a';
+        $campo['adm_elemento_lista_id'] = 'a';
+
+
+
+        $estructura_bd = array();
+        $representacion = '';
+        $tabla = '';
+        $valor_extra = array();
+        $vista = '';
+
+        $bools['con_label'] = 'a';
+        $bools['required'] = 'a';
+        $bools['ln'] = 'a';
+        $bools['select_vacio_alta'] = 'a';
+        $resultado = $sql->inicializa_estructura($bools, $campo, $estructura_bd, $representacion, $tabla, $valor_extra, $vista);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_true_false(): void
     {
         errores::$error = false;
