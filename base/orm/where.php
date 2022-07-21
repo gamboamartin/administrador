@@ -157,7 +157,7 @@ class where{
      * @param array $filtro_extra
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
-     * @param array $filtro_fecha Filtros de fecha para sql
+     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|stdClass
      */
     public function data_filtros_full(array $columnas_extra, array $filtro, array $filtro_especial, array $filtro_extra,
@@ -316,7 +316,8 @@ class where{
 
     /**
      * Genera el SQL de filtro fecha
-     * @param array $filtro_fecha Filtros de fecha para sql
+     * @version 1.180.34
+     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|string
      */
     private function filtro_fecha(array $filtro_fecha):array|string{
@@ -736,7 +737,7 @@ class where{
      * @param array $filtro_extra
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
-     * @param array $filtro_fecha Filtros de fecha para sql
+     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|stdClass
      */
     private function genera_filtros_sql(array $columnas_extra, array $filtro, array $filtro_especial,

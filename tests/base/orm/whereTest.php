@@ -263,6 +263,23 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_filtro_fecha(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $filtro_fecha = array();
+        $filtro_fecha[0]['campo_1'] = 'a';
+        $filtro_fecha[0]['campo_2'] = 'a';
+        $filtro_fecha[0]['fecha'] = '2020-01-01';
+        $resultado = $wh->filtro_fecha($filtro_fecha);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("(('2020-01-01' >= a AND '2020-01-01' <= a))", $resultado);
+        errores::$error = false;
+    }
+
     public function test_filtro_fecha_base(): void
     {
         errores::$error = false;
