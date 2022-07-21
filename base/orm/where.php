@@ -38,7 +38,7 @@ class where{
      * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql Filtro en forma de rango en SQL
-     * @param string $filtro_extra_sql
+     * @param string $filtro_extra_sql Filtro enviado desde el origen
      * @param string $not_in_sql
      * @param string $sql_extra
      * @param string $filtro_fecha_sql
@@ -154,7 +154,18 @@ class where{
      * @param array $filtro
      * @param array $filtro_especial
      * @param array $filtro_rango
-     * @param array $filtro_extra
+     * @param array $filtro_extra arreglo que contiene las condiciones
+     * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
+     * @example
+     *      $filtro_extra[0][tabla.campo]['operador'] = '<';
+     *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
+     *
+     *      $filtro_extra[0][tabla2.campo]['operador'] = '>';
+     *      $filtro_extra[0][tabla2.campo]['valor'] = 'x';
+     *      $filtro_extra[0][tabla2.campo]['comparacion'] = 'OR';
+     *
+     *      $resultado = filtro_extra_sql($filtro_extra);
+     *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
@@ -696,7 +707,7 @@ class where{
      * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql Filtro en forma de rango en SQL
-     * @param string $filtro_extra_sql
+     * @param string $filtro_extra_sql Filtro enviado desde el origen
      * @param string $not_in_sql
      * @param array $keys_data_filter Keys de los filtros
      * @param string $sql_extra
@@ -734,7 +745,18 @@ class where{
      * @param array $filtro
      * @param array $filtro_especial
      * @param array $filtro_rango
-     * @param array $filtro_extra
+     * @param array $filtro_extra arreglo que contiene las condiciones
+     * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
+     * @example
+     *      $filtro_extra[0][tabla.campo]['operador'] = '<';
+     *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
+     *
+     *      $filtro_extra[0][tabla2.campo]['operador'] = '>';
+     *      $filtro_extra[0][tabla2.campo]['valor'] = 'x';
+     *      $filtro_extra[0][tabla2.campo]['comparacion'] = 'OR';
+     *
+     *      $resultado = filtro_extra_sql($filtro_extra);
+     *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]

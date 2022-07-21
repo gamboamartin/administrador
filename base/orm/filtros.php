@@ -17,7 +17,18 @@ class filtros{
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial
-     * @param array $filtro_extra
+     * @param array $filtro_extra arreglo que contiene las condiciones
+     * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
+     * @example
+     *      $filtro_extra[0][tabla.campo]['operador'] = '<';
+     *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
+     *
+     *      $filtro_extra[0][tabla2.campo]['operador'] = '>';
+     *      $filtro_extra[0][tabla2.campo]['valor'] = 'x';
+     *      $filtro_extra[0][tabla2.campo]['comparacion'] = 'OR';
+     *
+     *      $resultado = filtro_extra_sql($filtro_extra);
+     *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
      * @param array $filtro_rango Filtro de tipo rango
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
