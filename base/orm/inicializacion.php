@@ -107,6 +107,7 @@ class inicializacion{
 
     /**
      * Funcion para asignar los parametros de una view
+     * @version 1.181.34
      * @param array $campo Campo a validar elementos
      * @param array $bools conjunto de campos de tipo bool en bd activo o inactivo
      * @param stdClass $datos Datos a validar
@@ -115,9 +116,33 @@ class inicializacion{
     private function asigna_data_campo(array $bools, array $campo, stdClass $datos): array
     {
 
+
+
         $datas = $this->init_data(bools:  $bools, campo: $campo,datos:  $datos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa $datos',data: $datas);
+        }
+
+        if(!isset($datas->campo['adm_elemento_lista_cols'])){
+            $datas->campo['adm_elemento_lista_cols'] = 12;
+        }
+        if(!isset($datas->campo['adm_elemento_lista_tipo'])){
+            $datas->campo['adm_elemento_lista_tipo'] = 'text';
+        }
+        if(!isset($datas->campo['adm_elemento_lista_tabla_externa'])){
+            $datas->campo['adm_elemento_lista_tabla_externa'] = '';
+        }
+        if(!isset($datas->campo['adm_elemento_lista_etiqueta'])){
+            $datas->campo['adm_elemento_lista_etiqueta'] = '';
+        }
+        if(!isset($datas->campo['adm_elemento_lista_campo'])){
+            $datas->campo['adm_elemento_lista_campo'] = '';
+        }
+        if(!isset($datas->campo['adm_elemento_lista_descripcion'])){
+            $datas->campo['adm_elemento_lista_descripcion'] = '';
+        }
+        if(!isset($datas->campo['adm_elemento_lista_id'])){
+            $datas->campo['adm_elemento_lista_id'] = '';
         }
 
         if(!is_array($datas->datos->valor_extra)){

@@ -113,6 +113,22 @@ class inicializacionTest extends test {
 
     }
 
+    public function test_asigna_data_campo(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+
+        $bools = array();
+        $campo = array();
+        $datos = new stdClass();
+
+        $resultado = $inicializacion->asigna_data_campo($bools, $campo, $datos);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+    }
+
     public function test_asigna_valor_desencriptado(){
         errores::$error = false;
         $inicializacion = new inicializacion();
