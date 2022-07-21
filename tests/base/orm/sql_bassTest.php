@@ -136,6 +136,27 @@ class sql_bassTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_estructura(): void
+    {
+        errores::$error = false;
+        $sql = new sql_bass();
+        $sql = new liberator($sql);
+
+        $campo = array();
+        $campo_envio = array();
+        $estructura_bd = array();
+        $tabla = '';
+
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $campo['adm_elemento_lista_tabla_externa'] = 'a';
+
+        $resultado = $sql->genera_estructura($campo, $campo_envio, $estructura_bd, $tabla);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_true_false(): void
     {
         errores::$error = false;

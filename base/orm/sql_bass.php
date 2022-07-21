@@ -143,9 +143,9 @@ class sql_bass{
     }
 
     /**
-     * P INT P ORDER
-     * Funcion para la generacion de la estructura para ser utilizada en views
      *
+     * Funcion para la generacion de la estructura para ser utilizada en views
+     * @version 1.184.34
      * @param array $campo campo de la vista
      * @param string $tabla  tabla del modelo o estructura
      * @param array $campo_envio  informacion inicializada para su utilizacion n las vistas
