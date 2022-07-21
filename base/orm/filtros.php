@@ -15,7 +15,7 @@ class filtros{
     /**
      * P INT P ORDER ERRROEV
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param array $filtro
+     * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial
      * @param array $filtro_extra
      * @param array $filtro_rango Filtro de tipo rango
