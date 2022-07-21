@@ -149,7 +149,7 @@ class sql_bass{
      * @param array $campo campo de la vista
      * @param string $tabla  tabla del modelo o estructura
      * @param array $campo_envio  informacion inicializada para su utilizacion n las vistas
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @example
      *      $campo_envio = $this->maqueta_campo_envio($campo,$vista, $valor_extra,$representacion, $bools);
     $estructura = $this->genera_estructura($tabla,$campo,$campo_envio);
@@ -171,8 +171,8 @@ class sql_bass{
     }
 
     /**
-     * P INT P ORDER
-     * @param array $campo
+     * Valida la estructura para upd
+     * @param array $campo campo de tipo elemento lista
      * @return bool|array
      */
     private function valida_estructura(array $campo): bool|array
@@ -195,7 +195,7 @@ class sql_bass{
      * @param string $tabla tabla del modelo o estructura
      * @param array $campos_obligatorios informacion inicializada para su utilizacion n las vistas
      * @param string $vista vista en la que se aplicaran los ajustes
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @return array conjunto de elementos para ser utilizados en views
      * @throws errores definidos en internals*@throws JsonException
      * @example
@@ -281,7 +281,7 @@ class sql_bass{
      * @param array $valor_extra  valor extra que se anade a los inputs
      * @param string $representacion  forma en la que se muestran los datos
      * @param array $bools  configuracion de campos booleanos
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @example
      *      $bools = $this->genera_bools($campo,$campos_obligatorios);
     if(!isset($campo['elemento_lista_css_id'])){
@@ -334,7 +334,7 @@ class sql_bass{
      * @param array $estructura_init array con datos de la estructura
      * @param array $campos_obligatorios campos para poner required true
      * @param string $tabla tabla de la estructura
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @example
      *      $estructura_init = $resultado['registros'];
     $this->estructura_bd[$tabla]['campos'] = array();

@@ -250,7 +250,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @param string $tabla tabla del modelo o estructura
      * @param string $vista vista en la que se aplicaran los ajustes
      * @param array $campos_obligatorios informacion inicializada para su utilizacion n las vistas
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @return array conjunto de elementos para ser utilizados en views
      * @example
      *      $estructura = $this->genera_estructura_tabla($link,$tabla,$vista,$campos_obligatorios);
@@ -288,7 +288,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      *
      * @param modelo $modelo
      * @param string $vista vista a la que se le aplicara la estructura
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @return array conjunto de elementos para ser utilizados en views
      * @uses consultas_base->obten_campos
      * @internal  $modelo_base->genera_modelo($tabla);
@@ -323,7 +323,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      *
      * @param modelo $modelo
      * @param string $vista vista para su aplicacion en views
-     * @param array $estructura_bd
+     * @param array $estructura_bd Estructura del modelo de la base de datos
      * @return array con datos para su utilizacion en views
      * @example
      *      $consultas_base = new consultas_base();
