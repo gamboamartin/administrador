@@ -36,7 +36,7 @@ class where{
     /**
      * P INT P ORDER ERROREV
      * @param string $sentencia Sentencia SQL previamente maquetada
-     * @param string $filtro_especial_sql
+     * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql
      * @param string $filtro_extra_sql
      * @param string $not_in_sql
@@ -156,7 +156,7 @@ class where{
      * @param array $filtro_rango
      * @param array $filtro_extra
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @param string $sql_extra
+     * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|stdClass
      */
@@ -315,7 +315,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * Genera el SQL de filtro fecha
      * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
@@ -693,7 +693,7 @@ class where{
     /**
      * P INT P ORDER ERROREV
      * @param string $sentencia Sentencia SQL previamente maquetada
-     * @param string $filtro_especial_sql
+     * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql
      * @param string $filtro_extra_sql
      * @param string $not_in_sql
@@ -735,7 +735,7 @@ class where{
      * @param array $filtro_rango
      * @param array $filtro_extra
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @param string $sql_extra
+     * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|stdClass
      */

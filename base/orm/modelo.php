@@ -626,7 +626,7 @@ class modelo extends modelo_base {
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
      * @param array $filtro_extra
      * @param array $filtro_fecha Filtros de fecha para sql
-     * @param array $filtro_rango
+     * @param array $filtro_rango Filtro de tipo rango
      *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
@@ -819,7 +819,7 @@ class modelo extends modelo_base {
      * @param array $filtro
      * @param array $filtro_especial
      * @param array $filtro_extra
-     * @param array $filtro_rango
+     * @param array $filtro_rango Filtro de tipo rango
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()

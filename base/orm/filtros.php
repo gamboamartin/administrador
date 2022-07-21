@@ -18,7 +18,7 @@ class filtros{
      * @param array $filtro
      * @param array $filtro_especial
      * @param array $filtro_extra
-     * @param array $filtro_rango
+     * @param array $filtro_rango Filtro de tipo rango
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
      * @param modelo $modelo modelo en ejecucion
