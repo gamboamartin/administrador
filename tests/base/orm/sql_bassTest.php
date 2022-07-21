@@ -186,6 +186,31 @@ class sql_bassTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_estructura(): void
+    {
+        errores::$error = false;
+        $sql = new sql_bass();
+        $sql = new liberator($sql);
+
+        $campo = array();
+
+        $resultado = $sql->valida_estructura($campo);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error no existe $campo[adm_elemento_lista_campo]', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = array();
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $campo['adm_elemento_lista_tabla_externa'] = 'a';
+
+        $resultado = $sql->valida_estructura($campo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valor_extra(): void
     {
         errores::$error = false;

@@ -172,16 +172,17 @@ class sql_bass{
 
     /**
      * Valida la estructura para upd
+     * @version 1.183.34
      * @param array $campo campo de tipo elemento lista
      * @return bool|array
      */
     private function valida_estructura(array $campo): bool|array
     {
         if(!isset($campo['adm_elemento_lista_campo'])){
-            return $this->error->error('Error no existe $campo[elemento_lista_campo]',$campo);
+            return $this->error->error('Error no existe $campo[adm_elemento_lista_campo]',$campo);
         }
         if(!isset($campo['adm_elemento_lista_tabla_externa'])){
-            return $this->error->error('Error no existe $campo[elemento_lista_tabla_externa]',$campo);
+            return $this->error->error('Error no existe $campo[adm_elemento_lista_tabla_externa]',$campo);
         }
         return true;
     }
