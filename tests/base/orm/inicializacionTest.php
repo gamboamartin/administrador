@@ -475,6 +475,38 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_campo_envio(): void
+    {
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+
+        $bools = array();
+        $campo = array();
+        $representacion = '';
+        $valor_extra = array();
+        $vista = '';
+
+        $campo['adm_elemento_lista_campo'] = 'a';
+        $campo['adm_elemento_lista_cols'] = '1';
+        $campo['adm_elemento_lista_tipo'] = '1';
+        $campo['adm_elemento_lista_tabla_externa'] = '1';
+        $campo['adm_elemento_lista_etiqueta'] = '1';
+        $campo['adm_elemento_lista_descripcion'] = '1';
+        $campo['adm_elemento_lista_id'] = '1';
+        $bools['con_label'] = '1';
+        $bools['required'] = '1';
+        $bools['ln'] = '1';
+        $bools['select_vacio_alta'] = '1';
+
+        $resultado = $inicializacion->maqueta_campo_envio($bools, $campo, $representacion, $valor_extra, $vista);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_registro_ins(): void
     {
         errores::$error = false;

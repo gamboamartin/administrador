@@ -464,9 +464,9 @@ class inicializacion{
     }
 
     /**
-     * P INT P ORDER
-     * Funcion para maquetar un array para ser mostrado en las vistas base
      *
+     * Funcion para maquetar un array para ser mostrado en las vistas base
+     * @version 1.182.34
      * @param array $campo datos del campo
      * @param string $vista vista para su aplicacion en views
      * @param array $valor_extra  datos para anexar extras
@@ -479,7 +479,8 @@ class inicializacion{
      * @throws errores por definir
      * @uses consultas_base->inicializa_estructura
      */
-    public function maqueta_campo_envio(array $bools, array $campo, string $representacion, array $valor_extra, string $vista):array{
+    public function maqueta_campo_envio(array $bools, array $campo, string $representacion, array $valor_extra,
+                                        string $vista):array{
 
 
         $valida = $this->validacion->valida_campo_envio(bools: $bools, campo: $campo);
