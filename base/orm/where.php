@@ -34,14 +34,14 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Asigna los filtros a un objeto para ser utilizado en WHEREs de SQL FORMA select
      * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql Filtro en forma de rango en SQL
      * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $not_in_sql
-     * @param string $sql_extra
-     * @param string $filtro_fecha_sql
+     * @param string $not_in_sql Filtro forma SQL NOT IN
+     * @param string $sql_extra Sql Generado manualmente desde llamadas a esta funcion
+     * @param string $filtro_fecha_sql Filtros en forma de fecha
      * @return stdClass
      */
     #[Pure] private function asigna_data_filtro(string $filtro_especial_sql, string $filtro_extra_sql,
