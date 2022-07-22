@@ -22,7 +22,7 @@ class controler{
     public valida_controller $validacion;
 
     public PDO $link ;
-    public array $registro = array();
+    public array|stdClass $registro = array();
     public string $tabla = '';
     public string $accion = '';
     public array|stdClass $inputs = array();
