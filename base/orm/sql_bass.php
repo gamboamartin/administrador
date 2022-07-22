@@ -189,9 +189,9 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER
-     * Funcion para la generacion de la estructura para ser utilizada en views
      *
+     * Funcion para la generacion de la estructura para ser utilizada en views
+     * @version 1.189.34
      * @param array $campo campo de la vista
      * @param string $tabla tabla del modelo o estructura
      * @param array $campos_obligatorios informacion inicializada para su utilizacion n las vistas
@@ -214,6 +214,7 @@ class sql_bass{
         if(!isset($campo['adm_elemento_lista_campo'])){
             return $this->error->error(mensaje: 'Error no existe $campo[adm_elemento_lista_campo]',data: $campo);
         }
+
         $bools = $this->genera_bools(campo: $campo,campos_obligatorios: $campos_obligatorios);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar bools',data: $bools);
