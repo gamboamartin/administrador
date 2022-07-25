@@ -493,6 +493,31 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_filtros_sqls(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $keys_data_filter = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $sql_extra = 'xx';
+        $not_in = array();
+        $tipo_filtro = '';
+        $resultado = $wh->genera_filtros_sql($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_rango,
+            $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+    }
+
     public function test_genera_not_in(): void
     {
         errores::$error = false;

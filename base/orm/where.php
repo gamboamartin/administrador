@@ -155,7 +155,7 @@ class where{
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
      * @param string $tipo_filtro Validos son numeros o textos
-     * @param array $filtro
+     * @param array $filtro Filtros basicos
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_rango
      *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
@@ -778,6 +778,10 @@ class where{
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @version 1.196.34
+     * @verfuncion 1.0.0
+     * @author mgamboa
+     * @fecha 2022-25-07 12:22
      * @return array|stdClass
      */
     private function genera_filtros_sql(array $columnas_extra, array $filtro, array $filtro_especial,
@@ -1380,7 +1384,7 @@ class where{
     /**
      * P INT P ORDER ERRROREV
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
-     * @param array $keys_data_filter
+     * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
      * @return string
      */
     private function where(stdClass $filtros, array $keys_data_filter): string
