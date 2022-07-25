@@ -8,9 +8,10 @@ use PDO;
 class validaciones extends validacion{
 
     /**
-     * @param PDO $link
+     * Valida si existe una tabla enm la estructura general de la base de datos
+     * @param PDO $link Conexion a la base de datos
      * @param string $name_bd Nombre de la base de datos
-     * @param string $tabla
+     * @param string $tabla Tabla o estructura a validar
      * @return bool|array
      */
     public function existe_tabla(PDO $link, string$name_bd, string $tabla): bool|array
