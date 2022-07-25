@@ -13,7 +13,7 @@ class filtros{
     }
 
     /**
-     * P INT P ORDER ERRROEV
+     * Genera el complemento completo para la ejecucion de un SELECT en forma de SQL
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
