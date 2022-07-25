@@ -12,10 +12,23 @@ class validaciones extends validacion{
      * @param PDO $link Conexion a la base de datos
      * @param string $name_bd Nombre de la base de datos
      * @param string $tabla Tabla o estructura a validar
+     * @version 1.202.34
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-25 17:23
      * @return bool|array
      */
     public function existe_tabla(PDO $link, string$name_bd, string $tabla): bool|array
     {
+        $name_db = trim($name_bd);
+        if($name_db === ''){
+            return $this->error->error(mensaje: 'Error name db esta vacio', data: $name_db);
+        }
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error $tabla db esta vacio', data: $tabla);
+        }
+
         $tablas = (new estructuras(link: $link))->modelos(name_db: $name_bd);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);

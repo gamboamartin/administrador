@@ -15,6 +15,21 @@ class validacionesTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_existe_tabla(): void
+    {
+        errores::$error = false;
+        $val = new validaciones();
+        //$val = new liberator($val);
+
+        $name_bd = 'administrador';
+        $tabla = 'adm_seccion';
+        $resultado = $val->existe_tabla($this->link, $name_bd, $tabla);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_alta_bd(): void
     {
         errores::$error = false;

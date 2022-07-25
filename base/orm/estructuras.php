@@ -324,11 +324,18 @@ class estructuras{
     /**
      * Funcion que obtiene todas las tablas de una base de datos del sistema en ejecucion
      * @version 1.168.33
+     * @verfuncion 1.2.0 Se valida name_db
+     * @author mgamboa
+     * @fecha 2022-07-25 17:26
      * @param string $name_db Nombre de la base de datos
      * @return array|stdClass
      */
     public function modelos(string $name_db): array|stdClass
     {
+        $name_db = trim($name_db);
+        if($name_db === ''){
+            return $this->error->error(mensaje: 'Error name db esta vacio', data: $name_db);
+        }
 
         $rows = $this->get_tables_sql();
         if(errores::$error){
@@ -364,12 +371,20 @@ class estructuras{
     /**
      * Funcion que retorna todas las tablas de una base de datos
      * @version 1.167.33
+     * @verfuncion  1.2.0 Se valida name_db
      * @param string $name_db Nombre de la base de datos
      * @param array $rows Conjunto de tablas de show tables
+     * @author mgamboa
+     * @fecha 2022-07-25 17:25
      * @return array
      */
     private function maqueta_modelos(string $name_db, array $rows): array
     {
+        $name_db = trim($name_db);
+        if($name_db === ''){
+            return $this->error->error(mensaje: 'Error name db esta vacio', data: $name_db);
+        }
+
         $modelos = array();
         foreach ($rows as $row){
             $modelos = $this->asigna_data_modelo(modelos:$modelos, name_db: $name_db,row: $row);
