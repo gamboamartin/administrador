@@ -622,7 +622,7 @@ class modelo extends modelo_base {
      * no aplicara las columnas tradicionales
      * @param bool $columnas_en_bruto si true se trae las columnas sion renombrar y solo de la tabla seleccionada
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
-     * @param array $filtro_especial
+     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
@@ -828,7 +828,7 @@ class modelo extends modelo_base {
      * @param array $columnas_by_table
      * @param bool $columnas_en_bruto
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
-     * @param array $filtro_especial
+     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
      * @example

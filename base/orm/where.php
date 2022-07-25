@@ -154,9 +154,9 @@ class where{
      * P INT P ORDER ERRROREV
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
-     * @param string $tipo_filtro
+     * @param string $tipo_filtro Validos son numeros o textos
      * @param array $filtro
-     * @param array $filtro_especial
+     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_rango
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
@@ -712,7 +712,7 @@ class where{
      * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql Filtro en forma de rango en SQL
      * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $not_in_sql
+     * @param string $not_in_sql Filtro en forma de NOT IN SQL
      * @param array $keys_data_filter Keys de los filtros
      * @param string $sql_extra
      * @param string $filtro_fecha_sql
@@ -726,17 +726,17 @@ class where{
             filtro_extra_sql: $filtro_extra_sql, filtro_fecha_sql:  $filtro_fecha_sql,
             filtro_rango_sql:  $filtro_rango_sql, not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar filtros',data: $filtros, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al asignar filtros',data: $filtros);
         }
 
         $filtros = $this->limpia_filtros(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al limpiar filtros',data:$filtros, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al limpiar filtros',data:$filtros);
         }
 
         $filtros = $this->parentesis_filtro(filtros: $filtros,keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al generar filtros',data:$filtros);
         }
         return $filtros;
     }
@@ -745,9 +745,9 @@ class where{
      * P INT P ORDER ERRROEV
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
-     * @param string $tipo_filtro
+     * @param string $tipo_filtro Validos son numeros o textos
      * @param array $filtro
-     * @param array $filtro_especial
+     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_rango
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
@@ -1112,26 +1112,27 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param stdClass $filtros
-     * @param array $keys_data_filter
+     * Asigna los parentesis  de un conjunto de filtros para SQL
+     * @param stdClass $filtros Conjunto de filtros
+     * @param array $keys_data_filter Keys de los filtros
      * @return stdClass|array
      */
     private function parentesis_filtro(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
-        $filtros = $this->limpia_filtros(filtros: $filtros, keys_data_filter: $keys_data_filter);
+        $filtros_ = $filtros;
+        $filtros_ = $this->limpia_filtros(filtros: $filtros_, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros);
         }
 
         foreach($keys_data_filter as $key){
-            if($filtros->$key!==''){
-                $filtros->$key = ' ('.$filtros->$key.') ';
+            if($filtros_->$key!==''){
+                $filtros_->$key = ' ('.$filtros_->$key.') ';
             }
         }
 
 
-        return $filtros;
+        return $filtros_;
     }
 
     /**
