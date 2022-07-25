@@ -669,6 +669,27 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_parentesis_filtro(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $filtros = new stdClass();
+        $keys_data_filter = array();
+        $keys_data_filter[] = 'a';
+        $keys_data_filter[] = 'c';
+        $filtros->b = 'z';
+        $filtros->c = 'k';
+        $resultado = $wh->parentesis_filtro($filtros, $keys_data_filter);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->a);
+        $this->assertEquals('z', $resultado->b);
+        $this->assertEquals(' (k) ', $resultado->c);
+        errores::$error = false;
+    }
+
     public function test_setea_filtro_rango(){
         errores::$error = false;
         $wh = new where();

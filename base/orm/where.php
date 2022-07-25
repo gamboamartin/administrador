@@ -1115,6 +1115,10 @@ class where{
      * Asigna los parentesis  de un conjunto de filtros para SQL
      * @param stdClass $filtros Conjunto de filtros
      * @param array $keys_data_filter Keys de los filtros
+     * @version 1.193.34
+     * @verfuncion 1.0.0
+     * @author mgamboa
+     * @fecha 2022-07-25 11:46
      * @return stdClass|array
      */
     private function parentesis_filtro(stdClass $filtros, array $keys_data_filter): stdClass|array
@@ -1122,7 +1126,7 @@ class where{
         $filtros_ = $filtros;
         $filtros_ = $this->limpia_filtros(filtros: $filtros_, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros);
+            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros_);
         }
 
         foreach($keys_data_filter as $key){
