@@ -930,6 +930,20 @@ class whereTest extends test {
 
     }
 
+    public function test_where(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $keys_data_filter = array();
+        $filtros = new stdClass();
+        $resultado = $wh->where($filtros, $keys_data_filter);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_where_mayus(){
         errores::$error = false;
         $wh = new where();

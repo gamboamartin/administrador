@@ -448,9 +448,9 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
+     * Genera un AND y une los filtros
      * @param stdClass $filtros Filtros a ejecutar en un where
-     * @param array $keys_data_filter
+     * @param array $keys_data_filter Key a verificar
      * @return stdClass
      */
     private function filtros_full(stdClass $filtros, array $keys_data_filter): stdClass
@@ -1382,9 +1382,13 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERRROREV
+     * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
+     * @version 1.197.34
+     * @verfuncion 1.0.0
+     * @author mgamboa
+     * @fecha 2022-07-25 12:33
      * @return string
      */
     private function where(stdClass $filtros, array $keys_data_filter): string
