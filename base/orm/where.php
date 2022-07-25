@@ -151,7 +151,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERRROREV
+     * Crea los datos de los diferentes tipos de filtro en forma de SQL
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
      * @param string $tipo_filtro Validos son numeros o textos
@@ -451,6 +451,10 @@ class where{
      * Genera un AND y une los filtros
      * @param stdClass $filtros Filtros a ejecutar en un where
      * @param array $keys_data_filter Key a verificar
+     * @version 1.198.34
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-25 16:27
      * @return stdClass
      */
     private function filtros_full(stdClass $filtros, array $keys_data_filter): stdClass
