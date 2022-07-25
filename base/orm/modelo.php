@@ -246,7 +246,7 @@ class modelo extends modelo_base {
 
     /**
      * P INT P ORDER ERRORREV
-     * @param array $filtro
+     * @param array $filtro Filtro de ejecucion basico
      * @param string $tipo_filtro
      * @param array $filtro_especial
      * @param array $filtro_rango
@@ -265,7 +265,7 @@ class modelo extends modelo_base {
 
         $tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $this->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
         }
 
         $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra, filtro:  $filtro,
@@ -274,7 +274,7 @@ class modelo extends modelo_base {
             tipo_filtro: $tipo_filtro);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtros',data: $filtros, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar filtros',data: $filtros);
         }
 
         $sql = /** @lang MYSQL */
