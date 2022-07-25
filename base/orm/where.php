@@ -35,6 +35,10 @@ class where{
 
     /**
      * Asigna los filtros a un objeto para ser utilizado en WHEREs de SQL FORMA select
+     * @version 1.191.34
+     * @verfuncion 1.0.0 Se integra prueba
+     * @author mgamboa
+     * @fecha 2022-07-25 11:25
      * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql Filtro en forma de rango en SQL

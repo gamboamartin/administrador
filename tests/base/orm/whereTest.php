@@ -39,6 +39,26 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_asigna_data_filtro(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $filtro_especial_sql = '';
+        $filtro_extra_sql = '';
+        $filtro_rango_sql = '';
+        $filtro_fecha_sql = '';
+        $not_in_sql = '';
+        $sentencia = '';
+        $sql_extra = '';
+        $resultado = $wh->asigna_data_filtro($filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
+            $filtro_rango_sql, $not_in_sql, $sentencia, $sql_extra);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_campo(): void
     {
         errores::$error = false;
