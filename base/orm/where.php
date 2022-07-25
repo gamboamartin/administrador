@@ -177,6 +177,10 @@ class where{
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @version 1.199.34
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-25 16:41
      * @return array|stdClass
      */
     public function data_filtros_full(array $columnas_extra, array $filtro, array $filtro_especial, array $filtro_extra,

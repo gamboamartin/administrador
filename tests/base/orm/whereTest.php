@@ -197,6 +197,28 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_filtros_full(){
+        errores::$error = false;
+        $wh = new where();
+        //$wh = new liberator($wh);
+
+        $keys_data_filter = array();
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_fecha = array();
+        $filtro_rango = array();
+        $not_in = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $resultado = $wh->data_filtros_full($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+            $filtro_rango, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_sql(){
         errores::$error = false;
         $wh = new where();
