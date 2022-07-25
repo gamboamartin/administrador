@@ -158,6 +158,10 @@ class where{
      * @param array $filtro
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_rango
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
      * @example
@@ -714,13 +718,14 @@ class where{
      * @param string $filtro_extra_sql Filtro enviado desde el origen
      * @param string $not_in_sql Filtro en forma de NOT IN SQL
      * @param array $keys_data_filter Keys de los filtros
-     * @param string $sql_extra
-     * @param string $filtro_fecha_sql
+     * @param string $sql_extra Sql generado de forma manual para la funcion en ejecucion
+     * @param string $filtro_fecha_sql Filtro de fecha en forma de sql
      * @return array|stdClass
      */
     private function genera_filtros_iniciales(string $filtro_especial_sql, string $filtro_extra_sql,
                                               string $filtro_rango_sql, array $keys_data_filter, string $not_in_sql,
-                                              string $sentencia, string $sql_extra, string $filtro_fecha_sql = ''): array|stdClass
+                                              string $sentencia, string $sql_extra,
+                                              string $filtro_fecha_sql = ''): array|stdClass
     {
         $filtros = $this->asigna_data_filtro(filtro_especial_sql:  $filtro_especial_sql,
             filtro_extra_sql: $filtro_extra_sql, filtro_fecha_sql:  $filtro_fecha_sql,
@@ -746,9 +751,13 @@ class where{
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
      * @param string $tipo_filtro Validos son numeros o textos
-     * @param array $filtro
+     * @param array $filtro Conjunto de filtros para ejecucion de where
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_rango
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
      * @example

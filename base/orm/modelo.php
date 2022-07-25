@@ -637,7 +637,11 @@ class modelo extends modelo_base {
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @param array $filtro_rango Filtro de tipo rango
+     * @param array $filtro_rango
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
@@ -841,7 +845,11 @@ class modelo extends modelo_base {
      *
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
-     * @param array $filtro_rango Filtro de tipo rango
+     * @param array $filtro_rango
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
