@@ -746,7 +746,7 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @uses  todo el sistema
      */
-    public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(), 
+    public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                array $columnas_by_table = array(), bool $columnas_en_bruto = false,
                                array $filtro=array(), array $filtro_especial= array(), array $filtro_extra = array(),
                                array $filtro_fecha = array(), array $filtro_rango = array(), array $group_by=array(),

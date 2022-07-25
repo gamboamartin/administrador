@@ -449,26 +449,27 @@ class where{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $filtros
+     * @param stdClass $filtros Filtros a ejecutar en un where
      * @param array $keys_data_filter
      * @return stdClass
      */
     private function filtros_full(stdClass $filtros, array $keys_data_filter): stdClass
     {
-        $filtros = $this->limpia_filtros(filtros: $filtros, keys_data_filter: $keys_data_filter);
+        $filtros_ = $filtros;
+        $filtros_ = $this->limpia_filtros(filtros: $filtros_, keys_data_filter: $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar filtros',data: $filtros, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar filtros',data: $filtros_);
         }
 
         $and = '';
         foreach ($keys_data_filter as $key){
-            if($filtros->$key !=='') {
-                $filtros->$key = " $and ( " . $filtros->$key . ")";
+            if($filtros_->$key !=='') {
+                $filtros_->$key = " $and ( " . $filtros_->$key . ")";
                 $and = " AND ";
             }
         }
 
-        return $filtros;
+        return $filtros_;
     }
 
 
@@ -711,7 +712,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Ajusta los filtros con parentesis y limpieza para su correcta ejecucion
      * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $filtro_especial_sql Filtro en forma de SQL
      * @param string $filtro_rango_sql Filtro en forma de rango en SQL
@@ -720,6 +721,10 @@ class where{
      * @param array $keys_data_filter Keys de los filtros
      * @param string $sql_extra Sql generado de forma manual para la funcion en ejecucion
      * @param string $filtro_fecha_sql Filtro de fecha en forma de sql
+     * @version 1.195.34
+     * @verfuncion 1.0.0
+     * @author mgamboa
+     * @fecha 2022-07-25 12:16
      * @return array|stdClass
      */
     private function genera_filtros_iniciales(string $filtro_especial_sql, string $filtro_extra_sql,
@@ -747,7 +752,7 @@ class where{
     }
 
     /**
-     * P INT P ORDER ERRROEV
+     * Genera los filtros en forma de sql
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
      * @param string $tipo_filtro Validos son numeros o textos
@@ -1374,20 +1379,20 @@ class where{
 
     /**
      * P INT P ORDER ERRROREV
-     * @param stdClass $filtros
+     * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter
      * @return string
      */
     private function where(stdClass $filtros, array $keys_data_filter): string
     {
-
-        $filtros = $this->limpia_filtros(filtros: $filtros,keys_data_filter:  $keys_data_filter);
+        $filtros_ = $filtros;
+        $filtros_ = $this->limpia_filtros(filtros: $filtros_,keys_data_filter:  $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros);
+            return $this->error->error(mensaje: 'Error al limpiar filtros', data: $filtros_);
         }
         $where='';
         foreach($keys_data_filter as $key){
-            if($filtros->$key!==''){
+            if($filtros_->$key!==''){
                 $where = " WHERE ";
             }
         }
