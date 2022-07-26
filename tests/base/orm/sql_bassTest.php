@@ -225,6 +225,26 @@ class sql_bassTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_estructuras(): void
+    {
+        errores::$error = false;
+        $sql = new sql_bass();
+        //$sql = new liberator($sql);
+
+        $vista ='';
+        $estructura_bd = array();
+        $tabla = '';
+
+        $campos_obligatorios = array();
+        $estructura_init = array();
+
+        $resultado = $sql->maqueta_estructuras($campos_obligatorios, $estructura_bd, $estructura_init, $tabla, $vista);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_true_false(): void
     {
         errores::$error = false;

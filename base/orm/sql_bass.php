@@ -330,7 +330,7 @@ class sql_bass{
 
 
     /**
-     * P INT P ORDER
+     *
      * Funcion para maquetar un array para ser mostrado en las vistas base
      *
      * @param string $vista vista para su aplicacion en views
@@ -348,6 +348,10 @@ class sql_bass{
      * @throws errores definidos en internals
      * @uses consultas_base->genera_estructura_tabla
      * @internal  $this->genera_estructura_init($campo,$campos_obligatorios,$vista,$tabla);
+     * @version 1.204.34
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-26 10:10
      */
 
     public function maqueta_estructuras(array $campos_obligatorios, array $estructura_bd, array $estructura_init,
