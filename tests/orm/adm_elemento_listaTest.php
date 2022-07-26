@@ -91,6 +91,22 @@ class adm_elemento_listaTest extends test {
 
     }
 
+    public function test_genera_estructura_tabla(){
+
+        errores::$error = false;
+        $el = new adm_elemento_lista($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $vista = 'alta';
+        $tabla = 'adm_seccion';
+        $campos_obligatorios = array();
+        $estructura_bd = array();
+        $resultado = $el->genera_estructura_tabla($campos_obligatorios, $estructura_bd, $tabla, $vista);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 }
 
