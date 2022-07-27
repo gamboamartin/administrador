@@ -43,6 +43,10 @@ class filtros{
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @version 1.207.34
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-27 11:07
      * @return array|stdClass
      */
     public function complemento_sql(bool $aplica_seguridad, array $filtro, array $filtro_especial,
