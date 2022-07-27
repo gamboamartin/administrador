@@ -36,7 +36,7 @@ class controler{
     public array $filtro = array();
 
     public array $datos_session_usuario = array();
-    
+
     public string $campo_busca = 'registro_id';
     public string $valor_busca_fault = '';
     public string $btn_busca = '';
