@@ -146,7 +146,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->breadcrumbs = $breadcrumbs;
 
-        $this->datos_session_usuario = $this->asigna_datos_session_usuario($_SESSION['usuario_id'], $link);
+        //$this->datos_session_usuario = $this->asigna_datos_session_usuario($_SESSION['usuario_id'], $link);
     }
 
     /**
