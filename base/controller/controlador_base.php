@@ -15,6 +15,7 @@ use JsonException;
 use models\adm_accion;
 use models\adm_elemento_lista;
 use models\adm_session;
+use models\adm_usuario;
 use PDO;
 use stdClass;
 use validacion\confs\configuraciones;
@@ -145,7 +146,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->breadcrumbs = $breadcrumbs;
 
-
+        $this->datos_session_usuario = $this->asigna_datos_session_usuario();
     }
 
     /**
@@ -484,6 +485,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $_SESSION;
     }
 
+    /**
+     *
+     * @return array
+     */
+    public function asigna_datos_session_usuario(): array{
+        return adm_usuario::usuario($_SESSION['usuario_id'], $this->link);
+    }
+    
     /**
      *
      * @param bool $header
