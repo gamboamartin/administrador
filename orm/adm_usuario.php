@@ -38,17 +38,17 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
 
     /**
-     * PHPUNIT
+     *
      * @return array
      */
-    public function usuario_activo():array{ //FIN PROT
+    public function usuario_activo():array{
         if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error('Error no existe session usuario id',$_SESSION);
+            return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
         }
         $this->registro_id = $_SESSION['usuario_id'];
         $usuario = $this->obten_data();
         if(errores::$error){
-            return $this->error->error('Error al obtener usuario activo',$usuario);
+            return $this->error->error(mensaje: 'Error al obtener usuario activo',data: $usuario);
         }
         return $usuario;
     }

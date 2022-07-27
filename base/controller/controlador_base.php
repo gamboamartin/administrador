@@ -146,16 +146,23 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->breadcrumbs = $breadcrumbs;
 
-        //$this->datos_session_usuario = $this->asigna_datos_session_usuario($_SESSION['usuario_id'], $link);
+        /**
+         * @author kevin.acuna
+         * Obtiene el usuario activo y asigna a atributo
+         */
+        if(isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id']>0) {
+            $datos_session_usuario = (new adm_usuario(link: $this->link))->usuario_activo();
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al generar nav breads', data: $datos_session_usuario);
+                print_r($error);
+                die('Error');
+            }
+            $this->datos_session_usuario = $datos_session_usuario;
+        }
+
     }
 
-    /**
-     *
-     * @return array
-     */
-    public function asigna_datos_session_usuario(int $usuario_id, PDO $link): array{
-        return adm_usuario::usuario($usuario_id, $link);
-    }
+
 
     /**
      * 

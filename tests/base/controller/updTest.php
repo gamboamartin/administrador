@@ -27,7 +27,7 @@ class updTest extends test {
     public function test_asigna_datos_modifica(): void
     {
         errores::$error = false;
-        $_SESSION['usuario_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
         $upd = new upd();
 
         $controler = new controlador_adm_mes(link: $this->link, paths_conf: $this->paths_conf);
