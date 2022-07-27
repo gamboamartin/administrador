@@ -106,6 +106,22 @@ class adm_usuarioTest extends test {
 
     }
 
+    public function test_usuario_activo(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $resultado = $modelo->usuario_activo();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('2', $resultado['adm_usuario_id']);
+        errores::$error = false;
+    }
+
 
 
 

@@ -38,13 +38,19 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
 
     /**
-     *
+     * Obtiene un usuario activo basado en la session
      * @return array
      */
     public function usuario_activo():array{
         if(!isset($_SESSION['usuario_id'])){
             return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
         }
+
+        if((int)$_SESSION['usuario_id'] < 0){
+            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
+                data: $_SESSION['usuario_id']);
+        }
+
         $this->registro_id = $_SESSION['usuario_id'];
         $usuario = $this->obten_data();
         if(errores::$error){
