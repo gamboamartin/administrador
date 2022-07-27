@@ -121,17 +121,11 @@ class controler{
         $this->seccion_titulo = str_replace('_', ' ', $this->seccion);
         $this->seccion_titulo = ucwords($this->seccion_titulo);
 
-        $this->datos_session_usuario = $this->asigna_datos_session_usuario();
+
 
     }
 
-    /**
-     *
-     * @return array
-     */
-    public function asigna_datos_session_usuario(): array{
-        return adm_usuario::usuario($_SESSION['usuario_id'], $this->link);
-    }
+
 
     /**
      * Obtiene los datos de un breadcrumb
