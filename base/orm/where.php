@@ -962,7 +962,7 @@ class where{
 
     /**
      * P ORDER P INT ERROREV
-     * @param stdClass $complemento
+     * @param stdClass $complemento Complemento de datos sql
      * @param array $keys_data_filter
      * @return array|stdClass
      */
@@ -1418,7 +1418,7 @@ class where{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $complemento
+     * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
      */
     private function where_base(stdClass $complemento): array|stdClass
@@ -1435,7 +1435,7 @@ class where{
 
     /**
      * P ORDER P INT ERROREV
-     * @param stdClass $complemento
+     * @param stdClass $complemento Complemento de datos sql
      * @param array $key_data_filter
      * @return array|stdClass
      */
@@ -1456,11 +1456,15 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     *
      * CONVIERTE EN MAYUSCULAS EL ELEMENTO WHERE EN SQL
-     * @version 1.
-     * @param stdClass $complemento
+     * @version 1.212.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-29 13:42
+     * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
+     *
      */
     private function where_mayus(stdClass $complemento): array|stdClass
     {
