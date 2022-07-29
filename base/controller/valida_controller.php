@@ -75,17 +75,20 @@ class valida_controller extends base_modelos{
     }
 
     /**
-     * FULL
+     * Valida los elementos enviado por POST en alta bd
+     * @version 1.210.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-29 12:20
      * @return bool|array
      */
     public function valida_post_alta(): bool|array
     {
         if(!isset($_POST)){
-            return $this->error->error(mensaje: 'Error no existe POST', data: $_GET, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe POST', data: $_GET);
         }
         if(count($_POST) === 0){
-            return $this->error->error(mensaje: 'Error el POST no puede venir vacio', data: $_POST,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el POST no puede venir vacio', data: $_POST);
         }
         return true;
     }
