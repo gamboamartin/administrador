@@ -52,6 +52,10 @@ class valida_controller extends base_modelos{
      * @param string $clase Clase en ejecucion
      * @param controler $controler Controlador en ejecucion
      * @param array $registro Registro a insertar
+     * @version 1.212.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-29 13:02
      * @return bool|array
      */
     public function valida_in_alta(string $clase, controler $controler, array $registro): bool|array
@@ -67,6 +71,7 @@ class valida_controller extends base_modelos{
             return $this->error->error(mensaje:'Error la seccion no puede venir vacia',data: $controler->seccion);
 
         }
+
         if(!class_exists($clase)){
             return $this->error->error(mensaje:'Error no existe la clase',data: $clase);
         }

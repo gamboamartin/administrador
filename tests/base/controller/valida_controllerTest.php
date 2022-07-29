@@ -85,6 +85,50 @@ class valida_controllerTest extends test {
         errores::$error = false;
     }
 
+    /**
+     */
+    public function test_valida_in_alta(): void
+    {
+        errores::$error = false;
+        $val = new valida_controller();
+        //$nm = new liberator($nm);
+
+        $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
+
+        $clase = '';
+        $registro = array();
+        $resultado = $val->valida_in_alta($clase, $controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error el registro no puede venir vacio", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
+
+        $clase = '';
+        $registro = array();
+        $registro[] = '';
+        $resultado = $val->valida_in_alta($clase, $controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error no existe la clase", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $controler = new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf);
+
+        $clase = 'models\\adm_seccion';
+        $registro = array();
+        $registro[] = '';
+        $resultado = $val->valida_in_alta($clase, $controler, $registro);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_valida_post_alta(){
         errores::$error = false;
         $val = new valida_controller();
