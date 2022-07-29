@@ -48,10 +48,10 @@ class valida_controller extends base_modelos{
     }
 
     /**
-     * P ORDER P INT ERROREV
-     * @param string $clase
+     * Valida la estructura base de un alta bd
+     * @param string $clase Clase en ejecucion
      * @param controler $controler Controlador en ejecucion
-     * @param array $registro
+     * @param array $registro Registro a insertar
      * @return bool|array
      */
     public function valida_in_alta(string $clase, controler $controler, array $registro): bool|array
