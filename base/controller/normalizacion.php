@@ -366,6 +366,10 @@ class normalizacion{
      * @param controler $controler Controlador en ejecucion
      * @param array $registro Registro a limpiar y validar
      * @return array
+     * @version 1.219.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-30 12:15
      */
     private function init_registro( controler $controler, array $registro): array
     {

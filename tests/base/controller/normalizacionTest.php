@@ -168,6 +168,23 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_registro(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+
+        $controler = new controler('', '');
+        $registro = array();
+        $controler->seccion = 'adm_accion';
+        $controler->tabla = 'a';
+        $registro[] = '';
+        $resultado = $nm->init_registro($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado[0]);
+        errores::$error = false;
+    }
+
     public function test_limpia_btn_post(){
         errores::$error = false;
         $nm = new normalizacion();
