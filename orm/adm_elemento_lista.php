@@ -287,7 +287,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
+     *
      * Funcion para la generacion de la estructura para ser utilizada en views
      *
      * @param modelo $modelo Modelo de obtencion de datos
@@ -299,6 +299,11 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @internal  $this->genera_estructura_tabla($link,$tabla,$vista,$campos_obligatorios);
      * @example
      *      $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
+     *
+     * @version 1.217.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-30 11:59
      *
      */
     private function genera_estructura_bd(array $estructura_bd,  modelo $modelo, string $vista): array{
