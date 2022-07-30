@@ -567,7 +567,7 @@ class normalizacion{
 
     /**
      * P INT P ORDER ERROREV
-     * @param array $registro
+     * @param array $registro Registro en ejecucion y a procesar
      * @param controler $controler Controlador de ejecucion
      * @return array
      */
