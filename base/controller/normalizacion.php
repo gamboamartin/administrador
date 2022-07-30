@@ -410,8 +410,8 @@ class normalizacion{
 
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param array $registro
+     * Limpia los nombre comunes de los botones no insertables
+     * @param array $registro Registro de post alta
      * @return array
      */
     private function limpia_btn_post(array $registro): array
