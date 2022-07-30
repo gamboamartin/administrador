@@ -57,7 +57,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER  ERROREV
+     * Asigna los elementos de un registro previo a procesar
      * @param controler $controler Controlador de ejecucion
      * @param array $registro Registro a limpiar y validar
      * @return array
@@ -566,7 +566,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Procesa ya ajusta un registro previo a la alta en un modelo
      * @param array $registro Registro en ejecucion y a procesar
      * @param controler $controler Controlador de ejecucion
      * @return array

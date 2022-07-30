@@ -324,6 +324,7 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+
     public function test_trim_arreglo(){
         errores::$error = false;
         $nm = new normalizacion();
