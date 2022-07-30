@@ -219,7 +219,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @uses consultas_base->genera_estructura_tabla
      * @internal $elemento_lista_modelo->obten_registros_filtro_and_ordenado($filtro,'elemento_lista.orden','ASC');
      */
-    public function elementos_lista(string $tabla, string $vista):array|stdClass{
+    private function elementos_lista(string $tabla, string $vista):array|stdClass{
         $valida = $this->validacion->valida_modelo(tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar '.$tabla,data: $valida);
@@ -262,7 +262,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @author mgamboa
      * @fecha 2022-07-26 14:21
      */
-    public function genera_estructura_tabla(array $campos_obligatorios, array $estructura_bd, string $tabla, string $vista): array{
+    private function genera_estructura_tabla(array $campos_obligatorios, array $estructura_bd, string $tabla, string $vista): array{
         $valida = $this->validacion->valida_modelo(tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar '.$tabla,data: $valida);
@@ -290,7 +290,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * P INT P ORDER
      * Funcion para la generacion de la estructura para ser utilizada en views
      *
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo de obtencion de datos
      * @param string $vista vista a la que se le aplicara la estructura
      * @param array $estructura_bd Estructura del modelo de la base de datos
      * @return array conjunto de elementos para ser utilizados en views
@@ -301,7 +301,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      *      $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
      *
      */
-    public function genera_estructura_bd(array $estructura_bd,  modelo $modelo, string $vista): array{
+    private function genera_estructura_bd(array $estructura_bd,  modelo $modelo, string $vista): array{
 
         if($vista === ''){
             return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista);

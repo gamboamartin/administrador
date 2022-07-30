@@ -2,6 +2,7 @@
 namespace tests\orm;
 
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_elemento_lista;
 
@@ -18,7 +19,7 @@ class adm_elemento_listaTest extends test {
 
         errores::$error = false;
         $el = new adm_elemento_lista($this->link);
-        //$inicializacion = new liberator($inicializacion);
+        $el = new liberator($el);
 
         $vista = '';
         $tabla = '';
@@ -95,7 +96,7 @@ class adm_elemento_listaTest extends test {
 
         errores::$error = false;
         $el = new adm_elemento_lista($this->link);
-        //$inicializacion = new liberator($inicializacion);
+        $el = new liberator($el);
 
         $vista = 'alta';
         $tabla = 'adm_seccion';
