@@ -550,7 +550,7 @@ class inicializacion{
 
     /**
      * Maqueta eñ registro a insertar
-     * @param array $campos_encriptados
+     * @param array $campos_encriptados Conjunto de campos a encriptar en el guardado
      * @param array $registro Registro que se insertara
      * @param string $status_default status activo o inactivo
      * @param array $tipo_campos
