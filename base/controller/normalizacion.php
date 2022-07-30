@@ -412,6 +412,10 @@ class normalizacion{
     /**
      * Limpia los nombre comunes de los botones no insertables
      * @param array $registro Registro de post alta
+     * @version 1.216.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-30-07 11:51
      * @return array
      */
     private function limpia_btn_post(array $registro): array
@@ -421,6 +425,9 @@ class normalizacion{
         }
         if(isset($registro['btn_guarda'])){
             unset($registro['btn_guarda']);
+        }
+        if(isset($registro['btn_action_next'])){
+            unset($registro['btn_action_next']);
         }
         return $registro;
     }
@@ -443,6 +450,9 @@ class normalizacion{
         }
         if(isset($_POST['Enviar'])){
             unset($_POST['Enviar']);
+        }
+        if(isset($_POST['btn_action_next'])){
+            unset($_POST['btn_action_next']);
         }
         return $_POST;
     }

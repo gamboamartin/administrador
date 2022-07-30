@@ -168,6 +168,25 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_btn_post(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+
+        $registro = array();
+        $resultado = $nm->limpia_btn_post($registro);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $registro = array('btn_action_next'=>'a');
+        $resultado = $nm->limpia_btn_post($registro);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
     public function test_limpia_post_alta(){
         errores::$error = false;
         $nm = new normalizacion();
