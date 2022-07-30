@@ -59,7 +59,7 @@ class normalizacion{
     /**
      * P INT P ORDER  ERROREV
      * @param controler $controler Controlador de ejecucion
-     * @param array $registro
+     * @param array $registro Registro a limpiar y validar
      * @return array
      */
     public function asigna_registro_alta(controler $controler, array $registro): array
@@ -362,9 +362,9 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param controler $controler
-     * @param array $registro
+     * Inicializa y valida los datos de un registro para un alta bd
+     * @param controler $controler Controlador en ejecucion
+     * @param array $registro Registro a limpiar y validar
      * @return array
      */
     private function init_registro( controler $controler, array $registro): array
