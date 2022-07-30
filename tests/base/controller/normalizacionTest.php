@@ -324,6 +324,23 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_procesa_registros_alta(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+
+        $controler = new controler();
+        $registro = array();
+        $registro['a'] = 'a';
+        $controler->seccion = 'a';
+        $controler->modelo = new adm_seccion($this->link);
+        $resultado = $nm->procesa_registros_alta($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado['a']);
+        errores::$error = false;
+    }
+
 
     public function test_trim_arreglo(){
         errores::$error = false;

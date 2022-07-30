@@ -556,6 +556,7 @@ class normalizacion{
         $pos = strpos($key,$controler->seccion.'_');
         $key_envio = $key;
         if((int)$pos === 0) {
+
             $key_envio = $controler->modelo->str_replace_first(content: $key, from:$controler->seccion . '_', to: '');
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error nal obtener key',data: $key_envio);
@@ -570,6 +571,11 @@ class normalizacion{
      * @param array $registro Registro en ejecucion y a procesar
      * @param controler $controler Controlador de ejecucion
      * @return array
+     * @version 1.122.37
+     * @verfuncion 1.1.0
+     * @fecha 2022-07-30 12:55
+     * @author mgamboa
+     * 
      */
     private function procesa_registros_alta(controler $controler, array $registro): array{
         if(count($registro) === 0){
