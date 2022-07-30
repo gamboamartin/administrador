@@ -60,6 +60,10 @@ class normalizacion{
      * Asigna los elementos de un registro previo a procesar
      * @param controler $controler Controlador de ejecucion
      * @param array $registro Registro a limpiar y validar
+     * @version 1.223.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-30 13:05
      * @return array
      */
     public function asigna_registro_alta(controler $controler, array $registro): array
@@ -575,7 +579,7 @@ class normalizacion{
      * @verfuncion 1.1.0
      * @fecha 2022-07-30 12:55
      * @author mgamboa
-     * 
+     *
      */
     private function procesa_registros_alta(controler $controler, array $registro): array{
         if(count($registro) === 0){
