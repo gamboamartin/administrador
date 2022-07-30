@@ -549,7 +549,7 @@ class inicializacion{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Maqueta eñ registro a insertar
      * @param array $campos_encriptados
      * @param array $registro Registro que se insertara
      * @param string $status_default status activo o inactivo
