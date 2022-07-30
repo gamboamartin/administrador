@@ -16,6 +16,24 @@ class data_formatTest extends test {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
     }
+
+    public function test_ajusta_campos_moneda(){
+        errores::$error = false;
+        $df = new data_format();
+        //$df = new liberator($df);
+
+        $tipo_campos = array();
+        $registro = array();
+
+        $tipo_campos[] = 'z';
+        $registro[] = '';
+        $resultado = $df->ajusta_campos_moneda($registro, $tipo_campos);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_asigna_campo_moneda(){
         errores::$error = false;
         $df = new data_format();

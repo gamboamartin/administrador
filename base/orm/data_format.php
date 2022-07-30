@@ -21,11 +21,23 @@ class data_format{
      * Funcion ajusta los campos en formato moneda previo a la insersion, los limpia y los integra como double
      * @param array $registro Registro donde se ajustaran los valores
      * @param array $tipo_campos Son los tipos de campos declarados en el modelo
+     * @version 1.224.37
+     * @verfuncion 1.1.0
+     * @fecha 2022-07-30 13:26
      * @return array
      */
     public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
     {
         foreach($tipo_campos as $campo =>$tipo_dato){
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo);
+            }
+            $tipo_dato = trim($tipo_dato);
+            if($tipo_dato === ''){
+                return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato);
+            }
+
             $registro = $this->asignacion_campo_moneda(campo: $campo, registro: $registro,tipo_dato:  $tipo_dato);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar campo ',data:  $registro);
