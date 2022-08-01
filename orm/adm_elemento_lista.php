@@ -330,7 +330,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * P INT P ORDER
      * Funcion para obtener los campos de una vista
      *
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo para la generacion de datos
      * @param string $vista vista para su aplicacion en views
      * @param array $estructura_bd Estructura del modelo de la base de datos
      * @return array con datos para su utilizacion en views
