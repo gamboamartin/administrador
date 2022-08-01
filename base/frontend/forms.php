@@ -122,7 +122,8 @@ class forms{
      * @author mgamboa
      * @fecha 2022-08-01 13:39
      */
-    public function header_form( string $accion, string $accion_request, string $seccion, string $session_id): string|array
+    public function header_form( string $accion, string $accion_request, string $seccion,
+                                 string $session_id): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){

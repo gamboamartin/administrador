@@ -106,8 +106,8 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param string $valor
+     * Genera el atributo checked si valor es activo
+     * @param string $valor Valor a verificar activo inactivo
      * @return string|array
      */
     private function checked(string $valor): string|array
@@ -291,7 +291,7 @@ class params_inputs{
 
     /**
      * PROBADO-PARAMS ORDER P INT
-     * @param string $valor
+     * @param string $valor Valor a verificar activo inactivo
      * @param bool $ln
      * @param string $css_id
      * @return array|stdClass $data->[string checked_html,string salto,string id_html]

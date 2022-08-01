@@ -225,7 +225,7 @@ class directivas extends html {
     /**
      * PROBADO-PARAMS ORDER P INT
      * Genera un input checkbox
-     * @param string $campo
+     * @param string $campo Nombre del campo input
      * @param int $cols
      * @param string $valor
      * @param bool $disabled Si disabled retorna text disabled

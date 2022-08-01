@@ -41,7 +41,7 @@ class templates{
      * @param bool $muestra_btn_guardar
      * @param bool $aplica_form
      * @param array $valores_filtrados
-     * @param array $campos
+     * @param array $campos Conjunto de campos pa ejecucion del html
      * @param string $seccion
      * @param string $session_id
      * @param string $path_base
@@ -252,7 +252,7 @@ class templates{
     /**
      * P INT
      * @param string $tipo
-     * @param string $campo_name
+     * @param string $campo_name Name del input
      * @param int $cols
      * @param mixed $valor
      * @param bool $required indica si es requerido o no
@@ -307,7 +307,7 @@ class templates{
     /**
      * P INT P ORDER
      * @param array $valores_filtrados
-     * @param array $campos
+     * @param array $campos Conjunto de campos pa ejecucion del html
      * @param array $campos_disabled
      * @param array $valores_default
      * @param array $campos_invisibles
@@ -379,13 +379,25 @@ class templates{
      * P INT
      * Genera un input de tipo HTML
      *
+     * @param string $campo_name Name del input
+     * @param string $tipo
+     * @param int $cols
+     * @param mixed $valor
+     * @param bool $required
+     * @param bool $disabled
+     * @param bool $ln
+     * @param string $etiqueta
+     * @param string $pattern
+     * @param string $css_id
+     * @param array $data_extra
+     * @param array $filtro
+     * @param string $tabla_foranea
+     * @param bool $select_vacio_alta
+     * @param string $columnas
+     * @param string $llaves_valores
+     * @return array|string html con info del input a mostrar
      * @example
      *      $$data_html = $this->genera_dato_html();
-     * @param bool $required indica si es requerido o no
-     * @return array|string html con info del input a mostrar
-     * @throws errores $campo vacio
-     * @throws errores $cols <0
-     * @throws errores $cols >12
      * @uses templates
      * @internal $this->validacion->valida_existencia_keys($this->input, $keys);
      * @internal $directiva->checkbox($this->cols, $this->valor, $etiqueta, $this->ln,$this->campo);
@@ -613,7 +625,7 @@ class templates{
      * P INT
      * Genera un input de tipo HTML
      * @param string $tipo
-     * @param string $campo_name
+     * @param string $campo_name Name del input
      * @param int $cols
      * @param mixed $valor
      * @param bool $required indica si es requerido o no
