@@ -88,6 +88,10 @@ class inicializacion{
             return $this->error->error(mensaje: 'Error el campo esta vacio', data:$campo);
         }
 
+        if(is_null($registro_previo->$campo)){
+            $registro_previo->$campo = '';
+        }
+
         $keys = array($campo);
         $valida = (new validaciones())->valida_existencia_keys(keys: $keys, registro: $registro_previo,
             valida_vacio: false);

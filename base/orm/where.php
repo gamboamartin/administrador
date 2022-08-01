@@ -486,6 +486,10 @@ class where{
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $keys_data_filter Keys a limpiar o validar
      * @return bool
+     * @version 1.237.39
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 13:07
      */
     private function filtros_vacios(stdClass $complemento, array $keys_data_filter): bool
     {
@@ -1365,8 +1369,8 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
-     **
+     * Verifica que la estructura de un complemento sql sea la correcta
+     *
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $key_data_filter Filtros a limpiar o validar
      * @return bool|array
@@ -1438,7 +1442,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * Genera un filtro de tipo where valido
      * @param stdClass $complemento Complemento de datos sql
      * @param array $key_data_filter Keys de filtros para where
      * @return array|stdClass

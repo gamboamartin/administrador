@@ -406,6 +406,20 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_filtros_vacios(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $keys_data_filter = array();
+        $complemento = new stdClass();
+        $resultado = $wh->filtros_vacios($complemento, $keys_data_filter);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_and(){
 
         errores::$error = false;
