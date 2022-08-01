@@ -177,8 +177,8 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param string $id_css
+     * Genera un id tipo css para html
+     * @param string $id_css Identificador css para java
      * @return string
      */
     private function id_html(string $id_css): string
@@ -297,7 +297,7 @@ class params_inputs{
      * PROBADO-PARAMS ORDER P INT
      * @param string $valor Valor a verificar activo inactivo
      * @param bool $ln Si true aplica div 12
-     * @param string $css_id
+     * @param string $css_id Identificador css para java
      * @return array|stdClass $data->[string checked_html,string salto,string id_html]
      */
     public function params_chk(string $css_id, bool $ln, string $valor): array|stdClass
@@ -453,6 +453,10 @@ class params_inputs{
      * Genera un salto de linea aplicando div 12
      * @param bool $ln Si true aplica div 12
      * @return string
+     * @version 1.246.39
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 17:06
      */
     private function salto(bool $ln): string
     {

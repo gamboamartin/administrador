@@ -231,7 +231,7 @@ class directivas extends html {
      * @param bool $disabled Si disabled retorna text disabled
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
-     * @param string $css_id
+     * @param string $css_id Identificador css para java
      * @param array $data_extra
      * @return array|string informacion de input en forma html
      * @example

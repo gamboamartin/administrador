@@ -45,7 +45,7 @@ class templates{
      * @param string $seccion
      * @param string $session_id
      * @param string $path_base
-     * @param array $campos_disabled
+     * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
      * @param array $valores_default
      * @param array $campos_invisibles
      * @return array|string
@@ -260,7 +260,7 @@ class templates{
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $pattern
-     * @param string $css_id
+     * @param string $css_id Identificador css para java
      * @param array $data_extra
      * @param string $tabla_foranea
      * @param bool $select_vacio_alta
@@ -308,7 +308,7 @@ class templates{
      * P INT P ORDER
      * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
-     * @param array $campos_disabled
+     * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
      * @param array $valores_default
      * @param array $campos_invisibles
      * @return array|string
@@ -388,7 +388,7 @@ class templates{
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $pattern
-     * @param string $css_id
+     * @param string $css_id Identificador css para java
      * @param array $data_extra
      * @param array $filtro
      * @param string $tabla_foranea
@@ -633,7 +633,7 @@ class templates{
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $pattern
-     * @param string $css_id
+     * @param string $css_id Identificador css para java
      * @param array $data_extra
      * @param string $tabla_foranea
      * @param bool $select_vacio_alta
