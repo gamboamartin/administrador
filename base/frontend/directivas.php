@@ -144,7 +144,7 @@ class directivas extends html {
      * @param string $value $value del input
      * @param string $type submit o button
      * @param string $stilo forma del boton success warning etc
-     * @param array $class_css
+     * @param array $class_css Clases css a incrustar en div
      * @param string $icon
      * @param string $id_css
      * @param array $datas
@@ -175,7 +175,7 @@ class directivas extends html {
         $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,  params: $params,
             stilo: $stilo,type: $type,value:  $value);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar container', data: $button, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar container', data: $button);
         }
 
         return $button;

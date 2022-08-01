@@ -98,7 +98,7 @@ class botones{
      * @param string $label
      * @param string $stilo
      * @param stdClass $params
-     * @param int $cols
+     * @param int $cols Columnas para css
      * @return array|string
      */
     public function button(int $cols,string $id_css, string $label, string $name, stdClass $params,string $stilo,
@@ -121,7 +121,7 @@ class botones{
 
         $button = $this->container_html(cols: $cols, contenido:  $btn);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar container',data:  $btn, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar container',data:  $btn);
         }
         return $button;
 
@@ -129,7 +129,7 @@ class botones{
 
     /**
      * FULL
-     * @param int $cols
+     * @param int $cols Columnas para css
      * @param string $contenido
      * @return string|array
      */
@@ -139,7 +139,7 @@ class botones{
 
         $valida =  (new validaciones_directivas())->valida_cols(cols: $cols);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar cols',data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar cols',data: $valida);
         }
 
         $html = "<div class='col-md-$cols'>";

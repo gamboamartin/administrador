@@ -30,19 +30,17 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * FULL
-     * @param int $cols
+     * Valida si las columnas estan en un rango correcto
+     * @param int $cols Columnas para css
      * @return bool|array
      */
     public function valida_cols(int $cols): bool|array
     {
         if($cols<=0){
-            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data:  $cols,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data:  $cols);
         }
         if($cols>=13){
-            return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data:  $cols,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data:  $cols);
         }
         return true;
     }
