@@ -114,9 +114,13 @@ class forms{
      * Obtiene el header de un formulario
      * @param string $seccion Seccion en ejecucion
      * @param string $accion Accion ene ejecucion
-     * @param string $accion_request accion a jecutar
+     * @param string $accion_request accion a ejecutar
      * @param string $session_id Session de seguridad
      * @return string|array
+     * @version 1.232.39
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 13:39
      */
     public function header_form( string $accion, string $accion_request, string $seccion, string $session_id): string|array
     {
