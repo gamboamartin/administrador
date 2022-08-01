@@ -303,6 +303,10 @@ class params_inputs{
      * @param bool $ln Si true aplica div 12
      * @param string $css_id Identificador css para java
      * @return array|stdClass $data->[string checked_html,string salto,string id_html]
+     * @version 1.249.40
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 18:26
      */
     public function params_chk(string $css_id, bool $ln, string $valor): array|stdClass
     {

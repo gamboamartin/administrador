@@ -328,6 +328,21 @@ class params_inputsTest extends test {
         errores::$error = false;
     }
 
+    public function test_params_chk()
+    {
+        errores::$error = false;
+        $params = new params_inputs();
+
+        $css_id = '';
+        $ln = false;
+        $valor = '';
+
+        $resultado = $params->params_chk($css_id, $ln, $valor);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_params_fecha()
     {
         errores::$error = false;
