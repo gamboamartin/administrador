@@ -38,7 +38,7 @@ class init{
     }
 
     /**
-     * P INT P ORDER
+     * Genera un controlador basado en el nombre
      * @param PDO $link Conexion a base de datos
      * @param string $seccion Seccion en ejecucion
      * @return controler|array
@@ -468,6 +468,9 @@ class init{
         }
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
+        }
+        if($sistema === 'organigrama'){
+            $namespace = 'gamboamartin\\acl\\';
         }
 
 
