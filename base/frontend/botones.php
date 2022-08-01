@@ -159,19 +159,17 @@ class botones{
     {
         $class_html = (new class_css())->class_css_html(clases_css:$class_css);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar clases',data:  $class_html,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar clases',data:  $class_html);
         }
 
         $icon_html = $this->icon_html(icon:$icon);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar icons', data: $icon_html, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar icons', data: $icon_html);
         }
 
         $data_extra_html = (new extra_params())->data_extra_html(data_extra: $datas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar datas', data: $data_extra_html,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar datas', data: $data_extra_html);
         }
         $params = new stdClass();
         $params->class = $class_html;
