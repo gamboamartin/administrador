@@ -126,6 +126,24 @@ class adm_elemento_listaTest extends test {
         errores::$error = false;
     }
 
+    public function test_obten_campos(){
+
+        errores::$error = false;
+        $el = new adm_elemento_lista($this->link);
+        //$el = new liberator($el);
+
+        $vista = 'alta';
+        $tabla = 'adm_seccion';
+        $campos_obligatorios = array();
+        $estructura_bd = array();
+        $mod = new adm_elemento_lista($this->link);
+        $resultado = $el->obten_campos($estructura_bd, $mod, $vista);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
 
 }
 

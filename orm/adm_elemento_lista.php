@@ -327,7 +327,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
+     *
      * Funcion para obtener los campos de una vista
      *
      * @param modelo $modelo Modelo para la generacion de datos
@@ -342,9 +342,16 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @uses modelo_basico
      * @uses templates
      * @internal  $estructura = $this->genera_estructura_bd($link,$tabla,$vista);
+     * @version v1.229.38
+     * @verfuncion v1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 11:34
      */
     public function obten_campos(array $estructura_bd, modelo_base $modelo, string $vista): array{
 
+        if($vista === ''){
+            return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista);
+        }
         $estructura_bd = $this->genera_estructura_bd(estructura_bd:  $estructura_bd, modelo: $modelo,vista: $vista);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar estructura',data: $estructura_bd);
