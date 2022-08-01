@@ -396,7 +396,7 @@ class normalizacion{
     }
 
     /**
-     *
+     * Inicializa los elementos de un registro previo a la actualizacion en base de datos
      * @param controler $controler Controlador en ejecucion
      * @param array $registro Registro a inicializar y ajustar
      * @return array
