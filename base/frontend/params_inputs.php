@@ -180,6 +180,10 @@ class params_inputs{
      * Genera un id tipo css para html
      * @param string $id_css Identificador css para java
      * @return string
+     * @version 1.248.39
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 18:20
      */
     private function id_html(string $id_css): string
     {
