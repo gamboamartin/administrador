@@ -483,7 +483,7 @@ class where{
 
     /**
      * P ORDER P INT ERRREV
-     * @param stdClass $complemento
+     * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $keys_data_filter
      * @return bool
      */
@@ -1366,7 +1366,7 @@ class where{
 
     /**
      * P ORDER P INT ERROREV
-     * @param stdClass $complemento
+     ** @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $key_data_filter
      * @return bool|array
      */
@@ -1378,12 +1378,11 @@ class where{
         if($complemento->where!==''){
             $filtros_vacios = $this->filtros_vacios(complemento: $complemento, keys_data_filter: $key_data_filter);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error validar filtros',data: $filtros_vacios,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error validar filtros',data: $filtros_vacios);
             }
             if($filtros_vacios){
                 return $this->error->error(mensaje: 'Error si existe where debe haber al menos un filtro',
-                    data: $complemento, params: get_defined_vars());
+                    data: $complemento);
             }
         }
         return true;
@@ -1420,6 +1419,10 @@ class where{
      * Genera un where base aplicando un estilo correcto SQL
      * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
+     * @version 1.236.39
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-01 14:42
+     * @author mgamboa
      */
     private function where_base(stdClass $complemento): array|stdClass
     {

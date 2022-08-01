@@ -981,6 +981,18 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_where_base(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $complemento = new stdClass();
+        $resultado = $wh->where_base($complemento);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_where_mayus(){
         errores::$error = false;
         $wh = new where();
