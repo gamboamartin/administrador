@@ -963,7 +963,7 @@ class where{
     /**
      * P ORDER P INT ERROREV
      * @param stdClass $complemento Complemento de datos sql
-     * @param array $keys_data_filter
+     * @param array $keys_data_filter Keys para filtros
      * @return array|stdClass
      */
     public function init_params_sql(stdClass $complemento, array $keys_data_filter): array|stdClass
@@ -1417,7 +1417,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERRORREV
+     * Genera un where base aplicando un estilo correcto SQL
      * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
      */
@@ -1428,7 +1428,7 @@ class where{
         }
         $complemento_r = $this->where_mayus(complemento: $complemento);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_r, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_r);
         }
         return $complemento_r;
     }
@@ -1436,19 +1436,19 @@ class where{
     /**
      * P ORDER P INT ERROREV
      * @param stdClass $complemento Complemento de datos sql
-     * @param array $key_data_filter
+     * @param array $key_data_filter Keys de filtros para where
      * @return array|stdClass
      */
     private function where_filtro(stdClass $complemento, array $key_data_filter): array|stdClass
     {
         $complemento_r = $this->where_base(complemento: $complemento);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_r, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_r);
         }
 
         $verifica = $this->verifica_where(complemento: $complemento_r,key_data_filter: $key_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error validar where',data:$verifica, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error validar where',data:$verifica);
         }
 
         $complemento_r->where = ' '.$complemento_r->where.' ';

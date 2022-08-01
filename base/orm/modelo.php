@@ -616,7 +616,7 @@ class modelo extends modelo_base {
      *
      *
      *
-     * @param bool $aplica_seguridad
+     * @param bool $aplica_seguridad Si aplica seguridad entonces valida el usuario logueado
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
      * @param array $columnas_by_table arreglo para obtener los campos especificos de una tabla, si esta seteada,
      * no aplicara las columnas tradicionales
@@ -828,13 +828,27 @@ class modelo extends modelo_base {
 
     /**
      * P INT P ORDER ERROREV
-     * @param array $columnas
+     * @param array $columnas Columnas para muestra si vacio muestra todas
      * @param array $columnas_by_table
      * @param bool $columnas_en_bruto
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
+     * @param array $filtro_rango
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
+     * @param int $limit Numero de registros a mostrar
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
+     * @param int $offset Numero de inicio de registros
+     * @param array $order con parametros para generar sentencia
+     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
+     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
+     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @return array|string
      * @example
      *      $filtro_extra[0][tabla.campo]['operador'] = '<';
      *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
@@ -845,20 +859,6 @@ class modelo extends modelo_base {
      *
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
-     * @param array $filtro_rango
-     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     *                  Opcion2.-
-     *                      Debe ser un array con la siguiente forma
-     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param int $limit Numero de registros a mostrar
-     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @param int $offset Numero de inicio de registros
-     * @param array  $order con parametros para generar sentencia
-     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
-     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
-     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @return array|string
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,
                                        array $filtro, array $filtro_especial, array $filtro_extra,
