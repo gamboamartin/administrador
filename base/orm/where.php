@@ -482,9 +482,9 @@ class where{
 
 
     /**
-     * P ORDER P INT ERRREV
+     * Inicializa los key del filtro como vacios
      * @param stdClass $complemento Complemento de datos SQL a incializar
-     * @param array $keys_data_filter
+     * @param array $keys_data_filter Keys a limpiar o validar
      * @return bool
      */
     private function filtros_vacios(stdClass $complemento, array $keys_data_filter): bool
@@ -1366,8 +1366,9 @@ class where{
 
     /**
      * P ORDER P INT ERROREV
-     ** @param stdClass $complemento Complemento de datos SQL a incializar
-     * @param array $key_data_filter
+     **
+     * @param stdClass $complemento Complemento de datos SQL a incializar
+     * @param array $key_data_filter Filtros a limpiar o validar
      * @return bool|array
      */
     private function verifica_where(stdClass $complemento, array $key_data_filter): bool|array
