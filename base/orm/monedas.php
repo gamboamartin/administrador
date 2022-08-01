@@ -10,8 +10,8 @@ class monedas{
     }
 
     /**
-     * P ORDER P INT PROBADO
-     * @param string|int|float|null $value
+     * Elimina los carcateres para convertir el valor en un double
+     * @param string|int|float|null $value Valor moneda
      * @return string|int|float|null
      */
     private function limpia_moneda_value(string|int|float|null $value): string|int|float|null
