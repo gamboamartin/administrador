@@ -557,10 +557,14 @@ class inicializacion{
      * @param array $campos_encriptados Conjunto de campos a encriptar en el guardado
      * @param array $registro Registro que se insertara
      * @param string $status_default status activo o inactivo
-     * @param array $tipo_campos
+     * @param array $tipo_campos Tipificacion de campos del modelo
      * @return array
+     * @version 1.241.39
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 16:08
      */
-    PUBLIC function registro_ins(array $campos_encriptados, array $registro, string $status_default,
+    public function registro_ins(array $campos_encriptados, array $registro, string $status_default,
                                  array $tipo_campos): array
     {
         $status_default = trim($status_default);
