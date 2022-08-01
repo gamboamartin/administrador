@@ -37,7 +37,7 @@ class directivas extends html {
      * @param bool $required si el elemento es requerido asigna required al html
      * @param bool $disabled aplica o no disabled
      * @param int $cols columnas css
-     * @param string $pattern
+     * @param string $pattern Regex de ejecucion en html5
      * @param bool $ln
      * @return array|string html con info del input a mostrar dependiendo el tipo de input
      * @example
@@ -812,7 +812,7 @@ class directivas extends html {
      *
      * @param string $campo Nombre del campo
      * @param array $valores valores default de los inputs a mostrar
-     * @param array $inputs
+     * @param array $inputs Conjunto de inputs precargados para ser mostrados en front
      * @param array $clases_css base de tipo css que se asignaran al input
      * @param bool $required si el elemento es requerido asigna required al html
      * @param int $cols columnas css
@@ -835,7 +835,8 @@ class directivas extends html {
             return $this->errores->error('Error al obtener datos ', $data_input_template);
         }
         $inputs[$campo] = $this->asigna_campo_template(inputs: $inputs,campo: $campo,valores: $data_input_template['valores'],
-            etiqueta: $data_input_template['etiqueta'],clases_css: $clases_css,tipo_campo: 'telefono',required: $required,disabled: false,cols: $cols);
+            etiqueta: $data_input_template['etiqueta'],clases_css: $clases_css,tipo_campo: 'telefono',required:
+            $required,disabled: false,cols: $cols);
         if(errores::$error){
             return $this->errores->error('Error al generar '.$campo, $inputs[$campo]);
         }
@@ -856,7 +857,7 @@ class directivas extends html {
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $pattern expresion regular a validar en el evento submit
-     * @param string $css_id
+     * @param string $css_id Identificador css
      * @param array $data_extra conjunto de data_extra para asignar al input text
      * @param string $tipo_letra ajustes del label de salida para mostrar en html
      * @param array $clases_css base de tipo css que se asignaran al input

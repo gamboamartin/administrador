@@ -277,7 +277,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * TODO
+     *
      * Valida que exista la clase y la accion
      *
      * @param string $tabla tabla modelo a validar
@@ -288,6 +288,10 @@ class validaciones_directivas extends validacion{
      *      $valida_metodo = $directiva->valida_metodos($this->seccion,'alta');
      *
      * @uses  templates
+     * @version 1.230.38
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 11:42
      */
     public function valida_metodos(string $accion, string $tabla):array|bool{
         $tabla = trim($tabla);

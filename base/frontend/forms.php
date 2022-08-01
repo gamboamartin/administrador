@@ -111,30 +111,30 @@ class forms{
     }
 
     /**
-     * PROBADO P INT P ORDER
-     * @param string $seccion
-     * @param string $accion
-     * @param string $accion_request
-     * @param string $session_id
+     * Obtiene el header de un formulario
+     * @param string $seccion Seccion en ejecucion
+     * @param string $accion Accion ene ejecucion
+     * @param string $accion_request accion a jecutar
+     * @param string $session_id Session de seguridad
      * @return string|array
      */
     public function header_form( string $accion, string $accion_request, string $seccion, string $session_id): string|array
     {
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error('Error $seccion no puede venir vacio', $seccion);
+            return $this->error->error(mensaje: 'Error $seccion no puede venir vacio', data: $seccion);
         }
         $accion = trim($accion);
         if($accion === ''){
-            return $this->error->error('Error $accion no puede venir vacio', $accion);
+            return $this->error->error(mensaje:'Error $accion no puede venir vacio',data: $accion);
         }
         $accion_request = trim($accion_request);
         if($accion_request === ''){
-            return $this->error->error('Error $accion_request no puede venir vacio', $accion_request);
+            return $this->error->error(mensaje:'Error $accion_request no puede venir vacio',data: $accion_request);
         }
         $session_id = trim($session_id);
         if($session_id === ''){
-            return $this->error->error('Error $session_id no puede venir vacio', $session_id);
+            return $this->error->error(mensaje:'Error $session_id no puede venir vacio',data: $session_id);
         }
 
         return "<form id='form-$seccion-$accion' name='form-$seccion-alta' method='POST' 
