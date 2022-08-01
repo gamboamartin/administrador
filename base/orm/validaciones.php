@@ -46,9 +46,9 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
-     * @param array $registro
-     * @param string $tabla
+     * Valida los elementos bases de un alta en base de datos
+     * @param array $registro Registro a validar
+     * @param string $tabla Nombre de tabla a validar
      * @return bool|array
      */
     public function valida_alta_bd(array $registro, string $tabla): bool|array

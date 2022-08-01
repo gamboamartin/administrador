@@ -2,6 +2,7 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -106,6 +107,9 @@ class inserts{
 
     /**
      * P INT P ORDER ERRORREV
+     * @param PDO $link
+     * @param array $registro Registro previo a la insersion
+     * @param string $tabla
      * @return array|stdClass
      */
     private function genera_data_log(PDO $link, array $registro, string $tabla): array|stdClass
@@ -180,7 +184,7 @@ class inserts{
 
     /**
      * P INT P ORDER ERROREV
-     * @param string $campo
+     * @param string $campo Nombre del campo a integrar al sql
      * @param mixed $value
      * @return array|stdClass
      */
@@ -235,6 +239,7 @@ class inserts{
 
     /**
      * P INT P ORDER ERROREV
+     * @param array $registro Registro previo a la insersion
      * @return array|stdClass
      */
     private function sql_alta_full(array $registro): array|stdClass
@@ -258,7 +263,7 @@ class inserts{
 
     /**
      * P INT P ORDER ERRORREV
-     * @param string $campo
+     * @param string $campo Nombre del campo a integrar al sql
      * @param mixed $value
      * @param string $campos
      * @param string $valores
@@ -292,7 +297,7 @@ class inserts{
     }
 
     /**
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function transacciones(modelo $modelo): array|stdClass
     {

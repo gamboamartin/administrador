@@ -292,7 +292,7 @@ class val_sql extends validaciones {
      * @param array $campos_obligatorios
      * @param modelo $modelo
      * @param array $no_duplicados
-     * @param array $registro
+     * @param array $registro Registro a validar
      * @param string $tabla
      * @param array $tipo_campos
      * @return bool|array
