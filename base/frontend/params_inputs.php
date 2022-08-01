@@ -108,6 +108,10 @@ class params_inputs{
     /**
      * Genera el atributo checked si valor es activo
      * @param string $valor Valor a verificar activo inactivo
+     * @version 1.234.39
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-01 14:04
      * @return string|array
      */
     private function checked(string $valor): string|array
@@ -292,7 +296,7 @@ class params_inputs{
     /**
      * PROBADO-PARAMS ORDER P INT
      * @param string $valor Valor a verificar activo inactivo
-     * @param bool $ln
+     * @param bool $ln Si true aplica div 12
      * @param string $css_id
      * @return array|stdClass $data->[string checked_html,string salto,string id_html]
      */
@@ -300,18 +304,18 @@ class params_inputs{
     {
         $checked_html = $this->checked(valor: $valor);
         if(errores::$error){
-            return $this->error->error('Error al validar checked',$checked_html);
+            return $this->error->error(mensaje: 'Error al validar checked',data: $checked_html);
         }
 
 
         $salto = $this->salto(ln: $ln);
         if(errores::$error){
-            return $this->error->error('Error al generar ln',$salto);
+            return $this->error->error(mensaje: 'Error al generar ln',data: $salto);
         }
 
         $id_html = $this->id_html(id_css: $css_id);
         if(errores::$error){
-            return $this->error->error('Error al generar $id_html',$id_html);
+            return $this->error->error(mensaje: 'Error al generar $id_html',data: $id_html);
         }
 
         $data = new stdClass();
@@ -446,8 +450,8 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param bool $ln
+     * Genera un salto de linea aplicando div 12
+     * @param bool $ln Si true aplica div 12
      * @return string
      */
     private function salto(bool $ln): string

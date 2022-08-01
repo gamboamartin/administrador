@@ -229,7 +229,7 @@ class directivas extends html {
      * @param int $cols
      * @param string $valor
      * @param bool $disabled Si disabled retorna text disabled
-     * @param bool $ln
+     * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $css_id
      * @param array $data_extra

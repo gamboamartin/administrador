@@ -40,7 +40,7 @@ class templates{
      * @param array $directivas_extra
      * @param bool $muestra_btn_guardar
      * @param bool $aplica_form
-     * @param array $valores_filtrados
+     * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
      * @param string $seccion
      * @param string $session_id
@@ -257,7 +257,7 @@ class templates{
      * @param mixed $valor
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
-     * @param bool $ln
+     * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $pattern
      * @param string $css_id
@@ -306,7 +306,7 @@ class templates{
 
     /**
      * P INT P ORDER
-     * @param array $valores_filtrados
+     * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
      * @param array $campos_disabled
      * @param array $valores_default
@@ -385,7 +385,7 @@ class templates{
      * @param mixed $valor
      * @param bool $required
      * @param bool $disabled
-     * @param bool $ln
+     * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $pattern
      * @param string $css_id
@@ -630,7 +630,7 @@ class templates{
      * @param mixed $valor
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
-     * @param bool $ln
+     * @param bool $ln Si true aplica div 12
      * @param string $etiqueta
      * @param string $pattern
      * @param string $css_id
