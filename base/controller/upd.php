@@ -42,7 +42,7 @@ class upd{
 
     /**
      *
-     * @param controler $controler
+     * @param controler $controler Controlador en ejecucion
      * @param array $registro_upd
      * @return array|stdClass
      * @throws JsonException

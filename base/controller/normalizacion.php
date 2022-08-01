@@ -397,8 +397,8 @@ class normalizacion{
 
     /**
      *
-     * @param controler $controler
-     * @param array $registro
+     * @param controler $controler Controlador en ejecucion
+     * @param array $registro Registro a inicializar y ajustar
      * @return array
      */
     public function init_upd_base(controler $controler, array $registro): array
@@ -408,7 +408,7 @@ class normalizacion{
             return $this->error->error(mensaje: 'Error al validar POST',data: $valida);
         }
 
-        $controler->registros = $this->procesa_registros_alta(registro: $registro,controler:  $controler);
+        $controler->registros = $this->procesa_registros_alta(controler:  $controler, registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al procesar registros',data: $controler->registros);
         }

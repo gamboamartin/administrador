@@ -992,7 +992,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     /**
      *
-     * @param bool $header
+     * @param bool $header Si header muestra resultado en html
      * @param bool $ws
      * @return array|stdClass
      * @throws JsonException
