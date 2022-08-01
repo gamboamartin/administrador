@@ -472,6 +472,9 @@ class init{
         if($sistema === 'acl'){
             $namespace = 'gamboamartin\\acl\\';
         }
+        if($sistema === 'nomina'){
+            $namespace = 'gamboamartin\\nomina\\';
+        }
 
 
         $name_ctl = 'controlador_'.$seccion;
