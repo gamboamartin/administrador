@@ -469,7 +469,7 @@ class init{
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
-        if($sistema === 'organigrama'){
+        if($sistema === 'acl'){
             $namespace = 'gamboamartin\\acl\\';
         }
 
