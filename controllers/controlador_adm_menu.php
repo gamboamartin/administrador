@@ -1,11 +1,12 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\menu;
+use models\adm_menu;
 
-class controlador_menu extends controlador_base{
+
+class controlador_adm_menu extends controlador_base{
     public function __construct($link){
-        $modelo = new menu($link);
+        $modelo = new adm_menu($link);
         parent::__construct($link, $modelo);
     }
 
