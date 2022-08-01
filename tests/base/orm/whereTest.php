@@ -981,6 +981,20 @@ class whereTest extends test {
 
     }
 
+    public function test_verifica_where(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $complemento = new stdClass();
+        $key_data_filter = array();
+        $resultado = $wh->verifica_where($complemento, $key_data_filter);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_where(){
         errores::$error = false;
         $wh = new where();

@@ -1374,6 +1374,10 @@ class where{
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $key_data_filter Filtros a limpiar o validar
      * @return bool|array
+     * @version 1.245.39
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-01 16:47
+     * @author mgamboa
      */
     private function verifica_where(stdClass $complemento, array $key_data_filter): bool|array
     {
