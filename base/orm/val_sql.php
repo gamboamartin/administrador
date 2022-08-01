@@ -8,7 +8,7 @@ class val_sql extends validaciones {
 
     /**
      * ERROREV
-     * @param string $campo
+     * @param string $campo Campo a validar si existe
      * @param array $keys_ids
      * @param array $registro
      * @return array|string
@@ -17,12 +17,11 @@ class val_sql extends validaciones {
     {
         $campo_r = $this->txt_valido(txt: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error key invalido', data: $campo_r, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error key invalido', data: $campo_r);
         }
         $existe = $this->existe(keys_obligatorios: $keys_ids, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
         }
         return $campo_r;
     }
@@ -112,7 +111,7 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER PROBADO ERRORREV
-     * @param array $keys_ids
+     * @param array $keys_ids Campos de tipo ids a validar
      * @param array $registro
      * @return bool|array
      */
@@ -121,8 +120,7 @@ class val_sql extends validaciones {
         foreach($keys_ids as $campo){
             $verifica = $this->verifica_id(campo: $campo,keys_ids: $keys_ids,registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar campo ids',data:  $verifica,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al verificar campo ids',data:  $verifica);
             }
 
         }
@@ -180,8 +178,8 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERRORREV
-     * @param string $txt
+     * Valida si un texto es valido
+     * @param string $txt Texto a validar
      * @return array|string
      */
     private function txt_valido(string $txt): array|string
@@ -245,7 +243,7 @@ class val_sql extends validaciones {
      * @param array $campos_obligatorios
      * @param array $registro
      * @param string $tabla
-     * @param array $tipo_campos
+     * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
      */
     private function verifica_estructura(array $campos_obligatorios, array $registro, string $tabla,
@@ -267,7 +265,7 @@ class val_sql extends validaciones {
 
     /**
      * ERROR
-     * @param string $campo
+     * @param string $campo Campo a validar
      * @param array $keys_ids
      * @param array $registro
      * @return bool|array
@@ -276,13 +274,12 @@ class val_sql extends validaciones {
     {
         $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys_ids,registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar campo ids', data: $campo_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al verificar campo ids', data: $campo_r);
         }
 
         if(!preg_match($this->patterns['id'], $registro[$campo_r])){
             return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] es invalido',
-                data: array($registro[$campo_r],$this->patterns['id']), params: get_defined_vars());
+                data: array($registro[$campo_r],$this->patterns['id']));
         }
         return true;
     }
@@ -294,7 +291,7 @@ class val_sql extends validaciones {
      * @param array $no_duplicados
      * @param array $registro Registro a validar
      * @param string $tabla
-     * @param array $tipo_campos
+     * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
      */
     public function valida_base_alta(array $campos_obligatorios, modelo $modelo, array $no_duplicados, array $registro,
@@ -333,7 +330,7 @@ class val_sql extends validaciones {
      * Funcion que valida la estructura de los campos de un modelo
      *
      * @param array $registro
-     * @param array $tipo_campos
+     * @param array $tipo_campos Campos con tipificacion desde modelo
      * @param array $keys_checked conjunto de campos en forma checked
      * @param array $keys_ids conjunto de campos en forma de id a validar
      * @param array $keys_obligatorios conjunto de campos obligatorios a validar
