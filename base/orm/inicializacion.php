@@ -54,7 +54,7 @@ class inicializacion{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $complemento
+     ** @param stdClass $complemento Complemento con datos para maquetacion de sql
      * @return array|stdClass
      */
     public function ajusta_params(stdClass $complemento): array|stdClass
@@ -399,8 +399,8 @@ class inicializacion{
     }
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param stdClass $complemento
+     * Inicializacion de parametros a vacio
+     * @param stdClass $complemento Complemento con datos para maquetacion de sql
      * @return stdClass
      */
     private function init_params(stdClass $complemento): stdClass
