@@ -54,8 +54,12 @@ class inicializacion{
 
     /**
      * Ajusta los parametros si no existen en el complemento
-     ** @param stdClass $complemento Complemento con datos para maquetacion de sql
+     * @param stdClass $complemento Complemento con datos para maquetacion de sql
      * @return array|stdClass
+     * @version 1.259.40
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-02 13:07
+     * @author mgamboa
      */
     public function ajusta_params(stdClass $complemento): array|stdClass
     {

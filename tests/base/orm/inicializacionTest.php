@@ -76,6 +76,24 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_ajusta_params(): void
+    {
+        errores::$error = false;
+        $modelo = new inicializacion();
+        //$modelo = new liberator($modelo);
+
+
+        $complemento = new stdClass();
+        $resultado = $modelo->ajusta_params($complemento);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->params->offset);
+        $this->assertEquals('',$resultado->params->group_by);
+        $this->assertEquals('',$resultado->params->order);
+        $this->assertEquals('',$resultado->params->limit);
+        errores::$error = false;
+    }
+
     public function test_ajusta_registro_upd(){
         errores::$error = false;
         $inicializacion = new inicializacion();
