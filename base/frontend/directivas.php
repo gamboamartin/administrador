@@ -248,24 +248,24 @@ class directivas extends html {
 
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error campo vacio', $campo);
+            return $this->error->error(mensaje: 'Error campo vacio', data: $campo);
         }
 
         $class ="class='checkboxes'";
 
         $params_base = (new params_inputs())->params_chk(css_id:  $css_id,ln: $ln,valor:$valor);
         if(errores::$error){
-            return $this->error->error('Error al generar parametros',$params_base);
+            return $this->error->error(mensaje:'Error al generar parametros', data:$params_base);
         }
 
         $data_extra_html = (new extra_params())->data_extra_html(data_extra: $data_extra);
         if(errores::$error){
-            return $this->error->error('Error al generar data-extra',$data_extra_html);
+            return $this->error->error(mensaje:'Error al generar data-extra', data:$data_extra_html);
         }
 
         $data_etiqueta = (new etiquetas())->etiqueta_chk(etiqueta: $etiqueta);
         if(errores::$error){
-            return $this->error->error('Error al generar etiqueta',$data_etiqueta);
+            return $this->error->error(mensaje:'Error al generar etiqueta', data:$data_etiqueta);
         }
 
         $disabled_html = (new params_inputs())->disabled_html(disabled: $disabled);

@@ -91,8 +91,8 @@ class etiquetas{
     }
 
     /**
-     * PROBADO PARAMS ORDER PARAMS INT
-     * @param string $etiqueta
+     * Genera una etiqueta para checkbox
+     * @param string $etiqueta Txt con etiqueta a mostrar
      * @return string
      */
     public function etiqueta_chk(string $etiqueta): string
