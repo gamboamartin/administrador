@@ -62,6 +62,11 @@ class init{
         /**
          * @var $name_ctl controlador_base
          */
+
+        if($paths_conf === null){
+            return new $name_ctl(link:$link);
+        }
+
         return new $name_ctl(link:$link,paths_conf: $paths_conf);
     }
 
