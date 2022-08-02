@@ -36,9 +36,13 @@ class extra_params{
     }
 
     /**
-     * FULL
+     * Genera los extra params via html
      * @param array $data_extra Conjunto de extra params para se asignados a un input
      * @return string|array
+     * @version 1.254.39
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-02 10:41
+     * @author mgamboa
      */
     public function data_extra_html(array $data_extra): string|array
     {

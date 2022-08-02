@@ -147,7 +147,7 @@ class directivas extends html {
      * @param array $class_css Clases css a incrustar en div
      * @param string $icon
      * @param string $id_css
-     * @param array $datas
+     * @param array $datas Conjunto de extra params para se convertido en html
      * @return array|string string palabra ajustada
      * @example
      *      $this->btn = $this->directiva->btn_enviar(4,'Modifica','btn_modifica','modifica');

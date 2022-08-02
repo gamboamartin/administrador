@@ -152,7 +152,7 @@ class botones{
      * FULL
      * @param array $class_css
      * @param string $icon
-     * @param array $datas
+     * @param array $datas Conjunto de extra params para se convertido en html
      * @return array|stdClass
      */
     public function data_btn(array $class_css, array $datas, string $icon): array|stdClass
