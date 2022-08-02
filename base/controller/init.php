@@ -41,16 +41,28 @@ class init{
      * Genera un controlador basado en el nombre
      * @param PDO $link Conexion a base de datos
      * @param string $seccion Seccion en ejecucion
+     * @param stdClass $paths_conf Configuraciones de conexion
      * @return controler|array
+     * @version 1.253.39
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-02 10:01
+     * @author mgamboa
      */
-    public function controller(PDO $link, string $seccion):controler|array{
+    public function controller(PDO $link, string $seccion, stdClass $paths_conf = new stdClass()):controler|array{
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia ',data: $seccion);
+        }
         $name_ctl = $this->name_controler(seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener nombre de controlador', data: $name_ctl);
 
         }
 
-        return new $name_ctl(link:$link);
+        /**
+         * @var $name_ctl controlador_base
+         */
+        return new $name_ctl(link:$link,paths_conf: $paths_conf);
     }
 
     /**

@@ -10,6 +10,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
 use models\seccion;
+use stdClass;
 
 
 class initTest extends test {
@@ -32,6 +33,26 @@ class initTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsNumeric($resultado['session_id']);
         errores::$error = false;
+    }
+
+    public function test_controller(): void
+    {
+
+        errores::$error = false;
+
+        $init = new init();
+        //$init = new liberator($init);
+
+        $seccion = 'adm_seccion';
+        $paths_conf = new stdClass();
+        $paths_conf->generales = '/var/www/html/administrador/config/generales.php';
+        $paths_conf->database = '/var/www/html/administrador/config/database.php';
+        $paths_conf->views = '/var/www/html/administrador/config/views.php';
+        $resultado = $init->controller($this->link, $seccion, paths_conf: $paths_conf);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
     }
 
 

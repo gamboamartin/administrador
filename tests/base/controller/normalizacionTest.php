@@ -1,13 +1,14 @@
 <?php
 namespace tests\base\controller;
 
+use base\controller\controlador_base;
 use base\controller\controler;
 use base\controller\normalizacion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_seccion;
-use models\seccion;
+use stdClass;
 
 
 class normalizacionTest extends test {
@@ -160,11 +161,17 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         //$nm = new liberator($nm);
 
-        $controler = new controler('', '');
+        $mod = new adm_seccion($this->link);
+        $paths_conf = new stdClass();
+        $paths_conf->generales = '/var/www/html/administrador/config/generales.php';
+        $paths_conf->database = '/var/www/html/administrador/config/database.php';
+        $paths_conf->views = '/var/www/html/administrador/config/views.php';
+        $controler = new controlador_base(link: $this->link,modelo: $mod, paths_conf: $paths_conf);
         $resultado = $nm->init_controler(controler: $controler);
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("", $resultado->tabla);
+        $this->assertEquals("adm_session", $resultado->tabla);
         errores::$error = false;
     }
 
