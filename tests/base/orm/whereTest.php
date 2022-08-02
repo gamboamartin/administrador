@@ -620,6 +620,19 @@ class whereTest extends test {
 
     }
 
+    public function test_init_params_sql(){
+        errores::$error = false;
+        $wh = new where();
+       // $wh = new liberator($wh);
+
+        $keys_data_filter = array();
+        $complemento = new stdClass();
+        $resultado = $wh->init_params_sql($complemento, $keys_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_limpia_filtros(){
         errores::$error = false;
         $wh = new where();

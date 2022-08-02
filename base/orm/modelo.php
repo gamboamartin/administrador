@@ -780,7 +780,7 @@ class modelo extends modelo_base {
 
         $result = $this->ejecuta_consulta(consulta:$sql,campos_encriptados: $this->campos_encriptados, hijo: $hijo);
         if(errores::$error){
-            return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result, params: get_defined_vars());
+            return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
         }
 
         return $result;

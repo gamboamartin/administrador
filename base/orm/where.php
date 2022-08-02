@@ -969,6 +969,10 @@ class where{
      * @param stdClass $complemento Complemento de datos sql
      * @param array $keys_data_filter Keys para filtros
      * @return array|stdClass
+     * @version 1.260.40
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-02 14:46
      */
     public function init_params_sql(stdClass $complemento, array $keys_data_filter): array|stdClass
     {
