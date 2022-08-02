@@ -87,11 +87,15 @@ class filtros{
     }
 
     /**
-     * P ORDER P INT ERRORREV
+     * Genera el sql completo para una sentencia select con wheres
      * @param stdClass $complemento Complemento de filtros a integrar en un select
      * @param string $consulta SQL PREVIO
      * @param modelo $modelo Modelo en ejecucion
      * @return string|array
+     * @version 1.261.40
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-02 15:53
+     * @author mgamboa
      */
     public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
     {
@@ -110,6 +114,15 @@ class filtros{
             keys_data_filter: $modelo->keys_data_filter);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r);
+        }
+
+
+        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','not_in','sentencia','sql_extra');
+
+        foreach ($keys as $key){
+            if(!isset($complemento_r->$key)){
+                $complemento_r->$key = '';
+            }
         }
 
 

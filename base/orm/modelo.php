@@ -827,10 +827,10 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Genera los filtros para una sentencia select
      * @param array $columnas Columnas para muestra si vacio muestra todas
-     * @param array $columnas_by_table
-     * @param bool $columnas_en_bruto
+     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
+     * @param bool $columnas_en_bruto if true obtiene solo los elementos nativos de la tabla o modelo
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_extra arreglo que contiene las condiciones

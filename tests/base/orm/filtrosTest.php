@@ -7,9 +7,7 @@ use gamboamartin\errores\errores;
 
 use gamboamartin\test\test;
 use models\adm_seccion;
-
-
-
+use stdClass;
 
 
 class filtrosTest extends test {
@@ -48,6 +46,61 @@ class filtrosTest extends test {
         errores::$error = false;
 
 
+    }
+
+    public function test_consulta_full_and(){
+        errores::$error = false;
+        $filtros = new filtros();
+        //$inicializacion = new liberator($inicializacion);
+
+        $modelo = new adm_seccion($this->link);
+
+        $complemento = new stdClass();
+        $consulta = '';
+        $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
+        $this->assertTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertStringContainsStringIgnoringCase('Error $consulta no puede venir vacia',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+
+        $complemento = new stdClass();
+        $consulta = 'a';
+
+        $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('a            ',$resultado);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+
+        $complemento = new stdClass();
+        $consulta = 'a';
+        $complemento->sql_extra = 'b';
+
+        $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('a       b     ',$resultado);
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+
+        $complemento = new stdClass();
+        $consulta = 'a';
+        $complemento->sql_extra = 'b';
+        $complemento->filtro_fecha = 'c';
+
+        $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('a     c  b     ',$resultado);
+        errores::$error = false;
     }
 
 
