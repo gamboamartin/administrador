@@ -94,6 +94,11 @@ class etiquetas{
      * Genera una etiqueta para checkbox
      * @param string $etiqueta Txt con etiqueta a mostrar
      * @return string
+     * @version 1.257.40
+     * @version 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-02 11:39
+     *
      */
     public function etiqueta_chk(string $etiqueta): string
     {

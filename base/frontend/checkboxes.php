@@ -51,22 +51,22 @@ class checkboxes{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error campo vacio', $campo);
+            return $this->error->error(mensaje: 'Error campo vacio',data:  $campo);
         }
         $valida = $this->validacion->valida_cols(cols:$cols);
         if(errores::$error){
-            return $this->error->error('Error al validar cols', $valida);
+            return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
         $data_span = $this->data_span_chk(campo: $campo, checked_html:  $checked_html,class:  $class,
             data_extra_html: $data_extra_html, disabled_html:  $disabled_html, id_html: $id_html,valor: $valor);
         if(errores::$error){
-            return $this->error->error('Error al generar span',$data_span);
+            return $this->error->error(mensaje: 'Error al generar span',data: $data_span);
         }
 
         $div_chk = $this->etiqueta_chk(cols: $cols, data_etiqueta:$data_etiqueta,span_chk: $data_span->span_chk);
         if(errores::$error){
-            return $this->error->error('Error al generar div',$div_chk);
+            return $this->error->error(mensaje: 'Error al generar div',data: $div_chk);
         }
 
         $data = new stdClass();

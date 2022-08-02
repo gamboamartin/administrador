@@ -277,13 +277,13 @@ class directivas extends html {
             class: $class,cols:  $cols,data_etiqueta: $data_etiqueta,data_extra_html:  $data_extra_html,
             disabled_html: $disabled_html, id_html: $params_base->id_html, valor: $valor);
         if(errores::$error){
-            return $this->error->error('Error al generar datos chk',$data_chk);
+            return $this->error->error(mensaje: 'Error al generar datos chk',data: $data_chk);
         }
 
         $checkbox = (new checkboxes())->checkbox(data_input:  $data_chk->data_input, div_chk: $data_chk->div_chk,
             etiqueta:  $etiqueta,salto: $params_base->salto);
         if(errores::$error){
-            return $this->error->error('Error al generar checkbox',$checkbox);
+            return $this->error->error(mensaje: 'Error al generar checkbox',data: $checkbox);
         }
 
 
