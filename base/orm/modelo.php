@@ -744,7 +744,10 @@ class modelo extends modelo_base {
      * @internal  $this->order_sql($order);
      * @internal  $this->filtro_especial_final($filtro_especial_sql,$where);
      * @internal  $this->ejecuta_consulta($hijo);
-     * @uses  todo el sistema
+     * @version 1.263.40
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-02 16:49
      */
     public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                array $columnas_by_table = array(), bool $columnas_en_bruto = false,

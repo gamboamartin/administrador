@@ -46,6 +46,20 @@ class modeloTest extends test {
 
     }
 
+    public function test_filtro_and(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $resultado = $modelo->filtro_and();
+        $this->assertIsObject( $resultado);
+        $this->assertEquals('1',$resultado->registros[0]['adm_seccion_id']);
+
+        errores::$error = false;
+
+    }
+
     public function test_filtro_or(): void
     {
         errores::$error = false;
