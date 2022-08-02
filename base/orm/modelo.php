@@ -859,6 +859,11 @@ class modelo extends modelo_base {
      *
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
+     *
+     * @version 1.262.40
+     * @verfuncion  1.1.0
+     * @fecha 2022-08-02 16:38
+     * @author mgamboa
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,
                                        array $filtro, array $filtro_especial, array $filtro_extra,
@@ -866,6 +871,14 @@ class modelo extends modelo_base {
                                        array $order, string $sql_extra, string $tipo_filtro,
                                        array $filtro_fecha = array()): array|string
     {
+        if($limit<0){
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+        }
+        if($offset<0){
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+
+        }
+
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);

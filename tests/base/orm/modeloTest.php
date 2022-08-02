@@ -17,11 +17,6 @@ class modeloTest extends test {
     }
 
 
-
-
-
-
-
     public function test_data_sentencia(): void
     {
         errores::$error = false;
@@ -64,9 +59,113 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_sql_filtro(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $columnas = array();
+        $columnas_by_table = array();
+        $columnas_en_bruto = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array();
+        $offset = 0;
+        $order = array();
+        $sql_extra = '';
+        $tipo_filtro = '';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id            ',$resultado);
+
+        errores::$error = false;
 
 
+        $columnas = array();
+        $columnas_by_table = array();
+        $columnas_en_bruto = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array();
+        $offset = 0;
+        $order = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro);
 
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (x))     ',$resultado);
+
+
+        errores::$error = false;
+
+
+        $columnas = array();
+        $columnas_by_table = array();
+        $columnas_en_bruto = true;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array();
+        $offset = 0;
+        $order = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SELECT adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (x))     ',$resultado);
+
+
+        errores::$error = false;
+
+
+        $columnas = array('adm_seccion_id');
+        $columnas_by_table = array();
+        $columnas_en_bruto = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array();
+        $offset = 0;
+        $order = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (x))     ',$resultado);
+
+
+        errores::$error = false;
+    }
 
     public function test_obten_data(): void
     {
@@ -157,10 +256,6 @@ class modeloTest extends test {
 
     }
 
-
-
-
-
     public function test_registro(): void
     {
         errores::$error = false;
@@ -172,7 +267,6 @@ class modeloTest extends test {
         errores::$error = false;
 
     }
-
 
     public function test_seccion_menu_id(): void
     {
