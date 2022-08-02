@@ -1021,6 +1021,19 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_where_filtro(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $complemento = new stdClass();
+        $key_data_filter = array();
+        $resultado = $wh->where_filtro($complemento, $key_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_where_mayus(){
         errores::$error = false;
         $wh = new where();

@@ -974,13 +974,12 @@ class where{
     {
         $complemento_w = $this->where_filtro(complemento: $complemento,key_data_filter:  $keys_data_filter);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_w, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error ajustar where',data: $complemento_w);
         }
 
         $complemento_r = (new inicializacion())->ajusta_params(complemento: $complemento_w);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r);
         }
         return $complemento_r;
     }
@@ -1450,6 +1449,9 @@ class where{
      * @param stdClass $complemento Complemento de datos sql
      * @param array $key_data_filter Keys de filtros para where
      * @return array|stdClass
+     * @version 1.251.39
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-02 09:43
      */
     private function where_filtro(stdClass $complemento, array $key_data_filter): array|stdClass
     {
