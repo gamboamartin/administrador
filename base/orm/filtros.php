@@ -90,7 +90,7 @@ class filtros{
      * P ORDER P INT ERRORREV
      * @param stdClass $complemento Complemento de filtros a integrar en un select
      * @param string $consulta SQL PREVIO
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @return string|array
      */
     public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
@@ -101,12 +101,13 @@ class filtros{
             return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data: $consulta);
         }
 
-        $complemento = (new where())->limpia_filtros(filtros: $complemento,keys_data_filter:  $modelo->columnas_extra);
+        $complemento_ = (new where())->limpia_filtros(filtros: $complemento,keys_data_filter:  $modelo->columnas_extra);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al limpiar filtros',data:$complemento);
+            return $this->error->error(mensaje:'Error al limpiar filtros',data:$complemento_);
         }
 
-        $complemento_r = (new where())->init_params_sql(complemento: $complemento,keys_data_filter: $modelo->keys_data_filter);
+        $complemento_r = (new where())->init_params_sql(complemento: $complemento_,
+            keys_data_filter: $modelo->keys_data_filter);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r);
         }

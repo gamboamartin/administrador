@@ -965,7 +965,7 @@ class where{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * Inicializa los parametros de un complemento para where
      * @param stdClass $complemento Complemento de datos sql
      * @param array $keys_data_filter Keys para filtros
      * @return array|stdClass
