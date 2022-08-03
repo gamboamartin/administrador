@@ -1496,8 +1496,8 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P ORDER P INT ERROREV
-     * @param string $seccion
+     * Obtiene el id de una seccion
+     * @param string $seccion Seccion a obtener el id
      * @return array|int
      */
     protected function seccion_menu_id(string $seccion):array|int{
