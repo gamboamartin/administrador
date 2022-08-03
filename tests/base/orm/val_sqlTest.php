@@ -317,6 +317,36 @@ class val_sqlTest extends test {
 
     }
 
+    public function test_txt_valido(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $txt = '';
+        $resultado = $val->txt_valido($txt);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error el $txt no puede venir vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $txt = '9.9';
+        $resultado = $val->txt_valido($txt);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error el $txt es numero debe se un string', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $txt = '9za_a';
+        $resultado = $val->txt_valido($txt);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('9za_a', $resultado);
+        errores::$error = false;
+    }
+
     public function test_vacio(): void
     {
         errores::$error = false;

@@ -9,7 +9,7 @@ class val_sql extends validaciones {
     /**
      * ERROREV
      * @param string $campo Campo a validar si existe
-     * @param array $keys_ids
+     * @param array $keys_ids Keys a validar
      * @param array $registro
      * @return array|string
      */
@@ -112,7 +112,7 @@ class val_sql extends validaciones {
     /**
      * P INT P ORDER PROBADO ERRORREV
      * @param array $keys_ids Campos de tipo ids a validar
-     * @param array $registro
+     * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @return bool|array
      */
     private function ids(array $keys_ids, array $registro ): bool|array
@@ -181,6 +181,11 @@ class val_sql extends validaciones {
      * Valida si un texto es valido
      * @param string $txt Texto a validar
      * @return array|string
+     * @version 1.266.40
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-03 11:47
+     * @author mgamboa
+     *
      */
     private function txt_valido(string $txt): array|string
     {
@@ -241,7 +246,7 @@ class val_sql extends validaciones {
     /**
      * P INT P ORDER PROBADO ERROREV
      * @param array $campos_obligatorios
-     * @param array $registro
+     * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @param string $tabla
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
@@ -266,7 +271,7 @@ class val_sql extends validaciones {
     /**
      * ERROR
      * @param string $campo Campo a validar
-     * @param array $keys_ids
+     * @param array $keys_ids Keys a validar
      * @param array $registro
      * @return bool|array
      */
@@ -286,7 +291,7 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER ERROR
-     * @param array $campos_obligatorios
+     * @param array $campos_obligatorios Campos definidos en el modelo como obligatorios
      * @param modelo $modelo
      * @param array $no_duplicados
      * @param array $registro Registro a validar
@@ -329,7 +334,7 @@ class val_sql extends validaciones {
      * P INT P ORDER PROBADO ERROREV
      * Funcion que valida la estructura de los campos de un modelo
      *
-     * @param array $registro
+     * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @param array $keys_checked conjunto de campos en forma checked
      * @param array $keys_ids conjunto de campos en forma de id a validar
