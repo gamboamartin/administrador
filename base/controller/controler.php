@@ -439,10 +439,15 @@ class controler{
     }
 
 
-    protected function header_out(mixed $result, bool $header, bool $ws): void
+    protected function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig): void
     {
         if($header){
+            $retorno_sig = trim($retorno_sig);
             $retorno = $_SERVER['HTTP_REFERER'];
+
+            if($retorno_sig!==''){
+                $retorno = $retorno_sig;
+            }
             header('Location:'.$retorno);
             exit;
         }
