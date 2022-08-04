@@ -46,7 +46,7 @@ class templates{
      * @param string $session_id
      * @param string $path_base
      * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
-     * @param array $valores_default
+     * @param array $valores_default Valores definidos como default del controller
      * @param array $campos_invisibles
      * @return array|string
      */
@@ -253,7 +253,7 @@ class templates{
      * P INT
      * @param string $tipo
      * @param string $campo_name Name del input
-     * @param int $cols
+     * @param int $cols Columnas para css
      * @param mixed $valor
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
@@ -309,7 +309,7 @@ class templates{
      * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
      * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
-     * @param array $valores_default
+     * @param array $valores_default Valores definidos como default del controller
      * @param array $campos_invisibles
      * @return array|string
      */
@@ -381,7 +381,7 @@ class templates{
      *
      * @param string $campo_name Name del input
      * @param string $tipo
-     * @param int $cols
+     * @param int $cols Columnas para css
      * @param mixed $valor
      * @param bool $required
      * @param bool $disabled
@@ -626,7 +626,7 @@ class templates{
      * Genera un input de tipo HTML
      * @param string $tipo
      * @param string $campo_name Name del input
-     * @param int $cols
+     * @param int $cols Columnas para css
      * @param mixed $valor
      * @param bool $required indica si es requerido o no
      * @param bool $disabled

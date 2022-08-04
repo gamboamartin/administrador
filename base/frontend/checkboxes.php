@@ -35,14 +35,14 @@ class checkboxes{
 
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param string $valor
      * @param string $class
      * @param string $id_html
      * @param string $data_extra_html
      * @param string $checked_html
      * @param string $data_etiqueta
-     * @param int $cols
+     * @param int $cols Columnas para css
      * @param string $disabled_html
      * @return array|stdClass
      */
@@ -80,13 +80,13 @@ class checkboxes{
 
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param string $campo
-     * @param string $valor
-     * @param string $class
-     * @param string $id_html
-     * @param string $data_extra_html
-     * @param string $checked_html
-     * @param string $disabled_html
+     * @param string $campo Campo de input
+     * @param string $valor Valor activo o inactivo
+     * @param string $class class css
+     * @param string $id_html id css
+     * @param string $data_extra_html extra params
+     * @param string $checked_html atributo checked
+     * @param string $disabled_html atributo disabled
      * @return string|array
      */
     private function data_input_chk(string $campo, string $checked_html, string $class, string $data_extra_html,
@@ -114,7 +114,7 @@ class checkboxes{
 
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param string $valor
      * @param string $class
      * @param string $id_html
