@@ -498,6 +498,9 @@ class init{
         if($sistema === 'tg_cliente'){
             $namespace = 'tglobally\\tg_cliente\\';
         }
+        if($sistema === 'tg_empresa'){
+            $namespace = 'tglobally\\tg_empresa\\';
+        }
 
 
 
