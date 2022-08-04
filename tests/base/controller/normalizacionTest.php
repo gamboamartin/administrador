@@ -129,6 +129,70 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_upd_base(): void
+    {
+        errores::$error = false;
+        $nm = new normalizacion();
+        //$nm = new liberator($nm);
+        $controler = new controler('', '');
+
+        $registro = array();
+        //$registro[] = '';
+        $resultado = $nm->init_upd_base($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al validar POST", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro[] = '';
+        $_POST = array();
+        $_POST[] = '';
+        $resultado = $nm->init_upd_base($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error la seccion no puede venir vacia", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro[] = '';
+        $_POST = array();
+        $_POST[] = '';
+        $controler->seccion = 'a';
+        $resultado = $nm->init_upd_base($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al procesar registros", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro[] = 'a';
+        $_POST = array();
+        $_POST['a'] = 'a';
+        $controler->seccion = 'a';
+        $resultado = $nm->init_upd_base($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("Error al procesar registros", $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['a'] = 'a';
+        $_POST = array();
+        $_POST['a'] = 'a';
+        $controler->seccion = 'a';
+        $controler->modelo = new adm_seccion($this->link);
+        $resultado = $nm->init_upd_base($controler, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado['a']);
+        errores::$error = false;
+    }
+
     public function test_genera_registros_envio(): void
     {
         errores::$error = false;
@@ -215,9 +279,10 @@ class normalizacionTest extends test {
         errores::$error = false;
         $nm = new normalizacion();
         //$nm = new liberator($nm);
+        unset($_POST);
 
-        $filtro_default_btn = array();
         $resultado = $nm->limpia_post_alta();
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);

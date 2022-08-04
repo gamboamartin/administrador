@@ -400,12 +400,22 @@ class normalizacion{
      * @param controler $controler Controlador en ejecucion
      * @param array $registro Registro a inicializar y ajustar
      * @return array
+     * @version 1.269.40
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-04 14:00
+     * @author mgamboa
      */
     public function init_upd_base(controler $controler, array $registro): array
     {
         $valida = $this->validacion->valida_post_modifica();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar POST',data: $valida);
+        }
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data: $registro);
+        }
+        if($controler->seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia', data: $controler->seccion);
         }
 
         $controler->registros = $this->procesa_registros_alta(controler:  $controler, registro: $registro);
