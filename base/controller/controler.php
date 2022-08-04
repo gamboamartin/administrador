@@ -439,7 +439,7 @@ class controler{
     }
 
 
-    protected function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig): void
+    protected function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig = ''): void
     {
         if($header){
             $retorno_sig = trim($retorno_sig);
