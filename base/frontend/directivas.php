@@ -145,7 +145,7 @@ class directivas extends html {
      * @param string $type submit o button
      * @param string $stilo forma del boton success warning etc
      * @param array $class_css Clases css a incrustar en div
-     * @param string $icon
+     * @param string $icon Icono a mostrar
      * @param string $id_css
      * @param array $datas Conjunto de extra params para se convertido en html
      * @return array|string string palabra ajustada
@@ -164,12 +164,12 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_data_btn(cols: $cols,label:  $label,name:  $name,value:  $value);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar boton', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar boton', data: $valida);
         }
 
         $params = (new botones())->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar parametros', data: $params,params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar parametros', data: $params);
         }
 
         $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,  params: $params,

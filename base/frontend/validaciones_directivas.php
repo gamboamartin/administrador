@@ -33,6 +33,10 @@ class validaciones_directivas extends validacion{
      * Valida si las columnas estan en un rango correcto
      * @param int $cols Columnas para css
      * @return bool|array
+     * @version 1.267.40
+     * @verfuncion 1.1.0
+     * @fecha 2022-08-04 11:18
+     * @author mgamboa
      */
     public function valida_cols(int $cols): bool|array
     {

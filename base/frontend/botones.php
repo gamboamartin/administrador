@@ -91,13 +91,13 @@ class botones{
 
     /**
      * FULL
-     * @param string $type
-     * @param string $name
-     * @param string $value
-     * @param string $id_css
-     * @param string $label
-     * @param string $stilo
-     * @param stdClass $params
+     * @param string $type Tipo de input
+     * @param string $name Nombre del input
+     * @param string $value Valor del input
+     * @param string $id_css identificador css
+     * @param string $label Etiqueta del boton
+     * @param string $stilo Estilo o contento danger , success etc
+     * @param stdClass $params Parametros del button
      * @param int $cols Columnas para css
      * @return array|string
      */
@@ -106,17 +106,17 @@ class botones{
     {
         $type = trim ($type);
         if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
         }
         $stilo = trim ($stilo);
         if($stilo === ''){
-            return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo);
         }
 
         $btn = $this->btn_html(id_css:  $id_css, label: $label,name:  $name,params:  $params, stilo: $stilo,
             type: $type, value:  $value);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar boton', data: $btn, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar boton', data: $btn);
         }
 
         $button = $this->container_html(cols: $cols, contenido:  $btn);
@@ -128,9 +128,9 @@ class botones{
     }
 
     /**
-     * FULL
+     * Genera un contenedor base html
      * @param int $cols Columnas para css
-     * @param string $contenido
+     * @param string $contenido Contenido del div
      * @return string|array
      */
     private function container_html(int $cols, string $contenido): string|array
