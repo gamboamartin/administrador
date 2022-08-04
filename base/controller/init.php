@@ -495,6 +495,10 @@ class init{
         if($sistema === 'comercial'){
             $namespace = 'gamboamartin\\comercial\\';
         }
+        if($sistema === 'tg_cliente'){
+            $namespace = 'tglobally\\tg_cliente\\';
+        }
+
 
 
         $name_ctl = 'controlador_'.$seccion;
