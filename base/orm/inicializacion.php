@@ -428,6 +428,9 @@ class inicializacion{
      * @param modelo $modelo Modelo en ejecucion
      * @param array $registro Registro a con datos a actualizar
      * @return array|stdClass
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-08 13:17
      */
     public function init_upd(int $id, modelo $modelo, array $registro): array|stdClass
     {

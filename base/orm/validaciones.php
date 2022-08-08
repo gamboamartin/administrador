@@ -328,7 +328,7 @@ class validaciones extends validacion{
 
     /**
      * Valida un regex basado en el tipo de campo
-     * @param array $tipo_campos
+     * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
      * @param array $registro_upd
      * @return bool|array
      */
@@ -351,9 +351,9 @@ class validaciones extends validacion{
 
     /**
      * Valida un regex con patter de campo
-     * @param string $campo
-     * @param array $registro_upd
-     * @param string $tipo_campo
+     * @param string $campo Campo a validar
+     * @param array $registro_upd Registro a validar
+     * @param string $tipo_campo Tipo de campo para aplicacion de regex
      * @return bool|array
      */
     private function valida_regex_campo(string $campo, array $registro_upd, string $tipo_campo): bool|array
@@ -436,7 +436,7 @@ class validaciones extends validacion{
      * Valida los elementos basicos de un upd
      * @param int $id Identificador a modificar
      * @param array $registro_upd Registro a modificar
-     * @param array $tipo_campos Tipos de campo a verificar upd
+     * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
      * @return array|bool
      * @version 1.77.17
      * @verfuncion 1.2.0 Se integra tipo campos para validar con regex
