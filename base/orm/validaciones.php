@@ -338,6 +338,9 @@ class validaciones extends validacion{
             if(!isset($registro_upd[$campo])){
                 continue;
             }
+            if(trim($registro_upd[$campo]) === ''){
+                continue;
+            }
             $valida = $this->valida_regex_campo(campo: $campo,registro_upd: $registro_upd,tipo_campo: $tipo_campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar',data:  $valida);
