@@ -791,7 +791,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * FULL
+     * Genera un filtro aplicando OR
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Genera las columnas tal y como vienen en la base de datos

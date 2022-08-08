@@ -1087,6 +1087,7 @@ class columnas{
      * @param array $renombres conjunto de columnas renombradas
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
+     * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd
      * @return array|string sql con las columnas para un SELECT
      * @throws errores definidos en la maquetacion de las columnas
      * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe

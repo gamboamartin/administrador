@@ -93,7 +93,7 @@ class controlador_adm_accion extends controlador_base{
          * REFCATRORIZAR
          */
         if(!isset($_POST)){
-            $error = $this->errores->error(mensaje: "Error no existe POST", data: $_GET, params: get_defined_vars());
+            $error = $this->errores->error(mensaje: "Error no existe POST", data: $_GET);
             if(!$header){
                 return $error;
             }
@@ -112,7 +112,7 @@ class controlador_adm_accion extends controlador_base{
         $keys = array('busca_accion');
         $valida = $this->validacion->valida_existencia_keys($_POST,$keys);
         if(errores::$error){
-            $error = $this->errores->error(mensaje: "Error al validar POST", data: $valida, params: get_defined_vars());
+            $error = $this->errores->error(mensaje: "Error al validar POST", data: $valida);
             if(!$header){
                 return $error;
             }

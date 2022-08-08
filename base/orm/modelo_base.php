@@ -1185,7 +1185,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @version 1.66.17
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto
+     * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param array $renombradas columnas estructura tabla ligadas renombradas
      * @return array|string string en forma de sql con los datos para la ejecucion de SELECT
