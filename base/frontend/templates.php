@@ -258,7 +258,7 @@ class templates{
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta
+     * @param string $etiqueta Etiqueta de input
      * @param string $pattern
      * @param string $css_id Identificador css para java
      * @param array $data_extra
@@ -305,7 +305,7 @@ class templates{
     }
 
     /**
-     * P INT P ORDER
+     * Genera el html de un form alta base
      * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
      * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
@@ -386,7 +386,7 @@ class templates{
      * @param bool $required
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta
+     * @param string $etiqueta Etiqueta de input
      * @param string $pattern
      * @param string $css_id Identificador css para java
      * @param array $data_extra
@@ -631,7 +631,7 @@ class templates{
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta
+     * @param string $etiqueta Etiqueta de input
      * @param string $pattern
      * @param string $css_id Identificador css para java
      * @param array $data_extra

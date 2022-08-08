@@ -17,7 +17,7 @@ class checkboxes{
 
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param string $salto
+     * @param string $salto Salto de linea en html
      * @param string $div_chk
      * @param string $etiqueta
      * @param string $data_input

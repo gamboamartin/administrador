@@ -483,6 +483,10 @@ class init{
         if($sistema === 'administrador'){
             $namespace = 'gamboamartin\\';
         }
+
+        /**
+         * REFCATORIZAR SIMPLICAR RERGISTRO DE PAQUETES
+         */
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
