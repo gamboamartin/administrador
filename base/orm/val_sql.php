@@ -128,9 +128,9 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERROREV
-     * @param string $key
-     * @param string $tipo_campo
+     * Limpia los elementos de un alt a de un registro
+     * @param string $key Key a limpiar
+     * @param string $tipo_campo Tipo de dato para aplicar limpieza
      * @return array|stdClass
      */
     private function limpia_data_tipo_campo(string $key, string $tipo_campo): array|stdClass
@@ -159,7 +159,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * Valida que los campos esten bien aplicados conforme el tipo de dato asignado
      * @param array $registro Registro a verificar
      * @param array $tipo_campos Conjunto de tipos de datos a verificar
      * @return bool|array
@@ -393,7 +393,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERRORREV
+     * Verifica el tipo de dato de un campo este bien aplicado
      * @param string $key Key del campo a verificar
      * @param array $registro Registro a verificar
      * @param string $tipo_campo Tipo de campo a validar
