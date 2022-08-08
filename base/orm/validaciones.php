@@ -323,9 +323,49 @@ class validaciones extends validacion{
 
         if(!preg_match($pattern, $value)){
             return $this->error->error(mensaje: 'Error el campo '.$key.' es invalido',
-                data: array($registro[$key],$pattern), params: get_defined_vars());
+                data: array($registro[$key],$pattern));
         }
 
+        return true;
+    }
+
+    /**
+     * Valida un regex basado en el tipo de campo
+     * @param array $tipo_campos
+     * @param array $registro_upd
+     * @return bool|array
+     */
+    private function valida_regex(array $tipo_campos, array $registro_upd): bool|array
+    {
+        foreach ($tipo_campos as $campo =>$tipo_campo){
+            if(!isset($registro_upd[$campo])){
+                continue;
+            }
+            $valida = $this->valida_regex_campo(campo: $campo,registro_upd: $registro_upd,tipo_campo: $tipo_campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar',data:  $valida);
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Valida un regex con patter de campo
+     * @param string $campo
+     * @param array $registro_upd
+     * @param string $tipo_campo
+     * @return bool|array
+     */
+    private function valida_regex_campo(string $campo, array $registro_upd, string $tipo_campo): bool|array
+    {
+        $valida = (new validacion())->valida_pattern(key: $tipo_campo,txt:  $registro_upd[$campo]);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar',data:  $valida);
+        }
+        if(!$valida){
+            return $this->error->error(mensaje: 'Error al validar '.$campo.' debe tener formato'.$tipo_campo,
+                data: $registro_upd[$campo]);
+        }
         return true;
     }
 
@@ -394,12 +434,16 @@ class validaciones extends validacion{
 
     /**
      * Valida los elementos basicos de un upd
-     * @version 1.77.17
      * @param int $id Identificador a modificar
      * @param array $registro_upd Registro a modificar
+     * @param array $tipo_campos Tipos de campo a verificar upd
      * @return array|bool
+     * @version 1.77.17
+     * @verfuncion 1.2.0 Se integra tipo campos para validar con regex
+     * @author mgamboa
+     * @fecha 2022-08-08 12:27
      */
-    public function valida_upd_base(int $id, array $registro_upd): bool|array
+    public function valida_upd_base(int $id, array $registro_upd, $tipo_campos = array()): bool|array
     {
         if($id <=0){
             return $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $id);
@@ -407,6 +451,11 @@ class validaciones extends validacion{
         if(count($registro_upd) === 0){
             return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $registro_upd);
         }
+        $valida_regex = $this->valida_regex(tipo_campos: $tipo_campos,registro_upd: $registro_upd);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data:  $valida_regex);
+        }
+
         return true;
     }
 }
