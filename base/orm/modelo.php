@@ -973,12 +973,16 @@ class modelo extends modelo_base {
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
 
+        /**
+         * REFACTORIZAR
+         */
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar',data: $init);
         }
 
-        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd);
+        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd,
+            tipo_campos: $this->tipo_campos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
         }

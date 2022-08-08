@@ -10,9 +10,14 @@ class monedas{
     }
 
     /**
-     * Elimina los carcateres para convertir el valor en un double
+     * Elimina los caracteres para convertir el valor en un double
      * @param string|int|float|null $value Valor moneda
      * @return string|int|float|null
+     * @version 1.275.40
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-08 12:44
+     *
      */
     private function limpia_moneda_value(string|int|float|null $value): string|int|float|null
     {
@@ -25,18 +30,19 @@ class monedas{
     }
 
     /**
-     * P INT P ORDER
-     * @param string $tipo_dato
-     * @param array $tipos_moneda
-     * @param int|string|float|null $value
+     * Limpia los campos de tipo moneda previo a la insersion
+     * @param string $tipo_dato Tipo dato a limpiar
+     * @param array $tipos_moneda Tipos moneda campos
+     * @param int|string|float|null $value Valor a limpiar
      * @return float|array|int|string|null
      */
-    private function limpia_monedas_values(string $tipo_dato, array $tipos_moneda, int|string|float|null $value): float|array|int|string|null
+    private function limpia_monedas_values(string $tipo_dato, array $tipos_moneda,
+                                           int|string|float|null $value): float|array|int|string|null
     {
         if(in_array($tipo_dato, $tipos_moneda, true)) {
             $value = $this->limpia_moneda_value(value: $value);
             if (errores::$error) {
-                return $this->error->error('Error al limpiar value', $value);
+                return $this->error->error(mensaje: 'Error al limpiar value', data: $value);
             }
         }
         return $value;
