@@ -160,8 +160,8 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER PROBADO ERRORREV
-     * @param array $registro
-     * @param array $tipo_campos
+     * @param array $registro Registro a verificar
+     * @param array $tipo_campos Conjunto de tipos de datos a verificar
      * @return bool|array
      */
     private function tipo_campos(array $registro, array $tipo_campos): bool|array
@@ -247,7 +247,7 @@ class val_sql extends validaciones {
      * P INT P ORDER PROBADO ERROREV
      * @param array $campos_obligatorios
      * @param array $registro Registro a verificar en conjunto de los keys id definidos
-     * @param string $tabla
+     * @param string $tabla Tabla a verificar
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
      */
@@ -292,7 +292,7 @@ class val_sql extends validaciones {
     /**
      * P INT P ORDER ERROR
      * @param array $campos_obligatorios Campos definidos en el modelo como obligatorios
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo a validar el alta
      * @param array $no_duplicados
      * @param array $registro Registro a validar
      * @param string $tabla
@@ -331,7 +331,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     *
      * Funcion que valida la estructura de los campos de un modelo
      *
      * @param array $registro Registro a verificar en conjunto de los keys id definidos
@@ -394,9 +394,9 @@ class val_sql extends validaciones {
 
     /**
      * ERRORREV
-     * @param string $key
-     * @param array $registro
-     * @param string $tipo_campo
+     * @param string $key Key del campo a verificar
+     * @param array $registro Registro a verificar
+     * @param string $tipo_campo Tipo de campo a validar
      * @return bool|array
      */
     private function verifica_tipo_dato(string $key, array $registro, string $tipo_campo): bool|array

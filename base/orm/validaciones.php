@@ -256,7 +256,7 @@ class validaciones extends validacion{
      * P INT P ORDER PROBADO ERROREV
      * Valida que una expresion regular se cumpla en un registro
      * @param string $key campo de un registro o this->registro
-     * @param array $registro
+     * @param array $registro Registro a validar
      * @param string $tipo_campo tipo de pattern a validar en this->patterns
      *
      * @return array|bool
@@ -273,17 +273,16 @@ class validaciones extends validacion{
      */
     public function valida_pattern_campo(string $key, array $registro, string $tipo_campo):array|bool{
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error el registro no no puede venir vacio',  data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error el registro no no puede venir vacio',  data: $registro);
         }
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio ', data:  $key, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error key esta vacio ', data:  $key);
         }
         if(isset($registro[$key])&&(string)$registro[$key] !==''){
             $valida_data = $this->valida_pattern_model(key:$key,registro: $registro, tipo_campo: $tipo_campo);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar', data: $valida_data, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al validar', data: $valida_data);
             }
         }
 
@@ -292,12 +291,12 @@ class validaciones extends validacion{
 
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     *
      * Valida que una expresion regular se cumpla en un registro
      * @param string $key campo de un registro o this->registro
-     * @param array $registro
+     * @param array $registro Registro a validar
      * @param string $tipo_campo tipo de pattern a validar en this->patterns
-     *
+
      * @return array|bool
      * @example
      *      $valida_data = $this->valida_pattern($key,$tipo_campo);
@@ -308,15 +307,13 @@ class validaciones extends validacion{
 
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio ',  data: $key, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error key esta vacio ',  data: $key);
         }
         if(!isset($registro[$key])){
-            return $this->error->error(mensaje: 'Error no existe el campo '.$key, data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe el campo '.$key, data: $registro);
         }
         if(!isset($this->patterns[$tipo_campo])){
-            return $this->error->error(mensaje: 'Error no existe el pattern '.$tipo_campo,data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error no existe el pattern '.$tipo_campo,data: $registro);
         }
         $value = trim($registro[$key]);
         $pattern = trim($this->patterns[$tipo_campo]);
