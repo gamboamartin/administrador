@@ -227,7 +227,7 @@ class directivas extends html {
      * Genera un input checkbox
      * @param string $campo Nombre del campo input
      * @param int $cols Columnas para css
-     * @param string $valor
+     * @param string $valor Valor del checkbox
      * @param bool $disabled Si disabled retorna text disabled
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta

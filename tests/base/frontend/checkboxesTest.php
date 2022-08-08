@@ -117,6 +117,29 @@ class checkboxesTest extends test {
 
     }
 
+    public function test_data_input_chk(): void
+    {
+        errores::$error = false;
+        $chk = new checkboxes();
+        $chk = new liberator($chk);
+        $campo = 'a';
+        $checked_html = '';
+        $data_extra_html = '';
+        $disabled_html = '';
+        $id_html = '';
+        $valor = '';
+        $class = '';
+
+        $resultado = $chk->data_input_chk($campo, $checked_html, $class, $data_extra_html, $disabled_html, $id_html,
+            $valor);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("<input type='checkbox'  name='a' value='inactivo'    >", $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_data_span_chk(){
         errores::$error = false;
         $chk = new checkboxes();

@@ -47,7 +47,7 @@ class templates{
      * @param string $path_base
      * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
      * @param array $valores_default Valores definidos como default del controller
-     * @param array $campos_invisibles
+     * @param array $campos_invisibles Campos que omitira la generacion
      * @return array|string
      */
     public function alta(bool $aplica_form, array $directivas_extra , bool $muestra_btn_guardar  ,
@@ -254,7 +254,7 @@ class templates{
      * @param string $tipo
      * @param string $campo_name Name del input
      * @param int $cols Columnas para css
-     * @param mixed $valor
+     * @param string $valor Valor del input
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12
@@ -310,7 +310,7 @@ class templates{
      * @param array $campos Conjunto de campos pa ejecucion del html
      * @param array $campos_disabled Conjunto de campos para dejar como deshabilitados en el frontend
      * @param array $valores_default Valores definidos como default del controller
-     * @param array $campos_invisibles
+     * @param array $campos_invisibles Campos que omitira la generacion
      * @return array|string
      */
     public function genera_campos_alta(array $campos, array $valores_filtrados, array $campos_disabled,
@@ -382,7 +382,7 @@ class templates{
      * @param string $campo_name Name del input
      * @param string $tipo
      * @param int $cols Columnas para css
-     * @param mixed $valor
+     * @param string $valor Valor del input
      * @param bool $required
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12
@@ -627,7 +627,7 @@ class templates{
      * @param string $tipo
      * @param string $campo_name Name del input
      * @param int $cols Columnas para css
-     * @param mixed $valor
+     * @param string $valor Valor del input
      * @param bool $required indica si es requerido o no
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12

@@ -290,7 +290,7 @@ class etiquetas{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $data_input
+     * @param string $data_input Data de input de checkbox en html
      * @return string
      */
     public function span_chk(string $data_input): string

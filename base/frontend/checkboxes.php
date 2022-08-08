@@ -36,7 +36,7 @@ class checkboxes{
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
      * @param string $campo Campo de input
-     * @param string $valor
+     * @param string $valor Valor del checkbox
      * @param string $class
      * @param string $id_html
      * @param string $data_extra_html
@@ -79,7 +79,7 @@ class checkboxes{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * Genera el html de un checkbox
      * @param string $campo Campo de input
      * @param string $valor Valor activo o inactivo
      * @param string $class class css
@@ -88,13 +88,18 @@ class checkboxes{
      * @param string $checked_html atributo checked
      * @param string $disabled_html atributo disabled
      * @return string|array
+     * @version 1.279.41
+     * @verfuncion  1.1.0
+     * @author mgamboa
+     * @fecha 2022-08-08 14:27
+     *
      */
     private function data_input_chk(string $campo, string $checked_html, string $class, string $data_extra_html,
                                     string $disabled_html, string $id_html, string $valor): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error campo vacio', $campo);
+            return $this->error->error(mensaje: 'Error campo vacio',data:  $campo);
         }
         $valor = trim($valor);
         $class = trim($class);
@@ -115,7 +120,7 @@ class checkboxes{
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
      * @param string $campo Campo de input
-     * @param string $valor
+     * @param string $valor Valor del checkbox
      * @param string $class
      * @param string $id_html
      * @param string $data_extra_html
@@ -133,12 +138,12 @@ class checkboxes{
         $data_input = $this->data_input_chk(campo: $campo, checked_html:  $checked_html, class: $class,
             data_extra_html:  $data_extra_html, disabled_html: $disabled_html,id_html:  $id_html, valor:  $valor);
         if(errores::$error){
-            return $this->error->error('Error al generar data',$data_input);
+            return $this->error->error(mensaje: 'Error al generar data',data: $data_input);
         }
 
         $span_chk = (new etiquetas())->span_chk(data_input: $data_input);
         if(errores::$error){
-            return $this->error->error('Error al generar span',$span_chk);
+            return $this->error->error(mensaje: 'Error al generar span',data: $span_chk);
         }
 
         $data = new stdClass();
