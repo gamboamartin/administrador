@@ -248,9 +248,13 @@ class modelo extends modelo_base {
      * Cuenta los registros de un modelo conforme al filtro en aplicacion
      * @param array $filtro Filtro de ejecucion basico
      * @param string $tipo_filtro validos son numeros y textos
-     * @param array $filtro_especial
+     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_rango
-     * @param array $filtro_fecha
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
+     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|int
      */
     public function cuenta(
