@@ -15,9 +15,17 @@ class salida_data{
 
     /**
      * Genera la salida general de una funcion de tipo controller para ejecucion de cliente
-     * @param bool $header
-     * @param array|stdClass $result
-     * @param bool $ws
+     * 
+     * @param bool $header Variable utilizada que, en caso de ser solicitada, almacenará la dirección de la
+     * pagina que emplea el usuario para la pagina actual en $_SERVER para ser almacenado en la variable
+     * $retorno, finaliza almacenando en un header el valor de $retorno con la etiqueta 'Location'
+     *
+     * @param array|stdClass $result Se encarga de almacenar los valores y devuelve el valor de $result en formato JSON
+     * y/o los resultados en formato JSON o un error en caso de haber errores.
+     *
+     * @param bool $ws variable utilizada para verificar si se ha realizado la maquetacion de estados en formato JSON.
+     * En caso de haber error lanzará un mensaje
+     *
      * @return array|stdClass|void
      */
     private function salida(bool $header, array|stdClass $result, bool $ws){
