@@ -400,6 +400,7 @@ class val_sql extends validaciones {
      * @param array $registro Registro a verificar
      * @param string $tipo_campo Tipo de campo a validar
      * @return bool|array
+     * @version 1.291.41
      */
     private function verifica_tipo_dato(string $key, array $registro, string $tipo_campo): bool|array
     {

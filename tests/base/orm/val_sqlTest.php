@@ -473,5 +473,23 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_verifica_tipo_dato(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array('');
+        $key = 'B';
+        $tipo_campo = 'A';
+        $resultado = $val->verifica_tipo_dato($key, $registro, $tipo_campo);
+
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 }
