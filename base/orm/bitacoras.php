@@ -129,14 +129,18 @@ class bitacoras{
     {
         $bitacora = array();
         if($modelo->aplica_bitacora){
-            $namespace = 'models\\';
-            $this->tabla = str_replace($namespace,'',$modelo->tabla);
-            $clase = $namespace.$modelo->tabla;
-            if($this->tabla === ''){
-                return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $this->tabla);
+
+            $data_ns = $this->clase_namespace(tabla: $modelo->tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
             }
-            if(!class_exists($clase)){
-                return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase);
+
+
+            if($data_ns->tabla === ''){
+                return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $data_ns->tabla);
+            }
+            if(!class_exists($data_ns->clase)){
+                return $this->error->error(mensaje:'Error no existe la clase '.$data_ns->clase,data:$data_ns->clase);
             }
             if($funcion === ''){
                 return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);
@@ -151,12 +155,41 @@ class bitacoras{
             $r_bitacora = $this->genera_bitacora(consulta:  $consulta, funcion: $funcion, modelo: $modelo,
                 registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje:'Error al generar bitacora en '.$this->tabla,data:$r_bitacora);
+                return $this->error->error(mensaje:'Error al generar bitacora en '.$data_ns->tabla,data:$r_bitacora);
             }
             $bitacora = $r_bitacora;
         }
 
         return $bitacora;
+    }
+
+    private function clase_namespace(string $tabla): stdClass
+    {
+        $namespace = 'models\\';
+        $tabla = str_replace($namespace,'',$tabla);
+
+        $data = new stdClass();
+        $data->tabla = $tabla;
+        $data->clase = $namespace.$tabla;
+
+        return$data;
+    }
+
+    private function data_ns_val(string $tabla): array|stdClass
+    {
+        $data_ns = $this->clase_namespace(tabla: $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
+        }
+
+        if($data_ns->tabla === ''){
+            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $data_ns->tabla);
+        }
+        if(!class_exists($data_ns->clase)){
+            return $this->error->error(mensaje:'Error no existe la clase '.$data_ns->clase,data:$data_ns);
+        }
+
+        return $data_ns;
     }
 
     /**
@@ -206,25 +239,18 @@ class bitacoras{
      * @internal $bitacora_modelo->alta_bd();
      */
     private function genera_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array{
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio', data: $modelo->tabla);
+
+
+        $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
         }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase);
+
+        $val = $this->val_bitacora(consulta: $consulta,funcion: $funcion,modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar valores', data: $val);
         }
-        if($funcion === ''){
-            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);
-        }
-        if($consulta === ''){
-            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta);
-        }
-        if($modelo->registro_id<=0){
-            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
-                data:$modelo->registro_id);
-        }
+
 
         $bitacora_modelo = (new adm_bitacora($modelo ->link));
         if(errores::$error){
@@ -264,25 +290,17 @@ class bitacoras{
      * @internal $this->asigna_registro_para_bitacora($seccion_menu,$registro,$funcion, $consulta);
      */
     private function maqueta_data_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro):array{
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $modelo->tabla);
+        $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
         }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase);
+
+
+        $val = $this->val_bitacora(consulta: $consulta,funcion: $funcion,modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar valores', data: $val);
         }
-        if($funcion === ''){
-            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);
-        }
-        if($consulta === ''){
-            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta);
-        }
-        if($modelo->registro_id<=0){
-            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
-                data:$modelo->registro_id);
-        }
+
         $seccion_menu = $this->obten_seccion_bitacora(modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener seccion', data:$seccion_menu);
@@ -312,22 +330,20 @@ class bitacoras{
      */
     private function obten_seccion_bitacora(modelo $modelo): array
     {
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $modelo->tabla);
+
+        $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
         }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$clase,data:$clase);
-        }
+
+
 
         $seccion_menu_modelo = (new adm_seccion($modelo->link));
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar modelo',data:$seccion_menu_modelo);
         }
 
-        $filtro['seccion_menu.descripcion'] = $modelo->tabla;
+        $filtro['seccion_menu.descripcion'] = $data_ns->tabla;
         $r_seccion_menu = $seccion_menu_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener seccion menu',data:$r_seccion_menu);
@@ -336,6 +352,21 @@ class bitacoras{
             return $this->error->error(mensaje:'Error no existe la seccion menu',data:$r_seccion_menu);
         }
         return $r_seccion_menu->registros[0];
+    }
+
+    private function val_bitacora(string $consulta, string $funcion, modelo $modelo): bool|array
+    {
+        if($funcion === ''){
+            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);
+        }
+        if($consulta === ''){
+            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta);
+        }
+        if($modelo->registro_id<=0){
+            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
+                data:$modelo->registro_id);
+        }
+        return true;
     }
 
 
