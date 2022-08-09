@@ -1620,6 +1620,15 @@ class modelo extends modelo_base {
 
     }
 
+    public function total_registros(): array|int
+    {
+        $n_rows = $this->cuenta();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al contar registros',data: $n_rows);
+        }
+        return $n_rows;
+    }
+
 
     /**
      * PHPUNIT
