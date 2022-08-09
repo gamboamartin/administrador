@@ -132,16 +132,18 @@ class val_sql extends validaciones {
      * @param string $key Key a limpiar
      * @param string $tipo_campo Tipo de dato para aplicar limpieza
      * @return array|stdClass
+     * @version 1.285.41
+     *
      */
     private function limpia_data_tipo_campo(string $key, string $tipo_campo): array|stdClass
     {
         $key_r = $this->txt_valido(txt:$key);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error en key de tipo campo', data: $key);
+            return $this->error->error(mensaje: 'Error en key de tipo campo', data: $key_r);
         }
         $tipo_campo_r = $this->txt_valido(txt:$tipo_campo);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error en $tipo_campo de tipo campo',data: $tipo_campo);
+            return $this->error->error(mensaje:'Error en $tipo_campo de tipo campo',data: $tipo_campo_r);
         }
         $data = new stdClass();
         $data->key = $key_r;

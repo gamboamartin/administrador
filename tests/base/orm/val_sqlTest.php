@@ -185,6 +185,39 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_data_tipo_campo(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $tipo_campo = '';
+        $key = '';
+        $resultado = $val->limpia_data_tipo_campo($key, $tipo_campo);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error en key de tipo campo',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $tipo_campo = '';
+        $key = 'a';
+        $resultado = $val->limpia_data_tipo_campo($key, $tipo_campo);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error en $tipo_campo de tipo campo',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $tipo_campo = 'a';
+        $key = 'a';
+        $resultado = $val->limpia_data_tipo_campo($key, $tipo_campo);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_obligatorios(): void
     {
         errores::$error = false;
