@@ -245,9 +245,9 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Cuenta los registros de un modelo conforme al filtro en aplicacion
      * @param array $filtro Filtro de ejecucion basico
-     * @param string $tipo_filtro
+     * @param string $tipo_filtro validos son numeros y textos
      * @param array $filtro_especial
      * @param array $filtro_rango
      * @param array $filtro_fecha
