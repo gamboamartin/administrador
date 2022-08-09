@@ -69,7 +69,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     *
      * Devuelve una cadena que comprueba la existencia del usuario que realiza la modificacion asignando su id a la
      * columna usuario_update_id
      *
@@ -86,11 +86,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses modelos->modifica_bd();
      * @uses modelos->modifica_por_id();
      * @internal $this->usuario_existente();
+     * @version 1.287.41
      */
     protected function agrega_usuario_session(): array|string
     {
         if($this->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido',data: $this->usuario_id);
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
         }
 
         if($this->campos_sql === ''){

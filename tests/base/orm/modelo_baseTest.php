@@ -19,6 +19,23 @@ class modelo_baseTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_agrega_usuario_session(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb->usuario_id = 2;
+        $mb->campos_sql = 1;
+        $mb = new liberator($mb);
+
+
+
+        $resultado = $mb->agrega_usuario_session();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_ajusta_row_select(){
 
 
