@@ -253,7 +253,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     *
      * Valida que una expresion regular se cumpla en un registro
      * @param string $key campo de un registro o this->registro
      * @param array $registro Registro a validar
@@ -270,6 +270,7 @@ class validaciones extends validacion{
      *
      * @uses modelo_basico->valida_estructura_campos
      * @internal  $this->valida_pattern($key,$tipo_campo);
+     * @version 1.286.41
      */
     public function valida_pattern_campo(string $key, array $registro, string $tipo_campo):array|bool{
         if(count($registro) === 0){
@@ -302,6 +303,7 @@ class validaciones extends validacion{
      *      $valida_data = $this->valida_pattern($key,$tipo_campo);
      *
      * @uses modelo_basico->valida_pattern_campo
+     * @version 1.286.41
      */
     private function valida_pattern_model(string $key, array $registro, string $tipo_campo):array|bool{
 
