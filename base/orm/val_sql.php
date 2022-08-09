@@ -10,7 +10,7 @@ class val_sql extends validaciones {
      * ERROREV
      * @param string $campo Campo a validar si existe
      * @param array $keys_ids Keys a validar
-     * @param array $registro
+     * @param array $registro Registro a verificar
      * @return array|string
      */
     private function campo_existe(string $campo, array $keys_ids, array $registro): array|string
@@ -69,7 +69,7 @@ class val_sql extends validaciones {
     /**
      * P INT P ORDER PROBADO ERROREV
      * @param array $keys_obligatorios
-     * @param array $registro
+     * @param array $registro Registro a verificar
      * @return bool|array
      */
     private function existe(array $keys_obligatorios, array $registro): bool|array
@@ -78,8 +78,7 @@ class val_sql extends validaciones {
 
             $verifica = $this->verifica_existe(campo: $campo, registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar si existe campo', data: $verifica,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al verificar si existe campo', data: $verifica);
             }
 
         }
@@ -96,13 +95,11 @@ class val_sql extends validaciones {
     {
         $existe = $this->existe(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar campos no existe', data: $existe,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar campos no existe', data: $existe);
         }
         $vacio = $this->vacio(keys_obligatorios: $keys_obligatorios, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar campo vacio', data: $vacio,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar campo vacio', data: $vacio);
         }
 
 
@@ -165,6 +162,7 @@ class val_sql extends validaciones {
      * @param array $registro Registro a verificar
      * @param array $tipo_campos Conjunto de tipos de datos a verificar
      * @return bool|array
+     * @version 1.292.41
      */
     private function tipo_campos(array $registro, array $tipo_campos): bool|array
     {
@@ -274,7 +272,7 @@ class val_sql extends validaciones {
      * ERROR
      * @param string $campo Campo a validar
      * @param array $keys_ids Keys a validar
-     * @param array $registro
+     * @param array $registro Registro a verificar
      * @return bool|array
      */
     private function verifica_id(string $campo, array $keys_ids, array $registro): bool|array
@@ -376,20 +374,19 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERRORREV
-     * @param string $campo
-     * @param array $registro
+     * Verifica si existe o no un campo
+     * @param string $campo campo a validar
+     * @param array $registro Registro a validar
      * @return bool|array
      */
     private function verifica_existe(string $campo, array $registro): bool|array
     {
         $campo_r = $this->txt_valido(txt:$campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar campo', data: $campo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar campo', data: $campo);
         }
         if(!isset($registro[$campo_r])){
-            return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe existir', data: $registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe existir', data: $registro);
         }
         return true;
     }
