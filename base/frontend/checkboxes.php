@@ -40,7 +40,7 @@ class checkboxes{
      * @param string $class Clase css
      * @param string $id_html Id en css para ser usado en java
      * @param string $data_extra_html extra params en forma html
-     * @param string $checked_html
+     * @param string $checked_html Atributo checked html puede venir vacio
      * @param string $data_etiqueta
      * @param int $cols Columnas para css
      * @param string $disabled_html
@@ -124,8 +124,8 @@ class checkboxes{
      * @param string $class Clase css
      * @param string $id_html Id en css para ser usado en java
      * @param string $data_extra_html extra params en forma html
-     * @param string $checked_html
-     * @param string $disabled_html
+     * @param string $checked_html Atributo checked html puede venir vacio
+     * @param string $disabled_html Atributo disabled html puede venir vacio
      * @return array|stdClass
      */
     private function data_span_chk(string $campo, string $checked_html, string $class, string $data_extra_html,
