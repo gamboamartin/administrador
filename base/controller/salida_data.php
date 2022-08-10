@@ -49,10 +49,19 @@ class salida_data{
 
     /**
      * Genera salida para funciones de controller de tipo get
-     * @param controler $controler
-     * @param array $filtro
-     * @param bool $header
-     * @param bool $ws
+     *
+     * @param controler $controler Objeto con la finalidad de generar la integracion entre el objeto y la vista. Usando
+     * los valores de "$controler". En caso de error, generará un mensaje
+     *
+     * @param array $filtro Genera un filtro en base a los registros encontrados. En caso de error, lanzará un mensaje.
+     *
+     * @param bool $header Variable utilizada que, en caso de ser solicitada, almacenará la dirección de la
+     * pagina que emplea el usuario para la pagina actual en $_SERVER para ser almacenado en la variable
+     * $retorno, finaliza almacenando en un header el valor de $retorno con la etiqueta 'Location'
+     *
+     * @param bool $ws variable utilizada para verificar si se ha realizado la maquetacion de estados en formato JSON.
+     * En caso de haber error lanzará un mensaje
+     *
      * @return array|stdClass
      */
     public function salida_get(controler $controler, array $filtro, bool $header, bool $ws): array|stdClass
