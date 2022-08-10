@@ -378,12 +378,14 @@ class val_sql extends validaciones {
      * @param string $campo campo a validar
      * @param array $registro Registro a validar
      * @return bool|array
+     * v1.294.41
+     *
      */
     private function verifica_existe(string $campo, array $registro): bool|array
     {
         $campo_r = $this->txt_valido(txt:$campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar campo', data: $campo);
+            return $this->error->error(mensaje: 'Error al limpiar campo invalido', data: $campo);
         }
         if(!isset($registro[$campo_r])){
             return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe existir', data: $registro);

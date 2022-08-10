@@ -473,6 +473,43 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_verifica_existe(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $campo = '';
+        $resultado = $val->verifica_existe($campo, $registro);
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al limpiar campo invalido',$resultado['mensaje']);
+
+        errores::$error = false;
+
+
+        $registro = array();
+        $campo = 'z';
+        $resultado = $val->verifica_existe($campo, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error $registro[z] debe existir',$resultado['mensaje']);
+
+        errores::$error = false;
+
+
+        $registro = array();
+        $campo = 'z';
+        $registro['z'] ='a';
+        $resultado = $val->verifica_existe($campo, $registro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_verifica_tipo_dato(): void
     {
         errores::$error = false;
