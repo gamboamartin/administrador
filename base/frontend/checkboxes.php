@@ -39,7 +39,7 @@ class checkboxes{
      * @param string $valor Valor del checkbox
      * @param string $class Clase css
      * @param string $id_html Id en css para ser usado en java
-     * @param string $data_extra_html
+     * @param string $data_extra_html extra params en forma html
      * @param string $checked_html
      * @param string $data_etiqueta
      * @param int $cols Columnas para css
@@ -123,7 +123,7 @@ class checkboxes{
      * @param string $valor Valor del checkbox
      * @param string $class Clase css
      * @param string $id_html Id en css para ser usado en java
-     * @param string $data_extra_html
+     * @param string $data_extra_html extra params en forma html
      * @param string $checked_html
      * @param string $disabled_html
      * @return array|stdClass

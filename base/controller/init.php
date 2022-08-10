@@ -522,6 +522,9 @@ class init{
         if($sistema === 'facturacion'){
             $namespace = 'gamboamartin\\facturacion\\';
         }
+        if($sistema === 'im_registro_patronal'){
+            $namespace = 'gamboamartin\\im_registro_patronal\\';
+        }
 
 
 
