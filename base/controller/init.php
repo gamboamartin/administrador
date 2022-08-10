@@ -456,6 +456,14 @@ class init{
         return $data;
     }
 
+    /**
+     * Inicializador de datos para la funcion "ws" en base a los resultados obtenidos  de
+     * otras funciones
+     *
+     * @return stdClass Devuelve las validaciones de las demas funciones para iniciar los
+     * procesos en "ws".
+     * @example $data->header = false, $data->ws = true, $data->view = false
+     */
     private function init_for_ws(): stdClass
     {
         $data = new stdClass();
