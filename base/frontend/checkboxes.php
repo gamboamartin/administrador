@@ -41,7 +41,7 @@ class checkboxes{
      * @param string $id_html Id en css para ser usado en java
      * @param string $data_extra_html extra params en forma html
      * @param string $checked_html Atributo checked html puede venir vacio
-     * @param string $data_etiqueta
+     * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param int $cols Columnas para css
      * @param string $disabled_html
      * @return array|stdClass
@@ -118,7 +118,7 @@ class checkboxes{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * Genera los datos a integrar un checkbox
      * @param string $campo Campo de input
      * @param string $valor Valor del checkbox
      * @param string $class Clase css
@@ -173,7 +173,7 @@ class checkboxes{
 
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param string $data_etiqueta
+     * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk
      * @param int $cols
      * @return array|string

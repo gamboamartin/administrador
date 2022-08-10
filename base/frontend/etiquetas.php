@@ -279,8 +279,8 @@ class etiquetas{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $data_etiqueta
-     * @param string $span_chk
+     * @param string $data_etiqueta Datos de la etiqueta del chk
+     * @param string $span_chk Texto del chk
      * @return string
 
      */
