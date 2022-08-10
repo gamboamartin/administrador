@@ -251,7 +251,7 @@ class templates{
 
     /**
      * P INT
-     * @param string $tipo
+     * @param string $tipo tipo de input
      * @param string $campo_name Name del input
      * @param int $cols Columnas para css
      * @param string $valor Valor del input
@@ -380,7 +380,7 @@ class templates{
      * Genera un input de tipo HTML
      *
      * @param string $campo_name Name del input
-     * @param string $tipo
+     * @param string $tipo tipo de input
      * @param int $cols Columnas para css
      * @param string $valor Valor del input
      * @param bool $required
@@ -624,7 +624,7 @@ class templates{
     /**
      * P INT
      * Genera un input de tipo HTML
-     * @param string $tipo
+     * @param string $tipo tipo de input
      * @param string $campo_name Name del input
      * @param int $cols Columnas para css
      * @param string $valor Valor del input

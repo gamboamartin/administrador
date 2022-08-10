@@ -37,7 +37,7 @@ class checkboxes{
      * PROBADO-PARAMS ORDER-PARAMS INT
      * @param string $campo Campo de input
      * @param string $valor Valor del checkbox
-     * @param string $class
+     * @param string $class Clase css
      * @param string $id_html
      * @param string $data_extra_html
      * @param string $checked_html
@@ -121,7 +121,7 @@ class checkboxes{
      * PROBADO-PARAMS ORDER-PARAMS INT
      * @param string $campo Campo de input
      * @param string $valor Valor del checkbox
-     * @param string $class
+     * @param string $class Clase css
      * @param string $id_html
      * @param string $data_extra_html
      * @param string $checked_html
