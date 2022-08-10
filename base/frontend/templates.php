@@ -261,7 +261,7 @@ class templates{
      * @param string $etiqueta Etiqueta de input
      * @param string $pattern
      * @param string $css_id Identificador css para java
-     * @param array $data_extra
+     * @param array $data_extra Elementos para integrar extraparams
      * @param string $tabla_foranea
      * @param bool $select_vacio_alta
      * @param array $valores_filtrados
@@ -389,7 +389,7 @@ class templates{
      * @param string $etiqueta Etiqueta de input
      * @param string $pattern
      * @param string $css_id Identificador css para java
-     * @param array $data_extra
+     * @param array $data_extra Elementos para integrar extraparams
      * @param array $filtro
      * @param string $tabla_foranea
      * @param bool $select_vacio_alta
@@ -634,7 +634,7 @@ class templates{
      * @param string $etiqueta Etiqueta de input
      * @param string $pattern
      * @param string $css_id Identificador css para java
-     * @param array $data_extra
+     * @param array $data_extra Elementos para integrar extraparams
      * @param string $tabla_foranea
      * @param bool $select_vacio_alta
      * @param string $columnas

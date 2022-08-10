@@ -282,6 +282,7 @@ class etiquetas{
      * @param string $data_etiqueta
      * @param string $span_chk
      * @return string
+
      */
     public function span_btn_chk(string $data_etiqueta, string $span_chk): string
     {
@@ -292,6 +293,7 @@ class etiquetas{
      * Genera un un span para un checkbox
      * @param string $data_input Data de input de checkbox en html
      * @return string
+     * @version 1.296.41
      */
     public function span_chk(string $data_input): string
     {

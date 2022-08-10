@@ -232,7 +232,7 @@ class directivas extends html {
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta Etiqueta de input
      * @param string $css_id Identificador css para java
-     * @param array $data_extra
+     * @param array $data_extra Elementos para integrar extraparams
      * @return array|string informacion de input en forma html
      * @example
      *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
