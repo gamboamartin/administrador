@@ -256,6 +256,7 @@ class modelo extends modelo_base {
      *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|int
+     * @version 1.306.41
      */
     public function cuenta(
         array $filtro = array(), string $tipo_filtro = 'numeros', array $filtro_especial = array(),
@@ -263,8 +264,7 @@ class modelo extends modelo_base {
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
 
         $tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $this->tabla);

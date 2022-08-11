@@ -1,6 +1,7 @@
 <?php
 namespace tests\src;
 
+use base\orm\filtros;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -14,6 +15,26 @@ class modeloTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_cuenta(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $resultado = $modelo->cuenta();
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+        $filtro = array();
+        $filtro['adm_seccion.id'] = 'adm_seccion.id';
+        $resultado = $modelo->cuenta(filtro: $filtro);
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(0, $resultado);
+        errores::$error = false;
     }
 
 
