@@ -39,7 +39,7 @@ class templates{
      * P INT
      * @param array $directivas_extra
      * @param bool $muestra_btn_guardar
-     * @param bool $aplica_form
+     * @param bool $aplica_form Si aplica form integra eh head de un form
      * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
      * @param string $seccion
@@ -256,7 +256,7 @@ class templates{
      * @param int $cols Columnas para css
      * @param string $valor Valor del input
      * @param bool $required indica si es requerido o no
-     * @param bool $disabled
+     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta Etiqueta de input
      * @param string $pattern
@@ -383,7 +383,7 @@ class templates{
      * @param string $tipo tipo de input
      * @param int $cols Columnas para css
      * @param string $valor Valor del input
-     * @param bool $required
+     * @param bool $required Si required genera un atributo de tipo required para input
      * @param bool $disabled
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta Etiqueta de input
@@ -629,7 +629,7 @@ class templates{
      * @param int $cols Columnas para css
      * @param string $valor Valor del input
      * @param bool $required indica si es requerido o no
-     * @param bool $disabled
+     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta Etiqueta de input
      * @param string $pattern

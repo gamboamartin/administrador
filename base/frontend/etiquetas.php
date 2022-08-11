@@ -278,7 +278,7 @@ class etiquetas{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera un span para un checkbox
      * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk Texto del chk
      * @return string

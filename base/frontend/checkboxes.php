@@ -43,7 +43,7 @@ class checkboxes{
      * @param string $checked_html Atributo checked html puede venir vacio
      * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param int $cols Columnas para css
-     * @param string $disabled_html
+     * @param string $disabled_html atributo disabled en html
      * @return array|stdClass
      */
     public function data_chk(string $campo, string $checked_html, string $class,int $cols, string $data_etiqueta,
@@ -127,6 +127,7 @@ class checkboxes{
      * @param string $checked_html Atributo checked html puede venir vacio
      * @param string $disabled_html Atributo disabled html puede venir vacio
      * @return array|stdClass
+     * @verfuncion 1.304.41
      */
     private function data_span_chk(string $campo, string $checked_html, string $class, string $data_extra_html,
                                    string $disabled_html, string $id_html, string $valor): array|stdClass
@@ -155,7 +156,7 @@ class checkboxes{
 
     /**
      * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param int $cols
+     * @param int $cols Columnas en css para maquetacion de divs
      * @param string $span_btn_chk
      * @return string|array
      */
@@ -175,7 +176,7 @@ class checkboxes{
      * PROBADO-PARAMS ORDER-PARAMS INT
      * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk
-     * @param int $cols
+     * @param int $cols Columnas en css para maquetacion de divs
      * @return array|string
      */
     private function etiqueta_chk(int $cols, string $data_etiqueta, string $span_chk): array|string
