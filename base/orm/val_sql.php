@@ -7,7 +7,7 @@ use stdClass;
 class val_sql extends validaciones {
 
     /**
-     * ERROREV
+     * Verifica si un campo existe en una transaccion
      * @param string $campo Campo a validar si existe
      * @param array $keys_ids Keys a validar
      * @param array $registro Registro a verificar
@@ -67,8 +67,8 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
-     * @param array $keys_obligatorios
+     * Verifica si existen o no los campos obligatorios de un modelo en transacciones
+     * @param array $keys_obligatorios Conjunto de campos obligatorios integrados en el modelo
      * @param array $registro Registro a verificar
      * @return bool|array
      */
@@ -107,7 +107,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * Valida que un conjunto de ids existan y sean validos para una transaccion de un modelo
      * @param array $keys_ids Campos de tipo ids a validar
      * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @return bool|array
@@ -245,7 +245,7 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER PROBADO ERROREV
-     * @param array $campos_obligatorios
+     * @param array $campos_obligatorios Conjunto de campos obligatorios de un modelo
      * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @param string $tabla Tabla a verificar
      * @param array $tipo_campos Campos con tipificacion desde modelo
@@ -269,7 +269,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERROR
+     * Verifica que existe un campo de tipo id en una transaccion
      * @param string $campo Campo a validar
      * @param array $keys_ids Keys a validar
      * @param array $registro Registro a verificar
@@ -293,7 +293,7 @@ class val_sql extends validaciones {
      * P INT P ORDER ERROR
      * @param array $campos_obligatorios Campos definidos en el modelo como obligatorios
      * @param modelo $modelo Modelo a validar el alta
-     * @param array $no_duplicados
+     * @param array $no_duplicados Conjunto de campos del modelo asignados como no duplicados
      * @param array $registro Registro a validar
      * @param string $tabla
      * @param array $tipo_campos Campos con tipificacion desde modelo
