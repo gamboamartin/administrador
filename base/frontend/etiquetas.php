@@ -282,7 +282,7 @@ class etiquetas{
      * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk Texto del chk
      * @return string
-
+     * @version 1.305.41
      */
     public function span_btn_chk(string $data_etiqueta, string $span_chk): string
     {

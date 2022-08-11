@@ -223,7 +223,6 @@ class directivas extends html {
     }
 
     /**
-     * Genera un checkbox
      * Genera un input checkbox
      * @param string $campo Nombre del campo input
      * @param int $cols Columnas para css
