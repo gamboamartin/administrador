@@ -501,6 +501,9 @@ class init{
         if($sistema === 'acl'){
             $namespace = 'gamboamartin\\acl\\';
         }
+        if($sistema === 'documento'){
+            $namespace = 'gamboamartin\\documento\\';
+        }
         if($sistema === 'nomina'){
             $namespace = 'gamboamartin\\nomina\\';
         }
