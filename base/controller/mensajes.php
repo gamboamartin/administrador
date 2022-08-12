@@ -8,6 +8,12 @@ class mensajes{
     public function __construct(){
         $this->error = new errores();
     }
+
+    /**
+     * Genera los datos de mensajeria
+     * @param bool $con_html
+     * @return array|stdClass
+     */
     public function data(bool $con_html = true): array|stdClass
     {
         $errores_transaccion = (new errores_html())->errores_transaccion();

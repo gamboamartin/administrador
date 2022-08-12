@@ -117,7 +117,8 @@ class controler{
         $this->mensaje_exito = $mensajes->exito_msj;
         $this->mensaje_warning = $mensajes->warning_msj;
 
-        $this->accion_titulo = ucwords($this->accion);
+        $this->accion_titulo = str_replace('_',' ',$this->accion);
+        $this->accion_titulo = ucwords($this->accion_titulo);
         $this->seccion_titulo = str_replace('_', ' ', $this->seccion);
         $this->seccion_titulo = ucwords($this->seccion_titulo);
 

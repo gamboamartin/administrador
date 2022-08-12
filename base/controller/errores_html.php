@@ -87,6 +87,10 @@ class errores_html extends base_html {
         return $html;
     }
 
+    /**
+     * @param array $error_previo arreglo de session con errores cargados
+     * @return string
+     */
     private function error_previo_detalle(array $error_previo): string
     {
         $html =print_r($error_previo,true);
@@ -124,6 +128,10 @@ class errores_html extends base_html {
         return $errores_html;
     }
 
+    /**
+     * @param array $errores_previos arreglo de session con errores cargados
+     * @return array|string
+     */
     private function errores_previos_detalle(array $errores_previos): array|string
     {
         $html = '';
@@ -139,6 +147,10 @@ class errores_html extends base_html {
         return $html;
     }
 
+    /**
+     * Genera los errores para formato html
+     * @return array|string
+     */
     public function errores_transaccion(): array|string
     {
         $errores_previos = $_SESSION['error_resultado'] ?? array();
@@ -164,6 +176,10 @@ class errores_html extends base_html {
         return $errores_transaccion;
     }
 
+    /**
+     * @param array $errores_previos arreglo de session con errores cargados
+     * @return array|string
+     */
     private function mensaje_error_detalle(array $errores_previos): array|string
     {
 
