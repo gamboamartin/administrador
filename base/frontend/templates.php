@@ -266,7 +266,7 @@ class templates{
      * @param bool $select_vacio_alta si true no mostrar datos en el select
      * @param array $valores_filtrados Valores a mostrar en select filtrados
      * @param string $columnas columnas para select
-     * @param string $llaves_foraneas
+     * @param string $llaves_foraneas llaves para integrar con select
      * @param array $vistas
      * @param string $accion
      * @param array $campos_invisibles
@@ -393,7 +393,7 @@ class templates{
      * @param array $filtro Filtro para selects
      * @param string $tabla_foranea Tabla de enlace para select
      * @param bool $select_vacio_alta si true deja select vacio
-     * @param string $columnas
+     * @param string $columnas Columnas para select
      * @param string $llaves_valores
      * @return array|string html con info del input a mostrar
      * @example
@@ -435,8 +435,8 @@ class templates{
             }
         }
         if( $tipo === 'documento'){
-            $data_html = $directiva->upload_file(campo: $campo_name,cols: $cols,required:  $required,
-                disabled: $disabled,ln: $ln,etiqueta:  $etiqueta,css_id:  $css_id,data_extra: $data_extra);
+            $data_html = $directiva->upload_file(campo: $campo_name, cols: $cols, disabled: $disabled,
+                required: $required, ln: $ln, etiqueta: $etiqueta, css_id: $css_id, data_extra: $data_extra);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al crear upload_file',data: $data_html);
             }
@@ -638,7 +638,7 @@ class templates{
      * @param string $tabla_foranea Tabla de ligue
      * @param bool $select_vacio_alta si true no mostrara datos el select
      * @param string $columnas columnas para select
-     * @param string $llaves_valores
+     * @param string $llaves_valores llaves en forma json
      * @param array $filtro Filtro para selects
      * @param array $vistas
      * @param string $accion

@@ -2014,12 +2014,11 @@ class directivas extends html {
      * @param bool $required si required el input sera obligatorio
      * @param bool $disabled si disabled el input quedara deshabilitado
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
-     *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $css_id css en html id
      * @param array $data_extra extra params
      * @param string $codigo Codigo del tipo de documento
-     * @param bool $multiple
+     * @param bool $multiple Si multiple integra in file de multiple docs
      * @param array $ids
      * @param array $class_css
      * @return array|string html con info del input a mostrar
@@ -2031,7 +2030,7 @@ class directivas extends html {
      * @uses alta views
      * @uses modifica views
      */
-    public function upload_file(string $campo,int $cols, bool $required, bool $disabled, bool $ln=false,
+    public function upload_file(string $campo,int $cols, bool $disabled, bool $required, bool $ln=false,
                                 string $etiqueta = '', string $css_id = '', array $data_extra = array(),
                                 string $codigo='', bool $multiple = false, array $ids = array(),
                                 array $class_css = array()):array|string{ //FIN PROT
