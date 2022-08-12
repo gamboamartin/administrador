@@ -59,9 +59,23 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
 
     /**
      * PRUEBAS FINALIZADAS
-     * @param int $accion_id
-     * @param int $grupo_id
+     *
+     * Funcion que sirve para validar si un grupo puede realizar una accion. Devuelve un dato de tipo registro
+     * En caso de que "$accion_id" o "$grupo_id" tengan un error, devolverá un error.
+     * En caso de que "$r_accion_grupo" tenga un error al filtrar, devolverá un error
+     * En caso de que los registros en "n" grupo sea diferente de 1 dará error
+     *
+     * @param int $accion_id contiene un entero que representa un id de acción
+     *
+     * @param int $grupo_id contiene un entero que represente el id de grupo
+     *
      * @return array|int
+     *
+     *@functions $r_accion_grupo = adm_accion_grupo->filtro_and. Revisa los filtros para validar la acción de la funcion
+     * En caso de error lanzará un mensaje
+     *
+     *@functions $adm_accion_grupo->registro_id = (int)$r_accion_grupo. Añade un valor a "r_accion_grupo", para
+     * conservarlo en "registro_id". 
      */
     public function obten_permiso_id(int $accion_id, int $grupo_id):array|int{ //FIN PROT
 
