@@ -265,7 +265,7 @@ class templates{
      * @param string $tabla_foranea Tabla de ligue
      * @param bool $select_vacio_alta si true no mostrar datos en el select
      * @param array $valores_filtrados Valores a mostrar en select filtrados
-     * @param string $columnas
+     * @param string $columnas columnas para select
      * @param string $llaves_foraneas
      * @param array $vistas
      * @param string $accion
@@ -392,7 +392,7 @@ class templates{
      * @param array $data_extra Elementos para integrar extraparams
      * @param array $filtro Filtro para selects
      * @param string $tabla_foranea Tabla de enlace para select
-     * @param bool $select_vacio_alta
+     * @param bool $select_vacio_alta si true deja select vacio
      * @param string $columnas
      * @param string $llaves_valores
      * @return array|string html con info del input a mostrar
@@ -637,7 +637,7 @@ class templates{
      * @param array $data_extra Elementos para integrar extraparams
      * @param string $tabla_foranea Tabla de ligue
      * @param bool $select_vacio_alta si true no mostrara datos el select
-     * @param string $columnas
+     * @param string $columnas columnas para select
      * @param string $llaves_valores
      * @param array $filtro Filtro para selects
      * @param array $vistas

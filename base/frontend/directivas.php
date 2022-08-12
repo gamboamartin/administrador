@@ -2017,7 +2017,7 @@ class directivas extends html {
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $css_id css en html id
-     * @param array $data_extra
+     * @param array $data_extra extra params
      * @param string $codigo Codigo del tipo de documento
      * @param bool $multiple
      * @param array $ids
