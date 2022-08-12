@@ -146,7 +146,7 @@ class directivas extends html {
      * @param string $stilo forma del boton success warning etc
      * @param array $class_css Clases css a incrustar en div
      * @param string $icon Icono a mostrar
-     * @param string $id_css
+     * @param string $id_css id css
      * @param array $datas Conjunto de extra params para se convertido en html
      * @return array|string string palabra ajustada
      * @example
@@ -240,6 +240,7 @@ class directivas extends html {
      * @uses  templates
      * @uses  controlador_cliente
      * @uses  controlador_contrarecibo
+     * @version 1.309.41
      */
     public function checkbox(string $campo,string $css_id = '', int $cols = 4, array $data_extra = array(),
                              bool $disabled = false, string $etiqueta = '', bool $ln = true,
@@ -2041,7 +2042,7 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_base_input(campo: $campo,cols:  $cols);
         if(errores::$error){
-            return  $this->error->error('Error al validar input',$valida);
+            return  $this->error->error(mensaje: 'Error al validar input',data: $valida);
         }
 
         if($etiqueta===''){
@@ -2057,17 +2058,17 @@ class directivas extends html {
 
         $ids_html = (new params_inputs())->ids_html(campo:  $campo, ids_css: $ids);
         if(errores::$error){
-            return  $this->error->error('Error al obtener ids',$ids_html);
+            return  $this->error->error(mensaje: 'Error al obtener ids',data: $ids_html);
         }
 
         $class_css_html = (new class_css())->class_css_html(clases_css: $class_css);
         if(errores::$error){
-            return  $this->error->error('Error al obtener ids',$ids_html);
+            return  $this->error->error(mensaje: 'Error al obtener ids',data: $ids_html);
         }
 
         $disable_html = (new params_inputs())->disabled_html(disabled: $disabled);
         if(errores::$error){
-            return  $this->error->error('Error al obtener $disable_html',$disable_html);
+            return  $this->error->error(mensaje: 'Error al obtener $disable_html',data: $disable_html);
         }
 
 

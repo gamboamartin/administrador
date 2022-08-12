@@ -11,19 +11,20 @@ class validaciones_directivas extends validacion{
 
 
     /**
-     * PROBADO- PARAMS ORDER P INT
-     * @param string $campo
-     * @param int $cols
+     * Valida los elementos de un input
+     * @param string $campo Nombre del campo
+     * @param int $cols Columnas css
      * @return bool|array
+     * @version 1.309.41
      */
     public function valida_base_input(string $campo, int $cols): bool|array
     {
         if($campo === ''){
-            return  $this->error->error('Error $campo no puede venir vacio',$campo);
+            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
         }
         $valida = $this->valida_cols(cols: $cols);
         if(errores::$error){
-            return  $this->error->error('Error al validar cols',$valida);
+            return  $this->error->error(mensaje: 'Error al validar cols',data: $valida);
         }
 
         return true;
@@ -50,26 +51,25 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * FULL
-     * @param int $cols
-     * @param string $label
-     * @param string $name
-     * @param string $value
+     * Valida los elementos de un boton
+     * @param int $cols Columnas para css
+     * @param string $label Etiqueta a mostrar
+     * @param string $name Nombre del boton
+     * @param string $value Valor d eboton
      * @return bool|array
+     * @version 1.309.41
      */
     public function valida_data_btn(int $cols, string $label, string $name, string $value): bool|array
     {
         $valida = $this->valida_cols(cols: $cols);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar cols',data:  $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar cols',data:  $valida);
         }
         if($name===''){
-            return $this->error->error(mensaje:'Error $name no puede venir vacio',data: $label,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $name no puede venir vacio',data: $label);
         }
         if($value===''){
-            return $this->error->error(mensaje:'Error $value no puede venir vacio',data: $name,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $value no puede venir vacio',data: $name);
         }
         return true;
     }

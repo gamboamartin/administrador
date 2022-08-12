@@ -16,12 +16,13 @@ class checkboxes{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * Genera el html de un checkbox
      * @param string $salto Salto de linea en html
-     * @param string $div_chk
-     * @param string $etiqueta
-     * @param string $data_input
+     * @param string $div_chk Div de integracion de checkbox
+     * @param string $etiqueta Etiqueta de checkbox
+     * @param string $data_input Datos de input
      * @return string Html formado
+     * @version 1.309.41
      */
     public function checkbox(string $data_input, string $div_chk, string $etiqueta, string $salto): string
     {
@@ -45,6 +46,7 @@ class checkboxes{
      * @param int $cols Columnas para css
      * @param string $disabled_html atributo disabled en html
      * @return array|stdClass
+     * @version 1.309.41
      */
     public function data_chk(string $campo, string $checked_html, string $class,int $cols, string $data_etiqueta,
                              string $data_extra_html, string $disabled_html, string $id_html,string $valor): array|stdClass
@@ -155,10 +157,11 @@ class checkboxes{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
+     * Genera el html de un div de checkbox
      * @param int $cols Columnas en css para maquetacion de divs
      * @param string $span_btn_chk html en forma de span para integrar a div
      * @return string|array
+     * @version 1.309.41
      */
     private function div_chk(int $cols, string $span_btn_chk): string|array
     {
@@ -178,6 +181,7 @@ class checkboxes{
      * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk html de span
      * @return array|string
+     * @version 1.309.41
      */
     private function etiqueta_chk(int $cols, string $data_etiqueta, string $span_chk): array|string
     {

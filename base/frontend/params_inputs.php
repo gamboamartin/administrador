@@ -195,16 +195,17 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param array $ids_css
-     * @param string $campo
+     * Genera id de css en forma html
+     * @param array $ids_css Id para css
+     * @param string $campo Nombre del campo
      * @return string|array
+     * @version 1.309.41
      */
     public function ids_html(string $campo, array $ids_css): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error el campo esta vacio', $campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
         }
         $ids_css_html = $campo;
         foreach($ids_css as $id_css){
@@ -214,10 +215,11 @@ class params_inputs{
     }
 
     /**
-     * FULL
-     * @param array $keys
-     * @param stdClass $params
+     * Limpia los elementos de un objeto basado en sus atributos
+     * @param array $keys Keys de parametros a limpiar
+     * @param stdClass $params Parametros a limpiar
      * @return stdClass
+     * @version 1.309.41
      */
     private function limpia_obj(array $keys, stdClass $params): stdClass
     {
@@ -239,7 +241,7 @@ class params_inputs{
         $keys = array('class','data_extra','icon');
         $params = $this->limpia_obj(keys: $keys,params: $params);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar params', data: $params, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar params', data: $params);
         }
         return $params;
     }

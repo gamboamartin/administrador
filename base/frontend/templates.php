@@ -431,14 +431,14 @@ class templates{
             $data_html = $directiva->checkbox(campo: $campo_name, css_id: $css_id, cols:  $cols,
                 data_extra: $data_extra, disabled: $disabled,etiqueta:  $etiqueta, ln: $ln, valor: $valor);
             if(errores::$error){
-                return $this->error->error('Error al crear checkbox',$data_html);
+                return $this->error->error(mensaje: 'Error al crear checkbox',data: $data_html);
             }
         }
         if( $tipo === 'documento'){
             $data_html = $directiva->upload_file(campo: $campo_name,cols: $cols,required:  $required,
                 disabled: $disabled,ln: $ln,etiqueta:  $etiqueta,css_id:  $css_id,data_extra: $data_extra);
             if(errores::$error){
-                return $this->error->error('Error al crear upload_file',$data_html);
+                return $this->error->error(mensaje: 'Error al crear upload_file',data: $data_html);
             }
         }
 

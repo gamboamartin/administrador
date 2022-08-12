@@ -71,17 +71,17 @@ class botones{
 
         $params = (new params_inputs())->limpia_obj_btn(params: $params);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar params',data:  $params, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al limpiar params',data:  $params);
         }
 
         $type = trim ($type);
         if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio', data: $type, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error type esta vacio', data: $type);
         }
 
         $stilo = trim ($stilo);
         if($stilo === ''){
-            return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo);
         }
 
         return "<button type='$type' name='$name' value='$value' id='$id_css'  
@@ -90,7 +90,7 @@ class botones{
     }
 
     /**
-     * FULL
+     * Genera un boton html
      * @param string $type Tipo de input
      * @param string $name Nombre del input
      * @param string $value Valor del input
@@ -149,11 +149,12 @@ class botones{
     }
 
     /**
-     * FULL
-     * @param array $class_css
-     * @param string $icon
+     * Genera los parametros para la integracion de un boton
+     * @param array $class_css clases para integrar en html
+     * @param string $icon Icono html
      * @param array $datas Conjunto de extra params para se convertido en html
      * @return array|stdClass
+     * @version 1.309.41
      */
     public function data_btn(array $class_css, array $datas, string $icon): array|stdClass
     {
@@ -179,9 +180,10 @@ class botones{
     }
 
     /**
-     * FULL
-     * @param string $icon
+     * Genera un icono svg
+     * @param string $icon Icono
      * @return string
+     * @version 1.309.41
      */
     private function icon_html(string $icon): string
     {
