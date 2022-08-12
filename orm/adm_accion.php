@@ -271,9 +271,20 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P INT
-     * @param string $seccion
-     * @param string $accion
+     *
+     * Funcion que obtiene y genera un registro de tipo acción. basado en los resultados de los
+     * filtros recibidos (accion y seccion). Valida si hay registros no, Devuelve un error en caso de no encontrarlos.
+     *
+     * @param string $seccion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
+     * @param string $accion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
+     *
      * @return array
+     *
+     *@functions $valida   = adm_accion->validacion->seccion_accion. Usada para validar los resultados de la funcion "seccion_accion".
+     *En caso de error lanzará un mensaje
+     *
+     *@functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
+     *En caso de error lanzará un mensaje
      */
     public function accion_registro(string $seccion, string $accion):array{
         $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
