@@ -2016,7 +2016,7 @@ class directivas extends html {
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param string $css_id
+     * @param string $css_id css en html id
      * @param array $data_extra
      * @param string $codigo Codigo del tipo de documento
      * @param bool $multiple

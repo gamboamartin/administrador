@@ -247,10 +247,11 @@ class etiquetas{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera label de files multiple
      * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta Etiqueta a mostrar
      * @return array|stdClass
+     * @version 1.314.41
      */
     public function labels_multiple(string $codigo, string $etiqueta): array|stdClass
     {

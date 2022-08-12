@@ -14,7 +14,7 @@ class inputs_files{
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param string $class_css_html
      * @param string $ids_html
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param string $disable_html
      * @param string $required_html
      * @param stdClass $labels
@@ -30,13 +30,13 @@ class inputs_files{
         $input_upload_multiple = $this->input_upload_multiple(campo: $campo, class_css_html: $class_css_html,
             disable_html: $disable_html, ids_html: $ids_html, required_html: $required_html);
         if(errores::$error){
-            return  $this->error->error('Error al obtener input',$input_upload_multiple);
+            return  $this->error->error(mensaje: 'Error al obtener input',data: $input_upload_multiple);
         }
 
         $content_input = $this->content_input_multiple(input_upload_multiple: $input_upload_multiple,
             label_input_upload: $labels->label_input_upload);
         if(errores::$error){
-            return  $this->error->error('Error al obtener input',$input_upload_multiple);
+            return  $this->error->error(mensaje: 'Error al obtener input',data: $input_upload_multiple);
         }
 
         return $content_input;
@@ -63,7 +63,7 @@ class inputs_files{
      * @param string $etiqueta Etiqueta a mostrar
      * @param string $class_css_html
      * @param string $ids_html
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param string $disable_html
      * @param string $required_html
      * @return array|stdClass
@@ -74,13 +74,13 @@ class inputs_files{
                                               string $required_html): array|stdClass {
         $labels = (new etiquetas())->labels_multiple(codigo: $codigo, etiqueta: $etiqueta);
         if(errores::$error){
-            return  $this->error->error('Error al obtener labels',$labels);
+            return  $this->error->error(mensaje: 'Error al obtener labels',data: $labels);
         }
 
         $content_input = $this->contains_input_file(campo: $campo, class_css_html: $class_css_html,
             disable_html: $disable_html, ids_html: $ids_html, labels:  $labels, required_html: $required_html);
         if(errores::$error){
-            return  $this->error->error('Error al obtener input',$content_input);
+            return  $this->error->error(mensaje: 'Error al obtener input',data: $content_input);
         }
 
         $labels->content_input = $content_input;
@@ -96,7 +96,7 @@ class inputs_files{
      * @param string $etiqueta Etiqueta a mostrar
      * @param string $class_css_html
      * @param string $ids_html
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param string $disable_html
      * @param string $required_html
      * @return array|string
@@ -137,7 +137,7 @@ class inputs_files{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param string $class_css_html
      * @param string $disable_html
      * @param string $ids_html
@@ -149,7 +149,7 @@ class inputs_files{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error campo vacio', $campo);
+            return $this->error->error(mensaje: 'Error campo vacio', data: $campo);
         }
 
         $html = '<input type="file" class="custom-file-input '.$class_css_html.'"';
