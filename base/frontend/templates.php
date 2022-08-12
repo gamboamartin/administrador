@@ -414,10 +414,10 @@ class templates{
                                      string $llaves_valores):array|string{ //FIN
 
         if($cols <0){
-            return $this->error->error('Error cols debe ser mayor a 0',$cols);
+            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data: $cols);
         }
         if($cols >12){
-            return $this->error->error('Error cols debe ser menor a 12',$cols);
+            return $this->error->error(mensaje: 'Error cols debe ser menor a 12',data: $cols);
         }
 
         $data_html = '';

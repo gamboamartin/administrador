@@ -136,7 +136,7 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT ERROREV
+     *
      * Valida la entrada de datos para generacion de inputs
      *
      * @param string $tabla Tabla - estructura modelo sistema
@@ -151,6 +151,7 @@ class validaciones_directivas extends validacion{
      * return $this->errores->error('Error al validar',$valida);
      * }
      *
+     * @version 1.310.41
      */
     public function valida_elementos_base_input(int $cols, string $tabla):array|bool{
         if($tabla === ''){

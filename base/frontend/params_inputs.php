@@ -262,16 +262,17 @@ class params_inputs{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param bool $ln
-     * @param string $size
+     * Genera un salto de linea html
+     * @param bool $ln Si salto genera un div col 12
+     * @param string $size sm lg etc
      * @return string|array
+     * @version 1.310.41
      */
     public function ln(bool $ln, string $size): string|array
     {
         $size = trim($size);
         if($size === ''){
-            return $this->error->error('Error size no puede venir vacio',$size);
+            return $this->error->error(mensaje: 'Error size no puede venir vacio',data: $size);
         }
         $html = '';
         if($ln){
@@ -337,7 +338,7 @@ class params_inputs{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param bool $disabled
+     * @param bool $disabled Si disabled deja input disabled
      * @param bool $required
      * @param array $data_extra
      * @param array $css
@@ -350,30 +351,30 @@ class params_inputs{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error el campo esta vacio', $campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
         }
         $disabled_html = $this->disabled_html(disabled: $disabled);
         if (errores::$error) {
-            return $this->error->error('Error al generar disabled html',$disabled_html);
+            return $this->error->error(mensaje: 'Error al generar disabled html',data: $disabled_html);
         }
 
         $required_html = $this->required_html(required: $required);
         if (errores::$error) {
-            return $this->error->error('Error al generar required html',$required_html);
+            return $this->error->error(mensaje: 'Error al generar required html',data: $required_html);
         }
 
         $data_extra_html = (new extra_params())->data_extra_html(data_extra: $data_extra);
         if (errores::$error) {
-            return $this->error->error('Error al generar data html',$data_extra_html);
+            return $this->error->error(mensaje: 'Error al generar data html',data: $data_extra_html);
         }
 
         $css_html = (new class_css())->class_css_html(clases_css: $css);
         if (errores::$error) {
-            return $this->error->error('Error al generar class html',$css_html);
+            return $this->error->error(mensaje: 'Error al generar class html',data: $css_html);
         }
         $ids_html = $this->ids_html(campo:  $campo, ids_css: $ids);
         if (errores::$error) {
-            return $this->error->error('Error al generar ids html',$ids_html);
+            return $this->error->error(mensaje: 'Error al generar ids html',data: $ids_html);
         }
 
         $params = new stdClass();

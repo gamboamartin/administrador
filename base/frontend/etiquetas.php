@@ -13,7 +13,7 @@ class etiquetas{
         $this->error = new errores();
     }
     /**
-     * PROBADO-PARAMS ORDER PARAMS INT
+     *
      * Ajusta el texto enviado basado en el tip de letra capitalize, mayúsculos, minusculas
      *
      * @param string $tipo_letra Tipo de letra para realizar ajuste de texto capitalize, mayúsculas, minusculas
@@ -29,6 +29,7 @@ class etiquetas{
      * @throws errores tipo_letra no sea una de las tres validas
      * @throws errores tipo_letra vacia
      * @uses  $directivas->genera_texto_etiqueta
+     * @version 1.310.41
      */
     private function ajusta_texto(string $texto, string $tipo_letra ):array|string{
         $texto = trim($texto);
@@ -180,7 +181,7 @@ class etiquetas{
     }
 
     /**
-     * PROBADO-PARAMS ORDER PARAMS INT
+     *
      * Ajusta el texto enviado basado en el tip de letra capitalize, mayusculas, minusculas y sustituye guiones
      * bajos por espacios
      *
@@ -195,14 +196,15 @@ class etiquetas{
      * @throws errores texto vacio
      * @throws errores tipo_letra no sea una de las tres validas
      * @throws errores tipo_letra vacia
+     * @version 1.310.41
      */
     public function genera_texto_etiqueta(string $texto, string $tipo_letra):array|string{
         if($texto === ''){
-            return $this->error->error("Error texto vacio",$texto);
+            return $this->error->error(mensaje: "Error texto vacio",data: $texto);
         }
         $campo_capitalize = $this->ajusta_texto(texto: $texto, tipo_letra: $tipo_letra);
         if(errores::$error){
-            return $this->error->error("Error al ajustar texto",$campo_capitalize);
+            return $this->error->error(mensaje: "Error al ajustar texto",data: $campo_capitalize);
         }
         $campo_capitalize = str_replace('_', ' ', $campo_capitalize);
 

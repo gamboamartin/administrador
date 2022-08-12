@@ -377,7 +377,7 @@ class directivas extends html {
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param string $value
      * @param bool $required
-     * @param bool $disabled
+     * @param bool $disabled Si disabled deja input disabled
      * @param bool $ln
      * @param string $etiqueta
      * @param string $pattern
@@ -408,15 +408,15 @@ class directivas extends html {
         }
 
         if(trim($etiqueta) === ''){
-            return $this->error->error("Etiqueta vacia",$etiqueta);
+            return $this->error->error(mensaje: "Etiqueta vacia",data: $etiqueta);
         }
         if($tipo_letra === ''){
-            return $this->error->error('Envie un tipo de letra valido capitalize normal',$tipo_letra);
+            return $this->error->error(mensaje: 'Envie un tipo de letra valido capitalize normal',data: $tipo_letra);
         }
 
         $valida = $this->validacion->valida_elementos_base_input(cols:$cols, tabla: $campo);
         if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar",data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: "Error al validar",data: $valida);
         }
 
         $con_label = false;
@@ -425,12 +425,12 @@ class directivas extends html {
         }
         $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta,tipo_letra:  $tipo_letra);
         if (errores::$error) {
-            return $this->error->error('Error al generar etiqueta',$campo_capitalize);
+            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $campo_capitalize);
         }
 
         $value = (new values())->value_fecha(tipo: $tipo, value: $value, value_vacio: $value_vacio);
         if(errores::$error){
-            return $this->error->error('Error al asignar valor',$value);
+            return $this->error->error(mensaje: 'Error al asignar valor',data: $value);
         }
 
         $html = '';
@@ -438,7 +438,7 @@ class directivas extends html {
 
         $ln_html = (new params_inputs())->ln(ln: $ln,size:  $size);
         if(errores::$error){
-            return $this->error->error('Error al generar ln',$ln_html);
+            return $this->error->error(mensaje: 'Error al generar ln',data: $ln_html);
         }
 
         $html.=$ln_html;
@@ -2076,7 +2076,7 @@ class directivas extends html {
 
         $ln_html = (new params_inputs())->ln(ln: $ln,size:  'md');
         if(errores::$error){
-            return  $this->error->error('Error al obtener ln',$ln_html);
+            return  $this->error->error(mensaje: 'Error al obtener ln',data: $ln_html);
         }
 
         $html.=$ln_html;
@@ -2087,7 +2087,7 @@ class directivas extends html {
                 codigo: $codigo, disable_html: $disable_html, etiqueta:  $etiqueta, ids_html:  $ids_html,
                  required_html: $required_html);
             if(errores::$error){
-                return  $this->error->error('Error al obtener input',$input_file);
+                return  $this->error->error(mensaje: 'Error al obtener input',data: $input_file);
             }
             $html.=$input_file;
 

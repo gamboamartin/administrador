@@ -375,11 +375,13 @@ class values{
     }
 
     /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param string $value
-     * @param bool $value_vacio
-     * @param string $tipo
+     * Genera un valor fecha default
+     * @param string $value valor init
+     * @param bool $value_vacio is vacio deja vacio
+     * @param string $tipo Tipo de fecha date, datetime local
      * @return string
+     * @version 1
+     * 1.310.41
      */
     public function value_fecha(string $tipo, string $value, bool $value_vacio): string
     {
