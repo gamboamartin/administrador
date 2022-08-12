@@ -20,8 +20,20 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
 
     /**
      * P INT P ORDER ERROREV
-     * @param int $seccion_menu_id
+     *
+     * Funcion utilizada para validar permisos basado en tu grupo y seccion. Devuelve un objeto de tipo result
+     * En caso de error al validar, lanzará un mensaje
+     *
+     * @param int $seccion_menu_id Contiene un id de grupo.
+     *
      * @return array|stdClass
+     *
+     *@functions $valida  = adm_accion_grupo->validacion->valida_ids  Usada para validar los
+     * resultados de "$keys" y "$S_SESSION". En caso de error lanzará un mensaje
+     *
+     *@functions $result  = adm_accion_grupo->filtro_and. obtiene los resultados de los registros
+     * encontrados. En caso de error, lanzará un mensaje.
+     *
      */
     public function obten_accion_permitida(int $seccion_menu_id):array|stdClass{
         $keys = array('grupo_id');
