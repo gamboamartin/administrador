@@ -212,9 +212,10 @@ class etiquetas{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $etiqueta
+     * Genera un label de un input de tipo file
+     * @param string $etiqueta Etiqueta a mostrar
      * @return string|array
+     * @version 1.312.41
      */
     private function label_input_upload(string $etiqueta): string|array
     {
@@ -248,7 +249,7 @@ class etiquetas{
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param string $codigo Codigo para ser mostrado en label
-     * @param string $etiqueta
+     * @param string $etiqueta Etiqueta a mostrar
      * @return array|stdClass
      */
     public function labels_multiple(string $codigo, string $etiqueta): array|stdClass

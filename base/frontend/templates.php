@@ -263,7 +263,7 @@ class templates{
      * @param string $css_id Identificador css para java
      * @param array $data_extra Elementos para integrar extraparams
      * @param string $tabla_foranea Tabla de ligue
-     * @param bool $select_vacio_alta
+     * @param bool $select_vacio_alta si true no mostrar datos en el select
      * @param array $valores_filtrados
      * @param string $columnas
      * @param string $llaves_foraneas
@@ -390,7 +390,7 @@ class templates{
      * @param string $pattern Regex para validacion de input
      * @param string $css_id Identificador css para java
      * @param array $data_extra Elementos para integrar extraparams
-     * @param array $filtro
+     * @param array $filtro Filtro para selects
      * @param string $tabla_foranea
      * @param bool $select_vacio_alta
      * @param string $columnas
@@ -639,7 +639,7 @@ class templates{
      * @param bool $select_vacio_alta
      * @param string $columnas
      * @param string $llaves_valores
-     * @param array $filtro
+     * @param array $filtro Filtro para selects
      * @param array $vistas
      * @param string $accion
      * @return array|string array con errores o string con html

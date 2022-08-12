@@ -2012,7 +2012,7 @@ class directivas extends html {
      * @param string $campo Nombre del campo
      * @param int $cols numero de columnas entre 1 y 12
      * @param bool $required si required el input sera obligatorio
-     * @param bool $disabled
+     * @param bool $disabled si disabled el input quedara deshabilitado
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
