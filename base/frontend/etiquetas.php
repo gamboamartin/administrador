@@ -226,15 +226,16 @@ class etiquetas{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $codigo
+     * Genera la etiqueta de un input file
+     * @param string $codigo Codigo de input mostrado en file
      * @return string|array
+     * @version 1.311.41
      */
     private function label_upload(string $codigo): string|array
     {
         $codigo = trim($codigo);
         if($codigo === ''){
-            return  $this->error->error('Error codigo esta vacio',$codigo);
+            return  $this->error->error(mensaje: 'Error codigo esta vacio',data: $codigo);
         }
 
         $html =     '<div class="input-group-prepend">';
@@ -246,7 +247,7 @@ class etiquetas{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $codigo
+     * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta
      * @return array|stdClass
      */
@@ -254,22 +255,22 @@ class etiquetas{
     {
         $codigo = trim($codigo);
         if($codigo === ''){
-            return  $this->error->error('Error codigo esta vacio',$codigo);
+            return  $this->error->error(mensaje: 'Error codigo esta vacio',data: $codigo);
         }
 
         $etiqueta = trim($etiqueta);
         if($etiqueta === ''){
-            return  $this->error->error('Error etiqueta esta vacio',$etiqueta);
+            return  $this->error->error(mensaje: 'Error etiqueta esta vacio',data: $etiqueta);
         }
 
         $label_upload = $this->label_upload(codigo: $codigo);
         if(errores::$error){
-            return  $this->error->error('Error al obtener label',$label_upload);
+            return  $this->error->error(mensaje: 'Error al obtener label',data: $label_upload);
         }
 
         $label_input_upload = $this->label_input_upload(etiqueta: $etiqueta);
         if(errores::$error){
-            return  $this->error->error('Error al obtener label',$label_input_upload);
+            return  $this->error->error(mensaje: 'Error al obtener label',data: $label_input_upload);
         }
 
         $data = new stdClass();

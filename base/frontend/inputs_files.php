@@ -59,7 +59,7 @@ class inputs_files{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $codigo
+     * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta
      * @param string $class_css_html
      * @param string $ids_html
@@ -92,7 +92,7 @@ class inputs_files{
     /**
      *
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $codigo
+     * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta
      * @param string $class_css_html
      * @param string $ids_html

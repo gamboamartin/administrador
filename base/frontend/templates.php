@@ -38,7 +38,7 @@ class templates{
     /**
      * P INT
      * @param array $directivas_extra Directivas no automatizadas a integrar en view
-     * @param bool $muestra_btn_guardar
+     * @param bool $muestra_btn_guardar si false no muestra el boton
      * @param bool $aplica_form Si aplica form integra eh head de un form
      * @param array $valores_filtrados Valores a aplicar un filtro para form alta
      * @param array $campos Conjunto de campos pa ejecucion del html
@@ -262,7 +262,7 @@ class templates{
      * @param string $pattern Regex para validacion html
      * @param string $css_id Identificador css para java
      * @param array $data_extra Elementos para integrar extraparams
-     * @param string $tabla_foranea
+     * @param string $tabla_foranea Tabla de ligue
      * @param bool $select_vacio_alta
      * @param array $valores_filtrados
      * @param string $columnas
@@ -387,7 +387,7 @@ class templates{
      * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
      * @param bool $ln Si true aplica div 12
      * @param string $etiqueta Etiqueta de input
-     * @param string $pattern
+     * @param string $pattern Regex para validacion de input
      * @param string $css_id Identificador css para java
      * @param array $data_extra Elementos para integrar extraparams
      * @param array $filtro
@@ -635,7 +635,7 @@ class templates{
      * @param string $pattern Regex para validacion html
      * @param string $css_id Identificador css para java
      * @param array $data_extra Elementos para integrar extraparams
-     * @param string $tabla_foranea
+     * @param string $tabla_foranea Tabla de ligue
      * @param bool $select_vacio_alta
      * @param string $columnas
      * @param string $llaves_valores
