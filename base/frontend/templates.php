@@ -267,7 +267,7 @@ class templates{
      * @param array $valores_filtrados Valores a mostrar en select filtrados
      * @param string $columnas columnas para select
      * @param string $llaves_foraneas llaves para integrar con select
-     * @param array $vistas
+     * @param array $vistas Conjunto de views permitidas
      * @param string $accion
      * @param array $campos_invisibles
      * @return array|string
@@ -394,7 +394,7 @@ class templates{
      * @param string $tabla_foranea Tabla de enlace para select
      * @param bool $select_vacio_alta si true deja select vacio
      * @param string $columnas Columnas para select
-     * @param string $llaves_valores
+     * @param string $llaves_valores LLaves para select
      * @return array|string html con info del input a mostrar
      * @example
      *      $$data_html = $this->genera_dato_html();
@@ -640,7 +640,7 @@ class templates{
      * @param string $columnas columnas para select
      * @param string $llaves_valores llaves en forma json
      * @param array $filtro Filtro para selects
-     * @param array $vistas
+     * @param array $vistas Conjunto de views permitidas
      * @param string $accion
      * @return array|string array con errores o string con html
      * @example

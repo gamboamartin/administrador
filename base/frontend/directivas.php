@@ -2019,7 +2019,7 @@ class directivas extends html {
      * @param array $data_extra extra params
      * @param string $codigo Codigo del tipo de documento
      * @param bool $multiple Si multiple integra in file de multiple docs
-     * @param array $ids
+     * @param array $ids Id de tipo css para ser integrados con java o css
      * @param array $class_css
      * @return array|string html con info del input a mostrar
      * @example
