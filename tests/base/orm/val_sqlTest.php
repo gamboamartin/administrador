@@ -15,6 +15,80 @@ class val_sqlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_campo_existe(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $campo = '';
+        $keys_ids = array();
+        $resultado = $val->campo_existe($campo, $keys_ids, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error key invalido', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $campo = 'a';
+        $keys_ids = array();
+        $resultado = $val->campo_existe($campo, $keys_ids, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado);
+
+        errores::$error = false;
+
+        $registro = array();
+        $campo = 'a';
+        $keys_ids = array();
+        $registro[] = '';
+        $resultado = $val->campo_existe($campo, $keys_ids, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado);
+
+        errores::$error = false;
+
+        $registro = array();
+        $campo = 'a';
+        $keys_ids = array();
+        $registro[] = '';
+        $keys_ids[] = '';
+        $resultado = $val->campo_existe($campo, $keys_ids, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al verificar si existe', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $campo = 'a';
+        $keys_ids = array();
+        $registro[] = '';
+        $keys_ids[] = 'a';
+        $resultado = $val->campo_existe($campo, $keys_ids, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al verificar si existe', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $campo = 'a';
+        $keys_ids = array();
+        $registro['a'] = '';
+
+        $keys_ids[] = 'a';
+        $resultado = $val->campo_existe($campo, $keys_ids, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado);
+        errores::$error = false;
+    }
+
     public function test_checked(): void
     {
         errores::$error = false;
