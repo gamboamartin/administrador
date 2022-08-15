@@ -531,6 +531,9 @@ class init{
         if($sistema === 'banco'){
             $namespace = 'gamboamartin\\banco\\';
         }
+        if($sistema === 'facturacion'){
+            $namespace = 'gamboamartin\\facturacion\\';
+        }
 
 
 
