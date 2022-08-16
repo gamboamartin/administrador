@@ -436,7 +436,7 @@ class templates{
         }
         if( $tipo === 'documento'){
             $data_html = $directiva->upload_file(campo: $campo_name, cols: $cols, disabled: $disabled,
-                required: $required, ln: $ln, etiqueta: $etiqueta, css_id: $css_id, data_extra: $data_extra);
+                required: $required, css_id: $css_id, data_extra: $data_extra, etiqueta: $etiqueta, ln: $ln);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al crear upload_file',data: $data_html);
             }

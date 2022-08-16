@@ -11,7 +11,7 @@ class inputs_files{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera un input file
      * @param string $class_css_html class css
      * @param string $ids_html id css
      * @param string $campo Campo de input
@@ -19,6 +19,7 @@ class inputs_files{
      * @param string $required_html atributo required html
      * @param stdClass $labels parametros label
      * @return array|string
+     * @version 1.325.41
      */
     private function contains_input_file(string $campo, string $class_css_html,  string $disable_html, string $ids_html,
                                          stdClass $labels, string $required_html): array|string
@@ -59,15 +60,16 @@ class inputs_files{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera un input file
      * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta Etiqueta a mostrar
      * @param string $class_css_html class css
      * @param string $ids_html id css
      * @param string $campo Campo de input
      * @param string $disable_html atributo disabled
-     * @param string $required_html
+     * @param string $required_html atributo required
      * @return array|stdClass
+     * @version 1.325.41
      */
 
     private function data_contains_input_file(string $campo, string $class_css_html, string $codigo,
@@ -92,15 +94,16 @@ class inputs_files{
 
     /**
      *
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera un input file multiple
      * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta Etiqueta a mostrar
      * @param string $class_css_html class css
      * @param string $ids_html id css
      * @param string $campo Campo de input
      * @param string $disable_html atributo disabled
-     * @param string $required_html
+     * @param string $required_html atributo required
      * @return array|string
+     * @version 1.325.41
      */
     public function input_file_multiple(string $campo, string $class_css_html, string $codigo, string $disable_html,
                                         string $etiqueta, string $ids_html, string $required_html): array|string
@@ -109,23 +112,24 @@ class inputs_files{
             codigo:  $codigo, disable_html:  $disable_html, etiqueta:  $etiqueta, ids_html: $ids_html,
             required_html:  $required_html);
         if(errores::$error){
-            return  $this->error->error('Error al obtener input',$data_contains);
+            return  $this->error->error(mensaje: 'Error al obtener input',data: $data_contains);
         }
 
         $input_file = $this->input_multiple_file(content_input: $data_contains->content_input,
             label_upload: $data_contains->label_upload);
         if(errores::$error){
-            return  $this->error->error('Error al obtener input',$input_file);
+            return  $this->error->error(mensaje: 'Error al obtener input',data: $input_file);
         }
 
         return $input_file;
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $label_upload
-     * @param string $content_input
+     * Integra uin input de tipo file
+     * @param string $label_upload Etiqueta a mostrar
+     * @param string $content_input Contenido con data del input en html
      * @return string
+     * @version 1.325.41
      */
     private function input_multiple_file(string $content_input, string $label_upload): string
     {

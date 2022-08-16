@@ -376,7 +376,7 @@ class directivas extends html {
      * @param string $campo Nombre o identificador del campo del input
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param string $value
-     * @param bool $required
+     * @param bool $required Si required deja input como requerido
      * @param bool $disabled Si disabled deja input disabled
      * @param bool $ln
      * @param string $etiqueta
@@ -397,8 +397,8 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      */
-    public function fecha(string $campo, int $cols = 4, bool $required = true, string $value = '',
-                          bool $disabled = false, bool $ln = false, string $etiqueta = '', string $pattern = '',
+    public function fecha(string $campo, int $cols = 4, bool $disabled = false, bool $required = true,
+                          string $value = '', bool $ln = false, string $etiqueta = '', string $pattern = '',
                           string $css_id = '', array $data_extra = array(), string $tipo_letra='capitalize',
                           bool $value_vacio = false, array $css = array(), string $tipo = 'date', string $size = 'md',
                           array $ids = array()):array|string{ //FIN PROT
@@ -2006,7 +2006,7 @@ class directivas extends html {
     }
 
     /**
-     * P INT
+     *
      * Genera un input para subida de archivos
      *
      * @param string $campo Nombre del campo
@@ -2020,7 +2020,7 @@ class directivas extends html {
      * @param string $codigo Codigo del tipo de documento
      * @param bool $multiple Si multiple integra in file de multiple docs
      * @param array $ids Id de tipo css para ser integrados con java o css
-     * @param array $class_css
+     * @param array $class_css clases css
      * @return array|string html con info del input a mostrar
      * @example
      *      $input = $directiva->upload_file(12,'tipo_documento_id['.$tipo_documento['tipo_documento_id'].']',false,$tipo_documento['tipo_documento_descripcion']);
@@ -2030,10 +2030,10 @@ class directivas extends html {
      * @uses alta views
      * @uses modifica views
      */
-    public function upload_file(string $campo,int $cols, bool $disabled, bool $required, bool $ln=false,
-                                string $etiqueta = '', string $css_id = '', array $data_extra = array(),
-                                string $codigo='', bool $multiple = false, array $ids = array(),
-                                array $class_css = array()):array|string{ //FIN PROT
+    public function upload_file(string $campo,int $cols, bool $disabled, bool $required, array $class_css = array(),
+                                string $css_id = '', string $codigo='', array $data_extra = array(),
+                                string $etiqueta = '', array $ids = array(), bool $ln=false,
+                                bool $multiple = false):array|string{ //FIN PROT
 
         /**
          * REFACTORIZAR

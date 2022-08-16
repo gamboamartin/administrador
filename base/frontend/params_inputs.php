@@ -339,7 +339,7 @@ class params_inputs{
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param bool $disabled Si disabled deja input disabled
-     * @param bool $required
+     * @param bool $required Si required deja input como requerido
      * @param array $data_extra
      * @param array $css
      * @param array $ids
