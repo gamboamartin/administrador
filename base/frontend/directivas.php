@@ -378,11 +378,11 @@ class directivas extends html {
      * @param string $value Valor asignado
      * @param bool $required Si required deja input como requerido
      * @param bool $disabled Si disabled deja input disabled
-     * @param bool $ln saldo de linea
+     * @param bool $ln salto de linea
      * @param string $etiqueta Etiqueta a mostrar
-     * @param string $pattern
-     * @param string $css_id
-     * @param array $data_extra
+     * @param string $pattern Regex integracion html
+     * @param string $css_id css id
+     * @param array $data_extra extraparams conjunto
      * @param string $tipo_letra
      * @param bool $value_vacio
      * @param array $css
@@ -397,11 +397,11 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      */
-    public function fecha(string $campo, string $css_id = '', int $cols = 4, bool $disabled = false,
-                          string $etiqueta = '', bool $ln = false, string $pattern = '', bool $required = true,
-                          string $value = '', array $data_extra = array(), string $tipo_letra='capitalize',
-                          bool $value_vacio = false, array $css = array(), string $tipo = 'date', string $size = 'md',
-                          array $ids = array()):array|string{ //FIN PROT
+    public function fecha(string $campo, array $css = array(), string $css_id = '', int $cols = 4,
+                          array $data_extra = array(), bool $disabled = false, string $etiqueta = '',
+                          array $ids = array(), bool $ln = false, string $pattern = '', bool $required = true,
+                          string $size = 'md', string $tipo = 'date', string $tipo_letra='capitalize',
+                          string $value = '', bool $value_vacio = false):array|string{ //FIN PROT
 
         if($etiqueta === ''){
             $etiqueta = ucwords($campo);
@@ -696,17 +696,18 @@ class directivas extends html {
      * @uses templates
      * */
     public function genera_input_numero(string $campo, int $cols, string $value,bool $required, bool $disabled,
-                                        bool $ln, string $etiqueta, string $pattern, string $css_id, array $data_extra, string $tipo_letra):array|string{  //FIN PROT
+                                        bool $ln, string $etiqueta, string $pattern, string $css_id,
+                                        array $data_extra, string $tipo_letra):array|string{  //FIN PROT
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
-            return  $this->error->error('Error al validar',$valida);
+            return  $this->error->error(mensaje: 'Error al validar',data: $valida);
         }
 
         $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo,tipo_letra:  $tipo_letra);
 
         if(errores::$error){
-            return  $this->error->error('Error al generar $campo_capitalize',$campo_capitalize);
+            return  $this->error->error(mensaje: 'Error al generar $campo_capitalize',data: $campo_capitalize);
         }
 
         $html = "";
@@ -743,7 +744,7 @@ class directivas extends html {
      * ERRORREV
      * Genera los inputs de un conjunto de selects
      *
-     * @param string $tabla
+     * @param string $tabla Tabla o estructura
      * @param array $columnas
      * @param array $data_extra
      * @param array $valores
@@ -783,10 +784,10 @@ class directivas extends html {
         }
 
 
-        $inputs[$campo] = $this->input_select_columnas(campo_name:$tabla.'_id',cols: 4,valor:  (string)$valores[$campo],
-            required: $required, disabled: $disabled,ln: false, etiqueta: $tabla, css_id: '', tabla: $tabla,
-            link:$link,select_vacio_alta: $select_vacio_alta, registros: $registros,todos: $todos,
-            data_extra:$data_extra);
+        $inputs[$campo] = $this->input_select_columnas(campo_name: $tabla.'_id', tabla: $tabla, link: $link,
+            cols: 4, valor: (string)$valores[$campo], required: $required, disabled: $disabled, ln: false,
+            etiqueta: $tabla, select_vacio_alta: $select_vacio_alta, registros: $registros, todos: $todos,
+            data_extra: $data_extra, css_id: '');
 
 
         if(errores::$error){
@@ -1220,7 +1221,7 @@ class directivas extends html {
     /**
      * P INT ERRORREV
      * Genera un contenedor div con un select
-     * @param string $campo_name
+     * @param string $campo_name Nombre del input
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param string $valor Valor de Identificador de registro
      * @param bool $required si required el input es obligatorio en su captura
@@ -1636,14 +1637,18 @@ class directivas extends html {
      * P INT
      * Genera el html de la barra de navegacion
      *
-     * @param string $value
-     * @param int $cols
      * @param string $campo
+     * @param int $cols
+     * @param string $value Valor de password
+     * @param bool $required
+     * @param string $etiqueta
+     * @param string $pattern
+     * @param string $css_id
+     * @param array $data_extra
+     * @return string|array html para incrustarlo y mostrarlo
      * @example
      *      $data_html = $directiva->password($this->valor, $this->cols, $this->campo);
      *
-     * @return string|array html para incrustarlo y mostrarlo
-     * @throws errores definidos en internals
      * @uses templates
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($campo,'capitalize');
@@ -1652,12 +1657,12 @@ class directivas extends html {
                               string $pattern, string $css_id, array $data_extra):string|array{ //FIN PROT
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
-            return  $this->error->error('Error al validar',$valida);
+            return  $this->error->error(mensaje: 'Error al validar',data: $valida);
         }
         $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto:$campo,tipo_letra: 'capitalize');
 
         if(errores::$error){
-            return  $this->error->error('Error al generar etiqueta',$campo_capitalize);
+            return  $this->error->error(mensaje: 'Error al generar etiqueta',data: $campo_capitalize);
         }
 
         $html = "<div class='form-group col-md-$cols'>";

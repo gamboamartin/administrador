@@ -53,7 +53,7 @@ class selects{
 
     /**
      * FULL
-     * @param array $columnas
+     * @param array $columnas conjunto de columnas a mostrar en input select
      * @param string $tabla
      * @return array
      */
@@ -114,7 +114,7 @@ class selects{
      * @param string $tabla
      * @param array $data_extra
      * @param array $data_con_valor
-     * @param array $columnas
+     * @param array $columnas conjunto de columnas a mostrar en input select
      * @return array|stdClass
      */
     private function data_for_select(array $columnas, array $data_con_valor,array $data_extra, string $tabla,
@@ -457,7 +457,7 @@ class selects{
      * @param string $tabla
      * @param array $data_extra
      * @param array $data_con_valor
-     * @param array $columnas
+     * @param array $columnas conjunto de columnas a mostrar en input select
      * @param PDO $link
      * @param array $registros
      * @param string $select_vacio_alta
