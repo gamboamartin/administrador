@@ -53,7 +53,7 @@ class etiquetas{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param bool $con_label
+     * @param bool $con_label Si con label integra la etiqueta
      * @param string $size
      * @param string $campo
      * @param string $campo_capitalize
@@ -65,15 +65,16 @@ class etiquetas{
         if($con_label) {
             $size = trim($size);
             if($size === ''){
-                return $this->error->error('Error size no puede venir vacio',$size);
+                return $this->error->error(mensaje: 'Error size no puede venir vacio',data: $size);
             }
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error('Error $campo no puede venir vacio',$campo);
+                return $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
             }
             $campo_capitalize = trim($campo_capitalize);
             if($campo_capitalize === ''){
-                return $this->error->error('Error $campo_capitalize no puede venir vacio',$campo_capitalize);
+                return $this->error->error(mensaje: 'Error $campo_capitalize no puede venir vacio',
+                    data: $campo_capitalize);
             }
 
             $html = "<label class='col-form-label-$size' for='$campo'>$campo_capitalize</label>";
