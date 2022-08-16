@@ -272,8 +272,16 @@ class init{
 
     /**
      * Obtiene el template de una vista.
-     * @param string $accion
+     *
+     * @param string $accion Accion a verificar
+     *
      * @return array|stdClass
+     *
+     * @functions $include_action = $init->include_action_template_base. Genera una ruta para obtener un
+     * template en base a "$accion". En caso de error, lanzará un mensaje
+     *
+     * @functions  $data = $init->genera_salida. Valida y maqueta el objeto almacenado si existe tanto
+     * el objeto como la ruta del archivo. En caso de error lanzará un mensaje.
      */
     private function include_action_template_base_data(string $accion): array|stdClass
     {
