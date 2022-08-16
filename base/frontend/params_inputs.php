@@ -340,10 +340,10 @@ class params_inputs{
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param bool $disabled Si disabled deja input disabled
      * @param bool $required Si required deja input como requerido
-     * @param array $data_extra
-     * @param array $css
-     * @param array $ids
-     * @param string $campo
+     * @param array $data_extra conjunto de extraparams
+     * @param array $css conjunto de css a integrar
+     * @param array $ids conjunto de ids a integrar
+     * @param string $campo nombre del campo
      * @return array|stdClass
      */
     public function params_fecha(string $campo, array $css, array $data_extra, bool $disabled, array $ids,

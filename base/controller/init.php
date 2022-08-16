@@ -665,7 +665,7 @@ class init{
     private function session_id(): array|string
     {
         if(isset($_GET['session_id'])){
-            return $_GET['session_id']; 
+            return $_GET['session_id'];
         }
         try{
             $session_id = random_int(10,99);

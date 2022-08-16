@@ -40,5 +40,22 @@ class directivasTest extends test {
 
     }
 
+    public function test_upload_file(): void
+    {
+        errores::$error = false;
+        $dir = new directivas();
+        //$inicializacion = new liberator($inicializacion);
+
+        $campo = 'a';
+        $cols = 1;
+        $disabled = false;
+        $required = false;
+        $resultado = $dir->upload_file($campo, $cols, $disabled, $required);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("<input type='file' class='custom-file-input input-file ' name='a'   id='a'>", $resultado);
+        errores::$error = false;
+    }
+
 
 }

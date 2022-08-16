@@ -443,8 +443,8 @@ class templates{
         }
 
         if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name,cols: $cols, required: $required,value: $valor,
-                disabled: $disabled,ln: $ln,etiqueta: $etiqueta,pattern:  $pattern, css_id: $css_id,
+            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, disabled: $disabled, required: $required,
+                value: $valor, ln: $ln, etiqueta: $etiqueta, pattern: $pattern, css_id: $css_id,
                 data_extra: $data_extra);
 
             if(errores::$error){

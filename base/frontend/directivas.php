@@ -375,11 +375,11 @@ class directivas extends html {
      * Genera un input fecha
      * @param string $campo Nombre o identificador del campo del input
      * @param int $cols Columnas para asignacion de html entre 1 y 12
-     * @param string $value
+     * @param string $value Valor asignado
      * @param bool $required Si required deja input como requerido
      * @param bool $disabled Si disabled deja input disabled
-     * @param bool $ln
-     * @param string $etiqueta
+     * @param bool $ln saldo de linea
+     * @param string $etiqueta Etiqueta a mostrar
      * @param string $pattern
      * @param string $css_id
      * @param array $data_extra
@@ -397,9 +397,9 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      */
-    public function fecha(string $campo, int $cols = 4, bool $disabled = false, bool $required = true,
-                          string $value = '', bool $ln = false, string $etiqueta = '', string $pattern = '',
-                          string $css_id = '', array $data_extra = array(), string $tipo_letra='capitalize',
+    public function fecha(string $campo, string $css_id = '', int $cols = 4, bool $disabled = false,
+                          string $etiqueta = '', bool $ln = false, string $pattern = '', bool $required = true,
+                          string $value = '', array $data_extra = array(), string $tipo_letra='capitalize',
                           bool $value_vacio = false, array $css = array(), string $tipo = 'date', string $size = 'md',
                           array $ids = array()):array|string{ //FIN PROT
 
@@ -447,18 +447,17 @@ class directivas extends html {
         $params = (new params_inputs())->params_fecha(campo: $campo, css: $css,data_extra: $data_extra,
             disabled: $disabled, ids: $ids, required: $required);
         if (errores::$error) {
-            return $this->error->error('Error al generar params',$params);
+            return $this->error->error(mensaje: 'Error al generar params',data: $params);
         }
 
 
-        $html = $html."
-		<div class='form-group col-$size-$cols'>";
+        $html .= "<div class='form-group col-$size-$cols'>";
 
 
         $con_label_html = (new etiquetas())->con_label(campo: $campo, campo_capitalize: $campo_capitalize,
             con_label: $con_label, size:  $size);
         if (errores::$error) {
-            return $this->error->error('Error al generar label',$con_label_html);
+            return $this->error->error(mensaje: 'Error al generar label',data: $con_label_html);
         }
 
         $html .= $con_label_html;
@@ -466,7 +465,7 @@ class directivas extends html {
         $container_html = $this->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
             size: $size, tipo: $tipo, value: $value);
         if (errores::$error) {
-            return $this->error->error('Error al integrar params',$container_html);
+            return $this->error->error(mensaje: 'Error al integrar params',data: $container_html);
         }
 
         $html.=$container_html;
@@ -2029,6 +2028,7 @@ class directivas extends html {
      * @uses templates
      * @uses alta views
      * @uses modifica views
+     * @version 1.331.41
      */
     public function upload_file(string $campo,int $cols, bool $disabled, bool $required, array $class_css = array(),
                                 string $css_id = '', string $codigo='', array $data_extra = array(),
@@ -2094,16 +2094,16 @@ class directivas extends html {
         else {
             $html.="<div class='col-md-12'>";
             $html .=  "
-<div class='input-group mb-3'>
-    <div class='input-group-prepend'>
-        <span class='input-group-text' >$codigo</span>
-    </div>
-    <div class='custom-file'>
-        <input type='file' class='custom-file-input input-file $class_css_html' name='$campo' $required_html $disable_html id='$ids_html'>
-        <label class='custom-file-label' for='$etiqueta'>$etiqueta</label>
-    </div>
-</div>
-</div>";
+                        <div class='input-group mb-3'>
+                            <div class='input-group-prepend'>
+                                <span class='input-group-text' >$codigo</span>
+                            </div>
+                            <div class='custom-file'>
+                                <input type='file' class='custom-file-input input-file $class_css_html' name='$campo' $required_html $disable_html id='$ids_html'>
+                                <label class='custom-file-label' for='$etiqueta'>$etiqueta</label>
+                            </div>
+                        </div>
+                    </div>";
 
         }
 
