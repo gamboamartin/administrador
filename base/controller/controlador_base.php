@@ -940,9 +940,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        if(!class_exists($clase)){
-            return $this->errores->error('Error no existe la clase',$clase);
-        }
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if(errores::$error){
