@@ -4,6 +4,7 @@ namespace base\controller;
 use base\frontend\directivas;
 use base\orm\modelo;
 use config\generales;
+use config\views;
 use gamboamartin\errores\errores;
 
 use models\adm_accion;
@@ -70,6 +71,8 @@ class controler{
     public string $include_lista_row = '';
     public string $include_lista_thead= '';
 
+    public array $subtitulos_menu = array();
+
 
 
     public function __construct(){
@@ -122,6 +125,15 @@ class controler{
         $this->seccion_titulo = str_replace('_', ' ', $this->seccion);
         $this->seccion_titulo = ucwords($this->seccion_titulo);
 
+
+        $views = new views();
+        if(!isset($views->subtitulos_menu)){
+            $error = $this->errores->error(mensaje: 'Error no existe subtitulos_menu en views', data: $views);
+            var_dump($error);
+            die('Error');
+        }
+
+        $this->subtitulos_menu = $views->subtitulos_menu;
 
 
     }
