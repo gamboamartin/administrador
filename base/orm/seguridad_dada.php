@@ -22,6 +22,12 @@ class seguridad_dada{
         return $filtro_seguridad;
     }
 
+    /**
+     * Genera un filtro de tipo seguridad
+     * @param modelo $modelo Modelo para integracion de filtro de seguridad
+     * @return array
+     *
+     */
     private function filtro_seguridad(modelo $modelo): array
     {
         $usuario_modelo = new adm_usuario($modelo->link);
