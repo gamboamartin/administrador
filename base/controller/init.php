@@ -298,9 +298,17 @@ class init{
 
     /**
      * Obtiene la ruta de un template
-     * @param string $accion
-     * @param string $seccion
+     * @param string $accion Accion a verificar
+     *
+     * @param string $seccion Seccion a verificar
+     *
      * @return array|stdClass
+     *
+     * @functions $data_include = $init->include_action_template_data. Genera una ruta contemplando "$accion" y "$seccion"
+     * para obtener un template. En caso de error, lanzará un mensaje.
+     *
+     * @functions $data_include = $init->include_template_base. Valida y maqueta el objeto requerido en base
+     * a "$accion" si éste existe. En caso de error, lanzará un mensaje.
      */
     private function include_template(string $accion, string $seccion): array|stdClass
     {
