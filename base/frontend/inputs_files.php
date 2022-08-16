@@ -12,12 +12,12 @@ class inputs_files{
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $class_css_html
+     * @param string $class_css_html class css
      * @param string $ids_html id css
      * @param string $campo Campo de input
-     * @param string $disable_html
-     * @param string $required_html
-     * @param stdClass $labels
+     * @param string $disable_html atributo disabled
+     * @param string $required_html atributo required html
+     * @param stdClass $labels parametros label
      * @return array|string
      */
     private function contains_input_file(string $campo, string $class_css_html,  string $disable_html, string $ids_html,
@@ -43,10 +43,11 @@ class inputs_files{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $input_upload_multiple
-     * @param string $label_input_upload
+     * Integra el contenido de un input
+     * @param string $input_upload_multiple Input en forma html
+     * @param string $label_input_upload Etiqueta de input
      * @return string
+     * @version 1.322.41
      */
     private function content_input_multiple(string $input_upload_multiple, string $label_input_upload): string
     {
@@ -61,10 +62,10 @@ class inputs_files{
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta Etiqueta a mostrar
-     * @param string $class_css_html
+     * @param string $class_css_html class css
      * @param string $ids_html id css
      * @param string $campo Campo de input
-     * @param string $disable_html
+     * @param string $disable_html atributo disabled
      * @param string $required_html
      * @return array|stdClass
      */
@@ -94,10 +95,10 @@ class inputs_files{
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param string $codigo Codigo para ser mostrado en label
      * @param string $etiqueta Etiqueta a mostrar
-     * @param string $class_css_html
+     * @param string $class_css_html class css
      * @param string $ids_html id css
      * @param string $campo Campo de input
-     * @param string $disable_html
+     * @param string $disable_html atributo disabled
      * @param string $required_html
      * @return array|string
      */
@@ -136,13 +137,15 @@ class inputs_files{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera un input file multiple
      * @param string $campo Campo de input
      * @param string $class_css_html Class css html
      * @param string $disable_html atributo disabled
      * @param string $ids_html id css
      * @param string $required_html atributo required
      * @return string|array
+     * @version 1.318.41
+     *
      */
     private function input_upload_multiple(string $campo, string $class_css_html, string $disable_html,
                                            string $ids_html, string $required_html): string|array

@@ -12,6 +12,7 @@ class val_sql extends validaciones {
      * @param array $keys_ids Keys a validar
      * @param array $registro Registro a verificar
      * @return array|string
+     * @version 1.321.41
      */
     private function campo_existe(string $campo, array $keys_ids, array $registro): array|string
     {
@@ -71,6 +72,7 @@ class val_sql extends validaciones {
      * @param array $keys_obligatorios Conjunto de campos obligatorios integrados en el modelo
      * @param array $registro Registro a verificar
      * @return bool|array
+     * @version 1.320.41
      */
     private function existe(array $keys_obligatorios, array $registro): bool|array
     {

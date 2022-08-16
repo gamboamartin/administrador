@@ -94,6 +94,20 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_existe(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $filtro = array();
+        $resultado = $modelo->existe($filtro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_genera_sql_filtro(): void
     {
         errores::$error = false;
