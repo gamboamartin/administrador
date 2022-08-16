@@ -98,9 +98,17 @@ class init{
 
     /**
      * Obtiene los datos de un template de una accion
-     * @param string $accion
-     * @param string $seccion
+     * @param string $accion Accion a verificar
+     *
+     * @param string $seccion Seccion a verificar
+     *
      * @return array|stdClass
+     *
+     *@functions $data_include = $init->include_action_local_base_data. Verifica si existe una view en base a
+     * "$accion" y "$seccion" obtenidas. En caso de error mostrará un mensaje
+     *
+     *@functions $data_include = $init->include_template. valida y obtiene la ruta de un template para posterior maquetarla.
+     * En caso de ocurrir un error, mostrará un mensaje
      */
     private function data_include_base(string $accion, string $seccion): array|stdClass
     {
@@ -263,7 +271,7 @@ class init{
     }
 
     /**
-     * Obtiene el template de una vista
+     * Obtiene el template de una vista.
      * @param string $accion
      * @return array|stdClass
      */
