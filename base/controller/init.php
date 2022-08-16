@@ -514,6 +514,9 @@ class init{
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
+        if($sistema === 'academico'){
+            $namespace = 'gamboamartin\\academico\\';
+        }
         if($sistema === 'acl'){
             $namespace = 'gamboamartin\\acl\\';
         }
