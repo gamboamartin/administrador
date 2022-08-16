@@ -533,9 +533,10 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Verifica si existe o no un registro basado en un filtro
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
      * @return array|bool
+     * @version 1.324.41
      */
     public function existe(array $filtro): array|bool
     {
@@ -552,6 +553,11 @@ class modelo extends modelo_base {
 
     }
 
+    /**
+     * Verifica si existe un elemento basado en el id
+     * @param int $registro_id registro a verificar
+     * @return bool|array
+     */
     public function existe_by_id(int $registro_id): bool|array
     {
         $filtro[$this->tabla.'.id'] = $registro_id;
@@ -1115,7 +1121,7 @@ class modelo extends modelo_base {
      * @version 1.11.8
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param array $extension_estructura arreglo con la extension de una estructra para obtener datos de foraneas a configuracion
+     * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas a configuracion
      * @example
      *      $salida_producto_id = $_GET['salida_producto_id'];
     $salida_producto_modelo = new salida_producto($this->link);
@@ -1191,7 +1197,7 @@ class modelo extends modelo_base {
      * Devuelve un array con un elemento declarado por $this->>registro_id
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
-     * @param array $extension_estructura arreglo con la extension de una estructra para obtener datos de foraneas a configuracion
+     * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas a configuracion
      * @return array|stdClass con datos del registro encontrado o registro vacio
      * @example
      *      if($this->registro_id < 0){
