@@ -443,9 +443,9 @@ class templates{
         }
 
         if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, disabled: $disabled, required: $required,
-                value: $valor, ln: $ln, etiqueta: $etiqueta, pattern: $pattern, css_id: $css_id,
-                data_extra: $data_extra);
+            $data_html =  $directiva->fecha( campo: $campo_name, css_id: $css_id, cols: $cols, data_extra: $data_extra,
+                disabled: $disabled, etiqueta: $etiqueta, ln: $ln, pattern: $pattern, required: $required,
+                value: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html);
@@ -456,14 +456,14 @@ class templates{
                 required: $required, disabled: $disabled,ln: $ln,
                 etiqueta: $etiqueta,pattern:  $pattern,css_id:  $css_id,data_extra:   $data_extra ,tipo_letra: 'mayusculas');
             if(errores::$error){
-                return $this->error->error('Error al generar input numero',$data_html);
+                return $this->error->error(mensaje: 'Error al generar input numero',data: $data_html);
             }
         }
         if($tipo === 'password') {
             $data_html = $directiva->password(campo: $campo_name,cols: $cols,value:  $valor,required:  $required,
                 etiqueta:  $etiqueta, pattern: $pattern, css_id: $css_id,data_extra: $data_extra );
             if(errores::$error){
-                return $this->error->error('Error al generar input password',$data_html);
+                return $this->error->error(mensaje: 'Error al generar input password',data: $data_html);
             }
         }
 
