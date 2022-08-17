@@ -350,9 +350,17 @@ class init{
 
     /**
      * Obtiene los datos de un template
-     * @param string $accion
-     * @param string $seccion
+     * @param string $accion Accion a verificar
+     *
+     * @param string $seccion Seccion a verificar
+     *
      * @return array|stdClass
+     *
+     * @functions $init->include_action_local_data. Genera una ruta contemplando "$accion" y "$sección"
+     * para obtener los datos. Si ocurre un error, lanzará un mensaje.
+     *
+     * @functions $init->data_include_base. Valida y maqueta el objeto requerido en base
+     * a "$accion" y "$seccion" si éste existe. En caso de error, lanzará un mensaje.
      */
     private function include_view(string $accion, string $seccion): array|stdClass
     {
