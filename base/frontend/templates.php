@@ -279,7 +279,7 @@ class templates{
                                   array $vistas, string $accion, array $campos_invisibles):array|string{
 
         if($accion === ''){
-            return $this->error->error(mensaje: 'Error accion debe existir',data: $accion, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error accion debe existir',data: $accion);
         }
 
         if(in_array($campo_name, $campos_invisibles,false)){
@@ -292,10 +292,11 @@ class templates{
         $filtro = $valores_filtrados[$campo_name] ?? array();
 
 
-        $html = $this->genera_html_input(campo_name: $campo_name, tipo: $tipo,cols: $cols,valor: $valor,
-            required: $required,disabled: $disabled,ln: $ln,etiqueta: $etiqueta,pattern: $pattern, css_id: $css_id,
-            data_extra: $data_extra,tabla_foranea: $tabla_foranea,select_vacio_alta: $select_vacio_alta,
-            columnas: $columnas,llaves_valores: $llaves_foraneas,filtro: $filtro,vistas: $vistas,accion: $accion);
+        $html = $this->genera_html_input(accion: $accion, campo_name: $campo_name, css_id: $css_id, cols: $cols,
+            columnas: $columnas, data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta, filtro: $filtro,
+            llaves_valores: $llaves_foraneas, ln: $ln, pattern: $pattern, required: $required,
+            select_vacio_alta: $select_vacio_alta, tabla_foranea: $tabla_foranea, tipo: $tipo, valor: $valor,
+            vistas: $vistas);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar html',data: $html);
@@ -408,10 +409,11 @@ class templates{
      * @internal $directiva->input_select_columnas($tabla_foranea,$this->valor,$this->cols,$disabled,$columnas,$this->link,$required,'capitalize',$this->ln,$select_vacio_alta,$registros = array(),$valor_extra,$this->filtro);
      * @internal $directiva->genera_select_estatico($llaves_valores, $this->cols, $this->campo,$etiqueta,false,false,$this->valor,$css_id);
      */
-    public function genera_dato_html(string $campo_name, string $tipo, int $cols,mixed $valor, bool $required, bool $disabled,
-                                     bool $ln, string $etiqueta, string $pattern,string $css_id, array $data_extra,
-                                     array $filtro, string $tabla_foranea, bool $select_vacio_alta, string $columnas,
-                                     string $llaves_valores):array|string{ //FIN
+    public function genera_dato_html(string $campo_name, string $css_id, int $cols, string $columnas,
+                                     array $data_extra, bool $disabled, string $etiqueta, array $filtro,
+                                     string $llaves_valores, bool $ln, string $pattern, bool $required,
+                                     bool $select_vacio_alta, string $tabla_foranea, string $tipo,
+                                     mixed $valor):array|string{ //FIN
 
         if($cols <0){
             return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data: $cols);
@@ -650,11 +652,11 @@ class templates{
      * @internal $this->validacion->valida_existencia_keys($this->input, $keys);
      * @internal $this->genera_dato_html();
      */
-    public function genera_html_input(string $campo_name, string $tipo, int $cols, mixed $valor, bool $required,
-                                      bool $disabled, bool $ln, string $etiqueta, string $pattern, string $css_id,
-                                      array $data_extra, string $tabla_foranea, bool $select_vacio_alta,
-                                      string $columnas, string $llaves_valores, array $filtro, array $vistas,
-                                      string $accion):array|string{
+    public function genera_html_input(string $accion, string $campo_name, string $css_id, int $cols, string $columnas,
+                                      array $data_extra, bool $disabled, string $etiqueta, array $filtro,
+                                      string $llaves_valores, bool $ln, string $pattern, bool $required,
+                                      bool $select_vacio_alta, string $tabla_foranea, string $tipo, mixed $valor,
+                                      array $vistas):array|string{
 
         $html = '';
 
@@ -667,10 +669,10 @@ class templates{
             if($cols>12){
                 return $this->error->error('Error cols debe ser menor a 13',$cols);
             }
-            $data_html = $this->genera_dato_html(campo_name: $campo_name, tipo: $tipo,cols:  $cols, valor: $valor,
-                required:  $required,disabled:  $disabled,ln:  $ln, etiqueta: $etiqueta,pattern:  $pattern,
-                css_id:  $css_id, data_extra:  $data_extra,filtro:  $filtro,tabla_foranea:  $tabla_foranea,
-                select_vacio_alta: $select_vacio_alta,columnas:  $columnas, llaves_valores: $llaves_valores);
+            $data_html = $this->genera_dato_html(campo_name: $campo_name, css_id: $css_id, cols: $cols,
+                columnas: $columnas, data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta,
+                filtro: $filtro, llaves_valores: $llaves_valores, ln: $ln, pattern: $pattern, required: $required,
+                select_vacio_alta: $select_vacio_alta, tabla_foranea: $tabla_foranea, tipo: $tipo, valor: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar html',data: $data_html);

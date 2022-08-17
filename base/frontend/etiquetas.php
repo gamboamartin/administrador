@@ -54,7 +54,7 @@ class etiquetas{
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param bool $con_label Si con label integra la etiqueta
-     * @param string $size
+     * @param string $size tamaño de div base css
      * @param string $campo
      * @param string $campo_capitalize
      * @return string|array
