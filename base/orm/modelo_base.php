@@ -1526,7 +1526,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     {
 
         if(count($this->registro_upd) === 0){
-            return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
         }
         $campos = $this->campos();
         if (errores::$error) {
@@ -1537,7 +1537,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * Genera los campos para un update
      * @return array|string
      */
     private function campos(): array|string
@@ -1554,7 +1554,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P INT P ORDER
-     * @param string $campo
+     * @param string $campo Campo a reasignar valor
      * @param string|int|float|null $value
      * @param string $campos
      * @return array|string
@@ -1562,7 +1562,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function maqueta_rows_upd(string $campo, string $campos, string|int|float|null $value): array|string
     {
         if(is_numeric($campo)){
-            return $this->error->error('Error ingrese un campo valido',$this->registro_upd);
+            return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $this->registro_upd);
         }
         if($campo === ''){
             return $this->error->error('Error ingrese un campo valido',$this->registro_upd);
@@ -1600,7 +1600,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P ORDER P INT
-     * @param string $campo
+     * @param string $campo Campo a reasignar valor
      * @param string|float|int|null $value
      * @return array|stdClass
      */
@@ -1609,17 +1609,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $value_ = $value;
         $value_ = (new monedas())->value_moneda(campo: $campo, modelo: $this, value: $value_);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar value', $value_);
+            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
         }
 
         $data = $this->slaches_value(campo: $campo,value:  $value_);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar value', $value_);
+            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
         }
 
         $data->value = $this->value_null(value: $data->value);
         if (errores::$error) {
-            return $this->error->error('Error al asignar value', $data);
+            return $this->error->error(mensaje: 'Error al asignar value', data:$data);
         }
         return $data;
     }

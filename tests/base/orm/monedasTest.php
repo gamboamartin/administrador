@@ -37,6 +37,21 @@ class monedasTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_monedas_values(){
+
+        errores::$error = false;
+        $monedas = new monedas();
+        $monedas = new liberator($monedas);
+        $tipo_dato = 'a';
+        $tipos_moneda = array('a');
+        $value = '$1.00';
+        $resultado = $monedas->limpia_monedas_values($tipo_dato, $tipos_moneda, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1.00', $resultado);
+        errores::$error = false;
+    }
+
 
 
 }

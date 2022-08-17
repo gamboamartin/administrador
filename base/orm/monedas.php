@@ -35,10 +35,15 @@ class monedas{
      * @param array $tipos_moneda Tipos moneda campos
      * @param int|string|float|null $value Valor a limpiar
      * @return float|array|int|string|null
+     * @version 1.337.41
      */
     private function limpia_monedas_values(string $tipo_dato, array $tipos_moneda,
                                            int|string|float|null $value): float|array|int|string|null
     {
+        $tipo_dato = trim($tipo_dato);
+        if($tipo_dato === ''){
+            return $this->error->error(mensaje: 'Error tipo dato vacio', data: $tipo_dato);
+        }
         if(in_array($tipo_dato, $tipos_moneda, true)) {
             $value = $this->limpia_moneda_value(value: $value);
             if (errores::$error) {
@@ -50,13 +55,14 @@ class monedas{
 
     /**
      * P ORDER P INT
-     * @param string $campo
+     * @param string $campo Campo a reasignar valor
      * @param modelo $modelo
      * @param array $tipos_moneda
      * @param string|int|float|null $value
      * @return float|array|int|string|null
      */
-    private function reasigna_value_moneda(string $campo, modelo $modelo, array $tipos_moneda, string|int|float|null $value): float|array|int|string|null
+    private function reasigna_value_moneda(string $campo, modelo $modelo, array $tipos_moneda,
+                                           string|int|float|null $value): float|array|int|string|null
     {
         $value_ = $value;
         if($campo === ''){
@@ -68,14 +74,14 @@ class monedas{
         $tipo_dato = $modelo->tipo_campos[$campo];
         $value_ = $this->limpia_monedas_values(tipo_dato: $tipo_dato,tipos_moneda:  $tipos_moneda,value:  $value_);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar value', $value_);
+            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
         }
         return $value_;
     }
 
     /**
      * P ORDER P INT
-     * @param string $campo
+     * @param string $campo Campo a reasignar valor
      * @param modelo $modelo
      * @param string|float|int|null $value
      * @return float|array|int|string|null
@@ -87,7 +93,7 @@ class monedas{
         if(array_key_exists($campo, $modelo->tipo_campos)){
             $value_ = $this->reasigna_value_moneda(campo: $campo, modelo: $modelo,tipos_moneda:  $tipos_moneda,value:  $value_);
             if (errores::$error) {
-                return $this->error->error('Error al limpiar value', $value);
+                return $this->error->error(mensaje: 'Error al limpiar value', data: $value);
             }
         }
         return $value_;
