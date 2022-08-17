@@ -57,7 +57,7 @@ class monedas{
      * P ORDER P INT
      * @param string $campo Campo a reasignar valor
      * @param modelo $modelo Modelo en ejecucion para validacion
-     * @param array $tipos_moneda
+     * @param array $tipos_moneda Campos tipos moneda declarados en modelo
      * @param string|int|float|null $value
      * @return float|array|int|string|null
      */
@@ -83,7 +83,7 @@ class monedas{
      * P ORDER P INT
      * @param string $campo Campo a reasignar valor
      * @param modelo $modelo Modelo en ejecucion para validacion
-     * @param string|float|int|null $value
+     * @param string|float|int|null $value Valor a ajustar
      * @return float|array|int|string|null
      */
     public function value_moneda(string $campo, modelo_base $modelo, string|float|int|null $value): float|array|int|string|null

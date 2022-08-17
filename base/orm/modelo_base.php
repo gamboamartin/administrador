@@ -1555,7 +1555,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * P INT P ORDER
      * @param string $campo Campo a reasignar valor
-     * @param string|int|float|null $value
+     * @param string|int|float|null $value Valor a ajustar
      * @param string $campos Conjunto de campos a validar
      * @return array|string
      */
@@ -1601,7 +1601,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * P ORDER P INT
      * @param string $campo Campo a reasignar valor
-     * @param string|float|int|null $value
+     * @param string|float|int|null $value Valor a ajustar
      * @return array|stdClass
      */
     private function params_data_update(string $campo, string|float|int|null $value): array|stdClass
