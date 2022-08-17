@@ -23,6 +23,9 @@ class init{
      * @param PDO $link Conexion a la base de datos
      * @param seguridad $seguridad Datos de seguridad aplicable en este caso seccion y accion
      * @return bool|array
+     *
+     * @functions $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);.
+     * Obtiene la accion ejecutada en base a seccion y accion. En caso de error lanzará un mensaje
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
@@ -676,7 +679,7 @@ class init{
      * permisos basado en accion y seccion
      *
      * @functions $n_acciones = $modelo_accion->cuenta_acciones. Cuenta la cantidad de funciones las cuales el grupo de
-     * usuarios tiene permisos,
+     * usuarios tiene permisos
      */
     public function permiso(PDO $link, seguridad $seguridad): array|seguridad
     {
