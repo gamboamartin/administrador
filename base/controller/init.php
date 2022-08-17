@@ -326,9 +326,15 @@ class init{
     }
 
     /**
-     * Obtiene la ruta de un template basado en una accion
-     * @param string $accion
+     * Obtiene la ruta de un template basado en una accion. Si no existe, lanzará un mensaje de error.
+     *
+     * @param string $accion Accion a verificar
+     *
      * @return array|stdClass
+     *
+     * @functions $init->include_action_template_base_data. Genera una ruta contemplando "$accion"
+     * para obtener un template. Si ocurre un error, lanzará un mensaje.
+     *
      */
     private function include_template_base(string $accion): array|stdClass
     {
