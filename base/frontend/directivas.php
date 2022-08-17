@@ -387,7 +387,7 @@ class directivas extends html {
      * @param bool $value_vacio
      * @param array $css
      * @param string $tipo
-     * @param string $size
+     * @param string $size tamaño de div base css
      * @param array $ids
      * @return array|string informacion de input en forma html
      * @example
