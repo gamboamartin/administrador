@@ -56,7 +56,7 @@ class monedas{
     /**
      * P ORDER P INT
      * @param string $campo Campo a reasignar valor
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion para validacion
      * @param array $tipos_moneda
      * @param string|int|float|null $value
      * @return float|array|int|string|null
@@ -82,7 +82,7 @@ class monedas{
     /**
      * P ORDER P INT
      * @param string $campo Campo a reasignar valor
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion para validacion
      * @param string|float|int|null $value
      * @return float|array|int|string|null
      */

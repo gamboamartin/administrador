@@ -999,7 +999,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->seccion = str_replace($namespace,'',$this->seccion);
         $clase = $namespace.$this->seccion;
         if($this->seccion === ''){
-            $error = $this->errores->error('Error seccion no puede venir vacia',$_GET);
+            $error = $this->errores->error(mensaje:'Error seccion no puede venir vacia',data: $_GET);
             if(!$header){
                 return $error;
             }
@@ -1013,7 +1013,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             exit;
         }
         if(!class_exists($clase)){
-            $error = $this->errores->error('Error no existe la clase',$clase);
+            $error = $this->errores->error(mensaje:'Error no existe la clase',data: $clase);
             if(!$header){
                 return $error;
             }
@@ -1028,7 +1028,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         if($this->registro_id <=0){
-            $error =  $this->errores->error('Error registro_id debe ser mayor a 0',$_GET);
+            $error =  $this->errores->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $_GET);
             if(!$header){
                 return $error;
             }

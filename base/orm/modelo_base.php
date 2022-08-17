@@ -1111,7 +1111,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * P INT P ORDER
+     *
      * Genera sql con forma de campos para UPDATE
      * @return array|string con sql de campos para update
      * @example
@@ -1530,7 +1530,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $campos = $this->campos();
         if (errores::$error) {
-            return $this->error->error('Error al generar campos', $campos);
+            return $this->error->error(mensaje: 'Error al generar campos',data:  $campos);
         }
 
         return $campos;
@@ -1546,7 +1546,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         foreach ($this->registro_upd as $campo => $value) {
             $campos = $this->maqueta_rows_upd(campo: $campo, campos:  $campos,value:  $value);
             if (errores::$error) {
-                return $this->error->error('Error al generar campos', $campos);
+                return $this->error->error(mensaje: 'Error al generar campos', data: $campos);
             }
         }
         return $campos;
@@ -1556,7 +1556,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * P INT P ORDER
      * @param string $campo Campo a reasignar valor
      * @param string|int|float|null $value
-     * @param string $campos
+     * @param string $campos Conjunto de campos a validar
      * @return array|string
      */
     private function maqueta_rows_upd(string $campo, string $campos, string|int|float|null $value): array|string
@@ -1582,7 +1582,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P ORDER P INT
-     * @param string $campos
+     * @param string $campos Conjunto de campos a validar
      * @param stdClass $params
      * @return string|array
      */
