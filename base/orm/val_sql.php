@@ -45,8 +45,8 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERRORREV
-     * @param string $campo
+     * Limpia y valida unj elemento vacio
+     * @param string $campo campo a verificar
      * @param array $keys_obligatorios
      * @param array $registro
      * @return array|string
@@ -86,7 +86,7 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER PROBADO ERROREV
-     * @param array $keys_obligatorios
+     * @param array $keys_obligatorios Conjunto de keys a verificar nativos de modelo
      * @param array $registro
      * @return bool|array
      */
@@ -201,7 +201,7 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER PROBADO ERRORREV
-     * @param array $keys_obligatorios
+     * @param array $keys_obligatorios Conjunto de keys a verificar nativos de modelo
      * @param array $registro
      * @return bool|array
      */
@@ -414,7 +414,7 @@ class val_sql extends validaciones {
 
     /**
      * ERRORREV
-     * @param string $campo
+     * @param string $campo campo a verificar
      * @param array $keys_obligatorios
      * @param array $registro
      * @return bool|array
