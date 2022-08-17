@@ -29,7 +29,7 @@ class val_sql extends validaciones {
 
     /**
      * P INT P ORDER PROBADO ERRROEV
-     * @param array $keys_checked
+     * @param array $keys_checked Keys a validar checked
      * @param array $registro
      * @return bool|array
      */
@@ -38,8 +38,7 @@ class val_sql extends validaciones {
         foreach($keys_checked as $campo){
             $verifica = $this->verifica_chk(campo: $campo,keys_checked: $keys_checked,registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar campo',data: $verifica,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al verificar campo',data: $verifica);
             }
         }
         return true;
@@ -56,13 +55,11 @@ class val_sql extends validaciones {
     {
         $campo_r = $this->txt_valido($campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r);
         }
         $existe = $this->existe(keys_obligatorios: $keys_obligatorios,registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar si existe',data: $existe,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al verificar si existe',data: $existe);
         }
         return trim($registro[$campo_r]);
     }
@@ -213,8 +210,7 @@ class val_sql extends validaciones {
         foreach($keys_obligatorios as $campo){
             $verifica = $this->verifica_vacio(campo: $campo,keys_obligatorios: $keys_obligatorios,registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar vacio',data: $verifica,
-                    params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al verificar vacio',data: $verifica);
             }
         }
         return true;
@@ -222,7 +218,7 @@ class val_sql extends validaciones {
 
     /**
      * ERRORREV
-     * @param string $campo
+     * @param string $campo Nombre del campo
      * @param array $keys_checked
      * @param array $registro
      * @return bool|array
@@ -231,16 +227,15 @@ class val_sql extends validaciones {
     {
         $campo_r = $this->txt_valido($campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r);
         }
         $existe = $this->existe(keys_obligatorios: $keys_checked,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si existe',data: $existe, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar si existe',data: $existe);
         }
         if((string)$registro[$campo_r] !== 'activo' && (string)$registro[$campo_r]!=='inactivo' ){
             return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe ser activo o inactivo',
-                data: $registro, params: get_defined_vars());
+                data: $registro);
         }
         return true;
     }
@@ -428,11 +423,10 @@ class val_sql extends validaciones {
     {
         $value = $this->data_vacio(campo: $campo,keys_obligatorios: $keys_obligatorios,registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al verificar si existe',data:$value, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al verificar si existe',data:$value);
         }
         if($value === ''){
-            return $this->error->error(mensaje:'Error $registro['.$campo.'] debe tener datos',data:$registro,
-                params: get_defined_vars());
+            return $this->error->error(mensaje:'Error $registro['.$campo.'] debe tener datos',data:$registro);
         }
         return true;
     }
