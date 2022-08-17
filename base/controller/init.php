@@ -662,9 +662,21 @@ class init{
 
     /**
      * P INT
-     * @param PDO $link
-     * @param seguridad $seguridad
+     * Funcion utilizada para verificar las solicitudes de un permiso.
+     *
+     * @param PDO $link Representa la conexion entre PHP y la base dedatos
+     *
+     * @param seguridad $seguridad llamada a la clase "seguridad"
+     *
      * @return array|seguridad
+     *
+     * @functions $modelo_accion = new adm_accion.  Genera un objeto de tipo adm_accion.
+     *
+     * @functions $permiso = $modelo_accion->permiso.  Valida que el grupo de usuarios cuente con los
+     * permisos basado en accion y seccion
+     *
+     * @functions $n_acciones = $modelo_accion->cuenta_acciones. Cuenta la cantidad de funciones las cuales el grupo de
+     * usuarios tiene permisos,
      */
     public function permiso(PDO $link, seguridad $seguridad): array|seguridad
     {
