@@ -454,9 +454,9 @@ class templates{
             }
         }
         if($tipo === 'numero') {
-            $data_html = $directiva->genera_input_numero(campo: $campo_name,cols:  $cols, value: $valor,
-                required: $required, disabled: $disabled,ln: $ln,
-                etiqueta: $etiqueta,pattern:  $pattern,css_id:  $css_id,data_extra:   $data_extra ,tipo_letra: 'mayusculas');
+            $data_html = $directiva->genera_input_numero(campo: $campo_name, css_id: $css_id, cols: $cols,
+                data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta,
+                ln: $ln, pattern: $pattern, required: $required, tipo_letra: 'mayusculas', value: $valor);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input numero',data: $data_html);
             }

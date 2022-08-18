@@ -52,10 +52,11 @@ class selects{
     }
 
     /**
-     * FULL
+     * Maqueta las columnas de un select a mostrar en un option
      * @param array $columnas conjunto de columnas a mostrar en input select
-     * @param string $tabla
+     * @param string $tabla Tabla o estructura de select
      * @return array
+     * @version 1.354.41
      */
     private function columnas_input_select(array $columnas, string $tabla): array
     {
@@ -109,13 +110,14 @@ class selects{
     }
 
     /**
-     * FULL
-     * @param string $valor
-     * @param string $tabla
-     * @param array $data_extra
-     * @param array $data_con_valor
+     * Integra los datos para los options de un select
+     * @param string $valor Valor para selected
+     * @param string $tabla Tabla o estructura de select
+     * @param array $data_extra Extra params
+     * @param array $data_con_valor datos con valor para integrar en option
      * @param array $columnas conjunto de columnas a mostrar en input select
      * @return array|stdClass
+     * @version 1.354.41
      */
     private function data_for_select(array $columnas, array $data_con_valor,array $data_extra, string $tabla,
                                      string $valor): array|stdClass
@@ -453,12 +455,12 @@ class selects{
 
     /**
      * P INT ERROREV
-     * @param string $valor
-     * @param string $tabla
-     * @param array $data_extra
-     * @param array $data_con_valor
+     * @param string $valor Valor para selected
+     * @param string $tabla Tabla o estructura de select
+     * @param array $data_extra Extra params
+     * @param array $data_con_valor Datos a integrar para options
      * @param array $columnas conjunto de columnas a mostrar en input select
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @param array $registros
      * @param string $select_vacio_alta
      * @param array $filtro
@@ -471,16 +473,16 @@ class selects{
      * @param string $tipo_letra
      * @param bool $aplica_etiqueta
      * @param string $name_input
-     * @param string $etiqueta
+     * @param string $etiqueta Etiqueta de select
      * @param bool $multiple
      * @param bool $inline
      * @return array|stdClass
      */
-    public function init_datos_select(string $valor, string $tabla, array $data_extra, array $data_con_valor,
-                                         array $columnas, PDO $link, array $registros, string $select_vacio_alta,
-                                         array $filtro, bool $todos, bool $ln, string $size, int $cols, bool $disabled,
-                                         bool $required, string $tipo_letra, bool $aplica_etiqueta, string $name_input,
-                                         string $etiqueta, bool $multiple, bool $inline ): array|stdClass
+    public function init_datos_select(bool $aplica_etiqueta, int $cols, array $data_extra, array $data_con_valor,
+                                      array $columnas, bool $disabled, string $etiqueta, array $filtro, bool $inline,
+                                      PDO $link, bool $ln, bool $multiple, string $name_input, array $registros,
+                                      bool $required, string $select_vacio_alta, string $size, string $tipo_letra,
+                                      string $tabla, bool $todos, string $valor ): array|stdClass
     {
         $datos = $this->data_for_select(columnas:$columnas, data_con_valor: $data_con_valor, data_extra:$data_extra,
             tabla: $tabla ,valor: $valor );

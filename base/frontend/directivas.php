@@ -679,7 +679,7 @@ class directivas extends html {
     }
 
     /**
-     * P INT
+     *
      * Genera un input para ser mostrado en html del front
      *
      * @param string $campo Nombre del campo
@@ -696,9 +696,9 @@ class directivas extends html {
      * @throws errores definidos en internals
      * @uses templates
      * */
-    public function genera_input_numero(string $campo, int $cols, string $value,bool $required, bool $disabled,
-                                        bool $ln, string $etiqueta, string $pattern, string $css_id,
-                                        array $data_extra, string $tipo_letra):array|string{  //FIN PROT
+    public function genera_input_numero(string $campo, string $css_id, int $cols, array $data_extra, bool $disabled,
+                                        string $etiqueta, bool $ln, string $pattern, bool $required,
+                                        string $tipo_letra, string $value):array|string{  //FIN PROT
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
@@ -713,19 +713,19 @@ class directivas extends html {
 
         $html = "";
         if($ln){
-            $html = $html."<div class='col-md-12'></div>";
+            $html .= "<div class='col-md-12'></div>";
         }
 
-        $html = $html."<div class=' form-group col-md-$cols'>";
+        $html .= "<div class=' form-group col-md-$cols'>";
 
-        $html = $html . "<label for='$campo'>$campo_capitalize</label>";
+        $html .= "<label for='$campo'>$campo_capitalize</label>";
 
         $required_html = '';
         if($required){
             $required_html = 'required';
         }
 
-        $html = $html."
+        $html .= "
         <div class='input-group number-spinner'>
 				<span class='input-group-btn data-dwn'>
 					<div class='btn btn-default menos' data-dir='dwn'>
@@ -746,11 +746,11 @@ class directivas extends html {
      * Genera los inputs de un conjunto de selects
      *
      * @param string $tabla Tabla o estructura
-     * @param array $columnas
-     * @param array $data_extra
-     * @param array $valores
-     * @param PDO $link
-     * @param array $campos_permitidos
+     * @param array $columnas Conjunto de columnas a mostrar en select
+     * @param array $data_extra Extra params
+     * @param array $valores Valores a integrar
+     * @param PDO $link Conexion a la base de datos
+     * @param array $campos_permitidos Campos permitidos para options info
      * @param array $inputs
      * @param array $campos_invisibles
      * @param string $campo
@@ -775,8 +775,7 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_estructura_input_base(columnas: $columnas,tabla: $tabla);
         if(errores::$error) {
-            return $this->errores->error(mensaje: 'Error al validar estructura de input',data: $valida,
-                params: get_defined_vars());
+            return $this->errores->error(mensaje: 'Error al validar estructura de input',data: $valida);
         }
 
 
@@ -785,15 +784,14 @@ class directivas extends html {
         }
 
 
-        $inputs[$campo] = $this->input_select_columnas(campo_name: $tabla.'_id', tabla: $tabla, link: $link,
-            cols: 4, valor: (string)$valores[$campo], required: $required, disabled: $disabled, ln: false,
+        $inputs[$campo] = $this->input_select_columnas(campo_name: $tabla.'_id', link: $link, tabla: $tabla,
+            css_id: '', cols: 4, required: $required, disabled: $disabled, ln: false,
             etiqueta: $tabla, select_vacio_alta: $select_vacio_alta, registros: $registros, todos: $todos,
-            data_extra: $data_extra, css_id: '');
+            data_extra: $data_extra, valor: (string)$valores[$campo]);
 
 
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar '.$campo,data: $inputs[$campo],
-                params: get_defined_vars());
+            return $this->errores->error(mensaje: 'Error al generar '.$campo,data: $inputs[$campo]);
         }
 
 
@@ -1087,9 +1085,9 @@ class directivas extends html {
      */
     public function grupo_comercial_id(int $valor, PDO $link):array|string{
         $columnas = array('grupo_comercial_codigo','grupo_comercial_descripcion');
-        $input = $this->input_select_columnas(campo_name:'grupo_comercial_id', cols:4,valor: $valor, required: true,
-            disabled: false, ln:false,etiqueta: "grupo_comercial",css_id: '', data_extra: array(),
-            tabla: "grupo_comercial", columnas: $columnas, link: $link);
+        $input = $this->input_select_columnas(campo_name: 'grupo_comercial_id', link: $link, tabla: "grupo_comercial", css_id: '',
+            cols: 4, required: true, disabled: false, ln: false, etiqueta: "grupo_comercial",
+            columnas: $columnas, data_extra: array(), valor: $valor);
         if(errores::$error){
             return $this->errores->error("Error al generar input grupo comercial", $input);
         }
@@ -1227,15 +1225,15 @@ class directivas extends html {
      * @param string $valor Valor de Identificador de registro
      * @param bool $required si required el input es obligatorio en su captura
      * @param bool $disabled si disabled el input queda deshabilitado
-     * @param bool $ln
-     * @param string $etiqueta
-     * @param string $css_id
-     * @param array $data_extra
+     * @param bool $ln Salto de line si aplica genera div con 12 cols
+     * @param string $etiqueta Etiqueta de select
+     * @param string $css_id css id para css
+     * @param array $data_extra Extra params
      * @param string $tabla Tabla - estructura modelo sistema
      * @param PDO $link Conexion a la BD
      * @param array $columnas Columnas a mostrar en select
-     * @param string $tipo_letra
-     * @param bool $select_vacio_alta
+     * @param string $tipo_letra Capitalize ucwords etc
+     * @param bool $select_vacio_alta Si esta vacio deja sin options el select
      * @param array $registros
      * @param array $filtro
      * @param bool $todos
@@ -1253,14 +1251,14 @@ class directivas extends html {
      * @internal $this->genera_contenedor_select($tabla,$cols,$disabled,$required,$tipo_letra, $aplica_etiqueta,$name_input,$etiqueta);
      * @internal $this->valida_selected($value,$tabla,$valor_envio);
      */
-    public function input_select_columnas(string $campo_name, string $tabla, PDO $link, int $cols = 4,
-                                          mixed $valor = '', bool $required = true, bool $disabled = false,
-                                          bool $ln = false,string $etiqueta = '', array $columnas = array(),
+    public function input_select_columnas(string $campo_name, PDO $link, string $tabla, string $css_id = '',
+                                          int $cols = 4, array $filtro = array(), bool $required = true,
+                                          bool $disabled = false, bool $ln = false,string $etiqueta = '',
+                                          array $columnas = array(),
                                           string $tipo_letra = 'capitalize', bool $select_vacio_alta = false,
-                                          array $registros = array(), array $filtro = array(), bool $todos = false,
+                                          array $registros = array(), bool $todos = false,
                                           bool $multiple = false, array $data_con_valor = array(), string $size = 'md',
-                                          bool $inline = false, array $data_extra = array(),
-                                          string $css_id = ''):array|string{
+                                          bool $inline = false, array $data_extra = array(), mixed $valor = ''):array|string{
 
 
         $aplica_etiqueta = false;
@@ -1268,11 +1266,11 @@ class directivas extends html {
             $aplica_etiqueta = true;
         }
 
-        $datos = (new selects())->init_datos_select(valor: $valor,tabla:  $tabla,data_extra:  $data_extra,
-            data_con_valor:  $data_con_valor, columnas: $columnas,link:  $link, registros: $registros,
-            select_vacio_alta:  $select_vacio_alta,filtro:  $filtro,todos:  $todos, ln: $ln, size: $size,cols:  $cols,
-            disabled: $disabled,required:  $required,tipo_letra:  $tipo_letra, aplica_etiqueta: $aplica_etiqueta,
-            name_input:  $campo_name,etiqueta:  $etiqueta,multiple:  $multiple,inline:  $inline);
+        $datos = (new selects())->init_datos_select(aplica_etiqueta: $aplica_etiqueta, cols: $cols,
+            data_extra: $data_extra, data_con_valor: $data_con_valor, columnas: $columnas, disabled: $disabled,
+            etiqueta: $etiqueta, filtro: $filtro, inline: $inline, link: $link, ln: $ln, multiple: $multiple,
+            name_input: $campo_name, registros: $registros, required: $required, select_vacio_alta: $select_vacio_alta,
+            size: $size, tipo_letra: $tipo_letra, tabla: $tabla, todos: $todos, valor: $valor);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar options', data: $datos);
