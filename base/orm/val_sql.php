@@ -47,9 +47,10 @@ class val_sql extends validaciones {
     /**
      * Limpia y valida unj elemento vacio
      * @param string $campo campo a verificar
-     * @param array $keys_obligatorios
-     * @param array $registro
+     * @param array $keys_obligatorios Conjunto de campos obligatorios definidos en el modelo
+     * @param array $registro Registro a validar
      * @return array|string
+     * @version 1.351.41
      */
     private function data_vacio(string $campo, array $keys_obligatorios, array $registro): array|string
     {
@@ -60,6 +61,9 @@ class val_sql extends validaciones {
         $existe = $this->existe(keys_obligatorios: $keys_obligatorios,registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar si existe',data: $existe);
+        }
+        if(!isset($registro[$campo_r])){
+            $registro[$campo_r] = '';
         }
         return trim($registro[$campo_r]);
     }
@@ -87,7 +91,7 @@ class val_sql extends validaciones {
     /**
      * P INT P ORDER PROBADO ERROREV
      * @param array $keys_obligatorios Conjunto de keys a verificar nativos de modelo
-     * @param array $registro
+     * @param array $registro Registro a validar
      * @return bool|array
      */
     private function obligatorios(array $keys_obligatorios, array $registro): bool|array
@@ -200,12 +204,12 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERRORREV
+     * Verifica si en elemento es vacio
      * @param array $keys_obligatorios Conjunto de keys a verificar nativos de modelo
-     * @param array $registro
+     * @param array $registro Registro a validar
      * @return bool|array
      */
-    PUBLIC function vacio(array $keys_obligatorios, array $registro): bool|array
+    private function vacio(array $keys_obligatorios, array $registro): bool|array
     {
         foreach($keys_obligatorios as $campo){
             $verifica = $this->verifica_vacio(campo: $campo,keys_obligatorios: $keys_obligatorios,registro: $registro);
@@ -413,10 +417,10 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERRORREV
+     * Verifica si un elemento esta vacio
      * @param string $campo campo a verificar
-     * @param array $keys_obligatorios
-     * @param array $registro
+     * @param array $keys_obligatorios Conjunto de campos obligatorios definidos en el modelo
+     * @param array $registro Registro a validar
      * @return bool|array
      */
     private function verifica_vacio(string $campo,array $keys_obligatorios, array $registro): bool|array

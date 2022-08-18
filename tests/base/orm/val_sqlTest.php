@@ -146,6 +146,22 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_vacio(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $keys_obligatorios = array();
+        $campo = 'a';
+        $resultado = $val->data_vacio($campo, $keys_obligatorios, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+        errores::$error = false;
+    }
+
     public function test_existe(): void
     {
         errores::$error = false;
@@ -458,7 +474,7 @@ class val_sqlTest extends test {
     {
         errores::$error = false;
         $val = new val_sql();
-        //$val = new liberator($val);
+        $val = new liberator($val);
 
         $registro = array();
         $keys_obligatorios = array();
