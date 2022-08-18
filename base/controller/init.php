@@ -148,6 +148,9 @@ class init{
      * @param bool $aplica_view Si view es activo se buscara un archivo valido
      * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
      * @return string|array retorna el path para include
+     *
+     * @functions $data_include = $this->include_view(accion: $seguridad->accion,seccion: $seguridad->seccion);.
+     * Se utiliza para asignar la accion y maquetarla. Si ocurre un error, lanzará un mensaje.
      */
     private function include_action(bool $aplica_view, seguridad $seguridad): string|array
     {
