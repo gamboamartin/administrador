@@ -6,6 +6,8 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
+use models\adm_accion_grupo;
+use validacion\accion;
 
 
 class monedasTest extends test {
@@ -49,6 +51,22 @@ class monedasTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('1.00', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_reasigna_value_moneda(){
+
+        errores::$error = false;
+        $monedas = new monedas();
+        $monedas = new liberator($monedas);
+        $campo = 'a';
+        $modelo = new adm_accion_grupo($this->link);
+        $tipos_moneda = array();
+        $value = '';
+        $resultado = $monedas->reasigna_value_moneda($campo, $modelo, $tipos_moneda, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
         errores::$error = false;
     }
 

@@ -1553,7 +1553,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P INT P ORDER
+     * Maqueta el registro para actualizacion
      * @param string $campo Campo a reasignar valor
      * @param string|int|float|null $value Valor a ajustar
      * @param string $campos Conjunto de campos a validar
@@ -1565,17 +1565,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $this->registro_upd);
         }
         if($campo === ''){
-            return $this->error->error('Error ingrese un campo valido',$this->registro_upd);
+            return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $this->registro_upd);
         }
 
         $params = $this->params_data_update(campo: $campo,value:  $value);
         if (errores::$error) {
-            return $this->error->error('Error al generar parametros', $params);
+            return $this->error->error(mensaje: 'Error al generar parametros', data:$params);
         }
 
         $campos = $this->rows_update(campos: $campos, params: $params);
         if (errores::$error) {
-            return $this->error->error('Error al generar campos', $campos);
+            return $this->error->error(mensaje: 'Error al generar campos',data:  $campos);
         }
         return $campos;
     }
@@ -1599,7 +1599,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT
+     * Ajusta los parametros para update
      * @param string $campo Campo a reasignar valor
      * @param string|float|int|null $value Valor a ajustar
      * @return array|stdClass
