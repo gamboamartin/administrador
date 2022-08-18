@@ -542,6 +542,9 @@ class init{
         if($sistema === 'academico'){
             $namespace = 'gamboamartin\\academico\\';
         }
+        if($sistema === 'cfd_sep'){
+            $namespace = 'gamboamartin\\cfd_sep\\';
+        }
         if($sistema === 'acl'){
             $namespace = 'gamboamartin\\acl\\';
         }
