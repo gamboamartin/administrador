@@ -90,14 +90,15 @@ class html  {
 
 
     /**
-     * P INT P
-     * @param string $tipo
-     * @param string $size
-     * @param stdClass $params
-     * @param string $campo
-     * @param string $campo_capitalize
-     * @param string $value
+     * Genera un html con un input de fecha
+     * @param string $tipo Tipo de input
+     * @param string $size sm o md para div
+     * @param stdClass $params parametros para inicializacion de input
+     * @param string $campo Campo a integra = name
+     * @param string $campo_capitalize Para label
+     * @param string $value Valor default
      * @return string|array
+     * @version 1.352.41
      */
     protected function html_fecha(string $campo, string $campo_capitalize, stdClass $params, string $size, string $tipo,
                                 string $value): string|array
@@ -105,22 +106,22 @@ class html  {
 
         $params_r = (new params_inputs())->limpia_obj_input(params: $params);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar params', $params_r);
+            return $this->error->error(mensaje: 'Error al limpiar params',data:  $params_r);
         }
 
         $tipo = trim($tipo);
         if($tipo === ''){
-            return $this->error->error('Error tipo no puede venir vacio', $tipo);
+            return $this->error->error(mensaje: 'Error tipo no puede venir vacio',data:  $tipo);
         }
 
         $size = trim($size);
         if($size === ''){
-            return $this->error->error('Error $size no puede venir vacio', $size);
+            return $this->error->error(mensaje: 'Error $size no puede venir vacio',data:  $size);
         }
 
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error $campo no puede venir vacio', $campo);
+            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo);
         }
 
         $html ="<input ";

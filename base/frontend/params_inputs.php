@@ -247,16 +247,17 @@ class params_inputs{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param stdClass $params
+     * Limpia un conjunto de objetos a vacio
+     * @param stdClass $params Inicializa parametros
      * @return array|stdClass
+     * @version 1.352.41
      */
     public function limpia_obj_input(stdClass $params): array|stdClass
     {
         $keys = array('class','ids','required','data_extra','disabled');
         $params = $this->limpia_obj(keys: $keys, params: $params);
         if (errores::$error) {
-            return $this->error->error('Error al limpiar params', $params);
+            return $this->error->error(mensaje: 'Error al limpiar params', data: $params);
         }
         return $params;
     }

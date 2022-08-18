@@ -52,12 +52,13 @@ class etiquetas{
 
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
+     * Genera un label en forma de html
      * @param bool $con_label Si con label integra la etiqueta
      * @param string $size tamaño de div base css
      * @param string $campo Nombre del campo para etiqueta
-     * @param string $campo_capitalize
+     * @param string $campo_capitalize Campo ajustado
      * @return string|array
+     * @version 1.352.41
      */
     public function con_label(string $campo, string $campo_capitalize, bool $con_label, string $size): string|array
     {

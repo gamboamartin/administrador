@@ -377,7 +377,7 @@ class templates{
     }
 
     /**
-     * P INT
+     *
      * Genera un input de tipo HTML
      *
      * @param string $campo_name Name del input

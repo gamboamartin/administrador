@@ -40,6 +40,30 @@ class directivasTest extends test {
 
     }
 
+    public function test_fecha(): void
+    {
+        errores::$error = false;
+        $dir = new directivas();
+        //$inicializacion = new liberator($inicializacion);
+
+        $campo = 'a';
+        $resultado = $dir->fecha($campo);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("'><label class='col-form-label-md' for='a'>A</label><input  type='", $resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $resultado = $dir->fecha(campo:$campo,value: '2000-01-01');
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("<div class='form-group col-md-4'><label class='col-form-label-md' for='a'>A</label><input  type='date'  class='form-control-md form-control input-md '  name='a'   id='a'   placeholder='Ingresa A'   required   title='Ingrese una a'   value='2000-01-01'         >   </div> ", $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_upload_file(): void
     {
         errores::$error = false;

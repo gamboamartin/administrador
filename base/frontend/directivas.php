@@ -371,7 +371,7 @@ class directivas extends html {
 
 
     /**
-     * P INT
+     *
      * Genera un input fecha
      * @param string $campo Nombre o identificador del campo del input
      * @param int $cols Columnas para asignacion de html entre 1 y 12
@@ -384,11 +384,11 @@ class directivas extends html {
      * @param string $css_id css id
      * @param array $data_extra extraparams conjunto
      * @param string $tipo_letra Tipo de leta ucwords capitalize ect
-     * @param bool $value_vacio
-     * @param array $css
-     * @param string $tipo
+     * @param bool $value_vacio si vacio deja el elemento vacio
+     * @param array $css Conjunto de css a integrar a elemento
+     * @param string $tipo tipo de fecha
      * @param string $size tamaño de div base css
-     * @param array $ids
+     * @param array $ids Conjunto de ids para css
      * @return array|string informacion de input en forma html
      * @example
      *     $controlador->inputs['fecha'] = $controlador->directiva->fecha(4, 'fecha','capitalize',true, false, true, 'Fecha',$controlador->valores['fecha']);
@@ -396,6 +396,7 @@ class directivas extends html {
      * @uses  TODO EL SISTEMA
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
+     * @version 1.352.41
      */
     public function fecha(string $campo, array $css = array(), string $css_id = '', int $cols = 4,
                           array $data_extra = array(), bool $disabled = false, string $etiqueta = '',
