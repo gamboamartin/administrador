@@ -383,7 +383,7 @@ class directivas extends html {
      * @param string $pattern Regex integracion html
      * @param string $css_id css id
      * @param array $data_extra extraparams conjunto
-     * @param string $tipo_letra
+     * @param string $tipo_letra Tipo de leta ucwords capitalize ect
      * @param bool $value_vacio
      * @param array $css
      * @param string $tipo

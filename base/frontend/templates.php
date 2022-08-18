@@ -268,15 +268,15 @@ class templates{
      * @param string $columnas columnas para select
      * @param string $llaves_foraneas llaves para integrar con select
      * @param array $vistas Conjunto de views permitidas
-     * @param string $accion
+     * @param string $accion Accion para view
      * @param array $campos_invisibles
      * @return array|string
      */
-    public function genera_campos(string $campo_name, string $tipo, int $cols, mixed $valor, bool $required,
-                                  bool $disabled, bool $ln, string $etiqueta, string $pattern, string $css_id,
-                                  array $data_extra, string $tabla_foranea, bool $select_vacio_alta,
-                                  array $valores_filtrados, string $columnas, string $llaves_foraneas,
-                                  array $vistas, string $accion, array $campos_invisibles):array|string{
+    public function genera_campos(string $accion, string $campo_name, array $campos_invisibles, string $css_id,
+                                  int $cols, string $columnas, array $data_extra, bool $disabled, string $etiqueta,
+                                  string $llaves_foraneas, bool $ln, string $pattern, bool $required,
+                                  bool $select_vacio_alta, string $tipo, mixed $valor, string $tabla_foranea,
+                                  array $valores_filtrados, array $vistas):array|string{
 
         if($accion === ''){
             return $this->error->error(mensaje: 'Error accion debe existir',data: $accion);
@@ -341,13 +341,13 @@ class templates{
             }
 
             $accion = 'alta';
-            $data_html = $this->genera_campos(campo_name: $campo_name, tipo: $input['tipo'],cols: $input['cols'],
-                valor: $valor,required: $input['required'], disabled: $disabled,ln: $input['ln'],
-                etiqueta: $input['etiqueta'],pattern: $input['pattern'],css_id: $input['css_id'],
-                data_extra: $input['data_extra'], tabla_foranea: $input['tabla_foranea'],
-                select_vacio_alta: $input['select_vacio_alta'],valores_filtrados: $valores_filtrados,
-                columnas: $input['columnas'], llaves_foraneas: $input['llaves_foraneas'],vistas: array('alta'),
-                accion: $accion,campos_invisibles: $campos_invisibles);
+            $data_html = $this->genera_campos(accion: $accion, campo_name: $campo_name,
+                campos_invisibles: $campos_invisibles, css_id: $input['css_id'], cols: $input['cols'],
+                columnas: $input['columnas'], data_extra: $input['data_extra'], disabled: $disabled,
+                etiqueta: $input['etiqueta'], llaves_foraneas: $input['llaves_foraneas'], ln: $input['ln'],
+                pattern: $input['pattern'], required: $input['required'],
+                select_vacio_alta: $input['select_vacio_alta'], tipo: $input['tipo'], valor: $valor,
+                tabla_foranea: $input['tabla_foranea'], valores_filtrados: $valores_filtrados, vistas: array('alta'));
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al generar campos',data: $data_html);
             }
@@ -643,7 +643,7 @@ class templates{
      * @param string $llaves_valores llaves en forma json
      * @param array $filtro Filtro para selects
      * @param array $vistas Conjunto de views permitidas
-     * @param string $accion
+     * @param string $accion Accion para view
      * @return array|string array con errores o string con html
      * @example
      *      $html = $this->genera_html_input($this->filtro);
@@ -663,11 +663,11 @@ class templates{
         if(in_array($accion,$vistas,false)) {
 
             if($cols<=0){
-                return $this->error->error('Error cols debe ser mayor a 0',$cols);
+                return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data: $cols);
 
             }
             if($cols>12){
-                return $this->error->error('Error cols debe ser menor a 13',$cols);
+                return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data: $cols);
             }
             $data_html = $this->genera_dato_html(campo_name: $campo_name, css_id: $css_id, cols: $cols,
                 columnas: $columnas, data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta,
