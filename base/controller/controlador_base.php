@@ -668,7 +668,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
     /**
-     * P INT
+     * Genera la view de lista
      * @param bool $header Si header se mostrara la info en el navegador de manera directa
      * @param bool $ws Se ejecutara via web service con salida json
      * @return array

@@ -538,21 +538,21 @@ class selects{
      * @internal $modelo->obten_registros();
      * @internal $modelo->obten_registros_activos(array(), $filtro);
      */
-    private function obten_registros_select(bool $select_vacio_alta, array $filtro,string $name_modelo, PDO $link,
+    private function obten_registros_select(array $filtro, bool $select_vacio_alta,string $name_modelo, PDO $link,
                                             bool $todos= false): array
     {
 
         $registros = array();
 
         if(!$select_vacio_alta) {
-            $registros = $this->data_select($todos, $link, $name_modelo, $filtro);
+            $registros = $this->data_select(todos: $todos,link:  $link,name_modelo:  $name_modelo,filtro:  $filtro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros del modelo '.$name_modelo,
                     data: $registros);
             }
         }
         elseif(count($filtro)>0) {
-            $registros = $this->registros_activos($link,$name_modelo,$filtro);
+            $registros = $this->registros_activos(link: $link,name_modelo: $name_modelo,filtro: $filtro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
             }
@@ -753,7 +753,7 @@ class selects{
      * @param PDO $link
      * @return array
      */
-    private function registros_select(array $registros, bool $select_vacio_alta, array $filtro, bool $todos, string $name_modelo, PDO $link): array
+    private function registros_select(array $filtro, array $registros, bool $select_vacio_alta, bool $todos, string $name_modelo, PDO $link): array
     {
 
         if(count($registros)===0 ) {

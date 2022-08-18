@@ -478,7 +478,7 @@ class controler{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Obtiene los botones para el filtro de lista
      * @return array
      */
     protected function obten_botones_para_filtro():array{
@@ -488,7 +488,7 @@ class controler{
                 filtro_boton_lista: $filtro_boton_lista['tabla']);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al obtener registros de filtro',
-                    data: $registros_botones_filtro, params: get_defined_vars());
+                    data: $registros_botones_filtro);
             }
             $data_para_botones = $registros_botones_filtro['registros'];
             foreach ($data_para_botones as $data_para_boton){
@@ -640,7 +640,7 @@ class controler{
 
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Obtiene todos los registros de un modelo para la muestra de los botones de filtros rapidos
      * @param string $filtro_boton_lista nombre del modelo para traerse todos
      * @example

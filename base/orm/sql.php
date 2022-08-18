@@ -45,7 +45,7 @@ class sql{
     /**
      * Funcion que inicializa los elementos de un SQL para sus where
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param array $columnas
+     * @param array $columnas Columnas de a obtener en select
      * @param bool $columnas_en_bruto
      * @param array $extension_estructura
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')

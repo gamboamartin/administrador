@@ -25,7 +25,7 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P INT P ORDER ERROREV
-     * @param string $seccion
+     * @param string $seccion Seccion tabla estructura
      * @param string $accion
      * @param modelo $modelo
      * @return array

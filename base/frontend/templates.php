@@ -462,8 +462,8 @@ class templates{
             }
         }
         if($tipo === 'password') {
-            $data_html = $directiva->password(campo: $campo_name,cols: $cols,value:  $valor,required:  $required,
-                etiqueta:  $etiqueta, pattern: $pattern, css_id: $css_id,data_extra: $data_extra );
+            $data_html = $directiva->password(campo: $campo_name, css_id: $css_id, cols: $cols, data_extra: $data_extra,
+                etiqueta: $etiqueta, pattern: $pattern, required: $required, value: $valor);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input password',data: $data_html);
             }
@@ -481,9 +481,9 @@ class templates{
             }
 
             $data_html = $directiva->input_select_columnas(campo_name: $campo_name, link: $this->link,
-                tabla: $tabla_foranea, css_id: $css_id, cols: $cols, filtro: $filtro, required: $required, disabled: $disabled,
-                ln: $ln, etiqueta: $etiqueta, columnas: $columnas_sl, select_vacio_alta: $select_vacio_alta,
-                data_extra: $data_extra, valor: $valor);
+                tabla: $tabla_foranea, css_id: $css_id, cols: $cols, columnas: $columnas_sl, data_extra: $data_extra, disabled: $disabled,
+                etiqueta: $etiqueta, filtro: $filtro, ln: $ln, select_vacio_alta: $select_vacio_alta,
+                required: $required, valor: $valor);
 
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al obtener select columnas del modelo '.$tabla_foranea,

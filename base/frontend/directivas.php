@@ -1086,8 +1086,8 @@ class directivas extends html {
     public function grupo_comercial_id(int $valor, PDO $link):array|string{
         $columnas = array('grupo_comercial_codigo','grupo_comercial_descripcion');
         $input = $this->input_select_columnas(campo_name: 'grupo_comercial_id', link: $link, tabla: "grupo_comercial", css_id: '',
-            cols: 4, required: true, disabled: false, ln: false, etiqueta: "grupo_comercial",
-            columnas: $columnas, data_extra: array(), valor: $valor);
+            cols: 4, columnas: $columnas, data_extra: array(), disabled: false, etiqueta: "grupo_comercial",
+            ln: false, required: true, valor: $valor);
         if(errores::$error){
             return $this->errores->error("Error al generar input grupo comercial", $input);
         }
@@ -1637,7 +1637,7 @@ class directivas extends html {
      * Genera el html de la barra de navegacion
      *
      * @param string $campo Campo de input
-     * @param int $cols
+     * @param int $cols N columnas css
      * @param string $value Valor de password
      * @param bool $required
      * @param string $etiqueta
@@ -1652,8 +1652,8 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($campo,'capitalize');
      */
-    public function password( string $campo, int $cols, string $value, bool $required, string $etiqueta,
-                              string $pattern, string $css_id, array $data_extra):string|array{ //FIN PROT
+    public function password( string $campo, string $css_id, int $cols, array $data_extra, string $etiqueta,
+                              string $pattern, bool $required, string $value):string|array{ //FIN PROT
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar',data: $valida);

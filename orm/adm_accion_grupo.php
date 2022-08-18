@@ -19,7 +19,7 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      *
      * Funcion utilizada para validar permisos basado en tu grupo y seccion. Devuelve un objeto de tipo result
      * En caso de error al validar, lanzará un mensaje
@@ -33,6 +33,8 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
      *
      *@functions $result  = adm_accion_grupo->filtro_and. obtiene los resultados de los registros
      * encontrados. En caso de error, lanzará un mensaje.
+     *
+     * @version 1.356.41
      *
      */
     public function obten_accion_permitida(int $seccion_menu_id):array|stdClass{

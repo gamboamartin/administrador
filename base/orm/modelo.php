@@ -1246,7 +1246,7 @@ class modelo extends modelo_base {
      * @param bool $aplica_seguridad Si aplica seguridad se integra usuario_permitido_id el cual debe existir en los
      * registros
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $columnas_en_bruto
+     * @param bool $columnas_en_bruto Si columnas en bruto obtiene los campos tal cual estan en la bd
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit
      * @param bool $return_objects
@@ -1513,6 +1513,7 @@ class modelo extends modelo_base {
      * Obtiene el id de una seccion
      * @param string $seccion Seccion a obtener el id
      * @return array|int
+     * @version 1.356.41
      */
     protected function seccion_menu_id(string $seccion):array|int{
         $seccion = trim($seccion);

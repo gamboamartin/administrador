@@ -41,6 +41,7 @@ class accionTest extends test {
 
         errores::$error = false;
 
+        unset($_SESSION['grupo_id']);
         $accion = 'b';
         $seccion = 'a';
         $resultado = $val->valida_accion_permitida($accion, $seccion);
