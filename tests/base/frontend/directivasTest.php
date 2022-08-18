@@ -64,6 +64,34 @@ class directivasTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_input_numero(): void
+    {
+        errores::$error = false;
+        $dir = new directivas();
+        //$inicializacion = new liberator($inicializacion);
+
+        $campo = 'a';
+        $css_id = '';
+        $cols = 1;
+        $data_extra = array();
+        $disabled = false;
+        $etiqueta = '';
+        $ln = false;
+        $pattern = '';
+        $required = false;
+        $tipo_letra = '';
+        $value = '';
+        $resultado = $dir->genera_input_numero($campo, $css_id, $cols, $data_extra, $disabled, $etiqueta, $ln,
+            $pattern, $required, $tipo_letra, $value);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("lass='form-control text-center numero_inpu", $resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_upload_file(): void
     {
         errores::$error = false;

@@ -695,6 +695,8 @@ class directivas extends html {
      * @return array|string html con info del input a mostrar
      * @throws errores definidos en internals
      * @uses templates
+     *
+     * @version 1.355.41
      * */
     public function genera_input_numero(string $campo, string $css_id, int $cols, array $data_extra, bool $disabled,
                                         string $etiqueta, bool $ln, string $pattern, bool $required,
@@ -702,7 +704,7 @@ class directivas extends html {
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar',data: $valida);
+            return  $this->error->error(mensaje: 'Error al validar campo',data: $valida);
         }
 
         $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo,tipo_letra:  $tipo_letra);
@@ -766,12 +768,10 @@ class directivas extends html {
      * @internal  $directiva->input_select_columnas($tabla,(string)$valores[$campo], 4,false,$columnas, $this->link,$required, 'capitalize', false,$select_vacio_alta,$registros,$data_extra, array(),true,'','',$todos);
      * @uses  clientes
      */
-    public function genera_input_select_columnas_template(string $tabla, array $columnas, array $data_extra,
-                                                          array $valores, PDO $link, array $campos_permitidos,
-                                                          array $inputs, array $campos_invisibles, string $campo,
-                                                          bool $required = true, array $registros=array(),
-                                                          bool $todos = false, bool $select_vacio_alta=false,
-                                                          bool $disabled = false): array{
+    public function genera_input_select_columnas_template(
+        array $columnas, array $data_extra, string $tabla, array $valores, PDO $link, array $campos_permitidos,
+        array $inputs, array $campos_invisibles, string $campo, bool $disabled = false, bool $required = true,
+        array $registros=array(), bool $todos = false, bool $select_vacio_alta=false): array{
 
         $valida = $this->validacion->valida_estructura_input_base(columnas: $columnas,tabla: $tabla);
         if(errores::$error) {
@@ -785,9 +785,9 @@ class directivas extends html {
 
 
         $inputs[$campo] = $this->input_select_columnas(campo_name: $tabla.'_id', link: $link, tabla: $tabla,
-            css_id: '', cols: 4, required: $required, disabled: $disabled, ln: false,
-            etiqueta: $tabla, select_vacio_alta: $select_vacio_alta, registros: $registros, todos: $todos,
-            data_extra: $data_extra, valor: (string)$valores[$campo]);
+            css_id: '', cols: 4, data_extra: $data_extra, disabled: $disabled, etiqueta: $tabla,
+            ln: false, registros: $registros, select_vacio_alta: $select_vacio_alta, todos: $todos,
+            required: $required, valor: (string)$valores[$campo]);
 
 
         if(errores::$error){
@@ -1234,7 +1234,7 @@ class directivas extends html {
      * @param array $columnas Columnas a mostrar en select
      * @param string $tipo_letra Capitalize ucwords etc
      * @param bool $select_vacio_alta Si esta vacio deja sin options el select
-     * @param array $registros
+     * @param array $registros Conjunto de registros para select
      * @param array $filtro
      * @param bool $todos
      * @param bool $multiple
@@ -1252,13 +1252,13 @@ class directivas extends html {
      * @internal $this->valida_selected($value,$tabla,$valor_envio);
      */
     public function input_select_columnas(string $campo_name, PDO $link, string $tabla, string $css_id = '',
-                                          int $cols = 4, array $filtro = array(), bool $required = true,
-                                          bool $disabled = false, bool $ln = false,string $etiqueta = '',
-                                          array $columnas = array(),
-                                          string $tipo_letra = 'capitalize', bool $select_vacio_alta = false,
-                                          array $registros = array(), bool $todos = false,
-                                          bool $multiple = false, array $data_con_valor = array(), string $size = 'md',
-                                          bool $inline = false, array $data_extra = array(), mixed $valor = ''):array|string{
+                                          int $cols = 4, array $columnas = array(), array $data_con_valor = array(),
+                                          array $data_extra = array(), bool $disabled = false, string $etiqueta = '',
+                                          array $filtro = array(), bool $inline = false, bool $ln = false,
+                                          bool $multiple = false, array $registros = array(),
+                                          bool $select_vacio_alta = false, string $size = 'md',
+                                          string $tipo_letra = 'capitalize', bool $todos = false,
+                                          bool $required = true, mixed $valor = ''):array|string{
 
 
         $aplica_etiqueta = false;
@@ -1636,7 +1636,7 @@ class directivas extends html {
      * P INT
      * Genera el html de la barra de navegacion
      *
-     * @param string $campo
+     * @param string $campo Campo de input
      * @param int $cols
      * @param string $value Valor de password
      * @param bool $required

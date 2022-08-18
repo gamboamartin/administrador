@@ -480,10 +480,10 @@ class templates{
                 $columnas_sl = array($tabla_foranea.'_id',$tabla_foranea.'_descripcion');
             }
 
-            $data_html = $directiva->input_select_columnas(campo_name:$campo_name,tabla: $tabla_foranea,
-                link: $this->link,cols:$cols, valor: $valor, required:  $required,disabled: $disabled,ln: $ln,
-                etiqueta: $etiqueta, columnas: $columnas_sl,select_vacio_alta: $select_vacio_alta,filtro: $filtro,
-                data_extra: $data_extra,css_id:  $css_id);
+            $data_html = $directiva->input_select_columnas(campo_name: $campo_name, link: $this->link,
+                tabla: $tabla_foranea, css_id: $css_id, cols: $cols, filtro: $filtro, required: $required, disabled: $disabled,
+                ln: $ln, etiqueta: $etiqueta, columnas: $columnas_sl, select_vacio_alta: $select_vacio_alta,
+                data_extra: $data_extra, valor: $valor);
 
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al obtener select columnas del modelo '.$tabla_foranea,
