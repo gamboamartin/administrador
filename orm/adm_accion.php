@@ -25,10 +25,21 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P INT P ORDER ERROREV
-     * @param string $seccion
-     * @param string $accion
-     * @param modelo $modelo
+     * @param string $seccion Seccion a verificar
+     *
+     * @param string $accion Accion a verificar
+     *
+     * @param modelo $modelo llamada a la clase modelo
+     *
      * @return array
+     *
+     * @functions $seccion = trim($seccion). Elimina espacios en blanco de "$seccion".
+     *
+     * @functions $seccion_menu_id = $modelo->seccion_menu_id(seccion: $seccion). Obtiene el menu_id de una seccion
+     *
+     * @functions $r_acciones = (new adm_accion_grupo($adm_accion->link))->obten_accion_permitida(seccion_menu_id: $seccion_menu_id)
+     * Se utiliza para valida y maquetar un registro acciones. En caso de error, lanzará un mensaje.
+     *
      */
     public function acciones_permitidas(string $accion, modelo $modelo, string $seccion):array{
         if(!isset($_SESSION['grupo_id']) && $seccion !== 'adm_session' && $accion !== 'login'){
