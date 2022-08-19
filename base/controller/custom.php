@@ -12,9 +12,24 @@ class custom{
     public function css(seguridad $seguridad): string
     {
         $css = '';
-        if(file_exists('./css/'.$seguridad->seccion.'.'.$seguridad->accion.'.css')){
-            $css = "<link rel='stylesheet' href='./css/$seguridad->seccion.$seguridad->accion.css'>";
+        $existe_php = false;
+        $existe_css = false;
+        $file_base = "./css/'.$seguridad->seccion.'.'.$seguridad->accion";
+
+        if(file_exists($file_base.'.php')){
+            $existe_php = true;
         }
+        if(file_exists($file_base.'.css')){
+            $existe_css = true;
+        }
+
+        if($existe_php){
+            $css = "./css/$seguridad->seccion.$seguridad->accion.php";
+        }
+        elseif($existe_css){
+            $css = "<link rel='stylesheet' href='$file_base.css'>";
+        }
+
         return $css;
     }
 
