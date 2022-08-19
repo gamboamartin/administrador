@@ -90,6 +90,25 @@ class directivasTest extends test {
         errores::$error = false;
     }
 
+    public function test_password(): void
+    {
+        errores::$error = false;
+        $dir = new directivas();
+        //$inicializacion = new liberator($inicializacion);
+
+        $campo = 'a';
+
+        $cols = 1;
+
+        $value = '';
+        $resultado = $dir->password($campo, $cols, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("type='password' clas", $resultado);
+        errores::$error = false;
+
+    }
+
     public function test_upload_file(): void
     {
         errores::$error = false;

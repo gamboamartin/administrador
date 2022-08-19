@@ -1631,7 +1631,8 @@ class directivas extends html {
     }
 
     /**
-     * P INT
+     *
+     *
      * Genera el html de la barra de navegacion
      *
      * @param string $campo Campo de input
