@@ -2,6 +2,7 @@
 namespace base\controller;
 use base\seguridad;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class custom{
@@ -27,8 +28,19 @@ class custom{
         return $init;
     }
 
-    private function css_existe(stdClass $init): stdClass
+    /**
+     * Valida si existe algun archivo para css
+     * @param stdClass $init Inicializacion data css
+     * @return stdClass|array salida con validacion de existencia de archivos
+     * @version 1.366.41
+     */
+    private function css_existe(stdClass $init): stdClass|array
     {
+        $keys = array('file_base');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $init);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar init',data:  $valida);
+        }
         if(file_exists($init->file_base.'.php')){
             $init->existe_php = true;
         }
@@ -103,6 +115,7 @@ class custom{
      * Inicializa los datos para salida css custom
      * @param seguridad $seguridad Seguridad inicializada
      * @return stdClass
+     * @version 1.365.41
      */
     private function init_css(seguridad $seguridad): stdClass
     {
@@ -121,13 +134,13 @@ class custom{
     {
         $init = $this->init_css(seguridad:$seguridad);
         if(errores::$error){
-            return $this->error->error('Error al inicializa css', $init);
+            return $this->error->error(mensaje: 'Error al inicializa css', data: $init);
 
         }
 
         $init = $this->css_existe(init:$init);
         if(errores::$error){
-            return $this->error->error('Error al inicializa css existe file', $init);
+            return $this->error->error(mensaje: 'Error al inicializa css existe file',data:  $init);
 
         }
 

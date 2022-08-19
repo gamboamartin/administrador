@@ -6,7 +6,7 @@ use base\seguridad;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
+use stdClass;
 
 
 class customTest extends test {
@@ -15,6 +15,23 @@ class customTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_css_existe(): void
+    {
+
+        errores::$error = false;
+
+        $custom = new custom();
+        $custom = new liberator($custom);
+
+        $init = new stdClass();
+        $init->file_base = '/var/www/html/administrador/index';
+        $resultado = $custom->css_existe($init);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(true,$resultado->existe_php);
+        errores::$error = false;
     }
 
     public function test_init_css(): void
