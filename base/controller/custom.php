@@ -136,7 +136,7 @@ class custom{
      * @return array|stdClass
      * @version 1.367.42
      */
-    PUBLIC function init_data_css(seguridad $seguridad): array|stdClass
+    private function init_data_css(seguridad $seguridad): array|stdClass
     {
         $init = $this->init_css(seguridad:$seguridad);
         if(errores::$error){
@@ -153,8 +153,19 @@ class custom{
         return $init;
     }
 
-    private function out_css(stdClass $init, seguridad $seguridad): stdClass
+    /**
+     * Salida de css
+     * @param stdClass $init Init de css
+     * @param seguridad $seguridad seguridad inicializada
+     * @return stdClass|array
+     */
+    private function out_css(stdClass $init, seguridad $seguridad): stdClass|array
     {
+        $keys = array('existe_php','existe_css');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $init);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar init',data:  $valida);
+        }
         if($init->existe_php){
             $init->css = "./css/$seguridad->seccion.$seguridad->accion.php";
         }
