@@ -454,16 +454,14 @@ class templates{
             }
         }
         if($tipo === 'numero') {
-            $data_html = $directiva->genera_input_numero(campo: $campo_name, css_id: $css_id, cols: $cols,
-                data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta,
-                ln: $ln, pattern: $pattern, required: $required, tipo_letra: 'mayusculas', value: $valor);
+            $data_html = $directiva->genera_input_numero(campo: $campo_name, cols: $cols, ln: $ln,
+                required: $required, tipo_letra: 'mayusculas', value: $valor);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input numero',data: $data_html);
             }
         }
         if($tipo === 'password') {
-            $data_html = $directiva->password(campo: $campo_name, css_id: $css_id, cols: $cols, data_extra: $data_extra,
-                etiqueta: $etiqueta, pattern: $pattern, required: $required, value: $valor);
+            $data_html = $directiva->password(campo: $campo_name, cols: $cols, value: $valor);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input password',data: $data_html);
             }

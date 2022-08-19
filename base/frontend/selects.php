@@ -735,7 +735,8 @@ class selects{
             return $this->error->error(mensaje: 'Error tabla esta vacia',data: $datos);
         }
 
-        $registros = $this->registros_select($registros, $select_vacio_alta, $filtro, $todos,$tabla, $link);
+        $registros = $this->registros_select(filtro: $filtro, registros: $registros,
+            select_vacio_alta: $select_vacio_alta, todos: $todos, name_modelo: $tabla, link: $link);
         if(errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros);
         }
@@ -757,7 +758,8 @@ class selects{
     {
 
         if(count($registros)===0 ) {
-            $registros = $this->obten_registros_select($select_vacio_alta, $filtro, $name_modelo, $link,$todos);
+            $registros = $this->obten_registros_select(filtro: $filtro, select_vacio_alta: $select_vacio_alta,
+                name_modelo: $name_modelo, link: $link, todos: $todos);
             if(errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros '.$name_modelo,data: $registros);
             }

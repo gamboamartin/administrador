@@ -1,8 +1,10 @@
 <?php //DEBUG FIN
 namespace base\frontend;
 
+
+use base\orm\modelo_base;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\modelo_base;
+
 use JetBrains\PhpStorm\Pure;
 
 use PDO;
@@ -295,7 +297,7 @@ class directivas extends html {
      * @param string $seccion Seccion del controlador a ejecutar
      * @param string $accion Accion del controlador a ejecutar
      * @param int $registro_id Identificador del registro
-     * @param array $var_get_extra Variables por get que se naden extra forma es array(name_variable=>value)
+     * @param array $var_get_extra Variables por get que se añaden extra forma es array(name_variable=>value)
      * @return array|string
      */
     public function data_form_id(string $seccion, string $accion, int $registro_id, array $var_get_extra): array|string
@@ -698,9 +700,8 @@ class directivas extends html {
      *
      * @version 1.355.41
      * */
-    public function genera_input_numero(string $campo, string $css_id, int $cols, array $data_extra, bool $disabled,
-                                        string $etiqueta, bool $ln, string $pattern, bool $required,
-                                        string $tipo_letra, string $value):array|string{  //FIN PROT
+    public function genera_input_numero(string $campo, int $cols,  bool $ln,  bool $required, string $tipo_letra,
+                                        string $value):array|string{  //FIN PROT
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
@@ -785,9 +786,8 @@ class directivas extends html {
 
 
         $inputs[$campo] = $this->input_select_columnas(campo_name: $tabla.'_id', link: $link, tabla: $tabla,
-            css_id: '', cols: 4, data_extra: $data_extra, disabled: $disabled, etiqueta: $tabla,
-            ln: false, registros: $registros, select_vacio_alta: $select_vacio_alta, todos: $todos,
-            required: $required, valor: (string)$valores[$campo]);
+            data_extra: $data_extra, disabled: $disabled, etiqueta: $tabla, registros: $registros,
+            select_vacio_alta: $select_vacio_alta, todos: $todos, required: $required, valor: (string)$valores[$campo]);
 
 
         if(errores::$error){
@@ -1085,9 +1085,8 @@ class directivas extends html {
      */
     public function grupo_comercial_id(int $valor, PDO $link):array|string{
         $columnas = array('grupo_comercial_codigo','grupo_comercial_descripcion');
-        $input = $this->input_select_columnas(campo_name: 'grupo_comercial_id', link: $link, tabla: "grupo_comercial", css_id: '',
-            cols: 4, columnas: $columnas, data_extra: array(), disabled: false, etiqueta: "grupo_comercial",
-            ln: false, required: true, valor: $valor);
+        $input = $this->input_select_columnas(campo_name: 'grupo_comercial_id', link: $link, tabla: "grupo_comercial",
+             columnas: $columnas, data_extra: array(), etiqueta: "grupo_comercial",valor: $valor);
         if(errores::$error){
             return $this->errores->error("Error al generar input grupo comercial", $input);
         }
@@ -1105,7 +1104,7 @@ class directivas extends html {
         if($name === ''){
             return $this->error->error('Error name no puede venir vacio',$name);
         }
-        return $input = "<input type='hidden'   name='".$name."' value='".$value."' >";
+        return "<input type='hidden'   name='" . $name . "' value='" . $value . "' >";
     }
 
     /**
@@ -1221,26 +1220,25 @@ class directivas extends html {
      * P INT ERRORREV
      * Genera un contenedor div con un select
      * @param string $campo_name Nombre del input
-     * @param int $cols Columnas para asignacion de html entre 1 y 12
-     * @param string $valor Valor de Identificador de registro
-     * @param bool $required si required el input es obligatorio en su captura
-     * @param bool $disabled si disabled el input queda deshabilitado
-     * @param bool $ln Salto de line si aplica genera div con 12 cols
-     * @param string $etiqueta Etiqueta de select
-     * @param string $css_id css id para css
-     * @param array $data_extra Extra params
-     * @param string $tabla Tabla - estructura modelo sistema
      * @param PDO $link Conexion a la BD
+     * @param string $tabla Tabla - estructura modelo sistema
+     * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param array $columnas Columnas a mostrar en select
-     * @param string $tipo_letra Capitalize ucwords etc
-     * @param bool $select_vacio_alta Si esta vacio deja sin options el select
-     * @param array $registros Conjunto de registros para select
-     * @param array $filtro
-     * @param bool $todos
-     * @param bool $multiple
      * @param array $data_con_valor igual con data extra pero con valores fijos
-     * @param string $size
+     * @param array $data_extra Extra params
+     * @param bool $disabled si disabled el input queda deshabilitado
+     * @param string $etiqueta Etiqueta de select
+     * @param array $filtro
      * @param bool $inline
+     * @param bool $ln Salto de line si aplica genera div con 12 cols
+     * @param bool $multiple
+     * @param array $registros Conjunto de registros para select
+     * @param bool $select_vacio_alta Si esta vacio deja sin options el select
+     * @param string $size
+     * @param string $tipo_letra Capitalize ucwords etc
+     * @param bool $todos
+     * @param bool $required si required el input es obligatorio en su captura
+     * @param string $valor Valor de Identificador de registro
      * @return array|string informacion de select en forma html
      * @example
      *     $input = $directiva->input_select_columnas($tabla,$value,12,false,$columnas,$link, true,'capitalize',false,false, $registros,$data_extra , array(),false);
@@ -1251,7 +1249,7 @@ class directivas extends html {
      * @internal $this->genera_contenedor_select($tabla,$cols,$disabled,$required,$tipo_letra, $aplica_etiqueta,$name_input,$etiqueta);
      * @internal $this->valida_selected($value,$tabla,$valor_envio);
      */
-    public function input_select_columnas(string $campo_name, PDO $link, string $tabla, string $css_id = '',
+    public function input_select_columnas(string $campo_name, PDO $link, string $tabla,
                                           int $cols = 4, array $columnas = array(), array $data_con_valor = array(),
                                           array $data_extra = array(), bool $disabled = false, string $etiqueta = '',
                                           array $filtro = array(), bool $inline = false, bool $ln = false,
@@ -1622,7 +1620,7 @@ class directivas extends html {
             return $this->errores->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_campo_busca);
         }
 
-        $inputs_busca = $this->busqueda_base(campo_busca: $campo_busca, etiqueta_campo_busca: $etiqueta_campo_busca,
+        $inputs_busca = $this->busqueda_base(etiqueta_campo_busca: $etiqueta_campo_busca, campo_busca: $campo_busca,
             valor_busca_fault: $valor_busca_fault);
         if(errores::$error){
             return $this->errores->error('Error al generar datos de busqueda',$inputs_busca);
@@ -1639,11 +1637,6 @@ class directivas extends html {
      * @param string $campo Campo de input
      * @param int $cols N columnas css
      * @param string $value Valor de password
-     * @param bool $required
-     * @param string $etiqueta
-     * @param string $pattern
-     * @param string $css_id
-     * @param array $data_extra
      * @return string|array html para incrustarlo y mostrarlo
      * @example
      *      $data_html = $directiva->password($this->valor, $this->cols, $this->campo);
@@ -1652,8 +1645,7 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($campo,'capitalize');
      */
-    public function password( string $campo, string $css_id, int $cols, array $data_extra, string $etiqueta,
-                              string $pattern, bool $required, string $value):string|array{ //FIN PROT
+    public function password( string $campo, int $cols, string $value):string|array{ //FIN PROT
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar',data: $valida);
@@ -1687,9 +1679,9 @@ class directivas extends html {
      */
     private function select_empleado_id(string $valor, PDO $link, array $empleados=array(),int $cols = 6):array|string{
         $columnas = array('empleado_codigo','empleado_descripcion');
-        $input = $this->input_select_columnas(campo_name:'empleado_id',cols: $cols,valor: $valor, required: true,
-            disabled: false, ln:false,etiqueta: "empleado",css_id: '', data_extra: array(),tabla: "empleado",
-            columnas: $columnas, link: $link,registros: $empleados);
+        $input = $this->input_select_columnas(campo_name: 'empleado_id', link: $link, tabla: "empleado", cols: $cols,
+            columnas: $columnas, data_extra: array(), disabled: false, etiqueta: "empleado",
+            registros: $empleados, valor: $valor);
         if(errores::$error){
             return $this->errores->error(mensaje: "Error al generar input empleado", data: $input);
         }
@@ -1726,8 +1718,8 @@ class directivas extends html {
 
             $value = $dia['dia_id'];
         }
-        $select = $this->input_select_columnas('dia_id',1,$value,true, false, false,
-            'dia','', array(),'dia',array('dia_codigo'),$link);
+        $select = $this->input_select_columnas(campo_name: 'dia_id', link: $link, tabla: 'dia', cols: 1,
+            columnas: array('dia_codigo'), valor: $value);
         if(errores::$error){
             return $this->errores->error('Error al generar input', $select);
         }
@@ -1747,8 +1739,8 @@ class directivas extends html {
 
             $value = $hora['hora_id'];
         }
-        $select = $this->input_select_columnas('hora_id',1,$value,true, false,
-            false,'hora','', array(),'hora', array('hora_codigo'), $link);
+        $select = $this->input_select_columnas(campo_name: 'hora_id', link: $link, tabla: 'hora', cols: 1,
+            columnas: array('hora_codigo'), valor: $value);
         if(errores::$error){
             return $this->errores->error('Error al generar input', $select);
         }
@@ -1767,8 +1759,8 @@ class directivas extends html {
 
             $value = $mes['mes_id'];
         }
-        $select = $this->input_select_columnas('mes_id',1,$value, true, false,
-            false,'mes','', array(),'tabla', array('mes_codigo','mes_descripcion'), $link);
+        $select = $this->input_select_columnas(campo_name: 'mes_id', link: $link, tabla: 'mes',
+            cols: 1, columnas: array('mes_codigo','mes_descripcion'), valor: $value);
         if(errores::$error){
             return $this->errores->error('Error al generar input', $select);
         }
@@ -1784,7 +1776,7 @@ class directivas extends html {
     private function sl_minuto(PDO $link, string $value = ''): array|string
     {
         if($value === ''){
-            $modelo = (new modelo_base($link))->genera_modelo('minuto');
+            $modelo = (new modelo_base($link))->genera_modelo(modelo: 'minuto');
             if(errores::$error){
                 return $this->errores->error('Error al generar modelo', $modelo);
             }
@@ -1795,8 +1787,8 @@ class directivas extends html {
             }
             $value = $minuto['minuto_id'];
         }
-        $select = $this->input_select_columnas('minuto_id',1,$value,true, false, false,
-            'minuto','', array(),'minuto', array('minuto_codigo'), $link);
+        $select = $this->input_select_columnas(campo_name: 'minuto_id', link: $link, tabla: 'minuto',
+            cols: 1, columnas: array('minuto_codigo'), valor: $value);
         if(errores::$error){
             return $this->errores->error('Error al generar input', $select);
         }
@@ -1816,8 +1808,8 @@ class directivas extends html {
 
             $value = $year['year_id'];
         }
-        $select = $this->input_select_columnas('year_id',1,$value,true, false, false,
-            'year','', array(),'year', array('year_descripcion'), $link);
+        $select = $this->input_select_columnas(campo_name: 'year_id', link: $link, tabla: 'year',
+            cols: 1, columnas: array('year_descripcion'), data_extra: array(), valor: $value);
         if(errores::$error){
             return $this->errores->error('Error al generar input', $select);
         }
@@ -1998,9 +1990,9 @@ class directivas extends html {
      */
     public function ubicacion_id(PDO $link, string $valor  = '-1', int $cols = 4, array $registros = array()): array|string
     {
-        $input = $this->input_select_columnas(campo_name:'ubicacion_id',cols: $cols,valor: $valor,required:true,
-            disabled: false, ln:false,etiqueta: 'ubicacion',css_id: '', data_extra: array(),tabla: 'ubicacion', columnas: array('ubicacion_descripcion_completa'),link: $link,
-            registros: $registros);
+        $input = $this->input_select_columnas(campo_name: 'ubicacion_id', link: $link, tabla: 'ubicacion', cols: $cols,
+            columnas: array('ubicacion_descripcion_completa'), data_extra: array(), etiqueta: 'ubicacion',
+            registros: $registros, valor: $valor);
 
         if(errores::$error){
             return $this->errores->error('Error al generar input',$input);
@@ -2125,9 +2117,9 @@ class directivas extends html {
      */
     public function valuador_id(PDO $link, string $valor  = '-1', int $cols = 4, array $registros = array()): array|string
     {
-        $input = $this->input_select_columnas(campo_name:'valuador_id',cols: $cols,valor: $valor,required: true,
-            disabled: false, ln:false,etiqueta: 'valuador',css_id: '', data_extra: array(),tabla: 'valuador', columnas: array('valuador_codigo','proveedor_razon_social'),
-            link: $link,registros: $registros);
+        $input = $this->input_select_columnas(campo_name: 'valuador_id', link: $link, tabla: 'valuador', cols: $cols,
+            columnas: array('valuador_codigo','proveedor_razon_social'), data_extra: array(), etiqueta: 'valuador',
+            registros: $registros, valor: $valor);
 
         if(errores::$error){
             return $this->errores->error('Error al generar input',$input);

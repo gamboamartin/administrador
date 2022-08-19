@@ -24,7 +24,7 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Obtiene las acciones permitidas de una session
      * @param string $accion Accion a verificar
      * @param modelo $modelo llamada a la clase modelo
      *
@@ -45,9 +45,13 @@ class adm_accion extends modelo{ //FINALIZADAS
         if(isset($_SESSION['grupo_id'])&&(int)$_SESSION['grupo_id']<=0 && $seccion !== 'adm_session' && $accion !== 'login'){
             return $this->error->error(mensaje: 'Error grupo_id debe ser mayor o igual a 0',data: $_SESSION);
         }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $accion);
+        }
         $seccion = trim($seccion);
         if($seccion === ''){
-            return $this->error->error('Error seccion no puede venir vacio',$seccion);
+            return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $seccion);
         }
         $seccion_menu_id = $modelo->seccion_menu_id(seccion: $seccion);
         if(errores::$error){

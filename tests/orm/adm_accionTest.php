@@ -15,6 +15,39 @@ class adm_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_acciones_permitidas(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+        $accion = '';
+        $seccion= '';
+        $resultado = $modelo->acciones_permitidas($accion, $modelo, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error debe existir grupo_id', $resultado['mensaje']);
+
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $accion = 'a';
+        $seccion= 'a';
+        $resultado = $modelo->acciones_permitidas($accion, $modelo, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error obtener seccion_menu_id', $resultado['mensaje']);
+
+        errores::$error = false;
+        $_SESSION['grupo_id'] = 1;
+        $accion = 'a';
+        $seccion= 'adm_accion';
+        $resultado = $modelo->acciones_permitidas($accion, $modelo, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_filtro_accion_seccion(){
 
         errores::$error = false;

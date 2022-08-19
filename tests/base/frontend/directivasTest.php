@@ -71,18 +71,16 @@ class directivasTest extends test {
         //$inicializacion = new liberator($inicializacion);
 
         $campo = 'a';
-        $css_id = '';
+
         $cols = 1;
-        $data_extra = array();
-        $disabled = false;
-        $etiqueta = '';
+
         $ln = false;
-        $pattern = '';
+
         $required = false;
         $tipo_letra = '';
         $value = '';
-        $resultado = $dir->genera_input_numero($campo, $css_id, $cols, $data_extra, $disabled, $etiqueta, $ln,
-            $pattern, $required, $tipo_letra, $value);
+        $resultado = $dir->genera_input_numero(campo: $campo, cols:  $cols,ln:  $ln,
+            required:  $required,tipo_letra:  $tipo_letra, value: $value);
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
