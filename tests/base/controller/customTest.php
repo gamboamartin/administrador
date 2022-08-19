@@ -54,6 +54,28 @@ class customTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_data_css(): void
+    {
+
+        errores::$error = false;
+
+        $custom = new custom();
+        //$custom = new liberator($custom);
+
+        $seguridad = new seguridad();
+        $resultado = $custom->init_data_css($seguridad);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->css);
+        $this->assertEquals(false,$resultado->existe_php);
+        $this->assertEquals(false,$resultado->existe_css);
+        $this->assertEquals("./css/'.adm_session.login",$resultado->file_base);
+
+
+
+        errores::$error = false;
+    }
+
 
 
 }

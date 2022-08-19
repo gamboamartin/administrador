@@ -130,7 +130,13 @@ class custom{
         return $data;
     }
 
-    private function init_data_css(seguridad $seguridad): array|stdClass
+    /**
+     * Inicializa los elementos de un css
+     * @param seguridad $seguridad Seguridad inicializada
+     * @return array|stdClass
+     * @version 1.367.42
+     */
+    PUBLIC function init_data_css(seguridad $seguridad): array|stdClass
     {
         $init = $this->init_css(seguridad:$seguridad);
         if(errores::$error){
