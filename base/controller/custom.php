@@ -11,26 +11,33 @@ class custom{
     }
     public function css(seguridad $seguridad): string
     {
-        $css = '';
-        $existe_php = false;
-        $existe_css = false;
-        $file_base = "./css/'.$seguridad->seccion.'.'.$seguridad->accion";
 
-        if(file_exists($file_base.'.php')){
-            $existe_php = true;
-        }
-        if(file_exists($file_base.'.css')){
-            $existe_css = true;
+        $init = $this->init_data_css(seguridad:$seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al inicializa css', $init);
+
         }
 
-        if($existe_php){
-            $css = "./css/$seguridad->seccion.$seguridad->accion.php";
-        }
-        elseif($existe_css){
-            $css = "<link rel='stylesheet' href='$file_base.css'>";
+        $init = $this->out_css(init:$init,seguridad:  $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al obtener css', $init);
+
         }
 
-        return $css;
+
+        return $init->css;
+    }
+
+    private function css_existe(stdClass $init): stdClass
+    {
+        if(file_exists($init->file_base.'.php')){
+            $init->existe_php = true;
+        }
+        if(file_exists($init->file_base.'.css')){
+            $init->existe_css = true;
+        }
+
+        return $init;
     }
 
     public function data(seguridad $seguridad): array|stdClass
@@ -91,6 +98,48 @@ class custom{
             $js = "<script type='text/javascript' src='$ruta_js'></script>";
         }
         return $js;
+    }
+
+    private function init_css(seguridad $seguridad): stdClass
+    {
+
+        $file_base = "./css/'.$seguridad->seccion.'.'.$seguridad->accion";
+        $data = new stdClass();
+        $data->css = '';
+        $data->existe_php = false;
+        $data->existe_css = false;
+        $data->file_base = $file_base;
+
+        return $data;
+    }
+
+    private function init_data_css(seguridad $seguridad): array|stdClass
+    {
+        $init = $this->init_css(seguridad:$seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al inicializa css', $init);
+
+        }
+
+        $init = $this->css_existe(init:$init);
+        if(errores::$error){
+            return $this->error->error('Error al inicializa css existe file', $init);
+
+        }
+
+        return $init;
+    }
+
+    private function out_css(stdClass $init, seguridad $seguridad): stdClass
+    {
+        if($init->existe_php){
+            $init->css = "./css/$seguridad->seccion.$seguridad->accion.php";
+        }
+        elseif($init->existe_css){
+            $init->css = "<link rel='stylesheet' href='$init->file_base.css'>";
+        }
+
+        return $init;
     }
 
 }
