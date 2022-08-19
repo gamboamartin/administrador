@@ -591,10 +591,10 @@ class init{
             $namespace = 'gamboamartin\\gastos\\';
         }
         if($sistema === 'tg_facturacion'){
-            $namespace = 'gamboamartin\\tg_facturacion\\';
+            $namespace = 'tglobally\\tg_facturacion\\';
         }
         if($sistema === 'tg_banco'){
-            $namespace = 'gamboamartin\\tg_banco\\';
+            $namespace = 'tglobally\\tg_banco\\';
         }
 
 
