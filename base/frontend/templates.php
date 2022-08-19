@@ -479,7 +479,7 @@ class templates{
             }
 
             $data_html = $directiva->input_select_columnas(campo_name: $campo_name, link: $this->link,
-                tabla: $tabla_foranea, css_id: $css_id, cols: $cols, columnas: $columnas_sl, data_extra: $data_extra, disabled: $disabled,
+                tabla: $tabla_foranea, cols: $cols, columnas: $columnas_sl, data_extra: $data_extra, disabled: $disabled,
                 etiqueta: $etiqueta, filtro: $filtro, ln: $ln, select_vacio_alta: $select_vacio_alta,
                 required: $required, valor: $valor);
 

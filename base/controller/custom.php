@@ -9,7 +9,7 @@ class custom{
     public function __construct(){
         $this->error = new errores();
     }
-    public function css(seguridad $seguridad): string
+    public function css(seguridad $seguridad): stdClass
     {
 
         $init = $this->init_data_css(seguridad:$seguridad);
@@ -24,8 +24,7 @@ class custom{
 
         }
 
-
-        return $init->css;
+        return $init;
     }
 
     private function css_existe(stdClass $init): stdClass
