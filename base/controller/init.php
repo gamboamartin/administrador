@@ -590,6 +590,12 @@ class init{
         if($sistema === 'gastos'){
             $namespace = 'gamboamartin\\gastos\\';
         }
+        if($sistema === 'tg_facturacion'){
+            $namespace = 'gamboamartin\\tg_facturacion\\';
+        }
+        if($sistema === 'tg_banco'){
+            $namespace = 'gamboamartin\\tg_banco\\';
+        }
 
 
 
