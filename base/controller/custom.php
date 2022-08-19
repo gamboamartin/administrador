@@ -120,7 +120,7 @@ class custom{
     private function init_css(seguridad $seguridad): stdClass
     {
 
-        $file_base = "./css/'.$seguridad->seccion.'.'.$seguridad->accion";
+        $file_base = "./css/'.$seguridad->seccion.$seguridad->accion";
         $data = new stdClass();
         $data->css = '';
         $data->existe_php = false;

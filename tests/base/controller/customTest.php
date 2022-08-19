@@ -50,7 +50,7 @@ class customTest extends test {
         $this->assertEquals('',$resultado->css);
         $this->assertEquals(false,$resultado->existe_php);
         $this->assertEquals(false,$resultado->existe_css);
-        $this->assertEquals("./css/'.adm_session.'.'.login",$resultado->file_base);
+        $this->assertEquals("./css/'.adm_session.login",$resultado->file_base);
         errores::$error = false;
     }
 
