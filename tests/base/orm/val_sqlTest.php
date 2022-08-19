@@ -618,5 +618,21 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_verifica_vacio(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $keys_obligatorios = array();
+        $campo = 'a';
+        $registro['a'] = 'x';
+        $resultado = $val->verifica_vacio($campo, $keys_obligatorios, $registro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 }

@@ -422,6 +422,7 @@ class val_sql extends validaciones {
      * @param array $keys_obligatorios Conjunto de campos obligatorios definidos en el modelo
      * @param array $registro Registro a validar
      * @return bool|array
+     * @version 1.361.41
      */
     private function verifica_vacio(string $campo,array $keys_obligatorios, array $registro): bool|array
     {
