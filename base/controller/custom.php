@@ -100,6 +100,11 @@ class custom{
         return $js;
     }
 
+    /**
+     * Inicializa los datos para salida css custom
+     * @param seguridad $seguridad Seguridad inicializada
+     * @return stdClass
+     */
     private function init_css(seguridad $seguridad): stdClass
     {
 
