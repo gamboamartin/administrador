@@ -596,6 +596,9 @@ class init{
         if($sistema === 'tg_banco'){
             $namespace = 'tglobally\\tg_banco\\';
         }
+        if($sistema === 'almacen'){
+            $namespace = 'gamboamartin\\almacen\\';
+        }
 
 
 
