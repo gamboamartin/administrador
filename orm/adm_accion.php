@@ -66,7 +66,7 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * inserta un registro de ti po accion y agrega permisos a usuarios de tipo root
+     * inserta un registro de tipo accion y agrega permisos a usuarios de tipo root
      * @return array|stdClass con datos del registro insertado
      * @throws JsonException
      * @example
@@ -111,8 +111,13 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
+     * Funcion usada para registrar la cantidad de acciones realizadas por un grupo.
+     *
      * P INT P ORDER
      * @return array|int
+     *
+     * @functions $n_permisos = (new adm_accion_grupo($adm_accion->link))->cuenta(filtro: $filtro); Valida y maqueta la
+     * cantidad de acciones realizadas
      */
     public function cuenta_acciones(): int|array
     { //FIN PROT
@@ -139,9 +144,19 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P INT ERROREV
-     * @param string $seccion
-     * @param string $accion
+     *
+     * Funcion con la finalidad de validar que el grupo al que pertenece el usuario tenga permitido realizar la accion
+     * enviada.
+     *
+     * @param string $seccion Seccion a verificar
+     * @param string $accion Accion a verificar
      * @return bool|array
+     *
+     * @functions $valida = $adm_accion->validacion->valida_accion_permitida(accion: $accion,seccion:  $seccion);
+     * Valida una accion realizada contemplando la seccion y accion
+     *
+     * @functions $existe = (new adm_accion_grupo($adm_accion->link))->existe(filtro: $filtro)
+     * Valida que exista un registro a partir de los filtros enviados
      */
     public function obten_accion_permitida_session(string $seccion, string $accion): bool|array{
 
