@@ -19,8 +19,17 @@ class atributos{
 
     /**
      * P ORDER P INT ERROREV
-     * @param string $tabla
+     *
+     * Funcion para obtener los atributos de una tabla. En caso de error, lanzará un mensaje.
+     *
+     * @param string $tabla Conjunto de datos obtenidos de la database
+     *
+     * @param PDO $link Enlace del servidor con la base de datos
+     *
      * @return array
+     *
+     * @functions $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro). Obtiene los atributos
+     * basado en los datos de "$filtro". En caso de error lanzará un mensaje.
      */
     private function atributos(PDO $link, string $tabla): array
     {
