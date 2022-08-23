@@ -1645,8 +1645,9 @@ class directivas extends html {
      * @uses templates
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($campo,'capitalize');
+     * @version 1.370.44
      */
-    public function password( string $campo, int $cols, string $value):string|array{ //FIN PROT
+    public function password( string $campo, int $cols, string $value):string|array{
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar',data: $valida);

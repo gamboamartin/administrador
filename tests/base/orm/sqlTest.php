@@ -7,7 +7,7 @@ use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
+use models\adm_session;
 
 
 class sqlTest extends test {
@@ -51,6 +51,188 @@ class sqlTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SHOW TABLES',$resultado);
+    }
+
+    public function test_sql_select_init(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $aplica_seguridad = false;
+        $columnas = array();
+        $columnas_en_bruto = false;
+        $extension_estructura = array();
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $sql_where_previo = '';
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('SELECT adm_session.id AS ',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('AS adm_session_id, adm_session.name AS adm_session_name,',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('name, adm_session.adm_usuario_id AS adm_session_adm_usuario_id, adm_session.numero_empresa AS a',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('AS adm_session_numero_empresa, adm_session.fecha AS adm_session_fecha, adm_session.fecha_ultim',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('ultima_ejecucion AS adm_session_fecha_ultima_ejecucion, adm_session.usuario_alta_id AS adm_s',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('S adm_session_usuario_alta_id, adm_session.usuario_update_id AS adm_session_usuario_updat',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('ario ON adm_usuario.id = adm_session.adm_usuario_id LEFT JOIN adm',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('upo AS adm_grupo ON adm_grupo.id = adm_usuario.adm_grupo_id',$resultado->consulta_base);
+
+        errores::$error = false;
+
+        $aplica_seguridad = true;
+        $columnas = array();
+        $columnas_en_bruto = false;
+        $extension_estructura = array();
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $sql_where_previo = '';
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al obtener parametros bas',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $aplica_seguridad = false;
+        $columnas = array();
+        $columnas[] = '';
+        $columnas_en_bruto = false;
+        $extension_estructura = array();
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $sql_where_previo = '';
+
+
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al generar consulta',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $aplica_seguridad = false;
+        $columnas = array();
+        $columnas_en_bruto = true;
+        $extension_estructura = array();
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $sql_where_previo = '';
+
+
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('ELECT adm_session.id AS id, adm_session.name AS name',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase(' adm_session.fecha AS fecha, adm_session.fecha_ultima_ejecucion AS',$resultado->consulta_base);
+
+        errores::$error = false;
+
+        $aplica_seguridad = false;
+        $columnas = array();
+        $columnas_en_bruto = false;
+        $extension_estructura = array();
+        $extension_estructura[] = '';
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $sql_where_previo = '';
+
+
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al generar consulta',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $aplica_seguridad = false;
+        $columnas = array();
+        $columnas_en_bruto = false;
+        $extension_estructura = array();
+        $extension_estructura['adm_grupo']['key'] = 'id';
+        $extension_estructura['adm_grupo']['enlace'] = 'adm_seccion';
+        $extension_estructura['adm_grupo']['key_enlace'] = 'id';
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $sql_where_previo = '';
+
+
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('uario.adm_grupo_id LEFT JOIN  adm_grupo AS adm_grupo  ON adm_grupo.id = adm_seccion.id',$resultado->consulta_base);
+        $this->assertStringContainsStringIgnoringCase('rupo ON adm_grupo.id = adm_usuario.adm',$resultado->consulta_base);
+
+
+        errores::$error = false;
+
+        $aplica_seguridad = false;
+        $columnas = array();
+        $columnas_en_bruto = false;
+        $extension_estructura = array();
+        $extension_estructura['adm_grupo']['key'] = 'id';
+        $extension_estructura['adm_grupo']['enlace'] = 'adm_seccion';
+        $extension_estructura['adm_grupo']['key_enlace'] = 'id';
+        $group_by = array();
+        $limit = 1;
+        $modelo = new adm_session($this->link);
+        $offset =1 ;
+        $order = array();
+        $renombres = array();
+        $renombres['x']['nombre_original'] = 'adm_accion';
+        $renombres['x']['enlace'] = 'adm_accion';
+        $renombres['x']['key'] = 'adm_accion.id';
+        $renombres['x']['key_enlace'] = 'id';
+        $sql_where_previo = '';
+
+
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+            $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('_seccion.id LEFT JOIN  adm_accion AS x  ON x.adm_accion.id = adm_accion.id',$resultado->consulta_base);
+
+
+
+        errores::$error = false;
     }
 
     public function test_update(): void

@@ -268,7 +268,7 @@ class columnas{
         $r_columnas = $this->ajusta_columnas_completas(columnas:  $columnas,columnas_en_bruto: false,
             columnas_sql:  $columnas_sql, modelo: $modelo, tabla: $data['nombre_original'], tabla_renombrada: $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $r_columnas);
         }
 
         return (string)$r_columnas;
@@ -603,7 +603,7 @@ class columnas{
             $r_columnas = $this->carga_columna_renombre(columnas: $columnas,columnas_sql: $columnas_sql,
                 data: $data,modelo: $modelo,tabla: $tabla);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $r_columnas);
             }
             $columnas = (string)$r_columnas;
         }

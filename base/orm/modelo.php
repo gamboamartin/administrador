@@ -1241,7 +1241,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Obtiene todos los registros de un modelo
      * @param bool $aplica_seguridad Si aplica seguridad se integra usuario_permitido_id el cual debe existir en los
      * registros
@@ -1249,8 +1249,8 @@ class modelo extends modelo_base {
      * @param bool $columnas_en_bruto Si columnas en bruto obtiene los campos tal cual estan en la bd
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Limit para integrar con sql
-     * @param bool $return_objects
-     * @param string $sql_extra
+     * @param bool $return_objects Retorna el resultado en objetos
+     * @param string $sql_extra Sql extra para integrar
      * @return array|stdClass conjunto de registros obtenidos
      * @example
      *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');

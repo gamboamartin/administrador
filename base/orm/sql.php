@@ -47,21 +47,30 @@ class sql{
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $columnas Columnas de a obtener en select
      * @param bool $columnas_en_bruto Obtiene las columnas tal como estan en base de datos
-     * @param array $extension_estructura
+     * @param array $extension_estructura Extension de estructura para joins
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param int $limit
-     * @param modelo $modelo
-     * @param int $offset
-     * @param array $order
-     * @param array $renombres
-     * @param string $sql_where_previo
+     * @param int $limit Limit en sql
+     * @param modelo $modelo Modelo en ejecucion
+     * @param int $offset Sql de integracion tipo offset
+     * @param array  $order con parametros para generar sentencia
+     * @param array $renombres Tablas renombradas
+     * @param string $sql_where_previo Sql previo a incrustar
      * @return array|stdClass
+     * @version 1.373.44
      */
     public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
                                     array $extension_estructura, array $group_by, int $limit, modelo $modelo,
                                     int $offset, array $order, array $renombres,
                                     string $sql_where_previo): array|stdClass
     {
+        if($limit<0){
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+        }
+        if($offset<0){
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+
+        }
+
         $params_base = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by: $group_by,
             limit:  $limit,modelo: $modelo, offset: $offset, order: $order,sql_where_previo: $sql_where_previo);
         if(errores::$error){
