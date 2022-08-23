@@ -197,11 +197,15 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * Funcion para generar un filtro con seccion y accion
+     * Funcion para maquetar filtro de "adm_seccion.descripcion" y "adm_accion.descripcion"
      * @version 1.48.14
      * @param string $seccion Seccion o modelo o tabla
      * @param string $accion accion de ejecucion
      * @return array
+     *
+     * @functions $valida = $adm_accion->validacion->seccion_accion( accion: $accion, seccion: $seccion);
+     * Valida que exista una accion comprobando "$seccion" y "accion". Mostrará un mensaje de error en caso
+     * de que ocurra uno
      */
     private function filtro_accion_seccion(string $accion, string $seccion, ):array{
 
