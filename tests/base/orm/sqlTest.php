@@ -8,6 +8,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_session;
+use stdClass;
 
 
 class sqlTest extends test {
@@ -51,6 +52,24 @@ class sqlTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SHOW TABLES',$resultado);
+    }
+
+    public function test_sql_select(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $consulta_base = 'a';
+        $params_base = new stdClass();
+        $params_base->seguridad = 'z';
+        $sql_extra = '';
+
+        $resultado = $sql->sql_select($consulta_base, $params_base, $sql_extra);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a  z    ',$resultado);
+        errores::$error = false;
     }
 
     public function test_sql_select_init(): void

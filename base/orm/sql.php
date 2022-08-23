@@ -25,6 +25,43 @@ class sql{
         return "DESCRIBE $tabla";
     }
 
+    private function inicializa_param(string $key, stdClass $params_base): array|stdClass
+    {
+        if(!isset($params_base->$key)){
+            $params_base = $this->init_param(key: $key,params_base:  $params_base);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar param', data: $params_base);
+            }
+        }
+        return $params_base;
+    }
+
+    private function init_param(string $key, stdClass $params_base): stdClass
+    {
+        $params_base->$key = '';
+        return $params_base;
+    }
+
+    private function init_params(stdClass $params_base): array|stdClass
+    {
+        $params_base_ = $params_base;
+
+        $keys_params[] = 'seguridad';
+        $keys_params[] = 'group_by';
+        $keys_params[] = 'order';
+        $keys_params[] = 'limit';
+        $keys_params[] = 'offset';
+
+        foreach ($keys_params as $key){
+            $params_base_ = $this->inicializa_param(key: $key, params_base: $params_base_);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar param', data: $params_base_);
+            }
+        }
+
+        return $params_base_;
+    }
+
     /**
      * Genera el sql para show tables
      * @version 1.160.31
@@ -35,10 +72,28 @@ class sql{
         return "SHOW TABLES";
     }
 
-    public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string
+    /**
+     * Integra el sql completo para la obtencion de un select
+     * @param string $consulta_base Sql base
+     * @param stdClass $params_base Parametros de integracion
+     * @param string $sql_extra Sql extra
+     * @return string|array
+     * @version 1.374.41
+     */
+    public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string|array
     {
-        $consulta = $consulta_base.' '.$sql_extra.' '.$params_base->seguridad.' ';
-        $consulta.= $params_base->group_by.' '.$params_base->order.' '.$params_base->limit.' '.$params_base->offset;
+        $consulta_base = trim($consulta_base);
+        if($consulta_base === ''){
+            return $this->error->error(mensaje: 'Error la consulta no puede venir vacia', data: $consulta_base);
+        }
+
+        $params_base_ = $this->init_params(params_base: $params_base);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar param', data: $params_base_);
+        }
+
+        $consulta = $consulta_base.' '.$sql_extra.' '.$params_base_->seguridad.' ';
+        $consulta.= $params_base_->group_by.' '.$params_base_->order.' '.$params_base_->limit.' '.$params_base_->offset;
         return $consulta;
     }
 
