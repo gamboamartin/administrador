@@ -255,6 +255,18 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_obten_registros(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $resultado = $modelo->obten_registros();
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_obten_registros_activos(): void
     {
         errores::$error = false;

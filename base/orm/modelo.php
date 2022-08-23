@@ -1256,6 +1256,7 @@ class modelo extends modelo_base {
      *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
      *
      * @uses  TODO EL SISTEMA
+     * @version 1.376.44
      */
     public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
                                     bool $columnas_en_bruto = false, array $group_by = array(), int $limit = 0,
