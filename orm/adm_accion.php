@@ -459,9 +459,17 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P INT
-     * @param string $seccion
-     * @param string $accion
+     * Funcion que genera un objeto de tipo $valida_permiso. Valida que los usuarios de un grupo puedan realizar acciones.
+     * En caso de error en validacion de grupo o al generar permisos, lanzará un error
+     *
+     * @param string $seccion seccion a verificar
+     * @param string $accion accion a verificar
      * @return array|bool
+     * 
+     * @functions $permiso_valido = $adm_accion->genera_permiso_valido(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
+     * Verifica y maqueta un "$permiso valido" en base a "$seccion" y "$accion" realizada por el usuario de un grupo. En caso de
+     * error lanzará un mensaje
+     *
      */
 	private function valida_permiso(string $seccion, string $accion): bool|array
     {
