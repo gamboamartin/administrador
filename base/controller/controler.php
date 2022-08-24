@@ -8,7 +8,6 @@ use config\views;
 use gamboamartin\errores\errores;
 
 use models\adm_accion;
-use models\adm_usuario;
 use PDO;
 use stdClass;
 use Throwable;
@@ -72,6 +71,8 @@ class controler{
     public string $include_lista_thead= '';
 
     public array $subtitulos_menu = array();
+
+    public int $number_active = -1;
 
 
 

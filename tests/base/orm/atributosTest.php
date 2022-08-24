@@ -22,18 +22,7 @@ class atributosTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_atributos()
-    {
-        errores::$error = false;
-        $attr = new atributos();
-        //$act = new liberator($act);
 
-        $link = $this->link;
-        $tabla = '';
-        $resultado = $attr->atributos($link, $tabla);
-       
-        errores::$error = false;
-    }
 
 
 }

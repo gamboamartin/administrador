@@ -31,7 +31,7 @@ class atributos{
      * @functions $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro). Obtiene los atributos
      * basado en los datos de "$filtro". En caso de error lanzará un mensaje.
      */
-    PUBLIC function atributos(PDO $link, string $tabla): array
+    private function atributos(PDO $link, string $tabla): array
     {
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $tabla);
