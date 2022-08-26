@@ -259,7 +259,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(!isset($registro['codigo'])){
 
             $codigo = $this->genera_codigo(keys_registro: $keys_registro,keys_row:  $keys_row, modelo: $modelo,
-                registro_id:$registro['nom_nomina_id'] , registro: $registro);
+                registro_id:$registro[$modelo->tabla.'_id'] , registro: $registro);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
