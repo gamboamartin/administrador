@@ -339,6 +339,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    protected function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
+                                     array $registro): array|string
+    {
+        $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener $nom_nomina', data: $row);
+        }
+
+        $codigo = $this->codigo_alta(keys_registro: $keys_registro,keys_row:  $keys_row,row:  $row,
+            registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
+        }
+        return $codigo;
+    }
 
 
     private function modelo_dependiente_val(string $modelo_dependiente): array|string
