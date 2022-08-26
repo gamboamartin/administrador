@@ -313,7 +313,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-    protected function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
+    private function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
     {
         $codigo = '';
         foreach ($keys_registro as $key){
@@ -341,7 +341,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * Genera codigo random
      * @return array|string
      */
-    protected function codigo_random(): array|string
+    private function codigo_random(): array|string
     {
         try {
             $codigo = random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
