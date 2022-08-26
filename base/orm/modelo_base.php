@@ -353,6 +353,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
+    protected function descripcion_alta(modelo $modelo, array $registro): array|string
+    {
+        $row = $modelo->registro($registro[$modelo->tabla.'_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
+        }
+
+        return $row[$modelo->tabla.'_descripcion'];
+    }
+
 
     private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
                                      array $registro): array|string
