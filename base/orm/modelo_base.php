@@ -217,6 +217,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $array_ini;
     }
 
+    protected function asigna_alias(array $registro): array
+    {
+        if(!isset($registro['alias'])){
+
+            $registro['alias'] = $registro['descripcion'];
+
+        }
+        return $registro;
+    }
+
     /**
      * PHPUNIT
      * Devuelve una cadena de ceros con una longitud definida entre la cantidad de digits ingresados y el limite de
@@ -265,6 +275,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
             }
             $registro['codigo'] = $codigo;
+        }
+        return $registro;
+    }
+
+
+
+
+
+    protected function asigna_codigo_bis(array $registro): array
+    {
+        if(!isset($registro['codigo_bis'])){
+
+            $registro['codigo_bis'] = $registro['codigo'];
         }
         return $registro;
     }
