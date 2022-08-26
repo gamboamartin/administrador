@@ -254,6 +254,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $ceros;
     }
 
+    protected function asigna_codigo(array $keys_registro, array $keys_row, modelo $modelo, array $registro): array
+    {
+        if(!isset($registro['codigo'])){
+
+            $codigo = $this->genera_codigo(keys_registro: $keys_registro,keys_row:  $keys_row, modelo: $modelo,
+                registro_id:$registro['nom_nomina_id'] , registro: $registro);
+
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
+            }
+            $registro['codigo'] = $codigo;
+        }
+        return $registro;
+    }
+
 
 
 
@@ -339,7 +354,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-    protected function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
+    private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
                                      array $registro): array|string
     {
         $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
