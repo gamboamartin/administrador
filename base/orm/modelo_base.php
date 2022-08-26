@@ -353,7 +353,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
-    protected function descripcion_alta(modelo $modelo, array $registro): array|string
+    private function descripcion_alta(modelo $modelo, array $registro): array|string
     {
         $row = $modelo->registro($registro[$modelo->tabla.'_id']);
         if(errores::$error){
@@ -378,6 +378,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
         }
         return $codigo;
+    }
+
+    protected function genera_descripcion(modelo $modelo, array $registro): array|string
+    {
+
+        $descripcion = $this->descripcion_alta(modelo: $modelo, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener descripcion', data: $descripcion);
+        }
+        return $descripcion;
     }
 
 
