@@ -297,6 +297,31 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
+
+    protected function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
+    {
+        $codigo = '';
+        foreach ($keys_row as $key){
+            $codigo .= $codigo = $registro[$key];
+            $codigo .= '-';
+        }
+
+        foreach ($keys_row as $key){
+            $codigo .= $row->$key;
+            $codigo .= '-';
+        }
+
+
+        $codigo_random = $this->codigo_random();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener codigo random', data: $codigo_random);
+        }
+
+        $codigo.=$codigo_random;
+
+        return $codigo;
+    }
+
     /**
      * Genera codigo random
      * @return array|string
