@@ -301,7 +301,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
     {
         $codigo = '';
-        foreach ($keys_row as $key){
+        foreach ($keys_registro as $key){
             $codigo .= $codigo = $registro[$key];
             $codigo .= '-';
         }
