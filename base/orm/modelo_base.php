@@ -297,7 +297,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-
+    /**
+     * Genera codigo random
+     * @return array|string
+     */
+    protected function codigo_random(): array|string
+    {
+        try {
+            $codigo = random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+            $codigo .= random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al generar codigo random', data: $e);
+        }
+        return $codigo;
+    }
 
 
 
