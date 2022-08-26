@@ -270,6 +270,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    protected function asigna_descripcion(modelo $modelo, array $registro): array
+    {
+        if(!isset($registro['descripcion'])){
+
+            $descripcion = $this->genera_descripcion( modelo:$modelo, registro: $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener descripcion', data: $descripcion);
+            }
+
+            $registro['descripcion'] = $descripcion;
+
+        }
+        return $registro;
+    }
 
 
 
@@ -380,7 +394,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
-    protected function genera_descripcion(modelo $modelo, array $registro): array|string
+    private function genera_descripcion(modelo $modelo, array $registro): array|string
     {
 
         $descripcion = $this->descripcion_alta(modelo: $modelo, registro: $registro);
