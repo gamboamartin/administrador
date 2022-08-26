@@ -285,6 +285,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $registro;
     }
 
+    protected function asigna_descripcion_select(array $registro): array
+    {
+        if(!isset($registro['descripcion_select'])){
+
+            $registro['descripcion_select'] = $registro['descripcion'];
+        }
+        return $registro;
+    }
+
 
 
     /**
