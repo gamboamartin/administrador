@@ -747,6 +747,23 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_key_vacio(): void
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb->usuario_id = 2;
+        $mb->campos_sql = 1;
+        $mb = new liberator($mb);
+        $key = 'a';
+        $resultado = $mb->valida_key_vacio($key);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
 
 
 

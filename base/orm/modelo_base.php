@@ -263,7 +263,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_registro Key para asignacion de datos base registro
      * @param array $keys_row
      * @param modelo $modelo
      * @param array $registro
@@ -374,7 +374,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * Genera un codigo automatico
-     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_registro Key para asignacion de datos base registro
      * @param array $keys_row Keys a implementar para codigo
      * @param stdClass $row Registro previo
      * @param array $registro Registro de alta
@@ -400,6 +400,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
+    /**
+     * @param array $keys_registro Key para asignacion de datos base registro
+     * @param array $keys_row
+     * @param array $registro
+     * @param stdClass $row
+     * @return array|string
+     */
     private function codigo_aut_init(array $keys_registro, array $keys_row, array $registro, stdClass $row): array|string
     {
         $codigo = '';
@@ -416,6 +423,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
+    /**
+     * @param string $codigo Codigo precargado
+     * @param array $keys
+     * @param array|stdClass $registro
+     * @return array|string
+     */
     private function codigo_base_aut(string $codigo, array $keys, array|stdClass $registro): array|string
     {
         $codigo_ = $codigo;
@@ -430,6 +443,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo_;
     }
 
+    /**
+     * @param string $codigo
+     * @param mixed $key Key para validacion
+     * @param array $keys
+     * @param array|stdClass $registro
+     * @return array|string
+     */
     private function codigo_concat_aut(string $codigo, mixed $key, array $keys, array|stdClass $registro): array|string
     {
         $valida = $this->valida_codigo_aut(key: $key,keys_registro:  $keys,registro:  $registro);
@@ -1036,7 +1056,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_registro Key para asignacion de datos base registro
      * @param array $keys_row
      * @param modelo $modelo
      * @param int $registro_id
@@ -1900,6 +1920,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $registros;
     }
 
+    /**
+     * @param mixed $key Key para validacion
+     * @param array $keys_registro
+     * @param array|stdClass $registro
+     * @return bool|array
+     */
     private function valida_codigo_aut(mixed $key, array $keys_registro, array|stdClass $registro): bool|array
     {
         $valida = $this->valida_key_vacio(key: $key);
@@ -1959,6 +1985,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return true;
     }
 
+    /**
+     * Valida si en txt esta vacio
+     * @param mixed $key Texto a validar
+     * @return bool|array
+     * @version 1.393.45
+     */
     private function valida_key_vacio(mixed $key): bool|array
     {
         $key = trim($key);
