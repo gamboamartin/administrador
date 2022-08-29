@@ -333,6 +333,22 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_genera_codigo(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        //$mb = new liberator($mb);
+
+        $keys_registro = array();
+        $keys_row = array();
+        $modelo = new adm_accion($this->link);
+        $registro_id = -1;
+        $registro = array();
+        $resultado = $mb->genera_codigo($keys_registro, $keys_row, $modelo, $registro_id, $registro);
+        print_r($resultado);exit;
+    }
+
     public function test_genera_consulta_base(){
 
         errores::$error = false;

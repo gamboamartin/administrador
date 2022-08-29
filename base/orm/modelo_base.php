@@ -264,9 +264,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row
-     * @param modelo $modelo
-     * @param array $registro
+     * @param array $keys_row Keys para asignacion de datos en base row
+     * @param modelo $modelo Modelo para obtencion de datos precargados
+     * @param array $registro Registro para integracion de codigo
      * @return array
      */
     protected function asigna_codigo(array $keys_registro, array $keys_row, modelo $modelo, array $registro): array
@@ -375,7 +375,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * Genera un codigo automatico
      * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row Keys a implementar para codigo
+     * @param array $keys_row Keys para asignacion de datos en base row
      * @param stdClass $row Registro previo
      * @param array $registro Registro de alta
      * @return array|string
@@ -402,7 +402,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row
+     * @param array $keys_row Keys para asignacion de datos en base row
      * @param array $registro
      * @param stdClass $row
      * @return array|string
@@ -425,7 +425,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param string $codigo Codigo precargado
-     * @param array $keys
+     * @param array $keys Key de integracion de registro
      * @param array|stdClass $registro
      * @return array|string
      */
@@ -444,7 +444,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * @param string $codigo
+     * @param string $codigo Codigo precargado
      * @param mixed $key Key para validacion
      * @param array $keys
      * @param array|stdClass $registro
@@ -1056,19 +1056,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Genera un codigo de forma automatica
      * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row
-     * @param modelo $modelo
-     * @param int $registro_id
-     * @param array $registro
+     * @param array $keys_row Keys para asignacion de datos en base row
+     * @param modelo $modelo Modelo para obtencion de datos precargados
+     * @param int $registro_id Identificador
+     * @param array $registro Registro para integracion de codigo
      * @return array|string
+     * @version 1.394.45
      */
-    private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
+    PUBLIC function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
                                      array $registro): array|string
     {
+        if($registro_id <=0){
+            return  $this->error->error(mensaje: 'Error $registro_id debe ser mayor a 0', data: $registro_id);
+        }
+
         $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener $nom_nomina', data: $row);
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
         }
 
         $codigo = $this->codigo_alta(keys_registro: $keys_registro,keys_row:  $keys_row,row:  $row,
@@ -1922,8 +1928,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param mixed $key Key para validacion
-     * @param array $keys_registro
-     * @param array|stdClass $registro
+     * @param array $keys_registro conjunto de key para integrar en base registro
+     * @param array|stdClass $registro Registro de alta
      * @return bool|array
      */
     private function valida_codigo_aut(mixed $key, array $keys_registro, array|stdClass $registro): bool|array
