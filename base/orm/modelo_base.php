@@ -264,6 +264,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $ceros;
     }
 
+    /**
+     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_row
+     * @param modelo $modelo
+     * @param array $registro
+     * @return array
+     */
     protected function asigna_codigo(array $keys_registro, array $keys_row, modelo $modelo, array $registro): array
     {
         if(!isset($registro['codigo'])){
@@ -358,7 +365,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-
+    /**
+     * Genera un codigo automatico
+     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_row Keys a implementar para codigo
+     * @param stdClass $row Registro previo
+     * @param array $registro Registro de alta
+     * @return array|string
+     */
     private function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
     {
         $codigo = '';
@@ -371,7 +385,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $codigo .= $row->$key;
             $codigo .= '-';
         }
-
 
         $codigo_random = $this->codigo_random();
         if(errores::$error){
@@ -386,6 +399,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * Genera codigo random
      * @return array|string
+     * @version 1.391.45
      */
     private function codigo_random(): array|string
     {
@@ -409,7 +423,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row[$modelo->tabla.'_descripcion'];
     }
 
-
+    /**
+     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_row
+     * @param modelo $modelo
+     * @param int $registro_id
+     * @param array $registro
+     * @return array|string
+     */
     private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
                                      array $registro): array|string
     {

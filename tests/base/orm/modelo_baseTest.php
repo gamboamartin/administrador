@@ -120,6 +120,24 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_codigo_random(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb->usuario_id = 2;
+        $mb->campos_sql = 1;
+        $mb = new liberator($mb);
+
+
+
+        $resultado = $mb->codigo_random();
+        $this->assertIsNumeric($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 
