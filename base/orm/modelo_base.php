@@ -159,8 +159,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-
-
     /**
      * PHPUNIT
      * @return array
@@ -286,10 +284,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $registro;
     }
 
-
-
-
-
     protected function asigna_codigo_bis(array $registro): array
     {
         if(!isset($registro['codigo_bis'])){
@@ -298,7 +292,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return $registro;
     }
-
 
     protected function asigna_descripcion(modelo $modelo, array $registro): array
     {
@@ -323,8 +316,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return $registro;
     }
-
-
 
     /**
      *
@@ -366,24 +357,37 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Genera los campos para un update
+     * @return array|string
+     */
+    private function campos(): array|string
+    {
+        $campos = '';
+        foreach ($this->registro_upd as $campo => $value) {
+            $campos = $this->maqueta_rows_upd(campo: $campo, campos:  $campos,value:  $value);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar campos', data: $campos);
+            }
+        }
+        return $campos;
+    }
+
+    /**
      * Genera un codigo automatico
      * @param array $keys_registro Keys a implementar para codigo
      * @param array $keys_row Keys a implementar para codigo
      * @param stdClass $row Registro previo
      * @param array $registro Registro de alta
      * @return array|string
+     * @version 1.392.45
      */
     private function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
     {
-        $codigo = '';
-        foreach ($keys_registro as $key){
-            $codigo .= $codigo = $registro[$key];
-            $codigo .= '-';
-        }
 
-        foreach ($keys_row as $key){
-            $codigo .= $row->$key;
-            $codigo .= '-';
+        $codigo = $this->codigo_aut_init(keys_registro: $keys_registro,keys_row:  $keys_row,
+            registro: $registro, row: $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar codigo', data: $codigo);
         }
 
         $codigo_random = $this->codigo_random();
@@ -393,6 +397,50 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $codigo.=$codigo_random;
 
+        return $codigo;
+    }
+
+    private function codigo_aut_init(array $keys_registro, array $keys_row, array $registro, stdClass $row): array|string
+    {
+        $codigo = '';
+
+        $codigo = $this->codigo_base_aut(codigo:$codigo,keys:  $keys_registro, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        }
+
+        $codigo = $this->codigo_base_aut(codigo:$codigo,keys:  $keys_row, registro: $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        }
+        return $codigo;
+    }
+
+    private function codigo_base_aut(string $codigo, array $keys, array|stdClass $registro): array|string
+    {
+        $codigo_ = $codigo;
+        foreach ($keys as $key){
+
+            $codigo_ = $this->codigo_concat_aut(codigo:$codigo_,key:  $key,keys:  $keys, registro: $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+            }
+
+        }
+        return $codigo_;
+    }
+
+    private function codigo_concat_aut(string $codigo, mixed $key, array $keys, array|stdClass $registro): array|string
+    {
+        $valida = $this->valida_codigo_aut(key: $key,keys_registro:  $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
+        $codigo = $this->concat_codigo_aut(codigo:$codigo, key: $key,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        }
         return $codigo;
     }
 
@@ -413,232 +461,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
-    private function descripcion_alta(modelo $modelo, array $registro): array|string
+    private function concat_codigo_aut(string $codigo, string $key, array|stdClass $registro): string
     {
-        $row = $modelo->registro($registro[$modelo->tabla.'_id']);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
+        if(is_object($registro)){
+            $registro = (array)$registro;
         }
-
-        return $row[$modelo->tabla.'_descripcion'];
-    }
-
-    /**
-     * @param array $keys_registro Keys a implementar para codigo
-     * @param array $keys_row
-     * @param modelo $modelo
-     * @param int $registro_id
-     * @param array $registro
-     * @return array|string
-     */
-    private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
-                                     array $registro): array|string
-    {
-        $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener $nom_nomina', data: $row);
-        }
-
-        $codigo = $this->codigo_alta(keys_registro: $keys_registro,keys_row:  $keys_row,row:  $row,
-            registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
-        }
+        $codigo .= $registro[$key];
+        $codigo .= '-';
         return $codigo;
-    }
-
-    private function genera_descripcion(modelo $modelo, array $registro): array|string
-    {
-
-        $descripcion = $this->descripcion_alta(modelo: $modelo, registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener descripcion', data: $descripcion);
-        }
-        return $descripcion;
-    }
-
-
-    private function modelo_dependiente_val(string $modelo_dependiente): array|string
-    {
-        $modelo_dependiente_ajustado = $this->ajusta_modelo_comp($modelo_dependiente);
-        if(errores::$error ){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
-        }
-
-        $valida = $this->valida_data_desactiva($modelo_dependiente_ajustado);
-        if(errores::$error){
-            return $this->error->error('Error al validar modelos',$valida);
-        }
-
-        return $modelo_dependiente_ajustado;
-    }
-
-    /**
-     *
-     * Devuelve el registro ya validado en la posicion de codigo
-     *
-     * @param array $registros registro a revisar
-     * @param string $key cadena de texto que indica la posicion del registro
-     * @example
-     *      $valida_base = $this->valida_base_ultimo_codigo($registros,$key);
-     *
-     * @return array
-     * @throws errores $registros['registros'] debe existir
-     * @throws errores $registros['registros'][0] debe existir
-     * @throws errores $key no puede venir vacio
-     *
-     * @uses modelo_basico->genera_ultimo_codigo_base_numero()
-     * @uses modelo_basico->obten_ultimo_codigo_insert()
-     *
-     */
-    private function valida_base_ultimo_codigo(array $registros, string $key):array{
-        if(!isset($registros['registros'])){
-            return $this->error->error('Error no existe registros en registro',$registros);
-        }
-        if(!isset($registros['registros'][0])){
-            return $this->error->error('Error no existe registros[registro][0]',$registros);
-        }
-        if($key === ''){
-            return $this->error->error('Error no existe key no puede venir vacio',$key);
-        }
-        return $registros;
-    }
-
-    /**
-     * PHPUNIT
-     * @param array $registros
-     * @param string $key
-     * @return array|int
-     */
-    private function obten_ultimo_codigo_insert(array $registros, string $key): array|int
-    {
-
-        $valida_base = $this->valida_base_ultimo_codigo($registros,$key);
-        if(errores::$error){
-            return $this->error->error('Error al validar',$valida_base);
-        }
-
-        $registro  = $registros['registros'][0];
-
-        if(!isset($registro[$key])){
-            return $this->error->error('Error no existe $registro['.$key.']',$registro);
-        }
-
-
-        $ultimo_codigo = (int)$registro[$key];
-
-
-        $ultimo_codigo_upd = $this->genera_ultimo_codigo_int($ultimo_codigo);
-        if(errores::$error){
-            return $this->error->error('Error al generar ultimo codigo',$ultimo_codigo_upd);
-        }
-
-        return $ultimo_codigo_upd;
-    }
-
-    /**
-     * PHPUNIT
-     * @param string $pattern
-     * @return array|string
-     */
-    public function pattern_html(string $pattern): array|string
-    {
-        if($pattern===''){
-            return $this->error->error('Error el pattern no puede venir vacio',$this->patterns);
-        }
-
-        $buscar = array('/^','$/');
-
-        return str_replace($buscar,'',$pattern);
-    }
-
-    /**
-     *
-     * Devuelve una variable de tipo booleana que indica si el usuario existe o no
-     * @version 1.145.31
-     * @param array $campos_encriptados Campos a validar desencripctacion encriptacion
-     * @return bool|array
-     * @example
-     *      $existe_user = $this->usuario_existente();
-     *
-     * @uses modelo_basico->agrega_usuario_session()
-     * @internal modelo_basico->$this->ejecuta_consulta();
-     */
-    private function usuario_existente(array $campos_encriptados = array()): bool|array
-    {
-        if($this->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido o no cargado deberia exitir 
-            $modelo->usuario_id mayor  a 0',data: $this->usuario_id);
-        }
-
-        $consulta = /** @lang MYSQL */
-            'SELECT count(*) AS existe FROM adm_usuario WHERE adm_usuario.id = '.$this->usuario_id;
-        $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $r_usuario_existente);
-        }
-
-        $usuario_existente = $r_usuario_existente->registros[0];
-
-        $update_valido = false;
-        if((int)$usuario_existente['existe'] === 1){
-            $update_valido = true;
-        }
-
-        return $update_valido;
-
-    }
-
-    private function valida_data_desactiva(string $modelo_dependiente): bool|array
-    {
-        $valida = $this->valida_names_model($modelo_dependiente);
-        if(errores::$error){
-            return $this->error->error('Error al validar modelos',$valida);
-        }
-
-        if($this->registro_id<=0){
-            return $this->error->error('Error $this->registro_id debe ser mayor a 0',$this->registro_id);
-        }
-        return true;
-    }
-
-    private function valida_names_model(string $modelo_dependiente): bool|array
-    {
-        $valida = $this->validacion->valida_data_modelo($modelo_dependiente);
-        if(errores::$error){
-            return  $this->error->error("Error al validar modelo",$valida);
-        }
-
-        $valida = $this->validacion->valida_name_clase($this->tabla);
-        if(errores::$error){
-            return $this->error->error('Error al validar tabla',$valida);
-        }
-
-        return true;
-    }
-
-
-
-    /**
-     * ALFABETICO
-     */
-
-
-
-
-
-    private function model_dependiente(string $modelo_dependiente): modelo_base|array
-    {
-        $modelo_dependiente_ajustado = $this->modelo_dependiente_val($modelo_dependiente);
-        if(errores::$error){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
-        }
-        $modelo = $this->genera_modelo($modelo_dependiente_ajustado);
-        if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $modelo);
-        }
-        return $modelo;
     }
 
     /**
@@ -727,6 +557,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
+    private function descripcion_alta(modelo $modelo, array $registro): array|string
+    {
+        $row = $modelo->registro($registro[$modelo->tabla.'_id']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
+        }
+
+        return $row[$modelo->tabla.'_descripcion'];
+    }
+
     /**
      *
      * Funcion que ejecuta un query de tipo select
@@ -787,7 +627,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-
     /**
      *
      * Devuelve un objeto que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de
@@ -836,40 +675,37 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-
     /**
      * PHPUNIT
-     * @param string $fecha_inicial
-     * @param string $fecha_final
-     * @param string $key
+     * Devuelve un array que contiene un rango de fechas con fecha inicial y final
+     *
+     * @example
+     *      $fechas_in = $this->fechas_in();
+     *      //return $resultado = array('fecha_inicial'=>'2020-07-01','fecha_final'=>'2020-07-05');
      * @return array
+     * @throws errores si no existen los metodos $_GET y $_POST en su posicion fecha_inicial
+     * @throws errores si no existen los metodos $_GET y $_POST en su posicion fecha_final
+     * @uses filtro_rango_fechas()
+     * @uses obten_datos_con_filtro_especial_rpt()
      */
-    protected function genera_filtro_base_fecha(string $fecha_inicial, string $fecha_final, string $key):array{
-        if($fecha_inicial === ''){
-            return $this->error->error('Error fecha inicial no puede venir vacia', $fecha_inicial);
-        }
-        if($fecha_final === ''){
-            return $this->error->error( 'Error fecha final no puede venir vacia', $fecha_final);
-        }
-        $valida = $this->validacion->valida_fecha($fecha_inicial);
+    protected function fechas_in():array{
+
+        $valida = $this->valida_fechas_in();
         if(errores::$error) {
-            return $this->error->error( 'Error al validar fecha inicial', $valida);
+            return $this->error->error('Error al validar fechas', $valida);
         }
-        $valida = $this->validacion->valida_fecha($fecha_final);
+
+        $fechas = $this->get_fechas_in();
         if(errores::$error) {
-            return $this->error->error( 'Error al validar fecha final', $valida);
+            return $this->error->error('Error al obtener fechas', $fechas);
         }
 
-        if($fecha_inicial>$fecha_final){
-            return $this->error->error( 'Error la fecha inicial no puede ser mayor a la final',
-                array($fecha_inicial,$fecha_final));
+        $valida = $this->verifica_fechas_in($fechas);
+        if(errores::$error) {
+            return $this->error->error('Error al validar fecha inicial', $valida);
         }
 
-        $filtro[$key]['valor1'] = $fecha_inicial;
-        $filtro[$key]['valor2'] = $fecha_final;
-        $filtro[$key]['es_fecha'] = true;
-
-        return $filtro;
+        return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
     /**
@@ -894,51 +730,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $filtro_especial_sql_env;
-    }
-
-
-
-
-
-    /**
-     * PRUEBAS FINALIZADAS
-     * @param string $fecha
-     * @param array $filtro
-     * @return array
-     */
-    public function filtro_fecha_rango(string $fecha, array $filtro): array
-    {
-        $valida = $this->validacion->valida_fecha($fecha);
-        if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-
-        $filtro_ini = $this->filtro_fecha_inicial($fecha);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro fecha', $filtro_ini);
-        }
-
-        $filtro_fin = $this->filtro_fecha_final($fecha);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro fecha', $filtro_fin);
-        }
-        $filtro[] = $filtro_ini;
-        $filtro[] = $filtro_fin;
-
-        return $filtro;
-
     }
 
     /**
@@ -1005,6 +796,47 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * PRUEBAS FINALIZADAS
+     * @param string $fecha
+     * @param array $filtro
+     * @return array
+     */
+    public function filtro_fecha_rango(string $fecha, array $filtro): array
+    {
+        $valida = $this->validacion->valida_fecha($fecha);
+        if(errores::$error){
+            return $this->error->error("Error fecha", $valida);
+        }
+        if($this->tabla === ''){
+            return $this->error->error("Error tabla vacia", $this->tabla);
+        }
+        $namespace = 'models\\';
+        $this->tabla = str_replace($namespace,'',$this->tabla);
+        $clase = $namespace.$this->tabla;
+        if($this->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+
+        $filtro_ini = $this->filtro_fecha_inicial($fecha);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro fecha', $filtro_ini);
+        }
+
+        $filtro_fin = $this->filtro_fecha_final($fecha);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro fecha', $filtro_fin);
+        }
+        $filtro[] = $filtro_ini;
+        $filtro[] = $filtro_fin;
+
+        return $filtro;
+
+    }
+
+    /**
      * Asigna el filtro necesario para traer elementos dependiendes de una consulta
      * @version 1.0.0
      * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros
@@ -1025,6 +857,36 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $row[$campo_row] = '';
         }
         $filtro[$campo_filtro] = (string)$row[$campo_row];
+
+        return $filtro;
+    }
+
+    public function filtro_monto_fin(string $monto, string $campo): array
+    {
+        if((float)$monto<0.0){
+            return $this->error->error("Error el monto es menor a 0", $monto);
+        }
+        if($this->tabla === ''){
+            return $this->error->error("Error tabla vacia", $this->tabla);
+        }
+        $namespace = 'models\\';
+        $this->tabla = str_replace($namespace,'',$this->tabla);
+        $clase = $namespace.$this->tabla;
+        if($this->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error("Error campo vacio", $campo);
+        }
+
+        $filtro["$monto"]['valor'] = $this->tabla.'.'.$campo;
+        $filtro["$monto"]['operador'] = '<=';
+        $filtro["$monto"]['comparacion'] = 'AND';
+        $filtro["$monto"]['valor_es_campo'] = true;
 
         return $filtro;
     }
@@ -1059,36 +921,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $filtro["$monto"]['valor'] = $this->tabla.'.'.$campo;
         $filtro["$monto"]['operador'] = '>=';
-        $filtro["$monto"]['comparacion'] = 'AND';
-        $filtro["$monto"]['valor_es_campo'] = true;
-
-        return $filtro;
-    }
-
-    public function filtro_monto_fin(string $monto, string $campo): array
-    {
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
-        }
-
-        $filtro["$monto"]['valor'] = $this->tabla.'.'.$campo;
-        $filtro["$monto"]['operador'] = '<=';
         $filtro["$monto"]['comparacion'] = 'AND';
         $filtro["$monto"]['valor_es_campo'] = true;
 
@@ -1144,102 +976,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * PHPUNIT
-     * Devuelve un array que contiene un rango de fechas con fecha inicial y final
-     *
-     * @example
-     *      $fechas_in = $this->fechas_in();
-     *      //return $resultado = array('fecha_inicial'=>'2020-07-01','fecha_final'=>'2020-07-05');
-     * @return array
-     * @throws errores si no existen los metodos $_GET y $_POST en su posicion fecha_inicial
-     * @throws errores si no existen los metodos $_GET y $_POST en su posicion fecha_final
-     * @uses filtro_rango_fechas()
-     * @uses obten_datos_con_filtro_especial_rpt()
-     */
-    protected function fechas_in():array{
-
-        $valida = $this->valida_fechas_in();
-        if(errores::$error) {
-            return $this->error->error('Error al validar fechas', $valida);
-        }
-
-        $fechas = $this->get_fechas_in();
-        if(errores::$error) {
-            return $this->error->error('Error al obtener fechas', $fechas);
-        }
-
-        $valida = $this->verifica_fechas_in($fechas);
-        if(errores::$error) {
-            return $this->error->error('Error al validar fecha inicial', $valida);
-        }
-
-        return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
-    }
-
-    /**
-     * PHPUNIT
-     * @param stdClass $fechas
-     * @return bool|array
-     */
-    private function verifica_fechas_in(stdClass $fechas): bool|array
-    {
-        if(!isset($fechas->fecha_inicial)){
-            return $this->error->error('Error fecha inicial no existe', $fechas);
-        }
-        if(!isset($fechas->fecha_final)){
-            return $this->error->error('Error fecha final no existe', $fechas);
-        }
-        if($fechas->fecha_inicial === ''){
-            return $this->error->error('Error fecha inicial no puede venir vacia', $fechas);
-        }
-        if($fechas->fecha_final === ''){
-            return $this->error->error('Error fecha final no puede venir vacia', $fechas);
-        }
-        $valida = $this->validacion->valida_fecha($fechas->fecha_inicial);
-        if(errores::$error) {
-            return $this->error->error('Error al validar fecha inicial', $valida);
-        }
-        $valida = $this->validacion->valida_fecha($fechas->fecha_final);
-        if(errores::$error) {
-            return $this->error->error('Error al validar fecha final', $valida);
-        }
-
-        if($fechas->fecha_inicial>$fechas->fecha_final){
-            return $this->error->error('Error la fecha inicial no puede ser mayor a la final', $fechas);
-        }
-        return true;
-    }
-
-    /**
-     * PHPUNIT
-     * @return stdClass
-     */
-    #[Pure] private function get_fechas_in(): stdClass
-    {
-        $fecha_inicial = $_GET['fecha_inicial'] ?? $_POST['fecha_inicial'];
-        $fecha_final = $_GET['fecha_final'] ?? $_POST['fecha_final'];
-        $fechas = new stdClass();
-        $fechas->fecha_inicial = $fecha_inicial;
-        $fechas->fecha_final = $fecha_final;
-        return $fechas;
-    }
-
-    /**
-     * PHPUNIT
-     * @return bool|array
-     */
-    private function valida_fechas_in(): bool|array
-    {
-        if(!isset($_GET['fecha_inicial']) && !isset($_POST['fecha_inicial'])){
-            return $this->error->error('Error debe existir fecha_inicial por POST o GET',array());
-        }
-        if(!isset($_GET['fecha_final']) && !isset($_POST['fecha_final'])){
-            return $this->error->error('Error debe existir fecha_final por POST o GET', array());
-        }
-        return true;
-    }
-
-    /**
      *
      * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
      * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
@@ -1262,9 +998,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return $filtro;
     }
-
-
-
 
     /**
      *
@@ -1301,6 +1034,90 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return $campos;
     }
+
+    /**
+     * @param array $keys_registro Keys a implementar para codigo
+     * @param array $keys_row
+     * @param modelo $modelo
+     * @param int $registro_id
+     * @param array $registro
+     * @return array|string
+     */
+    private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
+                                     array $registro): array|string
+    {
+        $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener $nom_nomina', data: $row);
+        }
+
+        $codigo = $this->codigo_alta(keys_registro: $keys_registro,keys_row:  $keys_row,row:  $row,
+            registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
+        }
+        return $codigo;
+    }
+
+    private function genera_descripcion(modelo $modelo, array $registro): array|string
+    {
+
+        $descripcion = $this->descripcion_alta(modelo: $modelo, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener descripcion', data: $descripcion);
+        }
+        return $descripcion;
+    }
+
+    /**
+     * PHPUNIT
+     * @param string $fecha_inicial
+     * @param string $fecha_final
+     * @param string $key
+     * @return array
+     */
+    protected function genera_filtro_base_fecha(string $fecha_inicial, string $fecha_final, string $key):array{
+        if($fecha_inicial === ''){
+            return $this->error->error('Error fecha inicial no puede venir vacia', $fecha_inicial);
+        }
+        if($fecha_final === ''){
+            return $this->error->error( 'Error fecha final no puede venir vacia', $fecha_final);
+        }
+        $valida = $this->validacion->valida_fecha($fecha_inicial);
+        if(errores::$error) {
+            return $this->error->error( 'Error al validar fecha inicial', $valida);
+        }
+        $valida = $this->validacion->valida_fecha($fecha_final);
+        if(errores::$error) {
+            return $this->error->error( 'Error al validar fecha final', $valida);
+        }
+
+        if($fecha_inicial>$fecha_final){
+            return $this->error->error( 'Error la fecha inicial no puede ser mayor a la final',
+                array($fecha_inicial,$fecha_final));
+        }
+
+        $filtro[$key]['valor1'] = $fecha_inicial;
+        $filtro[$key]['valor2'] = $fecha_final;
+        $filtro[$key]['es_fecha'] = true;
+
+        return $filtro;
+    }
+
+    /**
+     * PHPUNIT
+     * @return stdClass
+     */
+    #[Pure] private function get_fechas_in(): stdClass
+    {
+        $fecha_inicial = $_GET['fecha_inicial'] ?? $_POST['fecha_inicial'];
+        $fecha_final = $_GET['fecha_final'] ?? $_POST['fecha_final'];
+        $fechas = new stdClass();
+        $fechas->fecha_inicial = $fecha_inicial;
+        $fechas->fecha_final = $fecha_final;
+        return $fechas;
+    }
+
 
     /**
      * PRUEBAS FINALIZADAS
@@ -1387,9 +1204,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return /** @lang MYSQL */ "SELECT $columnas_sql $sub_querys_sql FROM $tablas";
     }
-
-
-
 
 
     /**
@@ -1556,9 +1370,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-
-
     /**
      *
      * @param array $registros
@@ -1640,10 +1451,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $new_array;
     }
 
-
-
-
-
     /**
      * PHPUNIT
      * Devuelve un arreglo con la sentencia de sql que indica si se aplicaran una o dos condiciones
@@ -1661,51 +1468,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $filtro_especial_sql;
-    }
-
-
-
-    /**
-     * P INT P ORDER
-     * Devuelve la forma de los campos a modifica enb forma de sql
-     * @return array|string con sql con maquetacion de una modificacion en sql campo = 'valor'
-     * @throws errores $this->registro_upd vacio
-     * @throws errores $this->registro_upd[campo] campo es un numero
-     * @throws errores $this->registro_upd[campo] campo es vacio
-     * @example
-     *       $campos = $this->obten_campos_update();
-     *
-     * @uses modelo_basico
-     * @uses modelo
-     */
-    private function obten_campos_update(): array|string
-    {
-
-        if(count($this->registro_upd) === 0){
-            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
-        }
-        $campos = $this->campos();
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar campos',data:  $campos);
-        }
-
-        return $campos;
-    }
-
-    /**
-     * Genera los campos para un update
-     * @return array|string
-     */
-    private function campos(): array|string
-    {
-        $campos = '';
-        foreach ($this->registro_upd as $campo => $value) {
-            $campos = $this->maqueta_rows_upd(campo: $campo, campos:  $campos,value:  $value);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar campos', data: $campos);
-            }
-        }
-        return $campos;
     }
 
     /**
@@ -1736,92 +1498,60 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $campos;
     }
 
-    /**
-     * P ORDER P INT
-     * @param string $campos Conjunto de campos a validar
-     * @param stdClass $params
-     * @return string|array
-     */
-    private function rows_update(string $campos, stdClass $params): string|array
+    private function model_dependiente(string $modelo_dependiente): modelo_base|array
     {
-        if(!isset($params->campo)){
-            return $this->error->error('Error no existe params->campo', $params);
+        $modelo_dependiente_ajustado = $this->modelo_dependiente_val($modelo_dependiente);
+        if(errores::$error){
+            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
         }
-        if(!isset($params->value)){
-            return $this->error->error('Error no existe params->value', $params);
+        $modelo = $this->genera_modelo($modelo_dependiente_ajustado);
+        if (errores::$error) {
+            return $this->error->error('Error al generar modelo', $modelo);
         }
-        $campos .= $campos === "" ? "$params->campo = $params->value" : ", $params->campo = $params->value";
+        return $modelo;
+    }
+
+    private function modelo_dependiente_val(string $modelo_dependiente): array|string
+    {
+        $modelo_dependiente_ajustado = $this->ajusta_modelo_comp($modelo_dependiente);
+        if(errores::$error ){
+            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
+        }
+
+        $valida = $this->valida_data_desactiva($modelo_dependiente_ajustado);
+        if(errores::$error){
+            return $this->error->error('Error al validar modelos',$valida);
+        }
+
+        return $modelo_dependiente_ajustado;
+    }
+
+    /**
+     * P INT P ORDER
+     * Devuelve la forma de los campos a modifica enb forma de sql
+     * @return array|string con sql con maquetacion de una modificacion en sql campo = 'valor'
+     * @throws errores $this->registro_upd vacio
+     * @throws errores $this->registro_upd[campo] campo es un numero
+     * @throws errores $this->registro_upd[campo] campo es vacio
+     * @example
+     *       $campos = $this->obten_campos_update();
+     *
+     * @uses modelo_basico
+     * @uses modelo
+     */
+    private function obten_campos_update(): array|string
+    {
+
+        if(count($this->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $this->registro_upd);
+        }
+        $campos = $this->campos();
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar campos',data:  $campos);
+        }
+
         return $campos;
     }
-
-    /**
-     * Ajusta los parametros para update
-     * @param string $campo Campo a reasignar valor
-     * @param string|float|int|null $value Valor a ajustar
-     * @return array|stdClass
-     */
-    private function params_data_update(string $campo, string|float|int|null $value): array|stdClass
-    {
-        $value_ = $value;
-        $value_ = (new monedas())->value_moneda(campo: $campo, modelo: $this, value: $value_);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
-        }
-
-        $data = $this->slaches_value(campo: $campo,value:  $value_);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
-        }
-
-        $data->value = $this->value_null(value: $data->value);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al asignar value', data:$data);
-        }
-        return $data;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param string|int|float|null $value
-     * @return string
-     */
-    private function value_null(string|int|float|null $value): string
-    {
-        if ($value == null) {
-            $value = 'NULL';
-        }
-        else {
-            $value = "'" . $value . "'";
-        }
-        return $value;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param string $campo
-     * @param string|int|float|null $value
-     * @return stdClass|array
-     */
-    private function slaches_value(string $campo, string|int|float|null $value): stdClass|array
-    {
-
-        if(is_null($value)){
-            $value = "";
-        }
-        if($campo === ''){
-            return $this->error->error('Error el campo no puede venir vacio', $campo);
-        }
-        $campo = addslashes($campo);
-        $value = addslashes($value);
-
-        $data = new stdClass();
-        $data->campo = $campo;
-        $data->value = $value;
-
-        return $data;
-    }
-
-
 
     /**
      *
@@ -1904,47 +1634,63 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $tabla_nombre;
     }
 
+    /**
+     * PHPUNIT
+     * @param array $registros
+     * @param string $key
+     * @return array|int
+     */
+    private function obten_ultimo_codigo_insert(array $registros, string $key): array|int
+    {
+
+        $valida_base = $this->valida_base_ultimo_codigo($registros,$key);
+        if(errores::$error){
+            return $this->error->error('Error al validar',$valida_base);
+        }
+
+        $registro  = $registros['registros'][0];
+
+        if(!isset($registro[$key])){
+            return $this->error->error('Error no existe $registro['.$key.']',$registro);
+        }
+
+
+        $ultimo_codigo = (int)$registro[$key];
+
+
+        $ultimo_codigo_upd = $this->genera_ultimo_codigo_int($ultimo_codigo);
+        if(errores::$error){
+            return $this->error->error('Error al generar ultimo codigo',$ultimo_codigo_upd);
+        }
+
+        return $ultimo_codigo_upd;
+    }
 
     /**
-     *
-     * Funcion reemplaza el primer dato encontrado en la posicion 0
-     * @version 1.0.0
-     * @param string $from cadena de busqueda
-     * @param string $to cadena de reemplazo
-     * @param string $content cadena a ejecutar ajuste
-     * @example
-    foreach($registro as $key=>$value){
-    if(!$value && in_array($key,$keys_int,false) ){
-    $value = 0;
-    }
-    $key_nuevo = $controlador->modelo->str_replace_first($controlador->tabla.'_','',$key);
-    $valores[$key_nuevo] = $value;
-    }
-     * @return array|string cadena con reemplazo aplicado
-     * @throws errores $content = vacio
-     * @throws errores $from  = vacio
-     * @uses clientes
-     * @uses controler
+     * Ajusta los parametros para update
+     * @param string $campo Campo a reasignar valor
+     * @param string|float|int|null $value Valor a ajustar
+     * @return array|stdClass
      */
-    public function str_replace_first(string $content, string $from, string $to):array|string{
-        if($content === ''){
-            return $this->error->error(mensaje: 'Error al content esta vacio',data: $content);
-        }
-        if($from === ''){
-            return $this->error->error(mensaje: 'Error from esta vacio',data: $from);
-        }
-        $pos = strpos($content, $from);
-
-
-        if($pos === 0) {
-            $from = '/' . preg_quote($from, '/') . '/';
-            return preg_replace($from, $to, $content, 1);
+    private function params_data_update(string $campo, string|float|int|null $value): array|stdClass
+    {
+        $value_ = $value;
+        $value_ = (new monedas())->value_moneda(campo: $campo, modelo: $this, value: $value_);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
         }
 
-        return $content;
+        $data = $this->slaches_value(campo: $campo,value:  $value_);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar value',data:  $value_);
+        }
+
+        $data->value = $this->value_null(value: $data->value);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar value', data:$data);
+        }
+        return $data;
     }
-
-
 
     /**
      *
@@ -1985,6 +1731,291 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $new_array;
+    }
+
+    /**
+     * PHPUNIT
+     * @param string $pattern
+     * @return array|string
+     */
+    public function pattern_html(string $pattern): array|string
+    {
+        if($pattern===''){
+            return $this->error->error('Error el pattern no puede venir vacio',$this->patterns);
+        }
+
+        $buscar = array('/^','$/');
+
+        return str_replace($buscar,'',$pattern);
+    }
+
+    /**
+     * P ORDER P INT
+     * @param string $campos Conjunto de campos a validar
+     * @param stdClass $params
+     * @return string|array
+     */
+    private function rows_update(string $campos, stdClass $params): string|array
+    {
+        if(!isset($params->campo)){
+            return $this->error->error('Error no existe params->campo', $params);
+        }
+        if(!isset($params->value)){
+            return $this->error->error('Error no existe params->value', $params);
+        }
+        $campos .= $campos === "" ? "$params->campo = $params->value" : ", $params->campo = $params->value";
+        return $campos;
+    }
+
+    /**
+     * P ORDER P INT
+     * @param string $campo
+     * @param string|int|float|null $value
+     * @return stdClass|array
+     */
+    private function slaches_value(string $campo, string|int|float|null $value): stdClass|array
+    {
+
+        if(is_null($value)){
+            $value = "";
+        }
+        if($campo === ''){
+            return $this->error->error('Error el campo no puede venir vacio', $campo);
+        }
+        $campo = addslashes($campo);
+        $value = addslashes($value);
+
+        $data = new stdClass();
+        $data->campo = $campo;
+        $data->value = $value;
+
+        return $data;
+    }
+
+    /**
+     *
+     * Funcion reemplaza el primer dato encontrado en la posicion 0
+     * @version 1.0.0
+     * @param string $from cadena de busqueda
+     * @param string $to cadena de reemplazo
+     * @param string $content cadena a ejecutar ajuste
+     * @example
+    foreach($registro as $key=>$value){
+    if(!$value && in_array($key,$keys_int,false) ){
+    $value = 0;
+    }
+    $key_nuevo = $controlador->modelo->str_replace_first($controlador->tabla.'_','',$key);
+    $valores[$key_nuevo] = $value;
+    }
+     * @return array|string cadena con reemplazo aplicado
+     * @throws errores $content = vacio
+     * @throws errores $from  = vacio
+     * @uses clientes
+     * @uses controler
+     */
+    public function str_replace_first(string $content, string $from, string $to):array|string{
+        if($content === ''){
+            return $this->error->error(mensaje: 'Error al content esta vacio',data: $content);
+        }
+        if($from === ''){
+            return $this->error->error(mensaje: 'Error from esta vacio',data: $from);
+        }
+        $pos = strpos($content, $from);
+
+
+        if($pos === 0) {
+            $from = '/' . preg_quote($from, '/') . '/';
+            return preg_replace($from, $to, $content, 1);
+        }
+
+        return $content;
+    }
+
+    /**
+     *
+     * Devuelve una variable de tipo booleana que indica si el usuario existe o no
+     * @version 1.145.31
+     * @param array $campos_encriptados Campos a validar desencripctacion encriptacion
+     * @return bool|array
+     * @example
+     *      $existe_user = $this->usuario_existente();
+     *
+     * @uses modelo_basico->agrega_usuario_session()
+     * @internal modelo_basico->$this->ejecuta_consulta();
+     */
+    private function usuario_existente(array $campos_encriptados = array()): bool|array
+    {
+        if($this->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido o no cargado deberia exitir 
+            $modelo->usuario_id mayor  a 0',data: $this->usuario_id);
+        }
+
+        $consulta = /** @lang MYSQL */
+            'SELECT count(*) AS existe FROM adm_usuario WHERE adm_usuario.id = '.$this->usuario_id;
+        $r_usuario_existente = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $r_usuario_existente);
+        }
+
+        $usuario_existente = $r_usuario_existente->registros[0];
+
+        $update_valido = false;
+        if((int)$usuario_existente['existe'] === 1){
+            $update_valido = true;
+        }
+
+        return $update_valido;
+
+    }
+
+    /**
+     *
+     * Devuelve el registro ya validado en la posicion de codigo
+     *
+     * @param array $registros registro a revisar
+     * @param string $key cadena de texto que indica la posicion del registro
+     * @example
+     *      $valida_base = $this->valida_base_ultimo_codigo($registros,$key);
+     *
+     * @return array
+     * @throws errores $registros['registros'] debe existir
+     * @throws errores $registros['registros'][0] debe existir
+     * @throws errores $key no puede venir vacio
+     *
+     * @uses modelo_basico->genera_ultimo_codigo_base_numero()
+     * @uses modelo_basico->obten_ultimo_codigo_insert()
+     *
+     */
+    private function valida_base_ultimo_codigo(array $registros, string $key):array{
+        if(!isset($registros['registros'])){
+            return $this->error->error('Error no existe registros en registro',$registros);
+        }
+        if(!isset($registros['registros'][0])){
+            return $this->error->error('Error no existe registros[registro][0]',$registros);
+        }
+        if($key === ''){
+            return $this->error->error('Error no existe key no puede venir vacio',$key);
+        }
+        return $registros;
+    }
+
+    private function valida_codigo_aut(mixed $key, array $keys_registro, array|stdClass $registro): bool|array
+    {
+        $valida = $this->valida_key_vacio(key: $key);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar key', data: $valida);
+        }
+
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys_registro, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
+        return true;
+    }
+
+    private function valida_data_desactiva(string $modelo_dependiente): bool|array
+    {
+        $valida = $this->valida_names_model($modelo_dependiente);
+        if(errores::$error){
+            return $this->error->error('Error al validar modelos',$valida);
+        }
+
+        if($this->registro_id<=0){
+            return $this->error->error('Error $this->registro_id debe ser mayor a 0',$this->registro_id);
+        }
+        return true;
+    }
+
+    /**
+     * PHPUNIT
+     * @return bool|array
+     */
+    private function valida_fechas_in(): bool|array
+    {
+        if(!isset($_GET['fecha_inicial']) && !isset($_POST['fecha_inicial'])){
+            return $this->error->error('Error debe existir fecha_inicial por POST o GET',array());
+        }
+        if(!isset($_GET['fecha_final']) && !isset($_POST['fecha_final'])){
+            return $this->error->error('Error debe existir fecha_final por POST o GET', array());
+        }
+        return true;
+    }
+
+
+    private function valida_names_model(string $modelo_dependiente): bool|array
+    {
+        $valida = $this->validacion->valida_data_modelo($modelo_dependiente);
+        if(errores::$error){
+            return  $this->error->error("Error al validar modelo",$valida);
+        }
+
+        $valida = $this->validacion->valida_name_clase($this->tabla);
+        if(errores::$error){
+            return $this->error->error('Error al validar tabla',$valida);
+        }
+
+        return true;
+    }
+
+    private function valida_key_vacio(mixed $key): bool|array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
+        return true;
+    }
+
+    /**
+     * P ORDER P INT
+     * @param string|int|float|null $value
+     * @return string
+     */
+    private function value_null(string|int|float|null $value): string
+    {
+        if ($value == null) {
+            $value = 'NULL';
+        }
+        else {
+            $value = "'" . $value . "'";
+        }
+        return $value;
+    }
+
+    /**
+     * PHPUNIT
+     * @param stdClass $fechas
+     * @return bool|array
+     */
+    private function verifica_fechas_in(stdClass $fechas): bool|array
+    {
+        if(!isset($fechas->fecha_inicial)){
+            return $this->error->error('Error fecha inicial no existe', $fechas);
+        }
+        if(!isset($fechas->fecha_final)){
+            return $this->error->error('Error fecha final no existe', $fechas);
+        }
+        if($fechas->fecha_inicial === ''){
+            return $this->error->error('Error fecha inicial no puede venir vacia', $fechas);
+        }
+        if($fechas->fecha_final === ''){
+            return $this->error->error('Error fecha final no puede venir vacia', $fechas);
+        }
+        $valida = $this->validacion->valida_fecha($fechas->fecha_inicial);
+        if(errores::$error) {
+            return $this->error->error('Error al validar fecha inicial', $valida);
+        }
+        $valida = $this->validacion->valida_fecha($fechas->fecha_final);
+        if(errores::$error) {
+            return $this->error->error('Error al validar fecha final', $valida);
+        }
+
+        if($fechas->fecha_inicial>$fechas->fecha_final){
+            return $this->error->error('Error la fecha inicial no puede ser mayor a la final', $fechas);
+        }
+        return true;
     }
 
 }
