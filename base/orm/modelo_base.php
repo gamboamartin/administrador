@@ -1790,6 +1790,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     public function registro_por_id(modelo $entidad, int $id): array|stdClass
     {
+        if($id <=0){
+            return  $this->error->error(mensaje: 'Error al obtener registro $id debe ser mayor a 0', data: $id);
+        }
         $data = $entidad->registro(registro_id: $id, retorno_obj: true);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener los registros', data: $data);

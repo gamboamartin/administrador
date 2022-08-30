@@ -723,6 +723,26 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_registro_por_id()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        //$mb = new liberator($mb);
+
+
+        $id = 1;
+        $entidad = new adm_accion($this->link);
+        $resultado = $mb->registro_por_id($entidad, $id);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1', $resultado->adm_accion_id);
+        errores::$error = false;
+
+    }
+
     public function test_str_replace_first(){
         errores::$error = false;
         $modelo = new modelo_base($this->link);
