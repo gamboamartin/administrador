@@ -16,12 +16,13 @@ class dependencias{
 
     /**
      * P INT P ORDER
-     * @param bool $desactiva_dependientes
-     * @param array $models_dependientes
-     * @param PDO $link
-     * @param int $registro_id
-     * @param string $tabla
+     * @param bool $desactiva_dependientes Si desactiva busca dependientes
+     * @param array $models_dependientes Conjunto de modelos hijos
+     * @param PDO $link Conexion a la base de datos
+     * @param int $registro_id Registro en ejecucion
+     * @param string $tabla Tabla origen
      * @return array
+     * @throws JsonException
      */
     public function aplica_eliminacion_dependencias(bool $desactiva_dependientes, PDO $link,array $models_dependientes,
                                                     int $registro_id, string $tabla): array
@@ -40,12 +41,13 @@ class dependencias{
     }
 
     /**
-     * P INT P ORDER
-     * @param PDO $link
-     * @param int $parent_id
-     * @param string $tabla
-     * @param string $tabla_children
+     * Obtiene los dependientes de una tabla
+     * @param PDO $link Conexion a la base de datos
+     * @param int $parent_id Registro padre
+     * @param string $tabla Tabla origen
+     * @param string $tabla_children Tabla hija
      * @return array
+     * @version 1.400.45
      */
     public function data_dependientes(PDO $link, int $parent_id, string $tabla, string $tabla_children): array
     {
@@ -55,6 +57,11 @@ class dependencias{
         }
         if($parent_id<=0){
             return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id);
+        }
+        $tabla_children = trim($tabla_children);
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $tabla_children);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $tabla_children',data: $valida);
         }
 
         $modelo_children = (new modelo_base(link: $link))->genera_modelo(modelo: $tabla_children);
@@ -74,10 +81,10 @@ class dependencias{
 
     /**
      * P INT P ORDER
-     * @param string $modelo_dependiente
-     * @param PDO $link
-     * @param int $registro_id
-     * @param string $tabla
+     * @param string $modelo_dependiente Modelo Hijo
+     * @param PDO $link Conexion a la bd
+     * @param int $registro_id Registro en proceso
+     * @param string $tabla Tabla origen
      * @return array
      * @throws JsonException
      */
@@ -106,11 +113,12 @@ class dependencias{
 
     /**
      * P INT P ORDER
-     * @param array $models_dependientes
-     * @param PDO $link
-     * @param int $registro_id
-     * @param string $tabla
+     * @param array $models_dependientes Modelos dependendientes
+     * @param PDO $link Conexion a la base de datos
+     * @param int $registro_id Registro en ejecucion
+     * @param string $tabla Tabla origen
      * @return array
+     * @throws JsonException
      */
     private function elimina_data_modelos_dependientes(array $models_dependientes, PDO $link, int $registro_id,
                                                        string $tabla): array
@@ -138,9 +146,9 @@ class dependencias{
 
     /**
      * P INT P ORDER
-     * @param modelo $model
-     * @param int $parent_id
-     * @param string $tabla
+     * @param modelo $model Modelo en ejecucion
+     * @param int $parent_id Id origen
+     * @param string $tabla Tabla origen
      * @return array
      * @throws JsonException
      */
