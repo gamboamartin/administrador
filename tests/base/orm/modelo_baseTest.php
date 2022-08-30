@@ -829,6 +829,42 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_valida_registro_modelo()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+
+        $registro = array();
+        $modelo = new adm_accion($this->link);
+        $resultado = $mb->valida_registro_modelo($modelo, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar registro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['adm_accion_id'] = -1;
+        $modelo = new adm_accion($this->link);
+        $resultado = $mb->valida_registro_modelo($modelo, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar registro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['adm_accion_id'] = 1;
+        $modelo = new adm_accion($this->link);
+        $resultado = $mb->valida_registro_modelo($modelo, $registro);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
 
 
 

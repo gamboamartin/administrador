@@ -293,6 +293,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $registro;
     }
 
+    /**
+     * @param modelo $modelo Modelo para generacion de descripcion
+     * @param array $registro
+     * @return array
+     */
     protected function asigna_descripcion(modelo $modelo, array $registro): array
     {
         $valida = $this->valida_registro_modelo(modelo: $modelo,registro:  $registro);
@@ -588,6 +593,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
+    /**
+     * @param modelo $modelo Modelo para generacion de descripcion
+     * @param array $registro
+     * @return array|string
+     */
     private function descripcion_alta(modelo $modelo, array $registro): array|string
     {
         $valida = $this->valida_registro_modelo(modelo: $modelo,registro:  $registro);
@@ -1101,6 +1111,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
+    /**
+     * @param modelo $modelo Modelo para generacion de descripcion
+     * @param array $registro
+     * @return array|string
+     */
     private function genera_descripcion(modelo $modelo, array $registro): array|string
     {
         $valida = $this->valida_registro_modelo(modelo: $modelo,registro:  $registro);
@@ -2047,6 +2062,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return true;
     }
 
+    /**
+     * Valida los datos de un modelo para obtener su registro
+     * @param modelo $modelo Modelo a validar
+     * @param array|stdClass $registro Registro a verificar
+     * @return bool|array
+     * @version 1.403.45
+     */
     protected function valida_registro_modelo(modelo $modelo, array|stdClass $registro): bool|array
     {
         $modelo->tabla = trim($modelo->tabla);
