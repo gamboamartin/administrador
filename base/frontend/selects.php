@@ -76,11 +76,11 @@ class selects{
 
     /**
      *
-     * @param bool $todos
-     * @param PDO $link
-     * @param string $name_modelo
-     * @param array $filtro
-     * @return array|stdClass
+     * @param bool $todos si todos = true traera todos los registros, si todos false, solo registros activos
+     * @param PDO $link conexion a base de datos
+     * @param string $name_modelo nombre del modelo
+     * @param array $filtro filtro a aplicar de la forma filtro_and para obtener los registros
+     * @return array|stdClass registros obtenidos por registros activos o todos los registros segun bool $todos
      */
     private function data_bd(bool $todos, PDO $link, string $name_modelo, array $filtro): array|stdClass
     {
