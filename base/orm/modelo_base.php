@@ -403,7 +403,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * @param array $keys_registro Key para asignacion de datos base registro
      * @param array $keys_row Keys para asignacion de datos en base row
-     * @param array $registro
+     * @param array $registro Registro para maquetacion de codigo basado en los keys_registro
      * @param stdClass $row
      * @return array|string
      */
@@ -426,7 +426,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * @param string $codigo Codigo precargado
      * @param array $keys Key de integracion de registro
-     * @param array|stdClass $registro
+     * @param array|stdClass $registro Registro a utilizar para generacion de codigo
      * @return array|string
      */
     private function codigo_base_aut(string $codigo, array $keys, array|stdClass $registro): array|string
@@ -446,7 +446,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * @param string $codigo Codigo precargado
      * @param mixed $key Key para validacion
-     * @param array $keys
+     * @param array $keys Conjunto de keys para integrar codigo
      * @param array|stdClass $registro
      * @return array|string
      */
@@ -481,6 +481,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
+    /**
+     * Concatena un codigo previo con datos de registro
+     * @param string $codigo Codigo precargaddo para concatenar
+     * @param string $key
+     * @param array|stdClass $registro
+     * @return string
+     */
     private function concat_codigo_aut(string $codigo, string $key, array|stdClass $registro): string
     {
         if(is_object($registro)){
@@ -1065,7 +1072,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array|string
      * @version 1.394.45
      */
-    PUBLIC function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
+    private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
                                      array $registro): array|string
     {
         if($registro_id <=0){
@@ -1927,10 +1934,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Valida que los datos de un codigo automatico sean validos
      * @param mixed $key Key para validacion
      * @param array $keys_registro conjunto de key para integrar en base registro
      * @param array|stdClass $registro Registro de alta
      * @return bool|array
+     * @version 1.395.45
      */
     private function valida_codigo_aut(mixed $key, array $keys_registro, array|stdClass $registro): bool|array
     {

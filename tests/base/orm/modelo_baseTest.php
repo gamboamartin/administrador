@@ -338,15 +338,18 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        //$mb = new liberator($mb);
+        $mb = new liberator($mb);
 
         $keys_registro = array();
         $keys_row = array();
         $modelo = new adm_accion($this->link);
-        $registro_id = -1;
+        $registro_id = 1;
         $registro = array();
         $resultado = $mb->genera_codigo($keys_registro, $keys_row, $modelo, $registro_id, $registro);
-        print_r($resultado);exit;
+        $this->assertIsNumeric($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
     }
 
     public function test_genera_consulta_base(){
@@ -758,6 +761,32 @@ class modelo_baseTest extends test {
 
         $mb->usuario_id = 100;
         $resultado = $mb->usuario_existente();
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_valida_codigo_aut(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $keys_registro = array();
+        $key = '';
+        $registro = array();
+        $resultado = $mb->valida_codigo_aut($key, $keys_registro, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar key', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $key = 'a';
+        $registro = array();
+        $resultado = $mb->valida_codigo_aut($key, $keys_registro, $registro);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
