@@ -300,7 +300,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
         if(!isset($registro['descripcion'])){
-            
+
             $descripcion = $this->genera_descripcion( modelo:$modelo, registro: $registro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener descripcion', data: $descripcion);
@@ -2047,7 +2047,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return true;
     }
 
-    private function valida_registro_modelo(modelo $modelo, array|stdClass $registro): bool|array
+    protected function valida_registro_modelo(modelo $modelo, array|stdClass $registro): bool|array
     {
         $modelo->tabla = trim($modelo->tabla);
         if($modelo->tabla === ''){
