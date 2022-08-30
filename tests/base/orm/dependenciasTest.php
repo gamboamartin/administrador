@@ -6,6 +6,7 @@ use base\orm\estructuras;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_mes;
 
 
 class dependenciasTest extends test {
@@ -30,6 +31,22 @@ class dependenciasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
 
+        errores::$error = false;
+    }
+
+    public function test_elimina_dependientes(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+        $link = $this->link;
+        $parent_id = 1;
+        $tabla = 'adm_mes';
+
+        $model = new adm_mes($this->link);
+        $resultado = $dep->elimina_dependientes($model, $parent_id, $tabla);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
         errores::$error = false;
     }
 

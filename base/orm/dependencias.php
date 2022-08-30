@@ -145,12 +145,13 @@ class dependencias{
     }
 
     /**
-     * P INT P ORDER
+     * Elimina los registros dependientes de un modelo
      * @param modelo $model Modelo en ejecucion
      * @param int $parent_id Id origen
      * @param string $tabla Tabla origen
      * @return array
      * @throws JsonException
+     * @version 1.401.45
      */
     private function elimina_dependientes(modelo $model, int $parent_id, string $tabla): array
     {
