@@ -295,8 +295,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     protected function asigna_descripcion(modelo $modelo, array $registro): array
     {
+        $valida = $this->valida_registro_modelo(modelo: $modelo,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
         if(!isset($registro['descripcion'])){
-
+            
             $descripcion = $this->genera_descripcion( modelo:$modelo, registro: $registro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener descripcion', data: $descripcion);
@@ -586,6 +590,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     private function descripcion_alta(modelo $modelo, array $registro): array|string
     {
+        $valida = $this->valida_registro_modelo(modelo: $modelo,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         $row = $modelo->registro($registro[$modelo->tabla.'_id']);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
@@ -1094,6 +1103,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     private function genera_descripcion(modelo $modelo, array $registro): array|string
     {
+        $valida = $this->valida_registro_modelo(modelo: $modelo,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
 
         $descripcion = $this->descripcion_alta(modelo: $modelo, registro: $registro);
         if(errores::$error){
@@ -2031,6 +2044,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if($key === ''){
             return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
         }
+        return true;
+    }
+
+    private function valida_registro_modelo(modelo $modelo, array|stdClass $registro): bool|array
+    {
+        $modelo->tabla = trim($modelo->tabla);
+        if($modelo->tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla de modelo esta vacia', data: $modelo->tabla);
+        }
+        $key_id = $modelo->tabla.'_id';
+        $keys = array($key_id);
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         return true;
     }
 
