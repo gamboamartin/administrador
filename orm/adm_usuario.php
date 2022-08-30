@@ -143,7 +143,14 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
 
-
+    /**
+     * Valida que un usuario y un password exista
+     * @param string $password
+     * @param string $usuario
+     * @param string $accion_header
+     * @param string $seccion_header
+     * @return array|mixed
+     */
     public function valida_usuario_password(string $password, string $usuario, string $accion_header = '',
                                             string $seccion_header = ''){
         if($usuario === ''){
