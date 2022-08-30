@@ -87,13 +87,17 @@ class monedas{
      * @param modelo $modelo Modelo en ejecucion para validacion
      * @param string|float|int|null $value Valor a ajustar
      * @return float|array|int|string|null
+     * @version 1.404.45
+     *
      */
-    public function value_moneda(string $campo, modelo_base $modelo, string|float|int|null $value): float|array|int|string|null
+    public function value_moneda(
+        string $campo, modelo_base $modelo, string|float|int|null $value): float|array|int|string|null
     {
         $value_= $value;
         $tipos_moneda = array('double','double_con_cero');
         if(array_key_exists($campo, $modelo->tipo_campos)){
-            $value_ = $this->reasigna_value_moneda(campo: $campo, modelo: $modelo,tipos_moneda:  $tipos_moneda,value:  $value_);
+            $value_ = $this->reasigna_value_moneda(
+                campo: $campo, modelo: $modelo,tipos_moneda:  $tipos_moneda,value:  $value_);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al limpiar value', data: $value);
             }

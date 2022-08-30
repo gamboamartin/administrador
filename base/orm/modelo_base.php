@@ -1849,8 +1849,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P ORDER P INT
-     * @param string $campo
-     * @param string|int|float|null $value
+     * @param string $campo Campo a normalizar
+     * @param string|int|float|null $value Valor a normalizar
      * @return stdClass|array
      */
     private function slaches_value(string $campo, string|int|float|null $value): stdClass|array

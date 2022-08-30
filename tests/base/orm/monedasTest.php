@@ -70,6 +70,22 @@ class monedasTest extends test {
         errores::$error = false;
     }
 
+    public function test_value_moneda(){
+
+        errores::$error = false;
+        $monedas = new monedas();
+        //$monedas = new liberator($monedas);
+        $campo = 'a';
+        $modelo = new adm_accion_grupo($this->link);
+        $tipos_moneda = array();
+        $value = '';
+        $resultado = $monedas->value_moneda($campo, $modelo, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+        errores::$error = false;
+    }
+
 
 
 }
