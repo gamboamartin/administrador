@@ -92,6 +92,10 @@ class inicializacion{
             return $this->error->error(mensaje: 'Error el campo esta vacio', data:$campo);
         }
 
+        if(!isset($registro_previo->$campo)){
+            return $this->error->error(mensaje: 'Error no existe '.$campo.' En registro', data:$registro_previo);
+        }
+
         if(is_null($registro_previo->$campo)){
             $registro_previo->$campo = '';
         }
