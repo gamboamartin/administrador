@@ -1783,6 +1783,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Genera los registros por id
+     * @param modelo $entidad Modelo o entidad de relacion
+     * @param int $id Identificador de registro a obtener
+     * @return array|stdClass
+     */
+    public function registro_por_id(modelo $entidad, int $id): array|stdClass
+    {
+        $data = $entidad->registro(registro_id: $id, retorno_obj: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener los registros', data: $data);
+        }
+        return $data;
+    }
+
+
+    /**
      * P ORDER P INT
      * @param string $campos Conjunto de campos a validar
      * @param stdClass $params
