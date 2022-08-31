@@ -80,20 +80,22 @@ class dependencias{
     }
 
     /**
-     * P INT P ORDER
+     * Elimina los registros dependientes de un modelo
      * @param string $modelo_dependiente Modelo Hijo
      * @param PDO $link Conexion a la bd
      * @param int $registro_id Registro en proceso
      * @param string $tabla Tabla origen
      * @return array
      * @throws JsonException
+     * @version 1.410.47
      */
-    private function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
+    PUBLIC function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
     {
         $modelo_dependiente = trim($modelo_dependiente);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
+            return  $this->error->error(mensaje: "Error al validar modelo dependiente $modelo_dependiente",
+                data: $valida);
         }
         if($registro_id<=0){
             return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',data:$registro_id);

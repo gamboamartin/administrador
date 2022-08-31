@@ -34,6 +34,21 @@ class dependenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_elimina_data_modelo(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        //$st = new liberator($st);
+        $link = $this->link;
+        $tabla = 'adm_accion';
+        $modelo_dependiente = 'adm_accion_grupo';
+        $registro_id = 1;
+        $resultado = $dep->elimina_data_modelo($modelo_dependiente, $link, $registro_id, $tabla);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
     public function test_elimina_dependientes(): void
     {
         errores::$error = false;
