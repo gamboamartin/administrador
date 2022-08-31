@@ -765,6 +765,26 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_slaches_value(): void
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb->usuario_id = 2;
+        $mb->campos_sql = 1;
+        $mb = new liberator($mb);
+
+        $campo = '"a';
+        $value = "b'";
+        $resultado = $mb->slaches_value($campo, $value);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('\"a', $resultado->campo);
+        $this->assertEquals("b\'", $resultado->value);
+        errores::$error = false;
+    }
+
     public function test_str_replace_first(){
         errores::$error = false;
         $modelo = new modelo_base($this->link);

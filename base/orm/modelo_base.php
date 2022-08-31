@@ -1855,19 +1855,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT
+     * Ajusta los elementos con slashes
      * @param string $campo Campo a normalizar
      * @param string|int|float|null $value Valor a normalizar
      * @return stdClass|array
+     * @version 1.409.47
      */
     private function slaches_value(string $campo, string|int|float|null $value): stdClass|array
     {
-
+        $campo = trim($campo);
         if(is_null($value)){
             $value = "";
         }
         if($campo === ''){
-            return $this->error->error('Error el campo no puede venir vacio', $campo);
+            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
         }
         $campo = addslashes($campo);
         $value = addslashes($value);
@@ -2094,7 +2095,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * P ORDER P INT
-     * @param string|int|float|null $value
+     * @param string|int|float|null $value Valor a ajustar como NULL
      * @return string
      */
     private function value_null(string|int|float|null $value): string
