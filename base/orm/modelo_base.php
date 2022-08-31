@@ -263,16 +263,23 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Asigna un codigo automatico si este no existe para alta
      * @param array $keys_registro Key para asignacion de datos base registro
      * @param array $keys_row Keys para asignacion de datos en base row
      * @param modelo $modelo Modelo para obtencion de datos precargados
      * @param array $registro Registro para integracion de codigo
      * @return array
+     * @version 1.406.47
      */
     protected function asigna_codigo(array $keys_registro, array $keys_row, modelo $modelo, array $registro): array
     {
         if(!isset($registro['codigo'])){
-
+            $key_id = $modelo->tabla.'_id';
+            $keys = array($key_id);
+            $valida = $this->validacion->valida_ids(keys: $keys,registro:  $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+            }
             $codigo = $this->genera_codigo(keys_registro: $keys_registro,keys_row:  $keys_row, modelo: $modelo,
                 registro_id:$registro[$modelo->tabla.'_id'] , registro: $registro);
 

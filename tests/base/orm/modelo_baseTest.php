@@ -8,6 +8,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\accion;
 use models\adm_accion;
+use models\adm_dia;
 use models\seccion;
 use stdClass;
 
@@ -55,6 +56,27 @@ class modelo_baseTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+    }
+
+    public function test_asigna_codigo(): void
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb->usuario_id = 2;
+        $mb->campos_sql = 1;
+        $mb = new liberator($mb);
+        $keys_registro = array();
+        $keys_row = array();
+        $modelo = new adm_dia($this->link);
+        $registro = array();
+        $registro['adm_dia_id'] = 1;
+        $resultado = $mb->asigna_codigo($keys_registro, $keys_row, $modelo, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
     }
 
 
