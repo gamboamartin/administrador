@@ -28,8 +28,7 @@ use models\adm_menu;?>
 <script type="text/javascript" src="node_modules/google-charts/dist/loader.js"></script>
 <script type="text/javascript" src="js/base.js"></script>
 <script type="text/javascript" src="js/checkbox.js"></script>
-    <?php
-echo $data->css_custom; ?>
+    <?php echo $data->css_custom->css; ?>
 <?php echo $data->js_seccion; ?>
 <?php echo $data->js_accion; ?>
 

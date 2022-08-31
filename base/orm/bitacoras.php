@@ -361,6 +361,7 @@ class bitacoras{
         return $r_seccion_menu->registros[0];
     }
 
+
     private function val_bitacora(string $consulta, string $funcion, modelo $modelo): bool|array
     {
         if($funcion === ''){
