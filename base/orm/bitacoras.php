@@ -163,6 +163,13 @@ class bitacoras{
         return $bitacora;
     }
 
+    /**
+     * P INT P ORDER
+     * agrega el nombre de la tabla y nombre de la clase a var $data
+     * @param string $tabla nombre de la tabla
+     * @return stdClass objeto $data que contiene nombre de la tabla y nombre de la clase
+     */
+
     private function clase_namespace(string $tabla): stdClass
     {
         $namespace = 'models\\';
