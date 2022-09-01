@@ -293,7 +293,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header Si header muestra resultado en front
      * @param bool $ws si ws retorna json
      * @return array|stdClass con datos del registro insertado
-     * @throws JsonException
+     * @throws JsonException retorna un arreglo
      */
     public function alta_bd(bool $header, bool $ws): array|stdClass{
         /**
@@ -392,7 +392,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     /**
      * P INT
-     * @param bool $header
+     * Función que aplica filtro sobre los registro de una tabla después de
+     * válidar los parámetros de la solicicutd y la existencia de botón filtrar o botón limpiar.
+     * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array
      */
     public function aplica_filtro(bool $header): array{
