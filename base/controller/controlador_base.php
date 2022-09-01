@@ -288,9 +288,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     /**
      * ERROREV
+     * Función que al validar los datos de una clase inserta los regitros en la base de datos.
+     * Si los registros no son válidos, éstos se limpian para ser capturados de nuevo.
      * @param bool $header Si header muestra resultado en front
-     * @param bool $ws
-     * @return array|stdClass
+     * @param bool $ws si ws retorna json
+     * @return array|stdClass con datos del registro insertado
      * @throws JsonException
      */
     public function alta_bd(bool $header, bool $ws): array|stdClass{
