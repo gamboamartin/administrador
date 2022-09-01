@@ -169,16 +169,25 @@ class bitacoras{
     }
 
     /**
-     * P INT P ORDER
+     *
      * agrega el nombre de la tabla y nombre de la clase a var $data
      * @param string $tabla nombre de la tabla
-     * @return stdClass objeto $data que contiene nombre de la tabla y nombre de la clase
+     * @return stdClass|array objeto $data que contiene nombre de la tabla y nombre de la clase
+     * @version 1.421.48
      */
 
-    private function clase_namespace(string $tabla): stdClass
+    private function clase_namespace(string $tabla): stdClass|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla vacia',data:  $tabla);
+        }
         $namespace = 'models\\';
         $tabla = str_replace($namespace,'',$tabla);
+
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla vacia o mal escrita',data:  $tabla);
+        }
 
         $data = new stdClass();
         $data->tabla = $tabla;
@@ -218,13 +227,11 @@ class bitacoras{
      * La funcion ejecuta una transaccion y realiza una consulta para obtener la bitacora involucrada
      * @param string $tabla contiene el nombre de la tabla con la que se va a interactuar
      * @param string $funcion contiene el nombre el nombre de la funcion que se va a aplicar
+     * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id contiene el identificador del registro a consultar
      * @param string $sql contiene la peticion que se realizara a la base de datos
      * @return array
      * @throws JsonException
-     * @throws error la variable que contiene la consulta llego vacia a la operacion
-     * @throws error no se logro concretar la consulta a la base de datos
-     * @throws error no se concreto la insercion del registro a la base de datos
      */
     public function ejecuta_transaccion(string $tabla, string $funcion,  modelo $modelo, int $registro_id = -1, string $sql = ''):array{
         $consulta =trim($sql);
