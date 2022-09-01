@@ -302,7 +302,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
-     * @param array $registro
+     * @param array $registro Registro en ejecucion
      * @return array
      */
     protected function asigna_descripcion(modelo $modelo, array $registro): array
@@ -602,8 +602,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
-     * @param array $registro
+     * @param array $registro Registro en ejecucion
      * @return array|string
+     * @version 1.416.48
+     *
      */
     private function descripcion_alta(modelo $modelo, array $registro): array|string
     {
@@ -612,7 +614,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
         }
 
-        $row = $modelo->registro($registro[$modelo->tabla.'_id']);
+        $row = $modelo->registro(registro_id: $registro[$modelo->tabla.'_id']);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
         }
@@ -1120,7 +1122,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
-     * @param array $registro
+     * @param array $registro Registro en ejecucion
      * @return array|string
      */
     private function genera_descripcion(modelo $modelo, array $registro): array|string

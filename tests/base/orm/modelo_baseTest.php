@@ -264,6 +264,25 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_descripcion_alta()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+
+        $modelo = new adm_accion($this->link);
+        $registro = array();
+        $registro['adm_accion_id'] = 1;
+        $resultado = $mb->descripcion_alta($modelo, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('alta', $resultado);
+        errores::$error = false;
+    }
+
 
 
 
