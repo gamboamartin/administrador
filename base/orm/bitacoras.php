@@ -388,14 +388,14 @@ class bitacoras{
     }
 
     /**
-     * La funcion ejecuta una consulta que depende de la funcion seleccionada para modificar el modelo
+     * La funcion Valida los elementos previos a la ejecucion de un SQL
      * @param string $consulta almacena la consulta a la base de datos
      * @param string $funcion almacena la funcion que entrara en interaccion con los datos
      * @param modelo $modelo es el modelo con el que se va a trabajar
      * @return bool|array
-     * @throws error la variable que indicaba la funcion llego vacia
-     * @throws  error la variable que indica la consulta llego vacia
-     * @throws  error el id del registro del modelo es menor o igual a 0
+     * @throws errores la variable que indicaba la funcion llego vacia
+     * @throws  errores la variable que indica la consulta llego vacia
+     * @throws  errores el id del registro del modelo es menor o igual a 0
      */
     private function val_bitacora(string $consulta, string $funcion, modelo $modelo): bool|array
     {
