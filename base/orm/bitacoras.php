@@ -19,12 +19,17 @@ class bitacoras{
 
     /**
      * P INT ERRORREV P ORDER
-     * @param string $tabla
-     * @param string $funcion
-     * @param string $consulta
-     * @param int $registro_id
+     * La funcion aplica una bitacora generando un modelo, consultando un registro con referencia al modelo e inserta una transaccion.
+     * Retornando los datos de la transaccion
+     * @param string $tabla almacena el nombre de la tabla con la que se va a interactuar
+     * @param string $funcion almacena la funcion que se va a utilizar
+     * @param string $consulta almacena la consulta que se va a realizar a la base de datos
+     * @param int $registro_id contiene el identificador del registro
      * @return array
      * @throws JsonException
+     * @throws errores hubo algun dato corrompido o causa similar por la que no se logro generar el modelo
+     * @throws errores no se logro obtener el registro de la tabla consultada
+     * @throws errores no se logro concretar el registro de la transaccion en la base de datos
      */
     private function aplica_bitacora(string $consulta, string $funcion, modelo $modelo, int $registro_id,
                                      string $tabla): array
@@ -182,6 +187,15 @@ class bitacoras{
         return$data;
     }
 
+    /**
+     * La funcion registra los datos de la tabla y clase
+     * @param string $tabla almacena el nombre correspondiente a la tabla con la que se va a interactuar
+     * @return array|stdClass
+     *@throws errores si surge un error al componer el namespace modelo
+     *@throws errores la variable que almacena el nombre de la tabla tiene contenido vacio
+     *@throws  errores la clase consultada para componer el namespace modelo no existe
+     */
+
     private function data_ns_val(string $tabla): array|stdClass
     {
         $data_ns = $this->clase_namespace(tabla: $tabla);
@@ -201,12 +215,16 @@ class bitacoras{
 
     /**
      * P INT ERRORREV P ORDER
-     * @param string $tabla
-     * @param string $funcion
-     * @param int $registro_id
-     * @param string $sql
+     * La funcion ejecuta una transaccion y realiza una consulta para obtener la bitacora involucrada
+     * @param string $tabla contiene el nombre de la tabla con la que se va a interactuar
+     * @param string $funcion contiene el nombre el nombre de la funcion que se va a aplicar
+     * @param int $registro_id contiene el identificador del registro a consultar
+     * @param string $sql contiene la peticion que se realizara a la base de datos
      * @return array
      * @throws JsonException
+     * @throws error la variable que contiene la consulta llego vacia a la operacion
+     * @throws error no se logro concretar la consulta a la base de datos
+     * @throws error no se concreto la insercion del registro a la base de datos
      */
     public function ejecuta_transaccion(string $tabla, string $funcion,  modelo $modelo, int $registro_id = -1, string $sql = ''):array{
         $consulta =trim($sql);
@@ -361,7 +379,16 @@ class bitacoras{
         return $r_seccion_menu->registros[0];
     }
 
-
+    /**
+     * La funcion ejecuta una consulta que depende de la funcion seleccionada para modificar el modelo
+     * @param string $consulta almacena la consulta a la base de datos
+     * @param string $funcion almacena la funcion que entrara en interaccion con los datos
+     * @param modelo $modelo es el modelo con el que se va a trabajar
+     * @return bool|array
+     * @throws error la variable que indicaba la funcion llego vacia
+     * @throws  error la variable que indica la consulta llego vacia
+     * @throws  error el id del registro del modelo es menor o igual a 0
+     */
     private function val_bitacora(string $consulta, string $funcion, modelo $modelo): bool|array
     {
         if($funcion === ''){
