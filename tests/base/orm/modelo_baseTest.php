@@ -908,10 +908,39 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_value_null()
+    {
 
 
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
 
 
+        $value = '';
+
+        $resultado = $mb->value_null($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $value = 'x';
+
+        $resultado = $mb->value_null($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $value = null;
+
+        $resultado = $mb->value_null($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('NULL', $resultado);
+        errores::$error = false;
+    }
 
 
 }

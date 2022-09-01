@@ -2094,13 +2094,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * P ORDER P INT
+     * Ajusta un NULL a Value
      * @param string|int|float|null $value Valor a ajustar como NULL
      * @return string
+     * @version 1.415.48
      */
     private function value_null(string|int|float|null $value): string
     {
-        if ($value == null) {
+        if ($value === null) {
             $value = 'NULL';
         }
         else {
