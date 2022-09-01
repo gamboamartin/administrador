@@ -57,6 +57,36 @@ class bitacorasTest extends test {
         errores::$error = false;
 
     }
+    public function test_data_ns_val(){
+
+        errores::$error = false;
+        $bitacora = new bitacoras();
+        $bitacora = (new liberator($bitacora));
+        $tabla = '';
+        $resultado = $bitacora->data_ns_val($tabla);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsString('Error tabla vacia',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $tabla = 'x';
+        $resultado = $bitacora->data_ns_val($tabla);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado->tabla);
+        $this->assertEquals('models\x',$resultado->clase);
+
+        errores::$error = false;
+
+        $tabla = 'models\\';
+        $resultado = $bitacora->data_ns_val($tabla);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsString('Error al generar namespace modelo',$resultado['mensaje']);
+
+        errores::$error = false;
+    }
 
 
 }

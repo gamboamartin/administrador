@@ -200,13 +200,18 @@ class bitacoras{
      * La funcion registra los datos de la tabla y clase
      * @param string $tabla almacena el nombre correspondiente a la tabla con la que se va a interactuar
      * @return array|stdClass
-     *@throws errores si surge un error al componer el namespace modelo
-     *@throws errores la variable que almacena el nombre de la tabla tiene contenido vacio
-     *@throws  errores la clase consultada para componer el namespace modelo no existe
+     * @throws errores si surge un error al componer el namespace modelo
+     * @throws errores la variable que almacena el nombre de la tabla tiene contenido vacio
+     * @throws  errores la clase consultada para componer el namespace modelo no existe
+     * @version 1.422.48
      */
 
     private function data_ns_val(string $tabla): array|stdClass
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla vacia',data:  $tabla);
+        }
         $data_ns = $this->clase_namespace(tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
@@ -214,9 +219,6 @@ class bitacoras{
 
         if($data_ns->tabla === ''){
             return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $data_ns->tabla);
-        }
-        if(!class_exists($data_ns->clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$data_ns->clase,data:$data_ns);
         }
 
         return $data_ns;
@@ -271,7 +273,6 @@ class bitacoras{
      * @internal $bitacora_modelo->alta_bd();
      */
     private function genera_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array{
-
 
         $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
         if(errores::$error){
