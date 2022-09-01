@@ -13,6 +13,8 @@ class altas{
 
     /**
      * ERROREV
+     * Función que sube los registros a base de datos después de que los registros
+     * fueron asignados y validados.
      * @param array $registro Registro que se insertara
      * @param controler $controler Controlador de ejecucion
      * @return array|stdClass
