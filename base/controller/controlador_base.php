@@ -163,11 +163,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
 
-
     /**
-     * 
-     * @param bool $header
-     * @return array
+     * Función que activa un registro de la base de datos. Retorna un arreglo con el registro
+     * correspondiente al id del registro en cuestión.
+     * @param bool $header si header retorna error en navegador y corta la operacion
+     * @return array almacena en un arreglo todos los datos del registro
+     * @throws JsonException
      */
     public function activa_bd(bool $header ): array{
         if($this->registro_id === -1){
