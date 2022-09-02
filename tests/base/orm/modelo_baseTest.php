@@ -9,6 +9,7 @@ use gamboamartin\test\test;
 use models\accion;
 use models\adm_accion;
 use models\adm_dia;
+use models\adm_usuario;
 use models\seccion;
 use stdClass;
 
@@ -299,65 +300,9 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-    public function test_filtro_hijo(){
-        errores::$error = false;
-        $modelo_base = new modelo_base($this->link);
-        $modelo_base = new liberator($modelo_base);
-        $filtro = array();
-        $row = array();
-        $resultado = $modelo_base->filtro_hijo('','',$filtro,$row);
-
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $resultado = $modelo_base->filtro_hijo('x','',$filtro,$row);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-        $resultado = $modelo_base->filtro_hijo('x','x',$filtro,$row);
-
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado['x']);
-
-        errores::$error = false;
-    }
-
-    public function test_filtro_para_hijo(){
-
-        errores::$error = false;
-        $modelo_base = new modelo_base($this->link);
-        $modelo_base = new liberator($modelo_base);
-
-        $filtros = array();
-        $row = array();
-        $resultado = $modelo_base->filtro_para_hijo($filtros,$row);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
-
-        $filtros[] = '';
-        $resultado = $modelo_base->filtro_para_hijo($filtros,$row);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
 
 
 
-        errores::$error = false;
-        $filtros = array();
-        $filtros['x'] = 'x';
-        $resultado = $modelo_base->filtro_para_hijo($filtros,$row);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertArrayHasKey('x',$resultado);
-
-    }
 
     public function test_genera_codigo(){
 
@@ -388,6 +333,24 @@ class modelo_baseTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SELECT adm_accion.id AS adm_accion_id   FROM adm_accion AS adm_accion LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = adm_accion.adm_seccion_id LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_genera_descripcion(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $modelo = new adm_accion($this->link);
+
+        $registro = array();
+        $registro['adm_accion_id'] = 2;
+        $resultado = $mb->genera_descripcion($modelo, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('lista', $resultado);
         errores::$error = false;
     }
 
@@ -637,61 +600,7 @@ class modelo_baseTest extends test {
 
 
 
-    public function test_obten_filtro_para_hijo(){
 
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-
-        $data_modelo = array();
-        $row = array();
-        $resultado = $mb->obten_filtro_para_hijo($data_modelo,$row);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
-
-
-        errores::$error = false;
-
-        $data_modelo['filtros_con_valor'] = '';
-        $data_modelo['filtros'] = '';
-
-        $resultado = $mb->obten_filtro_para_hijo($data_modelo,$row);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
-
-
-        errores::$error = false;
-
-        $data_modelo['filtros_con_valor'] = array();
-        $data_modelo['filtros'] = array();
-
-        $resultado = $mb->obten_filtro_para_hijo($data_modelo,$row);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty( $resultado);
-
-        errores::$error = false;
-
-        $data_modelo['filtros'][] = '';
-        $resultado = $mb->obten_filtro_para_hijo($data_modelo,$row);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
-        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['data']['mensaje']);
-
-        errores::$error = false;
-
-        $data_modelo['filtros'][0] = 'x';
-        $resultado = $mb->obten_filtro_para_hijo($data_modelo,$row);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertArrayHasKey(0, $resultado);
-
-
-
-    }
 
     public function test_obten_nombre_tabla(){
 

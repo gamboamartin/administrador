@@ -15,6 +15,26 @@ class dependencias{
     }
 
     /**
+     * PHPUNIT
+     * @param string $name_modelo
+     * @return string|array
+     */
+    private function ajusta_modelo_comp(string $name_modelo): string|array
+    {
+        $name_modelo = trim($name_modelo);
+        if($name_modelo === ''){
+            return $this->error->error('Error name_modelo no puede venir vacio', $name_modelo);
+        }
+        $name_modelo = str_replace('models\\','',$name_modelo);
+        $name_modelo = 'models\\'.$name_modelo;
+
+        if($name_modelo === 'models\\'){
+            return $this->error->error('Error name_modelo no puede venir vacio', $name_modelo);
+        }
+        return trim($name_modelo);
+    }
+
+    /**
      * P INT P ORDER
      * @param bool $desactiva_dependientes Si desactiva busca dependientes
      * @param array $models_dependientes Conjunto de modelos hijos
@@ -49,7 +69,7 @@ class dependencias{
      * @return array
      * @version 1.400.45
      */
-    public function data_dependientes(PDO $link, int $parent_id, string $tabla, string $tabla_children): array
+    private function data_dependientes(PDO $link, int $parent_id, string $tabla, string $tabla_children): array
     {
         $valida = $this->validacion->valida_name_clase(tabla: $tabla);
         if(errores::$error){
@@ -77,6 +97,79 @@ class dependencias{
             return $this->error->error(mensaje: 'Error al obtener dependientes',data: $result);
         }
         return $result->registros;
+    }
+
+    /**
+     * PHPUNIT
+     * @param modelo_base $modelo
+     * @param string $modelo_dependiente
+     * @return array
+     * @throws JsonException
+     */
+    public function desactiva_data_modelo(modelo_base $modelo, string $modelo_dependiente): array
+    {
+        $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo, modelo_dependiente: $modelo_dependiente);
+        if(errores::$error){
+            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente_ajustado);
+        }
+
+        $modelo_ = $this->model_dependiente(modelo: $modelo, modelo_dependiente: $modelo_dependiente_ajustado);
+        if (errores::$error) {
+            return $this->error->error('Error al generar modelo', $modelo_);
+        }
+
+        $desactiva = $this->desactiva_dependientes($modelo_, $modelo->registro_id, $modelo_->tabla);
+        if (errores::$error) {
+            return $this->error->error('Error al desactivar dependiente', $desactiva);
+        }
+        return $desactiva;
+    }
+
+    /**
+     * PHPUNIT
+     * @param modelo $modelo
+     * @param int $parent_id
+     * @param string $tabla_dep
+     * @return array
+     * @throws JsonException
+     */
+    private function desactiva_dependientes(modelo_base $modelo, int $parent_id, string $tabla_dep): array
+    {
+        $valida = $this->validacion->valida_name_clase($modelo->tabla);
+        if(errores::$error){
+            return $this->error->error('Error al validar tabla',$valida);
+        }
+        if($parent_id<=0){
+            return $this->error->error('Error $parent_id debe ser mayor a 0',$parent_id);
+        }
+
+        $dependientes = $this->data_dependientes(link: $modelo->link,parent_id: $parent_id,
+            tabla: $modelo->tabla, tabla_children: $tabla_dep);
+        if(errores::$error){
+            return $this->error->error('Error al obtener dependientes',$dependientes);
+        }
+
+        $key_dependiente_id = $tabla_dep.'_id';
+
+        $modelo_dep = $modelo->genera_modelo($tabla_dep);
+        if(errores::$error){
+            return $this->error->error('Error al generar modelo',$modelo_dep);
+        }
+
+
+        $result = array();
+        foreach($dependientes as $dependiente){
+
+            $modelo_dep->registro_id = $dependiente[$key_dependiente_id];
+
+            $desactiva_bd = $modelo_dep->desactiva_bd();
+            if(errores::$error){
+                return $this->error->error('Error al desactivar dependiente',$desactiva_bd);
+            }
+            $result[] = $desactiva_bd;
+        }
+        return $result;
+
     }
 
     /**
@@ -183,6 +276,64 @@ class dependencias{
         }
         return $result;
 
+    }
+
+    private function model_dependiente(modelo_base $modelo, string $modelo_dependiente): modelo_base|array
+    {
+        $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo, modelo_dependiente: $modelo_dependiente);
+        if(errores::$error){
+            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
+        }
+        $modelo_ = $modelo->genera_modelo($modelo_dependiente_ajustado);
+        if (errores::$error) {
+            return $this->error->error('Error al generar modelo', $modelo_);
+        }
+        return $modelo_;
+    }
+
+
+    private function modelo_dependiente_val(modelo_base $modelo, string $modelo_dependiente): array|string
+    {
+        $modelo_dependiente_ajustado = $this->ajusta_modelo_comp($modelo_dependiente);
+        if(errores::$error ){
+            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
+        }
+
+        $valida = $this->valida_data_desactiva(modelo: $modelo, modelo_dependiente: $modelo_dependiente_ajustado);
+        if(errores::$error){
+            return $this->error->error('Error al validar modelos',$valida);
+        }
+
+        return $modelo_dependiente_ajustado;
+    }
+
+    private function valida_data_desactiva(modelo_base $modelo, string $modelo_dependiente): bool|array
+    {
+        $valida = $this->valida_names_model(modelo_dependiente: $modelo_dependiente,
+            tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error('Error al validar modelos',$valida);
+        }
+
+        if($modelo->registro_id<=0){
+            return $this->error->error('Error $this->registro_id debe ser mayor a 0',$modelo->registro_id);
+        }
+        return true;
+    }
+
+    private function valida_names_model(string $modelo_dependiente, string $tabla): bool|array
+    {
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
+        if(errores::$error){
+            return  $this->error->error("Error al validar modelo",$valida);
+        }
+
+        $valida = $this->validacion->valida_name_clase(tabla: $tabla);
+        if(errores::$error){
+            return $this->error->error('Error al validar tabla',$valida);
+        }
+
+        return true;
     }
 
 }

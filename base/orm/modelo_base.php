@@ -4,6 +4,7 @@ namespace base\orm;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
+use JsonException;
 use models\adm_elemento_lista;
 use PDO;
 use PDOStatement;
@@ -71,25 +72,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-    /**
-     * PHPUNIT
-     * @param string $name_modelo
-     * @return string|array
-     */
-    private function ajusta_modelo_comp(string $name_modelo): string|array
-    {
-        $name_modelo = trim($name_modelo);
-        if($name_modelo === ''){
-            return $this->error->error('Error name_modelo no puede venir vacio', $name_modelo);
-        }
-        $name_modelo = str_replace('models\\','',$name_modelo);
-        $name_modelo = 'models\\'.$name_modelo;
 
-        if($name_modelo === 'models\\'){
-            return $this->error->error('Error name_modelo no puede venir vacio', $name_modelo);
-        }
-        return trim($name_modelo);
-    }
 
     /**
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
@@ -459,39 +442,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $codigo;
     }
 
-    /**
-     * PHPUNIT
-     * @param string $modelo_dependiente
-     * @return array
-     */
-    private function desactiva_data_modelo(string $modelo_dependiente): array
-    {
-        $modelo_dependiente_ajustado = $this->modelo_dependiente_val($modelo_dependiente);
-        if(errores::$error){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente_ajustado);
-        }
-
-        $modelo = $this->model_dependiente($modelo_dependiente_ajustado);
-        if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $modelo);
-        }
-
-        $desactiva = $this->desactiva_dependientes($this->registro_id, $modelo->tabla);
-        if (errores::$error) {
-            return $this->error->error('Error al desactivar dependiente', $desactiva);
-        }
-        return $desactiva;
-    }
 
     /**
      * PHPUNIT
      * @return array
+     * @throws JsonException
      */
     private function desactiva_data_modelos_dependientes(): array
     {
         $data = array();
         foreach ($this->models_dependientes as $dependiente) {
-            $desactiva = $this->desactiva_data_modelo($dependiente);
+            $desactiva = (new dependencias())->desactiva_data_modelo(modelo: $this,modelo_dependiente:  $dependiente);
             if (errores::$error) {
                 return $this->error->error('Error al desactivar dependiente', $desactiva);
             }
@@ -500,50 +461,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    /**
-     * PHPUNIT
-     * @param int $parent_id
-     * @param string $tabla_dep
-     * @return array
-     */
-    private function desactiva_dependientes(int $parent_id, string $tabla_dep): array
-    {
-        $valida = $this->validacion->valida_name_clase($this->tabla);
-        if(errores::$error){
-            return $this->error->error('Error al validar tabla',$valida);
-        }
-        if($parent_id<=0){
-            return $this->error->error('Error $parent_id debe ser mayor a 0',$parent_id);
-        }
 
-        $dependientes = (new dependencias())->data_dependientes(link: $this->link,parent_id: $parent_id,
-            tabla: $this->tabla, tabla_children: $tabla_dep);
-        if(errores::$error){
-            return $this->error->error('Error al obtener dependientes',$dependientes);
-        }
-
-        $key_dependiente_id = $tabla_dep.'_id';
-
-        $modelo_dep = $this->genera_modelo($tabla_dep);
-        if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo_dep);
-        }
-
-
-        $result = array();
-        foreach($dependientes as $dependiente){
-
-            $modelo_dep->registro_id = $dependiente[$key_dependiente_id];
-
-            $desactiva_bd = $modelo_dep->desactiva_bd();
-            if(errores::$error){
-                return $this->error->error('Error al desactivar dependiente',$desactiva_bd);
-            }
-            $result[] = $desactiva_bd;
-        }
-        return $result;
-
-    }
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -836,30 +754,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    /**
-     * Asigna el filtro necesario para traer elementos dependiendes de una consulta
-     * @version 1.0.0
-     * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros
-     * ligados
-     * @param string $campo_filtro Nombre del campo del registro el cual se utiliza como valor del filtro
-     * @param array $filtro Filtro precargado, es recursivo hace push con el nuevo resultado
-     * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
-     * @return array
-     */
-    private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{
-        if($campo_row===''){
-            return $this->error->error(mensaje: "Error campo vacio",data: $campo_row);
-        }
-        if($campo_filtro===''){
-            return $this->error->error(mensaje: "Error filtro",data: $campo_filtro);
-        }
-        if(!isset($row[$campo_row])){
-            $row[$campo_row] = '';
-        }
-        $filtro[$campo_filtro] = (string)$row[$campo_row];
 
-        return $filtro;
-    }
 
     public function filtro_monto_fin(string $monto, string $campo): array
     {
@@ -975,29 +870,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $filtro;
     }
 
-    /**
-     *
-     * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
-     * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
-     * Genera arreglo
-     * @version 1.0.0
-     * @param array $filtros arreglo de filtros para la obtencion de registros de hijos
-     * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
-     * @return array
-     */
-    private function filtro_para_hijo(array $filtros, array $row):array{
-        $filtro = array();
-        foreach($filtros as $campo_filtro=>$campo_row){
-            if($campo_row===''){
-                return $this->error->error(mensaje: "Error campo vacio",data: $campo_filtro);
-            }
-            $filtro = $this->filtro_hijo(campo_filtro: $campo_filtro, campo_row: $campo_row,filtro: $filtro, row: $row);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro);
-            }
-        }
-        return $filtro;
-    }
+
 
     /**
      * Genera un codigo de forma automatica
@@ -1033,6 +906,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param modelo $modelo Modelo para generacion de descripcion
      * @param array $registro Registro en ejecucion
      * @return array|string
+     * @version 1.426.48
      */
     private function genera_descripcion(modelo $modelo, array $registro): array|string
     {
@@ -1290,7 +1164,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
                 data: $data_modelo);
         }
-        $filtro = $this->obten_filtro_para_hijo(data_modelo: $data_modelo,row: $row);
+        $filtro = (new rows())->obten_filtro_para_hijo(data_modelo: $data_modelo,row: $row);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
@@ -1451,86 +1325,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-    private function model_dependiente(string $modelo_dependiente): modelo_base|array
-    {
-        $modelo_dependiente_ajustado = $this->modelo_dependiente_val($modelo_dependiente);
-        if(errores::$error){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
-        }
-        $modelo = $this->genera_modelo($modelo_dependiente_ajustado);
-        if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $modelo);
-        }
-        return $modelo;
-    }
-
-    private function modelo_dependiente_val(string $modelo_dependiente): array|string
-    {
-        $modelo_dependiente_ajustado = $this->ajusta_modelo_comp($modelo_dependiente);
-        if(errores::$error ){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
-        }
-
-        $valida = $this->valida_data_desactiva($modelo_dependiente_ajustado);
-        if(errores::$error){
-            return $this->error->error('Error al validar modelos',$valida);
-        }
-
-        return $modelo_dependiente_ajustado;
-    }
-
-
-
-    /**
-     *
-     * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
-     * @version 1.0.0
-     * @param array $data_modelo datos de la configuracion del modelo a procesar los filtros
-     * @param array $row registro formado en forma modelo->registro
-     * @example
-     *     $filtro = $this->obten_filtro_para_hijo($data_modelo,$row);
-     *
-     * @return array con filtro maquetado para su procesamiento filtro[$campo_filtro] = $value;
-     * @throws errores $data_modelo['filtros'] no existe
-     * @throws errores $data_modelo['filtros_con_valor'] no existe
-     * @throws errores $data_modelo['filtros'] no es un array
-     * @throws errores $data_modelo['filtros_con_valor'] no es un array
-     * @throws errores $data_modelo['filtros'][$campo] =  ''
-     * @throws errores $data_modelo['filtros'][$campo] no existe
-     *
-     */
-    private function obten_filtro_para_hijo(array $data_modelo, array $row):array{
-        if(!isset($data_modelo['filtros'])){
-            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
-        }
-        if(!isset($data_modelo['filtros_con_valor'])){
-            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros_con_valor] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
-        }
-        if(!is_array($data_modelo['filtros'])){
-            $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
-        }
-        if(!is_array($data_modelo['filtros_con_valor'])){
-            $fix = 'En data_modelo debe existir un key filtros_con_valor como array data_modelo[filtros_con_valor] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
-        }
-
-        $filtros = $data_modelo['filtros'];
-        $filtros_con_valor = $data_modelo['filtros_con_valor'];
-
-        $filtro = $this->filtro_para_hijo(filtros: $filtros,row: $row);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error filtro",data: $filtro);
-        }
-
-        foreach($filtros_con_valor as $campo_filtro=>$value){
-            $filtro[$campo_filtro] = $value;
-        }
-
-        return $filtro;
-    }
 
     /**
      *
@@ -1772,18 +1566,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return true;
     }
 
-    private function valida_data_desactiva(string $modelo_dependiente): bool|array
-    {
-        $valida = $this->valida_names_model($modelo_dependiente);
-        if(errores::$error){
-            return $this->error->error('Error al validar modelos',$valida);
-        }
 
-        if($this->registro_id<=0){
-            return $this->error->error('Error $this->registro_id debe ser mayor a 0',$this->registro_id);
-        }
-        return true;
-    }
 
     /**
      * PHPUNIT
@@ -1801,20 +1584,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-    private function valida_names_model(string $modelo_dependiente): bool|array
-    {
-        $valida = $this->validacion->valida_data_modelo($modelo_dependiente);
-        if(errores::$error){
-            return  $this->error->error("Error al validar modelo",$valida);
-        }
 
-        $valida = $this->validacion->valida_name_clase($this->tabla);
-        if(errores::$error){
-            return $this->error->error('Error al validar tabla',$valida);
-        }
-
-        return true;
-    }
 
     /**
      * Valida si en txt esta vacio

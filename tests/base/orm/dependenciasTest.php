@@ -21,7 +21,7 @@ class dependenciasTest extends test {
     {
         errores::$error = false;
         $dep = new dependencias();
-        //$st = new liberator($st);
+        $dep = new liberator($dep);
         $link = $this->link;
         $parent_id = 1;
         $tabla = 'adm_menu';
