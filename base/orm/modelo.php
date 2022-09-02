@@ -1013,26 +1013,17 @@ class modelo extends modelo_base {
 
         if($ejecuta_upd->ejecuta_upd) {
 
-            if (!$reactiva) {
-                $valida = $this->validacion->valida_transaccion_activa(
-                    aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo,
-                    registro: $registro, registro_id: $this->registro_id, tabla: $this->tabla);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $valida);
-                }
+            $reactiva_row = (new upd())->reactiva(modelo: $this,reactiva:  $reactiva,registro:  $registro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $reactiva_row);
             }
 
-            $campos_sql = $this->genera_campos_update();
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql);
-            }
-            $this->campos_sql = $campos_sql;
-            $campos_sql = $this->agrega_usuario_session();
+
+            $campos_sql = (new upd())->campos_sql(modelo: $this);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
             }
 
-            $this->campos_sql .= ',' . $campos_sql;
 
             $sql = (new sql())->update(campos_sql: $this->campos_sql, id:$id, tabla: $this->tabla);
             if (errores::$error) {

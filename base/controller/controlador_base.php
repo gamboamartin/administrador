@@ -260,7 +260,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $template->campos_invisibles =$this->campos_invisibles;
         $this->registro_en_proceso = $registro_en_proceso;
 
-        $campos = $elm->obten_campos(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
+        $campos = $elm->obten_campos_el(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
         if(errores::$error){
             return  $this->retorno_error(mensaje: 'Error al obtener campos',data: $campos,header: $header,ws: false);
         }
@@ -956,7 +956,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $template = new templates($this->link);
 
-        $campos = $elm->obten_campos(modelo: $this->modelo,vista: 'modifica',estructura_bd:  array());
+        $campos = $elm->obten_campos_el(estructura_bd: array(), modelo: $this->modelo, vista: 'modifica');
         if(errores::$error){
             return $this->errores->error('Error al obtener campos',$campos);
         }
@@ -1206,7 +1206,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $exportador = new exportador();
 
-        $campos = $elm->obten_campos(estructura_bd: array(), modelo: $this->modelo,vista: 'lista');
+        $campos = $elm->obten_campos_el(estructura_bd: array(), modelo: $this->modelo,vista: 'lista');
         if(errores::$error){
             return   $this->errores->error('Error al obtener campos',$campos);
         }
@@ -1220,7 +1220,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        $campos = $elm->obten_campos(estructura_bd:  array(), modelo: $this->modelo,vista: 'lista');
+        $campos = $elm->obten_campos_el(estructura_bd:  array(), modelo: $this->modelo,vista: 'lista');
         if(errores::$error){
             return   $this->errores->error('Error al obtener campos',$campos);
         }

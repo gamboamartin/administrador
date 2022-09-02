@@ -326,6 +326,8 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         return $estructura_bd;
     }
 
+
+
     /**
      *
      * Funcion para obtener los campos de una vista
@@ -347,7 +349,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @author mgamboa
      * @fecha 2022-08-01 11:34
      */
-    public function obten_campos(array $estructura_bd, modelo_base $modelo, string $vista): array{
+    public function obten_campos_el(array $estructura_bd, modelo_base $modelo, string $vista): array{
 
         if($vista === ''){
             return $this->error->error(mensaje: 'Error $vista no puede venir vacia',data: $vista);

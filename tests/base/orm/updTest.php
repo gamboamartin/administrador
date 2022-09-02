@@ -9,6 +9,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
+use models\adm_seccion;
 
 
 class updTest extends test {
@@ -17,6 +18,26 @@ class updTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_agrega_usuario_session(){
+
+
+        errores::$error = false;
+        $upd = new upd();
+
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->usuario_id = 2;
+        $modelo->campos_sql = 1;
+
+
+
+        $resultado = $upd->agrega_usuario_session($modelo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
     public function test_ejecuta_upd(): void
@@ -64,6 +85,92 @@ class updTest extends test {
         $this->assertNotTrue($resultado->ejecuta_upd);
 
 
+        errores::$error = false;
+    }
+
+    public function test_params_data_update(){
+
+
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_seccion($this->link);
+
+        //$modelo->usuario_id = 100;
+        $campo = 'a';
+        $value = '';
+        $resultado = $upd->params_data_update($campo, $modelo, $value);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_slaches_value(): void
+    {
+
+
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $campo = '"a';
+        $value = "b'";
+        $resultado = $upd->slaches_value($campo, $value);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('\"a', $resultado->campo);
+        $this->assertEquals("b\'", $resultado->value);
+        errores::$error = false;
+    }
+
+    public function test_usuario_existente(){
+
+
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_seccion($this->link);
+
+        $modelo->usuario_id = 100;
+        $resultado = $upd->usuario_existente($modelo);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_value_null()
+    {
+
+
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+
+        $value = '';
+
+        $resultado = $upd->value_null($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $value = 'x';
+
+        $resultado = $upd->value_null($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $value = null;
+
+        $resultado = $upd->value_null($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('NULL', $resultado);
         errores::$error = false;
     }
 

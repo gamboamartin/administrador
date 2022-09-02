@@ -21,22 +21,7 @@ class modelo_baseTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_agrega_usuario_session(){
 
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb->usuario_id = 2;
-        $mb->campos_sql = 1;
-        $mb = new liberator($mb);
-
-
-
-        $resultado = $mb->agrega_usuario_session();
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_ajusta_row_select(){
 
@@ -784,25 +769,7 @@ class modelo_baseTest extends test {
 
     }
 
-    public function test_slaches_value(): void
-    {
 
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb->usuario_id = 2;
-        $mb->campos_sql = 1;
-        $mb = new liberator($mb);
-
-        $campo = '"a';
-        $value = "b'";
-        $resultado = $mb->slaches_value($campo, $value);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('\"a', $resultado->campo);
-        $this->assertEquals("b\'", $resultado->value);
-        errores::$error = false;
-    }
 
     public function test_str_replace_first(){
         errores::$error = false;
@@ -833,19 +800,7 @@ class modelo_baseTest extends test {
 
     }
 
-    public function test_usuario_existente(){
 
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-
-        $mb->usuario_id = 100;
-        $resultado = $mb->usuario_existente();
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_valida_codigo_aut(){
 
@@ -927,39 +882,7 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-    public function test_value_null()
-    {
 
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-
-
-        $value = '';
-
-        $resultado = $mb->value_null($value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-
-        $value = 'x';
-
-        $resultado = $mb->value_null($value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-
-        $value = null;
-
-        $resultado = $mb->value_null($value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('NULL', $resultado);
-        errores::$error = false;
-    }
 
 
 }

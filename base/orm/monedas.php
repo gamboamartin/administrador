@@ -99,7 +99,7 @@ class monedas{
             $value_ = $this->reasigna_value_moneda(
                 campo: $campo, modelo: $modelo,tipos_moneda:  $tipos_moneda,value:  $value_);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al limpiar value', data: $value);
+                return $this->error->error(mensaje: 'Error al limpiar value', data: $value_);
             }
         }
         return $value_;

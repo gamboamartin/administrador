@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use models\adm_elemento_lista;
 use stdClass;
 
 class upd{
@@ -8,6 +9,79 @@ class upd{
 
     public function __construct(){
         $this->error = new errores();
+    }
+
+    /**
+     *
+     * Devuelve una cadena que comprueba la existencia del usuario que realiza la modificacion asignando su id a la
+     * columna usuario_update_id
+     *
+     * @param modelo_base $modelo
+     * @return array|string
+     * @example
+     *      $this->campos_sql = $campos_sql;
+     *      $campos_sql = $this->agrega_usuario_session();
+     *
+     * @uses modelos->modifica_bd();
+     * @uses modelos->modifica_por_id();
+     * @internal $this->usuario_existente();
+     * @version 1.287.41
+     */
+    private function agrega_usuario_session(modelo_base $modelo): array|string
+    {
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
+
+        if($modelo->campos_sql === ''){
+            return $this->error->error(mensaje: 'campos no puede venir vacio',data: $modelo->campos_sql);
+        }
+        $existe_user = $this->usuario_existente(modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error validar existencia de usuario',data: $existe_user);
+        }
+        if(!$existe_user){
+            return $this->error->error(mensaje: 'Error no existe usuario',
+                data: array($existe_user,$modelo->campos_sql, $modelo->usuario_id));
+        }
+
+        $modelo->campos_sql .= ',usuario_update_id=' . $modelo->usuario_id;
+
+
+        return $modelo->campos_sql;
+    }
+
+    /**
+     * Genera los campos para un update
+     * @param modelo_base $modelo Modleo en ejecucion
+     * @return array|string
+     */
+    private function campos(modelo_base $modelo): array|string
+    {
+        $campos = '';
+        foreach ($modelo->registro_upd as $campo => $value) {
+            $campos = $this->maqueta_rows_upd(campo: $campo, campos:  $campos, modelo: $modelo,value:  $value);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar campos', data: $campos);
+            }
+        }
+        return $campos;
+    }
+
+    public function campos_sql(modelo $modelo): array|string
+    {
+        $campos_sql = $this->genera_campos_update(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql);
+        }
+        $modelo->campos_sql = $campos_sql;
+        $campos_sql = $this->agrega_usuario_session(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
+        }
+
+        $modelo->campos_sql .= ',' . $campos_sql;
+        return $modelo->campos_sql;
     }
 
     /**
@@ -35,4 +109,242 @@ class upd{
         $data->resultado = $resultado;
         return $data;
     }
+
+    /**
+     *
+     * Genera sql con forma de campos para UPDATE
+     * @return array|string con sql de campos para update
+     * @example
+     *     $campos_sql = $this->genera_campos_update();
+     * @uses modelo
+     * @internal $consultas_base->obten_campos($this->tabla,'modifica', $this->link);
+     * @internal $this->obten_campos_update();
+     */
+    private function genera_campos_update(modelo_base $modelo): array|string
+    {
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $modelo->registro_upd);
+        }
+
+        $elemento_lista = (new adm_elemento_lista($modelo->link));
+
+        $campos = $elemento_lista->obten_campos_el(estructura_bd:array(), modelo:$modelo,vista:'modifica');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos',data: $campos);
+        }
+
+        $campos = $this->obten_campos_update(modelo: $modelo);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos',data: $campos);
+        }
+
+        return $campos;
+    }
+
+    /**
+     * Maqueta el registro para actualizacion
+     * @param string $campo Campo a reasignar valor
+     * @param string $campos Conjunto de campos a validar
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string|int|float|null $value Valor a ajustar
+     * @return array|string
+     */
+    private function maqueta_rows_upd(string $campo, string $campos, modelo_base $modelo, string|int|float|null $value): array|string
+    {
+        $campos_ = $campos;
+        if(is_numeric($campo)){
+            return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $campo);
+        }
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $campo);
+        }
+
+        $params = $this->params_data_update(campo: $campo, modelo: $modelo,value:  $value);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar parametros', data:$params);
+        }
+
+        $campos_ = $this->rows_update(campos: $campos_, params: $params);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar campos',data:  $campos_);
+        }
+        return $campos_;
+    }
+
+    /**
+     * P INT P ORDER
+     * Devuelve la forma de los campos a modifica enb forma de sql
+     * @return array|string con sql con maquetacion de una modificacion en sql campo = 'valor'
+     * @throws errores $this->registro_upd vacio
+     * @throws errores $this->registro_upd[campo] campo es un numero
+     * @throws errores $this->registro_upd[campo] campo es vacio
+     * @example
+     *       $campos = $this->obten_campos_update();
+     *
+     * @uses modelo_basico
+     * @uses modelo
+     */
+    private function obten_campos_update(modelo_base $modelo): array|string
+    {
+
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $modelo->registro_upd);
+        }
+        $campos = $this->campos(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar campos',data:  $campos);
+        }
+
+        return $campos;
+    }
+
+    /**
+     * Ajusta los parametros para update
+     * @param string $campo Campo a reasignar valor
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string|float|int|null $value Valor a ajustar
+     * @return array|stdClass
+     * @version 1.425.48
+     */
+    private function params_data_update(string $campo, modelo_base $modelo, string|float|int|null $value): array|stdClass
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
+        }
+
+        $value_ = $value;
+        $value_ = (new monedas())->value_moneda(campo: $campo, modelo: $modelo, value: $value_);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar value moneda',data:  $value_);
+        }
+
+        $data = $this->slaches_value(campo: $campo,value:  $value_);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar value',data:  $data);
+        }
+
+        $data->value = $this->value_null(value: $data->value);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar value', data:$data);
+        }
+        return $data;
+    }
+
+    public function reactiva(modelo $modelo, bool $reactiva, array $registro): bool|array
+    {
+        $valida = false;
+        if (!$reactiva) {
+            $valida = $modelo->validacion->valida_transaccion_activa(
+                aplica_transaccion_inactivo: $modelo->aplica_transaccion_inactivo,
+                registro: $registro, registro_id: $modelo->registro_id, tabla: $modelo->tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $valida);
+            }
+        }
+        return $valida;
+    }
+
+    /**
+     * Concatena los elementos par aun UPDATE
+     * @param string $campos Conjunto de campos a validar
+     * @param stdClass $params Parametros para integrar en upd
+     * @return string|array
+     */
+    private function rows_update(string $campos, stdClass $params): string|array
+    {
+        if(!isset($params->campo)){
+            return $this->error->error('Error no existe params->campo', $params);
+        }
+        if(!isset($params->value)){
+            return $this->error->error('Error no existe params->value', $params);
+        }
+        $campos .= $campos === "" ? "$params->campo = $params->value" : ", $params->campo = $params->value";
+        return $campos;
+    }
+
+    /**
+     * Ajusta los elementos con slashes
+     * @param string $campo Campo a normalizar
+     * @param string|int|float|null $value Valor a normalizar
+     * @return stdClass|array
+     * @version 1.409.47
+     */
+    private function slaches_value(string $campo, string|int|float|null $value): stdClass|array
+    {
+        $campo = trim($campo);
+        if(is_null($value)){
+            $value = "";
+        }
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
+        }
+        $campo = addslashes($campo);
+        $value = addslashes($value);
+
+        $data = new stdClass();
+        $data->campo = $campo;
+        $data->value = $value;
+
+        return $data;
+    }
+
+    /**
+     *
+     * Devuelve una variable de tipo booleana que indica si el usuario existe o no
+     * @param modelo $modelo
+     * @param array $campos_encriptados Campos a validar desencripctacion encriptacion
+     * @return bool|array
+     * @version 1.145.31
+     * @example
+     *      $existe_user = $this->usuario_existente();
+     *
+     * @uses modelo_basico->agrega_usuario_session()
+     * @internal modelo_basico->$this->ejecuta_consulta();
+     */
+    private function usuario_existente(modelo_base $modelo, array $campos_encriptados = array()): bool|array
+    {
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido o no cargado deberia exitir 
+            $modelo->usuario_id mayor  a 0',data: $modelo->usuario_id);
+        }
+
+        $consulta = /** @lang MYSQL */
+            'SELECT count(*) AS existe FROM adm_usuario WHERE adm_usuario.id = '.$modelo->usuario_id;
+        $r_usuario_existente = $modelo->ejecuta_consulta(consulta: $consulta, campos_encriptados: $campos_encriptados);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $r_usuario_existente);
+        }
+
+        $usuario_existente = $r_usuario_existente->registros[0];
+
+        $update_valido = false;
+        if((int)$usuario_existente['existe'] === 1){
+            $update_valido = true;
+        }
+
+        return $update_valido;
+
+    }
+
+    /**
+     * Ajusta un NULL a Value
+     * @param string|int|float|null $value Valor a ajustar como NULL
+     * @return string
+     * @version 1.415.48
+     */
+    private function value_null(string|int|float|null $value): string
+    {
+        if ($value === null) {
+            $value = 'NULL';
+        }
+        else {
+            $value = "'" . $value . "'";
+        }
+        return $value;
+    }
+
+
 }
