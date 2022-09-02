@@ -1067,5 +1067,17 @@ class whereTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error where mal aplicado', $resultado['mensaje']);
     }
 
+    public function test_where_suma(){
+        errores::$error = false;
+        $wh = new where();
 
+        $filtro_sql = 'a = 2';
+        $resultado = $wh->where_suma(filtro_sql: $filtro_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+        $this->assertEquals(expected: ' WHERE a = 2', actual: $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
 }
