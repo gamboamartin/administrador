@@ -148,9 +148,10 @@ class validaciones extends validacion{
 
     /**
      * P INT P ORDER PROBADO
-     * @param string $campo
-     * @param array $filtro_esp
-     * @return bool|array
+     * Valida que $filtro_esp contenga un campo con $campo enviado y este tenga un dato en valor
+     * @param string $campo este no debe ser vacio, debe existir en $filtro_esp
+     * @param array $filtro_esp este filtro debe tener $campo, debe existir y contener un dato en  $filtro_esp[$campo][valor]
+     * @return bool|array verdadero si el $campo no es vacio, existe y $filtro_esp[$campo]['valor'] existe y tiene un dato
      */
     public function valida_dato_filtro_especial(string $campo, array $filtro_esp): bool|array
     {
