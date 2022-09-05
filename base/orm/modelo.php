@@ -983,9 +983,6 @@ class modelo extends modelo_base {
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
 
-        /**
-         * REFACTORIZAR
-         */
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar',data: $init);
@@ -1002,23 +999,16 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
         }
 
-
         $ejecuta_upd = (new upd())->ejecuta_upd(id:$id,modelo:  $this);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al verificar actualizacion',data:$ejecuta_upd);
         }
 
-        $resultado = $ejecuta_upd->resultado;
-
-        if($ejecuta_upd->ejecuta_upd) {
-            $resultado = (new upd())->ejecuta_upd_modelo(id:$id, modelo: $this,reactiva:  $reactiva,
-                registro:  $registro);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al ejecutar sql',
-                    data:  array($resultado, 'sql' => $this->consulta));
-            }
+        $resultado = (new upd())->aplica_ejecucion(ejecuta_upd: $ejecuta_upd,id:  $id,modelo:  $this,
+            reactiva:  $reactiva,registro:  $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
         }
-
 
 
         return $resultado;

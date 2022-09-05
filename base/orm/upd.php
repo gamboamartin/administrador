@@ -53,6 +53,24 @@ class upd{
     }
 
     /**
+     * @throws JsonException
+     */
+    public function aplica_ejecucion(stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
+    {
+        $resultado = $ejecuta_upd->resultado;
+
+        if($ejecuta_upd->ejecuta_upd) {
+            $resultado = $this->ejecuta_upd_modelo(id:$id, modelo: $modelo,reactiva:  $reactiva,
+                registro:  $registro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql',
+                    data:  array($resultado, 'sql' => $modelo->consulta));
+            }
+        }
+        return $resultado;
+    }
+
+    /**
      * Genera los campos para un update
      * @param modelo_base $modelo Modleo en ejecucion
      * @return array|string
@@ -88,7 +106,7 @@ class upd{
     /**
      * @throws JsonException
      */
-    public function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
+    private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
         $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
         if (errores::$error) {
@@ -184,15 +202,17 @@ class upd{
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string|int|float|null $value Valor a ajustar
      * @return array|string
+     * @version 1.429.48
      */
-    private function maqueta_rows_upd(string $campo, string $campos, modelo_base $modelo, string|int|float|null $value): array|string
+    private function maqueta_rows_upd(string $campo, string $campos,
+                                      modelo_base $modelo, string|int|float|null $value): array|string
     {
         $campos_ = $campos;
         if(is_numeric($campo)){
-            return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $campo);
+            return $this->error->error(mensaje: 'Error ingrese un campo valido es un numero',data: $campo);
         }
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error ingrese un campo valido',data: $campo);
+            return $this->error->error(mensaje: 'Error ingrese un campo valido esta vacio',data: $campo);
         }
 
         $params = $this->params_data_update(campo: $campo, modelo: $modelo,value:  $value);
@@ -315,7 +335,7 @@ class upd{
      * @param string $campos Conjunto de campos a validar
      * @param stdClass $params Parametros para integrar en upd
      * @return string|array
-     * @version
+     * @version 1.429.48
      */
     private function rows_update(string $campos, stdClass $params): string|array
     {

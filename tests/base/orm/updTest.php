@@ -89,6 +89,25 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_rows_upd(): void
+    {
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $campo = 'a';
+        $campos = '';
+        $modelo = new adm_seccion($this->link);
+        $value = '';
+        $resultado = $upd->maqueta_rows_upd($campo, $campos, $modelo, $value);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a = ''", $resultado);
+        errores::$error = false;
+
+    }
+
     public function test_params_data_update(){
 
 
