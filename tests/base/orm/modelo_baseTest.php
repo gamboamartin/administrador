@@ -129,109 +129,6 @@ class modelo_baseTest extends test {
 
     }
 
-    public function test_codigo_alta(): void
-    {
-
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb->usuario_id = 2;
-        $mb->campos_sql = 1;
-        $mb = new liberator($mb);
-
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsNumeric($resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $keys_registro[] = '';
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $keys_registro[] = 'a';
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $keys_registro[] = 'a';
-        $registro['a'] = 'z';
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('z-', $resultado);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $keys_registro[] = 'a';
-        $registro['a'] = 'z';
-        $keys_row[] = '';
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $keys_registro[] = 'a';
-        $registro['a'] = 'z';
-        $keys_row[] = 'b';
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $keys_row = array();
-        $row = new stdClass();
-        $registro = array();
-        $keys_registro[] = 'a';
-        $registro['a'] = 'z';
-        $keys_row[] = 'b';
-        $row->b = 'a';
-        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('z-a-', $resultado);
-
-        errores::$error = false;
-    }
-
-
 
     public function test_descripcion_alta()
     {
@@ -287,24 +184,7 @@ class modelo_baseTest extends test {
 
 
 
-    public function test_genera_codigo(){
 
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-
-        $keys_registro = array();
-        $keys_row = array();
-        $modelo = new adm_accion($this->link);
-        $registro_id = 1;
-        $registro = array();
-        $resultado = $mb->genera_codigo($keys_registro, $keys_row, $modelo, $registro_id, $registro);
-        $this->assertIsNumeric($resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-    }
 
     public function test_genera_consulta_base(){
 

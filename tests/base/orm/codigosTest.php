@@ -8,6 +8,7 @@ use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_accion;
 use models\adm_seccion;
 use stdClass;
 
@@ -20,18 +21,137 @@ class codigosTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_codigo_alta(): void
+    {
+
+
+        errores::$error = false;
+        $mb = new codigos();
+
+        $mb = new liberator($mb);
+
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsNumeric($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $keys_registro[] = '';
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $keys_registro[] = 'a';
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $keys_registro[] = 'a';
+        $registro['a'] = 'z';
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('z-', $resultado);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $keys_registro[] = 'a';
+        $registro['a'] = 'z';
+        $keys_row[] = '';
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $keys_registro[] = 'a';
+        $registro['a'] = 'z';
+        $keys_row[] = 'b';
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al inicializar codigo', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $keys_registro = array();
+        $keys_row = array();
+        $row = new stdClass();
+        $registro = array();
+        $keys_registro[] = 'a';
+        $registro['a'] = 'z';
+        $keys_row[] = 'b';
+        $row->b = 'a';
+        $resultado = $mb->codigo_alta($keys_registro, $keys_row, $row, $registro);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('z-a-', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_codigo_random(): void
     {
 
 
         errores::$error = false;
-        $cods = new codigos($this->link);
-
-        //$mb = new liberator($mb);
+        $cods = new codigos();
+        $cods = new liberator($cods);
 
 
 
         $resultado = $cods->codigo_random();
+        $this->assertIsNumeric($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    public function test_genera_codigo(){
+
+
+        errores::$error = false;
+        $mb = new codigos();
+        $mb = new liberator($mb);
+
+        $keys_registro = array();
+        $keys_row = array();
+        $modelo = new adm_accion($this->link);
+        $registro_id = 1;
+        $registro = array();
+        $resultado = $mb->genera_codigo($keys_registro, $keys_row, $modelo, $registro_id, $registro);
         $this->assertIsNumeric($resultado);
         $this->assertNotTrue(errores::$error);
 

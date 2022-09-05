@@ -41,6 +41,21 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_campos(): void
+    {
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_upd['x'] = '';
+        $resultado = $upd->campos($modelo);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("x = ''",$resultado);
+        errores::$error = false;
+    }
+
     public function test_ejecuta_upd(): void
     {
         errores::$error = false;

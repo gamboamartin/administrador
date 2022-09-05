@@ -98,15 +98,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * PHPUNIT
+     *
      * @return array
+     * @throws JsonException
      */
     protected function aplica_desactivacion_dependencias(): array
     {
 
         $data = array();
         if($this->desactiva_dependientes) {
-            $desactiva = $this->desactiva_data_modelos_dependientes();
+            $desactiva = (new dependencias())->desactiva_data_modelos_dependientes(modelo: $this);
             if (errores::$error) {
                 return $this->error->error('Error al desactivar dependiente', $desactiva);
             }
@@ -181,7 +182,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
             }
-            $codigo = $this->genera_codigo(keys_registro: $keys_registro,keys_row:  $keys_row, modelo: $modelo,
+            $codigo = (new codigos())->genera_codigo(keys_registro: $keys_registro,keys_row:  $keys_row, modelo: $modelo,
                 registro_id:$registro[$modelo->tabla.'_id'] , registro: $registro);
 
             if(errores::$error){
@@ -273,51 +274,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    /**
-     * Genera un codigo automatico
-     * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row Keys para asignacion de datos en base row
-     * @param stdClass $row Registro previo
-     * @param array $registro Registro de alta
-     * @return array|string
-     * @version 1.392.45
-     */
-    private function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
-    {
-
-        $codigo = (new codigos())->codigo_aut_init(keys_registro: $keys_registro,keys_row:  $keys_row,
-            registro: $registro, row: $row);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar codigo', data: $codigo);
-        }
-
-        $codigo_random = (new codigos())->codigo_random();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener codigo random', data: $codigo_random);
-        }
-
-        $codigo.=$codigo_random;
-
-        return $codigo;
-    }
-
-    /**
-     * PHPUNIT
-     * @return array
-     * @throws JsonException
-     */
-    private function desactiva_data_modelos_dependientes(): array
-    {
-        $data = array();
-        foreach ($this->models_dependientes as $dependiente) {
-            $desactiva = (new dependencias())->desactiva_data_modelo(modelo: $this,modelo_dependiente:  $dependiente);
-            if (errores::$error) {
-                return $this->error->error('Error al desactivar dependiente', $desactiva);
-            }
-            $data[] = $desactiva;
-        }
-        return $data;
-    }
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -483,73 +439,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-    public function filtro_monto_fin(string $monto, string $campo): array
-    {
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
-        }
-
-        $filtro["$monto"]['valor'] = $this->tabla.'.'.$campo;
-        $filtro["$monto"]['operador'] = '<=';
-        $filtro["$monto"]['comparacion'] = 'AND';
-        $filtro["$monto"]['valor_es_campo'] = true;
-
-        return $filtro;
-    }
-
-    /**
-     * PRUEBAS FINALIZADAS
-     * @param string $monto
-     * @param string $campo
-     * @return array
-     */
-    public function filtro_monto_ini(string $monto, string $campo): array
-    {
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
-        }
-
-        $filtro["$monto"]['valor'] = $this->tabla.'.'.$campo;
-        $filtro["$monto"]['operador'] = '>=';
-        $filtro["$monto"]['comparacion'] = 'AND';
-        $filtro["$monto"]['valor_es_campo'] = true;
-
-        return $filtro;
-    }
-
     /**
      * PRUEBAS FINALIZADAS
      * @param string $monto
@@ -582,12 +471,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error("Error el monto es menor a 0", $monto);
         }
 
-        $filtro_monto_ini = $this->filtro_monto_ini($monto, $campos->inf);
+        $filtro_monto_ini = (new filtros())->filtro_monto_ini($monto, $campos->inf, $this);
         if(errores::$error){
             return $this->error->error('Error al generar filtro monto', $filtro_monto_ini);
         }
 
-        $filtro_monto_fin = $this->filtro_monto_fin($monto, $campos->sup);
+        $filtro_monto_fin = (new filtros())->filtro_monto_fin($monto, $campos->sup, $this);
         if(errores::$error){
             return $this->error->error('Error al generar filtro monto', $filtro_monto_fin);
         }
@@ -598,35 +487,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $filtro;
     }
 
-    /**
-     * Genera un codigo de forma automatica
-     * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row Keys para asignacion de datos en base row
-     * @param modelo $modelo Modelo para obtencion de datos precargados
-     * @param int $registro_id Identificador
-     * @param array $registro Registro para integracion de codigo
-     * @return array|string
-     * @version 1.394.45
-     */
-    private function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
-                                     array $registro): array|string
-    {
-        if($registro_id <=0){
-            return  $this->error->error(mensaje: 'Error $registro_id debe ser mayor a 0', data: $registro_id);
-        }
-
-        $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
-        }
-
-        $codigo = $this->codigo_alta(keys_registro: $keys_registro,keys_row:  $keys_row,row:  $row,
-            registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
-        }
-        return $codigo;
-    }
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion

@@ -56,13 +56,41 @@ class codigos{
     }
 
     /**
+     * Genera un codigo automatico
+     * @param array $keys_registro Key para asignacion de datos base registro
+     * @param array $keys_row Keys para asignacion de datos en base row
+     * @param stdClass $row Registro previo
+     * @param array $registro Registro de alta
+     * @return array|string
+     * @version 1.392.45
+     */
+    private function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
+    {
+
+        $codigo = $this->codigo_aut_init(keys_registro: $keys_registro,keys_row:  $keys_row,
+            registro: $registro, row: $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar codigo', data: $codigo);
+        }
+
+        $codigo_random = $this->codigo_random();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener codigo random', data: $codigo_random);
+        }
+
+        $codigo.=$codigo_random;
+
+        return $codigo;
+    }
+
+    /**
      * @param array $keys_registro Key para asignacion de datos base registro
      * @param array $keys_row Keys para asignacion de datos en base row
      * @param array $registro Registro para maquetacion de codigo basado en los keys_registro
      * @param stdClass $row
      * @return array|string
      */
-    public function codigo_aut_init(array $keys_registro, array $keys_row, array $registro, stdClass $row): array|string
+    private function codigo_aut_init(array $keys_registro, array $keys_row, array $registro, stdClass $row): array|string
     {
         $codigo = '';
 
@@ -122,6 +150,23 @@ class codigos{
     }
 
     /**
+     * Genera codigo random
+     * @return array|string
+     * @version 1.391.45
+     */
+    private function codigo_random(): array|string
+    {
+        try {
+            $codigo = random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+            $codigo .= random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al generar codigo random', data: $e);
+        }
+        return $codigo;
+    }
+
+    /**
      * Concatena un codigo previo con datos de registro
      * @param string $codigo Codigo precargaddo para concatenar
      * @param string $key
@@ -139,21 +184,36 @@ class codigos{
     }
 
     /**
-     * Genera codigo random
+     * Genera un codigo de forma automatica
+     * @param array $keys_registro Key para asignacion de datos base registro
+     * @param array $keys_row Keys para asignacion de datos en base row
+     * @param modelo $modelo Modelo para obtencion de datos precargados
+     * @param int $registro_id Identificador
+     * @param array $registro Registro para integracion de codigo
      * @return array|string
-     * @version 1.391.45
+     * @version 1.394.45
      */
-    public function codigo_random(): array|string
+    public function genera_codigo(array $keys_registro, array $keys_row, modelo $modelo, int $registro_id,
+                                   array $registro): array|string
     {
-        try {
-            $codigo = random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
-            $codigo .= random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+        if($registro_id <=0){
+            return  $this->error->error(mensaje: 'Error $registro_id debe ser mayor a 0', data: $registro_id);
         }
-        catch (Throwable $e){
-            return $this->error->error(mensaje: 'Error al generar codigo random', data: $e);
+
+        $row = $modelo->registro(registro_id: $registro_id, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $row);
+        }
+
+        $codigo = $this->codigo_alta(keys_registro: $keys_registro,keys_row:  $keys_row,row:  $row,
+            registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener codigo', data: $codigo);
         }
         return $codigo;
     }
+
+
 
     /**
      *

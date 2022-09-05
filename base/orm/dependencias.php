@@ -106,7 +106,7 @@ class dependencias{
      * @return array
      * @throws JsonException
      */
-    public function desactiva_data_modelo(modelo_base $modelo, string $modelo_dependiente): array
+    private function desactiva_data_modelo(modelo_base $modelo, string $modelo_dependiente): array
     {
         $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo, modelo_dependiente: $modelo_dependiente);
         if(errores::$error){
@@ -123,6 +123,25 @@ class dependencias{
             return $this->error->error('Error al desactivar dependiente', $desactiva);
         }
         return $desactiva;
+    }
+
+    /**
+     *
+     * @param modelo_base $modelo
+     * @return array
+     * @throws JsonException
+     */
+    public function desactiva_data_modelos_dependientes(modelo_base $modelo): array
+    {
+        $data = array();
+        foreach ($modelo->models_dependientes as $dependiente) {
+            $desactiva = $this->desactiva_data_modelo(modelo: $modelo,modelo_dependiente:  $dependiente);
+            if (errores::$error) {
+                return $this->error->error('Error al desactivar dependiente', $desactiva);
+            }
+            $data[] = $desactiva;
+        }
+        return $data;
     }
 
     /**

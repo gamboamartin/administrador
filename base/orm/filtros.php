@@ -266,6 +266,73 @@ class filtros{
     }
 
     /**
+     * PRUEBAS FINALIZADAS
+     * @param string $monto
+     * @param string $campo
+     * @param modelo_base $modelo
+     * @return array
+     */
+    public function filtro_monto_ini(string $monto, string $campo, modelo_base $modelo): array
+    {
+        if((float)$monto<0.0){
+            return $this->error->error("Error el monto es menor a 0", $monto);
+        }
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
+        }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
+        $clase = $namespace.$modelo->tabla;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error("Error campo vacio", $campo);
+        }
+
+        $filtro["$monto"]['valor'] = $modelo->tabla.'.'.$campo;
+        $filtro["$monto"]['operador'] = '>=';
+        $filtro["$monto"]['comparacion'] = 'AND';
+        $filtro["$monto"]['valor_es_campo'] = true;
+
+        return $filtro;
+    }
+
+    public function filtro_monto_fin(string $monto, string $campo, modelo_base $modelo): array
+    {
+        if((float)$monto<0.0){
+            return $this->error->error("Error el monto es menor a 0", $monto);
+        }
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
+        }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
+        $clase = $namespace.$modelo->tabla;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error("Error campo vacio", $campo);
+        }
+
+        $filtro["$monto"]['valor'] = $modelo->tabla.'.'.$campo;
+        $filtro["$monto"]['operador'] = '<=';
+        $filtro["$monto"]['comparacion'] = 'AND';
+        $filtro["$monto"]['valor_es_campo'] = true;
+
+        return $filtro;
+    }
+
+    /**
      *
      * Devuelve un arreglo con la sentencia de sql que indica si se aplicaran una o dos condiciones
      *

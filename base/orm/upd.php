@@ -72,13 +72,22 @@ class upd{
 
     /**
      * Genera los campos para un update
-     * @param modelo_base $modelo Modleo en ejecucion
+     * @param modelo_base $modelo Modelo en ejecucion
      * @return array|string
+     * @version 1.432.48
      */
     private function campos(modelo_base $modelo): array|string
     {
         $campos = '';
         foreach ($modelo->registro_upd as $campo => $value) {
+
+            if(is_numeric($campo)){
+                return $this->error->error(mensaje: 'Error ingrese un campo valido es un numero',data: $campo);
+            }
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error ingrese un campo valido esta vacio',data: $campo);
+            }
+
             $campos = $this->maqueta_rows_upd(campo: $campo, campos:  $campos, modelo: $modelo,value:  $value);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar campos', data: $campos);
