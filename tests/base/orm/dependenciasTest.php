@@ -17,6 +17,23 @@ class dependenciasTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_aplica_eliminacion_dependencias(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        //$dep = new liberator($dep);
+        $link = $this->link;
+        $tabla = '';
+        $registro_id = 1;
+        $models_dependientes = array();
+        $desactiva_dependientes = true;
+        $resultado = $dep->aplica_eliminacion_dependencias($desactiva_dependientes, $link, $models_dependientes,
+            $registro_id, $tabla);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
     public function test_data_dependientes(): void
     {
         errores::$error = false;

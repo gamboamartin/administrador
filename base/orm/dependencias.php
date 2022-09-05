@@ -42,6 +42,7 @@ class dependencias{
      * @param int $registro_id Registro en ejecucion
      * @param string $tabla Tabla origen
      * @return array
+     * @version 1.434.48
      */
     public function aplica_eliminacion_dependencias(bool $desactiva_dependientes, PDO $link,array $models_dependientes,
                                                     int $registro_id, string $tabla): array
