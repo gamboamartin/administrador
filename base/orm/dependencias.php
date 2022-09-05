@@ -182,7 +182,7 @@ class dependencias{
      * @throws JsonException
      * @version 1.410.47
      */
-    PUBLIC function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
+    private function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
     {
         $modelo_dependiente = trim($modelo_dependiente);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
@@ -192,6 +192,11 @@ class dependencias{
         }
         if($registro_id<=0){
             return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',data:$registro_id);
+        }
+
+        $valida = $this->validacion->valida_name_clase(tabla: $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
         }
 
         $modelo = (new modelo_base($link))->genera_modelo(modelo: $modelo_dependiente);
@@ -207,15 +212,16 @@ class dependencias{
     }
 
     /**
-     * P INT P ORDER
+     * Elimina los datos de un modelo dependiente
      * @param array $models_dependientes Modelos dependendientes
      * @param PDO $link Conexion a la base de datos
      * @param int $registro_id Registro en ejecucion
      * @param string $tabla Tabla origen
      * @return array
      * @throws JsonException
+     *
      */
-    private function elimina_data_modelos_dependientes(array $models_dependientes, PDO $link, int $registro_id,
+    PUBLIC function elimina_data_modelos_dependientes(array $models_dependientes, PDO $link, int $registro_id,
                                                        string $tabla): array
     {
         $data = array();
@@ -229,6 +235,11 @@ class dependencias{
                 return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',
                     data:$registro_id);
             }
+            $valida = $this->validacion->valida_name_clase(tabla: $tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
+            }
+
             $desactiva = $this->elimina_data_modelo(modelo_dependiente: $dependiente,
                 link: $link,registro_id: $registro_id,tabla: $tabla);
             if (errores::$error) {

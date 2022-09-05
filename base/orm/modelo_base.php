@@ -285,79 +285,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function codigo_alta(array $keys_registro, array $keys_row, stdClass $row, array $registro): array|string
     {
 
-        $codigo = $this->codigo_aut_init(keys_registro: $keys_registro,keys_row:  $keys_row,
+        $codigo = (new codigos())->codigo_aut_init(keys_registro: $keys_registro,keys_row:  $keys_row,
             registro: $registro, row: $row);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar codigo', data: $codigo);
         }
 
-        $codigo_random = $this->codigo_random();
+        $codigo_random = (new codigos())->codigo_random();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener codigo random', data: $codigo_random);
         }
 
         $codigo.=$codigo_random;
 
-        return $codigo;
-    }
-
-    /**
-     * @param array $keys_registro Key para asignacion de datos base registro
-     * @param array $keys_row Keys para asignacion de datos en base row
-     * @param array $registro Registro para maquetacion de codigo basado en los keys_registro
-     * @param stdClass $row
-     * @return array|string
-     */
-    private function codigo_aut_init(array $keys_registro, array $keys_row, array $registro, stdClass $row): array|string
-    {
-        $codigo = '';
-
-        $codigo = $this->codigo_base_aut(codigo:$codigo,keys:  $keys_registro, registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
-        }
-
-        $codigo = $this->codigo_base_aut(codigo:$codigo,keys:  $keys_row, registro: $row);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
-        }
-        return $codigo;
-    }
-
-    /**
-     * @param string $codigo Codigo precargado
-     * @param array $keys Key de integracion de registro
-     * @param array|stdClass $registro Registro a utilizar para generacion de codigo
-     * @return array|string
-     */
-    private function codigo_base_aut(string $codigo, array $keys, array|stdClass $registro): array|string
-    {
-        $codigo_ = $codigo;
-        foreach ($keys as $key){
-
-            $codigo_ = (new codigos())->codigo_concat_aut(codigo:$codigo_,key:  $key,keys:  $keys, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
-            }
-
-        }
-        return $codigo_;
-    }
-
-    /**
-     * Genera codigo random
-     * @return array|string
-     * @version 1.391.45
-     */
-    private function codigo_random(): array|string
-    {
-        try {
-            $codigo = random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
-            $codigo .= random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
-        }
-        catch (Throwable $e){
-            return $this->error->error(mensaje: 'Error al generar codigo random', data: $e);
-        }
         return $codigo;
     }
 
@@ -542,133 +482,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
-    /**
-     * PRUEBAS FINALIZADAS/PARAMETROS
-     * Devuelve un arreglo que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de sql y por
-     * @param string $filtro_especial_sql sql previo
-     * @return array|string
-     * @example
-     *      $data_filtro_especial_final = $this->filtro_especial_final($filtro_especial_sql,$where);
-     *
-     * @uses modelo
-     */
 
-    public function filtro_especial_final(string $filtro_especial_sql):array|string{
-        $filtro_especial_sql_env = $filtro_especial_sql;
-        if($filtro_especial_sql !=='') {
-            $data_filtro_especial = $this->maqueta_filtro_especial_final($filtro_especial_sql);
-            if(errores::$error){
-                return  $this->error->error('Error al maquetar sql',$data_filtro_especial);
-            }
-            $filtro_especial_sql_env = $data_filtro_especial;
-        }
-
-        return $filtro_especial_sql_env;
-    }
-
-    /**
-     * PRUEBAS FINALIZADAS
-     * @param string $fecha
-     * @return array
-     */
-    public function filtro_fecha_final(string $fecha): array
-    {
-        $valida = $this->validacion->valida_fecha($fecha);
-        if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-
-        $filtro[$fecha]['valor'] = $this->tabla.'.fecha_final';
-        $filtro[$fecha]['operador'] = '<=';
-        $filtro[$fecha]['comparacion'] = 'AND';
-        $filtro[$fecha]['valor_es_campo'] = true;
-
-        return $filtro;
-    }
-
-    /**
-     * PRUEBAS FINALIZADAS
-     * @param string $fecha
-     * @return array
-     */
-    public function filtro_fecha_inicial(string $fecha): array
-    {
-        $valida = $this->validacion->valida_fecha($fecha);
-        if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $filtro[$fecha]['valor'] = $this->tabla.'.fecha_inicial';
-        $filtro[$fecha]['operador'] = '>=';
-        $filtro[$fecha]['valor_es_campo'] = true;
-
-        return $filtro;
-
-    }
-
-    /**
-     * PRUEBAS FINALIZADAS
-     * @param string $fecha
-     * @param array $filtro
-     * @return array
-     */
-    public function filtro_fecha_rango(string $fecha, array $filtro): array
-    {
-        $valida = $this->validacion->valida_fecha($fecha);
-        if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
-        }
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-
-        $filtro_ini = $this->filtro_fecha_inicial($fecha);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro fecha', $filtro_ini);
-        }
-
-        $filtro_fin = $this->filtro_fecha_final($fecha);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro fecha', $filtro_fin);
-        }
-        $filtro[] = $filtro_ini;
-        $filtro[] = $filtro_fin;
-
-        return $filtro;
-
-    }
 
     public function filtro_monto_fin(string $monto, string $campo): array
     {
@@ -1170,26 +984,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * PHPUNIT
-     * Devuelve un arreglo con la sentencia de sql que indica si se aplicaran una o dos condiciones
-     *
-     * @param string $filtro_especial_sql cadena que contiene una sentencia de sql a aplicar el filtro
-     * @return array|string
-     * @example
-     *      $data_filtro_especial = $this->maqueta_filtro_especial_final($filtro_especial_sql);
-     *
-     * @uses modelo_basico->filtro_especial_final(string $filtro_especial_sql);
-     */
-    private function maqueta_filtro_especial_final( string $filtro_especial_sql):array|string{//FIN
-        if($filtro_especial_sql===''){
-            return  $this->error->error('Error el filtro especial no puede venir vacio',$filtro_especial_sql);
-        }
-
-        return $filtro_especial_sql;
-    }
-
-
-    /**
      *
      * Funcion que obtiene con base en la tabla renombrada si tabla renombrada no es vacia cambia el nombre a tabla original
      * @version 1.45.14
@@ -1218,7 +1012,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return $tabla_nombre;
     }
-
 
 
     /**
@@ -1338,9 +1131,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-
-
     /**
      * PHPUNIT
      * @return bool|array
@@ -1355,8 +1145,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return true;
     }
-
-
 
 
     /**

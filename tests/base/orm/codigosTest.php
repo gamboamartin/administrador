@@ -20,6 +20,24 @@ class codigosTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_codigo_random(): void
+    {
+
+
+        errores::$error = false;
+        $cods = new codigos($this->link);
+
+        //$mb = new liberator($mb);
+
+
+
+        $resultado = $cods->codigo_random();
+        $this->assertIsNumeric($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_valida_codigo_aut(){
 
 

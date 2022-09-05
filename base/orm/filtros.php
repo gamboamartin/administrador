@@ -134,6 +134,156 @@ class filtros{
         return $modelo->consulta;
     }
 
+    /**
+     *
+     * Devuelve un arreglo que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de sql y por
+     * @param string $filtro_especial_sql sql previo
+     * @return array|string
+     * @example
+     *      $data_filtro_especial_final = $this->filtro_especial_final($filtro_especial_sql,$where);
+     *
+     * @uses modelo
+     */
+
+    private function filtro_especial_final(string $filtro_especial_sql):array|string{
+        $filtro_especial_sql_env = $filtro_especial_sql;
+        if($filtro_especial_sql !=='') {
+            $data_filtro_especial = $this->maqueta_filtro_especial_final($filtro_especial_sql);
+            if(errores::$error){
+                return  $this->error->error('Error al maquetar sql',$data_filtro_especial);
+            }
+            $filtro_especial_sql_env = $data_filtro_especial;
+        }
+
+        return $filtro_especial_sql_env;
+    }
+
+    /**
+     *
+     * @param string $fecha
+     * @param modelo_base $modelo
+     * @return array
+     */
+    public function filtro_fecha_final(string $fecha, modelo_base $modelo): array
+    {
+        $valida = $this->validacion->valida_fecha($fecha);
+        if(errores::$error){
+            return $this->error->error("Error fecha", $valida);
+        }
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
+        }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
+        $clase = $namespace.$modelo->tabla;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+
+        $filtro[$fecha]['valor'] = $modelo->tabla.'.fecha_final';
+        $filtro[$fecha]['operador'] = '<=';
+        $filtro[$fecha]['comparacion'] = 'AND';
+        $filtro[$fecha]['valor_es_campo'] = true;
+
+        return $filtro;
+    }
+
+    /**
+     *
+     * @param string $fecha
+     * @param modelo_base $modelo
+     * @return array
+     */
+    public function filtro_fecha_inicial(string $fecha, modelo_base $modelo): array
+    {
+        $valida = $this->validacion->valida_fecha($fecha);
+        if(errores::$error){
+            return $this->error->error("Error fecha", $valida);
+        }
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
+        }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
+        $clase = $namespace.$modelo->tabla;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+        $filtro[$fecha]['valor'] = $modelo->tabla.'.fecha_inicial';
+        $filtro[$fecha]['operador'] = '>=';
+        $filtro[$fecha]['valor_es_campo'] = true;
+
+        return $filtro;
+
+    }
+
+    /**
+     *
+     * @param string $fecha
+     * @param array $filtro
+     * @param modelo_base $modelo
+     * @return array
+     */
+    private function filtro_fecha_rango(string $fecha, array $filtro, modelo_base $modelo): array
+    {
+        $valida = $this->validacion->valida_fecha($fecha);
+        if(errores::$error){
+            return $this->error->error("Error fecha", $valida);
+        }
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
+        }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
+        $clase = $namespace.$modelo->tabla;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+
+        $filtro_ini = (new filtros())->filtro_fecha_inicial($fecha, $modelo);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro fecha', $filtro_ini);
+        }
+
+        $filtro_fin = (new filtros())->filtro_fecha_final($fecha,$modelo);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro fecha', $filtro_fin);
+        }
+        $filtro[] = $filtro_ini;
+        $filtro[] = $filtro_fin;
+
+        return $filtro;
+
+    }
+
+    /**
+     *
+     * Devuelve un arreglo con la sentencia de sql que indica si se aplicaran una o dos condiciones
+     *
+     * @param string $filtro_especial_sql cadena que contiene una sentencia de sql a aplicar el filtro
+     * @return array|string
+     * @example
+     *      $data_filtro_especial = $this->maqueta_filtro_especial_final($filtro_especial_sql);
+     *
+     * @uses modelo_basico->filtro_especial_final(string $filtro_especial_sql);
+     */
+    private function maqueta_filtro_especial_final( string $filtro_especial_sql):array|string{//FIN
+        if($filtro_especial_sql===''){
+            return  $this->error->error('Error el filtro especial no puede venir vacio',$filtro_especial_sql);
+        }
+
+        return $filtro_especial_sql;
+    }
+
 
 
 

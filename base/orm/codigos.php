@@ -5,6 +5,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JetBrains\PhpStorm\Pure;
 use stdClass;
+use Throwable;
 
 
 class codigos{
@@ -55,6 +56,72 @@ class codigos{
     }
 
     /**
+     * @param array $keys_registro Key para asignacion de datos base registro
+     * @param array $keys_row Keys para asignacion de datos en base row
+     * @param array $registro Registro para maquetacion de codigo basado en los keys_registro
+     * @param stdClass $row
+     * @return array|string
+     */
+    public function codigo_aut_init(array $keys_registro, array $keys_row, array $registro, stdClass $row): array|string
+    {
+        $codigo = '';
+
+        $codigo = $this->codigo_base_aut(codigo:$codigo,keys:  $keys_registro, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        }
+
+        $codigo = $this->codigo_base_aut(codigo:$codigo,keys:  $keys_row, registro: $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        }
+        return $codigo;
+    }
+
+
+
+    /**
+     * @param string $codigo Codigo precargado
+     * @param array $keys Key de integracion de registro
+     * @param array|stdClass $registro Registro a utilizar para generacion de codigo
+     * @return array|string
+     */
+    private function codigo_base_aut(string $codigo, array $keys, array|stdClass $registro): array|string
+    {
+        $codigo_ = $codigo;
+        foreach ($keys as $key){
+
+            $codigo_ = $this->codigo_concat_aut(codigo:$codigo_,key:  $key,keys:  $keys, registro: $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+            }
+
+        }
+        return $codigo_;
+    }
+
+    /**
+     * @param string $codigo Codigo precargado
+     * @param mixed $key Key para validacion
+     * @param array $keys Conjunto de keys para integrar codigo
+     * @param array|stdClass $registro
+     * @return array|string
+     */
+    private function codigo_concat_aut(string $codigo, mixed $key, array $keys, array|stdClass $registro): array|string
+    {
+        $valida = $this->valida_codigo_aut(key: $key,keys_registro:  $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
+        $codigo = $this->concat_codigo_aut(codigo:$codigo, key: $key,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        }
+        return $codigo;
+    }
+
+    /**
      * Concatena un codigo previo con datos de registro
      * @param string $codigo Codigo precargaddo para concatenar
      * @param string $key
@@ -72,22 +139,18 @@ class codigos{
     }
 
     /**
-     * @param string $codigo Codigo precargado
-     * @param mixed $key Key para validacion
-     * @param array $keys Conjunto de keys para integrar codigo
-     * @param array|stdClass $registro
+     * Genera codigo random
      * @return array|string
+     * @version 1.391.45
      */
-    public function codigo_concat_aut(string $codigo, mixed $key, array $keys, array|stdClass $registro): array|string
+    public function codigo_random(): array|string
     {
-        $valida = $this->valida_codigo_aut(key: $key,keys_registro:  $keys,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        try {
+            $codigo = random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
+            $codigo .= random_int(10, 99) . random_int(10, 99) . random_int(10, 99) . random_int(10, 99);
         }
-
-        $codigo = $this->concat_codigo_aut(codigo:$codigo, key: $key,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al generar codigo random', data: $e);
         }
         return $codigo;
     }
