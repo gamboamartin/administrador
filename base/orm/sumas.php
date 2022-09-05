@@ -19,8 +19,15 @@ class sumas{
 
     /**
      * PHPUNIT
-     * @param array $campos
+     *
+     * Funcion que recorre el arreglo de $campos para maquetar una cadena de texto. A su vez
+     * verificando que no esté vacio y que sean validos los caracteres.
+     *
+     * @param array $campos Campos a verificar
      * @return array|string
+     *
+     * @function $data = $sumas->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
+     * La funcion enlista y maqueta el nombre de $campo y $alias para completar una cadena de texto.
      */
     public function columnas_suma(array $campos): array|string
     {
