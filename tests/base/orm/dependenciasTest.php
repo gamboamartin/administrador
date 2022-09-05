@@ -53,7 +53,7 @@ class dependenciasTest extends test {
     {
         errores::$error = false;
         $dep = new dependencias();
-        //$dep = new liberator($dep);
+        $dep = new liberator($dep);
         $link = $this->link;
         $tabla = 'adm_accion_grupo';
         $registro_id = 1;

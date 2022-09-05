@@ -440,55 +440,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * PRUEBAS FINALIZADAS
-     * @param string $monto
-     * @param stdClass $campos
-     * @param array $filtro
-     * @return array
-     */
-    public function filtro_monto_rango(string $monto, stdClass $campos, array $filtro): array
-    {
-        $campos_arr = (array)$campos;
-        $keys = array('inf','sup');
-        $valida = $this->validacion->valida_existencia_keys($campos_arr, $keys);
-        if(errores::$error){
-            return $this->error->error("Error validar campos", $valida);
-        }
-
-        if($this->tabla === ''){
-            return $this->error->error("Error tabla vacia", $this->tabla);
-        }
-        $namespace = 'models\\';
-        $this->tabla = str_replace($namespace,'',$this->tabla);
-        $clase = $namespace.$this->tabla;
-        if($this->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$this->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
-        }
-
-        $filtro_monto_ini = (new filtros())->filtro_monto_ini($monto, $campos->inf, $this);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro monto', $filtro_monto_ini);
-        }
-
-        $filtro_monto_fin = (new filtros())->filtro_monto_fin($monto, $campos->sup, $this);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro monto', $filtro_monto_fin);
-        }
-
-        $filtro[] = $filtro_monto_ini;
-        $filtro[] = $filtro_monto_fin;
-
-        return $filtro;
-    }
-
-
-    /**
      * @param modelo $modelo Modelo para generacion de descripcion
      * @param array $registro Registro en ejecucion
      * @return array|string

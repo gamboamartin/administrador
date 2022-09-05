@@ -334,6 +334,55 @@ class filtros{
 
     /**
      *
+     * @param string $monto
+     * @param stdClass $campos
+     * @param array $filtro
+     * @param modelo_base $modelo
+     * @return array
+     */
+    private function filtro_monto_rango(string $monto, stdClass $campos, array $filtro, modelo_base $modelo): array
+    {
+        $campos_arr = (array)$campos;
+        $keys = array('inf','sup');
+        $valida = $this->validacion->valida_existencia_keys($campos_arr, $keys);
+        if(errores::$error){
+            return $this->error->error("Error validar campos", $valida);
+        }
+
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
+        }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
+        $clase = $namespace.$modelo->tabla;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        if(!class_exists($clase)){
+            return $this->error->error('Error no existe la clase '.$clase,$clase);
+        }
+        if((float)$monto<0.0){
+            return $this->error->error("Error el monto es menor a 0", $monto);
+        }
+
+        $filtro_monto_ini = (new filtros())->filtro_monto_ini($monto, $campos->inf, $modelo);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro monto', $filtro_monto_ini);
+        }
+
+        $filtro_monto_fin = (new filtros())->filtro_monto_fin($monto, $campos->sup, $modelo);
+        if(errores::$error){
+            return $this->error->error('Error al generar filtro monto', $filtro_monto_fin);
+        }
+
+        $filtro[] = $filtro_monto_ini;
+        $filtro[] = $filtro_monto_fin;
+
+        return $filtro;
+    }
+
+    /**
+     *
      * Devuelve un arreglo con la sentencia de sql que indica si se aplicaran una o dos condiciones
      *
      * @param string $filtro_especial_sql cadena que contiene una sentencia de sql a aplicar el filtro

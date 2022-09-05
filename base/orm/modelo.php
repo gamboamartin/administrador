@@ -390,8 +390,7 @@ class modelo extends modelo_base {
      * @return array con datos del registro eliminado
      * @throws errores Si $id < 0
      * @throws errores definidas en internals
-     * @throws errores si no existe registro*@throws \JsonException
-     * @throws JsonException
+
      * @example
      *      $registro = $this->modelo->elimina_bd($this->registro_id);
      *
