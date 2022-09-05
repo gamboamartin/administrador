@@ -70,10 +70,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','not_in','sql_extra','filtro_fecha');
     }
 
-
-
-
-
     /**
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
      * hijos
@@ -165,43 +161,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         }
         return $registro;
-    }
-
-    /**
-     * PHPUNIT
-     * Devuelve una cadena de ceros con una longitud definida entre la cantidad de digits ingresados y el limite de
-     * digitos que requiere en el codigo
-     *
-     * @param int $longitud es un digito que indica el inicio a partir del cual se concatenaran los ceros faltantes hasta
-     * el limite
-     * @param int $total_cadena es un digito que indica la cantidad total de caracteres
-     * @example
-     *      $resultado = asigna_cero_codigo(1,10);
-     *      //return $ceros = '000000000';
-     *
-     * @return array|string
-     * @throws errores Si $longitud es menor a 0
-     * @example
-     *      $resultado = asigna_cero_codigo(-1,10);
-     *      //return array errores
-     * @throws errores Si $total_cadena es menor a 0
-     * @example
-     *      $resultado = asigna_cero_codigo(10,-1);
-     *      //return array errores
-     */
-    public function asigna_cero_codigo(int $longitud, int $total_cadena): array|string
-    {//FIN Y DOC
-        if($longitud<0){
-            return $this->error->error('Error $longitud debe ser mayor a 0',$longitud);
-        }
-        if($total_cadena<0){
-            return $this->error->error('Error $total_cadena debe ser mayor a 0',$total_cadena);
-        }
-        $ceros = '';
-        for($i = $longitud; $i<$total_cadena; $i++){
-            $ceros.='0';
-        }
-        return $ceros;
     }
 
     /**
@@ -314,8 +273,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-
-
     /**
      * Genera un codigo automatico
      * @param array $keys_registro Key para asignacion de datos base registro
@@ -378,34 +335,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $codigo_ = $codigo;
         foreach ($keys as $key){
 
-            $codigo_ = $this->codigo_concat_aut(codigo:$codigo_,key:  $key,keys:  $keys, registro: $registro);
+            $codigo_ = (new codigos())->codigo_concat_aut(codigo:$codigo_,key:  $key,keys:  $keys, registro: $registro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
             }
 
         }
         return $codigo_;
-    }
-
-    /**
-     * @param string $codigo Codigo precargado
-     * @param mixed $key Key para validacion
-     * @param array $keys Conjunto de keys para integrar codigo
-     * @param array|stdClass $registro
-     * @return array|string
-     */
-    private function codigo_concat_aut(string $codigo, mixed $key, array $keys, array|stdClass $registro): array|string
-    {
-        $valida = $this->valida_codigo_aut(key: $key,keys_registro:  $keys,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
-        }
-
-        $codigo = $this->concat_codigo_aut(codigo:$codigo, key: $key,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
-        }
-        return $codigo;
     }
 
     /**
@@ -426,24 +362,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * Concatena un codigo previo con datos de registro
-     * @param string $codigo Codigo precargaddo para concatenar
-     * @param string $key
-     * @param array|stdClass $registro
-     * @return string
-     */
-    private function concat_codigo_aut(string $codigo, string $key, array|stdClass $registro): string
-    {
-        if(is_object($registro)){
-            $registro = (array)$registro;
-        }
-        $codigo .= $registro[$key];
-        $codigo .= '-';
-        return $codigo;
-    }
-
-
-    /**
      * PHPUNIT
      * @return array
      * @throws JsonException
@@ -460,8 +378,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return $data;
     }
-
-
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -754,8 +670,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-
-
     public function filtro_monto_fin(string $monto, string $campo): array
     {
         if((float)$monto<0.0){
@@ -869,8 +783,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return $filtro;
     }
-
-
 
     /**
      * Genera un codigo de forma automatica
@@ -1225,53 +1137,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      *
-     * @param array $registros
-     * @param string $key
-     * @param int $longitud_maxima
-     * @return array|string
-     */
-    public function genera_ultimo_codigo_base_numero(array $registros, string $key,int $longitud_maxima):array|string{
-
-        $valida_base = $this->validacion->valida_base_ultimo_codigo($registros,$key);
-        if(errores::$error){
-            return $this->error->error('Error al validar',$valida_base);
-        }
-        if($longitud_maxima < 0){
-            return $this->error->error('Error $longitud_maxima debe ser mayor a 0',$longitud_maxima);
-        }
-
-        $ultimo_codigo_upd = $this->obten_ultimo_codigo_insert($registros,$key);
-        if(errores::$error){
-            return $this->error->error('Error al generar ultimo codigo',$ultimo_codigo_upd);
-        }
-
-        $longitud_codigo = strlen($ultimo_codigo_upd);
-
-        $ceros = $this->asigna_cero_codigo($longitud_codigo,$longitud_maxima);
-        if(errores::$error){
-            return $this->error->error('Error al asignar ceros',$ceros);
-        }
-
-        return $ceros.$ultimo_codigo_upd;
-    }
-
-    /**
-     * PHPUNIT
-     * @param int $ultimo_codigo
-     * @return int|array
-     */
-    private function genera_ultimo_codigo_int(int $ultimo_codigo): int|array
-    {
-        if($ultimo_codigo<0){
-            return $this->error->error('Error $ultimo_codigo debe ser mayor a 0',$ultimo_codigo);
-        }
-
-        $ultimo_codigo_int = $ultimo_codigo;
-        return $ultimo_codigo_int+1;
-    }
-
-    /**
-     *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @version 1.24.10
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
@@ -1324,8 +1189,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-
     /**
      *
      * Funcion que obtiene con base en la tabla renombrada si tabla renombrada no es vacia cambia el nombre a tabla original
@@ -1354,38 +1217,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $tabla_nombre = $tabla_original;
         }
         return $tabla_nombre;
-    }
-
-    /**
-     * PHPUNIT
-     * @param array $registros
-     * @param string $key
-     * @return array|int
-     */
-    private function obten_ultimo_codigo_insert(array $registros, string $key): array|int
-    {
-
-        $valida_base = $this->valida_base_ultimo_codigo($registros,$key);
-        if(errores::$error){
-            return $this->error->error('Error al validar',$valida_base);
-        }
-
-        $registro  = $registros['registros'][0];
-
-        if(!isset($registro[$key])){
-            return $this->error->error('Error no existe $registro['.$key.']',$registro);
-        }
-
-
-        $ultimo_codigo = (int)$registro[$key];
-
-
-        $ultimo_codigo_upd = $this->genera_ultimo_codigo_int($ultimo_codigo);
-        if(errores::$error){
-            return $this->error->error('Error al generar ultimo codigo',$ultimo_codigo_upd);
-        }
-
-        return $ultimo_codigo_upd;
     }
 
 
@@ -1467,10 +1298,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-
-
-
-
     /**
      *
      * Funcion reemplaza el primer dato encontrado en la posicion 0
@@ -1512,60 +1339,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-    /**
-     *
-     * Devuelve el registro ya validado en la posicion de codigo
-     *
-     * @param array $registros registro a revisar
-     * @param string $key cadena de texto que indica la posicion del registro
-     * @example
-     *      $valida_base = $this->valida_base_ultimo_codigo($registros,$key);
-     *
-     * @return array
-     * @throws errores $registros['registros'] debe existir
-     * @throws errores $registros['registros'][0] debe existir
-     * @throws errores $key no puede venir vacio
-     *
-     * @uses modelo_basico->genera_ultimo_codigo_base_numero()
-     * @uses modelo_basico->obten_ultimo_codigo_insert()
-     *
-     */
-    private function valida_base_ultimo_codigo(array $registros, string $key):array{
-        if(!isset($registros['registros'])){
-            return $this->error->error('Error no existe registros en registro',$registros);
-        }
-        if(!isset($registros['registros'][0])){
-            return $this->error->error('Error no existe registros[registro][0]',$registros);
-        }
-        if($key === ''){
-            return $this->error->error('Error no existe key no puede venir vacio',$key);
-        }
-        return $registros;
-    }
-
-    /**
-     * Valida que los datos de un codigo automatico sean validos
-     * @param mixed $key Key para validacion
-     * @param array $keys_registro conjunto de key para integrar en base registro
-     * @param array|stdClass $registro Registro de alta
-     * @return bool|array
-     * @version 1.395.45
-     */
-    private function valida_codigo_aut(mixed $key, array $keys_registro, array|stdClass $registro): bool|array
-    {
-        $valida = $this->valida_key_vacio(key: $key);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar key', data: $valida);
-        }
-
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys_registro, registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
-        }
-
-        return true;
-    }
-
 
 
     /**
@@ -1585,21 +1358,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-
-    /**
-     * Valida si en txt esta vacio
-     * @param mixed $key Texto a validar
-     * @return bool|array
-     * @version 1.393.45
-     */
-    private function valida_key_vacio(mixed $key): bool|array
-    {
-        $key = trim($key);
-        if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
-        }
-        return true;
-    }
 
     /**
      * Valida los datos de un modelo para obtener su registro
@@ -1623,8 +1381,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return true;
     }
-
-
 
     /**
      * PHPUNIT

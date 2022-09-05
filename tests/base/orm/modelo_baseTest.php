@@ -711,48 +711,9 @@ class modelo_baseTest extends test {
 
 
 
-    public function test_valida_codigo_aut(){
 
 
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
 
-        $keys_registro = array();
-        $key = '';
-        $registro = array();
-        $resultado = $mb->valida_codigo_aut($key, $keys_registro, $registro);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar key', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $keys_registro = array();
-        $key = 'a';
-        $registro = array();
-        $resultado = $mb->valida_codigo_aut($key, $keys_registro, $registro);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
-
-    public function test_valida_key_vacio(): void
-    {
-
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb->usuario_id = 2;
-        $mb->campos_sql = 1;
-        $mb = new liberator($mb);
-        $key = 'a';
-        $resultado = $mb->valida_key_vacio($key);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-
-    }
 
     public function test_valida_registro_modelo()
     {
