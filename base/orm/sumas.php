@@ -55,10 +55,23 @@ class sumas{
 
     /**
      * PROBADO P ORDER P INT
-     * @param string $campo
-     * @param string $alias
-     * @param string $columnas
+     *
+     * Funcion que obtiene el nombre del campo y el alias de la columna a sumar, validando
+     * que no vengan espacios vacios y retornando un objeto que continene 2 cadenas maquetadas
+     * con el valor de esas variables.
+     *
+     * @param string $campo Campo a verificar
+     * @param string $alias Alias a verificar
+     * @param string $columnas Columna a verificar
      * @return array|stdClass
+     *
+     * @function $column = (new columnas())->add_column(alias: $alias, campo: $campo); Funcion que
+     * hace llamado a la funcion "add_column" para maquetar una cadena de texto con los valores de
+     * $campo y $alias
+     *
+     * @function $coma = (new sql_bass())->coma_sql(columnas: $columnas); Funcion que hace llamado
+     * al metodo "coma_sql" para maquetar una cadena de texto conforme a los valores de la variable $columnas
+     *
      */
     private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
     {
