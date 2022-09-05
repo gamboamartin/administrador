@@ -10,6 +10,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
 use models\adm_seccion;
+use stdClass;
 
 
 class updTest extends test {
@@ -104,6 +105,53 @@ class updTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+    }
+
+    public function test_reactiva(): void
+    {
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $reactiva = false;
+        $modelo = new adm_accion($this->link);
+        $registro = array();
+        $resultado = $upd->reactiva($modelo, $reactiva, $registro);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_rows_update(): void
+    {
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $campos = '';
+        $params = new stdClass();
+        $params->campo = 'a';
+        $params->value = 'x';
+        $resultado = $upd->rows_update($campos, $params);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a = x', $resultado);
+
+        errores::$error = false;
+
+
+        $campos = 'z';
+        $params = new stdClass();
+        $params->campo = 'a';
+        $params->value = 'x';
+        $resultado = $upd->rows_update($campos, $params);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z, a = x', $resultado);
+        errores::$error = false;
+
     }
 
     public function test_slaches_value(): void

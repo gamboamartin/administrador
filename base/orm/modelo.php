@@ -1010,42 +1010,12 @@ class modelo extends modelo_base {
 
         $resultado = $ejecuta_upd->resultado;
 
-
         if($ejecuta_upd->ejecuta_upd) {
-
-            $reactiva_row = (new upd())->reactiva(modelo: $this,reactiva:  $reactiva,registro:  $registro);
+            $resultado = (new upd())->ejecuta_upd_modelo(id:$id, modelo: $this,reactiva:  $reactiva,
+                registro:  $registro);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $reactiva_row);
-            }
-
-
-            $campos_sql = (new upd())->campos_sql(modelo: $this);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
-            }
-
-
-            $sql = (new sql())->update(campos_sql: $this->campos_sql, id:$id, tabla: $this->tabla);
-            if (errores::$error) {
-                return $this->error->error('Error al generar sql', $sql);
-            }
-
-            $consulta = $sql;
-            $this->consulta = $consulta;
-
-            $this->transaccion = 'UPDATE';
-            $this->registro_id = $id;
-
-            $resultado = $this->ejecuta_sql(consulta: $this->consulta);
-
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al ejecutar sql',data:  array($resultado, 'sql' => $this->consulta));
-            }
-
-            $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $this,
-                registro: $this->registro_upd);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora);
+                return $this->error->error(mensaje: 'Error al ejecutar sql',
+                    data:  array($resultado, 'sql' => $this->consulta));
             }
         }
 

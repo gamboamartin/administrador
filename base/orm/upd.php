@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use JsonException;
 use models\adm_elemento_lista;
 use stdClass;
 
@@ -68,7 +69,7 @@ class upd{
         return $campos;
     }
 
-    public function campos_sql(modelo $modelo): array|string
+    private function campos_sql(modelo $modelo): array|string
     {
         $campos_sql = $this->genera_campos_update(modelo: $modelo);
         if (errores::$error) {
@@ -82,6 +83,38 @@ class upd{
 
         $modelo->campos_sql .= ',' . $campos_sql;
         return $modelo->campos_sql;
+    }
+
+    /**
+     * @throws JsonException
+     */
+    public function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
+    {
+        $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+
+        $consulta = $sql;
+        $modelo->consulta = $consulta;
+
+        $modelo->transaccion = 'UPDATE';
+        $modelo->registro_id = $id;
+
+        $resultado = $modelo->ejecuta_sql(consulta: $modelo->consulta);
+
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql',
+                data:  array($resultado, 'sql' => $modelo->consulta));
+        }
+
+        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__, modelo: $modelo,
+            registro: $modelo->registro_upd);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora);
+        }
+
+        return $resultado;
     }
 
     /**
@@ -109,6 +142,8 @@ class upd{
         $data->resultado = $resultado;
         return $data;
     }
+
+
 
     /**
      *
@@ -232,7 +267,36 @@ class upd{
         return $data;
     }
 
-    public function reactiva(modelo $modelo, bool $reactiva, array $registro): bool|array
+    private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro): array|string
+    {
+        $reactiva_row = $this->reactiva(modelo: $modelo,reactiva:  $reactiva,registro:  $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $reactiva_row);
+        }
+
+
+        $campos_sql = $this->campos_sql(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
+        }
+
+
+        $sql = (new sql())->update(campos_sql: $modelo->campos_sql, id:$id, tabla: $modelo->tabla);
+        if (errores::$error) {
+            return $this->error->error('Error al generar sql', $sql);
+        }
+        return $sql;
+    }
+
+    /**
+     * Valida siu aplica o no una reactivacion de registro
+     * @param modelo $modelo Modelo a validar
+     * @param bool $reactiva Si !$reactiva bloquea
+     * @param array $registro Registro a verificar
+     * @return bool|array
+     * @version 1.427.48
+     */
+    private function reactiva(modelo $modelo, bool $reactiva, array $registro): bool|array
     {
         $valida = false;
         if (!$reactiva) {
@@ -251,15 +315,23 @@ class upd{
      * @param string $campos Conjunto de campos a validar
      * @param stdClass $params Parametros para integrar en upd
      * @return string|array
+     * @version
      */
     private function rows_update(string $campos, stdClass $params): string|array
     {
+
         if(!isset($params->campo)){
             return $this->error->error('Error no existe params->campo', $params);
         }
         if(!isset($params->value)){
             return $this->error->error('Error no existe params->value', $params);
         }
+
+        $params->campo = trim($params->campo);
+        if($params->campo === ''){
+            return $this->error->error('Error params->campo esta vacio', $params);
+        }
+
         $campos .= $campos === "" ? "$params->campo = $params->value" : ", $params->campo = $params->value";
         return $campos;
     }
