@@ -93,9 +93,8 @@ class inicializacion{
         }
 
         if(!isset($registro_previo->$campo)){
-            return $this->error->error(mensaje: 'Error no existe '.$campo.' En registro', data:$registro_previo);
+            $registro_previo->$campo = '';
         }
-
         if(is_null($registro_previo->$campo)){
             $registro_previo->$campo = '';
         }
