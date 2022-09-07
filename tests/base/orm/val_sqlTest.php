@@ -600,6 +600,23 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_verifica_id(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $campo = 'x';
+        $keys_ids = array();
+        $registro['x'] = '1';
+        $resultado = $val->verifica_id($campo, $keys_ids, $registro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_verifica_tipo_dato(): void
     {
         errores::$error = false;

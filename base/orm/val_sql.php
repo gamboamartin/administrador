@@ -89,10 +89,11 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * Verifica los campos obligatorios esten bien ajustados
      * @param array $keys_obligatorios Conjunto de keys a verificar nativos de modelo
      * @param array $registro Registro a validar
      * @return bool|array
+     * @version 1.439.48
      */
     private function obligatorios(array $keys_obligatorios, array $registro): bool|array
     {
@@ -204,10 +205,12 @@ class val_sql extends validaciones {
     }
 
     /**
-     * Verifica si en elemento es vacio
+     * Valida que un campo obligatorio no se encuentre vacio
      * @param array $keys_obligatorios Conjunto de keys a verificar nativos de modelo
      * @param array $registro Registro a validar
      * @return bool|array
+     * @version 1.439.48
+     *
      */
     private function vacio(array $keys_obligatorios, array $registro): bool|array
     {
@@ -275,12 +278,16 @@ class val_sql extends validaciones {
      * @param array $keys_ids Keys a validar
      * @param array $registro Registro a verificar
      * @return bool|array
+     * @version 1.439.49
      */
     private function verifica_id(string $campo, array $keys_ids, array $registro): bool|array
     {
         $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys_ids,registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar campo ids', data: $campo_r);
+        }
+        if(!isset($registro[$campo_r])){
+            return $this->error->error(mensaje: 'Error no existe '.$campo_r.' en registro', data: $registro);
         }
 
         if(!preg_match($this->patterns['id'], $registro[$campo_r])){
