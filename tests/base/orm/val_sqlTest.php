@@ -546,6 +546,23 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_verifica_chk(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $campo = 'a';
+        $keys_checked = array();
+        $registro = array();
+        $registro['a'] = 'activo';
+        $resultado = $val->verifica_chk($campo, $keys_checked, $registro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_verifica_estructura(): void
     {
         errores::$error = false;

@@ -115,6 +115,7 @@ class val_sql extends validaciones {
      * @param array $keys_ids Campos de tipo ids a validar
      * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @return bool|array
+     * @version 1.443.48
      */
     private function ids(array $keys_ids, array $registro ): bool|array
     {
@@ -224,22 +225,28 @@ class val_sql extends validaciones {
     }
 
     /**
-     * ERRORREV
+     * Valida los elementos de un checked
      * @param string $campo Nombre del campo
-     * @param array $keys_checked
-     * @param array $registro
+     * @param array $keys_checked Key para validar checked
+     * @param array $registro Registro a validar
      * @return bool|array
+     * @version 1.443
      */
     private function verifica_chk(string $campo, array $keys_checked, array $registro): bool|array
     {
         $campo_r = $this->txt_valido($campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al reasignar campo valor',data: $campo_r);
+            return $this->error->error(mensaje: 'Error al validar campo valor',data: $campo_r);
         }
         $existe = $this->existe(keys_obligatorios: $keys_checked,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe',data: $existe);
         }
+
+        if(!isset($registro[$campo_r])){
+            return $this->error->error(mensaje: 'Error debe existir en registro '.$campo_r,data: $registro);
+        }
+
         if((string)$registro[$campo_r] !== 'activo' && (string)$registro[$campo_r]!=='inactivo' ){
             return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe ser activo o inactivo',
                 data: $registro);
