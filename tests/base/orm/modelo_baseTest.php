@@ -9,6 +9,7 @@ use gamboamartin\test\test;
 use models\accion;
 use models\adm_accion;
 use models\adm_dia;
+use models\adm_mes;
 use models\adm_usuario;
 use models\seccion;
 use stdClass;
@@ -63,6 +64,44 @@ class modelo_baseTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
 
+    }
+
+    public function test_asigna_descripcion()
+    {
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+        $modelo = new adm_mes($this->link);
+
+        $del = (new adm_mes($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar', data: $del);
+            print_r($error);
+            exit;
+        }
+
+        $mes_ins = array();
+        $mes_ins['id'] = 1;
+        $mes_ins['codigo'] = 1;
+        $mes_ins['descripcion'] = 1;
+        $alta = (new adm_mes($this->link))->alta_registro($mes_ins);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al dar de alta', data: $alta);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $registro['adm_mes_id'] = 1;
+        $resultado = $mb->asigna_descripcion($modelo, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado['adm_mes_id']);
+        $this->assertEquals(1,$resultado['descripcion']);
+        errores::$error = false;
     }
 
 

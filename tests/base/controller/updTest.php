@@ -6,6 +6,7 @@ use gamboamartin\controllers\controlador_adm_mes;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
 use JsonException;
+use models\adm_mes;
 use stdClass;
 
 
@@ -30,13 +31,33 @@ class updTest extends test {
         $_SESSION['usuario_id'] = 2;
         $upd = new upd();
 
+        $del = (new adm_mes($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error', data: $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_mes_ins = array();
+        $adm_mes_ins['id'] = 1;
+        $adm_mes_ins['codigo'] = 1;
+        $adm_mes_ins['descripcion'] = 1;
+        $alta = (new adm_mes($this->link))->alta_registro($adm_mes_ins);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error', data: $alta);
+            print_r($error);
+            exit;
+        }
+
         $controler = new controlador_adm_mes(link: $this->link, paths_conf: $this->paths_conf);
         $controler->seccion = 'a';
-        $controler->registro_id = 5;
+        $controler->registro_id = 1;
         $resultado = $upd->asigna_datos_modifica($controler);
+
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(5, $resultado['adm_mes_id']);
+        $this->assertEquals(1, $resultado['adm_mes_id']);
         errores::$error = false;
     }
 

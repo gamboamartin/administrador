@@ -203,9 +203,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Asigna una descripcion en caso de no existir
      * @param modelo $modelo Modelo para generacion de descripcion
      * @param array $registro Registro en ejecucion
      * @return array
+     * @version 1.446.48
      */
     protected function asigna_descripcion(modelo $modelo, array $registro): array
     {
