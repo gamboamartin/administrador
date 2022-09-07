@@ -9,6 +9,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
+use models\adm_accion;
 use models\adm_accion_grupo;
 use models\adm_campo;
 use models\adm_dia;
@@ -85,6 +86,22 @@ class bitacorasTest extends test {
         $this->assertTrue(errores::$error);
         $this->assertStringContainsString('Error al generar namespace modelo',$resultado['mensaje']);
 
+        errores::$error = false;
+    }
+
+    public function test_val_bitacora(){
+
+        errores::$error = false;
+        $bitacora = new bitacoras();
+        $bitacora = (new liberator($bitacora));
+        $consulta = 'x';
+        $funcion = 'x';
+        $modelo = new adm_accion($this->link);
+        $modelo->registro_id = 1;
+        $resultado = $bitacora->val_bitacora($consulta, $funcion, $modelo);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
         errores::$error = false;
     }
 

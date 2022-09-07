@@ -396,6 +396,7 @@ class bitacoras{
      * @throws errores la variable que indicaba la funcion llego vacia
      * @throws  errores la variable que indica la consulta llego vacia
      * @throws  errores el id del registro del modelo es menor o igual a 0
+     * @version 1.440.48
      */
     private function val_bitacora(string $consulta, string $funcion, modelo $modelo): bool|array
     {
