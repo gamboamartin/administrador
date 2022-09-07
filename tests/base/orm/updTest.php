@@ -123,6 +123,26 @@ class updTest extends test {
 
     }
 
+    public function test_obten_campos_update(){
+
+
+        errores::$error = false;
+        $upd = new upd();
+
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->usuario_id = 2;
+        $modelo->campos_sql = 1;
+
+        $modelo->registro_upd['x'] = '"xx';
+
+        $resultado = $upd->obten_campos_update($modelo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_params_data_update(){
 
 

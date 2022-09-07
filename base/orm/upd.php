@@ -237,17 +237,17 @@ class upd{
     }
 
     /**
-     * P INT P ORDER
+     *
      * Devuelve la forma de los campos a modifica enb forma de sql
+     * @param modelo_base $modelo modelo en ejecucion
      * @return array|string con sql con maquetacion de una modificacion en sql campo = 'valor'
      * @throws errores $this->registro_upd vacio
      * @throws errores $this->registro_upd[campo] campo es un numero
      * @throws errores $this->registro_upd[campo] campo es vacio
      * @example
      *       $campos = $this->obten_campos_update();
+     * @version 1.438.48
      *
-     * @uses modelo_basico
-     * @uses modelo
      */
     private function obten_campos_update(modelo_base $modelo): array|string
     {
