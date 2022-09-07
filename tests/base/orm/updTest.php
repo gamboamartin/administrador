@@ -9,6 +9,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
+use models\adm_dia;
 use models\adm_seccion;
 use stdClass;
 
@@ -101,6 +102,22 @@ class updTest extends test {
         $this->assertNotTrue($resultado->ejecuta_upd);
 
 
+        errores::$error = false;
+    }
+
+    public function test_genera_campos_update(): void
+    {
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_dia($this->link);
+        $modelo->registro_upd['a'] = '';
+
+        $resultado = $upd->genera_campos_update($modelo);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a = ''", $resultado);
         errores::$error = false;
     }
 

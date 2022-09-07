@@ -52,8 +52,15 @@ class upd{
         return $modelo->campos_sql;
     }
 
+
     /**
-     * @throws JsonException
+     * @param stdClass $ejecuta_upd
+     * @param int $id
+     * @param modelo $modelo Modelo en ejecucion
+     * @param bool $reactiva
+     * @param array $registro
+     * @return array|stdClass
+
      */
     public function aplica_ejecucion(stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
@@ -96,6 +103,11 @@ class upd{
         return $campos;
     }
 
+    /**
+     * Obtiene los campos para un upd del modelo
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array|string
+     */
     private function campos_sql(modelo $modelo): array|string
     {
         $campos_sql = $this->genera_campos_update(modelo: $modelo);
@@ -112,8 +124,14 @@ class upd{
         return $modelo->campos_sql;
     }
 
+
     /**
-     * @throws JsonException
+     * @param int $id
+     * @param modelo $modelo Modelo en ejecucion
+     * @param bool $reactiva
+     * @param array $registro
+     * @return array|stdClass
+
      */
     private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
@@ -181,11 +199,14 @@ class upd{
      * @uses modelo
      * @internal $consultas_base->obten_campos($this->tabla,'modifica', $this->link);
      * @internal $this->obten_campos_update();
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @version 1.445.48
      */
     private function genera_campos_update(modelo_base $modelo): array|string
     {
         if(count($modelo->registro_upd) === 0){
-            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $modelo->registro_upd);
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
         }
 
         $elemento_lista = (new adm_elemento_lista($modelo->link));
@@ -296,6 +317,13 @@ class upd{
         return $data;
     }
 
+    /**
+     * @param int $id
+     * @param modelo $modelo Modelo en ejecucion
+     * @param bool $reactiva
+     * @param array $registro
+     * @return array|string
+     */
     private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro): array|string
     {
         $reactiva_row = $this->reactiva(modelo: $modelo,reactiva:  $reactiva,registro:  $registro);

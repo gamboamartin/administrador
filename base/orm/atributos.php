@@ -92,9 +92,9 @@ class atributos{
 
     /**
      * P INT ERRORREV
+     * @param modelo $modelo
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array|string
-     * @throws \JsonException
      */
     public function ejecuta_insersion_attr(modelo $modelo, int $registro_id): array|string
     {
@@ -119,10 +119,10 @@ class atributos{
     /**
      * P INT ERRORREV
      * @param array $atributo Registro de tipo modelo atributo
+     * @param modelo $modelo_base
      * @param int $registro_id
      * @param string $tabla
      * @return array
-     * @throws JsonException
      */
     private function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
     {
@@ -159,10 +159,10 @@ class atributos{
 
     /**
      * P INT ERROREV
+     * @param modelo $modelo
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @param string $tabla_attr
      * @return array
-     * @throws JsonException
      */
     private function inserta_atributos( modelo $modelo, int $registro_id, string $tabla_attr): array
     {
@@ -193,9 +193,9 @@ class atributos{
     /**
      * P INT ERROREV
      * @param string $clase_attr
+     * @param modelo $modelo
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array
-     * @throws JsonException
      */
     public function inserta_data_attr(string $clase_attr,modelo $modelo, int $registro_id): array
     {

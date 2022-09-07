@@ -181,7 +181,7 @@ class modelo extends modelo_base {
      * P INT ERRORREV
      * inserta un registro por registro enviado
      * @return array|stdClass con datos del registro insertado
-     * @throws JsonException
+
      * @internal  $this->valida_campo_obligatorio();
      * @internal  $this->valida_estructura_campos();
      * @internal  $this->asigna_data_user_transaccion();
@@ -232,7 +232,7 @@ class modelo extends modelo_base {
      * P ORDER P INT
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
-     * @throws JsonException
+
      */
     public function alta_registro(array $registro):array|stdClass{ //FIN
         $this->registro = $registro;

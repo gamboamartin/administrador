@@ -296,9 +296,7 @@ class inserts{
         return $data;
     }
 
-    /**
-     * @throws JsonException
-     */
+
     public function transacciones(modelo $modelo): array|stdClass
     {
         $data_log = $this->genera_data_log(link: $modelo->link,registro: $modelo->registro,tabla: $modelo->tabla);
@@ -324,8 +322,8 @@ class inserts{
     /**
      * P INT ERROREV
      * @param string $consulta texto en forma de SQL
+     * @param modelo $modelo
      * @return array|stdClass
-     * @throws \JsonException
      */
     private function transacciones_default(string $consulta, modelo $modelo): array|stdClass
     {

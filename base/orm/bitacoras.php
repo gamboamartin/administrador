@@ -8,6 +8,7 @@ use models\adm_seccion;
 use models\bitacora;
 use models\seccion;
 use stdClass;
+use Throwable;
 
 class bitacoras{
     private errores $error;
@@ -56,16 +57,13 @@ class bitacoras{
      * P INT P ORDER ERROREV
      * Devuelve un arreglo que contiene los campos necesarios para un registro en la bitacora
      *
-     * @param array $seccion_menu es un arreglo que indica a que parte del catalogo pertenece la accion
-     * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
-     * @param string $funcion es una cadena que indica que funcion o accion se utilizo
      * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
      * realiza la accion que se utilizo
+     * @param string $funcion es una cadena que indica que funcion o accion se utilizo
+     * @param modelo $modelo
+     * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
+     * @param array $seccion_menu es un arreglo que indica a que parte del catalogo pertenece la accion
      * @return array
-     * @throws errores Si $seccion_menu es menor o igual a 0
-     * @throws errores Si $funcion es una cadena vacia
-     * @throws errores Si $consulta es una cadena vacia
-     * @throws errores|JsonException Si $registro_id es menor o igual a 0*@throws \JsonException
      * @example
      *      $resultado = asigna_registro_para_bitacora('seccion_menu_id'=>'1'),array('x'),'x','x');
      *      //return $registro_data = array('seccion_menu_id'=>'1','status'=>'activo','registro'=>'json_encode($registro)',
@@ -103,7 +101,12 @@ class bitacoras{
         }
         $registro_data['seccion_menu_id'] = $seccion_menu['seccion_menu_id'];
         $registro_data['status'] = 'activo';
-        $registro_data['registro'] = json_encode($registro, JSON_THROW_ON_ERROR);
+        try {
+            $registro_data['registro'] = json_encode($registro, JSON_THROW_ON_ERROR);
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al generar json de bitacora', data:$e);
+        }
         $registro_data['usuario_id'] = $_SESSION['usuario_id'];
         $registro_data['transaccion'] = $funcion;
         $registro_data['sql_data'] = $consulta;
@@ -120,7 +123,7 @@ class bitacoras{
      * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
      * realiza la accion que se utilizo
      * @return array resultados de inserciones de bitacora
-     * @throws JsonException
+
      * @internal  $this->genera_bitacora($registro,$funcion, $consulta)
      * @uses   modelo
      * @example
@@ -265,7 +268,7 @@ class bitacoras{
      * @param string $consulta el la sentencia sql de la funcion aplicada
      * @return array con registro de insersion de bitacora
      * @throws errores definidos en internals
-     * @throws JsonException
+
      * @example
      *     $r_bitacora = $this->genera_bitacora($registro,$funcion, $consulta);
      * @uses modelo_basico->bitacora
@@ -314,7 +317,7 @@ class bitacoras{
      *
      * @return array registro afectado
      * @throws errores definidos en internal*@throws JsonException
-     * @throws JsonException
+
      * @example
      *      $this->maqueta_data_bitacora($registro,$funcion, $consulta);
      *
