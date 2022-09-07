@@ -5,6 +5,7 @@ use base\orm\val_sql;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_seccion;
 
 
 class val_sqlTest extends test {
@@ -531,11 +532,32 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
-    public function test_valida_estructura_campos(): void
+    public function test_valida_base_alta(): void
     {
         errores::$error = false;
         $val = new val_sql();
         //$val = new liberator($val);
+
+        $registro = array();
+        $tipo_campos = array();
+        $campos_obligatorios = array();
+        $no_duplicados = array();
+        $modelo = new adm_seccion($this->link);
+        $tabla = 'a';
+        $registro[] = '';
+        $resultado = $val->valida_base_alta($campos_obligatorios, $modelo, $no_duplicados, $registro, $tabla,
+            $tipo_campos);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_valida_estructura_campos(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
 
         $registro = array();
         $tipo_campos = array();

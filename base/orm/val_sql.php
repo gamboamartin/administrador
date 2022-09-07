@@ -28,10 +28,11 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERRROEV
+     * Valida los campos indicados como activo inactivo
      * @param array $keys_checked Keys a validar checked
-     * @param array $registro
+     * @param array $registro Registro a validar
      * @return bool|array
+     * @version 1.444.48
      */
     private function checked(array $keys_checked, array $registro): bool|array
     {
@@ -255,12 +256,13 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER PROBADO ERROREV
+     * Verifica la estructura de un registro conforme a la configuracion del modelo
      * @param array $campos_obligatorios Conjunto de campos obligatorios de un modelo
      * @param array $registro Registro a verificar en conjunto de los keys id definidos
      * @param string $tabla Tabla a verificar
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
+     * @version 1.444.48
      */
     private function verifica_estructura(array $campos_obligatorios, array $registro, string $tabla,
                                          array $tipo_campos): bool|array
@@ -305,14 +307,15 @@ class val_sql extends validaciones {
     }
 
     /**
-     * P INT P ORDER ERROR
+     * Valida un registro previo a la alta en bd
      * @param array $campos_obligatorios Campos definidos en el modelo como obligatorios
      * @param modelo $modelo Modelo a validar el alta
      * @param array $no_duplicados Conjunto de campos del modelo asignados como no duplicados
      * @param array $registro Registro a validar
-     * @param string $tabla
+     * @param string $tabla Tabla o modelo a validar
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
+     * @version 1.444.48
      */
     public function valida_base_alta(array $campos_obligatorios, modelo $modelo, array $no_duplicados, array $registro,
                                      string $tabla, array $tipo_campos): bool|array
@@ -361,8 +364,9 @@ class val_sql extends validaciones {
      * @uses modelos->alta_bd
      * @uses producto->asigna_data_producto_factor
      * @internal  $this->valida_pattern_campo($key,$tipo_campo);
+     * @version 1.444.48
      */
-    public function valida_estructura_campos(array $registro, array $tipo_campos, array $keys_checked = array(),
+    private function valida_estructura_campos(array $registro, array $tipo_campos, array $keys_checked = array(),
                                              array $keys_ids = array(), array $keys_obligatorios = array()): array|bool
     {
 
