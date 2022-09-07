@@ -278,6 +278,7 @@ class selects{
      * @param string $name_modelo Nombre del modelo del select
      * @param array $filtro Filtro de datos
      * @return array
+     * @version 1.442.8
      */
     private function data_select(array $filtro, PDO $link, string $name_modelo, bool $todos):array{
 
@@ -462,7 +463,7 @@ class selects{
 
     /**
      * P INT ERROREV
-     * @param bool $aplica_etiqueta
+     * @param bool $aplica_etiqueta Si aplica etiqueta mostrara una etiqueta en ele select
      * @param int $cols
      * @param array $columnas conjunto de columnas a mostrar en input select
      * @param array $data_con_valor Datos a integrar para options
@@ -532,7 +533,7 @@ class selects{
      * Genera los registros a mostrar en un select
      * @param bool $select_vacio_alta Si true no genera options
      * @param array $filtro Filtro para obtencion de datos de un select
-     * @param string $name_modelo
+     * @param string $name_modelo Nombre del modelo de datos
      * @param PDO $link
      * @param bool $todos Si todos genera todos los registros completos
      *
@@ -559,7 +560,7 @@ class selects{
             }
         }
         elseif(count($filtro)>0) {
-            $registros = $this->registros_activos(link: $link,name_modelo: $name_modelo,filtro: $filtro);
+            $registros = $this->registros_activos(filtro: $filtro, link: $link, name_modelo: $name_modelo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener registros',data:  $registros);
             }
@@ -709,16 +710,30 @@ class selects{
         return $html;
     }
 
-    private function registros_activos(PDO $link, string $name_modelo, array $filtro){
+    /**
+     * Obtiene los registros activos para un select
+     * @param array $filtro Filtro de datos para select
+     * @param PDO $link Conexion a la base de datos
+     * @param string $name_modelo Nombre del modelo de datos
+     * @return array
+     * @version 1.442.48
+     */
+    private function registros_activos(array $filtro, PDO $link, string $name_modelo): array
+    {
+        $name_modelo = trim($name_modelo);
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
+        }
         $modelo = (new modelo_base($link))->genera_modelo($name_modelo);
         if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $modelo);
+            return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
-        $resultado = $modelo->obten_registros_activos(array(), $filtro);
+        $resultado = $modelo->obten_registros_activos(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener registros', $resultado);
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
         }
-        return $resultado['registros'];
+        return $resultado->registros;
     }
 
     /**
@@ -729,7 +744,7 @@ class selects{
      * @param array $registros
      * @param string $select_vacio_alta Si true no genera options
      * @param bool $todos Si todos genera todos los registros completos
-     * @param string $tabla
+     * @param string $tabla Tabla de datos
      * @return array
      */
     private function registros_for_select(stdClass $datos, array $filtro, PDO $link, array $registros,
@@ -757,7 +772,7 @@ class selects{
      * @param bool $select_vacio_alta Si true no genera options
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param bool $todos Si todos genera todos los registros completos
-     * @param string $name_modelo
+     * @param string $name_modelo Nombre del modelo de datos
      * @param PDO $link
      * @return array
      */

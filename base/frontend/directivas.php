@@ -754,7 +754,7 @@ class directivas extends html {
      * @param array $valores Valores a integrar
      * @param PDO $link Conexion a la base de datos
      * @param array $campos_permitidos Campos permitidos para options info
-     * @param array $inputs
+     * @param array $inputs Inputs previos cargados
      * @param array $campos_invisibles
      * @param string $campo
      * @param bool $required
@@ -1229,7 +1229,7 @@ class directivas extends html {
      * @param bool $disabled si disabled el input queda deshabilitado
      * @param string $etiqueta Etiqueta de select
      * @param array $filtro Filtro para obtencion de datos de un select
-     * @param bool $inline
+     * @param bool $inline Tipo de mostrado en form
      * @param bool $ln Salto de line si aplica genera div con 12 cols
      * @param bool $multiple
      * @param array $registros Conjunto de registros para select

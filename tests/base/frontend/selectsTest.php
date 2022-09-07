@@ -279,6 +279,23 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
+    public function test_registros_activos(){
+        errores::$error = false;
+        $sl = new selects();
+        $sl = new liberator($sl);
+
+        $filtro = array();
+        $name_modelo = 'adm_mes';
+        $link = $this->link;
+
+
+        $resultado = $sl->registros_activos($filtro, $link, $name_modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+    }
+
     public function test_selected_value(): void{
         errores::$error = false;
         $sl = new selects();
