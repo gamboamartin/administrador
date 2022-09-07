@@ -87,7 +87,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = '';
 
-        $resultado = $sl->data_bd(false, $this->link, $name_modelo, $filtro);
+        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false  );
 
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -98,7 +98,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = 'a';
 
-        $resultado = $sl->data_bd(false, $this->link, $name_modelo, $filtro);
+        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
@@ -108,7 +108,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = 'adm_seccion';
 
-        $resultado = $sl->data_bd(false, $this->link, $name_modelo, $filtro);
+        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -119,7 +119,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = 'adm_seccion';
 
-        $resultado = $sl->data_bd(true, $this->link, $name_modelo, $filtro);
+        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertNotEmpty($resultado);
@@ -223,6 +223,23 @@ class selectsTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(' z ', $resultado);
         errores::$error = false;
+    }
+
+    public function test_data_select(){
+        errores::$error = false;
+        $sl = new selects();
+        $sl = new liberator($sl);
+
+        $filtro = array();
+        $name_modelo = 'adm_accion';
+        $link = $this->link;
+        $todos = true;
+
+        $resultado = $sl->data_select($filtro, $link, $name_modelo, $todos);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
     }
 
     public function test_elemento_select_fijo(): void{

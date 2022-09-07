@@ -1275,8 +1275,8 @@ class modelo extends modelo_base {
      * @fecha 2022-08-02 17:03
      * @author mgamboa
      */
-    public function obten_registros_activos(array $order = array(), array $filtro= array(),
-                                            array $hijo = array()):array|stdClass{
+    public function obten_registros_activos(array $filtro= array(), array $hijo = array(),
+                                            array $order = array()):array|stdClass{
 
         $filtro[$this->tabla.'.status'] = 'activo';
         $r_data = $this->filtro_and(filtro: $filtro, hijo: $hijo,order: $order);

@@ -759,7 +759,7 @@ class directivas extends html {
      * @param string $campo
      * @param bool $required
      * @param array $registros
-     * @param bool $todos
+     * @param bool $todos Si todos genera todos los registros completos
      * @param bool $select_vacio_alta
      * @param bool $disabled aplica o no disabled a input
      * @return array definidos en internals
@@ -1228,7 +1228,7 @@ class directivas extends html {
      * @param array $data_extra Extra params
      * @param bool $disabled si disabled el input queda deshabilitado
      * @param string $etiqueta Etiqueta de select
-     * @param array $filtro
+     * @param array $filtro Filtro para obtencion de datos de un select
      * @param bool $inline
      * @param bool $ln Salto de line si aplica genera div con 12 cols
      * @param bool $multiple
@@ -1236,7 +1236,7 @@ class directivas extends html {
      * @param bool $select_vacio_alta Si esta vacio deja sin options el select
      * @param string $size
      * @param string $tipo_letra Capitalize ucwords etc
-     * @param bool $todos
+     * @param bool $todos Si todos genera todos los registros completos
      * @param bool $required si required el input es obligatorio en su captura
      * @param string $valor Valor de Identificador de registro
      * @return array|string informacion de select en forma html
@@ -1265,10 +1265,10 @@ class directivas extends html {
         }
 
         $datos = (new selects())->init_datos_select(aplica_etiqueta: $aplica_etiqueta, cols: $cols,
-            data_extra: $data_extra, data_con_valor: $data_con_valor, columnas: $columnas, disabled: $disabled,
+            columnas: $columnas, data_con_valor: $data_con_valor, data_extra: $data_extra, disabled: $disabled,
             etiqueta: $etiqueta, filtro: $filtro, inline: $inline, link: $link, ln: $ln, multiple: $multiple,
             name_input: $campo_name, registros: $registros, required: $required, select_vacio_alta: $select_vacio_alta,
-            size: $size, tipo_letra: $tipo_letra, tabla: $tabla, todos: $todos, valor: $valor);
+            size: $size, tabla: $tabla, tipo_letra: $tipo_letra, todos: $todos, valor: $valor);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar options', data: $datos);
