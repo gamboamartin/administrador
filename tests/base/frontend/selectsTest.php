@@ -279,6 +279,20 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
+    public function test_obten_registros_select(): void{
+        errores::$error = false;
+        $sl = new selects();
+        $sl = new liberator($sl);
+        $filtro = array();
+        $link = $this->link;
+        $name_modelo = 'adm_menu';
+        $select_vacio_alta = false;
+        $resultado = $sl->obten_registros_select($filtro, $link, $name_modelo, $select_vacio_alta);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_registros_activos(){
         errores::$error = false;
         $sl = new selects();
