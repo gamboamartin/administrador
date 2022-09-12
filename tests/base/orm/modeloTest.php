@@ -345,6 +345,17 @@ class modeloTest extends test {
 
     }
 
+    public function test_registros(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+
+        $resultado = $modelo->registros();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_seccion_menu_id(): void
     {
         errores::$error = false;

@@ -1400,12 +1400,13 @@ class modelo extends modelo_base {
     /**
      *
      * Obtiene los registros de una tabla
-     * @param array $columnas
-     * @param bool $aplica_seguridad
-     * @param int $limit
-     * @param array $order
-     * @param bool $return_obj
+     * @param array $columnas Columnas a mostrar en resultado SQL
+     * @param bool $aplica_seguridad Si aplica seguridad buscara usuario permitido
+     * @param int $limit Limit de resultado
+     * @param array $order Orden de resultado
+     * @param bool $return_obj Si retorna obj el resultado se envia en un stdclass
      * @return array|stdClass
+     * @version 1.448.48
      */
     public function registros(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0,
                               array $order = array(), bool $return_obj = false):array|stdClass{
@@ -1446,15 +1447,15 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     *
      * @param array $columnas
      * @return array
      */
     public function registros_permitidos(array $columnas = array()): array
     {
-        $registros = $this->registros($columnas, $this->aplica_seguridad);
+        $registros = $this->registros(columnas: $columnas,aplica_seguridad:  $this->aplica_seguridad);
         if(errores::$error) {
-            return $this->error->error('Error al obtener registros', $registros);
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
         }
 
         return $registros;
