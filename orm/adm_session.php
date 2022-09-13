@@ -56,7 +56,10 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $r_session
+     *
+     * Asigna los datos a mostrar al usuario en base a su id de grupo y usuario
+     *
+     * @param stdClass $r_session Sesion a verificar
      * @return array
      */
     private function asigna_datos_session(stdClass $r_session): array
@@ -89,9 +92,17 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $r_session
-     * @param bool $session_activa
+     *
+     * Funcion que carga los datos de una sesion. si hay una sesion activa, cargará los datos de esa sesion.
+     * Caso contrario cerrará/destuirá las sesiones. Devuelve el estado de la sesion.
+     *
+     * @param stdClass $r_session Sesion a verificar
+     * @param bool $session_activa Verífica la sesion está activa
      * @return bool|array
+     *
+     * @function $carga = $adm_session->carga_session(r_session: $r_session);
+     * Maqueta los datos de la sesion en curso. En caso de error al asignar la sesion devolverá un error
+     *
      */
     private function init_data_session(stdClass $r_session, bool $session_activa): bool|array
     {
