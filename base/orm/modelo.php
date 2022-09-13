@@ -1110,35 +1110,41 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
+     *
      * Devuelve un array con los datos del ultimo registro
      * @param array $filtro filtro a aplicar en sql
-     * @param bool $aplica_seguridad
+     * @param bool $aplica_seguridad si aplica seguridad integra usuario_permitido_id
      * @return array con datos del registro encontrado o registro vacio
      * @example
      *      $filtro['prospecto.aplica_ruleta'] = 'activo';
      * $resultado = $this->obten_datos_ultimo_registro($filtro);
      *
      * @internal  $this->filtro_and($filtro,'numeros',array(),$this->order,1);
-     * @uses  prospecto->obten_ultimo_cerrador_id
+     * @version 1.451.48
      */
-    protected function obten_datos_ultimo_registro(array $filtro = array(), bool $aplica_seguridad = true): array
-    { //fin
+    public function obten_datos_ultimo_registro(bool $aplica_seguridad = true, array $columnas = array(),
+                                                bool $columnas_en_bruto = false, array $filtro = array(),
+                                                array $order = array()): array
+    {
         if($this->tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia',$this->tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia',data: $this->tabla);
         }
-        $this->order = array($this->tabla.'.id'=>'DESC');
+        if(count($order)===0){
+            $order = array($this->tabla.'.id'=>'DESC');
+        }
+
         $this->limit = 1;
 
-        $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad, filtro: $filtro, limit: 1,
-            order: $this->order);
+        $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad,columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto, filtro: $filtro, limit: 1,
+            order: $order);
         if(errores::$error){
-            return $this->error->error('Error al obtener datos',$resultado);
+            return $this->error->error(mensaje: 'Error al obtener datos',data: $resultado);
         }
-        if((int)$resultado['n_registros'] === 0){
+        if((int)$resultado->n_registros === 0){
             return array();
         }
-        return $resultado['registros'][0];
+        return $resultado->registros[0];
 
     }
 
