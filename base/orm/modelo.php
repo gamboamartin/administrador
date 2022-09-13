@@ -1124,7 +1124,7 @@ class modelo extends modelo_base {
      */
     public function obten_datos_ultimo_registro(bool $aplica_seguridad = true, array $columnas = array(),
                                                 bool $columnas_en_bruto = false, array $filtro = array(),
-                                                array $order = array()): array
+                                                array $filtro_extra = array(), array $order = array()): array
     {
         if($this->tabla === ''){
             return $this->error->error(mensaje: 'Error tabla no puede venir vacia',data: $this->tabla);
@@ -1136,7 +1136,7 @@ class modelo extends modelo_base {
         $this->limit = 1;
 
         $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad,columnas: $columnas,
-            columnas_en_bruto: $columnas_en_bruto, filtro: $filtro, limit: 1,
+            columnas_en_bruto: $columnas_en_bruto, filtro: $filtro,filtro_extra: $filtro_extra, limit: 1,
             order: $order);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener datos',data: $resultado);

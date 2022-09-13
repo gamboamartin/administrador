@@ -261,6 +261,22 @@ class modeloTest extends test {
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertNotEmpty($resultado);
+
+
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $order['adm_seccion.descripcion']='ASC';
+        //$columnas[]='adm_seccion_id';
+        $filtro_extra[0]['adm_seccion.descripcion']['operador'] = '>=';
+        $filtro_extra[0]['adm_seccion.descripcion']['valor'] = "'adm_m'";
+        $filtro_extra[0]['adm_seccion.descripcion']['comparacion'] = 'AND';
+        $resultado = $modelo->obten_datos_ultimo_registro(columnas_en_bruto: true, filtro_extra: $filtro_extra, order: $order);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+
         errores::$error = false;
     }
 

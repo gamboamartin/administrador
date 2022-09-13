@@ -301,7 +301,7 @@ class whereTest extends test {
         $resultado = $wh->filtro_extra_sql($filtro_extra);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('a=1', $resultado);
+        $this->assertStringContainsStringIgnoringCase("a='1'", $resultado);
         errores::$error = false;
     }
 
