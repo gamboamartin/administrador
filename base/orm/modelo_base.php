@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 
+use config\generales;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
@@ -613,8 +614,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
      */
     public function genera_modelo(string $modelo):array|modelo{
-        $modelo = str_replace('models\\','',$modelo);
-        $modelo = 'models\\'.$modelo;
+
+
+        if((new generales())->sistema!=='empleado') {
+            $modelo = str_replace('models\\', '', $modelo);
+            $modelo = 'models\\' . $modelo;
+        }
 
         $modelo = trim($modelo);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo);

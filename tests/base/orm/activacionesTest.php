@@ -1,7 +1,6 @@
 <?php
 namespace tests\base;
 
-use base\controller\normalizacion;
 use base\orm\activaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;

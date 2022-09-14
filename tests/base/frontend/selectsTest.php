@@ -107,7 +107,7 @@ class selectsTest extends test {
         errores::$error = false;
 
         $filtro = array();
-        $name_modelo = 'adm_seccion';
+        $name_modelo = 'models\\adm_seccion';
 
         $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
 
@@ -118,7 +118,7 @@ class selectsTest extends test {
         errores::$error = false;
 
         $filtro = array();
-        $name_modelo = 'adm_seccion';
+        $name_modelo = 'models\\adm_seccion';
 
         $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
         $this->assertIsObject( $resultado);
@@ -232,11 +232,12 @@ class selectsTest extends test {
         $sl = new liberator($sl);
 
         $filtro = array();
-        $name_modelo = 'adm_accion';
+        $name_modelo = 'models\\adm_accion';
         $link = $this->link;
         $todos = true;
 
         $resultado = $sl->data_select($filtro, $link, $name_modelo, $todos);
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -286,7 +287,7 @@ class selectsTest extends test {
         $sl = new liberator($sl);
         $filtro = array();
         $link = $this->link;
-        $name_modelo = 'adm_menu';
+        $name_modelo = 'models\\adm_menu';
         $select_vacio_alta = false;
         $resultado = $sl->obten_registros_select($filtro, $link, $name_modelo, $select_vacio_alta);
         $this->assertIsArray( $resultado);
@@ -300,7 +301,7 @@ class selectsTest extends test {
         $sl = new liberator($sl);
 
         $filtro = array();
-        $name_modelo = 'adm_mes';
+        $name_modelo = 'models\\adm_mes';
         $link = $this->link;
 
 
@@ -322,7 +323,7 @@ class selectsTest extends test {
         $datos = new stdClass();
         $registros = array();
         $todos = true;
-        $tabla = 'adm_seccion';
+        $tabla = 'models\\adm_seccion';
         $datos->tabla = 'x';
         $resultado = $sl->registros_for_select($datos, $filtro, $link, $registros, $select_vacio_alta, $todos, $tabla);
         $this->assertIsArray( $resultado);
@@ -336,7 +337,7 @@ class selectsTest extends test {
         $sl = new liberator($sl);
         $filtro = array();
         $link = $this->link;
-        $name_modelo = 'adm_accion';
+        $name_modelo = 'models\\adm_accion';
         $registros = array();
         $select_vacio_alta = false;
         $todos = false;
