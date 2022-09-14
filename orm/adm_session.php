@@ -162,7 +162,15 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P INT P ORDER ERROREV
+     *
+     * Funcion para cargar los datos de una sesion iniciada en base a los filtros aplicados a $session_id.
+     * En caso de error al obtener o a asignar una sesion, lanzará un mensaje.
+     *
      * @return array
+     * 
+     * $r_session = $adm_session->filtro_and(filtro: $filtro);
+     *
+     * $session = $adm_seccion->asigna_data_session(r_session: $r_session);
      */
     public function carga_data_session(): array
     {
