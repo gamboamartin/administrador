@@ -56,7 +56,10 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $r_session
+     *
+     * Asigna los datos a mostrar al usuario en base a su id de grupo y usuario
+     *
+     * @param stdClass $r_session Sesion a verificar
      * @return array
      */
     private function asigna_datos_session(stdClass $r_session): array
@@ -89,9 +92,17 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P ORDER P INT ERRORREV
-     * @param stdClass $r_session
-     * @param bool $session_activa
+     *
+     * Funcion que carga los datos de una sesion. En caso de haber una sesion activa, cargará los
+     * datos de esa sesion. Caso contrario cerrará/destuirá las sesiones. Devuelve el estado de la sesion.
+     *
+     * @param stdClass $r_session Sesion a verificar
+     * @param bool $session_activa Verífica la sesion está activa
      * @return bool|array
+     *
+     * @function $carga = $adm_session->carga_session(r_session: $r_session);
+     * Maqueta los datos de la sesion en curso. En caso de error al asignar la sesion devolverá un error
+     *
      */
     private function init_data_session(stdClass $r_session, bool $session_activa): bool|array
     {
@@ -109,8 +120,12 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P ORDER P INT PROBADO ERRORREV
-     * @param string $session_id
+     * Funcion para generar una sesion, recibe un id de sesion y verifica que sea válido,
+     * en caso de error lanzará un mensaje.
+     *
+     * @param string $session_id Identificador de la sesion que se usará
      * @return string|array
+     *
      */
     private function init_session(string $session_id): string|array
     {
@@ -147,7 +162,15 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P INT P ORDER ERROREV
+     *
+     * Funcion para cargar los datos de una sesion iniciada en base a los filtros aplicados a $session_id.
+     * En caso de error al obtener o a asignar una sesion, lanzará un mensaje.
+     *
      * @return array
+     * 
+     * $r_session = $adm_session->filtro_and(filtro: $filtro);
+     *
+     * $session = $adm_seccion->asigna_data_session(r_session: $r_session);
      */
     public function carga_data_session(): array
     {
