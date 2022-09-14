@@ -93,8 +93,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     /**
      * P ORDER P INT ERRORREV
      *
-     * Funcion que carga los datos de una sesion. si hay una sesion activa, cargará los datos de esa sesion.
-     * Caso contrario cerrará/destuirá las sesiones. Devuelve el estado de la sesion.
+     * Funcion que carga los datos de una sesion. En caso de haber una sesion activa, cargará los
+     * datos de esa sesion. Caso contrario cerrará/destuirá las sesiones. Devuelve el estado de la sesion.
      *
      * @param stdClass $r_session Sesion a verificar
      * @param bool $session_activa Verífica la sesion está activa
