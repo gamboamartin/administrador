@@ -37,6 +37,7 @@ class adm_accion extends modelo{ //FINALIZADAS
      *
      * @functions $r_acciones = (new adm_accion_grupo($adm_accion->link))->obten_accion_permitida(seccion_menu_id: $seccion_menu_id)
      * Se utiliza para valida y maquetar un registro acciones. En caso de error, lanzará un mensaje.
+     * @version 1.454.49
      */
     public function acciones_permitidas(string $accion, modelo $modelo, string $seccion):array{
         if(!isset($_SESSION['grupo_id']) && $seccion !== 'adm_session' && $accion !== 'login'){

@@ -620,10 +620,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER ERRORREV
      * Devuelve un array de la siguiente con la informacion de registros encontrados
-     *
-     *
      *
      * @param bool $aplica_seguridad Si aplica seguridad entonces valida el usuario logueado
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas

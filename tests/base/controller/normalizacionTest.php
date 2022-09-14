@@ -129,6 +129,23 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_determina_filtro_btn(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+
+        $filtro_default_btn = array();
+        $filtro_btn = array();
+        $filtro_default_btn['tabla'] = 'x';
+        $filtro_default_btn['valor_default'] = '1';
+        $resultado = $nm->determina_filtro_btn($filtro_btn, $filtro_default_btn);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1',$resultado['x.id']);
+        errores::$error = false;
+    }
+
     public function test_init_upd_base(): void
     {
         errores::$error = false;
