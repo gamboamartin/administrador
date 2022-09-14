@@ -867,15 +867,8 @@ class templates{
                              bool $muestra_btn):array|string{
 
 
-        $namespace = 'models\\';
-        $seccion = str_replace($namespace,'',$seccion);
-        $clase = $namespace.$seccion;
-
         if(trim($seccion) === ''){
             return $this->error->error('Error seccion no puede venir vacia',$seccion);
-        }
-        if(!class_exists(trim($clase))){
-            return $this->error->error('Error no existe la clase',$clase);
         }
 
         $seccion = trim($seccion);
