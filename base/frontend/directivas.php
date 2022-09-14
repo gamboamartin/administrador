@@ -755,8 +755,8 @@ class directivas extends html {
      * @param PDO $link Conexion a la base de datos
      * @param array $campos_permitidos Campos permitidos para options info
      * @param array $inputs Inputs previos cargados
-     * @param array $campos_invisibles
-     * @param string $campo
+     * @param array $campos_invisibles Campos que nose mostraran en template
+     * @param string $campo Campo a integrar
      * @param bool $required
      * @param array $registros
      * @param bool $todos Si todos genera todos los registros completos
@@ -1231,10 +1231,10 @@ class directivas extends html {
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param bool $inline Tipo de mostrado en form
      * @param bool $ln Salto de line si aplica genera div con 12 cols
-     * @param bool $multiple
+     * @param bool $multiple Si multiple ejecuta un select multiple
      * @param array $registros Conjunto de registros para select
      * @param bool $select_vacio_alta Si esta vacio deja sin options el select
-     * @param string $size
+     * @param string $size Tamaño de div
      * @param string $tipo_letra Capitalize ucwords etc
      * @param bool $todos Si todos genera todos los registros completos
      * @param bool $required si required el input es obligatorio en su captura

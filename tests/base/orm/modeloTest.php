@@ -239,6 +239,47 @@ class modeloTest extends test {
 
     }
 
+    public function test_obten_datos_ultimo_registro(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $filtro['adm_seccion.descripcion'] = 'x';
+        $resultado = $modelo->obten_datos_ultimo_registro(filtro: $filtro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $order['adm_seccion.descripcion']='ASC';
+        //$columnas[]='adm_seccion_id';
+        $resultado = $modelo->obten_datos_ultimo_registro(columnas_en_bruto: true, order: $order);
+
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+
+
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $order['adm_seccion.descripcion']='ASC';
+        //$columnas[]='adm_seccion_id';
+        $filtro_extra[0]['adm_seccion.descripcion']['operador'] = '>=';
+        $filtro_extra[0]['adm_seccion.descripcion']['valor'] = "'adm_m'";
+        $filtro_extra[0]['adm_seccion.descripcion']['comparacion'] = 'AND';
+        $resultado = $modelo->obten_datos_ultimo_registro(columnas_en_bruto: true, filtro_extra: $filtro_extra, order: $order);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_obten_por_id(): void
     {
         errores::$error = false;
@@ -343,6 +384,17 @@ class modeloTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
 
+    }
+
+    public function test_registros(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+
+        $resultado = $modelo->registros();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
     public function test_seccion_menu_id(): void

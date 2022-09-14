@@ -587,6 +587,9 @@ class init{
         if($sistema === 'im_registro_patronal'){
             $namespace = 'gamboamartin\\im_registro_patronal\\';
         }
+        if($sistema === 'imss'){
+            $namespace = 'gamboamartin\\im_registro_patronal\\';
+        }
         if($sistema === 'banco'){
             $namespace = 'gamboamartin\\banco\\';
         }

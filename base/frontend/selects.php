@@ -464,11 +464,11 @@ class selects{
     /**
      * P INT ERROREV
      * @param bool $aplica_etiqueta Si aplica etiqueta mostrara una etiqueta en ele select
-     * @param int $cols
+     * @param int $cols Columnas css
      * @param array $columnas conjunto de columnas a mostrar en input select
      * @param array $data_con_valor Datos a integrar para options
      * @param array $data_extra Extra params
-     * @param bool $disabled
+     * @param bool $disabled si disabled el input queda deshabilitado
      * @param string $etiqueta Etiqueta de select
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param bool $inline
@@ -534,7 +534,7 @@ class selects{
      * @param bool $select_vacio_alta Si true no genera options
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param string $name_modelo Nombre del modelo de datos
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @param bool $todos Si todos genera todos los registros completos
      *
      * @return array conjunto de datos del resultado del modelo
@@ -545,10 +545,16 @@ class selects{
      * @internal $modelo->obten_registros_activos(array(), $filtro);
      * @internal $modelo->obten_registros();
      * @internal $modelo->obten_registros_activos(array(), $filtro);
+     * @version 1.449.48
      */
     private function obten_registros_select(array $filtro, PDO $link, string $name_modelo, bool $select_vacio_alta,
                                             bool $todos= false): array
     {
+
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
+        }
 
         $registros = array();
 
@@ -738,9 +744,9 @@ class selects{
 
     /**
      * ERROREV
-     * @param stdClass $datos
+     * @param stdClass $datos Datos init select
      * @param array $filtro Filtro para obtencion de datos de un select
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @param array $registros
      * @param string $select_vacio_alta Si true no genera options
      * @param bool $todos Si todos genera todos los registros completos
@@ -767,18 +773,24 @@ class selects{
     }
 
     /**
-     * ERROREV
-     * @param array $registros
+     * Obtiene los registros para un select
+     * @param array $registros Registros precargados
      * @param bool $select_vacio_alta Si true no genera options
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param bool $todos Si todos genera todos los registros completos
      * @param string $name_modelo Nombre del modelo de datos
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @return array
+     * @version 1.453.49
      */
     private function registros_select(array $filtro, PDO $link, string $name_modelo, array $registros,
                                       bool $select_vacio_alta, bool $todos): array
     {
+
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
+        }
 
         if(count($registros)===0 ) {
             $registros = $this->obten_registros_select(filtro: $filtro, link: $link, name_modelo: $name_modelo,

@@ -323,8 +323,9 @@ class where{
             if($valor===''){
                 return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor);
             }
+            $valor = addslashes($valor);
             $comparacion = $data_filtro[$campo]['comparacion'];
-            $condicion = $campo.$operador.$valor;
+            $condicion = $campo.$operador."'$valor'";
 
             if($filtro_extra_sql === ''){
                 $filtro_extra_sql .= $condicion;
