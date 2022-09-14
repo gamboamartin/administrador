@@ -120,8 +120,12 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * P ORDER P INT PROBADO ERRORREV
-     * @param string $session_id
+     * Funcion para generar una sesion, recibe un id de sesion y verifica que sea válido,
+     * en caso de error lanzará un mensaje.
+     *
+     * @param string $session_id Identificador de la sesion que se usará
      * @return string|array
+     *
      */
     private function init_session(string $session_id): string|array
     {
