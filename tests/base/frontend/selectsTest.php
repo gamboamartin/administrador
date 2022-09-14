@@ -5,6 +5,7 @@ use base\frontend\selects;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 
 class selectsTest extends test {
@@ -308,6 +309,25 @@ class selectsTest extends test {
         $this->assertNotTrue(errores::$error);
 
 
+    }
+
+    public function test_registros_for_select(): void{
+        errores::$error = false;
+        $sl = new selects();
+        $sl = new liberator($sl);
+        $filtro = array();
+        $link = $this->link;
+
+        $select_vacio_alta = false;
+        $datos = new stdClass();
+        $registros = array();
+        $todos = true;
+        $tabla = 'adm_seccion';
+        $datos->tabla = 'x';
+        $resultado = $sl->registros_for_select($datos, $filtro, $link, $registros, $select_vacio_alta, $todos, $tabla);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
     public function test_registros_select(): void{

@@ -283,9 +283,10 @@ class params_inputs{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param bool $multiple
+     * Aplica un multiple al input
+     * @param bool $multiple si multiple hace el el input se integre para multiples selecciones
      * @return stdClass
+     * @version 1.455.49
      */
     #[Pure] public function multiple_html(bool $multiple): stdClass
     {

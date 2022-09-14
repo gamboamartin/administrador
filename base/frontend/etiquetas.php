@@ -110,31 +110,33 @@ class etiquetas{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $tabla
-     * @param string $tipo_letra
-     * @param string $etiqueta
+     * Genera la etiqueta de unb input
+     * @param string $tabla Tabla o estructura base para input
+     * @param string $tipo_letra Tipo de letra
+     * @param string $etiqueta Etiqueta input Prioridad
      * @return array|string
+     * @version 1.455.49
      */
     public function etiqueta_label(string $etiqueta, string $tabla, string $tipo_letra): array|string
     {
         $etiqueta_label = strtoupper($tabla);
         $etiqueta_label = $this->genera_texto_etiqueta(texto: $etiqueta_label, tipo_letra: $tipo_letra);
         if (errores::$error) {
-            return $this->error->error('Error al generar etiqueta',$etiqueta_label);
+            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label);
         }
         $etiqueta_label_mostrable = $this->etiqueta_label_mostrable(etiqueta:  $etiqueta, etiqueta_label: $etiqueta_label);
         if (errores::$error) {
-            return $this->error->error('Error al generar etiqueta',$etiqueta_label_mostrable);
+            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label_mostrable);
         }
         return $etiqueta_label_mostrable;
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $etiqueta_label
-     * @param string $etiqueta
+     * Genera una etiqueta para un input
+     * @param string $etiqueta_label Etiqueta input
+     * @param string $etiqueta Etiqueta input Prioridad
      * @return string
+     * @version 1.455.49
      */
     private function etiqueta_label_mostrable(string $etiqueta, string $etiqueta_label): string
     {

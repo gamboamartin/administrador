@@ -24,7 +24,7 @@ class selects{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia',$tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia',data: $tabla);
         }
         $campo_name_html = $tabla. '_id';
 
@@ -151,7 +151,7 @@ class selects{
 
     /**
      * P INT P ORDER
-     * @param stdClass $datos
+     * @param stdClass $datos Conjunto de parametros para la creacion de un select
      * @return array|stdClass
      */
     private function data_html_for_select(stdClass $datos): array|stdClass
@@ -160,32 +160,32 @@ class selects{
             'etiqueta','multiple','inline','registros');
         foreach($keys as $key){
             if(!isset($datos->$key)){
-                return $this->error->error('Error no existe datos '.$key,$datos);
+                return $this->error->error(mensaje: 'Error no existe datos '.$key,data: $datos);
             }
         }
 
         $keys = array('cols');
         foreach($keys as $key){
             if(!is_numeric($datos->$key)){
-                return $this->error->error('Error debe ser un entero datos '.$key,$datos);
+                return $this->error->error(mensaje: 'Error debe ser un entero datos '.$key,data: $datos);
             }
         }
 
         $keys = array('registros');
         foreach($keys as $key){
             if(!is_array($datos->$key)){
-                return $this->error->error('Error debe ser un array datos '.$key,$datos);
+                return $this->error->error(mensaje: 'Error debe ser un array datos '.$key,data: $datos);
             }
         }
 
         $ln_html = (new params_inputs())->ln(ln: $datos->ln, size: $datos->size);
         if(errores::$error) {
-            return $this->error->error('Error al generar ln '.$datos->tabla,$ln_html);
+            return $this->error->error(mensaje: 'Error al generar ln '.$datos->tabla,data: $ln_html);
         }
 
         $header_fg = (new forms())->header_form_group(cols: $datos->cols);
         if(errores::$error) {
-            return $this->error->error('Error al generar header '.$datos->tabla,$header_fg);
+            return $this->error->error(mensaje: 'Error al generar header '.$datos->tabla,data: $header_fg);
         }
 
         $contenedor = $this->genera_contenedor_select(cols: $datos->cols,disabled: $datos->disabled,
@@ -193,13 +193,13 @@ class selects{
             aplica_etiqueta:  $datos->aplica_etiqueta, etiqueta: $datos->etiqueta,inline: $datos->inline,
             multiple: $datos->multiple, name_input:  $datos->name_input, size: $datos->size);
         if(errores::$error){
-            return $this->error->error('Error al generar contenedor', $contenedor);
+            return $this->error->error(mensaje: 'Error al generar contenedor',data:  $contenedor);
 
         }
 
         $options_html = $this->options_html(datos:  $datos, registros: $datos->registros);
         if(errores::$error){
-            return $this->error->error('Error al generar options', $options_html);
+            return $this->error->error(mensaje: 'Error al generar options', data: $options_html);
         }
 
         $datos->ln_html = $ln_html;
@@ -352,10 +352,10 @@ class selects{
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param bool $disabled si disabled el input queda deshabilitado
      * @param bool $required si required el input es obligatorio en su captura
-     * @param string $tipo_letra
-     * @param bool $aplica_etiqueta
+     * @param string $tipo_letra Tipo letra para etiquetas
+     * @param bool $aplica_etiqueta si aplica etiqueta muestra la etiqueta
      * @param string $name_input
-     * @param string $etiqueta
+     * @param string $etiqueta Etiqueta input Prioridad
      * @param bool $multiple
      * @param string $size
      * @param bool $inline
@@ -373,19 +373,20 @@ class selects{
 
         $valida_elementos = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar elementos',$valida_elementos);
+            return $this->error->error(mensaje: 'Error al validar elementos',data: $valida_elementos);
         }
 
 
-        $etiqueta_label_mostrable = (new etiquetas())->etiqueta_label(etiqueta:  $etiqueta, tabla: $tabla, tipo_letra: $tipo_letra);
+        $etiqueta_label_mostrable = (new etiquetas())->etiqueta_label(
+            etiqueta:  $etiqueta, tabla: $tabla, tipo_letra: $tipo_letra);
         if (errores::$error) {
-            return $this->error->error('Error al generar etiqueta',$etiqueta_label_mostrable);
+            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label_mostrable);
         }
 
 
         $inline_html_lb = (new class_css())->inline_html_lb(inline:  $inline, size: $size);
         if (errores::$error) {
-            return $this->error->error('Error al generar inline',$inline_html_lb);
+            return $this->error->error(mensaje: 'Error al generar inline',data: $inline_html_lb);
         }
 
         $html = "";
@@ -395,7 +396,7 @@ class selects{
 
         $campo_name_html = $this->campo_name_html(name_input:  $name_input, tabla: $tabla);
         if (errores::$error) {
-            return $this->error->error('Error al generar campo name',$campo_name_html);
+            return $this->error->error(mensaje: 'Error al generar campo name',data: $campo_name_html);
         }
 
 
@@ -406,22 +407,22 @@ class selects{
 
         $disabled_html = (new params_inputs())->disabled_html(disabled: $disabled);
         if (errores::$error) {
-            return $this->error->error('Error al generar disabled',$disabled_html);
+            return $this->error->error(mensaje: 'Error al generar disabled',data: $disabled_html);
         }
 
         $required_html = (new params_inputs())->required_html(required: $required);
         if (errores::$error) {
-            return $this->error->error('Error al generar required',$required_html);
+            return $this->error->error(mensaje: 'Error al generar required',data: $required_html);
         }
 
         $multiple_data = (new params_inputs())->multiple_html(multiple: $multiple);
         if (errores::$error) {
-            return $this->error->error('Error al generar multiple',$multiple_data);
+            return $this->error->error(mensaje: 'Error al generar multiple',data: $multiple_data);
         }
 
         $inline_html = (new class_css())->inline_html(inline: $inline, size: $size);
         if (errores::$error) {
-            return $this->error->error('Error al generar inline',$inline_html);
+            return $this->error->error(mensaje: 'Error al generar inline',data: $inline_html);
         }
 
         $html .= "<select name='$campo_name_html$multiple_data->data' $disabled_html class='$css_class  
@@ -471,9 +472,9 @@ class selects{
      * @param bool $disabled si disabled el input queda deshabilitado
      * @param string $etiqueta Etiqueta de select
      * @param array $filtro Filtro para obtencion de datos de un select
-     * @param bool $inline
+     * @param bool $inline Genera el input inline
      * @param PDO $link Conexion a la base de datos
-     * @param bool $ln
+     * @param bool $ln Salto de linea si true
      * @param bool $multiple
      * @param string $name_input
      * @param array $registros
@@ -743,15 +744,16 @@ class selects{
     }
 
     /**
-     * ERROREV
+     * Obtiene los registros de un select para integrar los options
      * @param stdClass $datos Datos init select
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param PDO $link Conexion a la base de datos
-     * @param array $registros
+     * @param array $registros Conjunto de registros a asignar a options
      * @param string $select_vacio_alta Si true no genera options
      * @param bool $todos Si todos genera todos los registros completos
      * @param string $tabla Tabla de datos
      * @return array
+     * @version 1.455.49
      */
     private function registros_for_select(stdClass $datos, array $filtro, PDO $link, array $registros,
                                           string $select_vacio_alta, bool $todos, string $tabla): array
@@ -761,6 +763,10 @@ class selects{
         }
         if(trim($datos->tabla) === ''){
             return $this->error->error(mensaje: 'Error tabla esta vacia',data: $datos);
+        }
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $tabla);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar tabla",data: $valida);
         }
 
         $registros = $this->registros_select(filtro: $filtro, link: $link, name_modelo: $tabla, registros: $registros,
