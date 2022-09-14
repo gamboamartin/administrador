@@ -310,6 +310,22 @@ class selectsTest extends test {
 
     }
 
+    public function test_registros_select(): void{
+        errores::$error = false;
+        $sl = new selects();
+        $sl = new liberator($sl);
+        $filtro = array();
+        $link = $this->link;
+        $name_modelo = 'adm_accion';
+        $registros = array();
+        $select_vacio_alta = false;
+        $todos = false;
+        $resultado = $sl->registros_select($filtro, $link, $name_modelo, $registros, $select_vacio_alta, $todos);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_selected_value(): void{
         errores::$error = false;
         $sl = new selects();

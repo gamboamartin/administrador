@@ -554,6 +554,10 @@ class init{
         if($sistema === 'documento'){
             $namespace = 'gamboamartin\\documento\\';
         }
+        
+        if($sistema === 'proceso'){
+            $namespace = 'gamboamartin\\proceso\\';
+        }
         if($sistema === 'nomina'){
             $namespace = 'gamboamartin\\nomina\\';
         }
