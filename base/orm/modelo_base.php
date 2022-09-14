@@ -616,7 +616,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public function genera_modelo(string $modelo):array|modelo{
 
 
-        if((new generales())->sistema!=='empleado') {
+        /**
+         * PRODUCTO NO CONFORME
+         */
+        $namespaces = array();
+        $namespaces[]  = 'gamboamartin\\empleado\\models\\';
+
+        $es_namespace_especial_como_mis_inges = false;
+        foreach ($namespaces as $namespace) {
+            $namespaces_explode = explode($namespace, $modelo);
+
+            if (is_array($namespaces_explode) && count($namespaces_explode)>1) {
+                $es_namespace_especial_como_mis_inges = true;
+                break;
+            }
+
+        }
+
+        if(!$es_namespace_especial_como_mis_inges) {
             $modelo = str_replace('models\\', '', $modelo);
             $modelo = 'models\\' . $modelo;
         }
