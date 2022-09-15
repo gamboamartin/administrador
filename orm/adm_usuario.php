@@ -68,6 +68,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @version 1.141.31
      * @param string $tabla
      * @return array
+     *
      */
     public function filtro_seguridad(string $tabla):array{
         $keys = array('usuario_id');
@@ -145,11 +146,15 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     /**
      * Valida que un usuario y un password exista
-     * @param string $password
-     * @param string $usuario
-     * @param string $accion_header
-     * @param string $seccion_header
+     * 
+     * @param string $password Contraseña a verificar
+     * @param string $usuario Usuario a verificar
+     * @param string $accion_header elemento para regresar a accion especifica en el controlador
+     * @param string $seccion_header elemento para regresar a seccion especifica en el controlador
      * @return array|mixed
+     *
+     * @function $r_usuario = $adm_usuario->filtro_and(filtro: $filtro); maqueta los datos obtenidos de un
+     * usuario, antes siendo revisados por un filtro.
      */
     public function valida_usuario_password(string $password, string $usuario, string $accion_header = '',
                                             string $seccion_header = ''){
