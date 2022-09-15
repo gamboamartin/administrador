@@ -49,6 +49,7 @@ class inserts{
      * @param string $campos Conjunto de campos previos
      * @param string $campo Campo a insertar
      * @return string|array
+     * @version 1.468.49
      */
     private function campos_alta_sql(string $campo, string $campos): string|array
     {
@@ -360,6 +361,7 @@ class inserts{
      * @param string $value Valor a cargar
      * @param bool $value_es_null Si null ajusta el campo en null sql
      * @return string|array
+     * @version 1.468.49
      */
     private function valores_sql_alta(string $valores, string $value, bool $value_es_null): string|array
     {

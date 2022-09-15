@@ -22,6 +22,20 @@ class insertsTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_campos_alta_sql(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $campo = 'a';
+        $campos = 'a';
+        $resultado = $ins->campos_alta_sql($campo, $campos);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a,a',$resultado);
+        errores::$error = false;
+    }
+
     public function test_slaches_campo(){
         errores::$error = false;
         $ins = new inserts();
