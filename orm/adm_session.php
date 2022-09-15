@@ -167,7 +167,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      * En caso de error al obtener o a asignar una sesion, lanzará un mensaje.
      *
      * @return array
-     * 
+     *
      * $r_session = $adm_session->filtro_and(filtro: $filtro);
      *
      * $session = $adm_seccion->asigna_data_session(r_session: $r_session);
@@ -285,7 +285,10 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
     /**
      * FULL
-     * @param string $seccion
+     * Funcion para obtener los resultados de los filtros en base a los parametros
+     * dados por $seccion. En caso de que la seccion esté vacia, la clase sea invalida
+     *
+     * @param string $seccion Seccion a verificar
      * @return array
      */
     public function obten_filtro_session(string $seccion): array{
