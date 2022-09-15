@@ -47,6 +47,7 @@ class atributos{
 
     /**
      * P INT P ORDER ERRORREV
+     * @param string $tabla
      * @return string
      */
     private function class_attr(string $tabla): string

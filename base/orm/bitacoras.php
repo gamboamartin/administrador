@@ -353,16 +353,16 @@ class bitacoras{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Funcion que obtiene el registro de seccion menu para aplicacion de una bitacora
      * @example
-    $seccion_menu = $this->obten_seccion_bitacora();
+     *  $seccion_menu = $this->obten_seccion_bitacora();
      * @return array registro de seccion menu encontrado
      * @throws errores definidos en filtro and
      * @throws errores si no se encontro registro
      * @internal  $seccion_menu_modelo->filtro_and($filtro);
      * @uses modelo_basico->maqueta_data_bitacora
-     * @version Falta de UT
+     * @version 1.463.49
      */
     private function obten_seccion_bitacora(modelo $modelo): array
     {
@@ -372,19 +372,17 @@ class bitacoras{
             return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
         }
 
-
-
-        $seccion_menu_modelo = (new adm_seccion($modelo->link));
+        $seccion_menu_modelo = (new adm_seccion(link: $modelo->link));
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar modelo',data:$seccion_menu_modelo);
         }
 
-        $filtro['seccion_menu.descripcion'] = $data_ns->tabla;
+        $filtro['adm_seccion.descripcion'] = $data_ns->tabla;
         $r_seccion_menu = $seccion_menu_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener seccion menu',data:$r_seccion_menu);
         }
-        if((int)$r_seccion_menu['n_registros'] === 0){
+        if((int)$r_seccion_menu->n_registros === 0){
             return $this->error->error(mensaje:'Error no existe la seccion menu',data:$r_seccion_menu);
         }
         return $r_seccion_menu->registros[0];

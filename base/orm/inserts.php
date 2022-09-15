@@ -54,7 +54,7 @@ class inserts{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
         }
         $campos .= $campos === '' ? $campo : ",$campo";
         return $campos;
@@ -152,6 +152,7 @@ class inserts{
     /**
      * P INT P ORDER ERROREV
      * @param stdClass $data_log
+     * @param modelo $modelo
      * @return array|stdClass
      */
     private function inserta_sql(stdClass $data_log, modelo $modelo): array|stdClass
@@ -219,6 +220,7 @@ class inserts{
     /**
      * P ORDER P INT ERROREV
      * @param string $campos
+     * @param string $tabla
      * @param string $valores
      * @return string|array
      */

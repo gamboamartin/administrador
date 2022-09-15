@@ -387,10 +387,7 @@ class modelo extends modelo_base {
      * Elimina un registro por el id enviado
      * @param int $id id del registro a eliminar
      *
-     * @return array con datos del registro eliminado
-     * @throws errores Si $id < 0
-     * @throws errores definidas en internals
-
+     * @return array|stdClass con datos del registro eliminado
      * @example
      *      $registro = $this->modelo->elimina_bd($this->registro_id);
      *
@@ -400,7 +397,7 @@ class modelo extends modelo_base {
      * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
      * @uses  todo el sistema
      */
-    public function elimina_bd(int $id): array{
+    public function elimina_bd(int $id): array|stdClass{
         if($id <= 0){
             return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
         }
@@ -446,12 +443,12 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al insertar bitacora de '.$this->tabla, data: $bitacora);
         }
 
-        /*$data = new stdClass();
+        $data = new stdClass();
         $data->registro_id = $id;
         $data->sql = $this->consulta;
-        $data->registro = $registro;*/
+        $data->registro = $registro;
 
-        return array('mensaje'=>'Registro eliminado con éxito', 'registro_id'=>$id);
+        return $data;
 
     }
 

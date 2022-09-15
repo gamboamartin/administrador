@@ -89,6 +89,19 @@ class bitacorasTest extends test {
         errores::$error = false;
     }
 
+    public function test_obten_seccion_bitacora(){
+
+        errores::$error = false;
+        $bitacora = new bitacoras();
+        $bitacora = (new liberator($bitacora));
+        $modelo = new adm_accion_grupo($this->link);
+        $resultado = $bitacora->obten_seccion_bitacora($modelo);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_val_bitacora(){
 
         errores::$error = false;
