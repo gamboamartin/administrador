@@ -446,6 +446,11 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al insertar bitacora de '.$this->tabla, data: $bitacora);
         }
 
+        /*$data = new stdClass();
+        $data->registro_id = $id;
+        $data->sql = $this->consulta;
+        $data->registro = $registro;*/
+
         return array('mensaje'=>'Registro eliminado con éxito', 'registro_id'=>$id);
 
     }
