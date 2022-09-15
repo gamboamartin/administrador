@@ -351,7 +351,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $resultado = (new altas())->alta_base(controler:  $this, registro: $_POST);
+        $resultado = (new altas())->alta_base(registro: $_POST, controler: $this);
 
         if(errores::$error){
             if(!$transaccion_previa) {
@@ -563,10 +563,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      *
      * @param bool $header
      * @param bool $ws
-     * @return array
-     * @throws JsonException
+     * @return array|stdClass
      */
-    public function elimina_bd(bool $header, bool $ws): array{
+    public function elimina_bd(bool $header, bool $ws): array|stdClass{
         $transacion_previa = false;
         if($this->link->inTransaction()){
             $transacion_previa = true;

@@ -24,6 +24,26 @@ class bitacorasTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_registro_para_bitacora(){
+
+        errores::$error = false;
+        $bitacora = new bitacoras();
+        $bitacora = (new liberator($bitacora));
+        $modelo = new adm_accion_grupo($this->link);
+        $modelo->registro_id  = 1;
+        $consulta = 'b';
+        $funcion = 'a';
+        $registro = array();
+        $seccion_menu = array();
+        $seccion_menu['adm_seccion_id'] = 1;
+        $_SESSION['usuario_id'] = 2;
+        $resultado = $bitacora->asigna_registro_para_bitacora($consulta, $funcion, $modelo, $registro, $seccion_menu);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado['transaccion']);
+        errores::$error = false;
+    }
+
     public function test_clase_namespace(){
 
         errores::$error = false;

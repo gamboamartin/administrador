@@ -438,7 +438,8 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje:'Error al ejecutar sql en '.$this->tabla, data:$resultado);
         }
-        $bitacora = (new bitacoras())->bitacora(consulta: $consulta, funcion: __FUNCTION__,modelo: $this, registro: $registro_bitacora);
+        $bitacora = (new bitacoras())->bitacora(
+            consulta: $consulta, funcion: __FUNCTION__,modelo: $this, registro: $registro_bitacora);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar bitacora de '.$this->tabla, data: $bitacora);
         }

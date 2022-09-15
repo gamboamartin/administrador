@@ -54,7 +54,7 @@ class bitacoras{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Devuelve un arreglo que contiene los campos necesarios para un registro en la bitacora
      *
      * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
@@ -83,12 +83,21 @@ class bitacoras{
      *      //return array errores
      */
     private function asigna_registro_para_bitacora(string $consulta,string $funcion, modelo $modelo,
-                                                   array $registro, array $seccion_menu): array
-    {//FIN Y DOC
-        if($seccion_menu['seccion_menu_id']<=0){
-            return$this->error->error(mensaje: 'Error el id de $seccion_menu[\'seccion_menu_id\'] no puede ser menor a 0',
-                data: $seccion_menu['seccion_menu_id']);
+                                                   array $registro, array $seccion): array
+    {
+
+        $keys = array('adm_seccion_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar seccion ',data:$valida);
         }
+
+        $keys = array('usuario_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar SESSION ',data:$valida);
+        }
+
         if($funcion === ''){
             return $this->error->error(mensaje: 'Error $funcion no puede venir vacia',data:$funcion);
         }
@@ -99,7 +108,7 @@ class bitacoras{
             return $this->error->error(mensaje: 'Error el id de $this->registro_id no puede ser menor a 0',
                 data:$modelo->registro_id);
         }
-        $registro_data['seccion_menu_id'] = $seccion_menu['seccion_menu_id'];
+        $registro_data['adm_seccion_id'] = $seccion['adm_seccion_id'];
         $registro_data['status'] = 'activo';
         try {
             $registro_data['registro'] = json_encode($registro, JSON_THROW_ON_ERROR);
@@ -343,7 +352,7 @@ class bitacoras{
         }
 
         $registro = $this->asigna_registro_para_bitacora(consulta: $consulta, funcion: $funcion,
-            modelo: $modelo, registro: $registro, seccion_menu: $seccion_menu);
+            modelo: $modelo, registro: $registro, seccion: $seccion_menu);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener MAQUETAR REGISTRO PARA BITACORA', data:$registro);
         }
