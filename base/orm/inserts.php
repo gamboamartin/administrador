@@ -195,25 +195,19 @@ class inserts{
         if($campo === ''){
             return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
         }
-        $value_es_null = false;
-        $campo = addslashes($campo);
-        try {
-            if(is_null($value)){
-                $value_es_null = true;
-                $value = 'NULL';
-            }
-            else{
-                $value = addslashes($value);
-            }
 
+        $campo = addslashes($campo);
+
+
+        $data_value = $this->value(value: $value);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar value',data:  $data_value);
         }
-        catch (Throwable  $e){
-            return $this->error->error(mensaje: 'Error al asignar value de campo '.$campo, data: $e);
-        }
+
         $data = new stdClass();
         $data->campo = $campo;
-        $data->value = $value;
-        $data->value_es_null = $value_es_null;
+        $data->value = $data_value->value;
+        $data->value_es_null = $data_value->value_es_null;
         return $data;
     }
 
@@ -372,6 +366,34 @@ class inserts{
         $value_aj = trim($value_aj);
         $valores .= $valores === '' ? (string)$value_aj : ",$value_aj";
         return $valores;
+    }
+
+    /**
+     * Integra un value para insersion
+     * @param mixed $value Valor a insertar
+     * @return array|stdClass
+     * @version 1.465.49
+     */
+    private function value(mixed $value): array|stdClass
+    {
+        $value_es_null = false;
+        try {
+            if(is_null($value)){
+                $value_es_null = true;
+                $value = 'NULL';
+            }
+            else{
+                $value = addslashes($value);
+            }
+
+        }
+        catch (Throwable  $e){
+            return $this->error->error(mensaje: 'Error al asignar value de campo '.$campo, data: $e);
+        }
+        $data = new stdClass();
+        $data->value = $value;
+        $data->value_es_null = $value_es_null;
+        return $data;
     }
 
 
