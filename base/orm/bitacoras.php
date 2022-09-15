@@ -2,11 +2,8 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 use models\adm_bitacora;
 use models\adm_seccion;
-use models\bitacora;
-use models\seccion;
 use stdClass;
 use Throwable;
 
@@ -22,15 +19,12 @@ class bitacoras{
      * P INT ERRORREV P ORDER
      * La funcion aplica una bitacora generando un modelo, consultando un registro con referencia al modelo e inserta una transaccion.
      * Retornando los datos de la transaccion
-     * @param string $tabla almacena el nombre de la tabla con la que se va a interactuar
-     * @param string $funcion almacena la funcion que se va a utilizar
      * @param string $consulta almacena la consulta que se va a realizar a la base de datos
+     * @param string $funcion almacena la funcion que se va a utilizar
+     * @param modelo $modelo
      * @param int $registro_id contiene el identificador del registro
+     * @param string $tabla almacena el nombre de la tabla con la que se va a interactuar
      * @return array
-     * @throws JsonException
-     * @throws errores hubo algun dato corrompido o causa similar por la que no se logro generar el modelo
-     * @throws errores no se logro obtener el registro de la tabla consultada
-     * @throws errores no se logro concretar el registro de la transaccion en la base de datos
      */
     private function aplica_bitacora(string $consulta, string $funcion, modelo $modelo, int $registro_id,
                                      string $tabla): array
@@ -60,9 +54,9 @@ class bitacoras{
      * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
      * realiza la accion que se utilizo
      * @param string $funcion es una cadena que indica que funcion o accion se utilizo
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
-     * @param array $seccion_menu es un arreglo que indica a que parte del catalogo pertenece la accion
+     * @param array $seccion
      * @return array
      * @example
      *      $resultado = asigna_registro_para_bitacora('seccion_menu_id'=>'1'),array('x'),'x','x');
@@ -81,6 +75,8 @@ class bitacoras{
      * @example
      *      $resultado = asigna_registro_para_bitacora(array('seccion_menu_id'=>'1'),$registro_id='-1','x','x')
      *      //return array errores
+     *
+     * @version 1.466.49
      */
     private function asigna_registro_para_bitacora(string $consulta,string $funcion, modelo $modelo,
                                                    array $registro, array $seccion): array
@@ -245,7 +241,6 @@ class bitacoras{
      * @param int $registro_id contiene el identificador del registro a consultar
      * @param string $sql contiene la peticion que se realizara a la base de datos
      * @return array
-     * @throws JsonException
      */
     public function ejecuta_transaccion(string $tabla, string $funcion,  modelo $modelo, int $registro_id = -1, string $sql = ''):array{
         $consulta =trim($sql);
@@ -317,7 +312,7 @@ class bitacoras{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     *
      * Genera un array para insertarlo en la bitacora
      *
      * @param array $registro registro afectado
@@ -333,14 +328,21 @@ class bitacoras{
      * @uses modelo_basico->genera_bitacora
      * @internal $this->obten_seccion_bitacora();
      * @internal $this->asigna_registro_para_bitacora($seccion_menu,$registro,$funcion, $consulta);
+     * @version 1.466.49
+     *
      */
     private function maqueta_data_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro):array{
+
+        $keys = array('usuario_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar SESSION ',data:$valida);
+        }
+
         $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
         }
-
-
         $val = $this->val_bitacora(consulta: $consulta,funcion: $funcion,modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar valores', data: $val);

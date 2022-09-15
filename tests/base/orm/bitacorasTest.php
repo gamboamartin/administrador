@@ -109,6 +109,25 @@ class bitacorasTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_data_bitacora(){
+
+        errores::$error = false;
+        $bitacora = new bitacoras();
+        $bitacora = (new liberator($bitacora));
+        $modelo = new adm_accion_grupo($this->link);
+        $modelo->registro_id  = 1;
+        $consulta = 'b';
+        $funcion = 'a';
+        $registro = array();
+
+        $_SESSION['usuario_id'] = 2;
+        $resultado = $bitacora->maqueta_data_bitacora($consulta, $funcion, $modelo, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_obten_seccion_bitacora(){
 
         errores::$error = false;
