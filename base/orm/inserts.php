@@ -45,9 +45,9 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param string $campos
-     * @param string $campo
+     * Genera los campos en forma de SQL para insersion
+     * @param string $campos Conjunto de campos previos
+     * @param string $campo Campo a insertar
      * @return string|array
      */
     private function campos_alta_sql(string $campo, string $campos): string|array
@@ -107,7 +107,7 @@ class inserts{
 
     /**
      * P INT P ORDER ERRORREV
-     * @param PDO $link
+     * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro previo a la insersion
      * @param string $tabla
      * @return array|stdClass
@@ -184,10 +184,11 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Ajusta los elementos a insertar con slaches
      * @param string $campo Nombre del campo a integrar al sql
-     * @param mixed $value
+     * @param mixed $value Valor a insertar
      * @return array|stdClass
+     * @version 1.467.49
      */
     private function slaches_campo(string $campo, mixed $value): array|stdClass
     {
@@ -234,7 +235,7 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Genera el SQL para insersion
      * @param array $registro Registro previo a la insersion
      * @return array|stdClass
      */
@@ -260,7 +261,7 @@ class inserts{
     /**
      * P INT P ORDER ERRORREV
      * @param string $campo Nombre del campo a integrar al sql
-     * @param mixed $value
+     * @param mixed $value Valor a insertar
      * @param string $campos
      * @param string $valores
      * @return array|stdClass
@@ -292,7 +293,10 @@ class inserts{
         return $data;
     }
 
-
+    /**
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array|stdClass
+     */
     public function transacciones(modelo $modelo): array|stdClass
     {
         $data_log = $this->genera_data_log(link: $modelo->link,registro: $modelo->registro,tabla: $modelo->tabla);
@@ -351,10 +355,10 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param string $valores
-     * @param string $value
-     * @param bool $value_es_null
+     * Integra los valores para una insersion
+     * @param string $valores Valores previamente cargados
+     * @param string $value Valor a cargar
+     * @param bool $value_es_null Si null ajusta el campo en null sql
      * @return string|array
      */
     private function valores_sql_alta(string $valores, string $value, bool $value_es_null): string|array

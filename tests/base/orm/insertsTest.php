@@ -22,6 +22,22 @@ class insertsTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_slaches_campo(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $value = null;
+        $campo = 'a';
+        $resultado = $ins->slaches_campo($campo, $value);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('NULL',$resultado->value);
+        $this->assertEquals(true,$resultado->value_es_null);
+        $this->assertEquals('a',$resultado->campo);
+        errores::$error = false;
+    }
+
     public function test_value(){
         errores::$error = false;
         $ins = new inserts();
