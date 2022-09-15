@@ -85,10 +85,13 @@ class normalizacionTest extends test {
         $registro = array();
         $registro['a'] = 1;
 
+        $controler->modelo = new adm_seccion($this->link);
+
         $resultado = $nm->asigna_registro_alta(controler: $controler,registro:  $registro);
+
         $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error al limpiar registro", $resultado['mensaje']);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado['a']);
 
         errores::$error = false;
         $controler = new controler();

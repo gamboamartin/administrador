@@ -110,9 +110,10 @@ class valida_controllerTest extends test {
         $registro = array();
         $registro[] = '';
         $resultado = $val->valida_in_alta($clase, $controler, $registro);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error no existe la clase", $resultado['mensaje']);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
 

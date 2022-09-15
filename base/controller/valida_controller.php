@@ -72,9 +72,6 @@ class valida_controller extends base_modelos{
 
         }
 
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje:'Error no existe la clase',data: $clase);
-        }
 
         return true;
     }
