@@ -31,6 +31,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public array $columnas = array();
     public array $sub_querys = array();
     public array $campos_obligatorios=array('status');
+    public array $campos_view = array();
     public array $tipo_campos = array();
 
     public base_modelos     $validacion;

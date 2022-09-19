@@ -32,6 +32,7 @@ class modelo extends modelo_base {
      * @param array $campos_encriptados
      * @param array $campos_obligatorios
      * @param array $columnas
+     * @param array $campos_view
      * @param array $columnas_extra
      * @param array $extension_estructura
      * @param array $no_duplicados
@@ -44,10 +45,10 @@ class modelo extends modelo_base {
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
                                 array $campos_obligatorios= array(), array $columnas = array(),
-                                array $columnas_extra = array(), array $extension_estructura = array(),
-                                array $no_duplicados = array(), array $renombres = array(),
-                                array $sub_querys = array(), array $tipo_campos = array(), bool $validation = false,
-                                array $campos_no_upd = array()){
+                                array $campos_view= array(), array $columnas_extra = array(),
+                                array $extension_estructura = array(), array $no_duplicados = array(),
+                                array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
+                                bool $validation = false,array $campos_no_upd = array()){
 
         /**
          * REFCATORIZAR
@@ -113,8 +114,8 @@ class modelo extends modelo_base {
             }
         }
 
+        $this->campos_view = array_merge($this->campos_view,$campos_view);
         $this->tipo_campos = $tipo_campos;
-
 
         $this->aplica_transaccion_inactivo = $aplica_transaccion_inactivo;
 
