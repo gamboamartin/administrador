@@ -260,23 +260,29 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera el SQL base de un alta
      * @param string $campo Nombre del campo a integrar al sql
      * @param mixed $value Valor a insertar
-     * @param string $campos
-     * @param string $valores
+     * @param string $campos Campos a integrar
+     * @param string $valores Valores a integrar
      * @return array|stdClass
+     * @version 1.473.49
      */
     private function sql_base_alta(string $campo, string $campos, string $valores, mixed $value): array|stdClass
     {
         if(is_numeric($campo)){
             return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo);
         }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
+        }
 
         $slacheados = $this->slaches_campo(campo: $campo,value:  $value);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al ajustar campo ', data:$slacheados);
         }
+
 
         $campos_r = $this->campos_alta_sql(campo:  $slacheados->campo, campos: $campos);
         if(errores::$error){

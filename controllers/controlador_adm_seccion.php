@@ -80,7 +80,7 @@ class controlador_adm_seccion extends controlador_base{
         $this->link->commit();
 
         if($header){
-            header('Location: index.php?seccion=adm_seccion&accion=lista&mensaje=Agreado con éxito&tipo_mensaje=exito&session_id=' . (new generales())->session_id);
+            header('Location: index.php?seccion=adm_seccion&accion=lista&mensaje=Agregado con éxito&tipo_mensaje=exito&session_id=' . (new generales())->session_id);
             exit;
         }
         return $r_alta_bd;

@@ -18,7 +18,6 @@ class altas{
      * @param array $registro Registro que se insertara
      * @param controler $controler Controlador de ejecucion
      * @return array|stdClass
-     * @throws JsonException
      */
     public function alta_base(array $registro, controler $controler): array|stdClass{
 

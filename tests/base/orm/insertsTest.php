@@ -52,6 +52,22 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_sql_base_alta(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $campo = 'a';
+        $campos = '';
+        $valores = '';
+        $value = '';
+
+        $resultado = $ins->sql_base_alta($campo, $campos, $valores, $value);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_value(){
         errores::$error = false;
         $ins = new inserts();
