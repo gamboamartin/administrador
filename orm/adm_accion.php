@@ -442,10 +442,13 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P ORDER P INT
-     * @param string $accion
-     * @param int $grupo_id
-     * @param int $n_permisos
-     * @param string $seccion
+     *
+     * Funcion que maqueta la variable SESSION con un permiso, siendo valido o invalido.
+     *
+     * @param string $accion Accion a verificar
+     * @param int $grupo_id Identificador de un grupo
+     * @param int $n_permisos Numero del permiso otorgado al grupo
+     * @param string $seccion Seccion a verificar
      * @return bool
      */
     private function permiso_valido(string $accion, int $grupo_id, int $n_permisos, string $seccion): bool
