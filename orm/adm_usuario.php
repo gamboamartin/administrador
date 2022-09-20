@@ -68,7 +68,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @version 1.141.31
      * @param string $tabla
      * @return array
-     *
      */
     public function filtro_seguridad(string $tabla):array{
         $keys = array('usuario_id');
@@ -100,9 +99,14 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * 
-     * @param array $filtro
+     * Valida que el grupo que va a filtrar exista en la base de datos. En caso de que
+     * halla un error en la búsqueda, que no exista o sea inconsistente la informacion. Mandará un error.
+     *
+     * @param array $filtro Verifica y valida los datos que se le ingresen
      * @return array
+     *
+     * @function $grupo_modelo = new adm_grupo($adm_usuario->link); Obtiene los datos de
+     * un grupo por medio del enlace a una base de datos
      */
     public function data_grupo(array $filtro): array
     {
@@ -146,7 +150,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     /**
      * Valida que un usuario y un password exista
-     * 
+     *
      * @param string $password Contraseña a verificar
      * @param string $usuario Usuario a verificar
      * @param string $accion_header elemento para regresar a accion especifica en el controlador
