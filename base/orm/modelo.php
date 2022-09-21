@@ -1528,22 +1528,22 @@ class modelo extends modelo_base {
 
         $this->filtro = $filtro;
         if(count($campos)===0){
-            return $this->error->error('Error campos no puede venir vacio',$campos);
+            return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos);
         }
 
-        $columnas = (new sumas())->columnas_suma($campos);
+        $columnas = (new sumas())->columnas_suma(campos: $campos);
         if(errores::$error){
-            return $this->error->error('Error al agregar columnas',$columnas);
+            return $this->error->error(mensaje: 'Error al agregar columnas',data: $columnas);
         }
 
         $filtro_sql = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro',$filtro_sql);
+            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_sql);
         }
 
-        $where = (new where())->where_suma($filtro_sql);
+        $where = (new where())->where_suma(filtro_sql: $filtro_sql);
         if(errores::$error){
-            return $this->error->error('Error al generar where',$where);
+            return $this->error->error(mensaje: 'Error al generar where',data: $where);
         }
 
         $tabla = $this->tabla;
