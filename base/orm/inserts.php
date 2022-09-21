@@ -65,16 +65,39 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Integra los datos de log a alta SQÑ
      * @param bool|PDOStatement $alta_valido String sql o resultado PDO
      * @param bool|PDOStatement $update_valido String sql o resultado PDO
-     * @param string $campos
-     * @param string $valores
+     * @param string $campos Conjunto de campos previos a alta
+     * @param string $valores Conjunto de valores previos a alta
      * @return array|stdClass
+     * @version 1.479.49
      */
-    private function data_log(bool|PDOStatement $alta_valido, string $campos, bool|PDOStatement $update_valido, string $valores): array|stdClass
+    private function data_log(
+        bool|PDOStatement $alta_valido, string $campos, bool|PDOStatement $update_valido,
+        string $valores): array|stdClass
     {
+
+        $campos = trim($campos);
+        if($campos === ''){
+            return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos);
+        }
+        $valores = trim($valores);
+        if($valores === ''){
+            return $this->error->error(mensaje: 'Error valores esta vacio',data: $valores);
+        }
+
         if($alta_valido &&  $update_valido ){
+            if(!isset($_SESSION)){
+                return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+            }
+            if(!isset($_SESSION['usuario_id'])){
+                return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
+            }
+            if($_SESSION['usuario_id'] <= 0){
+                return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+            }
+
             $data_asignacion = $this->asigna_data_user_transaccion();
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar datos de transaccion', data: $data_asignacion);
@@ -132,7 +155,7 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera los datos de un log para alta
      * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro previo a la insersion
      * @param string $tabla Tabla para integracion de datos logo

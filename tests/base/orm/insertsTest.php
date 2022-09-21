@@ -51,6 +51,25 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_log(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 1;
+        $alta_valido = true;
+        $campos = 'a';
+        $update_valido = true;
+        $valores = 'b';
+        $resultado = $ins->data_log($alta_valido, $campos, $update_valido, $valores);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a,usuario_alta_id,usuario_update_id',$resultado->campos);
+        $this->assertEquals('b,1,1',$resultado->valores);
+        errores::$error = false;
+    }
+
     public function test_data_para_log(){
         errores::$error = false;
         $ins = new inserts();
