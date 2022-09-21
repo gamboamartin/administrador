@@ -22,6 +22,21 @@ class insertsTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_data_user_transaccion(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 1;
+        $resultado = $ins->asigna_data_user_transaccion();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(',usuario_alta_id,usuario_update_id',$resultado['campos']);
+        $this->assertEquals(',1,1',$resultado['valores']);
+        errores::$error = false;
+    }
+
     public function test_campos_alta_sql(){
         errores::$error = false;
         $ins = new inserts();

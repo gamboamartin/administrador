@@ -25,11 +25,15 @@ class inserts{
      *      $data_asignacion = $this->asigna_data_user_transaccion();
      *
      * @uses modelos->alta_bd();
+     * @version 1.476.49
      */
     private function asigna_data_user_transaccion(): array
     {
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+        }
         if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error no existe usuario',data: $_SESSION);
+            return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
         }
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
@@ -63,7 +67,7 @@ class inserts{
     /**
      * P INT P ORDER ERROREV
      * @param bool|PDOStatement $alta_valido String sql o resultado PDO
-     * @param bool|PDOStatement $update_valido
+     * @param bool|PDOStatement $update_valido String sql o resultado PDO
      * @param string $campos
      * @param string $valores
      * @return array|stdClass
