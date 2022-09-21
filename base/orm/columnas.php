@@ -13,10 +13,11 @@ class columnas{
     }
 
     /**
-     *
-     * @param string $campo
-     * @param string $alias
+     * Anexa las columnas para suma
+     * @param string $campo Campo a integrar
+     * @param string $alias Alias del campo para salida
      * @return string|array
+     * @version 1.477.49
      */
     public function add_column(string $alias, string $campo): string|array
     {
