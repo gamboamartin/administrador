@@ -16,7 +16,7 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Devuelve un arreglo con las columnas y el valor del ID del usuario
      *
      * @return array
@@ -27,7 +27,7 @@ class inserts{
      * @uses modelos->alta_bd();
      */
     private function asigna_data_user_transaccion(): array
-    {//FIN
+    {
         if(!isset($_SESSION['usuario_id'])){
             return $this->error->error(mensaje: 'Error no existe usuario',data: $_SESSION);
         }
@@ -62,7 +62,7 @@ class inserts{
 
     /**
      * P INT P ORDER ERROREV
-     * @param bool|PDOStatement $alta_valido
+     * @param bool|PDOStatement $alta_valido String sql o resultado PDO
      * @param bool|PDOStatement $update_valido
      * @param string $campos
      * @param string $valores
@@ -89,17 +89,37 @@ class inserts{
      * Integra los datos default de alta
      * @param PDO $link Conexion  a la base de datos
      * @param string $tabla Tabla o modelo
-     * @return stdClass
+     * @return stdClass|array
+     * @version 1.475.49
      */
-    private function data_para_log(PDO $link, string $tabla): stdClass
+    private function data_para_log(PDO $link, string $tabla): stdClass|array
     {
-        $existe_alta_id = /** @lang MYSQL */
-            "SELECT count(usuario_alta_id) FROM " . $tabla;
-        $existe_update_id = /** @lang MYSQL */
-            "SELECT count(usuario_alta_id) FROM $tabla";
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error tabla esta vacia', data: $tabla);
+        }
 
-        $alta_valido = $link->query($existe_alta_id);
-        $update_valido = $link->query($existe_update_id);
+        $existe_alta_id = /** @lang MYSQL */"SELECT count(usuario_alta_id) FROM " . $tabla;
+        $existe_update_id = /** @lang MYSQL */"SELECT count(usuario_alta_id) FROM $tabla";
+
+        try {
+            $alta_valido = $link->query($existe_alta_id);
+        }
+        catch (Throwable $e){
+            $data_error = new stdClass();
+            $data_error->e = $e;
+            $data_error->sql = $existe_alta_id;
+            return $this->error->error(mensaje:'Error al ejecutar sql', data: $data_error);
+        }
+        try {
+            $update_valido = $link->query($existe_update_id);
+        }
+        catch (Throwable $e){
+            $data_error = new stdClass();
+            $data_error->e = $e;
+            $data_error->sql = $existe_update_id;
+            return $this->error->error(mensaje:'Error al ejecutar sql', data: $data_error);
+        }
 
         $data = new stdClass();
         $data->alta_valido = $alta_valido;
@@ -111,7 +131,7 @@ class inserts{
      * P INT P ORDER ERRORREV
      * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro previo a la insersion
-     * @param string $tabla
+     * @param string $tabla Tabla para integracion de datos logo
      * @return array|stdClass
      */
     private function genera_data_log(PDO $link, array $registro, string $tabla): array|stdClass

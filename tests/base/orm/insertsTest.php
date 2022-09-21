@@ -36,6 +36,22 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_para_log(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+
+        $tabla = 'adm_accion';
+
+
+        $resultado = $ins->data_para_log($this->link, $tabla);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('SELECT count(usuario_alta_id) FROM adm_accion',$resultado->alta_valido->queryString);
+        errores::$error = false;
+    }
+
     public function test_slaches_campo(){
         errores::$error = false;
         $ins = new inserts();
