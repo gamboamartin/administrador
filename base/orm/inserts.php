@@ -2,7 +2,6 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -10,10 +9,10 @@ use Throwable;
 
 class inserts{
     private errores $error;
-    private validaciones $validacion;
+
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validaciones();
+
     }
 
     /**
@@ -87,7 +86,9 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Integra los datos default de alta
+     * @param PDO $link Conexion  a la base de datos
+     * @param string $tabla Tabla o modelo
      * @return stdClass
      */
     private function data_para_log(PDO $link, string $tabla): stdClass
@@ -136,6 +137,8 @@ class inserts{
 
     /**
      * P INT P ORDER ERROREV
+     * @param int $registro_id
+     * @param string $tabla
      * @return  array
      */
     private function data_session_alta(int $registro_id, string $tabla): array
@@ -239,12 +242,24 @@ class inserts{
      * Genera el SQL para insersion
      * @param array $registro Registro previo a la insersion
      * @return array|stdClass
+     * @version 1.474.49
      */
     private function sql_alta_full(array $registro): array|stdClass
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error registro vacio',data:  $registro);
+        }
         $campos = '';
         $valores = '';
         foreach ($registro as $campo => $value) {
+            if(is_numeric($campo)){
+                return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo);
+            }
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
+            }
+
             $sql_base = $this->sql_base_alta(campo: $campo, campos:  $campos, valores:  $valores, value:  $value);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql ',data:  $sql_base);
@@ -376,7 +391,7 @@ class inserts{
             $value_aj = $value;
         }
         $value_aj = trim($value_aj);
-        $valores .= $valores === '' ? (string)$value_aj : ",$value_aj";
+        $valores .= $valores === '' ? $value_aj : ",$value_aj";
         return $valores;
     }
 

@@ -52,6 +52,46 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_sql_alta_full(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+
+        $registro = array();
+        $registro['a'] = '';
+
+        $resultado = $ins->sql_alta_full($registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("''",$resultado->valores);
+
+        errores::$error = false;
+
+
+        $registro = array();
+        $registro['a'] = null;
+
+        $resultado = $ins->sql_alta_full($registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("NULL",$resultado->valores);
+
+        errores::$error = false;
+
+
+        $registro = array();
+        $registro['a'] = null;
+        $registro['B'] = "''";
+
+        $resultado = $ins->sql_alta_full($registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("NULL,'\'\''",$resultado->valores);
+
+        errores::$error = false;
+    }
+
     public function test_sql_base_alta(){
         errores::$error = false;
         $ins = new inserts();
