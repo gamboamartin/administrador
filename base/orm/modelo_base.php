@@ -623,6 +623,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces = array();
         $namespaces[]  = 'gamboamartin\\empleado\\models\\';
         $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
+        $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
 
         $es_namespace_especial_como_mis_inges = false;
         foreach ($namespaces as $namespace) {
