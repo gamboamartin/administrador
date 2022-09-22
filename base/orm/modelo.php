@@ -594,6 +594,11 @@ class modelo extends modelo_base {
         return $existe;
     }
 
+    /**
+     * Verifica un elemento predetermindao de la entidad
+     * @return bool|array
+     * @version 1.485.49
+     */
     private function existe_predeterminado(): bool|array
     {
         $key = $this->tabla.'.predeterminado';
@@ -1692,6 +1697,9 @@ class modelo extends modelo_base {
         return $resultado['registros'];
     }
 
+    /**
+     * @return bool|array
+     */
     protected function valida_predetermiando(): bool|array
     {
         if(isset($this->registro['predeterminado']) && $this->registro['predeterminado'] === 'activo'){

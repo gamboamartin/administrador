@@ -67,6 +67,19 @@ class modeloTest extends test {
 
     }
 
+    public function test_existe_predeterminado(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $resultado = $modelo->existe_predeterminado();
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al verificar si existe', $resultado['mensaje']);
+        errores::$error = false;
+    }
+
     public function test_filtro_and(): void
     {
         errores::$error = false;
