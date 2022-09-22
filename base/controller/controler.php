@@ -649,7 +649,6 @@ class controler{
      *
      * @return array conjunto de registros obtenidos
      * @throws errores $filtro_boton_lista===''
-     * @uses  controler
      */
     private function obten_registros_para_boton_filtro(string $filtro_boton_lista):array{
         $filtro_boton_lista = str_replace('models\\','', $filtro_boton_lista);
