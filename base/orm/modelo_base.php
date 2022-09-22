@@ -52,7 +52,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     public string $key_id = '';
     public string $key_filtro_id = '';
-
+    public string $NAMESPACE = '';
 
 
     /**

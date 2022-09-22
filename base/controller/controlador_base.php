@@ -999,9 +999,25 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @throws JsonException
      */
     public function modifica_bd(bool $header, bool $ws): array|stdClass{
-        $namespace = 'models\\';
-        $this->seccion = str_replace($namespace,'',$this->seccion);
-        $clase = $namespace.$this->seccion;
+        $namespace = $this->modelo->NAMESPACE;
+
+        if ($namespace === ''){
+            $error = $this->errores->error(mensaje:'Error: NAMESPACE no esta inicializado',data: $_GET);
+            if(!$header){
+                return $error;
+            }
+            if($ws){
+                header('Content-Type: application/json');
+                echo json_encode($error, JSON_THROW_ON_ERROR);
+                exit;
+            }
+            $retorno = $_SERVER['HTTP_REFERER'];
+            header('Location:'.$retorno);
+            exit;
+        }
+
+        $clase = $this->modelo->NAMESPACE.'\\'.$this->seccion;
+
         if($this->seccion === ''){
             $error = $this->errores->error(mensaje:'Error seccion no puede venir vacia',data: $_GET);
             if(!$header){
