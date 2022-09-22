@@ -67,6 +67,20 @@ class modeloTest extends test {
 
     }
 
+    public function test_existe(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $filtro = array();
+        $resultado = $modelo->existe($filtro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_existe_predeterminado(): void
     {
         errores::$error = false;
@@ -107,19 +121,7 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
-    public function test_existe(): void
-    {
-        errores::$error = false;
-        $modelo = new adm_seccion($this->link);
-        //$modelo = new liberator($modelo);
-        $filtro = array();
-        $resultado = $modelo->existe($filtro);
-        $this->assertIsBool( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-        errores::$error = false;
 
-    }
 
     public function test_genera_sql_filtro(): void
     {
@@ -230,6 +232,17 @@ class modeloTest extends test {
         $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (x))     ',$resultado);
 
 
+        errores::$error = false;
+    }
+
+    public function test_id_predeterminado(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $resultado = $modelo->id_predeterminado();
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
         errores::$error = false;
     }
 
