@@ -594,6 +594,17 @@ class modelo extends modelo_base {
         return $existe;
     }
 
+    private function existe_predeterminado(): bool|array
+    {
+        $key = $this->tabla.'.predeterminado';
+        $filtro[$key] = 'activo';
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
+        }
+        return $existe;
+    }
+
     /**
      * PHPUNIT
      * @param array $compare_1
@@ -920,6 +931,29 @@ class modelo extends modelo_base {
         $this->consulta = $sql;
 
         return $sql;
+    }
+
+    public function id_predeterminado(): array|int
+    {
+        $key = $this->tabla.'.predeterminado';
+
+        $filtro[$key] = 'activo';
+
+        $r_modelo = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener predeterminado',data:  $r_modelo);
+        }
+
+        if($r_modelo->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe predeterminado',data:  $r_modelo);
+        }
+        if($r_modelo->n_registros > 1){
+            return $this->error->error(
+                mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+        }
+
+        return (int) $r_modelo->registros[0][$this->key_id];
+
     }
 
 
@@ -1656,6 +1690,20 @@ class modelo extends modelo_base {
             $resultado['registros'] = array();
         }
         return $resultado['registros'];
+    }
+
+    protected function valida_predetermiando(): bool|array
+    {
+        if(isset($this->registro['predeterminado']) && $this->registro['predeterminado'] === 'activo'){
+            $existe = $this->existe_predeterminado();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
+            }
+            if($existe){
+                return $this->error->error(mensaje: 'Error ya existe elemento predeterminado',data:  $this->registro);
+            }
+        }
+        return true;
     }
 
 }
