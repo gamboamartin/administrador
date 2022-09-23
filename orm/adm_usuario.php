@@ -67,14 +67,13 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * Genera un filtro en forma de array para integrarlo a la seguridad de datos. En caso de error al
      * validar la SESSION o al obtener al usuario activo lanzará un error.
      *
-     * @version 1.141.31
-     * @param string $tabla Conjunto de datos/valores a verificar
      * @return array
      *
      * @function $valida = $adm_usuario->validacion->valida_ids(keys: $keys, registro: $_SESSION);
      * Recibe los resultados de la validacion del usuario en base a la session y la llave.
+     * @version 1.141.31
      */
-    public function filtro_seguridad(string $tabla):array{
+    public function filtro_seguridad():array{
         $keys = array('usuario_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
         if(errores::$error){

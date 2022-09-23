@@ -160,9 +160,27 @@ class inserts{
      * @param array $registro Registro previo a la insersion
      * @param string $tabla Tabla para integracion de datos logo
      * @return array|stdClass
+     * @version 1.487.49
      */
     private function genera_data_log(PDO $link, array $registro, string $tabla): array|stdClass
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error registro vacio',data:  $registro);
+        }
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error tabla esta vacia', data: $tabla);
+        }
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
+        }
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
+
         $sql_data_alta = $this->sql_alta_full(registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql ', data: $sql_data_alta);
@@ -202,7 +220,7 @@ class inserts{
 
     /**
      * P INT P ORDER ERROREV
-     * @param stdClass $data_log
+     * @param stdClass $data_log Conjunto de datos log
      * @param modelo $modelo
      * @return array|stdClass
      */
@@ -265,7 +283,7 @@ class inserts{
 
     /**
      * P ORDER P INT ERROREV
-     * @param string $campos
+     * @param string $campos Campos para insert
      * @param string $tabla
      * @param string $valores
      * @return string|array
@@ -363,6 +381,7 @@ class inserts{
     }
 
     /**
+     * Genera las transacciones en sql
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
      */

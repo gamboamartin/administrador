@@ -86,6 +86,22 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_data_log(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $tabla = 'adm_seccion';
+        $registro = array();
+        $registro['a'] = '';
+        $_SESSION['usuario_id'] = 1;
+        $resultado = $ins->genera_data_log($this->link, $registro, $tabla);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("'',1,1",$resultado->valores);
+        errores::$error = false;
+    }
+
     public function test_slaches_campo(){
         errores::$error = false;
         $ins = new inserts();
