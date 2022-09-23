@@ -118,6 +118,23 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_sql_alta(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $tabla = 'a';
+        $campos = 'a';
+        $valores = 'c';
+
+       // $_SESSION['usuario_id'] = 1;
+        $resultado = $ins->sql_alta($campos, $tabla, $valores);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('INSERT INTO a (a) VALUES (c)',$resultado);
+        errores::$error = false;
+    }
+
     public function test_sql_alta_full(){
         errores::$error = false;
         $ins = new inserts();

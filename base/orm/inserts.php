@@ -221,7 +221,7 @@ class inserts{
     /**
      * P INT P ORDER ERROREV
      * @param stdClass $data_log Conjunto de datos log
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
      */
     private function inserta_sql(stdClass $data_log, modelo $modelo): array|stdClass
@@ -282,11 +282,12 @@ class inserts{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * Genera el sql paar alta
      * @param string $campos Campos para insert
-     * @param string $tabla
-     * @param string $valores
+     * @param string $tabla Tabla o modelo
+     * @param string $valores Valores A INTEGRAR
      * @return string|array
+     * @version 1.488.49
      */
     private function sql_alta(string $campos,string $tabla, string $valores): string|array
     {
