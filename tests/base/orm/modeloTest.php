@@ -484,6 +484,20 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_where_suma(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $campos = array();
+        $campos['adm_seccion_id'] = 'adm_seccion.id';
+        $filtro = array();
+        $resultado = $modelo->suma($campos,$filtro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
 

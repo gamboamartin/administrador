@@ -1504,6 +1504,7 @@ class where{
      * Antepone la palabra WHERE al filtro mandado por parametros
      * @param string $filtro_sql filtro por aplicar
      * @return string filtro enviado por parametros anteponiendo la palabra WHERE
+     * @version 1.489.49
      */
     public function where_suma(string $filtro_sql): string
     {

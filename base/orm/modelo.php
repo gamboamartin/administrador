@@ -1562,13 +1562,14 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PRUEBAS FINALIZADAS
+     * Suma sql
      * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
-     * @param array $filtro
+     * @param array $filtro Filtro para suma
      * @return array con la suma de los elementos seleccionados y filtrados
      */
     public function suma(array $campos, array $filtro = array()): array
     {
+
 
         $this->filtro = $filtro;
         if(count($campos)===0){
