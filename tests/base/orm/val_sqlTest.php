@@ -546,7 +546,7 @@ class val_sqlTest extends test {
         $tabla = 'a';
         $registro[] = '';
         $resultado = $val->valida_base_alta($campos_obligatorios, $modelo, $no_duplicados, $registro, $tabla,
-            $tipo_campos);
+            $tipo_campos, array());
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);

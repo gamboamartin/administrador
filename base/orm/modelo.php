@@ -20,6 +20,7 @@ class modelo extends modelo_base {
     public bool $validation;
     protected array $campos_encriptados;
     public array $campos_no_upd = array();
+    public array $parents = array();
 
 
     /**
@@ -41,6 +42,7 @@ class modelo extends modelo_base {
      * @param array $tipo_campos
      * @param bool $validation
      * @param array $campos_no_upd Conjunto de campos no modificables, por default id
+     * @param array $parents
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
@@ -48,7 +50,7 @@ class modelo extends modelo_base {
                                 array $campos_view= array(), array $columnas_extra = array(),
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
-                                bool $validation = false,array $campos_no_upd = array()){
+                                bool $validation = false,array $campos_no_upd = array(), array $parents = array()){
 
         /**
          * REFCATORIZAR
@@ -70,6 +72,7 @@ class modelo extends modelo_base {
         $this->no_duplicados = $no_duplicados;
         $this->campos_encriptados = $campos_encriptados;
         $this->campos_no_upd = $campos_no_upd;
+        $this->parents = $parents;
 
         if(!in_array('id', $this->campos_no_upd, true)){
             $this->campos_no_upd[] = 'id';
@@ -209,7 +212,7 @@ class modelo extends modelo_base {
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
             no_duplicados: $this->no_duplicados, registro: $registro,tabla:  $this->tabla,
-            tipo_campos: $this->tipo_campos);
+            tipo_campos: $this->tipo_campos, parents: $this->parents);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
@@ -570,7 +573,7 @@ class modelo extends modelo_base {
         $filtro[$this->tabla.'.id'] = $registro_id;
         $existe = $this->existe(filtro: $filtro);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener pais remoto', data: $existe);
+            return  $this->error->error(mensaje: 'Error al obtener row', data: $existe);
         }
         return $existe;
     }

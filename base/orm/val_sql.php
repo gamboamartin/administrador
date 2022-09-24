@@ -246,12 +246,17 @@ class val_sql extends validaciones {
      * @param array $registro Registro a validar
      * @param string $tabla Tabla o modelo a validar
      * @param array $tipo_campos Campos con tipificacion desde modelo
+     * @param array $parents Campos parents a verificar
      * @return bool|array
      * @version 1.444.48
      */
     public function valida_base_alta(array $campos_obligatorios, modelo $modelo, array $no_duplicados, array $registro,
-                                     string $tabla, array $tipo_campos): bool|array
+                                     string $tabla, array $tipo_campos, array $parents): bool|array
     {
+
+        /**
+         * REFACTORIZAR
+         */
         $valida = (new validaciones())->valida_alta_bd(registro: $registro,tabla:  $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar alta ',data:  $valida);
@@ -261,6 +266,26 @@ class val_sql extends validaciones {
             registro: $registro,tabla: $tabla,tipo_campos: $tipo_campos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura);
+        }
+
+        foreach($parents as $parent){
+
+            $model_parent = $modelo->genera_modelo(modelo: $parent);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar modelo',data:  $model_parent);
+            }
+
+            $model_parent_id = $registro[$model_parent->key_id];
+
+            $existe = $model_parent->existe_by_id(registro_id: $model_parent_id);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar si existe row',data:  $existe);
+            }
+
+            if(!$existe){
+                return $this->error->error(mensaje: 'Error al verificar parent no existe',data:  $existe);
+            }
+
         }
 
         foreach($no_duplicados as $campo){
