@@ -112,7 +112,7 @@ class bitacoras{
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al generar json de bitacora', data:$e);
         }
-        $registro_data['usuario_id'] = $_SESSION['usuario_id'];
+        $registro_data['adm_usuario_id'] = $_SESSION['usuario_id'];
         $registro_data['transaccion'] = $funcion;
         $registro_data['sql_data'] = $consulta;
         $registro_data['valor_id'] = $modelo->registro_id;
@@ -265,38 +265,31 @@ class bitacoras{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Inserta un registro de bitacora de la tabla afectada
-     * @param array $registro es el registro afectado por la accion del sistema
-     * @param string $funcion es la funcion que se aplica sobre el registro
      * @param string $consulta el la sentencia sql de la funcion aplicada
-     * @return array con registro de insersion de bitacora
-     * @throws errores definidos en internals
-
+     * @param string $funcion es la funcion que se aplica sobre el registro
+     * @param modelo $modelo
+     * @param array $registro es el registro afectado por la accion del sistema
+     * @return array|stdClass con registro de insersion de bitacora
      * @example
      *     $r_bitacora = $this->genera_bitacora($registro,$funcion, $consulta);
      * @uses modelo_basico->bitacora
      * @internal $this->maqueta_data_bitacora($registro,$funcion, $consulta);
      * @internal $bitacora_modelo->alta_bd();
+     * @version 1.491.49
      */
-    private function genera_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array{
+    private function genera_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array|stdClass{
 
-        $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
-        }
-
-        $val = $this->val_bitacora(consulta: $consulta,funcion: $funcion,modelo: $modelo);
+        $val = $this->valida_bitacora(consulta:$consulta,funcion:  $funcion, modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar valores', data: $val);
         }
-
 
         $bitacora_modelo = (new adm_bitacora($modelo ->link));
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener bitacora',data:$bitacora_modelo);
         }
-
 
         $bitacora_modelo->registro = $this->maqueta_data_bitacora(consulta:  $consulta, funcion: $funcion,
             modelo: $modelo, registro: $registro);
@@ -333,17 +326,8 @@ class bitacoras{
      */
     private function maqueta_data_bitacora(string $consulta, string $funcion, modelo $modelo, array $registro):array{
 
-        $keys = array('usuario_id');
-        $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar SESSION ',data:$valida);
-        }
 
-        $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
-        }
-        $val = $this->val_bitacora(consulta: $consulta,funcion: $funcion,modelo: $modelo);
+        $val = $this->valida_bitacora(consulta: $consulta,funcion:  $funcion, modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar valores', data: $val);
         }
@@ -422,6 +406,26 @@ class bitacoras{
             return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
                 data:$modelo->registro_id);
         }
+        return true;
+    }
+
+    public function valida_bitacora(string $consulta, string $funcion, modelo $modelo): bool|array
+    {
+        $keys = array('usuario_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $_SESSION);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar SESSION ',data:$valida);
+        }
+
+        $data_ns = $this->data_ns_val(tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
+        }
+        $val = $this->val_bitacora(consulta: $consulta,funcion: $funcion,modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar valores', data: $val);
+        }
+
         return true;
     }
 

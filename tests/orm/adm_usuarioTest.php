@@ -3,6 +3,7 @@ namespace tests\orm;
 
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
+use models\adm_bitacora;
 use models\adm_session;
 use models\adm_usuario;
 
@@ -70,6 +71,13 @@ class adm_usuarioTest extends test {
             $del_session = (new adm_session($this->link))->elimina_todo();
             if (errores::$error) {
                 $error = (new errores())->error('Error al eliminar $del_session', $del_session);
+                print_r($error);
+                die('Error');
+            }
+
+            $del_adm_bitacora = (new adm_bitacora($this->link))->elimina_todo();
+            if (errores::$error) {
+                $error = (new errores())->error('Error al eliminar bitacoras', $del_adm_bitacora);
                 print_r($error);
                 die('Error');
             }

@@ -8,6 +8,7 @@ use gamboamartin\errores\errores;
 use base\orm\inicializacion;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_accion;
 use models\adm_seccion;
 
 use stdClass;
@@ -99,6 +100,28 @@ class insertsTest extends test {
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("'',1,1",$resultado->valores);
+        errores::$error = false;
+    }
+
+    public function test_inserta_sql(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+
+        $data_log = new stdClass();
+        $modelo = new adm_accion($this->link);
+
+        $modelo->elimina_bd(9999);
+
+        $data_log->campos = 'id, adm_seccion_id';
+        $data_log->valores = "9999, 1";
+        $resultado = $ins->inserta_sql($data_log, $modelo);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('INSERT INTO adm_accion (id, adm_seccion_id) VALUES (9999, 1)',$resultado->sql);
+        $this->assertEquals(9999,$resultado->registro_id);
         errores::$error = false;
     }
 

@@ -299,7 +299,8 @@ class val_sql extends validaciones {
      * @version 1.444.48
      */
     private function valida_estructura_campos(array $registro, array $tipo_campos, array $keys_checked = array(),
-                                              array $keys_ids = array(), array $keys_obligatorios = array()): array|bool
+                                              array $keys_cod_3_mayus = array(), array $keys_ids = array(),
+                                              array $keys_obligatorios = array()): array|bool
     {
 
 
@@ -318,6 +319,11 @@ class val_sql extends validaciones {
         $v_checked = $this->checked(keys_checked: $keys_checked,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar checked', data: $v_checked);
+        }
+
+        $v_cod_3_mayusc= $this->cod_3_mayusc(keys_cod_3_mayus: $keys_cod_3_mayus,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar cod_3_mayusc', data: $v_cod_3_mayusc);
         }
 
 

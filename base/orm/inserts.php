@@ -219,10 +219,11 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Inserta dato
      * @param stdClass $data_log Conjunto de datos log
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * @version 1.491.49
      */
     private function inserta_sql(stdClass $data_log, modelo $modelo): array|stdClass
     {
@@ -301,6 +302,8 @@ class inserts{
         if($valores === ''){
             return $this->error->error(mensaje:'Error valores esta vacio',data: $valores);
         }
+
+
         return /** @lang mysql */ 'INSERT INTO '. $tabla.' ('.$campos.') VALUES ('.$valores.')';
     }
 
