@@ -391,6 +391,9 @@ class inserts{
      */
     public function transacciones(modelo $modelo): array|stdClass
     {
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
         $data_log = $this->genera_data_log(link: $modelo->link,registro: $modelo->registro,tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);

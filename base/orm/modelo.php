@@ -195,6 +195,10 @@ class modelo extends modelo_base {
      *
      */
     public function alta_bd(): array|stdClass{
+
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
         $this->status_default = 'activo';
         $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
             registro: $this->registro,status_default: $this->status_default, tipo_campos: $this->tipo_campos);
