@@ -2,12 +2,8 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
-use models\atributo;
-use models\bitacora;
-use models\seccion;
+use models\adm_atributo;
 use PDO;
-use stdClass;
 
 class atributos{
     private errores $error;
@@ -30,13 +26,14 @@ class atributos{
      *
      * @functions $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro). Obtiene los atributos
      * basado en los datos de "$filtro". En caso de error lanzará un mensaje.
+     * @version 1.500.49
      */
     private function atributos(PDO $link, string $tabla): array
     {
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $tabla);
         }
-        $modelo_atributo = new atributo($link);
+        $modelo_atributo = new adm_atributo($link);
         $filtro['adm_seccion.descripcion'] = $tabla;
         $r_atributo = $modelo_atributo->filtro_and(filtro: $filtro);
         if(errores::$error){
