@@ -14,16 +14,16 @@ class normalizacion{
     }
 
     /**
-     * FULL
-     * @param array $filtro_default_btn
+     * Ajusta los filtros para listas
+     * @param array $filtro_default_btn Filtro definido como default en controller
      * @return array
+     * @version 1.498.49
      */
     private function asigna_filtro_btn_get(array $filtro_default_btn):array{
         $keys = array('tabla','valor_default');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $filtro_default_btn);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error validar filtro_default_btn',data: $valida,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error validar filtro_default_btn',data: $valida);
         }
 
         $_GET['filtro_btn'][$filtro_default_btn['tabla'] . '.id']['campo'] = $filtro_default_btn['tabla'] . '.id';
@@ -32,7 +32,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER ERROR
+     * Asigna los filtros para dar salida a controller
      * @param array $filtro_default_btn Filtro del btn
      * @param array $filtro_btn Filtro ajustado
      * @return array
@@ -176,6 +176,12 @@ class normalizacion{
         return $filtro_modelado;
     }
 
+    private function ejecuta_filtro(controler $controler, array $filtro_default_btn): bool
+    {
+        return !isset($_SESSION['filtros'][$controler->tabla])
+            && !isset($_GET['filtro_btn']) && $filtro_default_btn['valor_default'] > 0;
+    }
+
     /**
      * P INT P ORDER ERRORREV
      * @param controler $controler Controlador en ejecucion
@@ -200,6 +206,21 @@ class normalizacion{
             return $this->error->error(mensaje: 'Error al determinar filtro',data: $filtro_btn);
         }
 
+        return $filtro_btn;
+    }
+
+    private function filtro_btn_data(controler $controler, array $filtro_btn, array $filtro_default_btn): array
+    {
+        $ejecuta_filtro = $this->ejecuta_filtro(controler: $controler,filtro_default_btn:  $filtro_default_btn);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar ejecucion de filtro',data: $ejecuta_filtro);
+        }
+        if($ejecuta_filtro) {
+            $filtro_btn = $this->asigna_filtros(filtro_btn: $filtro_btn, filtro_default_btn: $filtro_default_btn);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al determinar filtro',data: $filtro_btn);
+            }
+        }
         return $filtro_btn;
     }
 
@@ -622,15 +643,13 @@ class normalizacion{
      * @return array
      */
     private function reasigna_filtros(controler $controler, array $filtro_btn):array{
-        /**
-         * REFCATORIZAR
-         */
+        
         foreach($controler->filtro_boton_lista as $filtro_default_btn){
-            if(!isset($_SESSION['filtros'][$controler->tabla]) && !isset($_GET['filtro_btn']) && $filtro_default_btn['valor_default'] > 0) {
-                $filtro_btn = $this->asigna_filtros(filtro_btn: $filtro_btn, filtro_default_btn: $filtro_default_btn);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al determinar filtro',data: $filtro_btn);
-                }
+
+            $filtro_btn = $this->filtro_btn_data(
+                controler: $controler,filtro_btn:  $filtro_btn, filtro_default_btn: $filtro_default_btn);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al determinar filtro',data: $filtro_btn);
             }
         }
 
