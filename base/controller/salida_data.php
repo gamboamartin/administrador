@@ -1,9 +1,7 @@
 <?php
 namespace base\controller;
-use base\orm\modelo;
 use base\seguridad;
 use gamboamartin\errores\errores;
-use JsonException;
 use stdClass;
 use Throwable;
 
@@ -27,6 +25,7 @@ class salida_data{
      * En caso de haber error lanzará un mensaje
      *
      * @return array|stdClass|void
+     * @version 1.499.49
      */
     private function salida(bool $header, array|stdClass $result, bool $ws){
         if($header){
