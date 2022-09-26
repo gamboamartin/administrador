@@ -338,12 +338,12 @@ class validaciones_directivas extends validacion{
         $tabla = str_replace($namespace,'',$tabla);
 
         if($tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia',$tabla);
+            return $this->error->error(mensaje:'Error tabla no puede venir vacia',data: $tabla);
         }
 
         $key_id = $tabla . '_id';
         if(!isset($value[$key_id])){
-            return $this->error->error('Error no existe $value['.$key_id.']',$value);
+            return $this->error->error(mensaje: 'Error no existe $value['.$key_id.']',data: $value);
         }
         if ((int)$value[$key_id] === $id) {
             $selected = 'selected';

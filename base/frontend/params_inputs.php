@@ -139,18 +139,18 @@ class params_inputs{
     {
         $selected = $this->validacion->valida_selected(id: $valor_envio, tabla: $tabla, value: $value);
         if(errores::$error){
-            return $this->error->error('Error al validar selected', $selected);
+            return $this->error->error(mensaje: 'Error al validar selected', data: $selected);
         }
 
         $data_extra_html = (new extra_params())->datas_extra(data_con_valor:$data_con_valor,data_extra: $data_extra,
             value: $value);
         if(errores::$error){
-            return $this->error->error('Error al generar datas extra', $data_extra_html);
+            return $this->error->error(mensaje: 'Error al generar datas extra', data: $data_extra_html);
         }
 
         $value_html = (new values())->content_option_value(tabla: $tabla, value: $value);
         if(errores::$error){
-            return $this->error->error('Error al generar value', $data_extra_html);
+            return $this->error->error(mensaje: 'Error al generar value',data:  $data_extra_html);
         }
 
         $datas = new stdClass();

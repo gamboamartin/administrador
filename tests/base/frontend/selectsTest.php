@@ -296,6 +296,24 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_contenedor_select(): void
+    {
+        errores::$error = false;
+        $val = new selects();
+        $val = new liberator($val);
+
+        $cols = 1;
+        $disabled = true;
+        $required = true;
+        $tabla = 'a';
+        $tipo_letra = '';
+        $resultado = $val->genera_contenedor_select($cols, $disabled, $required, $tabla, $tipo_letra);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('selectpicker form-control form-contr', $resultado);
+        errores::$error = false;
+    }
+
     public function test_obten_registros_select(): void{
         errores::$error = false;
         $sl = new selects();

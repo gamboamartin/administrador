@@ -347,7 +347,7 @@ class selects{
 
 
     /**
-     * PARAMS ORDER P INT
+     *
      * Genera un contenedor div
      * @param string $tabla Tabla - estructura modelo sistema
      * @param int $cols Columnas para asignacion de html entre 1 y 12
@@ -357,20 +357,21 @@ class selects{
      * @param bool $aplica_etiqueta si aplica etiqueta muestra la etiqueta
      * @param string $name_input Nombre previo del input
      * @param string $etiqueta Etiqueta input Prioridad
-     * @param bool $multiple
-     * @param string $size
-     * @param bool $inline
+     * @param bool $multiple si multiple se integra un select multiple
+     * @param string $size tamaño de css
+     * @param bool $inline una linea form
      * @return array|string informacion de div en forma html
      * @example
      *     $contenedor = $this->genera_contenedor_select($tabla,$cols,$disabled,$required,$tipo_letra, $aplica_etiqueta,$name_input,$etiqueta);
      * @uses  directivas
      * @internal $this->valida_elementos_base_input($tabla,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta_label, $tipo_letra);
+     * @version 1.506.50
      */
     private function genera_contenedor_select(int $cols,bool $disabled, bool $required, string $tabla,
                                               string $tipo_letra, bool $aplica_etiqueta = true, string $etiqueta = '',
                                               bool $inline = false, bool $multiple = false, string $name_input = '',
-                                              string $size = 'md'):array|string{//FIN PROT
+                                              string $size = 'md'):array|string{
 
         $valida_elementos = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $tabla);
         if(errores::$error){
@@ -446,19 +447,19 @@ class selects{
     {
         $valor_envio = (new values())->valor_envio(valor: $valor);
         if(errores::$error){
-            return $this->error->error('Error al generar valor', $valor_envio);
+            return $this->error->error(mensaje: 'Error al generar valor', data: $valor_envio);
         }
 
         $data_content = (new params_inputs())->data_content_option(data_con_valor: $data_con_valor,
             data_extra:  $data_extra, tabla:  $tabla, valor_envio: $valor_envio, value: $value);
         if(errores::$error){
-            return $this->error->error('Error al generar data de contenido', $data_content);
+            return $this->error->error(mensaje: 'Error al generar data de contenido',data:  $data_content);
         }
 
         $content_option = (new values())->content_option(data_extra_html:  $data_content->data_extra_html,
             selected: $data_content->selected, value_html: $data_content->value_html);
         if(errores::$error){
-            return $this->error->error('Error al generar contenido option', $content_option);
+            return $this->error->error(mensaje: 'Error al generar contenido option', data: $content_option);
         }
         return $content_option;
     }
@@ -594,7 +595,7 @@ class selects{
     {
 
         if(count($columnas) === 0){
-            return $this->error->error('Error columnas esta vacio', $columnas);
+            return $this->error->error(mensaje: 'Error columnas esta vacio', data: $columnas);
         }
 
         $content_option = $this->html_content_option(data_con_valor: $data_con_valor, data_extra: $data_extra,
@@ -608,7 +609,7 @@ class selects{
         $data_options = $this->data_options_select(columnas: $columnas, i:  $i,
             separador_select_columnas:  $separador_select_columnas, value:  $value);
         if(errores::$error){
-            return $this->error->error('Error al generar data options en tabla '.$tabla, $data_options);
+            return $this->error->error(mensaje: 'Error al generar data options en tabla '.$tabla,data:  $data_options);
         }
         return  "<option $content_option > $data_options </option>";
 
@@ -709,7 +710,7 @@ class selects{
                 data_extra:  $datos->data_extra,  i: $i, separador_select_columnas: $separador_select_columnas,
                 tabla: $datos->tabla, valor: $datos->valor, value: $value);
             if(errores::$error){
-                return $this->error->error('Error al generar  option', $option_select);
+                return $this->error->error(mensaje: 'Error al generar  option', data: $option_select);
             }
             $html.=$option_select;
             $i = 0;
