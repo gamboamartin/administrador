@@ -62,6 +62,7 @@ class salida_data{
      * En caso de haber error lanzará un mensaje
      *
      * @return array|stdClass
+     * @version 1.501.50
      */
     public function salida_get(controler $controler, array $filtro, bool $header, bool $ws): array|stdClass
     {
