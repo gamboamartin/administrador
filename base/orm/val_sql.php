@@ -121,6 +121,32 @@ class val_sql extends validaciones {
         return true;
     }
 
+    private function existe_duplicado(string $campo, modelo $modelo, array $registro, string $tabla): bool|array
+    {
+        $filtro = $this->filtro_no_duplicado(campo: $campo,registro:  $registro,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar filtro',data:  $filtro);
+        }
+        $existe = $modelo->existe(filtro:$filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe);
+        }
+        if($existe){
+            return $this->error->error(mensaje: 'Error ya existe un registro con el campo '.$campo, data: $existe);
+        }
+
+        return $existe;
+    }
+
+    private function filtro_no_duplicado(string $campo, array $registro, string $tabla): array
+    {
+        $filtro = array();
+        $key = $tabla.'.'.$campo;
+        $filtro[$key] = $registro[$campo];
+
+        return $filtro;
+    }
+
     /**
      * Limpia los elementos de un alt a de un registro
      * @param string $key Key a limpiar
@@ -254,9 +280,6 @@ class val_sql extends validaciones {
                                      string $tabla, array $tipo_campos, array $parents): bool|array
     {
 
-        /**
-         * REFACTORIZAR
-         */
         $valida = (new validaciones())->valida_alta_bd(registro: $registro,tabla:  $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar alta ',data:  $valida);
@@ -268,38 +291,16 @@ class val_sql extends validaciones {
             return $this->error->error(mensaje: 'Error el campo al validar estructura ', data: $valida_estructura);
         }
 
-        foreach($parents as $parent){
 
-            $model_parent = $modelo->genera_modelo(modelo: $parent);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar modelo',data:  $model_parent);
-            }
-
-            $model_parent_id = $registro[$model_parent->key_id];
-
-            $existe = $model_parent->existe_by_id(registro_id: $model_parent_id);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar si existe row',data:  $existe);
-            }
-
-            if(!$existe){
-                return $this->error->error(mensaje: 'Error al verificar parent no existe',data:  $existe);
-            }
-
+        $verifica_parent = $this->verifica_parents(modelo: $modelo,parents:  $parents,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar parent',data:  $verifica_parent);
         }
 
-        foreach($no_duplicados as $campo){
-            $filtro = array();
-            $key = $tabla.'.'.$campo;
-            $filtro[$key] = $registro[$campo];
-
-            $existe = $modelo->existe(filtro:$filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error verificar si existe duplicado',data:  $existe);
-            }
-            if($existe){
-                return $this->error->error(mensaje: 'Error ya existe un registro con el campo '.$campo, data: $existe);
-            }
+        $verifica_no_duplicado = $this->verifica_no_duplicado(
+            modelo: $modelo,no_duplicados:  $no_duplicados,registro:  $registro,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar duplicado',data:  $verifica_no_duplicado);
         }
 
         return true;
@@ -469,6 +470,53 @@ class val_sql extends validaciones {
         }
         if(!isset($registro[$campo_r])){
             return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] debe existir', data: $registro);
+        }
+        return true;
+    }
+
+
+    private function verifica_no_duplicado(modelo $modelo, array $no_duplicados, array $registro, string $tabla): bool|array
+    {
+        foreach($no_duplicados as $campo){
+
+            $existe = $this->existe_duplicado(campo: $campo, modelo: $modelo,registro:  $registro,tabla:  $tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar duplicado',data:  $existe);
+            }
+
+        }
+        return true;
+    }
+
+    private function verifica_parent(modelo $modelo, string $parent, array $registro): bool|array
+    {
+        $model_parent = $modelo->genera_modelo(modelo: $parent);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar modelo',data:  $model_parent);
+        }
+
+        $model_parent_id = $registro[$model_parent->key_id];
+
+        $existe = $model_parent->existe_by_id(registro_id: $model_parent_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe row',data:  $existe);
+        }
+
+        if(!$existe){
+            return $this->error->error(mensaje: 'Error al verificar parent no existe',data:  $existe);
+        }
+        return true;
+    }
+
+    public function verifica_parents(modelo $modelo, array $parents, array $registro): bool|array
+    {
+        foreach($parents as $parent){
+
+            $verifica_parent = $this->verifica_parent(modelo: $modelo,parent:  $parent,registro:  $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar parent',data:  $verifica_parent);
+            }
+
         }
         return true;
     }

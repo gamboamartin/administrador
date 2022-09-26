@@ -121,14 +121,13 @@ class bitacoras{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     *
      * Inserta una transaccion de bitacora
      * @param array $registro es un arreglo que indica cual fue el registro afectado por la accion
      * @param string $funcion es una cadena que indica que funcion o accion se utilizo
      * @param string $consulta es una cadena que indica la peticion en sql, que se realizo a la base de datos que
      * realiza la accion que se utilizo
      * @return array resultados de inserciones de bitacora
-
      * @internal  $this->genera_bitacora($registro,$funcion, $consulta)
      * @uses   modelo
      * @example
@@ -148,23 +147,12 @@ class bitacoras{
                 return $this->error->error(mensaje: 'Error al generar namespace modelo', data: $data_ns);
             }
 
+            $valida = $this->valida_data_bitacora(
+                consulta: $consulta, data_ns: $data_ns, funcion: $funcion,modelo:  $modelo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+            }
 
-            if($data_ns->tabla === ''){
-                return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $data_ns->tabla);
-            }
-            if(!class_exists($data_ns->clase)){
-                return $this->error->error(mensaje:'Error no existe la clase '.$data_ns->clase,data:$data_ns->clase);
-            }
-            if($funcion === ''){
-                return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);
-            }
-            if($consulta === ''){
-                return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta);
-            }
-            if($modelo->registro_id<=0){
-                return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
-                    data: $modelo->registro_id);
-            }
             $r_bitacora = $this->genera_bitacora(consulta:  $consulta, funcion: $funcion, modelo: $modelo,
                 registro: $registro);
             if(errores::$error){
@@ -426,6 +414,27 @@ class bitacoras{
             return $this->error->error(mensaje: 'Error al validar valores', data: $val);
         }
 
+        return true;
+    }
+
+    private function valida_data_bitacora(string $consulta, stdClass $data_ns, string $funcion, modelo $modelo): bool|array
+    {
+        if($data_ns->tabla === ''){
+            return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $data_ns->tabla);
+        }
+        if(!class_exists($data_ns->clase)){
+            return $this->error->error(mensaje:'Error no existe la clase '.$data_ns->clase,data:$data_ns->clase);
+        }
+        if($funcion === ''){
+            return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);
+        }
+        if($consulta === ''){
+            return $this->error->error(mensaje:'Error $consulta no puede venir vacia',data:$consulta);
+        }
+        if($modelo->registro_id<=0){
+            return $this->error->error(mensaje:'Error el id de $this->registro_id no puede ser menor a 0',
+                data: $modelo->registro_id);
+        }
         return true;
     }
 
