@@ -368,10 +368,11 @@ class controler{
 
     /**
      * Generacion de metodo para ser utilizado en cualquier llamada get con filtros
-     * @param bool $header
-     * @param array $keys
-     * @param bool $ws
+     * @param bool $header si header da info en http
+     * @param array $keys conjunto de datos a integrar en filtros
+     * @param bool $ws out web services JSON
      * @return array|stdClass
+     * @version 1.504.50
      */
     protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {

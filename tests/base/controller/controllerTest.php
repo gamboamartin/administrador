@@ -6,7 +6,7 @@ use base\controller\controler;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
+use models\adm_atributo;
 
 
 class controllerTest extends test {
@@ -77,6 +77,25 @@ class controllerTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_get_out(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler();
+        $ctl = new liberator($ctl);
+
+        $keys = array();
+        $header = false;
+        $ws = false;
+        $ctl->modelo = new adm_atributo($this->link);
+        $resultado = $ctl->get_out($header, $keys, $ws);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
     }
 
 
