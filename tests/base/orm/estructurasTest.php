@@ -102,9 +102,11 @@ class estructurasTest extends test {
         $st = new liberator($st);
         $resultado = $st->modelos('administrador');
 
+        //print_r($resultado);exit;
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('adm_dia',$resultado[5]);
+        $this->assertEquals('adm_campo',$resultado[5]);
 
         errores::$error = false;
 

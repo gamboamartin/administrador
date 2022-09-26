@@ -112,11 +112,26 @@ class insertsTest extends test {
         $data_log = new stdClass();
         $modelo = new adm_accion($this->link);
 
-        $modelo->elimina_bd(9999);
+        $existe = $modelo->existe_by_id(9999);
+        if(errores::$error){
+            $error = (new errores())->error('Error al verificar', $existe);
+            print_r($error);
+            exit;
+        }
+
+        if($existe) {
+            $del = $modelo->elimina_bd(9999);
+            if (errores::$error) {
+                $error = (new errores())->error('Error al elimina', $del);
+                print_r($error);
+                exit;
+            }
+        }
 
         $data_log->campos = 'id, adm_seccion_id';
         $data_log->valores = "9999, 1";
         $resultado = $ins->inserta_sql($data_log, $modelo);
+
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
