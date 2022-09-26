@@ -208,6 +208,10 @@ class modelo extends modelo_base {
      */
     public function alta_bd(): array|stdClass{
 
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: $_SESSION['usuario_id']);
+        }
+
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
         }
