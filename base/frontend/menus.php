@@ -168,10 +168,6 @@ class menus{
      */
     public function breadcrumbs_con_label(PDO|bool $link, string $seccion, string $accion, array $accion_registro,
                                           bool $valida_accion = true): array|stdClass{
-        $valida = $this->validacion->valida_estructura_seccion_accion(seccion: $seccion,accion: $accion);
-        if(errores::$error){
-            return   $this->error->error('Error al validar entrada de datos ', $valida);
-        }
 
         $seccion_br = str_replace('_',' ', $seccion);
         $seccion_br = ucwords($seccion_br);
@@ -217,9 +213,6 @@ class menus{
         $class_model = 'models\\'.$seccion;
         if($seccion === ''){
             return $this->error->error('Error seccion no puede venir vacio',$seccion);
-        }
-        if(!class_exists($class_model)){
-            return  $this->error->error('Error no existe la clase',$class_model);
         }
 
         $etiquetas_array = $this->etiquetas_array(etiquetas_accion: $etiquetas_accion);
