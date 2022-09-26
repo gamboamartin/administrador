@@ -16,7 +16,7 @@ class bitacoras{
     }
 
     /**
-     * P INT ERRORREV P ORDER
+     *
      * La funcion aplica una bitacora generando un modelo, consultando un registro con referencia al modelo e inserta una transaccion.
      * Retornando los datos de la transaccion
      * @param string $consulta almacena la consulta que se va a realizar a la base de datos
@@ -25,10 +25,16 @@ class bitacoras{
      * @param int $registro_id contiene el identificador del registro
      * @param string $tabla almacena el nombre de la tabla con la que se va a interactuar
      * @return array
+     * @version 1.495.49
      */
     private function aplica_bitacora(string $consulta, string $funcion, modelo $modelo, int $registro_id,
                                      string $tabla): array
     {
+
+        if($registro_id <=0){
+            return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
+                data: $registro_id);
+        }
         $model = $modelo->genera_modelo(modelo: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo'.$tabla,data: $model);
@@ -136,6 +142,7 @@ class bitacoras{
      * return $this->error->error('Error al obtener registro',
      * __CLASS__,$registro_bitacora);
      * $bitacora = $this->bitacora($registro_bitacora,__FUNCTION__,$consulta );
+     * @version 1.495.49
      */
     public function bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array
     {
@@ -221,7 +228,7 @@ class bitacoras{
     }
 
     /**
-     * P INT ERRORREV P ORDER
+     *
      * La funcion ejecuta una transaccion y realiza una consulta para obtener la bitacora involucrada
      * @param string $tabla contiene el nombre de la tabla con la que se va a interactuar
      * @param string $funcion contiene el nombre el nombre de la funcion que se va a aplicar
@@ -229,8 +236,10 @@ class bitacoras{
      * @param int $registro_id contiene el identificador del registro a consultar
      * @param string $sql contiene la peticion que se realizara a la base de datos
      * @return array
+     * @version 1.495.49
      */
-    public function ejecuta_transaccion(string $tabla, string $funcion,  modelo $modelo, int $registro_id = -1, string $sql = ''):array{
+    public function ejecuta_transaccion(
+        string $tabla, string $funcion,  modelo $modelo, int $registro_id , string $sql = ''):array{
         $consulta =trim($sql);
         if($sql === '') {
             $consulta = $modelo->consulta;
@@ -417,13 +426,24 @@ class bitacoras{
         return true;
     }
 
+    /**
+     * Valida los elementos de una bitacora
+     * @param string $consulta Sql a guardar
+     * @param stdClass $data_ns Datos de servicio
+     * @param string $funcion Funcion de ejecucion
+     * @param modelo $modelo Modelo transaccion
+     * @return bool|array
+     * @version 1.495.49
+     */
     private function valida_data_bitacora(string $consulta, stdClass $data_ns, string $funcion, modelo $modelo): bool|array
     {
+        $keys = array('tabla');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $data_ns);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al al validar data_ns',data:$valida);
+        }
         if($data_ns->tabla === ''){
             return $this->error->error(mensaje: 'Error this->tabla no puede venir vacio',data: $data_ns->tabla);
-        }
-        if(!class_exists($data_ns->clase)){
-            return $this->error->error(mensaje:'Error no existe la clase '.$data_ns->clase,data:$data_ns->clase);
         }
         if($funcion === ''){
             return $this->error->error(mensaje:'Error $funcion no puede venir vacia',data:$funcion);

@@ -17,6 +17,22 @@ class modeloTest extends test {
         $this->errores = new errores();
     }
 
+
+    public function test_activa(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $modelo->registro_id = 1;
+        $resultado = $modelo->activa_bd();
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Registro activado con éxito en adm_seccion', $resultado->mensaje);
+
+        errores::$error = false;
+    }
+
     public function test_cuenta(): void
     {
         errores::$error = false;
@@ -36,7 +52,6 @@ class modeloTest extends test {
         $this->assertEquals(0, $resultado);
         errores::$error = false;
     }
-
 
     public function test_data_sentencia(): void
     {
@@ -120,8 +135,6 @@ class modeloTest extends test {
 
         errores::$error = false;
     }
-
-
 
     public function test_genera_sql_filtro(): void
     {

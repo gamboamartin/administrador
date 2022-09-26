@@ -7,6 +7,7 @@ use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
+use stdClass;
 
 class activacion{
     private errores $error;
@@ -18,13 +19,12 @@ class activacion{
 
     /**
      * ERRORREV P INT P ORDER
-     * @param int $registro_id
      * @param modelo $modelo
+     * @param int $registro_id
      * @param string $seccion
-     * @return array
-     * @throws JsonException
+     * @return array|stdClass
      */
-    public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array{
+    public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array|stdClass{
         if($registro_id <= 0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0',data: $registro_id);
 

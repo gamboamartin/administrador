@@ -137,13 +137,17 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT ERRROREV P ORDER
-     * @param bool $reactiva
-     * @return array
-     * @throws JsonException
+     * Activa un elemento
+     * @param bool $reactiva Si reactiva valida si el registro se puede reactivar
+     * @param int $registro_id
+     * @return array|stdClass
+     * @version 1.495.49
      */
-    public function activa_bd(bool $reactiva = false): array{ //FIN
+    public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
 
+        if($registro_id>0){
+            $this->registro_id  = $registro_id;
+        }
         if($this->registro_id <= 0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en '.$this->tabla,data: $this->registro_id);
         }
@@ -160,7 +164,12 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
         }
 
-        return array('mensaje'=>'Registro activado con éxito en '.$this->tabla, 'registro_id'=>$this->registro_id);
+        $data = new stdClass();
+        $data->mensaje = 'Registro activado con éxito en '.$this->tabla;
+        $data->registro_id = $this->registro_id;
+        $data->transaccion = $transaccion;
+
+        return $data;
     }
 
     /**

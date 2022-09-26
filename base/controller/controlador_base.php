@@ -168,7 +168,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * correspondiente al id del registro en cuestión.
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array almacena en un arreglo todos los datos del registro
-     * @throws JsonException
      */
     public function activa_bd(bool $header ): array{
         if($this->registro_id === -1){
@@ -185,8 +184,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         $valida = $this->validacion->valida_transaccion_activa(
-            aplica_transaccion_inactivo: $this->modelo->aplica_transaccion_inactivo, registro_id: $this->registro_id,
-            tabla: $this->modelo->tabla,registro: $registro);
+            aplica_transaccion_inactivo: $this->modelo->aplica_transaccion_inactivo, registro: $registro,
+            registro_id: $this->registro_id, tabla: $this->modelo->tabla);
 
         if(errores::$error){
             $error = $this->errores->error('Error al validar transaccion activa',$valida);
@@ -197,7 +196,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $error;
         }
 
-        $resultado = (new activacion())->activa_bd_base(modelo:  $this->modelo, registro_id: $this->registro_id,seccion:  $this->seccion);
+        $resultado = (new activacion())->activa_bd_base(
+            modelo:  $this->modelo, registro_id: $this->registro_id,seccion:  $this->seccion);
         if(errores::$error){
             $error = $this->errores->error('Error al activar registro', $resultado);
 
