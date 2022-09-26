@@ -612,6 +612,9 @@ class init{
         if($sistema === 'tg_cat_gen'){
             $namespace = 'tglobally\\tg_cat_gen\\';
         }
+        if($sistema === 'instalacion'){
+            $namespace = 'gamboamartin\\instalacion\\';
+        }
 
 
 
