@@ -176,10 +176,28 @@ class normalizacion{
         return $filtro_modelado;
     }
 
-    private function ejecuta_filtro(controler $controler, array $filtro_default_btn): bool
+    /**
+     * Valida si aplica o no la integracion de un filtro
+     * @param controler $controler Controlador en ejecucion
+     * @param array $filtro_default_btn Filtros defaults
+     * @return bool|array
+     * @version 1.503.50
+     */
+    private function ejecuta_filtro(controler $controler, array $filtro_default_btn): bool|array
     {
-        return !isset($_SESSION['filtros'][$controler->tabla])
-            && !isset($_GET['filtro_btn']) && $filtro_default_btn['valor_default'] > 0;
+        $tabla = trim($controler->tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error $controler->tabla esta vacia',data: $controler->tabla);
+        }
+        $existe_filtros = isset($_SESSION['filtros'][$controler->tabla]);
+        $existe_filtro_btn = isset($_GET['filtro_btn']);
+
+        $existe_filtro_default_btn = isset ($filtro_default_btn['valor_default']);
+
+        $existe_valor_default = $existe_filtro_default_btn && $filtro_default_btn['valor_default'] > 0;
+
+
+        return !$existe_filtros && !$existe_filtro_btn && $existe_filtro_default_btn && $existe_valor_default;
     }
 
     /**

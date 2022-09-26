@@ -149,6 +149,37 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_ejecuta_filtro(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+
+        $filtro_default_btn = array();
+        $controler = new controler('', '');
+        $controler->tabla = 'x';
+        $resultado = $nm->ejecuta_filtro($controler, $filtro_default_btn);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertFalse($resultado);
+
+        errores::$error = false;
+
+        $filtro_default_btn = array();
+        $controler = new controler('', '');
+        $controler->tabla = 'x';
+
+        unset($_SESSION['filtros'][$controler->tabla]);
+        unset($_GET['filtro_btn']);
+        $filtro_default_btn['valor_default'] = 1;
+
+        $resultado = $nm->ejecuta_filtro($controler, $filtro_default_btn);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_init_upd_base(): void
     {
         errores::$error = false;
