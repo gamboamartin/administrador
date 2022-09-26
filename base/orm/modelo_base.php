@@ -625,6 +625,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
         $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
         $namespaces[]  = 'gamboamartin\\direccion_postal\\models\\';
+        $namespaces[]  = 'gamboamartin\\cat_sat\\models\\';
 
         $es_namespace_especial_como_mis_inges = false;
         foreach ($namespaces as $namespace) {
