@@ -252,16 +252,17 @@ class values{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $data
-     * @param string $value
+     * Integra un extra param en un option
+     * @param string $data Dato a integrar
+     * @param string $value Valor del extra param
      * @return string|array
+     * @version 1.507.50
      */
     public function data_extra_html_base(string $data, string $value): string|array
     {
         $data = trim($data);
         if($data === ''){
-            return $this->error->error('Error al data esta vacio',$data);
+            return $this->error->error(mensaje: 'Error al data esta vacio',data: $data);
         }
         $data_extra_html = 'data-'.$data;
         $data_extra_html .= '  =  ';

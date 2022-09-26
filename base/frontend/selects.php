@@ -601,7 +601,7 @@ class selects{
         $content_option = $this->html_content_option(data_con_valor: $data_con_valor, data_extra: $data_extra,
             tabla: $tabla, valor: $valor,value:  $value);
         if(errores::$error){
-            return $this->error->error('Error al generar contenido option', $content_option);
+            return $this->error->error(mensaje: 'Error al generar contenido option',data:  $content_option);
         }
 
 
@@ -685,7 +685,7 @@ class selects{
         $keys = array('valor','tabla','data_extra','data_con_valor','columnas');
         foreach($keys aS $key){
             if(!isset($datos->$key)){
-                return $this->error->error('Error datos->'.$key.' Debe existir', $datos);
+                return $this->error->error(mensaje: 'Error datos->'.$key.' Debe existir',data:  $datos);
             }
         }
 

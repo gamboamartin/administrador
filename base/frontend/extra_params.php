@@ -12,16 +12,17 @@ class extra_params{
         $this->error = new errores();
     }
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param array $value
-     * @param string $data
+     * Genera un extra param basico
+     * @param array $value Valor a integrar
+     * @param string $data dato
      * @return array|string
+     * @version 1.507.50
      */
     private function data_extra_base(string $data, array $value): array|string
     {
         $data = trim($data);
         if($data === ''){
-            return $this->error->error('Error al data esta vacio',$data);
+            return $this->error->error(mensaje: 'Error al data esta vacio',data: $data);
         }
 
         if(!isset($value[$data])){
@@ -30,7 +31,7 @@ class extra_params{
 
         $data_ex = (new values())->data_extra_html_base(data: $data, value: $value[$data]);
         if(errores::$error){
-            return $this->error->error('Error al generar data extra',$data_ex);
+            return $this->error->error(mensaje: 'Error al generar data extra',data: $data_ex);
         }
         return $data_ex;
     }
@@ -72,22 +73,23 @@ class extra_params{
     {
         $datas_extras = $this->datas_extras(data_extra: $data_extra,value: $value);
         if(errores::$error){
-            return $this->error->error('Error al generar data extra',$datas_extras);
+            return $this->error->error(mensaje: 'Error al generar data extra',data: $datas_extras);
         }
 
         $datas_con_valor_html = (new values())->datas_con_valor(data_con_valor: $data_con_valor);
         if(errores::$error){
-            return $this->error->error('Error al generar data extra',$datas_con_valor_html);
+            return $this->error->error(mensaje: 'Error al generar data extra',data: $datas_con_valor_html);
         }
 
         return $datas_extras.' '.$datas_con_valor_html;
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param array $data_extra
-     * @param array $value
+     * Genera un conjunto de extra params
+     * @param array $data_extra Dato a integrar
+     * @param array $value valor a integrar
      * @return array|string
+     * @version 1.507.50
      */
     private function datas_extras(array $data_extra, array $value): array|string
     {
@@ -95,7 +97,7 @@ class extra_params{
         foreach($data_extra as $data){
             $data_ex = $this->data_extra_base(data:$data, value: $value);
             if(errores::$error){
-                return $this->error->error('Error al generar data extra',$data_ex);
+                return $this->error->error(mensaje: 'Error al generar data extra',data: $data_ex);
             }
             $data_extra_html.=$data_ex;
         }

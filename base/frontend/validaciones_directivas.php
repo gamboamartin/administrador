@@ -319,11 +319,11 @@ class validaciones_directivas extends validacion{
     }
 
     /**
-     * P ORDER P INT PROBADO
+     *
      * valida los datos de selected
-     * @param array $value
+     * @param array $value Valor de selected
      * @param string $tabla Tabla - estructura modelo sistema
-     * @param int $id
+     * @param int $id Identificador
 
      * @example
      *     $selected = $this->valida_selected($value,$tabla,$valor_envio);
@@ -332,8 +332,9 @@ class validaciones_directivas extends validacion{
      * @throws errores !class_exists ( 'controlador_'.$tabla )
      * @throws errores !isset($value[$key_id])
      * @uses  directivas
+     * @version 1.507.50
      */
-    public function valida_selected(int $id,string $tabla, array $value):array|string{ //FIN PROT
+    public function valida_selected(int $id,string $tabla, array $value):array|string{
         $namespace = 'models\\';
         $tabla = str_replace($namespace,'',$tabla);
 
