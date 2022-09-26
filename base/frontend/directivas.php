@@ -757,7 +757,7 @@ class directivas extends html {
      * @param array $inputs Inputs previos cargados
      * @param array $campos_invisibles Campos que nose mostraran en template
      * @param string $campo Campo a integrar
-     * @param bool $required
+     * @param bool $required Si required el input queda requerido
      * @param array $registros
      * @param bool $todos Si todos genera todos los registros completos
      * @param bool $select_vacio_alta
@@ -767,7 +767,7 @@ class directivas extends html {
      *      $data_html = $controlador->genera_input_select_columnas_template($tabla, $columnas, $data_extra,$valores,$required, $parametros['registros'],$parametros['todos'],$select_vacio_alta);
      * @internal  $this->validacion->valida_estructura_input_base($columnas,$tabla);
      * @internal  $directiva->input_select_columnas($tabla,(string)$valores[$campo], 4,false,$columnas, $this->link,$required, 'capitalize', false,$select_vacio_alta,$registros,$data_extra, array(),true,'','',$todos);
-     * @uses  clientes
+
      */
     public function genera_input_select_columnas_template(
         array $columnas, array $data_extra, string $tabla, array $valores, PDO $link, array $campos_permitidos,
@@ -1217,7 +1217,7 @@ class directivas extends html {
     }
 
     /**
-     * P INT ERRORREV
+     *
      * Genera un contenedor div con un select
      * @param string $campo_name Nombre del input
      * @param PDO $link Conexion a la BD
@@ -1242,7 +1242,6 @@ class directivas extends html {
      * @return array|string informacion de select en forma html
      * @example
      *     $input = $directiva->input_select_columnas($tabla,$value,12,false,$columnas,$link, true,'capitalize',false,false, $registros,$data_extra , array(),false);
-     * @uses  TODO EL SISTEMA
      * @internal $this->validacion->valida_estructura_input_base($columnas,$tabla);
      * @internal $modelo_base->genera_modelo($tabla);
      * @internal $this->obten_registros_select($select_vacio_alta,$modelo, $filtro,$todos);

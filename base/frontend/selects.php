@@ -15,10 +15,11 @@ class selects{
     }
 
     /**
-     * PARAMS ORDER P INT
-     * @param string $tabla
-     * @param string $name_input
+     * Integra el name en un input
+     * @param string $tabla Tabla o estructura
+     * @param string $name_input Nombre previo del input
      * @return string|array
+     * @version 1.505.50
      */
     private function campo_name_html(string $name_input, string $tabla): string|array
     {
@@ -150,7 +151,7 @@ class selects{
     }
 
     /**
-     * P INT P ORDER
+     * Obtiene los datos de un select
      * @param stdClass $datos Conjunto de parametros para la creacion de un select
      * @return array|stdClass
      */
@@ -354,7 +355,7 @@ class selects{
      * @param bool $required si required el input es obligatorio en su captura
      * @param string $tipo_letra Tipo letra para etiquetas
      * @param bool $aplica_etiqueta si aplica etiqueta muestra la etiqueta
-     * @param string $name_input
+     * @param string $name_input Nombre previo del input
      * @param string $etiqueta Etiqueta input Prioridad
      * @param bool $multiple
      * @param string $size
@@ -475,7 +476,7 @@ class selects{
      * @param bool $inline Genera el input inline
      * @param PDO $link Conexion a la base de datos
      * @param bool $ln Salto de linea si true
-     * @param bool $multiple
+     * @param bool $multiple Si multiple integra un input con multiple seleccion
      * @param string $name_input
      * @param array $registros
      * @param bool $required

@@ -16,6 +16,21 @@ class selectsTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_campo_name_html(): void
+    {
+        errores::$error = false;
+        $val = new selects();
+        $val = new liberator($val);
+
+        $name_input = '';
+        $tabla = 'a';
+        $resultado = $val->campo_name_html($name_input, $tabla);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a_id', $resultado);
+        errores::$error = false;
+    }
+
     public function test_columnas_base_select(): void
     {
         errores::$error = false;
