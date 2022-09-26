@@ -173,6 +173,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if($this->registro_id === -1){
             return $this->errores->error('No existe id para activar',$_GET);
         }
+        
         $registro = $this->modelo->registro(registro_id: $this->registro_id);
         if(errores::$error){
             $error = $this->errores->error('Error al obtener registro',$registro);
