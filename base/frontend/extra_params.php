@@ -63,11 +63,12 @@ class extra_params{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param array $data_extra
-     * @param array $data_con_valor
-     * @param array $value
+     * Integra extra params a options
+     * @param array $data_extra Datos extra params
+     * @param array $data_con_valor Datos extra params
+     * @param array $value Valores a integrar
      * @return string|array
+     * @version 1.509.51
      */
     public function datas_extra(array $data_con_valor, array $data_extra, array $value): string|array
     {

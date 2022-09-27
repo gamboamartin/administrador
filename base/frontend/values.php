@@ -202,14 +202,14 @@ class values{
      */
     private function asigna_valores_etiqueta_template(string $campo):array|string{
         if($campo === ''){
-            return $this->error->error('Error $campo no puede venir vacio',$campo);
+            return $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
         }
 
         $etiqueta = str_replace('_',' ',$campo);
         $etiqueta = ucwords($etiqueta);
 
         if(trim($etiqueta) === ''){
-            return $this->error->error('Error $etiqueta la etiqueta quedo vacia',$campo);
+            return $this->error->error(mensaje: 'Error $etiqueta la etiqueta quedo vacia',data: $campo);
         }
 
 
@@ -227,16 +227,17 @@ class values{
     {
         $value_html = trim($value_html);
         if($value_html === ''){
-            return $this->error->error('Error $value_html esta vacio ',$value_html);
+            return $this->error->error(mensaje: 'Error $value_html esta vacio ',data: $value_html);
         }
         return "$value_html $data_extra_html $selected";
     }
 
     /**
-     * P ORDER P INT PROBADO
-     * @param array $value
-     * @param string $tabla
+     * Integra un value a un option
+     * @param array $value Valor a integrar
+     * @param string $tabla Tabla en ejecucion
      * @return string|array
+     * @version 1.509.51
      */
     public function content_option_value(string $tabla, array $value): string|array
     {
@@ -272,9 +273,10 @@ class values{
     }
 
     /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param array $data_con_valor
+     * Integra valores a select
+     * @param array $data_con_valor Datos extra params
      * @return array|string
+     * @version 1.509.51
      */
     public function datas_con_valor(array $data_con_valor): array|string
     {
@@ -282,7 +284,7 @@ class values{
         foreach($data_con_valor as $key_value=>$valor){
             $data_ex = $this->data_extra_html_base(data: $key_value, value: $valor);
             if(errores::$error){
-                return $this->error->error('Error al generar data extra',$data_ex);
+                return $this->error->error(mensaje: 'Error al generar data extra',data: $data_ex);
             }
             $data_extra_html.=$data_ex;
 
@@ -323,9 +325,10 @@ class values{
     }
 
     /**
-     * P ORDER P INT PROBADO
-     * @param string $valor
+     * Genera un valor de nevio para select
+     * @param string $valor Valor a integrar
      * @return int|string
+     * @version 1.509.51
      */
     public function valor_envio(string $valor): int|string
     {

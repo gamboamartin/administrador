@@ -126,13 +126,14 @@ class params_inputs{
     }
 
     /**
-     * P INT P ORDER PROBADO
-     * @param array $value
-     * @param string $tabla
-     * @param int $valor_envio
-     * @param array $data_extra
-     * @param array $data_con_valor
+     * Integra los extra params a un option
+     * @param array $value Valor  integrar
+     * @param string $tabla tabla en ejecucion
+     * @param int $valor_envio Valor de option
+     * @param array $data_extra extra params
+     * @param array $data_con_valor extra params
      * @return array|stdClass
+     * @version 1.509.51
      */
     public function data_content_option(array $data_con_valor, array $data_extra, string $tabla, int $valor_envio,
                                         array $value): array|stdClass
