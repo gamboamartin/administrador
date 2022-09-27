@@ -43,12 +43,17 @@ class atributos{
     }
 
     /**
-     * P INT P ORDER ERRORREV
-     * @param string $tabla
-     * @return string
+     * Ajusta una clase de tipo modelo
+     * @param string $tabla Tabla a integrar
+     * @return string|array
+     * @version 1.510.51
      */
-    private function class_attr(string $tabla): string
+    private function class_attr(string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla vacia',data: $tabla);
+        }
         $namespace = 'models\\';
         $clase_attr = str_replace($namespace,'',$tabla);
         return 'models\\attr_'.$clase_attr;
@@ -57,23 +62,16 @@ class atributos{
     /**
      * P ORDER P INT ERROREV
      * @param array $atributo Registro de tipo modelo atributo
+     * @param modelo $modelo
      * @param int $registro_id
      * @return array
      */
     private function data_inst_attr(array $atributo, modelo $modelo, int $registro_id): array
     {
         $keys = array('adm_atributo_descripcion','adm_atributo_id');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $atributo);
+        $valida = $this->valida_attr(atributo: $atributo,keys:  $keys, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
-        }
-        $keys = array('atributo_id');
-        $valida = $this->validacion->valida_ids(keys:  $keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id);
         }
         $modelo->tabla = trim($modelo->tabla);
         if($modelo->tabla === ''){
@@ -125,18 +123,11 @@ class atributos{
     private function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
     {
         $keys = array('atributo_descripcion','atributo_id');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $atributo);
+        $valida = $this->valida_attr(atributo: $atributo,keys:  $keys, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
         }
-        $keys = array('atributo_id');
-        $valida = $this->validacion->valida_ids( keys:$keys, registro: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
-        }
-        if($registro_id<=0){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id);
-        }
+
 
         $data_ins = $this->data_inst_attr(atributo: $atributo, modelo: $modelo_base,registro_id:  $registro_id);
         if(errores::$error){
@@ -203,7 +194,7 @@ class atributos{
 
         $model_attr = $modelo->genera_modelo(modelo: $clase_attr);
         if(errores::$error){
-            return $this->error->error('Error al generar modelo', $model_attr);
+            return $this->error->error(mensaje: 'Error al generar modelo',data:  $model_attr);
         }
 
         $r_ins = $this->inserta_atributos(modelo:$modelo, registro_id:  $registro_id,
@@ -212,6 +203,24 @@ class atributos{
             return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins);
         }
         return $r_ins;
+    }
+
+    private function valida_attr(array $atributo, array $keys, int $registro_id): bool|array
+    {
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $atributo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
+        }
+        $keys = array('atributo_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $atributo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
+        }
+        if($registro_id<=0){
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id);
+        }
+
+        return true;
     }
 
 

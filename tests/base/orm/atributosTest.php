@@ -35,6 +35,20 @@ class atributosTest extends test {
         errores::$error = false;
     }
 
+    public function test_class_attr()
+    {
+
+        errores::$error = false;
+        $attr = new atributos();
+        $attr = new liberator($attr);
+        $tabla = 'a';
+        $resultado = $attr->class_attr($tabla);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('models\attr_a',$resultado);
+        errores::$error = false;
+    }
+
 
 
 
