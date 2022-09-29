@@ -153,7 +153,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id']>0) {
             $datos_session_usuario = (new adm_usuario(link: $this->link))->usuario_activo();
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al generar nav breads', data: $datos_session_usuario);
+                $error = $this->errores->error(mensaje: 'Error al verificar usuario activo', data: $datos_session_usuario);
                 print_r($error);
                 die('Error');
             }
