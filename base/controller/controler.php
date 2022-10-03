@@ -254,6 +254,15 @@ class controler{
         return $filtro;
     }
 
+    public function asigna_inputs(mixed $inputs): array|stdClass
+    {
+        foreach ($this->modelo->campos_view as $key => $value){
+            $this->inputs->$key = $inputs[$value['type']]->$key;
+        }
+
+        return $this->inputs;
+    }
+
     private function asigna_key_filter(string $campo, array $filtro, string $key_get, string $tabla): array
     {
         $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
