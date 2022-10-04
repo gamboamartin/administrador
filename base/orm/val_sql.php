@@ -159,7 +159,7 @@ class val_sql extends validaciones {
     {
         $key_r = $this->txt_valido(txt:$key);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error en key de tipo campo', data: $key_r);
+            return $this->error->error(mensaje: 'Error en key de tipo campo '.$key.' '.$tipo_campo, data: $key_r);
         }
         $tipo_campo_r = $this->txt_valido(txt:$tipo_campo);
         if(errores::$error){
@@ -214,7 +214,8 @@ class val_sql extends validaciones {
         foreach($tipo_campos as $key =>$tipo_campo){
             $valida_campos = $this->verifica_tipo_dato(key: $key,registro: $registro,tipo_campo: $tipo_campo);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar campos', data: $valida_campos);
+                return $this->error->error(
+                    mensaje: 'Error al validar campos '.$key.' '.$tipo_campo, data: $valida_campos);
             }
         }
 
@@ -533,7 +534,7 @@ class val_sql extends validaciones {
     {
         $data = $this->limpia_data_tipo_campo(key: $key, tipo_campo: $tipo_campo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar dato',data:  $data);
+            return $this->error->error(mensaje: 'Error al limpiar dato '.$key.' '.$tipo_campo,data:  $data);
         }
 
         $valida_campos = $this->valida_pattern_campo(key: $key, registro:  $registro, tipo_campo: $tipo_campo);
