@@ -62,8 +62,8 @@ class atributos{
     /**
      * P ORDER P INT ERROREV
      * @param array $atributo Registro de tipo modelo atributo
-     * @param modelo $modelo
-     * @param int $registro_id
+     * @param modelo $modelo Modelo a validar
+     * @param int $registro_id registro id
      * @return array
      */
     private function data_inst_attr(array $atributo, modelo $modelo, int $registro_id): array
@@ -88,7 +88,7 @@ class atributos{
 
     /**
      * P INT ERRORREV
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array|string
      */
@@ -115,7 +115,7 @@ class atributos{
     /**
      * P INT ERRORREV
      * @param array $atributo Registro de tipo modelo atributo
-     * @param modelo $modelo_base
+     * @param modelo $modelo_base modelo a integrar
      * @param int $registro_id
      * @param string $tabla
      * @return array
@@ -148,7 +148,7 @@ class atributos{
 
     /**
      * P INT ERROREV
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @param string $tabla_attr
      * @return array
@@ -181,7 +181,7 @@ class atributos{
 
     /**
      * P INT ERROREV
-     * @param string $clase_attr
+     * @param string $clase_attr Clase de atributo
      * @param modelo $modelo
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array
@@ -205,6 +205,14 @@ class atributos{
         return $r_ins;
     }
 
+    /**
+     * @version valida que los datos de un atributos sean validos
+     * @param array $atributo Atributo a validar
+     * @param array $keys Keys a validar
+     * @param int $registro_id Registro a validar identificador
+     * @return bool|array
+     * @version 1.513.51
+     */
     private function valida_attr(array $atributo, array $keys, int $registro_id): bool|array
     {
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $atributo);

@@ -49,6 +49,23 @@ class atributosTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_attr()
+    {
+
+        errores::$error = false;
+        $attr = new atributos();
+        $attr = new liberator($attr);
+        $atributo = array();
+        $keys = array();
+        $registro_id = 1;
+        $atributo['atributo_id'] = 1;
+
+        $resultado = $attr->valida_attr($atributo, $keys, $registro_id);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        errores::$error = false;
+    }
+
 
 
 
