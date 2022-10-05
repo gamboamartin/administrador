@@ -69,6 +69,30 @@ class conexionTest extends test {
     }
 
     /**
+     */
+    public function test_asigna_timeout(): void
+    {
+        errores::$error = false;
+
+        $paths = new stdClass();
+
+
+        $paths->generales = '/var/www/html/administrador/config/generales.php';
+        $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
+
+        $cnx = new conexion($paths);
+        $cnx = new liberator($cnx);
+
+        $time_out = -1;
+        $resultado = $cnx->asigna_timeout($this->link, $time_out);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    /**
      * @throws JsonException
      */
     public function test_conecta(): void

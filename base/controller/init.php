@@ -384,7 +384,10 @@ class init{
         return $data_include;
     }
 
+
     /**
+     * @param bool $aplica_seguridad si aplica seguridad se implementa acl por accion
+     * @return array|stdClass
      */
     public function index(bool $aplica_seguridad): array|stdClass
     {

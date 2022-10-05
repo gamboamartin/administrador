@@ -15,7 +15,8 @@ class conexion{
 
 
     /**
-     * P ORDER P INT
+     * @param stdClass $paths_conf Archivos de configuracion
+     * @param string $motor
      */
     public function __construct(stdClass $paths_conf = new stdClass(), string $motor = 'MYSQL'){
         $error = new errores();
@@ -80,18 +81,30 @@ class conexion{
         return $link;
     }
 
-    private function asigna_timeout(PDO $link, int $time_out): PDO
+    /**
+     * Asigna el time out by sql
+     * @param PDO $link Conexion a la BD
+     * @param int $time_out tiempo de espera en sql
+     * @return PDO|array
+     * @version 1.523.51
+     */
+    private function asigna_timeout(PDO $link, int $time_out): PDO|array
     {
         $sql = "SET innodb_lock_wait_timeout=$time_out;";
-        $link->query($sql);
+        try {
+            $link->query($sql);
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al ejecutar SQL sql_mode',data:$e);
+        }
         return $link;
     }
 
     /**
      * @param PDO $link Conexion a base de datos
      * @param string $set_name Codificacion de caracteres
-     * @param string $sql_mode
-     * @param int $time_out
+     * @param string $sql_mode Mode seguridad
+     * @param int $time_out tiempo ejecucion maximo de consultas
      * @return PDO|array
      */
     private function asigna_parametros_query(PDO $link, string $set_name, string $sql_mode, int $time_out): PDO|array
@@ -151,6 +164,11 @@ class conexion{
         return $link;
     }
 
+    /**
+     * @param stdClass|database $conf_database Configuraciones de database
+     * @param string $motor
+     * @return PDO|array
+     */
     private function conexion(stdClass|database $conf_database, string $motor): PDO|array
     {
         $link = $this->conecta(conf_database: $conf_database, motor: $motor);
@@ -179,6 +197,10 @@ class conexion{
         return $link;
     }
 
+    /**
+     * @param string $motor Motor de bd
+     * @return PDO|array
+     */
     private function genera_link(string $motor): PDO|array
     {
         $conf_database = new database();

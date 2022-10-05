@@ -17,6 +17,8 @@ class configuracionesTest extends test {
         $this->errores = new errores();
     }
 
+
+
     /**
      * @throws JsonException
      */
