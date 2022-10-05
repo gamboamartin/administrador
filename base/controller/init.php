@@ -615,6 +615,9 @@ class init{
         if($sistema === 'instalacion'){
             $namespace = 'gamboamartin\\instalacion\\';
         }
+        if($sistema === 'boletaje'){
+            $namespace = 'gamboamartin\\boletaje\\';
+        }
 
 
 
