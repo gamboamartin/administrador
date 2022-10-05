@@ -45,6 +45,30 @@ class conexionTest extends test {
     }
 
     /**
+     */
+    public function test_asigna_sql_mode(): void
+    {
+        errores::$error = false;
+
+        $paths = new stdClass();
+
+
+        $paths->generales = '/var/www/html/administrador/config/generales.php';
+        $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
+
+        $cnx = new conexion($paths);
+        $cnx = new liberator($cnx);
+
+        $sql_mode = '';
+        $resultado = $cnx->asigna_sql_mode($this->link, $sql_mode);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    /**
      * @throws JsonException
      */
     public function test_conecta(): void

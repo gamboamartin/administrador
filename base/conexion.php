@@ -61,10 +61,22 @@ class conexion{
         return $link;
     }
 
-    private function asigna_sql_mode(PDO $link, string $sql_mode): PDO
+    /**
+     * Asigna el modo de sql
+     * @param PDO $link Conexion a la base de datos
+     * @param string $sql_mode Mode sql
+     * @return PDO|array
+     * @version 1.522.51
+     */
+    private function asigna_sql_mode(PDO $link, string $sql_mode): PDO|array
     {
         $sql = "SET sql_mode = '$sql_mode';";
-        $link->query($sql);
+        try {
+            $link->query($sql);
+        }
+        catch (Throwable $e){
+            return $this->error->error(mensaje: 'Error al ejecutar SQL sql_mode',data:$e);
+        }
         return $link;
     }
 
