@@ -245,6 +245,19 @@ class columnas{
         return $registro;
     }
 
+    public function campos_tabla(modelo $modelo, string $tabla): array
+    {
+        if($tabla !=='') {
+
+            $data = (new columnas())->obten_columnas(modelo:$modelo, tabla_original: $tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
+            }
+            $modelo->campos_tabla = $data->columnas_parseadas;
+        }
+        return $modelo->campos_tabla;
+    }
+
 
     /**
      * Carga a un string de forma SQL los campos SELECTS
@@ -998,6 +1011,42 @@ class columnas{
         $data->columnas_sql = $columnas_sql;
         $data->tablas_select = $tablas_select;
         return $data;
+    }
+
+    private function integra_campo_obligatorio(string $campo, array $campos_obligatorios): array
+    {
+        $campos_obligatorios[]=$campo;
+        return $campos_obligatorios;
+    }
+
+    private function integra_campo_obligatorio_existente(string $campo, array $campos_obligatorios, array $campos_tabla): array
+    {
+        if(in_array($campo, $campos_tabla, true)){
+
+            $campos_obligatorios = $this->integra_campo_obligatorio(campo: $campo,campos_obligatorios:  $campos_obligatorios);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar campos obligatorios ', data: $campos_obligatorios);
+            }
+        }
+        return $campos_obligatorios;
+    }
+
+    public function integra_campos_obligatorios(array $campos_obligatorios, array $campos_tabla): array
+    {
+        $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id');
+
+
+        foreach($campos_obligatorios_parciales as $campo){
+
+            $campos_obligatorios = $this->integra_campo_obligatorio_existente(
+                campo: $campo,campos_obligatorios:  $campos_obligatorios,campos_tabla:  $campos_tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar campos obligatorios ', data: $campos_obligatorios);
+
+            }
+
+        }
+        return $campos_obligatorios;
     }
 
     /**

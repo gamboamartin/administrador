@@ -81,31 +81,36 @@ class modelo extends modelo_base {
         if(isset($_SESSION['usuario_id'])){
             $this->usuario_id = (int)$_SESSION['usuario_id'];
         }
-        if($tabla !=='') {
 
-            $data = (new columnas())->obten_columnas(modelo:$this, tabla_original: $tabla);
-            if (errores::$error) {
-                $error = $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
-                print_r($error);
-                die('Error');
-            }
-            $this->campos_tabla = $data->columnas_parseadas;
+
+        $campos_tabla = (new columnas())->campos_tabla(modelo:$this, tabla: $tabla);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al obtener campos tabla '.$tabla, data: $campos_tabla);
+            print_r($error);
+            die('Error');
         }
+        $this->campos_tabla = $campos_tabla;
 
-        $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id');
 
-        foreach($campos_obligatorios_parciales as $campo){
-            if(in_array($campo, $this->campos_tabla, true)){
-                $this->campos_obligatorios[]=$campo;
-            }
+        $campos_obligatorios = (new columnas())->integra_campos_obligatorios(
+            campos_obligatorios: $this->campos_obligatorios, campos_tabla: $this->campos_tabla);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al integrar campos obligatorios '.$tabla, data: $campos_obligatorios);
+            print_r($error);
+            die('Error');
         }
+        $this->campos_obligatorios = $campos_obligatorios;
+
+
 
         $this->sub_querys = $sub_querys;
         $this->sql_seguridad_por_ubicacion = array();
         $this->campos_obligatorios = array_merge($this->campos_obligatorios,$campos_obligatorios);
 
         if(isset($campos_obligatorios[0]) && trim($campos_obligatorios[0]) === '*'){
-
+            /**
+             * REFACTORIZAR
+             */
             $this->campos_obligatorios = $this->campos_tabla;
 
             $unsets = array('fecha_alta','fecha_update','id','usuario_alta_id','usuario_update_id');

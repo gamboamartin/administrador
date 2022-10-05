@@ -10,8 +10,10 @@ class seguridad_dada{
     }
 
     /**
-     * @param modelo $modelo
+     * Integra el filtro para implementacion de seguridad data
+     * @param modelo $modelo Modelo de aplicacion
      * @return array
+     * @version 1.520.51
      */
     public function aplica_filtro_seguridad(modelo $modelo): array
     {
