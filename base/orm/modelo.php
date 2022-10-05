@@ -93,7 +93,7 @@ class modelo extends modelo_base {
 
 
         $campos_obligatorios = (new columnas())->integra_campos_obligatorios(
-            campos_obligatorios: $this->campos_obligatorios, campos_tabla: $this->campos_tabla);
+            campos_obligatorios: $campos_obligatorios, campos_tabla: $this->campos_tabla);
         if (errores::$error) {
             $error = $this->error->error(mensaje: 'Error al integrar campos obligatorios '.$tabla, data: $campos_obligatorios);
             print_r($error);

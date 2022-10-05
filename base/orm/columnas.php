@@ -245,11 +245,17 @@ class columnas{
         return $registro;
     }
 
+    /**
+     * @param modelo $modelo Modelo en ejecucion
+     * @param string $tabla Tabla de modelo
+     * @return array
+     * @version 1.521.51
+     */
     public function campos_tabla(modelo $modelo, string $tabla): array
     {
         if($tabla !=='') {
 
-            $data = (new columnas())->obten_columnas(modelo:$modelo, tabla_original: $tabla);
+            $data = $this->obten_columnas(modelo:$modelo, tabla_original: $tabla);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
             }
@@ -1104,7 +1110,7 @@ class columnas{
      * @example
      * $columnas_parseadas = $this->obten_columnas($tabla_original);
      */
-    public function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
+    private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
         $tabla_original = trim(str_replace('models\\','',$tabla_original));
         $tabla_bd = $tabla_original;
 

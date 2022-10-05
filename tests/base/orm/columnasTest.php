@@ -283,6 +283,33 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_campos_tabla(){
+        errores::$error = false;
+
+        $col = new columnas();
+        //$modelo = new liberator($modelo);
+
+        $modelo = new adm_usuario($this->link);
+
+        $tabla = '';
+        $resultado = $col->campos_tabla($modelo, $tabla);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('id', $resultado[0]);
+        $this->assertEquals('user', $resultado[1]);
+        $this->assertEquals('password', $resultado[2]);
+        $this->assertEquals('email', $resultado[3]);
+        $this->assertEquals('adm_grupo_id', $resultado[4]);
+        $this->assertEquals('status', $resultado[5]);
+        $this->assertEquals('usuario_alta_id', $resultado[6]);
+        $this->assertEquals('usuario_update_id', $resultado[7]);
+        $this->assertEquals('fecha_alta', $resultado[8]);
+        $this->assertEquals('fecha_update', $resultado[9]);
+        $this->assertEquals('session', $resultado[10]);
+        $this->assertEquals('telefono', $resultado[11]);
+        errores::$error = false;
+    }
+
     public function test_carga_columna_renombre(){
 
         errores::$error = false;
@@ -1134,7 +1161,7 @@ class columnasTest extends test {
 
         errores::$error = false;
         $col = new columnas();
-        //$col = (new liberator($col));
+        $col = (new liberator($col));
         $modelo = new adm_seccion($this->link);
         $resultado = $col->obten_columnas($modelo,'adm_seccion');
 
