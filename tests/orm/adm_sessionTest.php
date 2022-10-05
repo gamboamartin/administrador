@@ -16,6 +16,20 @@ class adm_sessionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_datos_session(){
+
+        errores::$error = false;
+        $session = new adm_session($this->link);
+        $session = new liberator($session);
+        $r_session = new stdClass();
+        $r_session->registros[0]['adm_grupo_id'] = 1;
+        $r_session->registros[0]['adm_usuario_id'] = 1;
+        $resultado = $session->asigna_datos_session($r_session);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_init_session(){
 
         errores::$error = false;
