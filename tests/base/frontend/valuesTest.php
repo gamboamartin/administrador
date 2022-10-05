@@ -96,6 +96,22 @@ class valuesTest extends test {
         errores::$error = false;
     }
 
+    public function test_content_option(): void
+    {
+        errores::$error = false;
+        $val = new values();
+        //$val = new liberator($val);
+
+        $data_extra_html = '';
+        $selected = '';
+        $value_html = 'a';
+        $resultado = $val->content_option($data_extra_html, $selected, $value_html);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('a  ', $resultado);
+        errores::$error = false;
+    }
+
     public function test_content_option_value(): void
     {
         errores::$error = false;

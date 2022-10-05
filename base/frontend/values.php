@@ -217,11 +217,12 @@ class values{
     }
 
     /**
-     * P ORDER P INT
-     * @param string $value_html
-     * @param string $data_extra_html
-     * @param string $selected
+     * Genera el contenido de un option
+     * @param string $value_html Valor value input html
+     * @param string $data_extra_html Extra param html
+     * @param string $selected atributo selected
      * @return string|array
+     * @version 1.516.51
      */
     public function content_option(string $data_extra_html, string $selected, string $value_html): string|array
     {

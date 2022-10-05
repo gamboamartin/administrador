@@ -436,7 +436,7 @@ class selects{
 
     /**
      * P INT P ORDER
-     * @param string $valor
+     * @param string $valor Valor de input
      * @param string $tabla
      * @param array $data_extra
      * @param array $data_con_valor
@@ -580,7 +580,7 @@ class selects{
 
     /**
      * P INT P ORDER
-     * @param string $valor
+     * @param string $valor Valor de input
      * @param string $tabla
      * @param array $data_extra
      * @param array $data_con_valor
@@ -675,7 +675,7 @@ class selects{
 
     /**
      * P INT P ORDER
-     * @param array $registros
+     * @param array $registros Registros para integrar select
      * @param stdClass $datos
      * @return array|string
      */
