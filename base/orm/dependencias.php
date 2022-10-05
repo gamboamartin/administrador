@@ -15,21 +15,22 @@ class dependencias{
     }
 
     /**
-     * PHPUNIT
+     * Ajusta los nombres de los modelos dependendientes
      * @param string $name_modelo
      * @return string|array
+     * @version 1.519.51
      */
     private function ajusta_modelo_comp(string $name_modelo): string|array
     {
         $name_modelo = trim($name_modelo);
         if($name_modelo === ''){
-            return $this->error->error('Error name_modelo no puede venir vacio', $name_modelo);
+            return $this->error->error(mensaje:'Error name_modelo no puede venir vacio',data:  $name_modelo);
         }
         $name_modelo = str_replace('models\\','',$name_modelo);
         $name_modelo = 'models\\'.$name_modelo;
 
         if($name_modelo === 'models\\'){
-            return $this->error->error('Error name_modelo no puede venir vacio', $name_modelo);
+            return $this->error->error(mensaje: 'Error name_modelo no puede venir vacio', data: $name_modelo);
         }
         return trim($name_modelo);
     }
@@ -110,17 +111,17 @@ class dependencias{
     {
         $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo, modelo_dependiente: $modelo_dependiente);
         if(errores::$error){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente_ajustado);
+            return  $this->error->error(mensaje: 'Error al ajustar modelo',data: $modelo_dependiente_ajustado);
         }
 
         $modelo_ = $this->model_dependiente(modelo: $modelo, modelo_dependiente: $modelo_dependiente_ajustado);
         if (errores::$error) {
-            return $this->error->error('Error al generar modelo', $modelo_);
+            return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo_);
         }
 
         $desactiva = $this->desactiva_dependientes($modelo_, $modelo->registro_id, $modelo_->tabla);
         if (errores::$error) {
-            return $this->error->error('Error al desactivar dependiente', $desactiva);
+            return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
         }
         return $desactiva;
     }
@@ -137,7 +138,7 @@ class dependencias{
         foreach ($modelo->models_dependientes as $dependiente) {
             $desactiva = $this->desactiva_data_modelo(modelo: $modelo,modelo_dependiente:  $dependiente);
             if (errores::$error) {
-                return $this->error->error('Error al desactivar dependiente', $desactiva);
+                return $this->error->error(mensaje: 'Error al desactivar dependiente', data: $desactiva);
             }
             $data[] = $desactiva;
         }
@@ -156,23 +157,23 @@ class dependencias{
     {
         $valida = $this->validacion->valida_name_clase($modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar tabla',$valida);
+            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
         }
         if($parent_id<=0){
-            return $this->error->error('Error $parent_id debe ser mayor a 0',$parent_id);
+            return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id);
         }
 
         $dependientes = $this->data_dependientes(link: $modelo->link,parent_id: $parent_id,
             tabla: $modelo->tabla, tabla_children: $tabla_dep);
         if(errores::$error){
-            return $this->error->error('Error al obtener dependientes',$dependientes);
+            return $this->error->error(mensaje: 'Error al obtener dependientes',data: $dependientes);
         }
 
         $key_dependiente_id = $tabla_dep.'_id';
 
         $modelo_dep = $modelo->genera_modelo($tabla_dep);
         if(errores::$error){
-            return $this->error->error('Error al generar modelo',$modelo_dep);
+            return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo_dep);
         }
 
 
@@ -183,7 +184,7 @@ class dependencias{
 
             $desactiva_bd = $modelo_dep->desactiva_bd();
             if(errores::$error){
-                return $this->error->error('Error al desactivar dependiente',$desactiva_bd);
+                return $this->error->error(mensaje: 'Error al desactivar dependiente',data: $desactiva_bd);
             }
             $result[] = $desactiva_bd;
         }
@@ -324,12 +325,12 @@ class dependencias{
     {
         $modelo_dependiente_ajustado = $this->ajusta_modelo_comp($modelo_dependiente);
         if(errores::$error ){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
+            return  $this->error->error(mensaje: 'Error al ajustar modelo',data: $modelo_dependiente);
         }
 
         $valida = $this->valida_data_desactiva(modelo: $modelo, modelo_dependiente: $modelo_dependiente_ajustado);
         if(errores::$error){
-            return $this->error->error('Error al validar modelos',$valida);
+            return $this->error->error(mensaje: 'Error al validar modelos',data: $valida);
         }
 
         return $modelo_dependiente_ajustado;

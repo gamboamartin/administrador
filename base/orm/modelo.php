@@ -352,18 +352,18 @@ class modelo extends modelo_base {
      */
     public function desactiva_bd(): array{ //FIN
         if($this->registro_id<=0){
-            return  $this->error->error('Error $this->registro_id debe ser mayor a 0',$this->registro_id);
+            return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id);
         }
         $registro = $this->registro(registro_id: $this->registro_id);
         if(errores::$error){
-            return  $this->error->error('Error al obtener registro',$registro);
+            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
         }
 
         $valida = $this->validacion->valida_transaccion_activa(
             aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro: $registro,
             registro_id:  $this->registro_id, tabla: $this->tabla);
         if(errores::$error){
-            return  $this->error->error('Error al validar transaccion activa',$valida);
+            return  $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida);
         }
         $tabla = $this->tabla;
         $this->consulta = /** @lang MYSQL */
@@ -372,12 +372,12 @@ class modelo extends modelo_base {
         $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
             modelo: $this,registro_id:  $this->registro_id);
         if(errores::$error){
-            return  $this->error->error('Error al EJECUTAR TRANSACCION',$transaccion);
+            return  $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION',data: $transaccion);
         }
 
         $desactiva = $this->aplica_desactivacion_dependencias();
         if (errores::$error) {
-            return $this->error->error('Error al desactivar dependiente', $desactiva);
+            return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
         }
 
         return array('mensaje'=>'Registro desactivado con éxito', 'registro_id'=>$this->registro_id);

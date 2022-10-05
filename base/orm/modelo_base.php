@@ -111,7 +111,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if($this->desactiva_dependientes) {
             $desactiva = (new dependencias())->desactiva_data_modelos_dependientes(modelo: $this);
             if (errores::$error) {
-                return $this->error->error('Error al desactivar dependiente', $desactiva);
+                return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
             }
             $data = $desactiva;
         }

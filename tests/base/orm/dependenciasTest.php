@@ -17,6 +17,19 @@ class dependenciasTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_ajusta_modelo_comp(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+
+        $name_modelo = 'a';
+        $resultado = $dep->ajusta_modelo_comp($name_modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        errores::$error = false;
+    }
+
     public function test_aplica_eliminacion_dependencias(): void
     {
         errores::$error = false;
