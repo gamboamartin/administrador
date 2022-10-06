@@ -232,7 +232,7 @@ class inicializacionTest extends test {
     public function test_data_in_sql(){
         errores::$error = false;
         $inicializacion = new inicializacion();
-        //$inicializacion = new liberator($inicializacion);
+        $inicializacion = new liberator($inicializacion);
 
         $llave = 'a';
         $values_in = array(1);

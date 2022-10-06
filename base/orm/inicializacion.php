@@ -263,7 +263,7 @@ class inicializacion{
      * @return array
      * @version 1.527.51
      */
-    public function data_in_sql(string $llave, array $values_in): array
+    private function data_in_sql(string $llave, array $values_in): array
     {
         $llave = trim($llave);
         if($llave === ''){
@@ -341,6 +341,20 @@ class inicializacion{
             }
         }
         return $registro;
+    }
+
+    public function genera_data_in(string $campo, string $tabla,array $registros): array
+    {
+        $values_in = $this->values_in(key_value: $tabla.'_'.$campo, rows: $registros);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener values in',data:  $values_in);
+        }
+
+        $in = $this->data_in_sql(llave:$tabla.'.'.$campo, values_in: $values_in);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar in',data:  $in);
+        }
+        return $in;
     }
 
     /**
@@ -725,7 +739,7 @@ class inicializacion{
         return $value_enc;
     }
 
-    public function values_in(string $key_value, array $rows): array
+    private function values_in(string $key_value, array $rows): array
     {
         $values_in = array();
 
