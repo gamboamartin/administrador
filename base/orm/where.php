@@ -180,8 +180,6 @@ class where{
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @version 1.199.34
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
@@ -798,8 +796,6 @@ class where{
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @version 1.196.34
-     * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
@@ -1019,6 +1015,13 @@ class where{
         return $sql;
     }
 
+    /**
+     * Genera un IN SQL
+     * @param string $llave Llave o campo
+     * @param array $values Valores a integrar a IN
+     * @return array|string
+
+     */
     private function in_sql(string $llave, array $values): array|string
     {
         $llave = trim($llave);
@@ -1026,14 +1029,14 @@ class where{
             return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave);
         }
 
-        $in_sql = '';
         $values_sql = $this->values_sql_in(values:$values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
         }
 
-        if($values_sql!==''){
-            $in_sql.="$llave  IN ($values_sql)";
+        $in_sql = (new sql())->in(llave: $llave,values_sql:  $values_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
         }
 
         return $in_sql;

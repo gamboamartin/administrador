@@ -25,6 +25,26 @@ class sql{
         return "DESCRIBE $tabla";
     }
 
+    /**
+     * Genera el SQL IN
+     * @param string $llave Llave o campo
+     * @param string $values_sql Valores a integrar
+     * @return string|array
+     */
+    public function in(string $llave, string $values_sql): string|array
+    {
+        $valida = $this->valida_in(llave: $llave, values_sql: $values_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar in', data: $valida);
+        }
+
+        $in_sql = '';
+        if($values_sql!==''){
+            $in_sql.="$llave  IN ($values_sql)";
+        }
+        return $in_sql;
+    }
+
     private function inicializa_param(string $key, stdClass $params_base): array|stdClass
     {
         if(!isset($params_base->$key)){
@@ -169,6 +189,25 @@ class sql{
 
 
         return 'UPDATE ' . $tabla . ' SET ' . $campos_sql . "  WHERE id = $id";
+    }
+
+    private function valida_in(string $llave, string $values_sql): bool|array
+    {
+        $llave = trim($llave);
+        $values_sql = trim($values_sql);
+        if($llave !== ''){
+            if($values_sql ===''){
+                return $this->error->error(mensaje: 'Error si llave tiene info values debe tener info', data: $llave);
+            }
+        }
+
+        if($values_sql !== ''){
+            if($llave ===''){
+                return $this->error->error(
+                    mensaje: 'Error si values_sql tiene info llave debe tener info', data: $values_sql);
+            }
+        }
+        return true;
     }
 
 }

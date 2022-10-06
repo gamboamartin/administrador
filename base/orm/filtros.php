@@ -44,8 +44,6 @@ class filtros{
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @version 1.207.34
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-07-27 11:07
      * @return array|stdClass
@@ -94,8 +92,6 @@ class filtros{
      * @param string $consulta SQL PREVIO
      * @param modelo $modelo Modelo en ejecucion
      * @return string|array
-     * @version 1.261.40
-     * @verfuncion 1.1.0
      * @fecha 2022-08-02 15:53
      * @author mgamboa
      */
@@ -127,6 +123,9 @@ class filtros{
             }
         }
 
+        /**
+         * REFACTORIZAR
+         */
 
         $modelo->consulta = $consulta.$complemento_r->where.$complemento_r->sentencia.' '.
             $complemento_r->filtro_especial.' ';

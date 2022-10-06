@@ -799,8 +799,6 @@ class modelo extends modelo_base {
      * @internal  $this->order_sql($order);
      * @internal  $this->filtro_especial_final($filtro_especial_sql,$where);
      * @internal  $this->ejecuta_consulta($hijo);
-     * @version 1.263.40
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-02 16:49
      */
@@ -919,8 +917,6 @@ class modelo extends modelo_base {
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
      *
-     * @version 1.262.40
-     * @verfuncion  1.1.0
      * @fecha 2022-08-02 16:38
      * @author mgamboa
      */
