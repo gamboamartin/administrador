@@ -257,6 +257,30 @@ class inicializacion{
     }
 
     /**
+     * Integra los datos para in in sql
+     * @param string $llave LLave= tabla.campo
+     * @param array $values_in Conjunto de valores para un in SQL
+     * @return array
+     * @version 1.527.51
+     */
+    public function data_in_sql(string $llave, array $values_in): array
+    {
+        $llave = trim($llave);
+        if($llave === ''){
+            return $this->error->error(mensaje: 'Error llave no puede venir vacia', data: $llave);
+        }
+
+        if(count($values_in) === 0){
+            return $this->error->error(mensaje: 'Error values_in no puede venir vacios', data: $values_in);
+        }
+
+        $in = array();
+        $in['llave'] = $llave;
+        $in['values'] = $values_in;
+        return $in;
+    }
+
+    /**
      * Encripta los campos indicados desde modelo->campos_encriptados
      * @version 1.0.0
      * @param string $campo Campo a validar si es aplicable a encriptar

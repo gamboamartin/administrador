@@ -229,6 +229,20 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_in_sql(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        //$inicializacion = new liberator($inicializacion);
+
+        $llave = 'a';
+        $values_in = array(1);
+        $resultado = $inicializacion->data_in_sql($llave, $values_in);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_encripta_valor_registro(){
         errores::$error = false;
         $inicializacion = new inicializacion();
