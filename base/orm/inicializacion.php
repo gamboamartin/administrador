@@ -115,7 +115,6 @@ class inicializacion{
     }
 
 
-
     /**
      * Funcion para asignar los parametros de una view
      * @version 1.181.34
@@ -459,6 +458,19 @@ class inicializacion{
     }
 
     /**
+     * Integra un value para ser utilizado en un IN
+     * @param string $value Valor a integrar
+     * @param array $values_in Valores previos
+     * @return array
+     * @version 1.526.51
+     */
+    private function integra_value_in(string $value, array $values_in): array
+    {
+        $values_in[] = $value;
+        return $values_in;
+    }
+
+    /**
      * Funcion que limpia los valores quita elementos iniciales y finales no imprimibles
      * @version 1.0.0
      * @param string $campo Campo del registro del modelo a limpiar
@@ -606,7 +618,7 @@ class inicializacion{
     }
 
     /**
-     * Inicializa el resultado en warning cuando no hay elementos a modifcar
+     * Inicializa el resultado en warning cuando no hay elementos a modificar
      * @version 1.79.17
      * @param int $id Identificador del registro
      * @param array $registro_upd Registro limpio en upd
@@ -664,11 +676,11 @@ class inicializacion{
     }
 
     /**
-     * Descripta un valor de un campo seleccionado dentro de un conjunto de registros
+     * Desencripta un valor de un campo seleccionado dentro de un conjunto de registros
      * @version 1.15.9
      * @param string $campo Campo a desencriptar de array
      * @param array $campos_encriptados Campos definidos como encriptables de un registro
-     * @param mixed $value Valor a descriptar en caso de que aplique el camp dentro de los campos encriptados
+     * @param mixed $value Valor a desencriptar en caso de que aplique el camp dentro de los campos encriptados
      * @return array|string|null
      */
     private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
@@ -687,6 +699,20 @@ class inicializacion{
             }
         }
         return $value_enc;
+    }
+
+    public function values_in(string $key_value, array $rows): array
+    {
+        $values_in = array();
+
+        foreach ($rows as $row){
+            $value = $row[$key_value];
+            $values_in = $this->integra_value_in(value:$value,values_in:  $values_in);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar values in', data:$values_in);
+            }
+        }
+        return $values_in;
     }
 
 

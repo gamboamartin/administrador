@@ -405,7 +405,4 @@ class filtros{
         return $filtro_especial_sql;
     }
 
-
-
-
 }

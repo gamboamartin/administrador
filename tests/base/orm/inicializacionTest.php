@@ -486,6 +486,21 @@ class inicializacionTest extends test {
 
     }
 
+    public function test_integra_value_in(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $values_in = array();
+        $value = 1;
+        $resultado = $inicializacion->integra_value_in($value, $values_in);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1', $resultado[0]);
+
+    }
+
     public function test_limpia_valores(){
         errores::$error = false;
         $inicializacion = new inicializacion();
