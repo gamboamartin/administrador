@@ -43,6 +43,7 @@ class filtros{
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
      * @version 1.207.34
      * @verfuncion 1.1.0
      * @author mgamboa
@@ -50,7 +51,7 @@ class filtros{
      * @return array|stdClass
      */
     public function complemento_sql(bool $aplica_seguridad, array $filtro, array $filtro_especial,
-                                    array $filtro_extra, array $filtro_rango, array $group_by, int $limit,
+                                    array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
                                     modelo $modelo, array $not_in, int $offset, array $order, string $sql_extra,
                                     string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
     {
@@ -73,9 +74,10 @@ class filtros{
             return $this->error->error(mensaje: 'Error al generar parametros sql',data:$params);
         }
 
+
         $filtros = (new where())->data_filtros_full(columnas_extra: $modelo->columnas_extra, filtro: $filtro,
             filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha,
-            filtro_rango:  $filtro_rango, keys_data_filter: $modelo->keys_data_filter, not_in: $not_in,
+            filtro_rango:  $filtro_rango, in: $in, keys_data_filter: $modelo->keys_data_filter, not_in: $not_in,
             sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
 
 
@@ -117,7 +119,7 @@ class filtros{
         }
 
 
-        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','not_in','sentencia','sql_extra');
+        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra');
 
         foreach ($keys as $key){
             if(!isset($complemento_r->$key)){
@@ -126,9 +128,13 @@ class filtros{
         }
 
 
-        $modelo->consulta = $consulta.$complemento_r->where.$complemento_r->sentencia.' '.$complemento_r->filtro_especial.' ';
+        $modelo->consulta = $consulta.$complemento_r->where.$complemento_r->sentencia.' '.
+            $complemento_r->filtro_especial.' ';
+
         $modelo->consulta.= $complemento_r->filtro_rango.' '.$complemento_r->filtro_fecha.' ';
-        $modelo->consulta.= $complemento_r->filtro_extra.' '.$complemento_r->sql_extra.' '.$complemento_r->not_in.' ';
+        $modelo->consulta.= $complemento_r->filtro_extra.' '.$complemento_r->in.' '.$complemento_r->not_in.' '.
+            $complemento_r->sql_extra.' ';
+
         $modelo->consulta.= $complemento_r->params->group_by.' '.$complemento_r->params->order.' ';
         $modelo->consulta.= $complemento_r->params->limit.' '.$complemento_r->params->offset;
         return $modelo->consulta;

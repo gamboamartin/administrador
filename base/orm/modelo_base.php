@@ -69,7 +69,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->patterns['telefono'] = "/^[0-9]{10}$/";
         $this->patterns['id'] = "/^[1-9]+[0-9]*$/";
 
-        $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','not_in','sql_extra','filtro_fecha');
+        $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','in',
+            'not_in','sql_extra','filtro_fecha');
     }
 
     /**
