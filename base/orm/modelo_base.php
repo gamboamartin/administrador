@@ -607,6 +607,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @version 1.15.9
      *
      * @param string $modelo txt con el nombre del modelo a crear
+     * @param string $namespace_model paquete de origen modelo
      * @example
      *     $modelo = $modelo_base->genera_modelo($name_modelo);
      *
@@ -615,7 +616,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores $name_modelo no existe una clase con el nombre del modelo
 
      */
-    public function genera_modelo(string $modelo):array|modelo{
+    public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
 
         /**
@@ -644,6 +645,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(!$es_namespace_especial_como_mis_inges) {
             $modelo = str_replace('models\\', '', $modelo);
             $modelo = 'models\\' . $modelo;
+        }
+
+        if($namespace_model !==''){
+
+            $modelo = str_replace($namespace_model, '', $modelo);
+            $modelo = str_replace('models\\', '', $modelo);
+            $modelo = $namespace_model.'\\'.$modelo;
         }
 
         $modelo = trim($modelo);
