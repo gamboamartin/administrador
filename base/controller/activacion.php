@@ -18,11 +18,12 @@ class activacion{
     }
 
     /**
-     * ERRORREV P INT P ORDER
-     * @param modelo $modelo
-     * @param int $registro_id
-     * @param string $seccion
+     * Activacion base
+     * @param modelo $modelo Modelo en ejecucion
+     * @param int $registro_id Identificador
+     * @param string $seccion Seccion en ejecucion
      * @return array|stdClass
+     * @version 1.531.51
      */
     public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array|stdClass{
         if($registro_id <= 0){

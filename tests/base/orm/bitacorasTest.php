@@ -38,7 +38,8 @@ class bitacorasTest extends test {
         $tabla = 'adm_seccion';
 
 
-        $resultado = $bitacora->aplica_bitacora($consulta, $funcion, $modelo, $registro_id, $tabla);
+        $resultado = $bitacora->aplica_bitacora($consulta, $funcion, $modelo,'', $registro_id, $tabla);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
@@ -163,7 +164,7 @@ class bitacorasTest extends test {
         $tabla = 'adm_seccion';
 
 
-        $resultado = $bitacora->ejecuta_transaccion($tabla, $funcion , $modelo, $registro_id);
+        $resultado = $bitacora->ejecuta_transaccion($tabla, $funcion , $modelo,'', $registro_id);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

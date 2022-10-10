@@ -21,21 +21,22 @@ class bitacoras{
      * Retornando los datos de la transaccion
      * @param string $consulta almacena la consulta que se va a realizar a la base de datos
      * @param string $funcion almacena la funcion que se va a utilizar
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo a generar
+     * @param string $namespace_model Paquete origen
      * @param int $registro_id contiene el identificador del registro
      * @param string $tabla almacena el nombre de la tabla con la que se va a interactuar
      * @return array
      * @version 1.495.49
      */
-    private function aplica_bitacora(string $consulta, string $funcion, modelo $modelo, int $registro_id,
-                                     string $tabla): array
+    private function aplica_bitacora(string $consulta, string $funcion, modelo $modelo, string $namespace_model,
+                                     int $registro_id, string $tabla): array
     {
 
         if($registro_id <=0){
             return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
                 data: $registro_id);
         }
-        $model = $modelo->genera_modelo(modelo: $tabla);
+        $model = $modelo->genera_modelo(modelo: $tabla, namespace_model: $namespace_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo'.$tabla,data: $model);
         }
@@ -233,13 +234,14 @@ class bitacoras{
      * @param string $tabla contiene el nombre de la tabla con la que se va a interactuar
      * @param string $funcion contiene el nombre el nombre de la funcion que se va a aplicar
      * @param modelo $modelo Modelo en ejecucion
+     * @param string $namespace_model Namespaces del modelo
      * @param int $registro_id contiene el identificador del registro a consultar
      * @param string $sql contiene la peticion que se realizara a la base de datos
      * @return array
      * @version 1.495.49
      */
     public function ejecuta_transaccion(
-        string $tabla, string $funcion,  modelo $modelo, int $registro_id , string $sql = ''):array{
+        string $tabla, string $funcion,  modelo $modelo, string $namespace_model, int $registro_id , string $sql = ''):array{
         $consulta =trim($sql);
         if($sql === '') {
             $consulta = $modelo->consulta;
@@ -253,7 +255,7 @@ class bitacoras{
             return $this->error->error(mensaje:'Error al ejecutar sql en '.$tabla,data:$resultado);
         }
         $bitacora = $this->aplica_bitacora(consulta: $consulta, funcion: $funcion,modelo: $modelo,
-            registro_id:  $registro_id, tabla: $tabla);
+            namespace_model: $namespace_model, registro_id:  $registro_id, tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al insertar bitacora en '.$tabla,data:$bitacora);
         }

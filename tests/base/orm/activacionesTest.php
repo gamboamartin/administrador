@@ -19,6 +19,8 @@ class activacionesTest extends test {
         $this->errores = new errores();
     }
 
+
+
     public function test_init_activa()
     {
         errores::$error = false;

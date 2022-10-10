@@ -163,8 +163,9 @@ class modelo extends modelo_base {
                 data:$data_activacion);
         }
 
-        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,
-            registro_id: $this->registro_id,sql: $data_activacion->consulta);
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
+            modelo: $this, namespace_model: $this->NAMESPACE, registro_id: $this->registro_id,
+            sql: $data_activacion->consulta);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
         }
@@ -378,7 +379,7 @@ class modelo extends modelo_base {
             "UPDATE $tabla SET status = 'inactivo' WHERE id = $this->registro_id";
         $this->transaccion = 'DESACTIVA';
         $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
-            modelo: $this,registro_id:  $this->registro_id);
+            modelo: $this, namespace_model: $this->NAMESPACE,registro_id:  $this->registro_id);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION',data: $transaccion);
         }
