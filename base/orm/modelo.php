@@ -1731,7 +1731,9 @@ class modelo extends modelo_base {
     }
 
     /**
+     * Valida si existe un elemento predeterminado previo a su alta
      * @return bool|array
+     * @version 1.532.51
      */
     protected function valida_predetermiando(): bool|array
     {

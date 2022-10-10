@@ -530,6 +530,35 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_predetermiando(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->valida_predetermiando();
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro['predeterminado'] = 'activo';
+        $modelo = new liberator($modelo);
+
+
+
+        $resultado = $modelo->valida_predetermiando();
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al verificar si existe', $resultado['mensaje']);
+
+        errores::$error = false;
+    }
+
     public function test_where_suma(): void
     {
         errores::$error = false;
