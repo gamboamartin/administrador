@@ -49,6 +49,28 @@ class atributosTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_inst_attr()
+    {
+
+        errores::$error = false;
+        $attr = new atributos();
+        $attr = new liberator($attr);
+        $atributo = array();
+        $modelo = new adm_campo($this->link);
+        $registro_id = 1;
+        $atributo['adm_atributo_descripcion'] = 'x';
+        $atributo['adm_atributo_id'] = '1';
+        $resultado = $attr->data_inst_attr($atributo, $modelo, $registro_id);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals('x',$resultado['descripcion']);
+        $this->assertEquals('activo',$resultado['status']);
+        $this->assertEquals('1',$resultado['adm_atributo_id']);
+        $this->assertEquals('1',$resultado['adm_campo_id']);
+        $this->assertEquals('',$resultado['valor']);
+        errores::$error = false;
+    }
+
     public function test_valida_attr()
     {
 
@@ -58,7 +80,7 @@ class atributosTest extends test {
         $atributo = array();
         $keys = array();
         $registro_id = 1;
-        $atributo['atributo_id'] = 1;
+        $atributo['adm_atributo_id'] = 1;
 
         $resultado = $attr->valida_attr($atributo, $keys, $registro_id);
         $this->assertNotTrue(errores::$error);

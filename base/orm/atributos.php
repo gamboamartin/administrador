@@ -60,11 +60,12 @@ class atributos{
     }
 
     /**
-     * P ORDER P INT ERROREV
+     * Obtiene los datos de insersion para un atributo
      * @param array $atributo Registro de tipo modelo atributo
      * @param modelo $modelo Modelo a validar
      * @param int $registro_id registro id
      * @return array
+     * @version 1.529.51
      */
     private function data_inst_attr(array $atributo, modelo $modelo, int $registro_id): array
     {
@@ -206,7 +207,7 @@ class atributos{
     }
 
     /**
-     * @version valida que los datos de un atributos sean validos
+     * Valida que los datos de un atributos sean validos
      * @param array $atributo Atributo a validar
      * @param array $keys Keys a validar
      * @param int $registro_id Registro a validar identificador
@@ -219,7 +220,7 @@ class atributos{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
         }
-        $keys = array('atributo_id');
+        $keys = array('adm_atributo_id');
         $valida = $this->validacion->valida_ids(keys: $keys, registro: $atributo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
