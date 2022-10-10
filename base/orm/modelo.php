@@ -628,7 +628,7 @@ class modelo extends modelo_base {
      * @return bool|array
      * @version 1.485.49
      */
-    private function existe_predeterminado(): bool|array
+    public function existe_predeterminado(): bool|array
     {
         $key = $this->tabla.'.predeterminado';
         $filtro[$key] = 'activo';
