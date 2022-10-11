@@ -43,6 +43,10 @@ class sumas{
             if($campo === ''){
                 return $this->error->error(mensaje: 'Error $campo esta vacio $campos[alias]=campo',data: $campos);
             }
+            $alias = trim($alias);
+            if($alias === ''){
+                return $this->error->error(mensaje: 'Error $alias esta vacio',data: $alias);
+            }
 
             $data = $this->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
             if(errores::$error){

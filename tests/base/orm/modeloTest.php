@@ -6,6 +6,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_dia;
+use models\adm_menu;
 use models\adm_seccion;
 
 
@@ -556,6 +557,21 @@ class modeloTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("  a = ''", $resultado);
+        errores::$error = false;
+    }
+
+    public function test_suma(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_menu($this->link);
+        //$modelo = new liberator($modelo);
+
+        $campos = array();
+        $campos['a'] = 'adm_menu.id';
+        $resultado = $modelo->suma($campos);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsNumeric($resultado['a']);
         errores::$error = false;
     }
 

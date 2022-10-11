@@ -1602,6 +1602,7 @@ class modelo extends modelo_base {
      * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
      * @param array $filtro Filtro para suma
      * @return array con la suma de los elementos seleccionados y filtrados
+     * @version 1.535.51
      */
     public function suma(array $campos, array $filtro = array()): array
     {
