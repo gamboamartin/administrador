@@ -256,12 +256,21 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P ORDER P INT
+     * Inserta un registro
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
-
+     * @version 1.534.51
      */
-    public function alta_registro(array $registro):array|stdClass{ //FIN
+    public function alta_registro(array $registro):array|stdClass{
+
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
+        }
+
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
+
         $this->registro = $registro;
 
         $r_alta  = $this->alta_bd();
@@ -356,10 +365,10 @@ class modelo extends modelo_base {
 
     /**
      * PHPUNIT
-     * @return array
+     * @return array|stdClass
      * @throws JsonException
      */
-    public function desactiva_bd(): array{ //FIN
+    public function desactiva_bd(): array|stdClass{
         if($this->registro_id<=0){
             return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id);
         }

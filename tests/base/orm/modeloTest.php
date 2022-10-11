@@ -5,6 +5,7 @@ use base\orm\filtros;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_dia;
 use models\adm_seccion;
 
 
@@ -29,6 +30,34 @@ class modeloTest extends test {
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('Registro activado con éxito en adm_seccion', $resultado->mensaje);
+
+        errores::$error = false;
+    }
+
+    public function test_alta_registro(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_dia($this->link);
+        //$modelo = new liberator($modelo);
+        $_SESSION['usuario_id'] = 2;
+
+        $registro = array();
+        $registro['codigo'] = '1';
+        $registro['descripcion'] = '1';
+        $resultado = $modelo->alta_registro($registro);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al dar de alta registro', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['codigo'] = mt_rand(100000000000,999999999999);
+        $registro['descripcion'] = '1';
+        $resultado = $modelo->alta_registro($registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('INSERT INTO adm_dia (codigo,descripcion,status,usuario_alta_id,usuario_update_id) VALUE', $resultado->sql);
 
         errores::$error = false;
     }
