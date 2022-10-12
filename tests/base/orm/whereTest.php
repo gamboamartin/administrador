@@ -805,7 +805,7 @@ class whereTest extends test {
         $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "ab'b'", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "a b 'b'", $resultado);
 
         errores::$error = false;
     }

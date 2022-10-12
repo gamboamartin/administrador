@@ -5,6 +5,7 @@ use base\orm\filtros;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use models\adm_accion;
 use models\adm_dia;
 use models\adm_menu;
 use models\adm_seccion;
@@ -307,6 +308,47 @@ class modeloTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (a  IN (a ,b)))   AND  ( (a NOT IN (c ,d)))   AND  ( (x))    ',$resultado);
 
+
+        errores::$error = false;
+    }
+
+    public function test_get_data_lista(){
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+        $resultado = $modelo->get_data_lista();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(255,$resultado['n_registros']);
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+        $filtro_especial[0]['adm_accion.id']['operador'] = 'LIKE';
+        $filtro_especial[0]['adm_accion.id']['valor'] = "%1%";
+        $resultado = $modelo->get_data_lista(filtro_especial: $filtro_especial);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(80,$resultado['n_registros']);
+        $this->assertEquals(1,$resultado['registros'][0]['adm_accion_id']);
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+        $filtro_especial[0]['adm_accion.id']['operador'] = 'LIKE';
+        $filtro_especial[0]['adm_accion.id']['valor'] = "%1%";
+        $filtro_especial[0]['adm_accion.id']['comparacion'] = "OR";
+
+        $filtro_especial[1]['adm_accion.descripcion']['operador'] = 'LIKE';
+        $filtro_especial[1]['adm_accion.descripcion']['valor'] = "%1%";
+        $filtro_especial[1]['adm_accion.descripcion']['comparacion'] = "OR";
+
+        $resultado = $modelo->get_data_lista(filtro_especial: $filtro_especial);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(80,$resultado['n_registros']);
+        $this->assertStringContainsStringIgnoringCase("WHERE    ( (adm_accion.id LIKE '%1%'  OR  adm_accion.descripcion LIKE '%1%'))",$resultado['data_result']->sql);
 
         errores::$error = false;
     }
