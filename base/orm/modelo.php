@@ -983,6 +983,36 @@ class modelo extends modelo_base {
         return $sql;
     }
 
+    public function get_data_lista(array $filtro = array(), int $n_rows_for_page = 10, int $pagina = 1): array
+    {
+
+        $limit = $n_rows_for_page;
+
+        $n_rows = $this->cuenta(filtro:$filtro, tipo_filtro: 'textos');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
+        }
+
+        $offset = ($pagina - 1) * $n_rows_for_page;
+
+        if($n_rows <= $limit){
+            $offset = 0;
+        }
+
+        $result = $this->filtro_and(filtro:$filtro,limit: $limit, offset: $offset,tipo_filtro: 'textos');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
+        }
+
+
+        $out = array();
+        $out['n_registros'] = $n_rows;
+        $out['registros'] = $result->registros;
+        $out['data_result'] = $result;
+
+        return $out;
+    }
+
     /**
      * Obtiene un identificador predeterminado
      * @return array|int
