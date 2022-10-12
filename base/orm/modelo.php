@@ -983,12 +983,12 @@ class modelo extends modelo_base {
         return $sql;
     }
 
-    public function get_data_lista(array $filtro = array(), int $n_rows_for_page = 10, int $pagina = 1): array
+    public function get_data_lista(array $filtro_especial = array(), int $n_rows_for_page = 10, int $pagina = 1): array
     {
 
         $limit = $n_rows_for_page;
 
-        $n_rows = $this->cuenta(filtro:$filtro, tipo_filtro: 'textos');
+        $n_rows = $this->cuenta(filtro_especial: $filtro_especial);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
         }
@@ -999,7 +999,7 @@ class modelo extends modelo_base {
             $offset = 0;
         }
 
-        $result = $this->filtro_and(filtro:$filtro,limit: $limit, offset: $offset,tipo_filtro: 'textos');
+        $result = $this->filtro_and(filtro_especial:$filtro_especial,limit: $limit, offset: $offset);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
         }

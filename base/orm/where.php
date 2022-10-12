@@ -1134,7 +1134,7 @@ class where{
             return $this->error->error(mensaje:'Error al validar filtro',  data:$valida);
         }
 
-        $data_sql = $campo . $filtro[$campo]['operador'] . "'" . $filtro[$campo]['valor'] . "'";
+        $data_sql = " ".$campo." " . $filtro[$campo]['operador'] . " '" . $filtro[$campo]['valor'] . "' ";
 
         if(isset($filtro[$campo]['valor_es_campo']) && $filtro[$campo]['valor_es_campo']){
 

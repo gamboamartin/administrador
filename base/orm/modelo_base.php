@@ -391,7 +391,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
-                data: array($e->getCode().' '.$this->tabla.' '.$this->consulta.' '.$this->tabla,
+                data: array($e->getCode().' '.$this->tabla.' '.$consulta.' '.$this->tabla,
                     'registro'=>$this->registro));
         }
         if($this->transaccion ==='INSERT'){
