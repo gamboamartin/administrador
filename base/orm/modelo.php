@@ -855,16 +855,21 @@ class modelo extends modelo_base {
 
     /**
      * Genera un filtro aplicando OR
+     * @param bool $aplica_seguridad
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Genera las columnas tal y como vienen en la base de datos
      * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
+     * @param array $group_by
      * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
+     * @param int $limit Limit de datos a motrar
+     * @param int $offset
+     * @param array $order
      * @return array|stdClass
      */
-    public function filtro_or(array $columnas = array(), array $columnas_by_table = array(),
-                              bool $columnas_en_bruto = false, array $filtro = array(),
-                              array $hijo = array()):array|stdClass{
+    public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(), array $columnas_by_table = array(),
+                              bool $columnas_en_bruto = false, array $filtro = array(), array $group_by = array(),
+                              array $hijo = array(), int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{
 
         $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
             columnas_en_bruto: $columnas_en_bruto, extension_estructura:  $this->extension_estructura,
@@ -882,7 +887,11 @@ class modelo extends modelo_base {
             $where = $data_sentencia->where;
             $sentencia = $data_sentencia->sentencia;
         }
-        $consulta .= $where . $sentencia;
+
+        $params_sql = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by:  $group_by,
+            limit:  $limit, modelo: $this, offset: $offset, order: $order, sql_where_previo: $sentencia);
+
+        $consulta .= $where . $sentencia.$params_sql->limit;
 
         $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
         if(errores::$error){
