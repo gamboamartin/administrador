@@ -275,7 +275,7 @@ class whereTest extends test {
 
         $filtro_especial = array();
         $filtro_especial[] = '';
-        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $resultado = $wh->filtro_especial_sql(array(),$filtro_especial);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error filtro debe ser un array filtro_especial[] = array()', $resultado['mensaje']);
@@ -284,7 +284,7 @@ class whereTest extends test {
 
         $filtro_especial = array();
         $filtro_especial[]['campo'] = array();
-        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $resultado = $wh->filtro_especial_sql(array(),$filtro_especial);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
@@ -294,7 +294,7 @@ class whereTest extends test {
         $filtro_especial = array();
         $filtro_especial[0]['x']['operador'] = 'x';
         $filtro_especial[0]['x']['valor'] = 'x';
-        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $resultado = $wh->filtro_especial_sql(array(),$filtro_especial);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -781,7 +781,7 @@ class whereTest extends test {
 
         $campo = '';
         $filtro = array();
-        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $resultado = $wh->maqueta_filtro_especial($campo, array(), $filtro);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase( "Error al validar filtro", $resultado['mensaje']);
@@ -791,7 +791,7 @@ class whereTest extends test {
         $campo = 'a';
         $filtro = array();
         $filtro['a']['operador'] = 'b';
-        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $resultado = $wh->maqueta_filtro_especial($campo, array() ,$filtro);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase( "Error al validar filtro", $resultado['mensaje']);
@@ -802,7 +802,7 @@ class whereTest extends test {
         $filtro = array();
         $filtro['a']['operador'] = 'b';
         $filtro['a']['valor'] = 'b';
-        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $resultado = $wh->maqueta_filtro_especial($campo, array(), $filtro);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase( "a b 'b'", $resultado);
@@ -852,7 +852,7 @@ class whereTest extends test {
 
         $filtro_esp = array();
         $filtro_especial_sql = '';
-        $resultado = $wh->obten_filtro_especial($filtro_esp, $filtro_especial_sql);
+        $resultado = $wh->obten_filtro_especial(array(),$filtro_esp, $filtro_especial_sql);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error en filtro', $resultado['mensaje']);
@@ -863,7 +863,7 @@ class whereTest extends test {
         $filtro_especial_sql = '';
         $filtro_esp['x']['operador'] = 'x';
         $filtro_esp['x']['valor'] = 'x';
-        $resultado = $wh->obten_filtro_especial($filtro_esp, $filtro_especial_sql);
+        $resultado = $wh->obten_filtro_especial(array(),$filtro_esp, $filtro_especial_sql);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
 

@@ -119,7 +119,11 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:"Error al validar maquetacion",data: $datas->value);
         }
-        if(isset($data['es_sq']) && $data['es_sq']){
+        $es_sq = false;
+        if(isset($columnas_extra[$key])){
+            $es_sq = true;
+        }
+        if($es_sq){
             $datas->campo = $columnas_extra[$key];
         }
 
@@ -218,9 +222,11 @@ class where{
     /**
      *
      * Genera las condiciones sql de un filtro especial
-     * @version 1.130.30
+     * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *
+     * @return array|string
+     * @version 1.130.30
      * @example
      *      Ej 1
      *      $filtro_especial[0][tabla.campo]['operador'] = '>';
@@ -248,11 +254,8 @@ class where{
      *      $resultado =  tabla.campo < 'x' OR tabla.campo2  >= x
      *
      *
-     * @return array|string
-     * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe, Debe existir $filtro_esp[$campo]['comparacion']
-     * @throws errores $filtro_especial_sql != '' = $data_sql = '',  data_sql debe tener info
      */
-    PUBLIC function filtro_especial_sql(array $filtro_especial):array|string{ //DEBUG
+    private function filtro_especial_sql(array $columnas_extra, array $filtro_especial):array|string{ //DEBUG
 
         $filtro_especial_sql = '';
         foreach ($filtro_especial as $campo=>$filtro_esp){
@@ -262,8 +265,8 @@ class where{
                     data: $filtro_esp);
             }
 
-            $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,
-                filtro_especial_sql: $filtro_especial_sql);
+            $filtro_especial_sql = $this->obten_filtro_especial(columnas_extra: $columnas_extra,
+                filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
             if(errores::$error){
                 return $this->error->error(mensaje:"Error filtro", data: $filtro_especial_sql);
             }
@@ -815,7 +818,8 @@ class where{
             return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia);
         }
 
-        $filtro_especial_sql = $this->filtro_especial_sql(filtro_especial: $filtro_especial);
+        $filtro_especial_sql = $this->filtro_especial_sql(
+            columnas_extra: $columnas_extra, filtro_especial: $filtro_especial);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql);
         }
@@ -1095,10 +1099,12 @@ class where{
      *
      * Genera la condicion sql de un filtro especial
      *
-     * @version 1.127.29
-     *
      * @param string $campo campo de una tabla tabla.campo
+     * @param array $columnas_extra Campos en forma de subquery del modelo
      * @param array $filtro filtro a validar
+     *
+     * @return array|string
+     * @version 1.127.29
      *
      * @example
      *      Ej 1
@@ -1113,14 +1119,9 @@ class where{
      *      $resultado = maqueta_filtro_especial($campo, $filtro);
      *      $resultado = 'x'> x
      *
-     * @return array|string
-     * @throws errores $campo = '', Campo no puede venir vacio
-     * @throws errores $campo = int cualquier numero,  Campo no puede ser un numero
-     * @throws errores $filtro = array(), filtro[operador] debe existir
-     * @throws errores $filtro = array('operador'=>'x'), filtro[valor] debe existir
      * @uses modelo_basico->obten_filtro_especial
      */
-    private function maqueta_filtro_especial(string $campo, array $filtro):array|string{
+    private function maqueta_filtro_especial(string $campo, array $columnas_extra, array $filtro):array|string{
         $campo = trim($campo);
 
         $valida = (new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro);
@@ -1134,11 +1135,24 @@ class where{
             return $this->error->error(mensaje:'Error al validar filtro',  data:$valida);
         }
 
-        $data_sql = " ".$campo." " . $filtro[$campo]['operador'] . " '" . $filtro[$campo]['valor'] . "' ";
+        /**
+         * REFACTORIZAR
+         */
+        $campo_filtro = $campo;
+        $es_subquery = false;
+        if(isset($columnas_extra[$campo])){
+            $es_subquery = true;
+        }
 
-        if(isset($filtro[$campo]['valor_es_campo']) && $filtro[$campo]['valor_es_campo']){
+        if($es_subquery){
+            $campo = $columnas_extra[$campo];
+        }
 
-            $data_sql = "'".$campo."'".$filtro[$campo]['operador'].$filtro[$campo]['valor'];
+        $data_sql = " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
+
+        if(isset($filtro[$campo_filtro]['valor_es_campo']) && $filtro[$campo_filtro]['valor_es_campo']){
+
+            $data_sql = "'".$campo."'".$filtro[$campo_filtro]['operador'].$filtro[$campo_filtro]['valor'];
         }
 
         return $data_sql;
@@ -1174,10 +1188,12 @@ class where{
     /**
      *
      * Genera la condicion sql de un filtro especial
-     * @version 1.130.30
-     * @param string $filtro_especial_sql //condicion en forma de sql
+     * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_esp //array con datos del filtro $filtro_esp[tabla.campo]= array('operador'=>'AND','valor'=>'x');
      *
+     * @param string $filtro_especial_sql //condicion en forma de sql
+     * @return array|string
+     * @version 1.130.30
      * @example
      *      Ej 1
      *      $filtro_esp[tabla.campo]['operador'] = '>';
@@ -1195,13 +1211,10 @@ class where{
      *      $resultado =  tabla.campo > 'x' AND tabla.campo2 = 1
      *
      *
-     * @return array|string
-     * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe, Debe existir $filtro_esp[$campo]['comparacion']
-     * @throws errores $filtro_especial_sql != '' = $data_sql = '',  data_sql debe tener info
-     * @throws errores $filtro_esp[$campo] != array() $filtro_esp[$campo] debe ser un array
      */
 
-    private function obten_filtro_especial(array $filtro_esp, string $filtro_especial_sql):array|string{
+    private function obten_filtro_especial(
+        array $columnas_extra, array $filtro_esp, string $filtro_especial_sql):array|string{
         $campo = key($filtro_esp);
         $campo = trim($campo);
 
@@ -1209,7 +1222,7 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje: "Error en filtro ", data: $valida);
         }
-        $data_sql = $this->maqueta_filtro_especial(campo: $campo,filtro: $filtro_esp);
+        $data_sql = $this->maqueta_filtro_especial(campo: $campo, columnas_extra: $columnas_extra,filtro: $filtro_esp);
         if(errores::$error){
             return $this->error->error(mensaje:"Error filtro", data:$data_sql);
         }
