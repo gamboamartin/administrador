@@ -983,6 +983,14 @@ class modelo extends modelo_base {
         return $sql;
     }
 
+    /**
+     * Obtiene los datos para datatable
+     * @param array $filtro_especial Filtro para get data
+     * @param int $n_rows_for_page N rows
+     * @param int $pagina Num pag
+     * @return array
+     * @version 1.544.51
+     */
     public function get_data_lista(array $filtro_especial = array(), int $n_rows_for_page = 10, int $pagina = 1): array
     {
 
