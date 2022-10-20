@@ -69,7 +69,6 @@ class adm_accion extends modelo{ //FINALIZADAS
     /**
      * inserta un registro de tipo accion y agrega permisos a usuarios de tipo root
      * @return array|stdClass con datos del registro insertado
-     * @throws JsonException
      * @example
      *      $r_alta_accion = $this->accion_modelo->alta_bd();
      *

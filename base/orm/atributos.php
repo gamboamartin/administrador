@@ -114,19 +114,25 @@ class atributos{
     }
 
     /**
-     * P INT ERRORREV
+     * Inserta un atributo
      * @param array $atributo Registro de tipo modelo atributo
      * @param modelo $modelo_base modelo a integrar
-     * @param int $registro_id
-     * @param string $tabla
+     * @param int $registro_id Identificador
+     * @param string $tabla Tabla modelo
      * @return array
+     * @version 1.543.51
      */
-    private function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
+    PUBLIC function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
     {
-        $keys = array('atributo_descripcion','atributo_id');
+        $keys = array('adm_atributo_descripcion','adm_atributo_descripcion');
         $valida = $this->valida_attr(atributo: $atributo,keys:  $keys, registro_id: $registro_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $atributo',data: $valida);
+        }
+
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error la tabla esta vacia',data: $tabla);
         }
 
 

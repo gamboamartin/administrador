@@ -71,6 +71,28 @@ class atributosTest extends test {
         errores::$error = false;
     }
 
+    public function test_inserta_atributo()
+    {
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 1;
+        $attr = new atributos();
+        //$attr = new liberator($attr);
+        $atributo = array();
+        $keys = array();
+        $registro_id = 1;
+        $atributo['adm_atributo_id'] = 1;
+        $atributo['adm_atributo_descripcion'] = 1;
+
+        $modelo_base = new adm_accion_grupo($this->link);
+        $tabla = 'adm_seccion';
+
+        $resultado = $attr->inserta_atributo($atributo, $modelo_base, $registro_id, $tabla);
+        $this->assertTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_attr()
     {
 
