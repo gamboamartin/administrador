@@ -2,6 +2,7 @@
 namespace models;
 
 use base\orm\modelo;
+use gamboamartin\errores\errores;
 use PDO;
 
 class adm_menu extends modelo{ //PRUEBAS FINALIZADAS
@@ -60,4 +61,23 @@ class adm_menu extends modelo{ //PRUEBAS FINALIZADAS
 		return array('registros' => $new_array, 'n_registros' => $n_registros);
 
 	}
+
+    /**
+     * Obtiene las secciones de un menu
+     * @param int $adm_menu_id Menu identificador
+     * @return array
+     * @version 0.545.51
+     */
+    public function secciones(int $adm_menu_id): array
+    {
+        if($adm_menu_id <= 0){
+            return $this->error->error(mensaje: 'Error adm_menu_id debe ser mayor a 0',data:  $adm_menu_id);
+        }
+        $filtro['adm_menu.id'] = $adm_menu_id;
+        $r_adm_seccion = (new adm_seccion($this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener secciones',data:  $r_adm_seccion);
+        }
+        return $r_adm_seccion->registros;
+    }
 }
