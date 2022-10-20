@@ -63,6 +63,9 @@ class adm_seccion extends modelo{
             $accion['status'] = $accion_basica['adm_accion_basica_status'];
             $accion['adm_seccion_id'] = $registro_id;
             $accion['es_view'] = $accion_basica['adm_accion_basica_es_view'];
+            $accion['titulo'] =str_replace('_',' ',$accion_basica['adm_accion_basica_descripcion']);
+            $accion['titulo'] =ucwords($accion['titulo']);
+            $accion['css'] ='info';
             $adm_accion_modelo = new adm_accion($this->link);
             $adm_accion_modelo->registro = $accion;
             $r_alta_accion =$adm_accion_modelo->alta_bd();
