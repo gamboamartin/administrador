@@ -16,7 +16,7 @@ class adm_accion extends modelo{ //FINALIZADAS
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false, 'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
-        $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista');
+        $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista','titulo','css');
         $tipo_campos['adm_seccion_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas:  $columnas,
             tipo_campos:  $tipo_campos );
