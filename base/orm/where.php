@@ -219,6 +219,12 @@ class where{
         return $filtros;
     }
 
+    /**
+     * Integra los valores de data in
+     * @param array $in in
+     * @return array|stdClass
+     * @version 1.549.51
+     */
     private function data_in(array $in): array|stdClass
     {
         $keys = array('llave','values');
@@ -880,9 +886,12 @@ class where{
 
     }
 
+    /**
+     * @param array $in
+     * @return array|string
+     */
     private function genera_in(array $in): array|string
     {
-
 
         $data_in = $this->data_in(in: $in);
         if(errores::$error){
@@ -896,6 +905,10 @@ class where{
         return $in_sql;
     }
 
+    /**
+     * @param array $in
+     * @return array|string
+     */
     private function genera_in_sql(array $in): array|string
     {
         $in_sql = '';

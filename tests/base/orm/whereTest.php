@@ -267,6 +267,30 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_in(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $in = array();
+        $resultado = $wh->data_in($in);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar not_in', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $in = array();
+        $in['llave'] = 'a';
+        $in['values'] = array();
+        $resultado = $wh->data_in($in);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->llave);
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_sql(){
         errores::$error = false;
         $wh = new where();
