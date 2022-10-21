@@ -30,6 +30,7 @@ class sql{
      * @param string $llave Llave o campo
      * @param string $values_sql Valores a integrar
      * @return string|array
+     * @version 1.548.51
      */
     public function in(string $llave, string $values_sql): string|array
     {
@@ -191,6 +192,14 @@ class sql{
         return 'UPDATE ' . $tabla . ' SET ' . $campos_sql . "  WHERE id = $id";
     }
 
+    /**
+     * Valida los datos de entrada para un IN
+     * @param string $llave LLave a integrar
+     * @param string $values_sql Valores
+     * @return bool|array
+     * @version 1.548.51
+     *
+     */
     private function valida_in(string $llave, string $values_sql): bool|array
     {
         $llave = trim($llave);

@@ -21,6 +21,24 @@ class adm_seccion extends modelo{
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas);
     }
 
+    /**
+     * Obtiene las acciones de una seccion
+     * @param int $adm_seccion_id Seccion identificador
+     * @return array
+     */
+    public function acciones(int $adm_seccion_id): array
+    {
+        if($adm_seccion_id <= 0){
+            return $this->error->error(mensaje: 'Error adm_seccion_id debe ser mayor a 0',data:  $adm_seccion_id);
+        }
+        $filtro['adm_seccion.id'] = $adm_seccion_id;
+        $r_adm_accion = (new adm_accion($this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener acciones',data:  $r_adm_accion);
+        }
+        return $r_adm_accion->registros;
+    }
+
     public function alta_bd(): array|stdClass
     {
 
@@ -52,6 +70,9 @@ class adm_seccion extends modelo{
 
         $acciones_basicas = $r_accion_basica->registros;
 
+        /**
+         * REFACTORIZAR
+         */
         $accion = array();
         foreach ($acciones_basicas as $accion_basica) {
             $accion['descripcion'] = $accion_basica['adm_accion_basica_descripcion'];

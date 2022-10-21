@@ -219,6 +219,25 @@ class where{
         return $filtros;
     }
 
+    private function data_in(array $in): array|stdClass
+    {
+        $keys = array('llave','values');
+        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+        }
+
+        $values = $in['values'];
+
+        if(!is_array($values)){
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
+        }
+        $data = new stdClass();
+        $data->llave = $in['llave'];
+        $data->values = $in['values'];
+        return $data;
+    }
+
     /**
      *
      * Genera las condiciones sql de un filtro especial
@@ -863,20 +882,14 @@ class where{
 
     private function genera_in(array $in): array|string
     {
-        $keys = array('llave','values');
-        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $in);
+
+
+        $data_in = $this->data_in(in: $in);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+            return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
 
-        $llave = $in['llave'];
-        $values = $in['values'];
-
-        if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
-        }
-
-        $in_sql = $this->in_sql(llave:  $llave, values:$values);
+        $in_sql = $this->in_sql(llave:  $data_in->llave, values:$data_in->values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
         }
@@ -910,20 +923,12 @@ class where{
      */
     private function genera_not_in(array $not_in): array|string
     {
-        $keys = array('llave','values');
-        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $not_in);
+        $data_in = $this->data_in(in: $not_in);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+            return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
 
-        $llave = $not_in['llave'];
-        $values = $not_in['values'];
-
-        if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
-        }
-
-        $not_in_sql = $this->not_in_sql(llave:  $llave, values:$values);
+        $not_in_sql = $this->not_in_sql(llave:  $data_in->llave, values:$data_in->values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql);
         }
@@ -1024,7 +1029,7 @@ class where{
      * @param string $llave Llave o campo
      * @param array $values Valores a integrar a IN
      * @return array|string
-
+     * @version 1.548.51
      */
     private function in_sql(string $llave, array $values): array|string
     {
