@@ -112,6 +112,26 @@ class atributosTest extends test {
         errores::$error = false;
     }
 
+    public function test_inserta_data_attr()
+    {
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 1;
+        $attr = new atributos();
+        $attr = new liberator($attr);
+        $registro_id = 1;
+
+
+        $modelo = new adm_accion_grupo($this->link);
+        $clase_attr = 'adm_seccion';
+
+        $resultado = $attr->inserta_data_attr($clase_attr, $modelo, $registro_id);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_valida_attr()
     {
 

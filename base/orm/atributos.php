@@ -192,16 +192,21 @@ class atributos{
 
 
     /**
-     * P INT ERROREV
+     * Inserta aun atributo
      * @param string $clase_attr Clase de atributo
      * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array
+     * @version 1.557.51
      */
     private function inserta_data_attr(string $clase_attr,modelo $modelo, int $registro_id): array
     {
         if($registro_id<=0){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id);
+        }
+        $clase_attr = trim($clase_attr);
+        if($clase_attr === ''){
+            return $this->error->error(mensaje: 'Error clase_attr esta vacia', data: $clase_attr);
         }
 
         $model_attr = $modelo->genera_modelo(modelo: $clase_attr);
