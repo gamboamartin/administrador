@@ -243,6 +243,26 @@ class updTest extends test {
         errores::$error = false;
 
     }
+    public function test_sql_update(){
+
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+
+        $id = 1;
+        $reactiva = false;
+        $registro['a'] = 'zxsss';
+        $modelo->registro_upd['a'] = 'zxssss';
+
+        $resultado = $upd->sql_update($id, $modelo, $reactiva, $registro);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("UPDATE adm_accion SET a = 'zxssss',usuario_update_id=2  WHERE id = 1", $resultado);
+        errores::$error = false;
+    }
 
     public function test_slaches_value(): void
     {

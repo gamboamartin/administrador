@@ -323,14 +323,25 @@ class upd{
     }
 
     /**
-     * @param int $id
+     * Integra un sql para update
+     * @param int $id Identificador de registro
      * @param modelo $modelo Modelo en ejecucion
-     * @param bool $reactiva
-     * @param array $registro
+     * @param bool $reactiva Si reactiva el registro sera previamente validado
+     * @param array $registro Registro a actualizar
      * @return array|string
+     * @version 1.566.51
      */
     private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro): array|string
     {
+
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
+        }
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+
         $reactiva_row = $this->reactiva(modelo: $modelo,reactiva:  $reactiva,registro:  $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $reactiva_row);
