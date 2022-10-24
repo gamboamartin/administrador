@@ -12,6 +12,13 @@ class filtros{
         $this->validacion = new validaciones();
     }
 
+    /**
+     * Genera un complemento con datos para filtro
+     * @param stdClass $complemento Complemento previo
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array|stdClass
+     * @version 1.560.51
+     */
     private function complemento(stdClass $complemento, modelo $modelo): array|stdClass
     {
         $complemento_ = (new where())->limpia_filtros(filtros: $complemento,keys_data_filter:  $modelo->columnas_extra);

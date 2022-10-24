@@ -420,7 +420,7 @@ class inserts{
      * @param string $consulta texto en forma de SQL
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
-     * 
+     *
      */
     private function transacciones_default(string $consulta, modelo $modelo): array|stdClass
     {

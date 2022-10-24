@@ -19,6 +19,20 @@ class filtrosTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_complemento(){
+        errores::$error = false;
+        $filtros = new filtros();
+        $filtros = new liberator($filtros);
+
+        $modelo = new adm_seccion($this->link);
+
+        $complemento = new stdClass();
+        $resultado = $filtros->complemento($complemento, $modelo);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_complemento_sql(){
         errores::$error = false;
         $filtros = new filtros();
