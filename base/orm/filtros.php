@@ -240,9 +240,23 @@ class filtros{
         return $complemento;
     }
 
-    private function init_complemento(stdClass $complemento, array $keys): stdClass
+    /**
+     * Inicializa los keys de un complemento para filtro
+     * @param stdClass $complemento complemento previo
+     * @param array $keys Keys a incializar
+     * @return stdClass|array
+     * @version 1.554.51
+     */
+    private function init_complemento(stdClass $complemento, array $keys): stdClass|array
     {
+        if(count($keys) === 0){
+            return $this->error->error(mensaje:'Error los keys de un complemento esta vacio',data:$keys);
+        }
         foreach ($keys as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje:'Error el key esta vacio',data:$key);
+            }
             if(!isset($complemento->$key)){
                 $complemento->$key = '';
             }

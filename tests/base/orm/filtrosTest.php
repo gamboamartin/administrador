@@ -133,6 +133,36 @@ class filtrosTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_complemento(){
+        errores::$error = false;
+        $filtros = new filtros();
+        $filtros = new liberator($filtros);
+
+        $complemento = new stdClass();
+        $keys = array();
+        $resultado = $filtros->init_complemento($complemento, $keys);
+        $this->assertTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertStringContainsStringIgnoringCase('Error los keys de un complemento esta vacio',$resultado['mensaje']);
+
+        errores::$error = false;
+        $complemento = new stdClass();
+        $keys = array('');
+        $resultado = $filtros->init_complemento($complemento, $keys);
+        $this->assertTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertStringContainsStringIgnoringCase('Error el key esta vacio',$resultado['mensaje']);
+
+        errores::$error = false;
+        $complemento = new stdClass();
+        $keys = array('a');
+        $resultado = $filtros->init_complemento($complemento, $keys);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        $this->assertEquals('',$resultado->a);
+        errores::$error = false;
+    }
+
     public function test_keys_complemento(){
         errores::$error = false;
         $filtros = new filtros();
