@@ -187,6 +187,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
+     * @version 1.552.51
      */
     public function data_filtros_full(array $columnas_extra, array $filtro, array $filtro_especial, array $filtro_extra,
                                       array $filtro_fecha, array $filtro_rango, array $in, array $keys_data_filter,
@@ -827,6 +828,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
+     * @version 1.552.51
      */
     private function genera_filtros_sql(array $columnas_extra, array $filtro, array $filtro_especial,
                                         array $filtro_extra, array $filtro_rango, array $in, array $keys_data_filter,
@@ -917,6 +919,7 @@ class where{
      * Genera un sql para integrar sql
      * @param array $in Arreglo con params para IN
      * @return array|string
+     * @version 1.552.51
      */
     private function genera_in_sql(array $in): array|string
     {
