@@ -154,19 +154,24 @@ class atributos{
     }
 
     /**
-     * P INT ERROREV
+     * Inserta atributos
      * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
-     * @param string $tabla_attr
+     * @param string $tabla_attr Tabla de atributo
      * @return array
+     * @version 1.556.51
      */
     private function inserta_atributos( modelo $modelo, int $registro_id, string $tabla_attr): array
     {
         if($modelo->tabla === ''){
             return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $modelo->tabla);
         }
+
         if($registro_id<=0){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $registro_id);
+        }
+        if($tabla_attr === ''){
+            return $this->error->error(mensaje: 'Error tabla_attr esta vacia',data:  $tabla_attr);
         }
 
 
@@ -189,11 +194,11 @@ class atributos{
     /**
      * P INT ERROREV
      * @param string $clase_attr Clase de atributo
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array
      */
-    public function inserta_data_attr(string $clase_attr,modelo $modelo, int $registro_id): array
+    private function inserta_data_attr(string $clase_attr,modelo $modelo, int $registro_id): array
     {
         if($registro_id<=0){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id);
