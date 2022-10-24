@@ -5,6 +5,7 @@ use base\orm\filtros;
 
 use gamboamartin\errores\errores;
 
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_seccion;
 use stdClass;
@@ -130,6 +131,26 @@ class filtrosTest extends test {
         $this->assertIsString($resultado);
         $this->assertEquals('a     c    b    ',$resultado);
         errores::$error = false;
+    }
+
+    public function test_keys_complemento(){
+        errores::$error = false;
+        $filtros = new filtros();
+        $filtros = new liberator($filtros);
+
+        $resultado = $filtros->keys_complemento();
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals('filtro_especial',$resultado[0]);
+        $this->assertEquals('filtro_extra',$resultado[1]);
+        $this->assertEquals('filtro_fecha',$resultado[2]);
+        $this->assertEquals('filtro_rango',$resultado[3]);
+        $this->assertEquals('in',$resultado[4]);
+        $this->assertEquals('not_in',$resultado[5]);
+        $this->assertEquals('sentencia',$resultado[6]);
+        $this->assertEquals('sql_extra',$resultado[7]);
+        errores::$error = false;
+
     }
 
 

@@ -295,6 +295,11 @@ class filtros{
         return $modelo->tabla;
     }
 
+    /**
+     * Obtiene los keys de un complemento de filtros para AND
+     * @return string[]
+     * @version 1.553.51
+     */
     private function keys_complemento(): array
     {
         return array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra');
