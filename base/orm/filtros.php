@@ -331,10 +331,36 @@ class filtros{
         return array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra');
     }
 
-
-
+    /**
+     * Integra el resultado de complemento para un SQL
+     * @param stdClass $complemento Complemento
+     * @param string $consulta_previa Sql previo
+     * @return string
+     * @version 1.561.51
+     */
     private function sql(stdClass $complemento, string $consulta_previa): string
     {
+        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia',
+            'sql_extra','where');
+
+        foreach ($keys as $key){
+            if(!isset($complemento->$key)){
+                $complemento->$key = '';
+            }
+        }
+
+        if(!isset($complemento->params)){
+            $complemento->params = new stdClass();
+        }
+
+        $keys = array('group_by','limit','offset','order');
+
+        foreach ($keys as $key){
+            if(!isset($complemento->params->$key)){
+                $complemento->params->$key = '';
+            }
+        }
+
         $sql = $consulta_previa.$complemento->where.$complemento->sentencia.' '. $complemento->filtro_especial.' ';
 
         $sql.= $complemento->filtro_rango.' '.$complemento->filtro_fecha.' ';

@@ -212,6 +212,20 @@ class filtrosTest extends test {
 
     }
 
+    public function test_sql(){
+        errores::$error = false;
+        $filtros = new filtros();
+        $filtros = new liberator($filtros);
+
+
+        $complemento = new stdClass();
+        $consulta_previa = '';
+        $resultado = $filtros->sql($complemento, $consulta_previa);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 }
