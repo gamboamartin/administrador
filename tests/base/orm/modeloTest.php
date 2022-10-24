@@ -153,6 +153,28 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_elimina_con_filtro_and(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_dia($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new adm_dia($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+        $modelo->filtro = array();
+        $modelo->filtro['adm_dia.id'] = 1;
+        $resultado = $modelo->elimina_con_filtro_and();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_existe(): void
     {
         errores::$error = false;

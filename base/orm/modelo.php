@@ -484,8 +484,9 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER
+     * Elimina registros con filtro
      * @return string[]
+     * @version 1.564.51
      */
     public function elimina_con_filtro_and(): array{
         if(count($this->filtro) === 0){

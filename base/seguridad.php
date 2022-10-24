@@ -72,7 +72,7 @@ class seguridad{
     }
 
     /**
-     * AMBITO
+     * Elimina los datos de una session
      * @param PDO $link
      * @return array|bool
      */
