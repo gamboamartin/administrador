@@ -205,6 +205,7 @@ class inserts{
      * @param int $registro_id Registro insertado
      * @param string $tabla Tabla o entidad
      * @return  array
+     * @version 1.559.51
      */
     private function data_session_alta(int $registro_id, string $tabla): array
     {
@@ -415,10 +416,11 @@ class inserts{
     }
 
     /**
-     * P INT ERROREV
+     *Ejecuta transacciones para alta
      * @param string $consulta texto en forma de SQL
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * 
      */
     private function transacciones_default(string $consulta, modelo $modelo): array|stdClass
     {

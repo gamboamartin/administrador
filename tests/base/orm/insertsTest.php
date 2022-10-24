@@ -87,6 +87,22 @@ class insertsTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_session_alta(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 1;
+        $registro_id = 1;
+        $tabla = 'a';
+        $resultado = $ins->data_session_alta($registro_id, $tabla);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a se agrego con el id 1",$resultado[0]['mensaje']);
+        errores::$error = false;
+    }
+
     public function test_genera_data_log(){
         errores::$error = false;
         $ins = new inserts();
