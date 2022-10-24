@@ -811,6 +811,7 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @author mgamboa
      * @fecha 2022-08-02 16:49
+     * @version 1.562.51
      */
     public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                array $columnas_by_table = array(), bool $columnas_en_bruto = false,
@@ -938,6 +939,7 @@ class modelo extends modelo_base {
      *
      * @fecha 2022-08-02 16:38
      * @author mgamboa
+     * @version 1.562.51
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,
                                        array $filtro, array $filtro_especial, array $filtro_extra,

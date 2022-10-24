@@ -66,6 +66,24 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_asigna_filtros(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        $nm = new liberator($nm);
+;
+        unset($_GET);
+        $filtro_btn = array();
+        $filtro_default_btn = array();
+        $filtro_default_btn['tabla'] = 'a';
+        $filtro_default_btn['valor_default'] = 'a';
+        $resultado = $nm->asigna_filtros($filtro_btn, $filtro_default_btn);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado['a.id']);
+        errores::$error = false;
+    }
+
     public function test_asigna_registro_alta(){
         errores::$error = false;
         $nm = new normalizacion();
@@ -177,6 +195,18 @@ class normalizacionTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
 
+        errores::$error = false;
+    }
+
+    public function test_filtro_btn(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        //$nm = new liberator($nm);
+
+        $controler = new controler('', '');
+        $resultado = $nm->filtro_btn($controler);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 

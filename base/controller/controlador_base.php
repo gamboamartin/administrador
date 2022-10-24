@@ -394,7 +394,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     /**
      * P INT
      * Función que aplica filtro sobre los registro de una tabla después de
-     * válidar los parámetros de la solicicutd y la existencia de botón filtrar o botón limpiar.
+     * válidar los parámetros de la solicitud y la existencia de botón filtrar o botón limpiar.
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array
      */
@@ -507,12 +507,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
 
-
     /**
      *
      * @param bool $header
      * @param bool $ws
      * @return array
+     * @throws JsonException
      */
     public function desactiva_bd(bool $header, bool $ws): array{//FINPROTEOCOMPLETA
         if($this->registro_id<=0){

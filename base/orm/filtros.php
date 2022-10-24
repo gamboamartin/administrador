@@ -122,6 +122,7 @@ class filtros{
      * @return string|array
      * @fecha 2022-08-02 15:53
      * @author mgamboa
+     * @version 1.562.51
      */
     public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
     {

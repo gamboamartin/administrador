@@ -26,6 +26,8 @@ class normalizacion{
             return $this->error->error(mensaje: 'Error validar filtro_default_btn',data: $valida);
         }
 
+
+
         $_GET['filtro_btn'][$filtro_default_btn['tabla'] . '.id']['campo'] = $filtro_default_btn['tabla'] . '.id';
         $_GET['filtro_btn'][$filtro_default_btn['tabla'] . '.id'] = $filtro_default_btn['valor_default'];
         return $_GET;
@@ -36,6 +38,7 @@ class normalizacion{
      * @param array $filtro_default_btn Filtro del btn
      * @param array $filtro_btn Filtro ajustado
      * @return array
+     * @version 1.562.51
      */
     private function asigna_filtros(array $filtro_btn, array $filtro_default_btn):array{
         $keys = array('tabla','valor_default');
@@ -201,9 +204,10 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Inicializa los botones
      * @param controler $controler Controlador en ejecucion
      * @return array
+
      */
     public function filtro_btn(controler $controler):array{
         $filtro_btn = array();
@@ -227,6 +231,13 @@ class normalizacion{
         return $filtro_btn;
     }
 
+    /**
+     * Integra los filtros de las listas
+     * @param controler $controler
+     * @param array $filtro_btn
+     * @param array $filtro_default_btn
+     * @return array
+     */
     private function filtro_btn_data(controler $controler, array $filtro_btn, array $filtro_default_btn): array
     {
         $ejecuta_filtro = $this->ejecuta_filtro(controler: $controler,filtro_default_btn:  $filtro_default_btn);
@@ -655,7 +666,7 @@ class normalizacion{
     }
 
     /**
-     * P INT P ORDER ERROR
+     *
      * @param array $filtro_btn Filtro a ajustar
      * @param controler $controler Controlador en ejecucion
      * @return array
