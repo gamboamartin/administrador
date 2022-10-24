@@ -133,6 +133,21 @@ class filtrosTest extends test {
         errores::$error = false;
     }
 
+    public function test_inicializa_complemento(){
+        errores::$error = false;
+        $filtros = new filtros();
+        $filtros = new liberator($filtros);
+
+        $complemento = new stdClass();
+        $resultado = $filtros->inicializa_complemento($complemento);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        $this->assertEquals('',$resultado->filtro_especial);
+        $this->assertEquals('',$resultado->filtro_extra);
+
+        errores::$error = false;
+    }
+
     public function test_init_complemento(){
         errores::$error = false;
         $filtros = new filtros();

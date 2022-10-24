@@ -225,7 +225,12 @@ class filtros{
     }
 
 
-
+    /**
+     * Inicializa los datos de un complemento
+     * @param stdClass $complemento Complemento previamente cargado
+     * @return array|stdClass
+     * @version 1.555.51
+     */
     private function inicializa_complemento(stdClass $complemento): array|stdClass
     {
         $keys = $this->keys_complemento();
