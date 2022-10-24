@@ -200,7 +200,7 @@ class sql{
      * @version 1.548.51
      *
      */
-    private function valida_in(string $llave, string $values_sql): bool|array
+    public function valida_in(string $llave, string $values_sql): bool|array
     {
         $llave = trim($llave);
         $values_sql = trim($values_sql);

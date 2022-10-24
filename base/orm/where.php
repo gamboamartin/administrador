@@ -887,16 +887,24 @@ class where{
     }
 
     /**
-     * @param array $in
+     * Genera el SQL para IN
+     * @param array $in params para in
      * @return array|string
+     * @version 1.551.52
      */
     private function genera_in(array $in): array|string
     {
+        $keys = array('llave','values');
+        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+        }
 
         $data_in = $this->data_in(in: $in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
+
 
         $in_sql = $this->in_sql(llave:  $data_in->llave, values:$data_in->values);
         if(errores::$error){
@@ -906,7 +914,8 @@ class where{
     }
 
     /**
-     * @param array $in
+     * Genera un sql para integrar sql
+     * @param array $in Arreglo con params para IN
      * @return array|string
      */
     private function genera_in_sql(array $in): array|string
@@ -1054,6 +1063,10 @@ class where{
         $values_sql = $this->values_sql_in(values:$values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
+        }
+        $valida = (new sql())->valida_in(llave: $llave, values_sql: $values_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar in', data: $valida);
         }
 
         $in_sql = (new sql())->in(llave: $llave,values_sql:  $values_sql);
