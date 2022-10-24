@@ -88,10 +88,11 @@ class atributos{
     }
 
     /**
-     * P INT ERRORREV
+     * Ejecuta la aplicacion de atributos
      * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array|string
+     * @version 1.558.51
      */
     public function ejecuta_insersion_attr(modelo $modelo, int $registro_id): array|string
     {

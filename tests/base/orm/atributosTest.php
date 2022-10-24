@@ -71,6 +71,26 @@ class atributosTest extends test {
         errores::$error = false;
     }
 
+    public function test_ejecuta_insersion_attr()
+    {
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 1;
+        $attr = new atributos();
+        //$attr = new liberator($attr);
+        $registro_id = 1;
+
+
+        $modelo = new adm_accion_grupo($this->link);
+
+
+        $resultado = $attr->ejecuta_insersion_attr($modelo, $registro_id);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_inserta_atributo()
     {
 

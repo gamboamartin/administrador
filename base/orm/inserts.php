@@ -201,9 +201,9 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param int $registro_id
-     * @param string $tabla
+     * Obtiene los datos de la session al ejecutar un alta
+     * @param int $registro_id Registro insertado
+     * @param string $tabla Tabla o entidad
      * @return  array
      */
     private function data_session_alta(int $registro_id, string $tabla): array
