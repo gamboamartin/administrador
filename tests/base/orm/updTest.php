@@ -57,6 +57,25 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_campos_sql(){
+
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->registro_upd['a'] = NULL;
+        $modelo->registro_upd['bn'] = '';
+
+        $resultado = $upd->campos_sql($modelo);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a = '', bn = '',usuario_update_id=2",$resultado);
+
+        errores::$error = false;
+    }
+
     public function test_ejecuta_upd(): void
     {
         errores::$error = false;

@@ -46,10 +46,7 @@ class upd{
                 data: array($existe_user,$modelo->campos_sql, $modelo->usuario_id));
         }
 
-        $modelo->campos_sql .= ',usuario_update_id=' . $modelo->usuario_id;
-
-
-        return $modelo->campos_sql;
+        return 'usuario_update_id=' . $modelo->usuario_id;
     }
 
 
@@ -107,20 +104,28 @@ class upd{
      * Obtiene los campos para un upd del modelo
      * @param modelo $modelo Modelo en ejecucion
      * @return array|string
+     * @version 1.565.51
      */
     private function campos_sql(modelo $modelo): array|string
     {
-        $campos_sql = $this->genera_campos_update(modelo: $modelo);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql);
-        }
-        $modelo->campos_sql = $campos_sql;
-        $campos_sql = $this->agrega_usuario_session(modelo: $modelo);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
         }
 
-        $modelo->campos_sql .= ',' . $campos_sql;
+        $campos_sql_model = $this->genera_campos_update(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql_model);
+        }
+
+        $modelo->campos_sql = $campos_sql_model;
+        $campos_sql_user = $this->agrega_usuario_session(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql_user);
+        }
+
+
+        $modelo->campos_sql =  $campos_sql_model.','.$campos_sql_user;
         return $modelo->campos_sql;
     }
 
