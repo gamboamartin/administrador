@@ -50,6 +50,7 @@ class modelo_baseTest extends test {
 
 
         errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
         $mb = new modelo_base($this->link);
         $mb->usuario_id = 2;
         $mb->campos_sql = 1;
@@ -57,9 +58,30 @@ class modelo_baseTest extends test {
         $keys_registro = array();
         $keys_row = array();
         $modelo = new adm_dia($this->link);
+
+        $r = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $r);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+
+        $r = $modelo->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r);
+            print_r($error);
+            exit;
+        }
+
         $registro = array();
         $registro['adm_dia_id'] = 1;
         $resultado = $mb->asigna_codigo($keys_registro, $keys_row, $modelo, $registro);
+       
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

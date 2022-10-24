@@ -157,7 +157,9 @@ class activacionesTest extends test {
         $modelo = new adm_dia($this->link);
         $modelo->registro_id = 1;
 
-        $r_del_dia = $modelo->elimina_bd(1);
+
+
+        $r_del_dia = $modelo->elimina_todo();
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al eliminar dia', data: $r_del_dia);
             print_r($error);

@@ -113,6 +113,46 @@ class modeloTest extends test {
 
     }
 
+    public function test_elimina_bd(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_dia($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new adm_dia($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+        $id = 1;
+        $resultado = $modelo->elimina_bd($id);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar transaccion activa en adm_dia', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+        $alta = (new adm_dia($this->link))->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+        $id = 1;
+        $resultado = $modelo->elimina_bd($id);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado->registro_id);
+
+        errores::$error = false;
+    }
+
     public function test_existe(): void
     {
         errores::$error = false;

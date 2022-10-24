@@ -422,7 +422,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT P ORDER
+     *
      * Elimina un registro por el id enviado
      * @param int $id id del registro a eliminar
      *
@@ -434,7 +434,7 @@ class modelo extends modelo_base {
      * @internal  $this->obten_data();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
-     * @uses  todo el sistema
+     * @version 1.563.51
      */
     public function elimina_bd(int $id): array|stdClass{
         if($id <= 0){
@@ -442,18 +442,9 @@ class modelo extends modelo_base {
         }
         $this->registro_id = $id;
 
-        $registro = $this->registro(registro_id: $this->registro_id);
+        $valida = (new activaciones())->valida_activacion(modelo: $this);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro' .$this->tabla, data: $registro);
-
-        }
-
-        $valida = $this->validacion->valida_transaccion_activa(
-            aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro:  $registro,
-            registro_id:  $this->registro_id, tabla:  $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar transaccion activa en' .$this->tabla,data: $valida);
-
+            return $this->error->error(mensaje:'Error al validar transaccion activa en ' .$this->tabla,data: $valida);
         }
 
         $registro_bitacora = $this->obten_data();
@@ -470,7 +461,7 @@ class modelo extends modelo_base {
             desactiva_dependientes:$this->desactiva_dependientes,link: $this->link,
             models_dependientes: $this->models_dependientes,registro_id: $this->registro_id,tabla: $this->tabla);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al eliminar dependiente', data:$elimina);
+            return $this->error->error(mensaje:'Error al eliminar dependiente ', data:$elimina);
         }
 
         $resultado = $this->ejecuta_sql(consulta: $this->consulta);
@@ -486,7 +477,7 @@ class modelo extends modelo_base {
         $data = new stdClass();
         $data->registro_id = $id;
         $data->sql = $this->consulta;
-        $data->registro = $registro;
+        $data->registro = $registro_bitacora;
 
         return $data;
 
@@ -495,7 +486,6 @@ class modelo extends modelo_base {
     /**
      * P INT P ORDER
      * @return string[]
-     * @throws JsonException
      */
     public function elimina_con_filtro_and(): array{
         if(count($this->filtro) === 0){
