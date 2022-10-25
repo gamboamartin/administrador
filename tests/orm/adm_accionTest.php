@@ -15,6 +15,20 @@ class adm_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_status(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $key = 'a';
+        $registro= array();
+        $resultado = $modelo->asigna_status($key, $registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('activo', $resultado['a']);
+        errores::$error = false;
+    }
+
     public function test_acciones_permitidas(){
 
         errores::$error = false;
