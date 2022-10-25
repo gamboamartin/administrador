@@ -86,6 +86,38 @@ class filtrosTest extends test {
         $this->assertEquals("  ( (a  IN (a ,b)))",$resultado->in);
         $this->assertEquals("",$resultado->sentencia);
 
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+        $aplica_seguridad = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array();
+        $offset = 0;
+        $order = array();
+        $sql_extra = '';
+        $tipo_filtro = '';
+        $in = array();
+        $in['llave'] = 'a';
+        $in['values'] = array('a','b');
+        $diferente_de['zzz'] = 'z';
+        $diferente_de['ppp'] = 'z';
+        $resultado = $filtros->complemento_sql(aplica_seguridad: $aplica_seguridad, diferente_de: $diferente_de,
+            filtro:  $filtro,
+            filtro_especial:  $filtro_especial,filtro_extra:  $filtro_extra, filtro_rango: $filtro_rango,
+            group_by:  $group_by,in:  $in, limit: $limit, modelo: $modelo, not_in: $not_in, offset: $offset,
+            order:  $order,sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  ( (a  IN (a ,b)))",$resultado->in);
+        $this->assertEquals("",$resultado->sentencia);
+        $this->assertEquals("  AND  ( (zzz <> 'z'   AND  ppp <> 'z'))",$resultado->diferente_de);
+
 
         errores::$error = false;
 
@@ -116,7 +148,7 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a             ',$resultado);
+        $this->assertEquals('a              ',$resultado);
 
         errores::$error = false;
 
@@ -129,7 +161,7 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a         b    ',$resultado);
+        $this->assertEquals('a          b    ',$resultado);
 
         errores::$error = false;
 
@@ -143,7 +175,25 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a     c    b    ',$resultado);
+        $this->assertEquals('a     c     b    ',$resultado);
+
+
+        errores::$error = false;
+
+        $modelo = new adm_seccion($this->link);
+
+        $complemento = new stdClass();
+        $consulta = 'a';
+        $complemento->sql_extra = 'b';
+        $complemento->filtro_fecha = 'c';
+        $complemento->diferente_de = 'g';
+
+        $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('a     c    g b    ',$resultado);
+
+
         errores::$error = false;
     }
 

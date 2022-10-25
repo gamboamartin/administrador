@@ -206,6 +206,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
+     * @version 1.575.51
      */
     public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
                                       array $filtro_especial, array $filtro_extra, array $filtro_fecha,
@@ -852,9 +853,9 @@ class where{
      * @param string $sql_extra Sql generado de forma manual para la funcion en ejecucion
      * @param string $filtro_fecha_sql Filtro de fecha en forma de sql
      * @return array|stdClass
-     * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 12:16
+     * @version 1.575.51
      */
     private function genera_filtros_iniciales(string $diferente_de_sql, string $filtro_especial_sql,
                                               string $filtro_extra_sql, string $filtro_rango_sql, string $in_sql,
@@ -913,6 +914,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
+     * @version 1.575.51
      */
     private function genera_filtros_sql(array $columnas_extra, array $diferente_de, array $filtro,
                                         array $filtro_especial, array $filtro_extra, array $filtro_rango, array $in,
@@ -1200,6 +1202,7 @@ class where{
      * @param stdClass $filtros Filtros a limpiar o inicializar
      * @param array $keys_data_filter keys de los filtros
      * @return stdClass|array
+     * @version 1.574.51
      */
     public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
@@ -1363,7 +1366,7 @@ class where{
      * Asigna los parentesis  de un conjunto de filtros para SQL
      * @param stdClass $filtros Conjunto de filtros
      * @param array $keys_data_filter Keys de los filtros
-     * @version 1.193.34
+     * @version 1.575.51
      * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 11:46
@@ -1619,7 +1622,7 @@ class where{
      * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
-     * @version 1.197.34
+     * @version 1.575.51
      * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 12:33

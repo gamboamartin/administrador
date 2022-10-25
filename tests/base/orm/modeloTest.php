@@ -257,7 +257,7 @@ class modeloTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_seccion.codigo_bis AS adm_seccion_codigo_bis, adm_seccion.descripcion_select AS adm_seccion_descripcion_select, adm_seccion.alias AS adm_seccion_alias, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id, adm_menu.codigo AS adm_menu_codigo, adm_menu.codigo_bis AS adm_menu_codigo_bis, adm_menu.descripcion_select AS adm_menu_descripcion_select, adm_menu.alias AS adm_menu_alias   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id             ',$resultado);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_seccion.codigo_bis AS adm_seccion_codigo_bis, adm_seccion.descripcion_select AS adm_seccion_descripcion_select, adm_seccion.alias AS adm_seccion_alias, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id, adm_menu.codigo AS adm_menu_codigo, adm_menu.codigo_bis AS adm_menu_codigo_bis, adm_menu.descripcion_select AS adm_menu_descripcion_select, adm_menu.alias AS adm_menu_alias   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id              ',$resultado);
 
         errores::$error = false;
 
@@ -284,7 +284,7 @@ class modeloTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_seccion.codigo_bis AS adm_seccion_codigo_bis, adm_seccion.descripcion_select AS adm_seccion_descripcion_select, adm_seccion.alias AS adm_seccion_alias, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id, adm_menu.codigo AS adm_menu_codigo, adm_menu.codigo_bis AS adm_menu_codigo_bis, adm_menu.descripcion_select AS adm_menu_descripcion_select, adm_menu.alias AS adm_menu_alias   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE          ( (x))    ',$resultado);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_seccion.codigo_bis AS adm_seccion_codigo_bis, adm_seccion.descripcion_select AS adm_seccion_descripcion_select, adm_seccion.alias AS adm_seccion_alias, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id, adm_menu.codigo AS adm_menu_codigo, adm_menu.codigo_bis AS adm_menu_codigo_bis, adm_menu.descripcion_select AS adm_menu_descripcion_select, adm_menu.alias AS adm_menu_alias   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE           ( (x))    ',$resultado);
 
 
         errores::$error = false;
@@ -313,7 +313,7 @@ class modeloTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE          ( (x))    ',$resultado);
+        $this->assertEquals('SELECT adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE           ( (x))    ',$resultado);
 
 
         errores::$error = false;
@@ -341,7 +341,7 @@ class modeloTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE          ( (x))    ',$resultado);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE           ( (x))    ',$resultado);
 
 
         errores::$error = false;
@@ -368,7 +368,35 @@ class modeloTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (a  IN (a ,b)))   AND  ( (a NOT IN (c ,d)))   AND  ( (x))    ',$resultado);
+        $this->assertEquals('SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (a  IN (a ,b)))   AND  ( (a NOT IN (c ,d)))    AND  ( (x))    ',$resultado);
+
+        errores::$error = false;
+
+
+        $columnas = array('adm_seccion_id');
+        $columnas_by_table = array();
+        $columnas_en_bruto = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array('llave'=>'a','values'=>array('c','d'));
+        $offset = 0;
+        $order = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','b'));
+        $diferente_de['a']= 'p';
+        $diferente_de['g']= 'p';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, $diferente_de, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("SELECT adm_seccion.id AS adm_seccion_id   FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE        ( (a  IN (a ,b)))   AND  ( (a NOT IN (c ,d)))   AND  ( (a <> 'p'   AND  g <> 'p'))   AND  ( (x))    ",$resultado);
 
 
         errores::$error = false;

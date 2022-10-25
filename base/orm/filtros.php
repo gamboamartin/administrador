@@ -75,6 +75,7 @@ class filtros{
      * @author mgamboa
      * @fecha 2022-07-27 11:07
      * @return array|stdClass
+     * @version 1.575.51
      */
     public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
                                     array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
@@ -342,8 +343,8 @@ class filtros{
      */
     private function sql(stdClass $complemento, string $consulta_previa): string
     {
-        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia',
-            'sql_extra','where');
+        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','diferente_de',
+            'sentencia', 'sql_extra','where');
 
         foreach ($keys as $key){
             if(!isset($complemento->$key)){
@@ -367,7 +368,7 @@ class filtros{
 
         $sql.= $complemento->filtro_rango.' '.$complemento->filtro_fecha.' ';
 
-        $sql.= $complemento->filtro_extra.' '.$complemento->in.' '.$complemento->not_in.' '.
+        $sql.= $complemento->filtro_extra.' '.$complemento->in.' '.$complemento->not_in.' '.$complemento->diferente_de.' '.
             $complemento->sql_extra.' ';
 
         $sql.= $complemento->params->group_by.' '.$complemento->params->order.' ';
