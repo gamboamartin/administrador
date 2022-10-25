@@ -52,7 +52,7 @@ class filtrosTest extends test {
         $sql_extra = '';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $filtros->complemento_sql($aplica_seguridad, $filtro, $filtro_especial, $filtro_extra,
+        $resultado = $filtros->complemento_sql($aplica_seguridad, array(), $filtro, $filtro_especial, $filtro_extra,
             $filtro_rango, $group_by, $in, $limit, $modelo, $not_in, $offset, $order, $sql_extra, $tipo_filtro);
 
         $this->assertIsObject( $resultado);
@@ -76,7 +76,7 @@ class filtrosTest extends test {
         $in = array();
         $in['llave'] = 'a';
         $in['values'] = array('a','b');
-        $resultado = $filtros->complemento_sql(aplica_seguridad: $aplica_seguridad,filtro:  $filtro,
+        $resultado = $filtros->complemento_sql(aplica_seguridad: $aplica_seguridad, diferente_de: array(),filtro:  $filtro,
             filtro_especial:  $filtro_especial,filtro_extra:  $filtro_extra, filtro_rango: $filtro_rango,
             group_by:  $group_by,in:  $in, limit: $limit, modelo: $modelo, not_in: $not_in, offset: $offset,
             order:  $order,sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro);

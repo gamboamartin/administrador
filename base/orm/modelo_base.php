@@ -70,7 +70,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->patterns['id'] = "/^[1-9]+[0-9]*$/";
 
         $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','in',
-            'not_in','sql_extra','filtro_fecha');
+            'not_in', 'diferente_de','sql_extra','filtro_fecha');
     }
 
     /**

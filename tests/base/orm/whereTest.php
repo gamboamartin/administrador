@@ -53,7 +53,7 @@ class whereTest extends test {
         $sentencia = '';
         $sql_extra = '';
         $in = '';
-        $resultado = $wh->asigna_data_filtro($filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
+        $resultado = $wh->asigna_data_filtro('',$filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
             $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -70,7 +70,7 @@ class whereTest extends test {
         $sentencia = '';
         $sql_extra = '';
         $in = 'a';
-        $resultado = $wh->asigna_data_filtro($filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
+        $resultado = $wh->asigna_data_filtro('',$filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
             $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
 
         $this->assertIsObject( $resultado);
@@ -236,7 +236,7 @@ class whereTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $wh->data_filtros_full($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+        $resultado = $wh->data_filtros_full($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
             $filtro_rango, $in, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -255,7 +255,7 @@ class whereTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array('llave'=>'a','values'=>array('a','c'));
-        $resultado = $wh->data_filtros_full($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+        $resultado = $wh->data_filtros_full($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
             $filtro_rango, $in, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
 
         $this->assertIsObject($resultado);
@@ -608,7 +608,7 @@ class whereTest extends test {
         $sentencia = 'z';
         $sql_extra = '';
         $in_sql = '';
-        $resultado = $wh->genera_filtros_iniciales($filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql, $in_sql,
+        $resultado = $wh->genera_filtros_iniciales('',$filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql, $in_sql,
             $keys_data_filter, $not_in_sql, $sentencia, $sql_extra);
 
         $this->assertIsObject($resultado);
@@ -624,7 +624,7 @@ class whereTest extends test {
         $sentencia = 'z';
         $sql_extra = '';
         $in_sql = 'a';
-        $resultado = $wh->genera_filtros_iniciales($filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql, $in_sql,
+        $resultado = $wh->genera_filtros_iniciales('',$filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql, $in_sql,
             $keys_data_filter, $not_in_sql, $sentencia, $sql_extra);
 
         $this->assertIsObject($resultado);
@@ -653,7 +653,7 @@ class whereTest extends test {
         $not_in = array();
         $tipo_filtro = '';
         $in = array();
-        $resultado = $wh->genera_filtros_sql($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
+        $resultado = $wh->genera_filtros_sql($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
             $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
 
         $this->assertIsObject($resultado);
@@ -671,7 +671,7 @@ class whereTest extends test {
         $not_in = array();
         $tipo_filtro = '';
         $in = array('llave'=>'a','values'=>array('a','f'));
-        $resultado = $wh->genera_filtros_sql($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
+        $resultado = $wh->genera_filtros_sql($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
             $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
 
         $this->assertIsObject($resultado);

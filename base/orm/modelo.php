@@ -282,6 +282,7 @@ class modelo extends modelo_base {
 
     /**
      * Cuenta los registros de un modelo conforme al filtro en aplicacion
+     * @param array $diferente_de Integra el sql para diferente de
      * @param array $filtro Filtro de ejecucion basico
      * @param string $tipo_filtro validos son numeros y textos
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -294,12 +295,10 @@ class modelo extends modelo_base {
      * @param array $in Genera IN en sql
      * @param array $not_in Genera NOT IN en SQL
      * @return array|int
-     * @version 1.306.41
      */
-    public function cuenta(
-        array $filtro = array(), string $tipo_filtro = 'numeros', array $filtro_especial = array(),
-        array $filtro_rango = array(), array $filtro_fecha = array(), array $in = array(),
-        array $not_in = array()):array|int{
+    public function cuenta(array $diferente_de = array(), array $filtro = array(), string $tipo_filtro = 'numeros',
+                           array $filtro_especial = array(), array $filtro_rango = array(),
+                           array $filtro_fecha = array(), array $in = array(), array $not_in = array()):array|int{
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
@@ -311,8 +310,8 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
         }
 
-        $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra, filtro:  $filtro,
-            filtro_especial: $filtro_especial, filtro_extra: array(), filtro_fecha: $filtro_fecha,
+        $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra,diferente_de: $diferente_de,
+            filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: array(), filtro_fecha: $filtro_fecha,
             filtro_rango: $filtro_rango, in:$in, keys_data_filter: $this->keys_data_filter, not_in: $not_in,
             sql_extra: '', tipo_filtro: $tipo_filtro);
 
@@ -707,6 +706,7 @@ class modelo extends modelo_base {
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
      * @return array|stdClass
      * @example
      *      Ej 1
@@ -802,10 +802,9 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @author mgamboa
      * @fecha 2022-08-02 16:49
-     * @version 1.562.51
      */
     public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
-                               array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                               array $columnas_by_table = array(), bool $columnas_en_bruto = false, array $diferente_de = array(),
                                array $filtro=array(), array $filtro_especial= array(), array $filtro_extra = array(),
                                array $filtro_fecha = array(), array $filtro_rango = array(), array $group_by=array(),
                                array $hijo = array(), array $in = array(), int $limit=0,  array $not_in = array(),
@@ -827,10 +826,10 @@ class modelo extends modelo_base {
         }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table:$columnas_by_table,
-            columnas_en_bruto:$columnas_en_bruto, filtro:  $filtro, filtro_especial: $filtro_especial,
-            filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango, group_by:  $group_by, in: $in, limit:  $limit,
-            not_in: $not_in, offset:  $offset, order: $order, sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro,
-            filtro_fecha:  $filtro_fecha);
+            columnas_en_bruto:$columnas_en_bruto, diferente_de: $diferente_de, filtro:  $filtro,
+            filtro_especial: $filtro_especial, filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango,
+            group_by:  $group_by, in: $in, limit:  $limit, not_in: $not_in, offset:  $offset, order: $order,
+            sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro, filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
@@ -916,6 +915,7 @@ class modelo extends modelo_base {
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @return array|string
      * @example
      *      $filtro_extra[0][tabla.campo]['operador'] = '<';
@@ -930,10 +930,9 @@ class modelo extends modelo_base {
      *
      * @fecha 2022-08-02 16:38
      * @author mgamboa
-     * @version 1.562.51
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,
-                                       array $filtro, array $filtro_especial, array $filtro_extra,
+                                       array $diferente_de, array $filtro, array $filtro_especial, array $filtro_extra,
                                        array $filtro_rango, array $group_by, array $in, int $limit, array $not_in,
                                        int $offset, array $order, string $sql_extra, string $tipo_filtro,
                                        array $filtro_fecha = array()): array|string
@@ -957,10 +956,11 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
 
-        $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false,filtro:  $filtro,
-            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango,
-            group_by: $group_by, in: $in, limit: $limit, modelo: $this, not_in: $not_in, offset:  $offset,
-            order:  $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha:  $filtro_fecha);
+        $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false, diferente_de: $diferente_de,
+            filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, modelo: $this, not_in: $not_in,
+            offset:  $offset, order:  $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
+            filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data: $complemento_sql);

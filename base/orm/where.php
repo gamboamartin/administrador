@@ -35,23 +35,23 @@ class where{
 
     /**
      * Asigna los filtros a un objeto para ser utilizado en WHEREs de SQL FORMA select
-     * @version 1.191.34
-     * @verfuncion 1.0.0 Se integra prueba
+     * @param string $diferente_de_sql Integra un diferente de en SQL
+     * @param string $filtro_especial_sql Filtro en forma de SQL
+     * @param string $filtro_extra_sql Filtro enviado desde el origen
+     * @param string $filtro_fecha_sql Filtros en forma de fecha
+     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
+     * @param string $in_sql Filtro en forma de  IN SQL
+     * @param string $not_in_sql Filtro forma SQL NOT IN
+     * @param string $sentencia Sentencia SQL previamente maquetada
+     * @param string $sql_extra Sql Generado manualmente desde llamadas a esta funcion
+     * @return stdClass
      * @author mgamboa
      * @fecha 2022-07-25 11:25
-     * @param string $sentencia Sentencia SQL previamente maquetada
-     * @param string $filtro_especial_sql Filtro en forma de SQL
-     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
-     * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $not_in_sql Filtro forma SQL NOT IN
-     * @param string $sql_extra Sql Generado manualmente desde llamadas a esta funcion
-     * @param string $filtro_fecha_sql Filtros en forma de fecha
-     * @param string $in_sql Filtro en forma de  IN SQL
-     * @return stdClass
      */
-    #[Pure] private function asigna_data_filtro(string $filtro_especial_sql, string $filtro_extra_sql,
-                                                string $filtro_fecha_sql, string $filtro_rango_sql, string $in_sql,
-                                                string $not_in_sql, string $sentencia, string $sql_extra): stdClass
+    #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
+                                                string $filtro_extra_sql, string $filtro_fecha_sql,
+                                                string $filtro_rango_sql, string $in_sql, string $not_in_sql,
+                                                string $sentencia, string $sql_extra): stdClass
     {
         $filtros = new stdClass();
         $filtros->sentencia = $sentencia ;
@@ -60,6 +60,7 @@ class where{
         $filtros->filtro_extra = $filtro_extra_sql;
         $filtros->in = $in_sql;
         $filtros->not_in = $not_in_sql;
+        $filtros->diferente_de = $diferente_de_sql;
         $filtros->sql_extra = $sql_extra;
         $filtros->filtro_fecha = $filtro_fecha_sql;
         return $filtros;
@@ -184,24 +185,25 @@ class where{
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
-     * @version 1.552.51
      */
-    public function data_filtros_full(array $columnas_extra, array $filtro, array $filtro_especial, array $filtro_extra,
-                                      array $filtro_fecha, array $filtro_rango, array $in, array $keys_data_filter,
-                                      array $not_in, string $sql_extra, string $tipo_filtro): array|stdClass
+    public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
+                                      array $filtro_especial, array $filtro_extra, array $filtro_fecha,
+                                      array $filtro_rango, array $in, array $keys_data_filter, array $not_in,
+                                      string $sql_extra, string $tipo_filtro): array|stdClass
     {
 
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $filtros = $this->genera_filtros_sql(columnas_extra: $columnas_extra, filtro:  $filtro,
-            filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_rango:  $filtro_rango, in: $in,
-            keys_data_filter: $keys_data_filter, not_in: $not_in, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
-            filtro_fecha: $filtro_fecha);
+        $filtros = $this->genera_filtros_sql(columnas_extra: $columnas_extra, diferente_de: $diferente_de,
+            filtro:  $filtro, filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra,
+            filtro_rango:  $filtro_rango, in: $in, keys_data_filter: $keys_data_filter, not_in: $not_in,
+            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha: $filtro_fecha);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtros', data:$filtros);
         }
@@ -243,6 +245,28 @@ class where{
         $data->llave = $in['llave'];
         $data->values = $in['values'];
         return $data;
+    }
+
+    private function diferente_de_sql(array $diferente_de): array|string
+    {
+        $diferente_de_sql = '';
+        if(count($diferente_de)>0){
+
+
+            foreach ($diferente_de as $campo=>$value){
+                $coma = '';
+                if($diferente_de_sql === ''){
+                    $coma = ',';
+                }
+                $campo = addslashes($campo);
+                $value = addslashes($value);
+
+                $diferente_de_sql .="$coma $campo <> '$value'";
+            }
+
+
+        }
+        return $diferente_de_sql;
     }
 
     /**
@@ -636,6 +660,8 @@ class where{
 
     }
 
+
+
     /**
      *
      * Genera la condicion sql de un filtro especial
@@ -757,30 +783,30 @@ class where{
 
     /**
      * Ajusta los filtros con parentesis y limpieza para su correcta ejecucion
-     * @param string $sentencia Sentencia SQL previamente maquetada
+     * @param string $diferente_de_sql Integra un diferente de
      * @param string $filtro_especial_sql Filtro en forma de SQL
-     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
      * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $not_in_sql Filtro en forma de NOT IN SQL
+     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
+     * @param string $in_sql Filtro en forma de  IN SQL
      * @param array $keys_data_filter Keys de los filtros
+     * @param string $not_in_sql Filtro en forma de NOT IN SQL
+     * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $sql_extra Sql generado de forma manual para la funcion en ejecucion
      * @param string $filtro_fecha_sql Filtro de fecha en forma de sql
-     * @param string $in_sql Filtro en forma de  IN SQL
-     * @version 1.195.34
+     * @return array|stdClass
      * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 12:16
-     * @return array|stdClass
      */
-    private function genera_filtros_iniciales(string $filtro_especial_sql, string $filtro_extra_sql,
-                                              string $filtro_rango_sql, string $in_sql, array $keys_data_filter,
-                                              string $not_in_sql, string $sentencia, string $sql_extra,
-                                              string $filtro_fecha_sql = ''): array|stdClass
+    private function genera_filtros_iniciales(string $diferente_de_sql, string $filtro_especial_sql,
+                                              string $filtro_extra_sql, string $filtro_rango_sql, string $in_sql,
+                                              array $keys_data_filter, string $not_in_sql, string $sentencia,
+                                              string $sql_extra, string $filtro_fecha_sql = ''): array|stdClass
     {
-        $filtros = $this->asigna_data_filtro(filtro_especial_sql:  $filtro_especial_sql,
-            filtro_extra_sql: $filtro_extra_sql, filtro_fecha_sql:  $filtro_fecha_sql,
-            filtro_rango_sql:  $filtro_rango_sql, in_sql: $in_sql, not_in_sql: $not_in_sql,sentencia: $sentencia,
-            sql_extra:  $sql_extra);
+        $filtros = $this->asigna_data_filtro(diferente_de_sql: $diferente_de_sql,
+            filtro_especial_sql:  $filtro_especial_sql, filtro_extra_sql: $filtro_extra_sql,
+            filtro_fecha_sql:  $filtro_fecha_sql, filtro_rango_sql:  $filtro_rango_sql, in_sql: $in_sql,
+            not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar filtros',data: $filtros);
         }
@@ -825,14 +851,14 @@ class where{
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
-     * @version 1.552.51
      */
-    private function genera_filtros_sql(array $columnas_extra, array $filtro, array $filtro_especial,
-                                        array $filtro_extra, array $filtro_rango, array $in, array $keys_data_filter,
-                                        array $not_in, string $sql_extra, string $tipo_filtro,
+    private function genera_filtros_sql(array $columnas_extra, array $diferente_de, array $filtro,
+                                        array $filtro_especial, array $filtro_extra, array $filtro_rango, array $in,
+                                        array $keys_data_filter, array $not_in, string $sql_extra, string $tipo_filtro,
                                         array $filtro_fecha = array()): array|stdClass
     {
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
@@ -875,10 +901,17 @@ class where{
             return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql);
         }
 
-        $filtros = $this->genera_filtros_iniciales(filtro_especial_sql:  $filtro_especial_sql,
-            filtro_extra_sql: $filtro_extra_sql, filtro_rango_sql: $filtro_rango_sql, in_sql:$in_sql,
-            keys_data_filter:  $keys_data_filter,not_in_sql:  $not_in_sql, sentencia: $sentencia,
-            sql_extra:  $sql_extra,filtro_fecha_sql:  $filtro_fecha_sql);
+        $diferente_de_sql = $this->diferente_de_sql(diferente_de: $diferente_de);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al generar sql',data:$diferente_de_sql);
+        }
+
+
+        $filtros = $this->genera_filtros_iniciales(diferente_de_sql: $diferente_de_sql,
+            filtro_especial_sql: $filtro_especial_sql, filtro_extra_sql: $filtro_extra_sql,
+            filtro_rango_sql: $filtro_rango_sql, in_sql: $in_sql, keys_data_filter: $keys_data_filter,
+            not_in_sql: $not_in_sql, sentencia: $sentencia, sql_extra: $sql_extra,
+            filtro_fecha_sql: $filtro_fecha_sql);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtros',data:$filtros);
         }

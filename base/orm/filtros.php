@@ -71,12 +71,12 @@ class filtros{
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de en SQL
      * @author mgamboa
      * @fecha 2022-07-27 11:07
      * @return array|stdClass
-     * @version 1.552.51
      */
-    public function complemento_sql(bool $aplica_seguridad, array $filtro, array $filtro_especial,
+    public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
                                     array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
                                     modelo $modelo, array $not_in, int $offset, array $order, string $sql_extra,
                                     string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
@@ -101,10 +101,11 @@ class filtros{
         }
 
 
-        $filtros = (new where())->data_filtros_full(columnas_extra: $modelo->columnas_extra, filtro: $filtro,
-            filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha,
-            filtro_rango:  $filtro_rango, in: $in, keys_data_filter: $modelo->keys_data_filter, not_in: $not_in,
-            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
+        $filtros = (new where())->data_filtros_full(columnas_extra: $modelo->columnas_extra,
+            diferente_de: $diferente_de, filtro: $filtro, filtro_especial:  $filtro_especial,
+            filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha, filtro_rango:  $filtro_rango, in: $in,
+            keys_data_filter: $modelo->keys_data_filter, not_in: $not_in, sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro);
 
 
         if(errores::$error){
