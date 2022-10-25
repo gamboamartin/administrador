@@ -1197,7 +1197,6 @@ class where{
 
     /**
      * Limpia los elementos para usar en un filtro para WHERE en SQL
-     * @version 1.52.31
      * @param stdClass $filtros Filtros a limpiar o inicializar
      * @param array $keys_data_filter keys de los filtros
      * @return stdClass|array

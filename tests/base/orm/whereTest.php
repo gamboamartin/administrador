@@ -933,6 +933,22 @@ class whereTest extends test {
         errores::$error = false;
 
 
+        $filtros = new stdClass();
+        $filtros->d = ' x ';
+        $filtros->diferente_de = ' sss ';
+        $keys_data_filter = array();
+        $keys_data_filter['z'] = 'd';
+        $keys_data_filter['xxx'] = 'diferente_de';
+        $resultado = $wh->limpia_filtros($filtros, $keys_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( 'x', $resultado->d);
+        $this->assertEquals( 'sss', $resultado->diferente_de);
+
+
+        errores::$error = false;
+
+
 
     }
 
