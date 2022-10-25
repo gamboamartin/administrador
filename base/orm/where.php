@@ -21,13 +21,13 @@ class where{
     /**
      * Asigna and  A FILTRO
      * @version 1.150.31
-     * @param string $filtro_fecha_sql Filtro en forma de sql
+     * @param string $txt Filtro en forma de sql
      * @return string
      */
-    private function and_filtro_fecha(string $filtro_fecha_sql): string
+    private function and_filtro_fecha(string $txt): string
     {
         $and = '';
-        if($filtro_fecha_sql !== ''){
+        if($txt !== ''){
             $and = ' AND ';
         }
         return $and;
@@ -80,6 +80,21 @@ class where{
         }
         $campo = $data['campo'] ?? $key;
         return addslashes($campo);
+    }
+
+    /**
+     * si existe txt integra coma
+     * @param string $txt Texto previo
+     * @return string
+     * @version 1.571.51
+     */
+    private function coma(string $txt): string
+    {
+        $coma = '';
+        if($txt === ''){
+            $coma = ',';
+        }
+        return $coma;
     }
 
     /**
@@ -247,6 +262,31 @@ class where{
         return $data;
     }
 
+    /**
+     * Genera un elemento diferente de
+     * @param string $campo Campo de integracion del modelo
+     * @param string $diferente_de_sql sql previo
+     * @param string $value Valor a verificar
+     * @return string|array
+     * @version 1.571.51
+     */
+    private function diferente_de(string $campo, string $diferente_de_sql, string $value): string|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
+        }
+        $and = $this->and_filtro_fecha(txt: $diferente_de_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al integrar AND", data: $and);
+        }
+
+        $campo = addslashes($campo);
+        $value = addslashes($value);
+
+        return " $and $campo <> '$value' ";
+    }
+
     private function diferente_de_sql(array $diferente_de): array|string
     {
         $diferente_de_sql = '';
@@ -254,14 +294,13 @@ class where{
 
 
             foreach ($diferente_de as $campo=>$value){
-                $coma = '';
-                if($diferente_de_sql === ''){
-                    $coma = ',';
-                }
-                $campo = addslashes($campo);
-                $value = addslashes($value);
 
-                $diferente_de_sql .="$coma $campo <> '$value'";
+                $sql = $this->diferente_de(campo:$campo,diferente_de_sql:  $diferente_de_sql,value:  $value);
+                if(errores::$error){
+                    return $this->error->error(mensaje: "Error al integrar sql", data: $sql);
+                }
+
+                $diferente_de_sql .= $sql;
             }
 
 
@@ -1070,7 +1109,7 @@ class where{
             return $this->error->error(mensaje:'Error al generar datos',data:$data);
         }
 
-        $and = $this->and_filtro_fecha(filtro_fecha_sql: $filtro_fecha_sql);
+        $and = $this->and_filtro_fecha(txt: $filtro_fecha_sql);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener and',data:$and);
         }

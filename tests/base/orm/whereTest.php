@@ -150,6 +150,19 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_coma(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $txt = '';
+        $resultado = $wh->coma($txt);
+        $this->assertEquals(',', $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_comparacion_pura(){
 
         errores::$error = false;
@@ -288,6 +301,43 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a', $resultado->llave);
+        errores::$error = false;
+    }
+
+    public function test_diferente_de(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $campo = '';
+        $diferente_de_sql = '';
+        $value = '';
+        $resultado = $wh->diferente_de($campo, $diferente_de_sql, $value);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error campo esta vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $diferente_de_sql = '';
+        $value = '';
+        $resultado = $wh->diferente_de($campo, $diferente_de_sql, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  a <> '' ", $resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $diferente_de_sql = 'z';
+        $value = '';
+        $resultado = $wh->diferente_de($campo, $diferente_de_sql, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  AND  a <> '' ", $resultado);
+
         errores::$error = false;
     }
 

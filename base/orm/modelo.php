@@ -804,11 +804,12 @@ class modelo extends modelo_base {
      * @fecha 2022-08-02 16:49
      */
     public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
-                               array $columnas_by_table = array(), bool $columnas_en_bruto = false, array $diferente_de = array(),
-                               array $filtro=array(), array $filtro_especial= array(), array $filtro_extra = array(),
-                               array $filtro_fecha = array(), array $filtro_rango = array(), array $group_by=array(),
-                               array $hijo = array(), array $in = array(), int $limit=0,  array $not_in = array(),
-                               int $offset=0, array $order = array(), string $sql_extra = '',
+                               array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                               array $diferente_de = array(), array $filtro=array(), array $filtro_especial= array(),
+                               array $filtro_extra = array(), array $filtro_fecha = array(),
+                               array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
+                               array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
+                               array $order = array(), string $sql_extra = '',
                                string $tipo_filtro='numeros'): array|stdClass{
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
