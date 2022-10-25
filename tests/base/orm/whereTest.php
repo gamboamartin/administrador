@@ -341,6 +341,40 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_diferente_de_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $diferente_de = array();
+        $resultado = $wh->diferente_de_sql($diferente_de);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+
+        errores::$error = false;
+
+        $diferente_de = array();
+        $diferente_de['a'] = '';
+        $resultado = $wh->diferente_de_sql($diferente_de);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  a <> '' ", $resultado);
+
+        errores::$error = false;
+
+        $diferente_de = array();
+        $diferente_de['a'] = 'x';
+        $diferente_de['b'] = 'x';
+        $resultado = $wh->diferente_de_sql($diferente_de);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  a <> 'x'   AND  b <> 'x' ", $resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_sql(){
         errores::$error = false;
         $wh = new where();

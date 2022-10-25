@@ -47,6 +47,7 @@ class where{
      * @return stdClass
      * @author mgamboa
      * @fecha 2022-07-25 11:25
+     * 
      */
     #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
                                                 string $filtro_extra_sql, string $filtro_fecha_sql,
@@ -276,6 +277,10 @@ class where{
         if($campo === ''){
             return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
         }
+        if(is_numeric($campo)){
+            return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
+                data: $campo);
+        }
         $and = $this->and_filtro_fecha(txt: $diferente_de_sql);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al integrar AND", data: $and);
@@ -287,13 +292,27 @@ class where{
         return " $and $campo <> '$value' ";
     }
 
+    /**
+     * Integra el diferente de en sql
+     * @param array $diferente_de Parametros diferente de
+     * @return array|string
+     * @version 1.572.51
+     */
     private function diferente_de_sql(array $diferente_de): array|string
     {
         $diferente_de_sql = '';
         if(count($diferente_de)>0){
 
-
             foreach ($diferente_de as $campo=>$value){
+
+                $campo = trim($campo);
+                if($campo === ''){
+                    return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
+                }
+                if(is_numeric($campo)){
+                    return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
+                        data: $campo);
+                }
 
                 $sql = $this->diferente_de(campo:$campo,diferente_de_sql:  $diferente_de_sql,value:  $value);
                 if(errores::$error){
@@ -302,7 +321,6 @@ class where{
 
                 $diferente_de_sql .= $sql;
             }
-
 
         }
         return $diferente_de_sql;
