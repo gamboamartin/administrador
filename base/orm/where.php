@@ -47,7 +47,8 @@ class where{
      * @return stdClass
      * @author mgamboa
      * @fecha 2022-07-25 11:25
-     * 
+     * @version 1.573.51
+     *
      */
     #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
                                                 string $filtro_extra_sql, string $filtro_fecha_sql,
