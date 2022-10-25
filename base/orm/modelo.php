@@ -1090,7 +1090,6 @@ class modelo extends modelo_base {
      * @param int $id id del registro a modificar
      * @param bool $reactiva para evitar validacion de status inactivos
      * @return array|stdClass resultado de la insercion
-     * @throws JsonException
      * @example
      *      $r_modifica_bd =  parent::modifica_bd($registro, $id, $reactiva);
      * @internal  $this->validacion->valida_transaccion_activa($this, $this->aplica_transaccion_inactivo, $this->registro_id, $this->tabla);
@@ -1098,7 +1097,6 @@ class modelo extends modelo_base {
      * @internal  $this->agrega_usuario_session();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($this->registro_upd,__FUNCTION__, $consulta);
-     * @uses  todo el sistema
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {

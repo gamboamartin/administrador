@@ -131,15 +131,24 @@ class upd{
 
 
     /**
-     * @param int $id
+     * Ejecuta un update en el motor d ebase de datos
+     * @param int $id Identificador
      * @param modelo $modelo Modelo en ejecucion
-     * @param bool $reactiva
-     * @param array $registro
+     * @param bool $reactiva Si reactiva el elemento sera validado
+     * @param array $registro Registro en ejecucion
      * @return array|stdClass
-
+     * @version 1.567.51
      */
     private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
+        }
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+
         $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
