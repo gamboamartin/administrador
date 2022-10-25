@@ -67,6 +67,18 @@ class menusTest extends test {
 
     }
 
+    public function test_etiquetas_array(){
+        errores::$error = false;
+        $m = new menus();
+        $m = new liberator($m);
+
+        $etiquetas_accion = array();
+        $resultado = $m->etiquetas_array($etiquetas_accion);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
 

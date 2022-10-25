@@ -210,7 +210,6 @@ class menus{
      */
     public function breadcrumbs_con_label_html(array $etiquetas_accion, string $seccion):array{
         $seccion = str_replace('models\\','',$seccion);
-        $class_model = 'models\\'.$seccion;
         if($seccion === ''){
             return $this->error->error('Error seccion no puede venir vacio',$seccion);
         }
@@ -224,17 +223,23 @@ class menus{
     }
 
     /**
-     * PROBADO P ORDER P INT
+     * Obtiene los datos de un menu
      * @param array $etiqueta Datos para mostrar una etiqueta en un menu
      * @return array
+     * @version 1.568.51
      */
-    PUBLIC function data_menu(array $etiqueta): array
+    private function data_menu(array $etiqueta): array
     {
-        $keys = array('adm_accion_descripcion','adm_accion_icono');
+        $keys = array('adm_accion_descripcion');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $etiqueta);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar etiqueta', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar etiqueta', data: $valida);
         }
+
+        if(!isset($etiqueta['adm_accion_icono'])){
+            $etiqueta['adm_accion_icono'] = '';
+        }
+
         $data['etiqueta'] = $etiqueta['adm_accion_descripcion'];
         $data['link'] = $etiqueta['adm_accion_descripcion'];
         $data['icon'] = $etiqueta['adm_accion_icono'];
@@ -246,6 +251,7 @@ class menus{
      * Funcion la generar las etiquetas de una accion mostrable en el menu
      * @param array $etiquetas_accion Datos con las etiquetas a mostrar
      * @return array
+     * @version 1.568.51
      */
     private function etiquetas_array(array $etiquetas_accion): array
     {
