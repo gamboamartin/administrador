@@ -9,6 +9,7 @@ use base\orm\inicializacion;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
+use models\adm_menu;
 use models\adm_seccion;
 
 use stdClass;
@@ -242,6 +243,24 @@ class insertsTest extends test {
         $resultado = $ins->sql_base_alta($campo, $campos, $valores, $value);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_transacciones_default(){
+        errores::$error = false;
+        $ins = new inserts();
+        $ins = new liberator($ins);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 1;
+
+        $consulta = true;
+        $modelo = new adm_menu($this->link);
+        $modelo->registro_id = 1;
+        $resultado = $ins->transacciones_default($consulta, $modelo);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
         errores::$error = false;
     }
 
