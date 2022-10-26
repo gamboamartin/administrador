@@ -340,7 +340,7 @@ class params_inputsTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->disabled);
         $this->assertEquals('', $resultado->required);
-        $this->assertEquals('', $resultado->data_extra);
+
         $this->assertEquals('', $resultado->class);
         $this->assertEquals('z', $resultado->ids);
 
@@ -360,7 +360,7 @@ class params_inputsTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->disabled);
         $this->assertEquals('', $resultado->required);
-        $this->assertEquals('', $resultado->data_extra);
+
         $this->assertEquals(' p', $resultado->class);
         $this->assertEquals('z', $resultado->ids);
 

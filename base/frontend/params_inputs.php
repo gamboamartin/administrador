@@ -60,10 +60,6 @@ class params_inputs{
             return $this->error->error('Error al generar ids html', $ids_css_html);
         }
 
-        $data_extra_html = (new extra_params())->data_extra_html(data_extra: $data_extra);
-        if(errores::$error){
-            return $this->error->error('Error al generar data extra html', $data_extra_html);
-        }
 
         $value = str_replace("'","`",$value);
 
@@ -73,7 +69,6 @@ class params_inputs{
         $datas->disabled = $disabled_html;
         $datas->required = $required_html;
         $datas->ids = $ids_css_html;
-        $datas->data_extra = $data_extra_html;
         $datas->value = $value;
 
         return $datas;
@@ -298,11 +293,6 @@ class params_inputs{
             return $this->error->error(mensaje: 'Error al generar required html',data: $required_html);
         }
 
-        $data_extra_html = (new extra_params())->data_extra_html(data_extra: $data_extra);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar data html',data: $data_extra_html);
-        }
-
         $css_html = (new class_css())->class_css_html(clases_css: $css);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar class html',data: $css_html);
@@ -315,7 +305,6 @@ class params_inputs{
         $params = new stdClass();
         $params->disabled = $disabled_html;
         $params->required = $required_html;
-        $params->data_extra = $data_extra_html;
         $params->class = $css_html;
         $params->ids = $ids_html;
 

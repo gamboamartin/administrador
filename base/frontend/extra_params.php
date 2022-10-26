@@ -36,31 +36,7 @@ class extra_params{
         return $data_ex;
     }
 
-    /**
-     * Genera los extra params via html
-     * @param array $data_extra Conjunto de extra params para se asignados a un input
-     * @return string|array
-     * @version 1.254.39
-     * @verfuncion 1.1.0
-     * @fecha 2022-08-02 10:41
-     * @author mgamboa
-     */
-    public function data_extra_html(array $data_extra): string|array
-    {
-        $data_extra_html = '';
-        foreach($data_extra as $key =>$valor){
-            if(is_numeric($key)){
-                return $this->error->error(mensaje: 'Error el data_extra[] key debe ser texto',data: $data_extra);
-            }
-            $valor = trim($valor);
-            if($valor === ''){
-                return $this->error->error(mensaje:'Error el $valor de data extra no puede venir vacio',
-                    data:$data_extra);
-            }
-            $data_extra_html.= 'data-'.$key." = '$valor'";
-        }
-        return $data_extra_html;
-    }
+
 
     /**
      * Integra extra params a options

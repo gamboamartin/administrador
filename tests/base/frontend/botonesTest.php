@@ -250,10 +250,9 @@ class botonesTest extends test {
         $datas[] = '';
         $icon = '';
         $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el data_extra[] key debe ser texto',
-            $resultado['data']['mensaje']);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
 
@@ -262,10 +261,9 @@ class botonesTest extends test {
         $datas['x'] = '';
         $icon = '';
         $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el $valor de data extra no puede venir vacio',
-            $resultado['data']['mensaje']);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
 
@@ -276,7 +274,7 @@ class botonesTest extends test {
         $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("data-x = 'x'",$resultado->data_extra);
+
 
         errores::$error = false;
 

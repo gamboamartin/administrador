@@ -51,38 +51,7 @@ class extra_paramsTest extends test {
         errores::$error = false;
     }
 
-    public function test_data_extra_html(): void
-    {
-        errores::$error = false;
-        $ep = new extra_params();
-        //$inicializacion = new liberator($inicializacion);
-        $data_extra[] = '';
-        $resultado = $ep->data_extra_html($data_extra);
 
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el data_extra[] key debe ser texto', $resultado['mensaje']);
-        errores::$error = false;
-
-        $data_extra = array();
-        $data_extra['x'] = '';
-        $resultado = $ep->data_extra_html($data_extra);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el $valor de data extra no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $data_extra = array();
-        $data_extra['x'] = '1';
-        $resultado = $ep->data_extra_html($data_extra);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("data-x = '1'", $resultado);
-
-        errores::$error = false;
-
-    }
 
     public function test_datas_extra(){
         errores::$error = false;
