@@ -608,9 +608,11 @@ class templates{
 
         $accion ='modifica';
 
-        $campos_html = $this->genera_campos($campo_name, $tipo, $cols, $valor, $required, $disabled, $ln, $etiqueta,
-            $pattern, $css_id, $data_extra, $tabla_foranea, $select_vacio_alta, $valores_filtrados, $columnas,
-            $llaves_foraneas, $vistas, $accion, $campos_invisibles);
+        $campos_html = $this->genera_campos(accion: $accion, campo_name: $campo_name,
+            campos_invisibles: $campos_invisibles, css_id: $css_id, cols: $cols, columnas: $columnas,
+            data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta, llaves_foraneas: $llaves_foraneas,
+            ln: $ln, pattern: $pattern, required: $required, select_vacio_alta: $select_vacio_alta, tipo: $tipo,
+            valor: $valor, tabla_foranea: $tabla_foranea, valores_filtrados: $valores_filtrados, vistas: $vistas);
         if(errores::$error){
             return $this->error->error('Error al generar campos',$campos_html);
         }

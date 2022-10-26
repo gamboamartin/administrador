@@ -435,19 +435,27 @@ class selects{
     }
 
     /**
-     * P INT P ORDER
+     * Genera el contenido html de un option
      * @param string $valor Valor de input
-     * @param string $tabla
-     * @param array $data_extra
-     * @param array $data_con_valor
-     * @param array $value
+     * @param string $tabla Tabla o estrcutura
+     * @param array $data_extra extraparams
+     * @param array $data_con_valor  extra params
+     * @param array $value values
      * @return array|string
+     * @version 1.580.51
      */
-    private function html_content_option(array $data_con_valor, array $data_extra, string $tabla, string $valor, array $value): array|string
+    private function html_content_option(array $data_con_valor, array $data_extra, string $tabla, string $valor,
+                                        array $value): array|string
     {
+
         $valor_envio = (new values())->valor_envio(valor: $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar valor', data: $valor_envio);
+        }
+
+        $selected = $this->validacion->valida_selected(id: $valor_envio, tabla: $tabla, value: $value);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar selected', data: $selected);
         }
 
         $data_content = (new params_inputs())->data_content_option(data_con_valor: $data_con_valor,
@@ -581,7 +589,7 @@ class selects{
     /**
      * P INT P ORDER
      * @param string $valor Valor de input
-     * @param string $tabla
+     * @param string $tabla Estructura o modelo
      * @param array $data_extra
      * @param array $data_con_valor
      * @param array $value
@@ -703,7 +711,7 @@ class selects{
         foreach ($registros as $key => $value) {
 
             if(!is_array($value)){
-                return $this->error->error('Error al value debe ser un array', array('value'=>$value,'key'=>$key));
+                return $this->error->error(mensaje: 'Error al value debe ser un array', data: array('value'=>$value,'key'=>$key));
             }
 
             $option_select = $this->option_select(columnas:  $datos->columnas, data_con_valor: $datos->data_con_valor,

@@ -314,6 +314,25 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
+    public function test_html_content_option(): void
+    {
+        errores::$error = false;
+        $val = new selects();
+        $val = new liberator($val);
+
+        $data_con_valor = array();
+        $data_extra = array();
+        $tabla = 'a';
+        $valor = '';
+        $value = array();
+        $value['a_id'] = 1;
+        $resultado = $val->html_content_option($data_con_valor, $data_extra, $tabla, $valor, $value);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("value='1'   ", $resultado);
+        errores::$error = false;
+    }
+
     public function test_obten_registros_select(): void{
         errores::$error = false;
         $sl = new selects();
