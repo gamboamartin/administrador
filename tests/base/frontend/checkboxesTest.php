@@ -73,7 +73,7 @@ class checkboxesTest extends test {
         $cols = '13';
 
         $resultado = $chk->data_chk(campo: $campo,class: $class, cols: $cols,
-            data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '', id_html: $id_html,
+            data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '',
             valor: $valor);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -90,7 +90,7 @@ class checkboxesTest extends test {
         $cols = '13';
 
         $resultado = $chk->data_chk(campo: $campo,class: $class, cols: $cols,
-            data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '', id_html: $id_html,
+            data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '',
             valor: $valor);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -107,7 +107,7 @@ class checkboxesTest extends test {
         $cols = '12';
 
         $resultado = $chk->data_chk(campo: $campo,class: $class, cols: $cols,
-            data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '', id_html: $id_html,
+            data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '',
             valor: $valor);
 
         $this->assertIsObject( $resultado);

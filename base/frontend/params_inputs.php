@@ -158,23 +158,7 @@ class params_inputs{
         return $disabled_html;
     }
 
-    /**
-     * Genera un id tipo css para html
-     * @param string $id_css Identificador css para java
-     * @return string
-     * @version 1.248.39
-     * @verfuncion 1.1.0
-     * @author mgamboa
-     * @fecha 2022-08-01 18:20
-     */
-    private function id_html(string $id_css): string
-    {
-        $id_html = '';
-        if($id_css !==''){
-            $id_html = " id = '$id_css' ";
-        }
-        return $id_html;
-    }
+
 
     /**
      * Genera id de css en forma html
@@ -284,35 +268,7 @@ class params_inputs{
         return $data;
     }
 
-    /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param string $valor Valor a verificar activo inactivo
-     * @param bool $ln Si true aplica div 12
-     * @param string $css_id Identificador css para java
-     * @return array|stdClass $data->[string checked_html,string salto,string id_html]
-     * @version 1.249.40
-     * @verfuncion 1.1.0
-     * @author mgamboa
-     * @fecha 2022-08-01 18:26
-     */
-    public function params_chk(string $css_id, bool $ln, string $valor): array|stdClass
-    {
 
-        /*$salto = $this->salto(ln: $ln);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar ln',data: $salto);
-        }*/
-
-        $id_html = $this->id_html(id_css: $css_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar $id_html',data: $id_html);
-        }
-
-        $data = new stdClass();
-        //$data->salto = $salto;
-        $data->id_html = $id_html;
-        return $data;
-    }
 
     /**
      * Genera los parametros de una fecha input

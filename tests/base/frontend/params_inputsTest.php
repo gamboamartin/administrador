@@ -162,25 +162,7 @@ class params_inputsTest extends test {
         errores::$error = false;
     }
 
-    public function test_id_html(){
-        errores::$error = false;
-        $params = new params_inputs();
-        $params = new liberator($params);
-        $id_css = '';
-        $resultado = $params->id_html(id_css: $id_css);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
 
-        errores::$error = false;
-        $id_css = 'x';
-        $resultado = $params->id_html(id_css: $id_css);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(" id = 'x' ", $resultado);
-
-        errores::$error = false;
-    }
 
     public function test_ids_html(){
         errores::$error = false;
@@ -329,20 +311,7 @@ class params_inputsTest extends test {
         errores::$error = false;
     }
 
-    public function test_params_chk()
-    {
-        errores::$error = false;
-        $params = new params_inputs();
 
-        $css_id = '';
-        $ln = false;
-        $valor = '';
-
-        $resultado = $params->params_chk($css_id, $ln, $valor);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_params_fecha()
     {
@@ -507,25 +476,5 @@ class params_inputsTest extends test {
 
     }
 
-    /*
-    public function test_salto(){
-        errores::$error = false;
-        $params = new params_inputs();
-        $params = new liberator($params);
-        $ln = '';
-        $resultado = $params->salto(ln: $ln);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-        $ln = 'x';
-        $resultado = $params->salto(ln: $ln);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div class='col-md-12'></div>", $resultado);
-
-        errores::$error = false;
-
-    }*/
+    
 }

@@ -255,10 +255,6 @@ class directivas extends html {
 
         $class ="class='checkboxes'";
 
-        $params_base = (new params_inputs())->params_chk(css_id:  $css_id,ln: $ln,valor:$valor);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar parametros', data:$params_base);
-        }
 
         $data_extra_html = (new extra_params())->data_extra_html(data_extra: $data_extra);
         if(errores::$error){
@@ -277,7 +273,7 @@ class directivas extends html {
 
         $data_chk = (new checkboxes())->data_chk(campo: $campo,
             class: $class,cols:  $cols,data_etiqueta: $data_etiqueta,data_extra_html:  $data_extra_html,
-            disabled_html: $disabled_html, id_html: $params_base->id_html, valor: $valor);
+            disabled_html: $disabled_html, valor: $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar datos chk',data: $data_chk);
         }

@@ -36,19 +36,17 @@ class checkboxes{
     /**
      * Integra el dato de un checkbox en html
      * @param string $campo Campo de input
-     * @param string $valor Valor del checkbox
      * @param string $class Clase css
-     * @param string $id_html Id en css para ser usado en java
-     * @param string $data_extra_html extra params en forma html
-     * @param string $checked_html Atributo checked html puede venir vacio
-     * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param int $cols Columnas para css
+     * @param string $data_etiqueta Datos de la etiqueta del chk
+     * @param string $data_extra_html extra params en forma html
      * @param string $disabled_html atributo disabled en html
+     * @param string $valor Valor del checkbox
      * @return array|stdClass
      * @version 1.309.41
      */
     public function data_chk(string $campo, string $class,int $cols, string $data_etiqueta,
-                             string $data_extra_html, string $disabled_html, string $id_html,string $valor): array|stdClass
+                             string $data_extra_html, string $disabled_html,string $valor): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -60,7 +58,7 @@ class checkboxes{
         }
 
         $data_span = $this->data_span_chk(campo: $campo,class:  $class,
-            data_extra_html: $data_extra_html, disabled_html:  $disabled_html, id_html: $id_html,valor: $valor);
+            data_extra_html: $data_extra_html, disabled_html:  $disabled_html,valor: $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar span',data: $data_span);
         }
@@ -85,7 +83,6 @@ class checkboxes{
      * @param string $class class css
      * @param string $data_extra_html extra params
      * @param string $disabled_html atributo disabled
-     * @param string $id_html id css
      * @param string $valor Valor activo o inactivo
      * @return string|array
      * @version 1.279.41
@@ -94,7 +91,7 @@ class checkboxes{
      * @fecha 2022-08-08 14:27
      */
     private function data_input_chk(string $campo, string $class, string $data_extra_html,
-                                    string $disabled_html, string $id_html, string $valor): string|array
+                                    string $disabled_html, string $valor): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -102,7 +99,7 @@ class checkboxes{
         }
         $valor = trim($valor);
         $class = trim($class);
-        $id_html = trim($id_html);
+
         $data_extra_html = trim($data_extra_html);
         $disabled_html = trim($disabled_html);
 
@@ -111,31 +108,29 @@ class checkboxes{
         }
 
         $html = "<input type='checkbox' $disabled_html ";
-        $html .= "name='$campo' value='$valor' $class $id_html $data_extra_html>";
+        $html .= "name='$campo' value='$valor' $class  $data_extra_html>";
         return $html;
     }
 
     /**
      * Genera los datos a integrar un checkbox
      * @param string $campo Campo de input
-     * @param string $valor Valor del checkbox
      * @param string $class Clase css
-     * @param string $id_html Id en css para ser usado en java
      * @param string $data_extra_html extra params en forma html
-     * @param string $checked_html Atributo checked html puede venir vacio
      * @param string $disabled_html Atributo disabled html puede venir vacio
+     * @param string $valor Valor del checkbox
      * @return array|stdClass
      * @version  1.304.41
      */
     private function data_span_chk(string $campo, string $class, string $data_extra_html,
-                                   string $disabled_html, string $id_html, string $valor): array|stdClass
+                                   string $disabled_html, string $valor): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
             return $this->error->error('Error campo vacio', $campo);
         }
         $data_input = $this->data_input_chk(campo: $campo, class: $class,
-            data_extra_html:  $data_extra_html, disabled_html: $disabled_html,id_html:  $id_html, valor:  $valor);
+            data_extra_html:  $data_extra_html, disabled_html: $disabled_html, valor:  $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data',data: $data_input);
         }
