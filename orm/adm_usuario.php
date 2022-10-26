@@ -146,7 +146,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         }
         return $usuario;
     }
-    
+
     public function usuarios_por_grupo(int $adm_grupo_id): array
     {
         if($adm_grupo_id <=0 ){
