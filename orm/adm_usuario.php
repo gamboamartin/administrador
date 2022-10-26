@@ -35,32 +35,30 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return (int)$r_usuario_alta_bd->registro_id;
     }
 
-
-
     /**
-     * Obtiene un usuario activo basado en la session
-     * @version 1.209.37
-     * @verfuncion 1.1.0
-     * @author mgamboa
-     * @fecha 2022-07-27
+     * Valida que el grupo que va a filtrar exista en la base de datos. En caso de que
+     * halla un error en la búsqueda, que no exista o sea inconsistente la informacion. Mandará un error.
+     *
+     * @param array $filtro Verifica y valida los datos que se le ingresen
      * @return array
+     *
+     * @function $grupo_modelo = new adm_grupo($adm_usuario->link); Obtiene los datos de
+     * un grupo por medio del enlace a una base de datos
      */
-    public function usuario_activo():array{
-        if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
-        }
-
-        if((int)$_SESSION['usuario_id'] < 0){
-            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
-                data: $_SESSION['usuario_id']);
-        }
-
-        $this->registro_id = $_SESSION['usuario_id'];
-        $usuario = $this->obten_data();
+    public function data_grupo(array $filtro): array
+    {
+        $grupo_modelo = new adm_grupo($this->link);
+        $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener usuario activo',data: $usuario);
+            return $this->error->error('Error al obtener grupo',$r_grupo);
         }
-        return $usuario;
+        if((int)$r_grupo['n_registros'] === 0){
+            return $this->error->error('Error al obtener grupo no existe',$r_grupo);
+        }
+        if((int)$r_grupo->n_registros > 1){
+            return $this->error->error('Error al obtener grupo inconsistencia existe mas de uno',$r_grupo);
+        }
+        return $r_grupo->registros[0];
     }
 
     /**
@@ -103,34 +101,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * Valida que el grupo que va a filtrar exista en la base de datos. En caso de que
-     * halla un error en la búsqueda, que no exista o sea inconsistente la informacion. Mandará un error.
-     *
-     * @param array $filtro Verifica y valida los datos que se le ingresen
-     * @return array
-     *
-     * @function $grupo_modelo = new adm_grupo($adm_usuario->link); Obtiene los datos de
-     * un grupo por medio del enlace a una base de datos
-     */
-    public function data_grupo(array $filtro): array
-    {
-        $grupo_modelo = new adm_grupo($this->link);
-        $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error('Error al obtener grupo',$r_grupo);
-        }
-        if((int)$r_grupo['n_registros'] === 0){
-            return $this->error->error('Error al obtener grupo no existe',$r_grupo);
-        }
-        if((int)$r_grupo->n_registros > 1){
-            return $this->error->error('Error al obtener grupo inconsistencia existe mas de uno',$r_grupo);
-        }
-        return $r_grupo->registros[0];
-    }
-
-
-
-    /**
      * Obtiene un usuario por id
      * @version 1.138.31
      * @param int $usuario_id Usuario a obtener
@@ -151,6 +121,44 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $usuario;
     }
 
+    /**
+     * Obtiene un usuario activo basado en la session
+     * @version 1.209.37
+     * @verfuncion 1.1.0
+     * @author mgamboa
+     * @fecha 2022-07-27
+     * @return array
+     */
+    public function usuario_activo():array{
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
+        }
+
+        if((int)$_SESSION['usuario_id'] < 0){
+            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
+                data: $_SESSION['usuario_id']);
+        }
+
+        $this->registro_id = $_SESSION['usuario_id'];
+        $usuario = $this->obten_data();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener usuario activo',data: $usuario);
+        }
+        return $usuario;
+    }
+    
+    public function usuarios_por_grupo(int $adm_grupo_id): array
+    {
+        if($adm_grupo_id <=0 ){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data: $adm_grupo_id);
+        }
+        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        $r_usuario = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener usuarios',data: $r_usuario);
+        }
+        return $r_usuario->registros;
+    }
 
     /**
      * Valida que un usuario y un password exista

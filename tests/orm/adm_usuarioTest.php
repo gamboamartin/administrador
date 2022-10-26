@@ -130,6 +130,33 @@ class adm_usuarioTest extends test {
         errores::$error = false;
     }
 
+    public function test_usuarios_por_grupo(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = 2;
+        $adm_grupo_id = 1;
+
+        $resultado = $modelo->usuarios_por_grupo($adm_grupo_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $adm_grupo_id = 2;
+
+        $resultado = $modelo->usuarios_por_grupo($adm_grupo_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+
+        errores::$error = false;
+    }
+
 
 
 
