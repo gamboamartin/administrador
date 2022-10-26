@@ -16,6 +16,30 @@ class adm_accion_grupoTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_grupos_por_accion(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_accion_grupo($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $adm_accion_id= 1;
+        $resultado = $modelo->grupos_por_accion($adm_accion_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $adm_accion_id= 2;
+        $resultado = $modelo->grupos_por_accion($adm_accion_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_obten_accion_permitida(): void
     {
 
