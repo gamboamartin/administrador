@@ -132,6 +132,21 @@ class adm_accionTest extends test {
 
     }
 
+    public function test_grupos_id_por_accion(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $adm_accion_id= 2;
+        $resultado = $modelo->grupos_id_por_accion($adm_accion_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(2, $resultado[0]);
+
+        errores::$error = false;
+    }
+
 
 
 

@@ -331,6 +331,31 @@ class adm_accion extends modelo{ //FINALIZADAS
         return $permiso_valido;
     }
 
+
+    public function grupos_id_por_accion(int $adm_accion_id): array
+    {
+        if($adm_accion_id <=0){
+            return $this->error->error('Error adm_accion_id debe ser mayor a 0', $adm_accion_id);
+        }
+        $filtro['adm_accion.id'] = $adm_accion_id;
+        $group_by[] = 'adm_grupo.id';
+        $columnas = array('adm_grupo_id');
+        $r_acciones_grupo = (new adm_accion_grupo($this->link))->filtro_and(
+            columnas: $columnas, filtro: $filtro, group_by: $group_by);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener grupos', $r_acciones_grupo);
+        }
+        $adm_acciones_grupos = $r_acciones_grupo->registros;
+
+        $grupos = array();
+        foreach ($adm_acciones_grupos as $adm_accion_grupo){
+            $grupos[] = $adm_accion_grupo['adm_grupo_id'];
+        }
+
+        return $grupos;
+
+    }
+
     private function grupos_root(): array
     {
         $grupo_modelo = new adm_grupo($this->link);
