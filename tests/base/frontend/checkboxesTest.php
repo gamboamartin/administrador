@@ -42,7 +42,7 @@ class checkboxesTest extends test {
         $resultado = $chk->checkbox($data_input,$div_chk, $etiqueta,$salto);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a b',$resultado);
+        $this->assertEquals(' b',$resultado);
 
         errores::$error = false;
         $salto = 'a';

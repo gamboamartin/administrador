@@ -507,6 +507,7 @@ class params_inputsTest extends test {
 
     }
 
+    /*
     public function test_salto(){
         errores::$error = false;
         $params = new params_inputs();
@@ -526,5 +527,5 @@ class params_inputsTest extends test {
 
         errores::$error = false;
 
-    }
+    }*/
 }

@@ -17,16 +17,15 @@ class checkboxes{
 
     /**
      * Genera el html de un checkbox
-     * @param string $salto Salto de linea en html
+     * @param string $data_input Datos de input
      * @param string $div_chk Div de integracion de checkbox
      * @param string $etiqueta Etiqueta de checkbox
-     * @param string $data_input Datos de input
      * @return string Html formado
      * @version 1.309.41
      */
-    public function checkbox(string $data_input, string $div_chk, string $etiqueta, string $salto): string
+    public function checkbox(string $data_input, string $div_chk, string $etiqueta): string
     {
-        $html = "$salto $div_chk";
+        $html = " $div_chk";
 
         if($etiqueta === ''){
             $html = $data_input;

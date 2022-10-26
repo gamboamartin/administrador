@@ -107,27 +107,6 @@ class params_inputs{
 
 
     /**
-     * Genera el atributo checked si valor es activo
-     * @param string $valor Valor a verificar activo inactivo
-     * @version 1.234.39
-     * @verfuncion 1.1.0
-     * @author mgamboa
-     * @fecha 2022-08-01 14:04
-     * @return string|array
-
-    private function checked(string $valor): string|array
-    {
-        $valor = trim($valor);
-
-        $checked_html = '';
-        if($valor==='activo'){
-            $checked_html = 'checked';
-        }
-        return $checked_html;
-    }
-     * */
-
-    /**
      * Integra los extra params a un option
      * @param array $value Valor  integrar
      * @param string $tabla tabla en ejecucion
@@ -319,16 +298,10 @@ class params_inputs{
     public function params_chk(string $css_id, bool $ln, string $valor): array|stdClass
     {
 
-        /*$checked_html = $this->checked(valor: $valor);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar checked',data: $checked_html);
-        }*/
-
-
-        $salto = $this->salto(ln: $ln);
+        /*$salto = $this->salto(ln: $ln);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar ln',data: $salto);
-        }
+        }*/
 
         $id_html = $this->id_html(id_css: $css_id);
         if(errores::$error){
@@ -336,8 +309,7 @@ class params_inputs{
         }
 
         $data = new stdClass();
-        //$data->checked_html = $checked_html;
-        $data->salto = $salto;
+        //$data->salto = $salto;
         $data->id_html = $id_html;
         return $data;
     }
@@ -475,7 +447,7 @@ class params_inputs{
      * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-01 17:06
-     */
+
     private function salto(bool $ln): string
     {
         $salto = '';
@@ -483,7 +455,7 @@ class params_inputs{
             $salto = "<div class='col-md-12'></div>";
         }
         return $salto;
-    }
+    }*/
 
 
 
