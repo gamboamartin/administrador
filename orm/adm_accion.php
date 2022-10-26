@@ -40,7 +40,7 @@ class adm_accion extends modelo{ //FINALIZADAS
      *@functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
      *En caso de error lanzará un mensaje
      */
-    public function accion_registro(string $seccion, string $accion):array{
+    public function accion_registro(string $accion, string $seccion):array{
         $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
@@ -56,9 +56,6 @@ class adm_accion extends modelo{ //FINALIZADAS
     }
 
     /**
-     * P INT P ORDER
-     *
-     *
      * Funcion que valida entre la seccion y accion en base a lo que obtenga retorna un objeto de tipo accion".
      * En caso de error en "$valida", "$filtro" o "$r_accion" lanzará un mensaje de error.
      *
@@ -70,7 +67,7 @@ class adm_accion extends modelo{ //FINALIZADAS
      * @functions $valida   = adm_accion->validacion->seccion_accion  Usada para validar los resultados de la funcion "seccion_accion". En caso de error lanzará un mensaje
      * @functions $filtro   = adm_accion->filtro_accion_seccion  Usada para validar los resultados de la funcion "filtro_accion_seccion". En caso de error lanzará un mensaje
      * @functions $r_accion = adm_accion->filtro_and  Usada para validar los resultados de la funcion "filtro_and". En caso de error lanzará un mensaje
-     *
+     * @version 1.577.51
      */
     private function accion_seccion(string $accion, string $seccion ):array|stdClass{
         $valida = $this->validacion->seccion_accion(accion:  $accion, seccion: $seccion);
@@ -531,7 +528,7 @@ class adm_accion extends modelo{ //FINALIZADAS
         if(isset($_SESSION['acciones_breads'][$seccion][$accion])){
             return $_SESSION['acciones_breads'][$seccion][$accion];
         }
-        $accion_registro = $this->accion_registro($seccion, $accion);
+        $accion_registro = $this->accion_registro(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error('Error al obtener acciones',$accion_registro);
         }

@@ -16,7 +16,6 @@ class controlador_adm_seccion extends controlador_base{
     public $operaciones_controlador;
     public $accion_modelo;
     public $accion_basica_modelo;
-    public $encabezado_seccion_menu;
     public $seccion_menu_id = false;
     public $template_accion;
 
@@ -42,12 +41,13 @@ class controlador_adm_seccion extends controlador_base{
             return  $this->errores->error(mensaje: 'Error al generar modelo',data: $accion_modelo);
         }
 
-        $accion_registro = $accion_modelo->accion_registro($this->seccion, $this->accion);
+        $accion_registro = $accion_modelo->accion_registro(accion: $this->accion, seccion: $this->seccion);
         if(errores::$error){
             return  $this->errores->error('Error al obtener acciones',$accion_registro);
         }
 
-        $this->breadcrumbs = $this->directiva->nav_breadcumbs($breadcrumbs,$this->seccion,$this->accion, $this->link, $accion_registro);
+        $this->breadcrumbs = $this->directiva->nav_breadcumbs(breadcrumbs: $breadcrumbs,seccion: $this->seccion,
+            accion: $this->accion, link: $this->link,accion_registro:  $accion_registro, session_id: $this->session_id);
         $this->seccion_menu_id = $_GET['registro_id'];
         $this->operaciones_controlador->encabezados($this);
         setcookie('seccion_menu_id' , $this->seccion_menu_id);

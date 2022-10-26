@@ -29,7 +29,7 @@ class init{
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
-        $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+        $accion = (new adm_accion($link))->accion_registro(accion: $seguridad->accion, seccion: $seguridad->seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
         }

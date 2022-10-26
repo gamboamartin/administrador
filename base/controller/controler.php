@@ -174,7 +174,7 @@ class controler{
             if(errores::$error){
                 return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $accion_registro);
             }
-            $acciones =  $accion_modelo->acciones_permitidas(seccion: $this->seccion,accion: $this->accion,modelo: $this->modelo);
+            $acciones =  $accion_modelo->acciones_permitidas(accion: $this->accion, modelo: $this->modelo, seccion: $this->seccion);
             if(errores::$error){
                 return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $acciones);
             }
