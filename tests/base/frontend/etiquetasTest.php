@@ -117,19 +117,6 @@ class etiquetasTest extends test {
         errores::$error = false;
     }
 
-    public function test_etiqueta_chk(): void
-    {
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$inicializacion = new liberator($inicializacion);
-        $etiqueta = '';
-        $resultado = $etiquetas->etiqueta_chk(etiqueta: $etiqueta);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('btn-default btn-checkbox', $resultado);
-
-        errores::$error = false;
-    }
 
     public function test_etiqueta_label(){
         errores::$error = false;
@@ -350,7 +337,7 @@ class etiquetasTest extends test {
         //$inicializacion = new liberator($inicializacion);
         $data_etiqueta = '';
         $span_chk = '';
-        $resultado = $etiquetas->span_btn_chk(data_etiqueta: $data_etiqueta, span_chk: $span_chk);
+        $resultado = $etiquetas->span_btn_chk( span_chk: $span_chk);
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);

@@ -255,18 +255,14 @@ class directivas extends html {
 
         $class ="class='checkboxes'";
 
-        $data_etiqueta = (new etiquetas())->etiqueta_chk(etiqueta: $etiqueta);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar etiqueta', data:$data_etiqueta);
-        }
+
 
         $disabled_html = (new params_inputs())->disabled_html(disabled: $disabled);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar disabled',data: $disabled_html);
         }
 
-        $data_chk = (new checkboxes())->data_chk(campo: $campo, class: $class,cols:  $cols,
-            data_etiqueta: $data_etiqueta, disabled_html: $disabled_html, valor: $valor);
+        $data_chk = (new checkboxes())->data_chk(campo: $campo, class: $class,cols:  $cols, disabled_html: $disabled_html, valor: $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar datos chk',data: $data_chk);
         }

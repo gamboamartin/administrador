@@ -38,13 +38,12 @@ class checkboxes{
      * @param string $campo Campo de input
      * @param string $class Clase css
      * @param int $cols Columnas para css
-     * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $disabled_html atributo disabled en html
      * @param string $valor Valor del checkbox
      * @return array|stdClass
      * @version 1.309.41
      */
-    public function data_chk(string $campo, string $class,int $cols, string $data_etiqueta, string $disabled_html,string $valor): array|stdClass
+    public function data_chk(string $campo, string $class,int $cols, string $disabled_html,string $valor): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -60,7 +59,7 @@ class checkboxes{
             return $this->error->error(mensaje: 'Error al generar span',data: $data_span);
         }
 
-        $div_chk = $this->etiqueta_chk(cols: $cols, data_etiqueta:$data_etiqueta,span_chk: $data_span->span_chk);
+        $div_chk = $this->etiqueta_chk(cols: $cols,span_chk: $data_span->span_chk);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar div',data: $div_chk);
         }
@@ -163,18 +162,17 @@ class checkboxes{
     /**
      * Genera una etiqueta para un checkbox
      * @param int $cols Columnas en css para maquetacion de divs
-     * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk html de span
      * @return array|string
      * @version 1.309.41
      */
-    private function etiqueta_chk(int $cols, string $data_etiqueta, string $span_chk): array|string
+    private function etiqueta_chk(int $cols, string $span_chk): array|string
     {
         $valida = $this->validacion->valida_cols(cols:$cols);
         if(errores::$error){
             return $this->error->error('Error al validar cols', $valida);
         }
-        $span_btn_chk = (new etiquetas())->span_btn_chk(data_etiqueta: $data_etiqueta, span_chk: $span_chk);
+        $span_btn_chk = (new etiquetas())->span_btn_chk( span_chk: $span_chk);
         if(errores::$error){
             return $this->error->error('Error al generar span',$span_btn_chk);
         }

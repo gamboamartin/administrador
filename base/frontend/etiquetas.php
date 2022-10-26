@@ -93,21 +93,7 @@ class etiquetas{
         return str_replace(array('_', '.', '[', ']'), ' ', $campo_busca);
     }
 
-    /**
-     * Genera una etiqueta para checkbox
-     * @param string $etiqueta Txt con etiqueta a mostrar
-     * @return string
-     * @version 1.257.40
-     * @version 1.1.0
-     * @author mgamboa
-     * @fecha 2022-08-02 11:39
-     *
-     */
-    public function etiqueta_chk(string $etiqueta): string
-    {
-        $etiqueta = trim($etiqueta);
-        return "<button class='btn btn-default btn-checkbox' type='button'>".$etiqueta."</button>";
-    }
+
 
     /**
      * Genera la etiqueta de unb input
@@ -288,14 +274,13 @@ class etiquetas{
 
     /**
      * Genera un span para un checkbox
-     * @param string $data_etiqueta Datos de la etiqueta del chk
      * @param string $span_chk Texto del chk
      * @return string
      * @version 1.305.41
      */
-    public function span_btn_chk(string $data_etiqueta, string $span_chk): string
+    public function span_btn_chk(string $span_chk): string
     {
-        return "<span class='input-group-btn'>$data_etiqueta $span_chk</span>";
+        return "<span class='input-group-btn'> $span_chk</span>";
     }
 
     /**
