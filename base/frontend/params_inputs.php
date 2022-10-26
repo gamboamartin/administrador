@@ -105,6 +105,7 @@ class params_inputs{
         return $data;
     }
 
+
     /**
      * Genera el atributo checked si valor es activo
      * @param string $valor Valor a verificar activo inactivo
@@ -113,7 +114,7 @@ class params_inputs{
      * @author mgamboa
      * @fecha 2022-08-01 14:04
      * @return string|array
-     */
+
     private function checked(string $valor): string|array
     {
         $valor = trim($valor);
@@ -124,6 +125,7 @@ class params_inputs{
         }
         return $checked_html;
     }
+     * */
 
     /**
      * Integra los extra params a un option
@@ -316,10 +318,11 @@ class params_inputs{
      */
     public function params_chk(string $css_id, bool $ln, string $valor): array|stdClass
     {
-        $checked_html = $this->checked(valor: $valor);
+
+        /*$checked_html = $this->checked(valor: $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar checked',data: $checked_html);
-        }
+        }*/
 
 
         $salto = $this->salto(ln: $ln);
@@ -333,7 +336,7 @@ class params_inputs{
         }
 
         $data = new stdClass();
-        $data->checked_html = $checked_html;
+        //$data->checked_html = $checked_html;
         $data->salto = $salto;
         $data->id_html = $id_html;
         return $data;

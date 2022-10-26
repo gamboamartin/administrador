@@ -99,6 +99,7 @@ class params_inputsTest extends test {
         errores::$error = false;
     }
 
+    /*
     public function test_checked(){
         errores::$error = false;
         $params = new params_inputs();
@@ -124,7 +125,7 @@ class params_inputsTest extends test {
         $this->assertEquals('', $resultado);
 
         errores::$error = false;
-    }
+    }*/
 
     public function test_data_content_option(){
         errores::$error = false;

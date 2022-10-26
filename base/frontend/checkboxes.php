@@ -48,7 +48,7 @@ class checkboxes{
      * @return array|stdClass
      * @version 1.309.41
      */
-    public function data_chk(string $campo, string $checked_html, string $class,int $cols, string $data_etiqueta,
+    public function data_chk(string $campo, string $class,int $cols, string $data_etiqueta,
                              string $data_extra_html, string $disabled_html, string $id_html,string $valor): array|stdClass
     {
         $campo = trim($campo);
@@ -60,7 +60,7 @@ class checkboxes{
             return $this->error->error(mensaje: 'Error al validar cols', data: $valida);
         }
 
-        $data_span = $this->data_span_chk(campo: $campo, checked_html:  $checked_html,class:  $class,
+        $data_span = $this->data_span_chk(campo: $campo,class:  $class,
             data_extra_html: $data_extra_html, disabled_html:  $disabled_html, id_html: $id_html,valor: $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar span',data: $data_span);
@@ -83,20 +83,18 @@ class checkboxes{
     /**
      * Genera el html de un checkbox
      * @param string $campo Campo de input
-     * @param string $valor Valor activo o inactivo
      * @param string $class class css
-     * @param string $id_html id css
      * @param string $data_extra_html extra params
-     * @param string $checked_html atributo checked
      * @param string $disabled_html atributo disabled
+     * @param string $id_html id css
+     * @param string $valor Valor activo o inactivo
      * @return string|array
      * @version 1.279.41
      * @verfuncion  1.1.0
      * @author mgamboa
      * @fecha 2022-08-08 14:27
-     *
      */
-    private function data_input_chk(string $campo, string $checked_html, string $class, string $data_extra_html,
+    private function data_input_chk(string $campo, string $class, string $data_extra_html,
                                     string $disabled_html, string $id_html, string $valor): string|array
     {
         $campo = trim($campo);
@@ -107,7 +105,6 @@ class checkboxes{
         $class = trim($class);
         $id_html = trim($id_html);
         $data_extra_html = trim($data_extra_html);
-        $checked_html = trim($checked_html);
         $disabled_html = trim($disabled_html);
 
         if($valor !== 'activo'){
@@ -115,7 +112,7 @@ class checkboxes{
         }
 
         $html = "<input type='checkbox' $disabled_html ";
-        $html .= "name='$campo' value='$valor' $class $id_html $data_extra_html $checked_html>";
+        $html .= "name='$campo' value='$valor' $class $id_html $data_extra_html>";
         return $html;
     }
 
@@ -131,14 +128,14 @@ class checkboxes{
      * @return array|stdClass
      * @version  1.304.41
      */
-    private function data_span_chk(string $campo, string $checked_html, string $class, string $data_extra_html,
+    private function data_span_chk(string $campo, string $class, string $data_extra_html,
                                    string $disabled_html, string $id_html, string $valor): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
             return $this->error->error('Error campo vacio', $campo);
         }
-        $data_input = $this->data_input_chk(campo: $campo, checked_html:  $checked_html, class: $class,
+        $data_input = $this->data_input_chk(campo: $campo, class: $class,
             data_extra_html:  $data_extra_html, disabled_html: $disabled_html,id_html:  $id_html, valor:  $valor);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data',data: $data_input);

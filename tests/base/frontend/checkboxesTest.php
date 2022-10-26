@@ -72,7 +72,7 @@ class checkboxesTest extends test {
         $data_etiqueta = '';
         $cols = '13';
 
-        $resultado = $chk->data_chk(campo: $campo,checked_html: $checked_html,class: $class, cols: $cols,
+        $resultado = $chk->data_chk(campo: $campo,class: $class, cols: $cols,
             data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '', id_html: $id_html,
             valor: $valor);
         $this->assertIsArray( $resultado);
@@ -89,7 +89,7 @@ class checkboxesTest extends test {
         $data_etiqueta = '';
         $cols = '13';
 
-        $resultado = $chk->data_chk(campo: $campo,checked_html: $checked_html,class: $class, cols: $cols,
+        $resultado = $chk->data_chk(campo: $campo,class: $class, cols: $cols,
             data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '', id_html: $id_html,
             valor: $valor);
         $this->assertIsArray( $resultado);
@@ -106,7 +106,7 @@ class checkboxesTest extends test {
         $data_etiqueta = '';
         $cols = '12';
 
-        $resultado = $chk->data_chk(campo: $campo,checked_html: $checked_html,class: $class, cols: $cols,
+        $resultado = $chk->data_chk(campo: $campo,class: $class, cols: $cols,
             data_etiqueta: $data_etiqueta,data_extra_html: $data_extra_html, disabled_html: '', id_html: $id_html,
             valor: $valor);
 
@@ -135,7 +135,7 @@ class checkboxesTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<input type='checkbox'  name='a' value='inactivo'    >", $resultado);
+        $this->assertEquals("<input type='checkbox'  name='a' value='inactivo'   >", $resultado);
 
         errores::$error = false;
     }
@@ -153,7 +153,7 @@ class checkboxesTest extends test {
         $resultado = $chk->data_span_chk($campo, $valor, $class, $id_html, $data_extra_html, $checked_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
 
         errores::$error = false;
 
