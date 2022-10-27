@@ -25,7 +25,7 @@ class botonesTest extends test {
         $class_css = array();
         $datas = array();
         $icon = '';
-        $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
+        $resultado = $btn->data_btn( icon: $icon);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->icon);
 
@@ -34,7 +34,7 @@ class botonesTest extends test {
         $class_css = array();
         $datas = array();
         $icon = 'x';
-        $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
+        $resultado = $btn->data_btn( icon: $icon);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('<i class="x"></i>', $resultado->icon);
@@ -45,7 +45,7 @@ class botonesTest extends test {
         $datas = array();
         $datas[] = '';
         $icon = '';
-        $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
+        $resultado = $btn->data_btn( icon: $icon);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -56,7 +56,7 @@ class botonesTest extends test {
         $datas = array();
         $datas['x'] = '';
         $icon = '';
-        $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
+        $resultado = $btn->data_btn( icon: $icon);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -67,7 +67,7 @@ class botonesTest extends test {
         $datas = array();
         $datas['x'] = 'x';
         $icon = '';
-        $resultado = $btn->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
+        $resultado = $btn->data_btn( icon: $icon);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 

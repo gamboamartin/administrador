@@ -14,30 +14,7 @@ class class_cssTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_class_css_html(){
-        errores::$error = false;
-        $cl = new class_css();
-        //$inicializacion = new liberator($inicializacion);
 
-        $clases_css = array();
-        $resultado = $cl->class_css_html($clases_css);
-
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("", $resultado);
-
-        errores::$error = false;
-        $clases_css = array();
-        $clases_css[] = 'a';
-        $resultado = $cl->class_css_html($clases_css);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(" a", $resultado);
-
-        errores::$error = false;
-
-
-    }
 
     public function test_inline_html(){
         errores::$error = false;

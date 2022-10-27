@@ -27,7 +27,7 @@ class params_inputsTest extends test {
         $ids_css = array();
         $pattern = '';
         $value = '';
-        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
+        $resultado = $params->base_input(campo: $campo, pattern: $pattern, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacio',
@@ -41,7 +41,7 @@ class params_inputsTest extends test {
         $ids_css = array();
         $pattern = '';
         $value = '';
-        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
+        $resultado = $params->base_input(campo: $campo, pattern: $pattern, value: $value);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -54,7 +54,7 @@ class params_inputsTest extends test {
         $ids_css = array();
         $pattern = 'a';
         $value = 'b';
-        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
+        $resultado = $params->base_input(campo: $campo, pattern: $pattern, value: $value);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("pattern='a'", $resultado->pattern);
@@ -187,53 +187,7 @@ class params_inputsTest extends test {
 
 
 
-    public function test_params_fecha()
-    {
-        errores::$error = false;
-        $params = new params_inputs();
 
-        $data_extra = array();
-        $css = array();
-        $ids = array();
-        $campo = '';
-        $resultado = $params->params_fecha(campo: $campo,  css: $css);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el campo esta vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $data_extra = array();
-        $css = array();
-        $ids = array();
-        $campo = 'z';
-        $resultado = $params->params_fecha(campo: $campo,  css: $css);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-
-
-        $this->assertEquals('', $resultado->class);
-
-
-        errores::$error = false;
-
-
-        $data_extra = array();
-        $css = array();
-        $ids = array();
-        $campo = 'z';
-        $disabled = false;
-        $required = false;
-        $css[] = 'p';
-        $resultado = $params->params_fecha(campo: $campo,  css: $css);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-
-        $this->assertEquals(' p', $resultado->class);
-
-
-        errores::$error = false;
-    }
 
     public function test_params_input(){
         errores::$error = false;
@@ -247,7 +201,7 @@ class params_inputsTest extends test {
         $pattern = '';
         $value = '';
 
-        $resultado = $params->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
+        $resultado = $params->params_input(campo: $campo, etiqueta: $etiqueta,
             pattern: $pattern, value: $value);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -264,7 +218,7 @@ class params_inputsTest extends test {
         $pattern = '';
         $value = '';
 
-        $resultado = $params->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
+        $resultado = $params->params_input(campo: $campo, etiqueta: $etiqueta,
             pattern: $pattern, value: $value);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -272,7 +226,7 @@ class params_inputsTest extends test {
         $this->assertEquals('', $resultado->place_holder);
         $this->assertEquals('x', $resultado->name);
         $this->assertEquals('', $resultado->pattern);
-        $this->assertEquals('', $resultado->class);
+
 
         errores::$error = false;
 
@@ -284,7 +238,7 @@ class params_inputsTest extends test {
         $pattern = '';
         $value = 'z';
 
-        $resultado = $params->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
+        $resultado = $params->params_input(campo: $campo, etiqueta: $etiqueta,
             pattern: $pattern, value: $value);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);

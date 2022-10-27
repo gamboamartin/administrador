@@ -28,7 +28,7 @@ class inputs_filesTest extends test {
         $labels = new stdClass();
         $required_html = '';
 
-        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html,
+        $resultado = $inputs->contains_input_file(campo: $campo,
             labels:  $labels, required_html: $required_html);
 
 
@@ -45,7 +45,7 @@ class inputs_filesTest extends test {
         $labels = new stdClass();
         $required_html = '';
 
-        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html, labels:  $labels, required_html: $required_html);
+        $resultado = $inputs->contains_input_file(campo: $campo, labels:  $labels, required_html: $required_html);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('<div class="custom-file"><input type="file" class="custom-file-input" id="" name="x" multiple></div>',
@@ -60,7 +60,7 @@ class inputs_filesTest extends test {
         $labels = new stdClass();
         $required_html = '';
 
-        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html, labels:  $labels, required_html: $required_html);
+        $resultado = $inputs->contains_input_file(campo: $campo, labels:  $labels, required_html: $required_html);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -117,7 +117,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
 
-        $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
+        $resultado = $inputs->data_contains_input_file(campo: $campo,
             codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsArray( $resultado);
@@ -134,7 +134,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
 
-        $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
+        $resultado = $inputs->data_contains_input_file(campo: $campo,
             codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsArray( $resultado);
@@ -151,7 +151,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
 
-        $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
+        $resultado = $inputs->data_contains_input_file(campo: $campo,
             codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsArray( $resultado);
@@ -168,7 +168,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
 
-        $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
+        $resultado = $inputs->data_contains_input_file(campo: $campo,
             codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsObject($resultado);
@@ -186,7 +186,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = 'd';
 
-        $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
+        $resultado = $inputs->data_contains_input_file(campo: $campo,
             codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsObject($resultado);
@@ -209,7 +209,7 @@ class inputs_filesTest extends test {
         $etiqueta = '';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
+        $resultado = $inputs->input_file_multiple(campo: $campo, codigo: $codigo,
             etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -224,7 +224,7 @@ class inputs_filesTest extends test {
         $etiqueta = '';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
+        $resultado = $inputs->input_file_multiple(campo: $campo, codigo: $codigo,
             etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -239,7 +239,7 @@ class inputs_filesTest extends test {
         $etiqueta = 'b';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
+        $resultado = $inputs->input_file_multiple(campo: $campo, codigo: $codigo,
             etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -254,7 +254,7 @@ class inputs_filesTest extends test {
         $etiqueta = 'b';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
+        $resultado = $inputs->input_file_multiple(campo: $campo, codigo: $codigo,
             etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
@@ -308,7 +308,7 @@ class inputs_filesTest extends test {
         $disable_html = '';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_upload_multiple(campo: $campo, class_css_html: $class_css_html, required_html: $required_html);
+        $resultado = $inputs->input_upload_multiple(campo: $campo, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("Error campo vacio", $resultado['mensaje']);
@@ -320,7 +320,7 @@ class inputs_filesTest extends test {
         $disable_html = '';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_upload_multiple(campo: $campo, class_css_html: $class_css_html, required_html: $required_html);
+        $resultado = $inputs->input_upload_multiple(campo: $campo, required_html: $required_html);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('<input type="file" class="custom-file-input" id="" name="x" multiple>',

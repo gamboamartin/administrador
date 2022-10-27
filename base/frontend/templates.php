@@ -50,10 +50,9 @@ class templates{
      * @param array $campos_invisibles Campos que omitira la generacion
      * @return array|string
      */
-    public function alta(bool $aplica_form, array $directivas_extra , bool $muestra_btn_guardar  ,
-                         array $valores_filtrados, array $campos, string $seccion,string $session_id,
-                         string $path_base, array $campos_disabled, array $valores_default,
-                         array $campos_invisibles):array|string{
+    public function alta(bool $aplica_form, array $directivas_extra   , array $valores_filtrados, array $campos,
+                         string $seccion,string $session_id, string $path_base, array $campos_disabled,
+                         array $valores_default, array $campos_invisibles):array|string{
         $directiva = new directivas();
         $valida_metodo = $directiva->validacion->valida_metodos(accion: 'alta', tabla: $seccion);
         if(errores::$error){
@@ -86,13 +85,7 @@ class templates{
         }
 
         $html .= '<div class="col-md-12"></div>';
-        if($muestra_btn_guardar) {
-            $btn = $directiva->btn_enviar(label:  'Guardar',name:  'btn_guarda',value: 'activo', stilo: 'success');
-            if(errores::$error){
-                return  $this->error->error(mensaje: 'Error al generar boton',data: $btn);
-            }
-            $html.=$btn;
-        }
+
 
         $html .= '</div>';
         if($aplica_form) {
@@ -494,7 +487,7 @@ class templates{
 
 
             $data_html = $directiva->genera_input_text(campo: $campo_name,cols:  $cols, value: $valor,ln:  $ln,etiqueta: $etiqueta,
-                pattern: $pattern, clases_css: array());
+                pattern: $pattern);
 
             if(errores::$error){
                 return  $this->error->error('Error al generar text',$data_html);
@@ -846,12 +839,10 @@ class templates{
      * @param string $session_id
      * @param string $path_base
      * @param bool $aplica_form
-     * @param bool $muestra_btn
      * @return array|string
      */
     public function modifica(array $registro, string $seccion, string $breadcrumbs, array $valores_filtrados,
-                             array $campos_alta, string $session_id, string $path_base, bool $aplica_form,
-                             bool $muestra_btn):array|string{
+                             array $campos_alta, string $session_id, string $path_base, bool $aplica_form):array|string{
 
 
         if(trim($seccion) === ''){
@@ -901,13 +892,7 @@ class templates{
 
         $html .= '<div class="col-md-12"></div>';
 
-        if($muestra_btn) {
-            $btn_modifica = $directiva->btn_enviar(cols:2,label:  'Modificar',name:  'btn_modifica', value: 'activo');
-            if (errores::$error) {
-                return $this->error->error('Error al generar boton',$btn_modifica);
-            }
-            $html .= $btn_modifica;
-        }
+
         $html .= '</div>';
         if($aplica_form) {
             $html .= '</form>';

@@ -34,9 +34,7 @@ class directivas extends html {
      * @param string $campo Nombre del campo
      * @param array $valores valores default de los inputs a mostrar
      * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param array $clases_css base de tipo css que se asignaran al input
      * @param string $tipo_campo text o telefono
-     * @param bool $required si el elemento es requerido asigna required al html
      * @param int $cols columnas css
      * @param string $pattern Regex de ejecucion en html5
      * @param bool $ln
@@ -46,8 +44,7 @@ class directivas extends html {
      *          $data_input_template['etiqueta'],$clases_css,'telefono',$required);
      */
     private function asigna_campo_template(array $inputs, string $campo, array $valores, string $etiqueta,
-                                           array $clases_css, string $tipo_campo,
-                                           int $cols = 4, string $pattern = '', bool $ln = false):array|string{
+                                           string $tipo_campo, int $cols = 4, string $pattern = '', bool $ln = false):array|string{
 
         if(count($valores) === 0){
             return $this->errores->error('Valores no puede venir vacio',$valores);
@@ -69,14 +66,15 @@ class directivas extends html {
 
         if($tipo_campo === 'text') {
 
-            $inputs[$campo] = $this->genera_input_text(campo: $campo,cols:  $cols,value:  $valores[$campo],ln:  $ln,etiqueta: $etiqueta, pattern: $pattern, clases_css: $clases_css);
+            $inputs[$campo] = $this->genera_input_text(campo: $campo,cols:  $cols,value:  $valores[$campo],
+                ln:  $ln,etiqueta: $etiqueta, pattern: $pattern);
             if (errores::$error) {
                 return $this->errores->error('Error al generar ' . $campo,$inputs[$campo]);
             }
         }
         if($tipo_campo === 'telefono'){
             $inputs[$campo] =  $this->telefono(campo: $campo,cols: $cols, value: $valores[$campo],
-                ln:  $ln,etiqueta: $etiqueta, tipo_letra: 'capitalize',clases_css: $clases_css,size: 'md');
+                ln:  $ln,etiqueta: $etiqueta, tipo_letra: 'capitalize',size: 'md');
             if(errores::$error){
                 return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
             }
@@ -152,7 +150,7 @@ class directivas extends html {
     private function campo_busca(string $etiqueta_campo_busca, string $campo_busca, string $valor_busca_fault): array|string
     {
         $campo_busca_r = $this->genera_input_text($campo_busca,1,$valor_busca_fault,
-            true,false,$etiqueta_campo_busca,'capitalize',array());
+            true,false,$etiqueta_campo_busca);
         if(errores::$error){
             return $this->errores->error('Error al campo de busqueda',$campo_busca_r);
         }
@@ -261,9 +259,8 @@ class directivas extends html {
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      * @version 1.352.41
      */
-    public function fecha(string $campo, array $css = array(), int $cols = 4, string $etiqueta = '',
-                          bool $ln = false, string $size = 'md', string $tipo = 'date',
-                          string $tipo_letra='capitalize', string $value = '',
+    public function fecha(string $campo, int $cols = 4, string $etiqueta = '', bool $ln = false, string $size = 'md',
+                          string $tipo = 'date', string $tipo_letra='capitalize', string $value = '',
                           bool $value_vacio = false):array|string{
 
         if($etiqueta === ''){
@@ -307,10 +304,6 @@ class directivas extends html {
         $html.=$ln_html;
 
 
-        $params = (new params_inputs())->params_fecha(campo: $campo, css: $css);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar params',data: $params);
-        }
 
 
         $html .= "<div class='form-group col-$size-$cols'>";
@@ -672,12 +665,10 @@ class directivas extends html {
      * @param string $campo Nombre del campo
      * @param int $cols numero de columnas entre 1 y 12
      * @param string $value Valor default a mostrar en el input
-     * @param bool $required si el elemento es requerido asigna required al html
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $pattern expresion regular a validar en el evento submit
      * @param string $tipo_letra ajustes del label de salida para mostrar en html
-     * @param array $clases_css base de tipo css que se asignaran al input
      * @param bool $aplica_etiqueta si aplica etiqueta mostrar el label del campo si no no integra label
      * @param string $size
      * @return array|string html con info del input a mostrar
@@ -686,7 +677,7 @@ class directivas extends html {
      */
     public function genera_input_text(string $campo, int $cols = 12 , string $value = '',
                                       bool $ln = false,string $etiqueta = '', string $pattern = '',
-                                      string $tipo_letra = 'capitalize', array $clases_css = array(),
+                                      string $tipo_letra = 'capitalize',
                                       bool $aplica_etiqueta = true, string $size = 'md'):array|string{
 
         if($etiqueta === ''){
@@ -727,7 +718,7 @@ class directivas extends html {
 
         $tipo = 'text';
         $input = $this->genera_input(campo: $campo,value:  $value, pattern: $pattern,
-            tipo: $tipo,etiqueta: $etiqueta,clases_css: $clases_css, aplica_etiqueta: false,size: $size);
+            tipo: $tipo,etiqueta: $etiqueta, aplica_etiqueta: false,size: $size);
 
         if(errores::$error){
             return $this->error->error('Error al generar input', $input);
@@ -745,8 +736,6 @@ class directivas extends html {
      * @param string $campo Nombre del campo
      * @param array $valores valores default de los inputs a mostrar
      * @param array $inputs
-     * @param array $clases_css base de tipo css que se asignaran al input
-     * @param bool $required si el elemento es requerido asigna required al html
      * @param int $cols columnas css
      * @param string $pattern
      * @return mixed html con info del input a mostrar dependiendo el tipo de input
@@ -756,7 +745,7 @@ class directivas extends html {
      * @internal  $this->obten_data_input_template($campo,$valores);
      * @internal  $this->asigna_campo_template($campo,$data_input_template['valores'],$data_input_template['etiqueta'],$clases_css,'text',$required);
      */
-    public function genera_input_text_template(string $campo, array $valores, array $inputs, array $clases_css= array(), int $cols = 4, string $pattern = ''): array{
+    public function genera_input_text_template(string $campo, array $valores, array $inputs, int $cols = 4, string $pattern = ''): array{
         if($campo === ''){
             return $this->errores->error('Error $campo no puede venir vacio',$campo);
         }
@@ -767,7 +756,7 @@ class directivas extends html {
             return $this->errores->error('Error al obtener datos ',$data_input_template);
         }
         $inputs[$campo] = $this->asigna_campo_template($inputs,$campo,$data_input_template['valores'],
-            $data_input_template['etiqueta'],$clases_css,'text',$cols, $pattern);
+            $data_input_template['etiqueta'],'text',$cols, $pattern);
 
         if(errores::$error){
             return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
@@ -1678,15 +1667,13 @@ class directivas extends html {
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $tipo_letra ajustes del label de salida para mostrar en html
-     * @param array $clases_css base de tipo css que se asignaran al input
      * @param string $size
      * @return array|string html con info del input a mostrar con pattern de telefono
      * @example
      *      $this->inputs[$campo] =  $this->directiva->telefono($campo,4, $valores[$campo], $required,'', 'capitalize',
      *          false,$etiqueta,$clases_css);
      */
-    public function telefono(string $campo, int $cols, string $value, bool $ln,
-                             string $etiqueta, string $tipo_letra,array $clases_css = array(),
+    public function telefono(string $campo, int $cols, string $value, bool $ln, string $etiqueta, string $tipo_letra,
                              string $size = 'sm'):array|string{
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
@@ -1695,7 +1682,7 @@ class directivas extends html {
         }
 
         $html = $this->genera_input_text(campo: $campo,cols: $cols,value: $value,ln:  $ln,
-            etiqueta: $etiqueta,pattern: '[0-9]{10}', tipo_letra: $tipo_letra,clases_css: $clases_css,size: $size);
+            etiqueta: $etiqueta,pattern: '[0-9]{10}', tipo_letra: $tipo_letra,size: $size);
 
         if(errores::$error){
             return $this->error->error('Error al generar text '.$campo,$html);
@@ -1800,7 +1787,7 @@ class directivas extends html {
      * @uses modifica views
      * @version 1.331.41
      */
-    public function upload_file(string $campo,int $cols, bool $required, array $class_css = array(), string $codigo='',
+    public function upload_file(string $campo,int $cols, bool $required, string $codigo='',
                                 string $etiqueta = '', bool $ln=false, bool $multiple = false):array|string{
 
         /**
@@ -1824,13 +1811,6 @@ class directivas extends html {
         }
 
 
-        $class_css_html = (new class_css())->class_css_html(clases_css: $class_css);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener ids',data: $class_css_html);
-        }
-
-
-
         $html = '';
 
         $ln_html = (new params_inputs())->ln(ln: $ln,size:  'md');
@@ -1842,8 +1822,8 @@ class directivas extends html {
 
         if($multiple){
 
-            $input_file = (new inputs_files())->input_file_multiple(campo: $campo, class_css_html: $class_css_html,
-                codigo: $codigo, etiqueta:  $etiqueta, required_html: $required_html);
+            $input_file = (new inputs_files())->input_file_multiple(campo: $campo, codigo: $codigo,
+                etiqueta:  $etiqueta, required_html: $required_html);
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al obtener input',data: $input_file);
             }
@@ -1858,7 +1838,7 @@ class directivas extends html {
                                 <span class='input-group-text' >$codigo</span>
                             </div>
                             <div class='custom-file'>
-                                <input type='file' class='custom-file-input input-file $class_css_html' name='$campo' $required_html >
+                                <input type='file' class='custom-file-input input-file ' name='$campo' $required_html >
                                 <label class='custom-file-label' for='$etiqueta'>$etiqueta</label>
                             </div>
                         </div>

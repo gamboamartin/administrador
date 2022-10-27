@@ -17,12 +17,11 @@ class params_inputs{
      * PROBADO - PARAMS ORDER PARAMS INT
      * Asigna los parametros de un input para ser utilizados en java o css
      * @param string $campo nombre de input
-     * @param array $clases_css Clases de estilos para ser utilizas en css y/o java
      * @param string $pattern Regex para ser integrado en validacion de input via html5
      * @param string $value valor inicial del input puede ser vacio
      * @return array|stdClass Valor en un objeto para ser integrados en un input
      */
-    private function base_input(string $campo, array $clases_css, string $pattern, string $value): array|stdClass
+    private function base_input(string $campo, string $pattern, string $value): array|stdClass
     {
         $campo = trim($campo);
 
@@ -35,18 +34,10 @@ class params_inputs{
             return $this->error->error('Error al generar pattern css', $html_pattern);
         }
 
-        $class_css_html = (new class_css())->class_css_html(clases_css: $clases_css);
-        if(errores::$error){
-            return $this->error->error('Error al generar clases css', $class_css_html);
-        }
-
-
-
         $value = str_replace("'","`",$value);
 
         $datas = new stdClass();
         $datas->pattern = $html_pattern;
-        $datas->class = $class_css_html;
         $datas->value = $value;
 
         return $datas;
@@ -176,42 +167,16 @@ class params_inputs{
     }
 
 
-    /**
-     * Genera los parametros de una fecha input
-     * @param string $campo nombre del campo
-     * @param array $css conjunto de css a integrar
-     * @return array|stdClass
-     * @version 1.332.41
-     */
-    public function params_fecha(string $campo, array $css): array|stdClass
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
-        }
-
-
-        $css_html = (new class_css())->class_css_html(clases_css: $css);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar class html',data: $css_html);
-        }
-
-        $params = new stdClass();
-        $params->class = $css_html;
-
-        return $params;
-    }
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
      * @param string $campo
-     * @param array $clases_css
      * @param string $etiqueta
      * @param string $pattern
      * @param string $value
      * @return array|stdClass
      */
-    public function params_input(string $campo, array $clases_css, string $etiqueta, string $pattern, string $value): array|stdClass
+    public function params_input(string $campo, string $etiqueta, string $pattern, string $value): array|stdClass
     {
         $campo = trim($campo);
 
@@ -224,7 +189,7 @@ class params_inputs{
             return $this->error->error('Error al genera base input', $base_input_dinamic);
         }
 
-        $data_base_input = $this->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
+        $data_base_input = $this->base_input(campo: $campo, pattern: $pattern, value: $value);
 
         if(errores::$error){
             return $this->error->error('Error al genera base input', $data_base_input);

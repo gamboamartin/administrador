@@ -15,24 +15,14 @@ class botones{
 
     }
 
-
-
-
-
     /**
      * Genera los parametros para la integracion de un boton
-     * @param array $class_css clases para integrar en html
      * @param string $icon Icono html
-     * @param array $datas Conjunto de extra params para se convertido en html
      * @return array|stdClass
      * @version 1.309.41
      */
-    public function data_btn(array $class_css, array $datas, string $icon): array|stdClass
+    public function data_btn( string $icon): array|stdClass
     {
-        $class_html = (new class_css())->class_css_html(clases_css:$class_css);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar clases',data:  $class_html);
-        }
 
         $icon_html = $this->icon_html(icon:$icon);
         if(errores::$error){
@@ -41,7 +31,6 @@ class botones{
 
 
         $params = new stdClass();
-        $params->class = $class_html;
         $params->icon = $icon_html;
 
         return $params;

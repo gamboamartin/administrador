@@ -47,11 +47,9 @@ class html  {
      *
      * @param string $campo Nombre del campo
      * @param string $value Valor default a mostrar en el input
-     * @param bool $required si el elemento es requerido asigna required al html
      * @param string $pattern expresion regular a validar en el evento submit
      * @param string $tipo tipo de input ej  text, file
      * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param array $clases_css base de tipo css que se asignaran al input
      * @param bool $aplica_etiqueta si aplica etiqueta mostrar el label del campo si no no integra label
      * @param string $size Tamano del input sm md lg
      * @return string|array html con info del input a mostrar
@@ -59,7 +57,7 @@ class html  {
      *      $input = $this->genera_input($campo, $value, $required, $pattern,$disabled,'text',$etiqueta,$clases_css,$ids_css);
      */
     protected function genera_input(string $campo, string $value, string $pattern, string $tipo,
-                                    string $etiqueta, array $clases_css, bool $aplica_etiqueta = true,
+                                    string $etiqueta, bool $aplica_etiqueta = true,
                                     string $size = 'sm'):string|array{
 
 
@@ -69,7 +67,7 @@ class html  {
             return $this->error->error('Error al validar', $valida);
         }
 
-        $params = (new params_inputs())->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta, pattern: $pattern, value: $value);
+        $params = (new params_inputs())->params_input(campo: $campo, etiqueta: $etiqueta, pattern: $pattern, value: $value);
 
         if(errores::$error){
             return $this->error->error('Error al genera base input', $params);

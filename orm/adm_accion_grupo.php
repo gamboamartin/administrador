@@ -18,6 +18,21 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
             tipo_campos:  $tipo_campos);
     }
 
+    public function acciones_por_grupo(int $adm_grupo_id): array
+    {
+        if($adm_grupo_id <=0 ){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data: $adm_grupo_id);
+        }
+        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        $r_adm_grupo_accion = $this->filtro_and(filtro:$filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener r_adm_grupo_accion',data: $r_adm_grupo_accion);
+        }
+        return $r_adm_grupo_accion->registros;
+
+
+    }
+
     /**
      * Obtiene los grupos configurados por accion
      * @param int $adm_accion_id Identificador de accion

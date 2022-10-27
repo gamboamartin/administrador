@@ -11,20 +11,7 @@ class class_css{
     #[Pure] public function __construct(){
         $this->error = new errores();
     }
-    /**
-     * Genera las clases de un css en forma html
-     * @param array $clases_css Clases para generar css html
-     * @return string
-     * @version 1.309.41
-     */
-    public function class_css_html(array $clases_css): string
-    {
-        $class_css_html = '';
-        foreach($clases_css as $clase_css){
-            $class_css_html.=' '.$clase_css;
-        }
-        return $class_css_html;
-    }
+
 
     /**
      * Aplica Inline
