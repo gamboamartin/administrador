@@ -72,6 +72,14 @@ class salida_data{
 
         }
 
+        if ($r_modelo->n_registros === 0){
+            $r_modelo = $controler->modelo->row_predeterminado();
+            if(errores::$error){
+                return $controler->retorno_error(mensaje: 'Error al obtener predeterminado',
+                    data:  $r_modelo,header: $header,ws: $ws);
+            }
+        }
+
         $salida = $this->salida(header: $header,result:  $r_modelo,ws:  $ws);
         if(errores::$error){
             return $controler->retorno_error(mensaje: 'Error al generar salida',data:  $salida,header: $header,ws: $ws);

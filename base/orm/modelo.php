@@ -1017,6 +1017,20 @@ class modelo extends modelo_base {
         return $out;
     }
 
+    private function get_predeterminado(): array|stdClass
+    {
+        $key = $this->tabla.'.predeterminado';
+        $filtro[$key] = 'activo';
+        $r_modelo = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $r_modelo->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+        }
+        if((int)$r_modelo->n_registros > 1){
+            return $r_modelo->error->error(mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+        }
+        return $r_modelo;
+    }
+
     /**
      * Obtiene un identificador predeterminado
      * @return array|int
@@ -1490,6 +1504,8 @@ class modelo extends modelo_base {
     }
 
 
+
+
     /**
      *
      * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
@@ -1587,6 +1603,39 @@ class modelo extends modelo_base {
         }
 
         return $registros;
+    }
+
+    private function result_ini(){
+        $r_modelo = new stdClass();
+        $r_modelo->n_registros = 0;
+        $r_modelo->registros= array();
+        $r_modelo->sql= '';
+        $r_modelo->registros_obj= array();
+        return $r_modelo;
+    }
+
+    public function row_predeterminado(): array|stdClass
+    {
+
+        $r_modelo = $this->result_ini();
+        if(errores::$error){
+            return $r_modelo->error->error(mensaje: 'Error al inicializar result',data:  $r_modelo);
+        }
+
+
+        $tiene_predeterminado = $this->tiene_predeterminado();
+        if(errores::$error){
+            return $r_modelo->error->error(mensaje: 'Error al obtener si predeterminado',data:  $tiene_predeterminado);
+        }
+
+        if($tiene_predeterminado){
+            $r_modelo = $this->get_predeterminado();
+            if(errores::$error){
+                return $r_modelo->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+            }
+
+        }
+        return $r_modelo;
     }
 
     /**
@@ -1711,6 +1760,15 @@ class modelo extends modelo_base {
 
         return $upd;
 
+    }
+
+    public function tiene_predeterminado(): bool
+    {
+        $tiene_predeterminado = false;
+        if(in_array('predeterminado', $this->data_columnas->columnas_parseadas)){
+            $tiene_predeterminado = true;
+        }
+        return $tiene_predeterminado;
     }
 
     public function total_registros(): array|int

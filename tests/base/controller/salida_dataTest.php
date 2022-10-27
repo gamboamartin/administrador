@@ -60,6 +60,16 @@ class salida_dataTest extends test {
         $resultado = $sd->salida_get($controler, $filtro, $header, $ws);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $header = false;
+        $controler =new controlador_adm_session(link: $this->link,paths_conf: $this->paths_conf);
+        $resultado = $sd->salida_get($controler, $filtro, $header, $ws);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
         errores::$error = false;
     }
 
