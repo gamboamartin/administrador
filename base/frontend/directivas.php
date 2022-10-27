@@ -37,7 +37,6 @@ class directivas extends html {
      * @param array $clases_css base de tipo css que se asignaran al input
      * @param string $tipo_campo text o telefono
      * @param bool $required si el elemento es requerido asigna required al html
-     * @param bool $disabled aplica o no disabled
      * @param int $cols columnas css
      * @param string $pattern Regex de ejecucion en html5
      * @param bool $ln
@@ -48,8 +47,7 @@ class directivas extends html {
      */
     private function asigna_campo_template(array $inputs, string $campo, array $valores, string $etiqueta,
                                            array $clases_css, string $tipo_campo, bool $required = false,
-                                           bool $disabled = false, int $cols = 4, string $pattern = '',
-                                           bool $ln = false):array|string{
+                                           int $cols = 4, string $pattern = '', bool $ln = false):array|string{
 
         if(count($valores) === 0){
             return $this->errores->error('Valores no puede venir vacio',$valores);
@@ -72,16 +70,14 @@ class directivas extends html {
         if($tipo_campo === 'text') {
 
             $inputs[$campo] = $this->genera_input_text(campo: $campo,cols:  $cols,value:  $valores[$campo],
-                required: $required,disabled: $disabled,ln:  $ln,etiqueta: $etiqueta, pattern: $pattern,
-                data_extra:  array(), clases_css: $clases_css, ids_css: array());
+                required: $required,ln:  $ln,etiqueta: $etiqueta, pattern: $pattern, clases_css: $clases_css);
             if (errores::$error) {
                 return $this->errores->error('Error al generar ' . $campo,$inputs[$campo]);
             }
         }
         if($tipo_campo === 'telefono'){
             $inputs[$campo] =  $this->telefono(campo: $campo,cols: $cols, value: $valores[$campo],required:  $required,
-                disabled: $disabled,ln:  $ln,etiqueta: $etiqueta, css_id: '', data_extra: array(),
-                 tipo_letra: 'capitalize',clases_css: $clases_css,ids_css: array(),size: 'md');
+                ln:  $ln,etiqueta: $etiqueta, tipo_letra: 'capitalize',clases_css: $clases_css,size: 'md');
             if(errores::$error){
                 return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
             }
@@ -217,65 +213,11 @@ class directivas extends html {
     private function campo_busca(string $etiqueta_campo_busca, string $campo_busca, string $valor_busca_fault): array|string
     {
         $campo_busca_r = $this->genera_input_text($campo_busca,1,$valor_busca_fault,
-            true,false, false,$etiqueta_campo_busca,'','', array(),'capitalize',array(),array());
+            true,false, false,$etiqueta_campo_busca,'capitalize',array());
         if(errores::$error){
             return $this->errores->error('Error al campo de busqueda',$campo_busca_r);
         }
         return $campo_busca_r;
-    }
-
-    /**
-     * Genera un input checkbox
-     * @param string $campo Nombre del campo input
-     * @param int $cols Columnas para css
-     * @param string $valor Valor del checkbox
-     * @param bool $disabled Si disabled retorna text disabled
-     * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta Etiqueta de input
-     * @param string $css_id Identificador css para java
-     * @param array $data_extra Elementos para integrar extraparams
-     * @return array|string informacion de input en forma html
-     * @example
-     *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
-     *
-     * @uses  clientes
-     * @uses  templates
-     * @uses  controlador_cliente
-     * @uses  controlador_contrarecibo
-     * @version 1.309.41
-     */
-    public function checkbox(string $campo,string $css_id = '', int $cols = 4, array $data_extra = array(),
-                             bool $disabled = false, string $etiqueta = '', bool $ln = true,
-                             string $valor = 'inactivo'):array|string{
-
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacio', data: $campo);
-        }
-
-        $class ="class='checkboxes'";
-
-
-
-        $disabled_html = (new params_inputs())->disabled_html(disabled: $disabled);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar disabled',data: $disabled_html);
-        }
-
-        $data_chk = (new checkboxes())->data_chk(campo: $campo, class: $class,cols:  $cols, disabled_html: $disabled_html, valor: $valor);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar datos chk',data: $data_chk);
-        }
-
-
-        $checkbox = (new checkboxes())->checkbox(data_input:  $data_chk->data_input, div_chk: $data_chk->div_chk,
-            etiqueta:  $etiqueta);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar checkbox',data: $checkbox);
-        }
-
-
-        return $checkbox;
     }
 
     /**
@@ -357,26 +299,20 @@ class directivas extends html {
     }
 
 
-
     /**
      *
      * Genera un input fecha
      * @param string $campo Nombre o identificador del campo del input
-     * @param int $cols Columnas para asignacion de html entre 1 y 12
-     * @param string $value Valor asignado
-     * @param bool $required Si required deja input como requerido
-     * @param bool $disabled Si disabled deja input disabled
-     * @param bool $ln salto de linea
-     * @param string $etiqueta Etiqueta a mostrar
-     * @param string $pattern Regex integracion html
-     * @param string $css_id css id
-     * @param array $data_extra extraparams conjunto
-     * @param string $tipo_letra Tipo de leta ucwords capitalize ect
-     * @param bool $value_vacio si vacio deja el elemento vacio
      * @param array $css Conjunto de css a integrar a elemento
-     * @param string $tipo tipo de fecha
+     * @param int $cols Columnas para asignacion de html entre 1 y 12
+     * @param string $etiqueta Etiqueta a mostrar
+     * @param bool $ln salto de linea
+     * @param bool $required Si required deja input como requerido
      * @param string $size tamaño de div base css
-     * @param array $ids Conjunto de ids para css
+     * @param string $tipo tipo de fecha
+     * @param string $tipo_letra Tipo de leta ucwords capitalize ect
+     * @param string $value Valor asignado
+     * @param bool $value_vacio si vacio deja el elemento vacio
      * @return array|string informacion de input en forma html
      * @example
      *     $controlador->inputs['fecha'] = $controlador->directiva->fecha(4, 'fecha','capitalize',true, false, true, 'Fecha',$controlador->valores['fecha']);
@@ -386,11 +322,10 @@ class directivas extends html {
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      * @version 1.352.41
      */
-    public function fecha(string $campo, array $css = array(), string $css_id = '', int $cols = 4,
-                          array $data_extra = array(), bool $disabled = false, string $etiqueta = '',
-                          array $ids = array(), bool $ln = false, string $pattern = '', bool $required = true,
-                          string $size = 'md', string $tipo = 'date', string $tipo_letra='capitalize',
-                          string $value = '', bool $value_vacio = false):array|string{ //FIN PROT
+    public function fecha(string $campo, array $css = array(), int $cols = 4, string $etiqueta = '',
+                          bool $ln = false, bool $required = true, string $size = 'md', string $tipo = 'date',
+                          string $tipo_letra='capitalize', string $value = '',
+                          bool $value_vacio = false):array|string{ //FIN PROT
 
         if($etiqueta === ''){
             $etiqueta = ucwords($campo);
@@ -433,8 +368,7 @@ class directivas extends html {
         $html.=$ln_html;
 
 
-        $params = (new params_inputs())->params_fecha(campo: $campo, css: $css,data_extra: $data_extra,
-            disabled: $disabled, ids: $ids, required: $required);
+        $params = (new params_inputs())->params_fecha(campo: $campo, css: $css, required: $required);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar params',data: $params);
         }
@@ -791,44 +725,6 @@ class directivas extends html {
         return $inputs;
     }
 
-    /**
-     * P INT
-     * Genera un input con un pattern para telefono los asigna a this->inputs
-     *
-     * @param string $campo Nombre del campo
-     * @param array $valores valores default de los inputs a mostrar
-     * @param array $inputs Conjunto de inputs precargados para ser mostrados en front
-     * @param array $clases_css base de tipo css que se asignaran al input
-     * @param bool $required si el elemento es requerido asigna required al html
-     * @param int $cols columnas css
-     *
-     * @return array con this->inputs
-     * @example
-     *      $data_html = $controlador->genera_input_telefono_template($input,$controlador->valores, $clases_css = array('data_conyugue'));
-     *
-     * @internal  $this->obten_data_input_template($campo,$valores);
-     * @internal  $this->asigna_campo_template()
-     * @uses  clientes
-     */
-    public function genera_input_telefono_template(string $campo, array $valores, array $inputs, array $clases_css= array(),
-                                                   bool $required = false,int $cols = 4): array{
-        if($campo === ''){
-            return $this->errores->error('Error $campo no puede venir vacio',$campo);
-        }
-        $data_input_template = (new values())->obten_data_input_template(campo: $campo,valores: $valores);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener datos ', $data_input_template);
-        }
-        $inputs[$campo] = $this->asigna_campo_template(inputs: $inputs,campo: $campo,valores: $data_input_template['valores'],
-            etiqueta: $data_input_template['etiqueta'],clases_css: $clases_css,tipo_campo: 'telefono',required:
-            $required,disabled: false,cols: $cols);
-        if(errores::$error){
-            return $this->errores->error('Error al generar '.$campo, $inputs[$campo]);
-        }
-
-        return $inputs;
-
-    }
 
     /**
      * P INT
@@ -838,15 +734,11 @@ class directivas extends html {
      * @param int $cols numero de columnas entre 1 y 12
      * @param string $value Valor default a mostrar en el input
      * @param bool $required si el elemento es requerido asigna required al html
-     * @param bool $disabled si el elemento es true asigna disabled al html
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $pattern expresion regular a validar en el evento submit
-     * @param string $css_id Identificador css
-     * @param array $data_extra conjunto de data_extra para asignar al input text
      * @param string $tipo_letra ajustes del label de salida para mostrar en html
      * @param array $clases_css base de tipo css que se asignaran al input
-     * @param array $ids_css ids de tipo css que se asignaran al input
      * @param bool $aplica_etiqueta si aplica etiqueta mostrar el label del campo si no no integra label
      * @param string $size
      * @return array|string html con info del input a mostrar
@@ -854,10 +746,9 @@ class directivas extends html {
      *      $input = $directiva->genera_input_text($campo,12,'',true,'',false,'capitalize',false,'',array(),array(),false);
      */
     public function genera_input_text(string $campo, int $cols = 12 , string $value = '', bool $required = true,
-                                      bool $disabled = false,bool $ln = false,string $etiqueta = '',
-                                      string $pattern = '', string $css_id = '', array $data_extra = array(),
+                                      bool $ln = false,string $etiqueta = '', string $pattern = '',
                                       string $tipo_letra = 'capitalize', array $clases_css = array(),
-                                      array $ids_css= array(), bool $aplica_etiqueta = true, string $size = 'md'):array|string{ //FIN PROT
+                                      bool $aplica_etiqueta = true, string $size = 'md'):array|string{
 
         if($etiqueta === ''){
             $etiqueta = $campo;
@@ -897,8 +788,7 @@ class directivas extends html {
 
         $tipo = 'text';
         $input = $this->genera_input(campo: $campo,value:  $value,required:  $required, pattern: $pattern,
-            disabled: $disabled,tipo: $tipo,etiqueta: $etiqueta,clases_css: $clases_css, ids_css: $ids_css,
-            aplica_etiqueta: false,data_extra: $data_extra,size: $size);
+            tipo: $tipo,etiqueta: $etiqueta,clases_css: $clases_css, aplica_etiqueta: false,size: $size);
 
         if(errores::$error){
             return $this->error->error('Error al generar input', $input);
@@ -918,7 +808,6 @@ class directivas extends html {
      * @param array $inputs
      * @param array $clases_css base de tipo css que se asignaran al input
      * @param bool $required si el elemento es requerido asigna required al html
-     * @param bool $disabled indica si el elemento es disabled o no
      * @param int $cols columnas css
      * @param string $pattern
      * @return mixed html con info del input a mostrar dependiendo el tipo de input
@@ -927,12 +816,9 @@ class directivas extends html {
      *
      * @internal  $this->obten_data_input_template($campo,$valores);
      * @internal  $this->asigna_campo_template($campo,$data_input_template['valores'],$data_input_template['etiqueta'],$clases_css,'text',$required);
-     * @uses  clientes
-     * @uses  ubicaciones
      */
-    public function genera_input_text_template(string $campo, array $valores, array $inputs,
-                                               array $clases_css= array(), bool $required=false,
-                                               bool $disabled = false, int $cols = 4, string $pattern = ''): array{
+    public function genera_input_text_template(string $campo, array $valores, array $inputs, array $clases_css= array(),
+                                               bool $required=false, int $cols = 4, string $pattern = ''): array{
         if($campo === ''){
             return $this->errores->error('Error $campo no puede venir vacio',$campo);
         }
@@ -943,7 +829,7 @@ class directivas extends html {
             return $this->errores->error('Error al obtener datos ',$data_input_template);
         }
         $inputs[$campo] = $this->asigna_campo_template($inputs,$campo,$data_input_template['valores'],
-            $data_input_template['etiqueta'],$clases_css,'text',$required, $disabled,$cols, $pattern);
+            $data_input_template['etiqueta'],$clases_css,'text',$required,$cols, $pattern);
 
         if(errores::$error){
             return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
@@ -992,12 +878,11 @@ class directivas extends html {
      * Genera un contenedor div con un select
      * @param string $campo_name
      * @param string $llaves_valores
-     * @param int $cols
-     * @param mixed $valor
-     * @param bool $required indica si es requerido o no
-     * @param bool $disabled
-     * @param string $etiqueta
      * @param string $css_id
+     * @param int $cols
+     * @param string $etiqueta
+     * @param bool $required indica si es requerido o no
+     * @param mixed $valor
      * @return array|string informacion de select en forma html
      * @example
      *     $controlador->inputs['estado_civil'] =  $directiva->genera_select_estatico('Selecciona una opción:,Soltero:soltero,Casado:casado', 4,'estado_civil', 'Estado civil', false, false, $valores['estado_civil']);
@@ -1006,7 +891,7 @@ class directivas extends html {
      * @internal $this->valida_elementos_base_input($input_name,$cols);
      */
     public function genera_select_estatico(string $campo_name, string $llaves_valores,string $css_id = '',
-                                           int $cols = 4, bool $disabled = false, string $etiqueta = '',
+                                           int $cols = 4, string $etiqueta = '',
                                            bool $required = true, mixed $valor =''):array|string{
         if(trim($llaves_valores) === ''){
             return $this->error->error('Error $llaves_valores debe venir en formato json string',$llaves_valores);
@@ -1027,10 +912,6 @@ class directivas extends html {
             return $this->error->error('Error al generar required', $required_html);
         }
 
-        $disabled_html = (new params_inputs())->disabled_html(disabled: $disabled);
-        if(errores::$error){
-            return $this->error->error('Error al generar disabled', $disabled_html);
-        }
 
 
         $elementos_select = (new selects())->elementos_for_select_fijo(llaves_valores: $llaves_valores);
@@ -1043,7 +924,7 @@ class directivas extends html {
         $html = "<div class='form-group col-md-$cols' id='contenedor_select_$campo_name'>";
 
         $html .= "<label for='$etiqueta'>$etiqueta</label>";
-        $html .= "<select name='" . $campo_name . "' $disabled_html class='form-control input-md' 
+        $html .= "<select name='" . $campo_name . "'  class='form-control input-md' 
                    title='Seleccione un  ' id='$select_input_name' $required_html>";
 
 
@@ -1881,31 +1762,28 @@ class directivas extends html {
      * @param int $cols numero de columnas entre 1 y 12
      * @param string $value Valor default a mostrar en el input
      * @param bool $required si el elemento es requerido asigna required al html
-     * @param bool $disabled si el elemento es true asigna disabled al html
-     * @param string $tipo_letra ajustes del label de salida para mostrar en html
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
+     * @param string $tipo_letra ajustes del label de salida para mostrar en html
      * @param array $clases_css base de tipo css que se asignaran al input
-     * @param array $ids_css ids de tipo css que se asignaran al input
      * @param string $size
      * @return array|string html con info del input a mostrar con pattern de telefono
      * @example
      *      $this->inputs[$campo] =  $this->directiva->telefono($campo,4, $valores[$campo], $required,'', 'capitalize',
      *          false,$etiqueta,$clases_css);
      */
-    public function telefono(string $campo, int $cols, string $value,bool $required, bool $disabled, bool $ln,
-                             string $etiqueta, string $css_id, array $data_extra, string $tipo_letra,array $clases_css = array(),
-                             array $ids_css = array(),string $size = 'sm'):array|string{//FIN PROT
+    public function telefono(string $campo, int $cols, string $value,bool $required, bool $ln,
+                             string $etiqueta, string $tipo_letra,array $clases_css = array(),
+                             string $size = 'sm'):array|string{
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return $this->error->error('Error al validar '.$campo,$valida);
         }
 
-        $html = $this->genera_input_text(campo: $campo,cols: $cols,value: $value,required: $required,
-            disabled: $disabled,ln:  $ln,etiqueta: $etiqueta,pattern: '[0-9]{10}',css_id: $css_id, data_extra: $data_extra,
-            tipo_letra: $tipo_letra,clases_css: $clases_css,ids_css: $ids_css,size: $size);
+        $html = $this->genera_input_text(campo: $campo,cols: $cols,value: $value,required: $required,ln:  $ln,
+            etiqueta: $etiqueta,pattern: '[0-9]{10}', tipo_letra: $tipo_letra,clases_css: $clases_css,size: $size);
 
         if(errores::$error){
             return $this->error->error('Error al generar text '.$campo,$html);
@@ -1994,15 +1872,12 @@ class directivas extends html {
      * @param string $campo Nombre del campo
      * @param int $cols numero de columnas entre 1 y 12
      * @param bool $required si required el input sera obligatorio
-     * @param bool $disabled si disabled el input quedara deshabilitado
-     * @param bool $ln inserta <div class="col-md-12"></div> antes del input
-     * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param string $css_id css en html id
-     * @param array $data_extra extra params
-     * @param string $codigo Codigo del tipo de documento
-     * @param bool $multiple Si multiple integra in file de multiple docs
-     * @param array $ids Id de tipo css para ser integrados con java o css
      * @param array $class_css clases css
+     * @param string $codigo Codigo del tipo de documento
+     * @param string $etiqueta Etiqueta a mostrar en input es un label
+     * @param array $ids Id de tipo css para ser integrados con java o css
+     * @param bool $ln inserta <div class="col-md-12"></div> antes del input
+     * @param bool $multiple Si multiple integra in file de multiple docs
      * @return array|string html con info del input a mostrar
      * @example
      *      $input = $directiva->upload_file(12,'tipo_documento_id['.$tipo_documento['tipo_documento_id'].']',false,$tipo_documento['tipo_documento_descripcion']);
@@ -2013,10 +1888,8 @@ class directivas extends html {
      * @uses modifica views
      * @version 1.331.41
      */
-    public function upload_file(string $campo,int $cols, bool $disabled, bool $required, array $class_css = array(),
-                                string $css_id = '', string $codigo='', array $data_extra = array(),
-                                string $etiqueta = '', array $ids = array(), bool $ln=false,
-                                bool $multiple = false):array|string{ //FIN PROT
+    public function upload_file(string $campo,int $cols, bool $required, array $class_css = array(), string $codigo='',
+                                string $etiqueta = '', bool $ln=false, bool $multiple = false):array|string{
 
         /**
          * REFACTORIZAR
@@ -2038,20 +1911,12 @@ class directivas extends html {
             $required_html = 'required';
         }
 
-        $ids_html = (new params_inputs())->ids_html(campo:  $campo, ids_css: $ids);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener ids',data: $ids_html);
-        }
 
         $class_css_html = (new class_css())->class_css_html(clases_css: $class_css);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener ids',data: $ids_html);
+            return  $this->error->error(mensaje: 'Error al obtener ids',data: $class_css_html);
         }
 
-        $disable_html = (new params_inputs())->disabled_html(disabled: $disabled);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener $disable_html',data: $disable_html);
-        }
 
 
         $html = '';
@@ -2066,8 +1931,7 @@ class directivas extends html {
         if($multiple){
 
             $input_file = (new inputs_files())->input_file_multiple(campo: $campo, class_css_html: $class_css_html,
-                codigo: $codigo, disable_html: $disable_html, etiqueta:  $etiqueta, ids_html:  $ids_html,
-                 required_html: $required_html);
+                codigo: $codigo, etiqueta:  $etiqueta, required_html: $required_html);
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al obtener input',data: $input_file);
             }
@@ -2082,7 +1946,7 @@ class directivas extends html {
                                 <span class='input-group-text' >$codigo</span>
                             </div>
                             <div class='custom-file'>
-                                <input type='file' class='custom-file-input input-file $class_css_html' name='$campo' $required_html $disable_html id='$ids_html'>
+                                <input type='file' class='custom-file-input input-file $class_css_html' name='$campo' $required_html >
                                 <label class='custom-file-label' for='$etiqueta'>$etiqueta</label>
                             </div>
                         </div>

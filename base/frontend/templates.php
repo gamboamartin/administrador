@@ -413,7 +413,7 @@ class templates{
                                      array $data_extra, bool $disabled, string $etiqueta, array $filtro,
                                      string $llaves_valores, bool $ln, string $pattern, bool $required,
                                      bool $select_vacio_alta, string $tabla_foranea, string $tipo,
-                                     mixed $valor):array|string{ //FIN
+                                     mixed $valor):array|string{
 
         if($cols <0){
             return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data: $cols);
@@ -426,28 +426,18 @@ class templates{
 
         $directiva = new directivas();
 
-        if( $tipo === 'checkbox') {
-            if($valor === ''){
-                $valor = 'inactivo';
-            }
-            $data_html = $directiva->checkbox(campo: $campo_name, css_id: $css_id, cols:  $cols,
-                data_extra: $data_extra, disabled: $disabled,etiqueta:  $etiqueta, ln: $ln, valor: $valor);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al crear checkbox',data: $data_html);
-            }
-        }
+
         if( $tipo === 'documento'){
-            $data_html = $directiva->upload_file(campo: $campo_name, cols: $cols, disabled: $disabled,
-                required: $required, css_id: $css_id, data_extra: $data_extra, etiqueta: $etiqueta, ln: $ln);
+            $data_html = $directiva->upload_file(campo: $campo_name, cols: $cols, required: $required,
+                etiqueta: $etiqueta, ln: $ln);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al crear upload_file',data: $data_html);
             }
         }
 
         if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name, css_id: $css_id, cols: $cols, data_extra: $data_extra,
-                disabled: $disabled, etiqueta: $etiqueta, ln: $ln, pattern: $pattern, required: $required,
-                value: $valor);
+            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, etiqueta: $etiqueta, ln: $ln,
+                required: $required, value: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html);
@@ -494,7 +484,7 @@ class templates{
 
 
             $data_html =  $directiva->genera_select_estatico(campo_name: $campo_name, llaves_valores: $llaves_valores,
-                css_id: $css_id, cols: $cols, disabled: $disabled, etiqueta: $etiqueta, required: $required,
+                css_id: $css_id, cols: $cols, etiqueta: $etiqueta, required: $required,
                 valor: $valor );
 
             if(errores::$error){
@@ -506,9 +496,8 @@ class templates{
 
 
             $data_html = $directiva->genera_input_text(campo: $campo_name,cols:  $cols, value: $valor,
-                required:  $required,disabled: $disabled,ln:  $ln,etiqueta: $etiqueta,
-                pattern: $pattern,css_id:  $css_id,data_extra:  $data_extra,
-                clases_css: array(),ids_css: array());
+                required:  $required,ln:  $ln,etiqueta: $etiqueta,
+                pattern: $pattern, clases_css: array());
 
             if(errores::$error){
                 return  $this->error->error('Error al generar text',$data_html);
@@ -516,8 +505,7 @@ class templates{
         }
         if( $tipo === 'telefono') {
             $data_html = $directiva->telefono(campo: $campo_name,cols:  $cols, value: $valor,required:  $required,
-                disabled:  $disabled,ln: $ln,etiqueta: $etiqueta, css_id: $css_id,data_extra:  $data_extra,
-                tipo_letra: 'capitalize');
+                ln: $ln,etiqueta: $etiqueta, tipo_letra: 'capitalize');
             if(errores::$error){
                 return  $this->error->error('Error al generar telefono',$data_html);
             }

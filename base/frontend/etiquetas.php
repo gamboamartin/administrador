@@ -272,27 +272,8 @@ class etiquetas{
         return $data;
     }
 
-    /**
-     * Genera un span para un checkbox
-     * @param string $span_chk Texto del chk
-     * @return string
-     * @version 1.305.41
-     */
-    public function span_btn_chk(string $span_chk): string
-    {
-        return "<span class='input-group-btn'> $span_chk</span>";
-    }
 
-    /**
-     * Genera un un span para un checkbox
-     * @param string $data_input Data de input de checkbox en html
-     * @return string
-     * @version 1.296.41
-     */
-    public function span_chk(string $data_input): string
-    {
-        return "<span class='input-group-addon checkbox_directiva'>$data_input</span>";
-    }
+
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT ERROREV

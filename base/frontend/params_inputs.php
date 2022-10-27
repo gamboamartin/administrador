@@ -16,18 +16,15 @@ class params_inputs{
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
      * Asigna los parametros de un input para ser utilizados en java o css
-     * @param string $pattern Regex para ser integrado en validacion de input via html5
-     * @param array $clases_css Clases de estilos para ser utilizas en css y/o java
-     * @param bool $disabled si disabled input queda inhabilitado en front
-     * @param bool $required si required input es requerido y se validara via html5
-     * @param array $ids_css Id de estilos para ser utilizas en css y/o java
      * @param string $campo nombre de input
-     * @param array $data_extra datos para ser utilizados en javascript
+     * @param array $clases_css Clases de estilos para ser utilizas en css y/o java
+     * @param string $pattern Regex para ser integrado en validacion de input via html5
+     * @param bool $required si required input es requerido y se validara via html5
      * @param string $value valor inicial del input puede ser vacio
      * @return array|stdClass Valor en un objeto para ser integrados en un input
      */
-    private function base_input(string $campo, array $clases_css, array $data_extra, bool $disabled,
-                                array $ids_css, string $pattern, bool $required, string $value): array|stdClass
+    private function base_input(string $campo, array $clases_css, string $pattern, bool $required,
+                                string $value): array|stdClass
     {
         $campo = trim($campo);
 
@@ -45,20 +42,12 @@ class params_inputs{
             return $this->error->error('Error al generar clases css', $class_css_html);
         }
 
-        $disabled_html = $this->disabled_html(disabled: $disabled);
-        if(errores::$error){
-            return $this->error->error('Error al generar disabled html', $disabled_html);
-        }
 
         $required_html = $this->required_html(required: $required);
         if(errores::$error){
             return $this->error->error('Error al generar required html', $required_html);
         }
 
-        $ids_css_html = $this->ids_html(campo: $campo, ids_css: $ids_css);
-        if(errores::$error){
-            return $this->error->error('Error al generar ids html', $ids_css_html);
-        }
 
 
         $value = str_replace("'","`",$value);
@@ -66,9 +55,7 @@ class params_inputs{
         $datas = new stdClass();
         $datas->pattern = $html_pattern;
         $datas->class = $class_css_html;
-        $datas->disabled = $disabled_html;
         $datas->required = $required_html;
-        $datas->ids = $ids_css_html;
         $datas->value = $value;
 
         return $datas;
@@ -138,42 +125,9 @@ class params_inputs{
         return $datas;
     }
 
-    /**
-     * Genera disabled html para inputs
-     * @version 1.86.19
-     * @param bool $disabled Si disabled retorna text disabled
-     * @return string
-     */
-    public function disabled_html(bool $disabled): string
-    {
-        $disabled_html = '';
-        if($disabled){
-            $disabled_html = 'disabled';
-        }
-        return $disabled_html;
-    }
 
 
 
-    /**
-     * Genera id de css en forma html
-     * @param array $ids_css Id para css
-     * @param string $campo Nombre del campo
-     * @return string|array
-     * @version 1.309.41
-     */
-    public function ids_html(string $campo, array $ids_css): string|array
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
-        }
-        $ids_css_html = $campo;
-        foreach($ids_css as $id_css){
-            $ids_css_html.=' '.$id_css;
-        }
-        return $ids_css_html;
-    }
 
     /**
      * Limpia los elementos de un objeto basado en sus atributos
@@ -264,28 +218,19 @@ class params_inputs{
     }
 
 
-
     /**
      * Genera los parametros de una fecha input
-     * @param bool $disabled Si disabled deja input disabled
-     * @param bool $required Si required deja input como requerido
-     * @param array $data_extra conjunto de extraparams
-     * @param array $css conjunto de css a integrar
-     * @param array $ids conjunto de ids a integrar
      * @param string $campo nombre del campo
+     * @param array $css conjunto de css a integrar
+     * @param bool $required Si required deja input como requerido
      * @return array|stdClass
      * @version 1.332.41
      */
-    public function params_fecha(string $campo, array $css, array $data_extra, bool $disabled, array $ids,
-                                 bool $required): array|stdClass
+    public function params_fecha(string $campo, array $css, bool $required): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
             return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
-        }
-        $disabled_html = $this->disabled_html(disabled: $disabled);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar disabled html',data: $disabled_html);
         }
 
         $required_html = $this->required_html(required: $required);
@@ -297,35 +242,26 @@ class params_inputs{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar class html',data: $css_html);
         }
-        $ids_html = $this->ids_html(campo:  $campo, ids_css: $ids);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar ids html',data: $ids_html);
-        }
 
         $params = new stdClass();
-        $params->disabled = $disabled_html;
         $params->required = $required_html;
         $params->class = $css_html;
-        $params->ids = $ids_html;
 
         return $params;
     }
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $etiqueta
      * @param string $campo
-     * @param string $pattern
      * @param array $clases_css
-     * @param bool $disabled
+     * @param string $etiqueta
+     * @param string $pattern
      * @param bool $required
-     * @param array $ids_css
-     * @param array $data_extra
      * @param string $value
      * @return array|stdClass
      */
-    public function params_input(string $campo, array $clases_css, array $data_extra, bool $disabled, string $etiqueta,
-                                 array $ids_css, string $pattern, bool $required, string $value): array|stdClass
+    public function params_input(string $campo, array $clases_css, string $etiqueta, string $pattern, bool $required,
+                                 string $value): array|stdClass
     {
         $campo = trim($campo);
 
@@ -338,8 +274,8 @@ class params_inputs{
             return $this->error->error('Error al genera base input', $base_input_dinamic);
         }
 
-        $data_base_input = $this->base_input(campo: $campo, clases_css: $clases_css, data_extra:  $data_extra,
-            disabled:  $disabled, ids_css: $ids_css, pattern: $pattern, required:  $required, value: $value);
+        $data_base_input = $this->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern,
+            required:  $required, value: $value);
 
         if(errores::$error){
             return $this->error->error('Error al genera base input', $data_base_input);

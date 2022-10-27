@@ -14,31 +14,6 @@ class directivasTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_checkbox(): void
-    {
-        errores::$error = false;
-        $dir = new directivas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $campo = '';
-        $resultado = $dir->checkbox($campo);
-
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $campo = 'a';
-        $resultado = $dir->checkbox($campo);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<input type='checkbox'", $resultado);
-        errores::$error = false;
-
-
-
-    }
 
     public function test_fecha(): void
     {
@@ -59,7 +34,7 @@ class directivasTest extends test {
         $resultado = $dir->fecha(campo:$campo,value: '2000-01-01');
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<div class='form-group col-md-4'><label class='col-form-label-md' for='a'>A</label><input  type='date'  class='form-control-md form-control input-md '  name='a'   id='a'   placeholder='Ingresa A'   required   title='Ingrese una a'   value='2000-01-01'         >   </div> ", $resultado);
+
 
         errores::$error = false;
     }
@@ -119,10 +94,10 @@ class directivasTest extends test {
         $cols = 1;
         $disabled = false;
         $required = false;
-        $resultado = $dir->upload_file($campo, $cols, $disabled, $required);
+        $resultado = $dir->upload_file($campo, $cols, $required);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<input type='file' class='custom-file-input input-file ' name='a'   id='a'>", $resultado);
+
         errores::$error = false;
     }
 

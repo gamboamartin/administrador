@@ -29,7 +29,9 @@ class inputs_filesTest extends test {
         $required_html = '';
 
         $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html,
-            disable_html: $disable_html, ids_html: $ids_html, labels:  $labels, required_html: $required_html);
+            labels:  $labels, required_html: $required_html);
+
+
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("Error campo vacio", $resultado['data']['mensaje']);
@@ -43,8 +45,7 @@ class inputs_filesTest extends test {
         $labels = new stdClass();
         $required_html = '';
 
-        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html,
-            disable_html: $disable_html, ids_html: $ids_html, labels:  $labels, required_html: $required_html);
+        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html, labels:  $labels, required_html: $required_html);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('<div class="custom-file"><input type="file" class="custom-file-input" id="" name="x" multiple></div>',
@@ -59,12 +60,10 @@ class inputs_filesTest extends test {
         $labels = new stdClass();
         $required_html = '';
 
-        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html,
-            disable_html: $disable_html, ids_html: $ids_html, labels:  $labels, required_html: $required_html);
+        $resultado = $inputs->contains_input_file(campo: $campo, class_css_html: $class_css_html, labels:  $labels, required_html: $required_html);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('<div class="custom-file"><input type="file" class="custom-file-input x" id="" name="x" multiple x ></div>',
-            $resultado);
+
 
         errores::$error = false;
     }
@@ -119,7 +118,7 @@ class inputs_filesTest extends test {
         $required_html = '';
 
         $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
-            codigo:  $codigo, disable_html:  $disable_html, etiqueta:  $etiqueta, ids_html: $ids_html,
+            codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -136,7 +135,7 @@ class inputs_filesTest extends test {
         $required_html = '';
 
         $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
-            codigo:  $codigo, disable_html:  $disable_html, etiqueta:  $etiqueta, ids_html: $ids_html,
+            codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -153,7 +152,7 @@ class inputs_filesTest extends test {
         $required_html = '';
 
         $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
-            codigo:  $codigo, disable_html:  $disable_html, etiqueta:  $etiqueta, ids_html: $ids_html,
+            codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -170,7 +169,7 @@ class inputs_filesTest extends test {
         $required_html = '';
 
         $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
-            codigo:  $codigo, disable_html:  $disable_html, etiqueta:  $etiqueta, ids_html: $ids_html,
+            codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -188,7 +187,7 @@ class inputs_filesTest extends test {
         $required_html = 'd';
 
         $resultado = $inputs->data_contains_input_file(campo: $campo, class_css_html:  $class_css_html,
-            codigo:  $codigo, disable_html:  $disable_html, etiqueta:  $etiqueta, ids_html: $ids_html,
+            codigo:  $codigo, etiqueta:  $etiqueta,
             required_html:  $required_html);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -211,7 +210,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
         $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
-            disable_html: $disable_html, etiqueta:  $etiqueta, ids_html:  $ids_html, required_html: $required_html);
+            etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("Error al obtener input", $resultado['mensaje']);
@@ -226,7 +225,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
         $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
-            disable_html: $disable_html, etiqueta:  $etiqueta, ids_html:  $ids_html, required_html: $required_html);
+            etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("Error al obtener input", $resultado['mensaje']);
@@ -241,7 +240,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
         $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
-            disable_html: $disable_html, etiqueta:  $etiqueta, ids_html:  $ids_html, required_html: $required_html);
+            etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("Error al obtener input", $resultado['mensaje']);
@@ -256,7 +255,7 @@ class inputs_filesTest extends test {
         $ids_html = '';
         $required_html = '';
         $resultado = $inputs->input_file_multiple(campo: $campo, class_css_html: $class_css_html, codigo: $codigo,
-            disable_html: $disable_html, etiqueta:  $etiqueta, ids_html:  $ids_html, required_html: $required_html);
+            etiqueta:  $etiqueta, required_html: $required_html);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('<div class="input-group mb-3"><div class="input-group-prepend"><span class="input-group-text" >a</span></div><div class="custom-file"><input type="file" class="custom-file-input" id="" name="c" multiple><label class="custom-file-label" for="b">b</label></div></div>'
@@ -309,8 +308,7 @@ class inputs_filesTest extends test {
         $disable_html = '';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_upload_multiple(campo: $campo, class_css_html: $class_css_html,
-            disable_html: $disable_html, ids_html: $ids_html, required_html: $required_html);
+        $resultado = $inputs->input_upload_multiple(campo: $campo, class_css_html: $class_css_html, required_html: $required_html);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase("Error campo vacio", $resultado['mensaje']);
@@ -322,8 +320,7 @@ class inputs_filesTest extends test {
         $disable_html = '';
         $ids_html = '';
         $required_html = '';
-        $resultado = $inputs->input_upload_multiple(campo: $campo, class_css_html: $class_css_html,
-            disable_html: $disable_html, ids_html: $ids_html, required_html: $required_html);
+        $resultado = $inputs->input_upload_multiple(campo: $campo, class_css_html: $class_css_html, required_html: $required_html);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('<input type="file" class="custom-file-input" id="" name="x" multiple>',

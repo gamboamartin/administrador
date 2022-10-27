@@ -330,40 +330,8 @@ class etiquetasTest extends test {
         errores::$error = false;
     }
 
-    public function test_span_btn_chk(): void
-    {
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$inicializacion = new liberator($inicializacion);
-        $data_etiqueta = '';
-        $span_chk = '';
-        $resultado = $etiquetas->span_btn_chk( span_chk: $span_chk);
-
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<span class='input-group-btn'> </span>", $resultado);
 
 
-        errores::$error = false;
-
-    }
-
-    public function test_span_chk(): void
-    {
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$inicializacion = new liberator($inicializacion);
-        $data_input = '';
-        $resultado = $etiquetas->span_chk(data_input: $data_input);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<span class='input-group-addon checkbox_directiva'></span>", $resultado);
-
-
-
-        errores::$error = false;
-
-    }
 
     public function test_title(){
         errores::$error = false;
