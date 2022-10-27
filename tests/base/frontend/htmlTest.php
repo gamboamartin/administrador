@@ -72,7 +72,7 @@ class htmlTest extends test {
     public function test_html_fecha(){
         errores::$error = false;
         $html = new html();
-        $inicializacion = new liberator($html);
+        $html = new liberator($html);
 
         $campo = '';
         $campo_capitalize = '';
@@ -81,8 +81,7 @@ class htmlTest extends test {
         $tipo = '';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
-            size: $size, tipo: $tipo, value: $value);
+        $resultado = $html->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error tipo no puede venir vacio', $resultado['mensaje']);
@@ -96,8 +95,7 @@ class htmlTest extends test {
         $tipo = 'x';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
-            size: $size, tipo: $tipo, value: $value);
+        $resultado = $html->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error $size no puede venir vacio', $resultado['mensaje']);
@@ -111,8 +109,7 @@ class htmlTest extends test {
         $tipo = 'x';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
-            size: $size, tipo: $tipo, value: $value);
+        $resultado = $html->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
@@ -126,8 +123,7 @@ class htmlTest extends test {
         $tipo = 'x';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
-            size: $size, tipo: $tipo, value: $value);
+        $resultado = $html->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("<input  type='x'  class='form-control-x form-control input-x '  name='x'   placeholder='Ingresa '   title='Ingrese una x'   value=''   > ", $resultado);

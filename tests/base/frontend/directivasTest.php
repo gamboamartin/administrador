@@ -26,7 +26,7 @@ class directivasTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("'><label class='col-form-label-md' for='a'>A</label><input  type='", $resultado);
+
 
         errores::$error = false;
 
@@ -39,50 +39,9 @@ class directivasTest extends test {
         errores::$error = false;
     }
 
-    public function test_genera_input_numero(): void
-    {
-        errores::$error = false;
-        $dir = new directivas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $campo = 'a';
-
-        $cols = 1;
-
-        $ln = false;
-
-        $required = false;
-        $tipo_letra = '';
-        $value = '';
-        $resultado = $dir->genera_input_numero(campo: $campo, cols:  $cols,ln:  $ln,
-            required:  $required, value: $value);
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("lass='form-control text-center numero_inpu", $resultado);
 
 
-        errores::$error = false;
-    }
 
-    public function test_password(): void
-    {
-        errores::$error = false;
-        $dir = new directivas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $campo = 'a';
-
-        $cols = 1;
-
-        $value = '';
-        $resultado = $dir->password($campo, $cols, $value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("type='password' clas", $resultado);
-        errores::$error = false;
-
-    }
 
     public function test_upload_file(): void
     {

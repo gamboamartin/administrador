@@ -85,14 +85,13 @@ class html  {
     /**
      * Genera un html con un input de fecha
      * @param string $campo Campo a integra = name
-     * @param string $campo_capitalize Para label
      * @param string $size sm o md para div
      * @param string $tipo Tipo de input
      * @param string $value Valor default
      * @return string|array
      * @version 1.352.41
      */
-    protected function html_fecha(string $campo, string $campo_capitalize, string $size, string $tipo,
+    protected function html_fecha(string $campo, string $size, string $tipo,
                                 string $value): string|array
     {
 
@@ -115,7 +114,7 @@ class html  {
         $html.=" type='$tipo' ";
         $html.=" class='form-control-$size form-control input-$size ' ";
         $html.=" name='$campo' ";
-        $html.="  placeholder='Ingresa $campo_capitalize' ";
+        $html.="  placeholder='Ingresa ' ";
         $html.="  title='Ingrese una $campo' ";
         $html.="  value='$value' ";
         $html.="  > ";

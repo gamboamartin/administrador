@@ -34,12 +34,8 @@ class menus{
             return $this->error->error("Error texto vacio",$etiqueta);
         }
 
-        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta);
-        if(errores::$error){
-            return $this->error->error('Error al generar texto de etiqueta',$r_etiqueta);
-        }
 
-        $etiqueta = str_replace('_', ' ', $r_etiqueta);
+        $etiqueta = str_replace('_', ' ', $etiqueta);
         if($accion === ''){
             $link = '#';
         }
@@ -68,12 +64,8 @@ class menus{
             return $this->error->error(mensaje: 'Error al $etiqueta no puede venir vacia',data: $etiqueta,
                 params: get_defined_vars());
         }
-        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar genera_texto_etiqueta', data: $r_etiqueta,
-                params: get_defined_vars());
-        }
-        return "<button class='btn btn-info btn-sm disabled no-print'>$r_etiqueta</button>";
+
+        return "<button class='btn btn-info btn-sm disabled no-print'>$etiqueta</button>";
     }
 
     /**
@@ -125,10 +117,7 @@ class menus{
 
             $etiqueta = strtolower($value['etiqueta']);
             $link = strtolower($value['link']);
-            $etiqueta = (new etiquetas())->genera_texto_etiqueta($etiqueta,'capitalize');
-            if(errores::$error){
-                return $this->error->error('Error al generar Etiqueta',$etiqueta);
-            }
+
 
             $bread = $this->breadcrumb(etiqueta: $etiqueta, accion: $link, seccion: $seccion,session_id:  $session_id);
 

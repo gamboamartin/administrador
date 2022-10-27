@@ -17,56 +17,7 @@ class etiquetasTest extends test {
 
 
 
-    public function test_con_label(): void{
-        errores::$error = false;
 
-        $etiquetas = new etiquetas();
-
-        $size = '';
-        $campo = '';
-        $campo_capitalize = '';
-        $resultado = $etiquetas->con_label(campo: $campo, campo_capitalize: $campo_capitalize,
-            con_label: true, size:  $size);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error size no puede venir vacio', $resultado['mensaje']);
-
-
-        errores::$error = false;
-
-        $size = 'a';
-        $campo = '';
-        $campo_capitalize = '';
-        $resultado = $etiquetas->con_label(campo: $campo, campo_capitalize: $campo_capitalize,
-            con_label: true, size:  $size);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $size = 'a';
-        $campo = 'b';
-        $campo_capitalize = '';
-        $resultado = $etiquetas->con_label(campo: $campo, campo_capitalize: $campo_capitalize,
-            con_label: true, size:  $size);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo_capitalize no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $size = 'a';
-        $campo = 'b';
-        $campo_capitalize = 'c';
-        $resultado = $etiquetas->con_label(campo: $campo, campo_capitalize: $campo_capitalize,
-            con_label: true, size:  $size);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<label class='col-form-label-a' for='b'>c</label>", $resultado);
-        errores::$error = false;
-
-    }
 
     public function test_etiqueta_campo_vista(): void{
         errores::$error = false;
@@ -94,15 +45,14 @@ class etiquetasTest extends test {
     public function test_etiqueta_label(){
         errores::$error = false;
         $etiquetas = new etiquetas();
-        $inicializacion = new liberator($etiquetas);
+        //$etiquetas = new liberator($etiquetas);
 
         $etiqueta = '';
         $tabla = '';
         $tipo_letra = '';
         $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar etiqueta', $resultado['mensaje']);
+        $this->assertIsString($resultado);
+
 
         errores::$error = false;
 
@@ -160,70 +110,9 @@ class etiquetasTest extends test {
         errores::$error = false;
     }
 
-    public function test_genera_label(){
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $campo = '';
-        $tipo_letra = 'capitalize';
-        $size = '';
-        $resultado = $etiquetas->genera_label(aplica_etiqueta: true,campo: $campo,tipo_letra: $tipo_letra,size: $size);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $campo = 'x';
-        $tipo_letra = 'capitalize';
-        $size = '';
-        $resultado = $etiquetas->genera_label(aplica_etiqueta: false,campo: $campo,tipo_letra: $tipo_letra,size: $size);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("", $resultado);
-
-        errores::$error = false;
-
-        $campo = 'x';
-        $tipo_letra = 'capitalize';
-        $size = 'x';
-        $resultado = $etiquetas->genera_label(aplica_etiqueta: true,campo: $campo,tipo_letra: $tipo_letra,size: $size);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
 
 
-        errores::$error = false;
-    }
 
-    public function test_genera_texto_etiqueta(): void{
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$inicializacion = new liberator($inicializacion);
-        $texto = '';
-        $tipo_letra = '';
-        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error texto vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-        $texto = 'a';
-        $tipo_letra = '';
-        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('a', $resultado);
-
-        errores::$error = false;
-        $texto = 'aa';
-        $tipo_letra = 'capitalize';
-        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('aA', $resultado);
-        errores::$error = false;
-    }
 
     public function test_label_input_upload(){
         errores::$error = false;

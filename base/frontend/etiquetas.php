@@ -13,37 +13,6 @@ class etiquetas{
         $this->error = new errores();
     }
 
-    /**
-     * Genera un label en forma de html
-     * @param bool $con_label Si con label integra la etiqueta
-     * @param string $size tamaño de div base css
-     * @param string $campo Nombre del campo para etiqueta
-     * @param string $campo_capitalize Campo ajustado
-     * @return string|array
-     * @version 1.352.41
-     */
-    public function con_label(string $campo, string $campo_capitalize, bool $con_label, string $size): string|array
-    {
-        $html = '';
-        if($con_label) {
-            $size = trim($size);
-            if($size === ''){
-                return $this->error->error(mensaje: 'Error size no puede venir vacio',data: $size);
-            }
-            $campo = trim($campo);
-            if($campo === ''){
-                return $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
-            }
-            $campo_capitalize = trim($campo_capitalize);
-            if($campo_capitalize === ''){
-                return $this->error->error(mensaje: 'Error $campo_capitalize no puede venir vacio',
-                    data: $campo_capitalize);
-            }
-
-            $html = "<label class='col-form-label-$size' for='$campo'>$campo_capitalize</label>";
-        }
-        return $html;
-    }
 
     /**
      * PROBADO PARAMS INT PARAMS ORDER ERRORREV
@@ -66,10 +35,7 @@ class etiquetas{
     public function etiqueta_label(string $etiqueta, string $tabla): array|string
     {
         $etiqueta_label = strtoupper($tabla);
-        $etiqueta_label = $this->genera_texto_etiqueta(texto: $etiqueta_label);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label);
-        }
+
         $etiqueta_label_mostrable = $this->etiqueta_label_mostrable(etiqueta:  $etiqueta, etiqueta_label: $etiqueta_label);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label_mostrable);
@@ -95,68 +61,7 @@ class etiquetas{
         return $etiqueta_label_mostrable;
     }
 
-    /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * Genera un label para mostrarlo en html ajusta el texto del campo para que sea mas aceptable para el usuario
-     *
-     * @param string $tipo_letra Tipo de letra para realizar ajuste de texto capitalize, mayusculas, minusculas
-     * @param string $campo Texto a ejecutar funcion de ajuste regularmente un campo de bd
-     * @param bool $aplica_etiqueta si aplica etiqueta genera label, sino la envia vacia
-     *
-     * @example
-     *      $label = $this->genera_label($campo,$tipo_letra,true);
-     *
-     * @return array|string html ajustando en label
-     * @throws errores $campo vacio
-     * @throws errores tipo_letra no sea una de las tres validas
-     * @throws errores tipo_letra vacia
-     */
-    public function genera_label(bool $aplica_etiqueta, string $campo,string $tipo_letra, string $size = 'sm'):array|string{ //FIN PROT
-        $campo = trim($campo);
-        $tipo_letra = trim($tipo_letra);
-        if(!$aplica_etiqueta){
-            return '';
-        }
 
-        if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
-        }
-
-        $campo_mostrable = $this->genera_texto_etiqueta(texto: $campo);
-        if(errores::$error){
-            return $this->error->error("Error al generar texto", $campo_mostrable);
-        }
-
-        return "<label for='$campo' class='col-form-label-$size'>$campo_mostrable</label>";
-    }
-
-    /**
-     *
-     * Ajusta el texto enviado basado en el tip de letra capitalize, mayusculas, minusculas y sustituye guiones
-     * bajos por espacios
-     *
-     * @param string $tipo_letra Tipo de letra para realizar ajuste de texto capitalize, mayusculas, minusculas
-     * @param string $texto Texto a ejecutar funcion de ajuste
-     *
-     * @example
-     *      $etiqueta = 'nombre'
-     *      $r_etiqueta = $this->genera_texto_etiqueta($etiqueta,'capitalize');
-     *
-     * @return array|string string palabra ajustada
-     * @throws errores texto vacio
-     * @throws errores tipo_letra no sea una de las tres validas
-     * @throws errores tipo_letra vacia
-     * @version 1.310.41
-     */
-    public function genera_texto_etiqueta(string $texto):array|string{
-        if($texto === ''){
-            return $this->error->error(mensaje: "Error texto vacio",data: $texto);
-        }
-
-        $campo_capitalize = str_replace('_', ' ', $texto);
-
-        return trim($campo_capitalize);
-    }
 
     /**
      * Genera un label de un input de tipo file

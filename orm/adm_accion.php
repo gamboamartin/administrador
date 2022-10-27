@@ -86,6 +86,30 @@ class adm_accion extends modelo{ //FINALIZADAS
         return $r_accion;
     }
 
+    public function acciones_id_por_grupo(int $adm_grupo_id): array
+    {
+        if($adm_grupo_id <=0){
+            return $this->error->error('Error adm_grupo_id debe ser mayor a 0', $adm_grupo_id);
+        }
+        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        $group_by[] = 'adm_accion.id';
+        $columnas = array('adm_accion_id');
+        $r_acciones_grupo = (new adm_accion_grupo($this->link))->filtro_and(
+            columnas: $columnas, filtro: $filtro, group_by: $group_by);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener acciones', $r_acciones_grupo);
+        }
+        $adm_acciones_grupos = $r_acciones_grupo->registros;
+
+        $grupos = array();
+        foreach ($adm_acciones_grupos as $adm_accion_grupo){
+            $grupos[] = $adm_accion_grupo['adm_accion_id'];
+        }
+
+        return $grupos;
+
+    }
+
     /**
      * Obtiene las acciones permitidas de una session
      * @param string $accion Accion a verificar

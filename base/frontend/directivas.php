@@ -61,8 +61,6 @@ class directivas extends html {
             return $this->errores->error('Etiqueta no puede venir vacio ' . $campo,$etiqueta);
         }
 
-
-
         if($tipo_campo === 'text') {
 
             $inputs[$campo] = $this->genera_input_text(campo: $campo,cols:  $cols,value:  $valores[$campo],
@@ -73,7 +71,7 @@ class directivas extends html {
         }
         if($tipo_campo === 'telefono'){
             $inputs[$campo] =  $this->telefono(campo: $campo,cols: $cols, value: $valores[$campo],
-                ln:  $ln,etiqueta: $etiqueta, tipo_letra: 'capitalize',size: 'md');
+                ln:  $ln,etiqueta: $etiqueta,size: 'md');
             if(errores::$error){
                 return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
             }
@@ -278,14 +276,6 @@ class directivas extends html {
             return $this->error->error(mensaje: "Error al validar",data: $valida);
         }
 
-        $con_label = false;
-        if($etiqueta!==''){
-            $con_label = true;
-        }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $campo_capitalize);
-        }
 
         $value = (new values())->value_fecha(tipo: $tipo, value: $value, value_vacio: $value_vacio);
         if(errores::$error){
@@ -308,16 +298,9 @@ class directivas extends html {
         $html .= "<div class='form-group col-$size-$cols'>";
 
 
-        $con_label_html = (new etiquetas())->con_label(campo: $campo, campo_capitalize: $campo_capitalize,
-            con_label: $con_label, size:  $size);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar label',data: $con_label_html);
-        }
 
-        $html .= $con_label_html;
 
-        $container_html = $this->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
-            size: $size, tipo: $tipo, value: $value);
+        $container_html = $this->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar params',data: $container_html);
         }
@@ -531,66 +514,6 @@ class directivas extends html {
 
     }
 
-    /**
-     *
-     * Genera un input para ser mostrado en html del front
-     *
-     * @param string $campo Nombre del campo
-     * @param int $cols columnas a mostrar en md-cols
-     *
-     * @param bool $ln aplica salto de linea
-     * @param bool $required si el elemento es requerido asigna required al html
-     * @param string $value Valor default a mostrar en el input
-     * @return array|string html con info del input a mostrar
-     * @example
-     *      $data_html = $directiva->genera_input_numero($this->campo, $this->cols, $this->valor, $required,'mayusculas',$this->ln);
-     *
-     * @uses templates
-     *
-     * @version 1.355.41
-     */
-    public function genera_input_numero(string $campo, int $cols,  bool $ln,  bool $required, string $value):array|string{  //FIN PROT
-
-        $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar campo',data: $valida);
-        }
-
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo);
-
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al generar $campo_capitalize',data: $campo_capitalize);
-        }
-
-        $html = "";
-        if($ln){
-            $html .= "<div class='col-md-12'></div>";
-        }
-
-        $html .= "<div class=' form-group col-md-$cols'>";
-
-        $html .= "<label for='$campo'>$campo_capitalize</label>";
-
-        $required_html = '';
-        if($required){
-            $required_html = 'required';
-        }
-
-        $html .= "
-        <div class='input-group number-spinner'>
-				<span class='input-group-btn data-dwn'>
-					<div class='btn btn-default menos' data-dir='dwn'>
-					    <span class='glyphicon glyphicon-minus'></span>
-					   </div>
-				</span>
-				<input type='text' name='$campo' class='form-control text-center numero_input $campo' value='$value' $required_html>
-				<span class='input-group-btn data-up'>
-					<div class='btn btn-default mas' data-dir='up'><span class='glyphicon glyphicon-plus'></span></div>
-				</span>
-				</div></div>";
-
-        return $html;
-    }
 
     /**
      * ERRORREV
@@ -664,17 +587,15 @@ class directivas extends html {
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      * @param string $etiqueta Etiqueta a mostrar en input es un label
      * @param string $pattern expresion regular a validar en el evento submit
-     * @param string $tipo_letra ajustes del label de salida para mostrar en html
      * @param bool $aplica_etiqueta si aplica etiqueta mostrar el label del campo si no no integra label
      * @param string $size
      * @return array|string html con info del input a mostrar
      * @example
      *      $input = $directiva->genera_input_text($campo,12,'',true,'',false,'capitalize',false,'',array(),array(),false);
      */
-    public function genera_input_text(string $campo, int $cols = 12 , string $value = '',
-                                      bool $ln = false,string $etiqueta = '', string $pattern = '',
-                                      string $tipo_letra = 'capitalize',
-                                      bool $aplica_etiqueta = true, string $size = 'md'):array|string{
+    public function genera_input_text(string $campo, int $cols = 12 , string $value = '', bool $ln = false,
+                                      string $etiqueta = '', string $pattern = '', bool $aplica_etiqueta = true,
+                                      string $size = 'md'):array|string{
 
         if($etiqueta === ''){
             $etiqueta = $campo;
@@ -699,12 +620,6 @@ class directivas extends html {
         }
 
 
-        $label = (new etiquetas())->genera_label(aplica_etiqueta: $aplica_etiqueta, campo: $etiqueta,
-            tipo_letra: $tipo_letra, size: $size);
-
-        if(errores::$error){
-            return $this->error->error('Error al generar label', $label);
-        }
 
         $tipo = 'text';
         $input = $this->genera_input(campo: $campo,value:  $value, pattern: $pattern,
@@ -714,7 +629,7 @@ class directivas extends html {
             return $this->error->error('Error al generar input', $input);
         }
 
-        $html = str_replace(array('|label|', '|input|'), array($label, $input), $html);
+        $html = str_replace(array('|label|', '|input|'), array( $input), $html);
         $this->html = $html;
         return $html;
     }
@@ -928,10 +843,6 @@ class directivas extends html {
             return $this->errores->error('Error al validar',$valida);
         }
 
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta($etiqueta, $tipo_letra);
-        if (isset($campo_capitalize['error'])) {
-            return $this->errores->error('Error al generar etiqueta', $campo_capitalize);
-        }
 
         $html = '';
         if($ln){
@@ -949,7 +860,7 @@ class directivas extends html {
         $html = $html."
 		<div class='form-group col-md-$cols'>";
         if($con_label) {
-            $html = $html . "<label for='$campo'>$campo_capitalize</label>";
+            $html = $html . "<label for='$campo'></label>";
         }
 
         $data_extra_html = '';
@@ -962,7 +873,7 @@ class directivas extends html {
 
         $html = $html."
 			<input 
-				type='time' class='form-control input-md' name='$campo' id='$campo' placeholder='Ingresa $campo_capitalize' 
+				type='time' class='form-control input-md' name='$campo' id='$campo' placeholder='Ingresa ' 
 				$required_html title='Ingrese una $campo' value='$value' $disabled_html $data_extra_html>
 		</div>";
         return $html;
@@ -1388,45 +1299,6 @@ class directivas extends html {
         return $inputs_busca;
     }
 
-    /**
-     *
-     *
-     * Genera el html de la barra de navegacion
-     *
-     * @param string $campo Campo de input
-     * @param int $cols N columnas css
-     * @param string $value Valor de password
-     * @return string|array html para incrustarlo y mostrarlo
-     * @example
-     *      $data_html = $directiva->password($this->valor, $this->cols, $this->campo);
-     *
-     * @uses templates
-     * @internal $this->valida_elementos_base_input($campo,$cols);
-     * @internal $this->genera_texto_etiqueta($campo,'capitalize');
-     * @version 1.370.44
-     */
-    public function password( string $campo, int $cols, string $value):string|array{
-        $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar',data: $valida);
-        }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto:$campo);
-
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al generar etiqueta',data: $campo_capitalize);
-        }
-
-        $html = "<div class='form-group col-md-$cols'>";
-
-        $html .=   "<label for='$campo'>$campo_capitalize</label>";
-
-        $html .= "<input 
-				type='password' class='form-control input-md' name='$campo' placeholder='$campo_capitalize' 
-				required title='Ingrese un $campo' value='$value'>
-		</div>";
-
-        return $html;
-    }
 
 
     /**
@@ -1656,15 +1528,13 @@ class directivas extends html {
      * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      *
      * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param string $tipo_letra ajustes del label de salida para mostrar en html
      * @param string $size
      * @return array|string html con info del input a mostrar con pattern de telefono
      * @example
      *      $this->inputs[$campo] =  $this->directiva->telefono($campo,4, $valores[$campo], $required,'', 'capitalize',
      *          false,$etiqueta,$clases_css);
      */
-    public function telefono(string $campo, int $cols, string $value, bool $ln, string $etiqueta, string $tipo_letra,
-                             string $size = 'sm'):array|string{
+    public function telefono(string $campo, int $cols, string $value, bool $ln, string $etiqueta, string $size = 'sm'):array|string{
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
@@ -1672,7 +1542,7 @@ class directivas extends html {
         }
 
         $html = $this->genera_input_text(campo: $campo,cols: $cols,value: $value,ln:  $ln,
-            etiqueta: $etiqueta,pattern: '[0-9]{10}', tipo_letra: $tipo_letra,size: $size);
+            etiqueta: $etiqueta,pattern: '[0-9]{10}',size: $size);
 
         if(errores::$error){
             return $this->error->error('Error al generar text '.$campo,$html);
@@ -1707,10 +1577,7 @@ class directivas extends html {
         if($cols >12){
             return  $this->error->error('Error cols debe ser menor a 12',$cols);
         }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo_name);
-        if(errores::$error){
-            return  $this->error->error('Error al $campo_capitalize',$campo_capitalize);
-        }
+
         $html = "<div class='form-group col-md-$cols'>";
         if(trim($etiqueta)!=='') {
 
