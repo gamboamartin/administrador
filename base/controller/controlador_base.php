@@ -267,7 +267,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         $alta_html = $template->alta(aplica_form: true, directivas_extra: $this->directivas_extra,
-            muestra_btn_guardar:  true,valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
+            valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
             session_id: $this->session_id,path_base: $this->path_base,
             campos_disabled: $this->campos_disabled,valores_default: $this->valores_asignados_default,
             campos_invisibles: $this->campos_invisibles);
@@ -276,14 +276,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                 ws: false);
         }
         $this->alta_html = $alta_html;
-        $directiva = new directivas();
-        $btn = $directiva->btn_enviar(label: 'Agrega',name: 'btn_agrega',value: 'btn_agrega',stilo: 'success');
 
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar btn', data: $btn , header: $header, ws: false);
 
-        }
-        $this->btn = $btn;
         return $this->alta_html;
     }
 
@@ -966,7 +960,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $modifica_html =  $template->modifica(registro: $this->registro, seccion: $this->seccion,
             breadcrumbs:  $breadcrumbs, valores_filtrados: $this->valores_filtrados, campos_alta: $campos_alta,
-            session_id:  $this->session_id,path_base:  $this->path_base,aplica_form:  $aplica_form,muestra_btn:  $muestra_btn);
+            session_id:  $this->session_id,path_base:  $this->path_base,aplica_form:  $aplica_form);
 
 
         if(errores::$error){
