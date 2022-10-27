@@ -93,6 +93,7 @@ class controlador_adm_seccion extends controlador_base{
         $keys['adm_seccion'] = array('id','descripcion','codigo','codigo_bis');
 
 
+
         $salida = $this->get_out(header: $header,keys: $keys, ws: $ws);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar salida',data:  $salida,header: $header,ws: $ws);

@@ -385,13 +385,26 @@ class controler{
      */
     protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {
-        $filtro = $this->asigna_filtro_get($keys);
+        $filtro = $this->asigna_filtro_get(keys: $keys);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar filtros',data:  $filtro,header: $header,ws: $ws);
 
         }
 
-        $salida = (new salida_data())->salida_get(controler: $this,filtro:  $filtro,header:  $header,ws:  $ws);
+        $not_in = array();
+        if(isset($_POST['not_in'])){
+            /**
+             * llave = string tabla.campo
+             * values = array(n1,n2,n3,nn)
+             * @example $_POST[llave] = 'adm_seccion.id'
+             * @example $_POST[values] = array(1,2,3);
+             */
+            $not_in['llave'] = $_POST['not_in']['llave'];
+            $not_in['values'] = $_POST['not_in']['values'];
+        }
+
+        $salida = (new salida_data())->salida_get(controler: $this,filtro:  $filtro,header:  $header, not_in: $not_in,
+            ws:  $ws);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar salida',data:  $salida,header: $header,ws: $ws);
 
