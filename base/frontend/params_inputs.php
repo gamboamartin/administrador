@@ -125,6 +125,23 @@ class params_inputs{
         return $datas;
     }
 
+    /**
+     * Si disabled retorna attr disabled  en string
+     * @stable true
+     * @version 1.588.52
+     * @param bool $disabled Si disabled retorna attr disabled
+     * @return string
+     *
+     */
+    public function disabled_html(bool $disabled): string
+    {
+        $disabled_html = '';
+        if($disabled){
+            $disabled_html = 'disabled';
+        }
+        return $disabled_html;
+    }
+
 
 
 

@@ -95,34 +95,30 @@ class params_inputsTest extends test {
 
         errores::$error = false;
     }
-
-    /*
-    public function test_checked(){
+    public function test_disabled_html()
+    {
         errores::$error = false;
         $params = new params_inputs();
-        $params = new liberator($params);
-        $valor = '';
-        $resultado = $params->checked(valor: $valor);
-        $this->assertIsString( $resultado);
+        //$params = new liberator($params);
+        $disabled = false;
+
+        $resultado = $params->disabled_html($disabled);
+        $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
+        $this->assertEquals('',$resultado);
 
         errores::$error = false;
-        $valor = 'activo';
-        $resultado = $params->checked(valor: $valor);
-        $this->assertIsString( $resultado);
+
+        $disabled = true;
+
+        $resultado = $params->disabled_html($disabled);
+        $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('checked', $resultado);
+        $this->assertEquals('disabled',$resultado);
 
         errores::$error = false;
-        $valor = 'inactivo';
-        $resultado = $params->checked(valor: $valor);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
+    }
 
-        errores::$error = false;
-    }*/
 
     public function test_data_content_option(){
         errores::$error = false;
