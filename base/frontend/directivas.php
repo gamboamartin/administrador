@@ -118,65 +118,9 @@ class directivas extends html {
         return "<a class='btn $class_css_html' href='$link' role='button'>$icon $etiqueta </a>";
     }
 
-    /**
-     *
-     * @return array|string
-     */
-    private function btn_busca():array|string{
 
-        $btn_busca = $this->btn_enviar(cols: 1,label: 'Busca',name: 'busca',value: 'busca');
-        if(errores::$error){
-            return $this->errores->error('Error al genera btn',$btn_busca);
-        }
-        return $btn_busca;
-    }
 
-    /**
-     * P INT
-     * Genera el html de un boton
-     *
-     * @param int $cols Tipo de letra para realizar ajuste de texto capitalize, mayusculas, minusculas
-     * @param string $label Texto a mostrar en el boton
-     * @param string $name name del input
-     * @param string $value $value del input
-     * @param string $type submit o button
-     * @param string $stilo forma del boton success warning etc
-     * @param array $class_css Clases css a incrustar en div
-     * @param string $icon Icono a mostrar
-     * @param string $id_css id css
-     * @param array $datas Conjunto de extra params para se convertido en html
-     * @return array|string string palabra ajustada
-     * @example
-     *      $this->btn = $this->directiva->btn_enviar(4,'Modifica','btn_modifica','modifica');
-     *
-     * @uses  templates
-     * @uses  almacenes
-     * @uses  clientes
 
-     */
-    public function btn_enviar(int $cols = 12, string $label = 'Enviar', string $name= 'Enviar',
-                               string $type = 'submit', string $value = 'Enviar', string $stilo = 'primary',
-                               array $class_css = array(), string $icon = '', string $id_css = '',
-                               array $datas = array()):array|string{
-
-        $valida = $this->validacion->valida_data_btn(cols: $cols,label:  $label,name:  $name,value:  $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar boton', data: $valida);
-        }
-
-        $params = (new botones())->data_btn(class_css: $class_css, datas: $datas, icon: $icon);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar parametros', data: $params);
-        }
-
-        $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,
-            stilo: $stilo,type: $type,value:  $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar container', data: $button);
-        }
-
-        return $button;
-    }
 
     /**
      * NO SE MUEVE
@@ -187,11 +131,7 @@ class directivas extends html {
      */
     private function busqueda_base(string $etiqueta_campo_busca, string $campo_busca, string $valor_busca_fault): array
     {
-        $btn_busca = $this->btn_busca();
 
-        if(errores::$error){
-            return $this->errores->error('Error al genera btn',$btn_busca);
-        }
 
         $campo_busca_r = $this->campo_busca($etiqueta_campo_busca, $campo_busca, $valor_busca_fault);
         if(errores::$error){
@@ -199,7 +139,7 @@ class directivas extends html {
 
         }
 
-        return array('campo_busca'=>$campo_busca_r,'btn_busca'=>$btn_busca);
+        return array('campo_busca'=>$campo_busca_r);
     }
 
     /**

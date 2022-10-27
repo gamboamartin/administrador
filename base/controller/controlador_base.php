@@ -119,7 +119,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         $this->campo_busca = $inputs_busca['campo_busca'];
-        $this->btn_busca = $inputs_busca['btn_busca'];
+
 
         parent::__construct();
 
