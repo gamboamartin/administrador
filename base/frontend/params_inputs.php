@@ -135,56 +135,6 @@ class params_inputs{
 
 
 
-
-
-    /**
-     * Limpia los elementos de un objeto basado en sus atributos
-     * @param array $keys Keys de parametros a limpiar
-     * @param stdClass $params Parametros a limpiar
-     * @return stdClass
-     * @version 1.309.41
-     */
-    private function limpia_obj(array $keys, stdClass $params): stdClass
-    {
-        foreach($keys as $key){
-            if(!isset($params->$key)){
-                $params->$key = '';
-            }
-        }
-        return $params;
-    }
-
-    /**
-     * FULL
-     * @param stdClass $params
-     * @return stdClass
-     */
-    public function limpia_obj_btn(stdClass $params): stdClass
-    {
-        $keys = array('class','data_extra','icon');
-        $params = $this->limpia_obj(keys: $keys,params: $params);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar params', data: $params);
-        }
-        return $params;
-    }
-
-    /**
-     * Limpia un conjunto de objetos a vacio
-     * @param stdClass $params Inicializa parametros
-     * @return array|stdClass
-     * @version 1.352.41
-     */
-    public function limpia_obj_input(stdClass $params): array|stdClass
-    {
-        $keys = array('class','ids','required','data_extra','disabled');
-        $params = $this->limpia_obj(keys: $keys, params: $params);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar params', data: $params);
-        }
-        return $params;
-    }
-
     /**
      * Genera un salto de linea html
      * @param bool $ln Si salto genera un div col 12

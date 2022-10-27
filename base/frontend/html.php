@@ -86,23 +86,17 @@ class html  {
 
     /**
      * Genera un html con un input de fecha
-     * @param string $tipo Tipo de input
-     * @param string $size sm o md para div
-     * @param stdClass $params parametros para inicializacion de input
      * @param string $campo Campo a integra = name
      * @param string $campo_capitalize Para label
+     * @param string $size sm o md para div
+     * @param string $tipo Tipo de input
      * @param string $value Valor default
      * @return string|array
      * @version 1.352.41
      */
-    protected function html_fecha(string $campo, string $campo_capitalize, stdClass $params, string $size, string $tipo,
+    protected function html_fecha(string $campo, string $campo_capitalize, string $size, string $tipo,
                                 string $value): string|array
     {
-
-        $params_r = (new params_inputs())->limpia_obj_input(params: $params);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar params',data:  $params_r);
-        }
 
         $tipo = trim($tipo);
         if($tipo === ''){
@@ -121,15 +115,11 @@ class html  {
 
         $html ="<input ";
         $html.=" type='$tipo' ";
-        $html.=" class='form-control-$size form-control input-$size $params_r->class' ";
+        $html.=" class='form-control-$size form-control input-$size ' ";
         $html.=" name='$campo' ";
-        $html.="  id='$params_r->ids' ";
         $html.="  placeholder='Ingresa $campo_capitalize' ";
-        $html.="  $params_r->required ";
         $html.="  title='Ingrese una $campo' ";
         $html.="  value='$value' ";
-        $html.="  $params_r->disabled ";
-        $html.="  $params_r->data_extra ";
         $html.="  > ";
 
         return $html;

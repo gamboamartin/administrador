@@ -21,7 +21,7 @@ class botonesTest extends test {
     public function test_btn_html(){
         errores::$error = false;
         $btn = new botones();
-        $inicializacion = new liberator($btn);
+        $btn = new liberator($btn);
 
         $id_css = '';
         $label = '';
@@ -30,7 +30,7 @@ class botonesTest extends test {
         $stilo = '';
         $type = '';
         $value = '';
-        $resultado = $inicializacion->btn_html(id_css:  $id_css, label: $label,name:  $name,params:  $params,
+        $resultado = $btn->btn_html(id_css:  $id_css, label: $label,name:  $name,
             stilo: $stilo, type: $type, value:  $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -45,7 +45,7 @@ class botonesTest extends test {
         $stilo = '';
         $type = 'x';
         $value = '';
-        $resultado = $inicializacion->btn_html(id_css:  $id_css, label: $label,name:  $name,params:  $params,
+        $resultado = $btn->btn_html(id_css:  $id_css, label: $label,name:  $name,
             stilo: $stilo, type: $type, value:  $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -60,7 +60,7 @@ class botonesTest extends test {
         $stilo = 'x';
         $type = 'x';
         $value = '';
-        $resultado = $inicializacion->btn_html(id_css:  $id_css, label: $label,name:  $name,params:  $params,
+        $resultado = $btn->btn_html(id_css:  $id_css, label: $label,name:  $name,
             stilo: $stilo, type: $type, value:  $value);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
@@ -72,7 +72,7 @@ class botonesTest extends test {
     public function test_button(){
         errores::$error = false;
         $btn = new botones();
-        $inicializacion = new liberator($btn);
+        $btn = new liberator($btn);
 
         $cols = '0';
         $id_css = '';
@@ -82,7 +82,7 @@ class botonesTest extends test {
         $stilo = '';
         $type = '';
         $value = '';
-        $resultado =  $inicializacion->button(cols: $cols, id_css: $id_css,label: $label, name: $name, params: $params,
+        $resultado =  $btn->button(cols: $cols, id_css: $id_css,label: $label, name: $name,
             stilo: $stilo, type: $type,value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -98,7 +98,7 @@ class botonesTest extends test {
         $stilo = '';
         $type = 'x';
         $value = '';
-        $resultado =  $inicializacion->button(cols: $cols, id_css: $id_css,label: $label, name: $name, params: $params,
+        $resultado =  $btn->button(cols: $cols, id_css: $id_css,label: $label, name: $name,
             stilo: $stilo, type: $type,value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -114,7 +114,7 @@ class botonesTest extends test {
         $stilo = 'x';
         $type = 'x';
         $value = '';
-        $resultado =  $inicializacion->button(cols: $cols, id_css: $id_css,label: $label, name: $name, params: $params,
+        $resultado =  $btn->button(cols: $cols, id_css: $id_css,label: $label, name: $name,
             stilo: $stilo, type: $type,value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -130,7 +130,7 @@ class botonesTest extends test {
         $stilo = 'x';
         $type = 'x';
         $value = '';
-        $resultado =  $inicializacion->button(cols: $cols, id_css: $id_css,label: $label, name: $name, params: $params,
+        $resultado =  $btn->button(cols: $cols, id_css: $id_css,label: $label, name: $name,
             stilo: $stilo, type: $type,value: $value);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);

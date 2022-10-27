@@ -81,7 +81,7 @@ class htmlTest extends test {
         $tipo = '';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
             size: $size, tipo: $tipo, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -96,7 +96,7 @@ class htmlTest extends test {
         $tipo = 'x';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
             size: $size, tipo: $tipo, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -111,7 +111,7 @@ class htmlTest extends test {
         $tipo = 'x';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
             size: $size, tipo: $tipo, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -126,11 +126,11 @@ class htmlTest extends test {
         $tipo = 'x';
         $value = '';
 
-        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+        $resultado = $inicializacion->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
             size: $size, tipo: $tipo, value: $value);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<input  type='x'  class='form-control-x form-control input-x '  name='x'   id=''   placeholder='Ingresa '      title='Ingrese una x'   value=''         > ", $resultado);
+        $this->assertEquals("<input  type='x'  class='form-control-x form-control input-x '  name='x'   placeholder='Ingresa '   title='Ingrese una x'   value=''   > ", $resultado);
 
         errores::$error = false;
     }

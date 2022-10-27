@@ -169,7 +169,7 @@ class directivas extends html {
             return $this->error->error(mensaje: 'Error al generar parametros', data: $params);
         }
 
-        $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,  params: $params,
+        $button = (new botones())->button(cols:  $cols, id_css: $id_css,label: $label, name:  $name,
             stilo: $stilo,type: $type,value:  $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar container', data: $button);
@@ -384,7 +384,7 @@ class directivas extends html {
 
         $html .= $con_label_html;
 
-        $container_html = $this->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize, params: $params,
+        $container_html = $this->html_fecha(campo:  $campo, campo_capitalize:  $campo_capitalize,
             size: $size, tipo: $tipo, value: $value);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar params',data: $container_html);

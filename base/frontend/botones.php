@@ -17,16 +17,15 @@ class botones{
 
     /**
      * FULL
-     * @param string $type
-     * @param string $name
-     * @param string $value
      * @param string $id_css
      * @param string $label
+     * @param string $name
      * @param string $stilo
-     * @param stdClass $params
+     * @param string $type
+     * @param string $value
      * @return string|array
      */
-    private function btn_html(string $id_css, string $label, string $name, stdClass $params,string $stilo,
+    protected function btn_html(string $id_css, string $label, string $name,string $stilo,
                               string $type, string $value): string|array
     {
         $id_css = trim($id_css);
@@ -34,10 +33,6 @@ class botones{
         $name = trim($name);
         $value = trim($value);
 
-        $params = (new params_inputs())->limpia_obj_btn(params: $params);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar params',data:  $params);
-        }
 
         $type = trim ($type);
         if($type === ''){
@@ -50,23 +45,22 @@ class botones{
         }
 
         return "<button type='$type' name='$name' value='$value' id='$id_css'  
-                    class='btn btn-$stilo col-md-12 $params->class' $params->data_extra>$params->icon $label</button>";
+                    class='btn btn-$stilo col-md-12 ' > $label</button>";
 
     }
 
     /**
      * Genera un boton html
-     * @param string $type Tipo de input
-     * @param string $name Nombre del input
-     * @param string $value Valor del input
+     * @param int $cols Columnas para css
      * @param string $id_css identificador css
      * @param string $label Etiqueta del boton
+     * @param string $name Nombre del input
      * @param string $stilo Estilo o contento danger , success etc
-     * @param stdClass $params Parametros del button
-     * @param int $cols Columnas para css
+     * @param string $type Tipo de input
+     * @param string $value Valor del input
      * @return array|string
      */
-    public function button(int $cols,string $id_css, string $label, string $name, stdClass $params,string $stilo,
+    public function button(int $cols,string $id_css, string $label, string $name,string $stilo,
                            string $type, string $value): array|string
     {
         $type = trim ($type);
@@ -78,7 +72,7 @@ class botones{
             return $this->error->error(mensaje: 'Error $stilo esta vacio', data: $stilo);
         }
 
-        $btn = $this->btn_html(id_css:  $id_css, label: $label,name:  $name,params:  $params, stilo: $stilo,
+        $btn = $this->btn_html(id_css:  $id_css, label: $label,name:  $name, stilo: $stilo,
             type: $type, value:  $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar boton', data: $btn);
