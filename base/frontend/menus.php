@@ -269,20 +269,6 @@ class menus{
         return $etiquetas_array;
     }
 
-    /**
-     * PARAMS ORDER
-     * @param string $class_btn
-     * @param string $target
-     * @return array|string
-     */
-    public function item_pestana(string $class_btn, string $target): array|string
-    {
-        $boton = (new botones())->boton_pestana(class_btn: $class_btn,target: $target);
-        if(errores::$error){
-            return $this->error->error('Error al generar boton', $boton);
-        }
-        return '<li class="nav-item">'.$boton.'</li>';
-    }
 
 
 }

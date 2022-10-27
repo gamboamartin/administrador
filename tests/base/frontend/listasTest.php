@@ -542,9 +542,6 @@ class listasTest extends test {
         $resultado = $ls->td_acciones();
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('</i> Acciones </button></td>', $resultado);
-
-
 
         errores::$error = false;
 

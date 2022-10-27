@@ -16,41 +16,6 @@ class botones{
     }
 
     /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
-     * @return string
-     */
-    public function boton_acciones_list(): string
-    {
-        return"<button class='btn btn-outline-info btn-sm'><i class='bi bi-chevron-down'></i> Acciones </button>";
-    }
-
-    /**
-     * PROBADO-PARAMS ORDER-PARAMS INT
-     * @param string $class_btn
-     * @param string $target
-     * @return array|string
-     */
-    public function boton_pestana(string $class_btn, string $target): array|string
-    {
-        $class_btn = trim($class_btn);
-        if($class_btn === ''){
-            return $this->error->error('Error class_btn vacio', $class_btn);
-        }
-
-        $target = trim($target);
-        if($target === '') {
-            return $this->error->error('Error target vacio', $target);
-        }
-
-        $etiqueta = str_replace('_', ' ', $target);
-        $etiqueta = ucwords($etiqueta);
-        $btn = '<button class="nav-link active  btn-'.$class_btn.'"';
-        $btn.='data-toggle="collapse"  data-target="#'.$target.'" aria-expanded="true"';
-        $btn.='aria-controls="'.$target.'" >'.$etiqueta.'</button>';
-        return $btn;
-    }
-
-    /**
      * FULL
      * @param string $type
      * @param string $name

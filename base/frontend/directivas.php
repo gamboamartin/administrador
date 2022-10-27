@@ -324,7 +324,7 @@ class directivas extends html {
     public function fecha(string $campo, array $css = array(), int $cols = 4, string $etiqueta = '',
                           bool $ln = false, string $size = 'md', string $tipo = 'date',
                           string $tipo_letra='capitalize', string $value = '',
-                          bool $value_vacio = false):array|string{ //FIN PROT
+                          bool $value_vacio = false):array|string{
 
         if($etiqueta === ''){
             $etiqueta = ucwords($campo);
@@ -1136,24 +1136,7 @@ class directivas extends html {
 
     }
 
-    /**
-     * PARAMS ORDER
-     * @param array $items
-     * @return array|string
-     */
-    public function items_pestanas(array $items): array|string
-    {
 
-        $items_html = '';
-        foreach ($items as $target=>$class_btn){
-            $item_html = (new menus())->item_pestana($class_btn,$target);
-            if(errores::$error){
-                return $this->errores->error('Error al generar item', $item_html);
-            }
-            $items_html.=$item_html;
-        }
-        return $items_html;
-    }
 
     /**
      * NO SE MUEVE

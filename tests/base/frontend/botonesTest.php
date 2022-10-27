@@ -16,53 +16,7 @@ class botonesTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_boton_acciones_list(){
-        errores::$error = false;
-        $btn = new botones();
-        //$inicializacion = new liberator($inicializacion);
-
-
-        $resultado = $btn->boton_acciones_list();
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<button class='btn btn-outline-info btn-sm'><i class='bi bi-chevron-down'></i> Acciones </button>", $resultado);
-
-
-        errores::$error = false;
-    }
-
-    public function test_boton_pestana(){
-        errores::$error = false;
-        $btn = new botones();
-        //$inicializacion = new liberator($inicializacion);
-
-        $class_btn = '';
-        $target = '';
-        $resultado = $btn->boton_pestana(class_btn: $class_btn, target: $target);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error class_btn vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $class_btn = 'a';
-        $target = '';
-        $resultado = $btn->boton_pestana(class_btn: $class_btn, target: $target);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error target vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $class_btn = 'b';
-        $target = 'd';
-        $resultado = $btn->boton_pestana(class_btn: $class_btn, target: $target);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('<button class="nav-link active  btn-b"data-toggle="collapse"  data-target="#d" aria-expanded="true"aria-controls="d" >D</button>', $resultado);
-
-        errores::$error = false;
-    }
+    
 
     public function test_btn_html(){
         errores::$error = false;

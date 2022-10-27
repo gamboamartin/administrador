@@ -2,7 +2,6 @@
 namespace base\frontend;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use models\accion;
 use models\adm_accion;
 use PDO;
 use stdClass;
@@ -729,10 +728,8 @@ class listas{
     private function genera_text_filtro_lista(array $campo, string $etiqueta, string $value):array|string{
         $directiva = new directivas();
         $clases_css = array('filtro');
-        $ids_css = array('filtro');
         $input_text = $directiva->genera_input_text(campo: "filtro[$campo[tabla_externa]][$campo[campo]]",
-            cols: 2,value: $value,required: false,etiqueta: $etiqueta, data_extra: array(), clases_css: $clases_css,
-            ids_css: $ids_css,size: 'sm');
+            cols: 2,value: $value,etiqueta: $etiqueta, clases_css: $clases_css,size: 'sm');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
         }
@@ -1084,12 +1081,8 @@ class listas{
      */
     private function td_acciones(): string
     {
-        $boton_acciones = (new botones())->boton_acciones_list();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar boton',data: $boton_acciones);
-        }
 
-        $td = $this->td_acciones_base($boton_acciones);
+        $td = $this->td_acciones_base('');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar td',data: $td);
         }
