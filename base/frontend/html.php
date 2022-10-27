@@ -58,7 +58,7 @@ class html  {
      * @example
      *      $input = $this->genera_input($campo, $value, $required, $pattern,$disabled,'text',$etiqueta,$clases_css,$ids_css);
      */
-    protected function genera_input(string $campo, string $value, bool $required, string $pattern, string $tipo,
+    protected function genera_input(string $campo, string $value, string $pattern, string $tipo,
                                     string $etiqueta, array $clases_css, bool $aplica_etiqueta = true,
                                     string $size = 'sm'):string|array{
 
@@ -69,8 +69,7 @@ class html  {
             return $this->error->error('Error al validar', $valida);
         }
 
-        $params = (new params_inputs())->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
-            pattern: $pattern, required: $required, value: $value);
+        $params = (new params_inputs())->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta, pattern: $pattern, value: $value);
 
         if(errores::$error){
             return $this->error->error('Error al genera base input', $params);

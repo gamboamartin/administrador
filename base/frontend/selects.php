@@ -189,8 +189,7 @@ class selects{
             return $this->error->error(mensaje: 'Error al generar header '.$datos->tabla,data: $header_fg);
         }
 
-        $contenedor = $this->genera_contenedor_select(cols: $datos->cols,
-            required: $datos->required,tabla: $datos->tabla, tipo_letra: $datos->tipo_letra,
+        $contenedor = $this->genera_contenedor_select(cols: $datos->cols,tabla: $datos->tabla, tipo_letra: $datos->tipo_letra,
             aplica_etiqueta:  $datos->aplica_etiqueta, etiqueta: $datos->etiqueta,inline: $datos->inline,
             multiple: $datos->multiple, name_input:  $datos->name_input, size: $datos->size);
         if(errores::$error){
@@ -368,7 +367,7 @@ class selects{
      * @internal $this->genera_texto_etiqueta($etiqueta_label, $tipo_letra);
      * @version 1.506.50
      */
-    private function genera_contenedor_select(int $cols, bool $required, string $tabla,
+    private function genera_contenedor_select(int $cols, string $tabla,
                                               string $tipo_letra, bool $aplica_etiqueta = true, string $etiqueta = '',
                                               bool $inline = false, bool $multiple = false, string $name_input = '',
                                               string $size = 'md'):array|string{
@@ -409,11 +408,6 @@ class selects{
 
 
 
-        $required_html = (new params_inputs())->required_html(required: $required);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar required',data: $required_html);
-        }
-
         $multiple_data = (new params_inputs())->multiple_html(multiple: $multiple);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar multiple',data: $multiple_data);
@@ -426,7 +420,7 @@ class selects{
 
         $html .= "<select name='$campo_name_html$multiple_data->data' class='$css_class  
                     selectpicker form-control form-control-$size $inline_html' data-live-search='true' title='$etiqueta_title'  
-                    id='$css_id' $required_html $multiple_data->multiple >";
+                    id='$css_id'  $multiple_data->multiple >";
 
         return $html;
     }

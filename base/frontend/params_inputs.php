@@ -19,12 +19,10 @@ class params_inputs{
      * @param string $campo nombre de input
      * @param array $clases_css Clases de estilos para ser utilizas en css y/o java
      * @param string $pattern Regex para ser integrado en validacion de input via html5
-     * @param bool $required si required input es requerido y se validara via html5
      * @param string $value valor inicial del input puede ser vacio
      * @return array|stdClass Valor en un objeto para ser integrados en un input
      */
-    private function base_input(string $campo, array $clases_css, string $pattern, bool $required,
-                                string $value): array|stdClass
+    private function base_input(string $campo, array $clases_css, string $pattern, string $value): array|stdClass
     {
         $campo = trim($campo);
 
@@ -43,19 +41,12 @@ class params_inputs{
         }
 
 
-        $required_html = $this->required_html(required: $required);
-        if(errores::$error){
-            return $this->error->error('Error al generar required html', $required_html);
-        }
-
-
 
         $value = str_replace("'","`",$value);
 
         $datas = new stdClass();
         $datas->pattern = $html_pattern;
         $datas->class = $class_css_html;
-        $datas->required = $required_html;
         $datas->value = $value;
 
         return $datas;
@@ -239,21 +230,16 @@ class params_inputs{
      * Genera los parametros de una fecha input
      * @param string $campo nombre del campo
      * @param array $css conjunto de css a integrar
-     * @param bool $required Si required deja input como requerido
      * @return array|stdClass
      * @version 1.332.41
      */
-    public function params_fecha(string $campo, array $css, bool $required): array|stdClass
+    public function params_fecha(string $campo, array $css): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
             return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
         }
 
-        $required_html = $this->required_html(required: $required);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar required html',data: $required_html);
-        }
 
         $css_html = (new class_css())->class_css_html(clases_css: $css);
         if (errores::$error) {
@@ -261,7 +247,6 @@ class params_inputs{
         }
 
         $params = new stdClass();
-        $params->required = $required_html;
         $params->class = $css_html;
 
         return $params;
@@ -273,12 +258,10 @@ class params_inputs{
      * @param array $clases_css
      * @param string $etiqueta
      * @param string $pattern
-     * @param bool $required
      * @param string $value
      * @return array|stdClass
      */
-    public function params_input(string $campo, array $clases_css, string $etiqueta, string $pattern, bool $required,
-                                 string $value): array|stdClass
+    public function params_input(string $campo, array $clases_css, string $etiqueta, string $pattern, string $value): array|stdClass
     {
         $campo = trim($campo);
 
@@ -291,8 +274,7 @@ class params_inputs{
             return $this->error->error('Error al genera base input', $base_input_dinamic);
         }
 
-        $data_base_input = $this->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern,
-            required:  $required, value: $value);
+        $data_base_input = $this->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
 
         if(errores::$error){
             return $this->error->error('Error al genera base input', $data_base_input);
@@ -325,6 +307,7 @@ class params_inputs{
     /**
      * Genera required en forma html para ser integrado en un input
      * @version 1.87.19
+     * @stable true
      * @param bool $required indica si es requerido o no
      * @return string required en caso true o vacio en false
      */

@@ -27,7 +27,7 @@ class params_inputsTest extends test {
         $ids_css = array();
         $pattern = '';
         $value = '';
-        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, required: true, value: $value);
+        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacio',
@@ -41,7 +41,7 @@ class params_inputsTest extends test {
         $ids_css = array();
         $pattern = '';
         $value = '';
-        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, required: true, value: $value);
+        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -54,7 +54,7 @@ class params_inputsTest extends test {
         $ids_css = array();
         $pattern = 'a';
         $value = 'b';
-        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, required: true, value: $value);
+        $resultado = $params->base_input(campo: $campo, clases_css: $clases_css, pattern: $pattern, value: $value);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("pattern='a'", $resultado->pattern);
@@ -264,7 +264,7 @@ class params_inputsTest extends test {
         $css = array();
         $ids = array();
         $campo = '';
-        $resultado = $params->params_fecha(campo: $campo,  css: $css, required: false);
+        $resultado = $params->params_fecha(campo: $campo,  css: $css);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error el campo esta vacio', $resultado['mensaje']);
@@ -275,11 +275,10 @@ class params_inputsTest extends test {
         $css = array();
         $ids = array();
         $campo = 'z';
-        $resultado = $params->params_fecha(campo: $campo,  css: $css, required: false);
+        $resultado = $params->params_fecha(campo: $campo,  css: $css);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
-        $this->assertEquals('', $resultado->required);
 
         $this->assertEquals('', $resultado->class);
 
@@ -294,11 +293,9 @@ class params_inputsTest extends test {
         $disabled = false;
         $required = false;
         $css[] = 'p';
-        $resultado = $params->params_fecha(campo: $campo,  css: $css, required: false);
+        $resultado = $params->params_fecha(campo: $campo,  css: $css);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-
-        $this->assertEquals('', $resultado->required);
 
         $this->assertEquals(' p', $resultado->class);
 
@@ -319,8 +316,7 @@ class params_inputsTest extends test {
         $value = '';
 
         $resultado = $params->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
-            pattern: $pattern, required: false,
-            value: $value);
+            pattern: $pattern, value: $value);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacio',
@@ -337,7 +333,7 @@ class params_inputsTest extends test {
         $value = '';
 
         $resultado = $params->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
-            pattern: $pattern, required: false, value: $value);
+            pattern: $pattern, value: $value);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->campo_mostrable);
@@ -357,7 +353,7 @@ class params_inputsTest extends test {
         $value = 'z';
 
         $resultado = $params->params_input(campo: $campo,clases_css: $clases_css, etiqueta: $etiqueta,
-            pattern: $pattern, required: false, value: $value);
+            pattern: $pattern, value: $value);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->campo_mostrable);

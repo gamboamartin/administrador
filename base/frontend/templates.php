@@ -436,8 +436,7 @@ class templates{
         }
 
         if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, etiqueta: $etiqueta, ln: $ln,
-                required: $required, value: $valor);
+            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, etiqueta: $etiqueta, ln: $ln, value: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html);
@@ -484,8 +483,7 @@ class templates{
 
 
             $data_html =  $directiva->genera_select_estatico(campo_name: $campo_name, llaves_valores: $llaves_valores,
-                css_id: $css_id, cols: $cols, etiqueta: $etiqueta, required: $required,
-                valor: $valor );
+                css_id: $css_id, cols: $cols, etiqueta: $etiqueta, valor: $valor );
 
             if(errores::$error){
                 return  $this->error->error('Error al obtener genera_select_estatico',$data_html);
@@ -495,8 +493,7 @@ class templates{
         if( $tipo === 'text') {
 
 
-            $data_html = $directiva->genera_input_text(campo: $campo_name,cols:  $cols, value: $valor,
-                required:  $required,ln:  $ln,etiqueta: $etiqueta,
+            $data_html = $directiva->genera_input_text(campo: $campo_name,cols:  $cols, value: $valor,ln:  $ln,etiqueta: $etiqueta,
                 pattern: $pattern, clases_css: array());
 
             if(errores::$error){
@@ -504,7 +501,7 @@ class templates{
             }
         }
         if( $tipo === 'telefono') {
-            $data_html = $directiva->telefono(campo: $campo_name,cols:  $cols, value: $valor,required:  $required,
+            $data_html = $directiva->telefono(campo: $campo_name,cols:  $cols, value: $valor,
                 ln: $ln,etiqueta: $etiqueta, tipo_letra: 'capitalize');
             if(errores::$error){
                 return  $this->error->error('Error al generar telefono',$data_html);
