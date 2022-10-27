@@ -15,34 +15,7 @@ class etiquetasTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_ajusta_texto(): void{
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        $etiquetas = new liberator($etiquetas);
-        $tipo_letra = '';
-        $texto = '';
-        $resultado = $etiquetas->ajusta_texto(texto: $texto, tipo_letra: $tipo_letra);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
 
-        errores::$error = false;
-        $tipo_letra = '';
-        $texto = 'a';
-        $resultado = $etiquetas->ajusta_texto(texto: $texto, tipo_letra: $tipo_letra);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado);
-
-        errores::$error = false;
-        $tipo_letra = 'mayusculas';
-        $texto = 'a';
-        $resultado = $etiquetas->ajusta_texto(texto: $texto, tipo_letra: $tipo_letra);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('A', $resultado);
-        errores::$error = false;
-    }
 
     public function test_con_label(): void{
         errores::$error = false;
@@ -126,7 +99,7 @@ class etiquetasTest extends test {
         $etiqueta = '';
         $tabla = '';
         $tipo_letra = '';
-        $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla, tipo_letra: $tipo_letra);
+        $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al generar etiqueta', $resultado['mensaje']);
@@ -136,7 +109,7 @@ class etiquetasTest extends test {
         $etiqueta = '';
         $tabla = 'a';
         $tipo_letra = 'capitalize';
-        $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla, tipo_letra: $tipo_letra);
+        $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('A', $resultado);
@@ -146,7 +119,7 @@ class etiquetasTest extends test {
         $etiqueta = 'x';
         $tabla = 'a';
         $tipo_letra = 'capitalize';
-        $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla, tipo_letra: $tipo_letra);
+        $resultado = $etiquetas->etiqueta_label(etiqueta: $etiqueta, tabla: $tabla);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('x', $resultado);
@@ -218,7 +191,7 @@ class etiquetasTest extends test {
         $resultado = $etiquetas->genera_label(aplica_etiqueta: true,campo: $campo,tipo_letra: $tipo_letra,size: $size);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<label for='x' class='col-form-label-x'>X</label>", $resultado);
+
 
         errores::$error = false;
     }
@@ -229,7 +202,7 @@ class etiquetasTest extends test {
         //$inicializacion = new liberator($inicializacion);
         $texto = '';
         $tipo_letra = '';
-        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto, tipo_letra: $tipo_letra);
+        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error texto vacio', $resultado['mensaje']);
@@ -237,7 +210,7 @@ class etiquetasTest extends test {
         errores::$error = false;
         $texto = 'a';
         $tipo_letra = '';
-        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto, tipo_letra: $tipo_letra);
+        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('a', $resultado);
@@ -245,7 +218,7 @@ class etiquetasTest extends test {
         errores::$error = false;
         $texto = 'aa';
         $tipo_letra = 'capitalize';
-        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto, tipo_letra: $tipo_letra);
+        $resultado = $etiquetas->genera_texto_etiqueta(texto: $texto);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('aA', $resultado);

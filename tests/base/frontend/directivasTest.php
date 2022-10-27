@@ -55,7 +55,7 @@ class directivasTest extends test {
         $tipo_letra = '';
         $value = '';
         $resultado = $dir->genera_input_numero(campo: $campo, cols:  $cols,ln:  $ln,
-            required:  $required,tipo_letra:  $tipo_letra, value: $value);
+            required:  $required, value: $value);
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);

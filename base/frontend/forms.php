@@ -1,7 +1,6 @@
 <?php
 namespace base\frontend;
 use gamboamartin\errores\errores;
-use gamboamartin\orm\validaciones;
 use JetBrains\PhpStorm\Pure;
 
 class forms{
@@ -89,26 +88,6 @@ class forms{
         return 'method="POST" enctype="multipart/form-data"';
     }
 
-    /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param int $cols Columnas para mostrar en formulario 1-12
-     * @param string $campo Nombre del campo para html en un input
-     * @return array|string
-     */
-    public function genera_form_group(string $campo, int $cols):array|string{
-
-        $valida = $this->validacion->valida_elementos_base_input(cols:$cols, tabla: $campo);
-        if(errores::$error){
-            return $this->error->error("Error al validar campo", $valida);
-        }
-        $html = "<div class='form-group col-md-$cols selector_$campo'>";
-        $html .= '|label|';
-        $html .='|input|';
-        $html .= '</div>';
-
-
-        return $html;
-    }
 
     /**
      * Obtiene el header de un formulario

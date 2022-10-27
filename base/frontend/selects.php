@@ -189,8 +189,8 @@ class selects{
             return $this->error->error(mensaje: 'Error al generar header '.$datos->tabla,data: $header_fg);
         }
 
-        $contenedor = $this->genera_contenedor_select(cols: $datos->cols,tabla: $datos->tabla, tipo_letra: $datos->tipo_letra,
-            aplica_etiqueta:  $datos->aplica_etiqueta, etiqueta: $datos->etiqueta,inline: $datos->inline,
+        $contenedor = $this->genera_contenedor_select(cols: $datos->cols,tabla: $datos->tabla,
+            tipo_letra: $datos->tipo_letra, aplica_etiqueta:  $datos->aplica_etiqueta, etiqueta: $datos->etiqueta,
             multiple: $datos->multiple, name_input:  $datos->name_input, size: $datos->size);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar contenedor',data:  $contenedor);
@@ -344,21 +344,17 @@ class selects{
     }
 
 
-
     /**
      *
      * Genera un contenedor div
-     * @param string $tabla Tabla - estructura modelo sistema
      * @param int $cols Columnas para asignacion de html entre 1 y 12
-     * @param bool $disabled si disabled el input queda deshabilitado
-     * @param bool $required si required el input es obligatorio en su captura
+     * @param string $tabla Tabla - estructura modelo sistema
      * @param string $tipo_letra Tipo letra para etiquetas
      * @param bool $aplica_etiqueta si aplica etiqueta muestra la etiqueta
-     * @param string $name_input Nombre previo del input
      * @param string $etiqueta Etiqueta input Prioridad
      * @param bool $multiple si multiple se integra un select multiple
+     * @param string $name_input Nombre previo del input
      * @param string $size tamaño de css
-     * @param bool $inline una linea form
      * @return array|string informacion de div en forma html
      * @example
      *     $contenedor = $this->genera_contenedor_select($tabla,$cols,$disabled,$required,$tipo_letra, $aplica_etiqueta,$name_input,$etiqueta);
@@ -367,9 +363,9 @@ class selects{
      * @internal $this->genera_texto_etiqueta($etiqueta_label, $tipo_letra);
      * @version 1.506.50
      */
-    private function genera_contenedor_select(int $cols, string $tabla,
-                                              string $tipo_letra, bool $aplica_etiqueta = true, string $etiqueta = '',
-                                              bool $inline = false, bool $multiple = false, string $name_input = '',
+    private function genera_contenedor_select(int $cols, string $tabla, string $tipo_letra,
+                                              bool $aplica_etiqueta = true, string $etiqueta = '',
+                                              bool $multiple = false, string $name_input = '',
                                               string $size = 'md'):array|string{
 
         $valida_elementos = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $tabla);
@@ -378,21 +374,15 @@ class selects{
         }
 
 
-        $etiqueta_label_mostrable = (new etiquetas())->etiqueta_label(
-            etiqueta:  $etiqueta, tabla: $tabla, tipo_letra: $tipo_letra);
+        $etiqueta_label_mostrable = (new etiquetas())->etiqueta_label(etiqueta:  $etiqueta, tabla: $tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label_mostrable);
         }
 
 
-        $inline_html_lb = (new class_css())->inline_html_lb(inline:  $inline, size: $size);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar inline',data: $inline_html_lb);
-        }
-
         $html = "";
         if($aplica_etiqueta) {
-            $html .=  "<label class='col-form-label-$size $inline_html_lb' for='$tabla'>$etiqueta_label_mostrable</label>";
+            $html .=  "<label class='col-form-label-$size' for='$tabla'>$etiqueta_label_mostrable</label>";
         }
 
         $campo_name_html = $this->campo_name_html(name_input:  $name_input, tabla: $tabla);
@@ -413,13 +403,9 @@ class selects{
             return $this->error->error(mensaje: 'Error al generar multiple',data: $multiple_data);
         }
 
-        $inline_html = (new class_css())->inline_html(inline: $inline, size: $size);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar inline',data: $inline_html);
-        }
 
         $html .= "<select name='$campo_name_html$multiple_data->data' class='$css_class  
-                    selectpicker form-control form-control-$size $inline_html' data-live-search='true' title='$etiqueta_title'  
+                    selectpicker form-control form-control-$size' data-live-search='true' title='$etiqueta_title'  
                     id='$css_id'  $multiple_data->multiple >";
 
         return $html;

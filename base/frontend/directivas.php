@@ -8,7 +8,6 @@ use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 
 use PDO;
-use stdClass;
 
 class directivas extends html {
     private errores $error;
@@ -283,7 +282,7 @@ class directivas extends html {
         if($etiqueta!==''){
             $con_label = true;
         }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta,tipo_letra:  $tipo_letra);
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar etiqueta',data: $campo_capitalize);
         }
@@ -537,30 +536,27 @@ class directivas extends html {
      * Genera un input para ser mostrado en html del front
      *
      * @param string $campo Nombre del campo
-     * @param string $value Valor default a mostrar en el input
-     * @param string $tipo_letra tipo de letra
-     * @param bool $required si el elemento es requerido asigna required al html
-     * @param bool $ln aplica salto de linea
      * @param int $cols columnas a mostrar en md-cols
      *
+     * @param bool $ln aplica salto de linea
+     * @param bool $required si el elemento es requerido asigna required al html
+     * @param string $value Valor default a mostrar en el input
+     * @return array|string html con info del input a mostrar
      * @example
      *      $data_html = $directiva->genera_input_numero($this->campo, $this->cols, $this->valor, $required,'mayusculas',$this->ln);
      *
-     * @return array|string html con info del input a mostrar
-     * @throws errores definidos en internals
      * @uses templates
      *
      * @version 1.355.41
-     * */
-    public function genera_input_numero(string $campo, int $cols,  bool $ln,  bool $required, string $tipo_letra,
-                                        string $value):array|string{  //FIN PROT
+     */
+    public function genera_input_numero(string $campo, int $cols,  bool $ln,  bool $required, string $value):array|string{  //FIN PROT
 
         $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar campo',data: $valida);
         }
 
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo,tipo_letra:  $tipo_letra);
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al generar $campo_capitalize',data: $campo_capitalize);
@@ -702,12 +698,6 @@ class directivas extends html {
             $html .= "<div class='col-md-12'></div>";
         }
 
-        $form  = (new forms())->genera_form_group(campo: $campo, cols: $cols);
-        if(errores::$error){
-            return $this->error->error('Error al generar $form de '.$campo, $form);
-        }
-
-        $html.=$form;
 
         $label = (new etiquetas())->genera_label(aplica_etiqueta: $aplica_etiqueta, campo: $etiqueta,
             tipo_letra: $tipo_letra, size: $size);
@@ -1420,7 +1410,7 @@ class directivas extends html {
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al validar',data: $valida);
         }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto:$campo,tipo_letra: 'capitalize');
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto:$campo);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al generar etiqueta',data: $campo_capitalize);
@@ -1699,14 +1689,7 @@ class directivas extends html {
      * @param string $campo_name
      * @param int $cols numero de columnas entre 1 y 12
      * @param string $value
-     * @param bool $required
-     * @param bool $disabled
-     * @param bool $ln
      * @param string $etiqueta
-     * @param string $pattern
-     * @param string $css_id
-     * @param array $data_extra
-     * @param string $tipo_letra
      * @return string|array html con info del input a mostrar
      * @example
      *      $data_html = $directiva->textarea($this->valor, $this->cols, $this->campo,$con_label);
@@ -1714,8 +1697,7 @@ class directivas extends html {
      * @uses templates
      * @internal $this->genera_texto_etiqueta($campo,$tipo_letra);
      */
-    public function textarea(string $campo_name,int $cols, string $value, bool $required, bool $disabled, bool $ln,
-                             string $etiqueta, string $pattern, string $css_id, array $data_extra, string $tipo_letra='capitalize'):string|array{ //FIN PROT
+    public function textarea(string $campo_name,int $cols, string $value, string $etiqueta):string|array{ //FIN PROT
         if($campo_name === ''){
             return  $this->error->error('Error $campo no puede venir vacio',$campo_name);
         }
@@ -1725,7 +1707,7 @@ class directivas extends html {
         if($cols >12){
             return  $this->error->error('Error cols debe ser menor a 12',$cols);
         }
-        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo_name,tipo_letra: $tipo_letra);
+        $campo_capitalize = (new etiquetas())->genera_texto_etiqueta(texto: $campo_name);
         if(errores::$error){
             return  $this->error->error('Error al $campo_capitalize',$campo_capitalize);
         }

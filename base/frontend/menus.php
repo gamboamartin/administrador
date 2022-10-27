@@ -68,7 +68,7 @@ class menus{
             return $this->error->error(mensaje: 'Error al $etiqueta no puede venir vacia',data: $etiqueta,
                 params: get_defined_vars());
         }
-        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta, tipo_letra: 'capitalize');
+        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar genera_texto_etiqueta', data: $r_etiqueta,
                 params: get_defined_vars());

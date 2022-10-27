@@ -437,7 +437,7 @@ class templates{
         }
         if($tipo === 'numero') {
             $data_html = $directiva->genera_input_numero(campo: $campo_name, cols: $cols, ln: $ln,
-                required: $required, tipo_letra: 'mayusculas', value: $valor);
+                required: $required, value: $valor);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input numero',data: $data_html);
             }
@@ -501,8 +501,7 @@ class templates{
             }
         }
         if( $tipo === 'textarea') {
-            $data_html = $directiva->textarea(campo_name: $campo_name,cols: $cols,value:  $valor,required:  $required,
-                disabled:  $disabled,ln:  $ln,etiqueta:  $etiqueta,pattern:  $pattern,css_id:  $css_id,data_extra:  $data_extra);
+            $data_html = $directiva->textarea(campo_name: $campo_name,cols: $cols,value:  $valor,etiqueta:  $etiqueta);
             if(errores::$error){
                 return  $this->error->error('Error al generar textarea',$data_html);
             }

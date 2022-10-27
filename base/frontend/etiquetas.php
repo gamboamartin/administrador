@@ -12,44 +12,6 @@ class etiquetas{
     #[Pure] public function __construct(){
         $this->error = new errores();
     }
-    /**
-     *
-     * Ajusta el texto enviado basado en el tip de letra capitalize, mayúsculos, minusculas
-     *
-     * @param string $tipo_letra Tipo de letra para realizar ajuste de texto capitalize, mayúsculas, minusculas
-     * @param string $texto Texto a ejecutar funcion de ajuste
-     *
-     * @example
-     *      $tipo_letra = 'mayusculas;
-     *      $texto = 'nombre'
-     *      $campo_capitalize = $this->ajusta_texto($tipo_letra,$texto);
-     *
-     * @return array|string string palabra ajustada
-     * @throws errores texto vacio
-     * @throws errores tipo_letra no sea una de las tres validas
-     * @throws errores tipo_letra vacia
-     * @uses  $directivas->genera_texto_etiqueta
-     * @version 1.310.41
-     */
-    private function ajusta_texto(string $texto, string $tipo_letra ):array|string{
-        $texto = trim($texto);
-        $tipo_letra = trim($tipo_letra);
-
-        $campo_capitalize = $texto;
-        if($tipo_letra === 'capitalize'){
-            $campo_capitalize = strtolower($texto);
-            $campo_capitalize = ucwords($campo_capitalize);
-        }
-        if($tipo_letra === 'mayusculas'){
-            $campo_capitalize = strtoupper($texto);
-        }
-        if($tipo_letra === 'minusculas'){
-            $campo_capitalize = strtolower($texto);
-        }
-
-        return $campo_capitalize;
-    }
-
 
     /**
      * Genera un label en forma de html
@@ -94,19 +56,17 @@ class etiquetas{
     }
 
 
-
     /**
      * Genera la etiqueta de unb input
-     * @param string $tabla Tabla o estructura base para input
-     * @param string $tipo_letra Tipo de letra
      * @param string $etiqueta Etiqueta input Prioridad
+     * @param string $tabla Tabla o estructura base para input
      * @return array|string
      * @version 1.455.49
      */
-    public function etiqueta_label(string $etiqueta, string $tabla, string $tipo_letra): array|string
+    public function etiqueta_label(string $etiqueta, string $tabla): array|string
     {
         $etiqueta_label = strtoupper($tabla);
-        $etiqueta_label = $this->genera_texto_etiqueta(texto: $etiqueta_label, tipo_letra: $tipo_letra);
+        $etiqueta_label = $this->genera_texto_etiqueta(texto: $etiqueta_label);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label);
         }
@@ -162,7 +122,7 @@ class etiquetas{
             return $this->error->error("Error campo vacio", $campo);
         }
 
-        $campo_mostrable = $this->genera_texto_etiqueta(texto: $campo,tipo_letra: $tipo_letra);
+        $campo_mostrable = $this->genera_texto_etiqueta(texto: $campo);
         if(errores::$error){
             return $this->error->error("Error al generar texto", $campo_mostrable);
         }
@@ -188,15 +148,12 @@ class etiquetas{
      * @throws errores tipo_letra vacia
      * @version 1.310.41
      */
-    public function genera_texto_etiqueta(string $texto, string $tipo_letra):array|string{
+    public function genera_texto_etiqueta(string $texto):array|string{
         if($texto === ''){
             return $this->error->error(mensaje: "Error texto vacio",data: $texto);
         }
-        $campo_capitalize = $this->ajusta_texto(texto: $texto, tipo_letra: $tipo_letra);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al ajustar texto",data: $campo_capitalize);
-        }
-        $campo_capitalize = str_replace('_', ' ', $campo_capitalize);
+
+        $campo_capitalize = str_replace('_', ' ', $texto);
 
         return trim($campo_capitalize);
     }
