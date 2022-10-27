@@ -34,7 +34,7 @@ class menus{
             return $this->error->error("Error texto vacio",$etiqueta);
         }
 
-        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta,tipo_letra: 'capitalize');
+        $r_etiqueta = (new etiquetas())->genera_texto_etiqueta(texto: $etiqueta);
         if(errores::$error){
             return $this->error->error('Error al generar texto de etiqueta',$r_etiqueta);
         }
