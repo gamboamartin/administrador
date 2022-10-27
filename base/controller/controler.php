@@ -739,23 +739,7 @@ class controler{
 
     }
 
-    /**
-     * DEBUG INI ERROR DEF
-     * @param array $filtro
-     * @param array $filtro_btn
-     * @return array|int
-     */
-    public function obten_total_registros_filtrados(array $filtro, array $filtro_btn = array()): array|int
-    {
-        
-        $registros = $this->obten_registros_para_lista(0,1,$filtro,$filtro_btn,array($this->tabla.'_id'));
-        if(errores::$error){
-            return  $this->errores->error('Error al generar resultado filtrado',$registros);
-        }
 
-
-        return count($registros);
-    }
 
     private function valida_data_filtro(string $campo, string $tabla): bool|array
     {
