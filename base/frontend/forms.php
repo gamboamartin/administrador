@@ -5,79 +5,13 @@ use JetBrains\PhpStorm\Pure;
 
 class forms{
     private errores $error;
-    private validaciones_directivas $validacion;
+
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validaciones_directivas();
-    }
-
-    /**
-     *
-     * @param string $seccion
-     * @param string $accion
-     * @param array $var_get_extra
-     * @return array|string
-     */
-    public function action_form(string $seccion, string $accion, array $var_get_extra): array|string
-    {
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error('Error $seccion no puede venir vacio',$seccion);
-        }
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error('Error $accion no puede venir vacio',$accion);
-        }
-
-        if(!defined('SESSION_ID')){
-            return $this->error->error('Error SESSION_ID no existe','');
-        }
-
-        $vars = $this->vars_get($var_get_extra);
-        if(errores::$error){
-            return $this->error->error('Error al generar $var_get_extra',$vars);
-        }
-        $vars = (string)$vars;
-
-        return "index.php?seccion=$seccion&accion=$accion&session_id=".SESSION_ID.$vars;
-    }
-
-    /**
-     *
-     * @param string $seccion Seccion del controlador a ejecutar
-     * @param string $accion Accion del controlador a ejecutar
-     * @param int $registro_id Identificador del registro
-     * @param array $var_get_extra Variables por get que se naden extra forma es array(name_variable=>value)
-     * @return string|array
-     */
-    public function action_form_id(string $seccion, string $accion, int $registro_id, array $var_get_extra): string|array
-    {
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error('Error $seccion no puede venir vacio',$seccion);
-        }
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error('Error $accion no puede venir vacio',$accion);
-        }
-        if($registro_id <=0){
-            return $this->error->error('Error $registro_id debe ser mayor a 0',$registro_id);
-        }
-        if(!defined('SESSION_ID')){
-            return $this->error->error('Error SESSION_ID no existe','');
-        }
-        $vars = '';
-        foreach ($var_get_extra as $key=>$value){
-            $vars.="&$key=$value";
-        }
-        $action_form = $this->action_form($seccion, $accion, $var_get_extra);
-        if(errores::$error){
-            return $this->error->error('Error al generar form',$action_form);
-        }
-
-        return $action_form."&registro_id=$registro_id";
 
     }
+
+
 
     /**
      *
@@ -142,33 +76,5 @@ class forms{
         return '<div class="form-group col-md-'.$cols.'">';
     }
 
-    private function var_get(string $key, string $value): array|string
-    {
-        $valida = $this->validacion->valida_vars_get($key, $value);
-        if(errores::$error){
-            return $this->error->error('Error al validar $var_get_extra',$valida);
-        }
-
-        return "&$key=$value";
-    }
-    private function vars_get(array $var_get_extra): array|string
-    {
-        $vars = '';
-        foreach ($var_get_extra as $key=>$value){
-
-            $valida = $this->validacion->valida_vars_get($key, $value);
-            if(errores::$error){
-                return $this->error->error('Error al validar $var_get_extra',$valida);
-            }
-
-            $var_get = $this->var_get($key, $value);
-            if(errores::$error){
-                return $this->error->error('Error al generar $var_get_extra',$var_get);
-            }
-
-            $vars.=$var_get;
-        }
-        return $vars;
-    }
 
 }

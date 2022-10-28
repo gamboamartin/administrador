@@ -98,7 +98,26 @@ class controllerTest extends test {
         errores::$error = false;
     }
 
+    public function test_not_in_post(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler();
+        $ctl = new liberator($ctl);
+
+        $_POST['not_in']['llave'] = 'a';
+        $_POST['not_in']['values'] = array('1');
+        $resultado = $ctl->not_in_post();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado['values'][0]);
+        $this->assertEquals('a',$resultado['llave']);
+        errores::$error = false;
+
+    }
 
 
 
-}
+
+    }

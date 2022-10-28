@@ -222,7 +222,6 @@ class normalizacionTest extends test {
         $resultado = $nm->init_upd_base($controler, $registro);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error al validar POST", $resultado['mensaje']);
 
         errores::$error = false;
 

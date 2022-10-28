@@ -17,31 +17,6 @@ class etiquetasTest extends test {
 
 
 
-
-
-    public function test_etiqueta_campo_vista(): void{
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$etiquetas = new liberator($etiquetas);
-
-        $campo_busca = '';
-        $resultado = $etiquetas->etiqueta_campo_vista(campo_busca: $campo_busca);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("", $resultado);
-
-        errores::$error = false;
-
-
-        $campo_busca = 'a_a';
-        $resultado = $etiquetas->etiqueta_campo_vista(campo_busca: $campo_busca);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("a a", $resultado);
-        errores::$error = false;
-    }
-
-
     public function test_etiqueta_label(){
         errores::$error = false;
         $etiquetas = new etiquetas();
