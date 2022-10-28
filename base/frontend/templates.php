@@ -427,15 +427,6 @@ class templates{
             }
         }
 
-        if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, etiqueta: $etiqueta, value: $valor);
-
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html);
-            }
-        }
-
-
 
         if($tipo === 'select_columnas' || $tipo === 'select'){
             $columnas_sl = array();

@@ -41,45 +41,7 @@ class html  {
     }
 
 
-    /**
-     * Genera un html con un input de fecha
-     * @param string $campo Campo a integra = name
-     * @param string $size sm o md para div
-     * @param string $tipo Tipo de input
-     * @param string $value Valor default
-     * @return string|array
-     * @version 1.352.41
-     */
-    protected function html_fecha(string $campo, string $size, string $tipo,
-                                string $value): string|array
-    {
 
-        $tipo = trim($tipo);
-        if($tipo === ''){
-            return $this->error->error(mensaje: 'Error tipo no puede venir vacio',data:  $tipo);
-        }
-
-        $size = trim($size);
-        if($size === ''){
-            return $this->error->error(mensaje: 'Error $size no puede venir vacio',data:  $size);
-        }
-
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo);
-        }
-
-        $html ="<input ";
-        $html.=" type='$tipo' ";
-        $html.=" class='form-control-$size form-control input-$size ' ";
-        $html.=" name='$campo' ";
-        $html.="  placeholder='Ingresa ' ";
-        $html.="  title='Ingrese una $campo' ";
-        $html.="  value='$value' ";
-        $html.="  > ";
-
-        return $html;
-    }
 
 
 

@@ -26,60 +26,6 @@ class directivas extends html {
 
 
     /**
-     *
-     * Genera un input fecha
-     * @param string $campo Nombre o identificador del campo del input
-     * @param int $cols Columnas para asignacion de html entre 1 y 12
-     * @param string $etiqueta Etiqueta a mostrar
-     * @param string $size tamaño de div base css
-     * @param string $tipo tipo de fecha
-     * @param string $tipo_letra Tipo de leta ucwords capitalize ect
-     * @param string $value Valor asignado
-     * @return array|string informacion de input en forma html
-     * @example
-     *     $controlador->inputs['fecha'] = $controlador->directiva->fecha(4, 'fecha','capitalize',true, false, true, 'Fecha',$controlador->valores['fecha']);
-     *
-     * @internal $this->valida_elementos_base_input($campo,$cols);
-     * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
-     * @version 1.352.41
-     */
-    public function fecha(string $campo, int $cols = 4, string $etiqueta = '', string $size = 'md',
-                          string $tipo = 'date', string $tipo_letra='capitalize', string $value = ''):array|string{
-
-        if($etiqueta === ''){
-            $etiqueta = ucwords($campo);
-        }
-
-        if(trim($etiqueta) === ''){
-            return $this->error->error(mensaje: "Etiqueta vacia",data: $etiqueta);
-        }
-        if($tipo_letra === ''){
-            return $this->error->error(mensaje: 'Envie un tipo de letra valido capitalize normal',data: $tipo_letra);
-        }
-
-        $valida = $this->validacion->valida_elementos_base_input(cols:$cols, tabla: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar",data: $valida);
-        }
-
-
-        $html = "<div class='form-group col-$size-$cols'>";
-
-
-        $container_html = $this->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al integrar params',data: $container_html);
-        }
-
-        $html.=$container_html;
-
-        $html.="  </div> ";
-
-
-        return $html;
-    }
-
-    /**
      * NO SE MUEVE
      * @param PDO $link
      * @param string $fecha

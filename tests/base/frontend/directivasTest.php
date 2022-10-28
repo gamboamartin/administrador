@@ -15,33 +15,6 @@ class directivasTest extends test {
     }
 
 
-    public function test_fecha(): void
-    {
-        errores::$error = false;
-        $dir = new directivas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $campo = 'a';
-        $resultado = $dir->fecha($campo);
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-
-
-        errores::$error = false;
-
-        $campo = 'a';
-        $resultado = $dir->fecha(campo:$campo,value: '2000-01-01');
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-
-
-        errores::$error = false;
-    }
-
-
-
-
 
     public function test_upload_file(): void
     {
