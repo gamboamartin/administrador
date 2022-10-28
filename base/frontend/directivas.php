@@ -27,43 +27,6 @@ class directivas extends html {
 
     /**
      * NO SE MUEVE
-     * @param string $seccion
-     * @param string $accion
-     * @param int $id
-     * @param string $etiqueta
-     * @param string $session_id
-     * @param array $class_css
-     * @param string $icon
-     * @return string
-     */
-    public function boton_link(string $seccion, string $accion, int $id, string $etiqueta, string $session_id, array $class_css = array(),
-                               string $icon = ''): string
-    {
-
-        $class_css_html = '';
-        foreach ($class_css as $css){
-            $class_css_html.=" $css ";
-        }
-
-        if($class_css_html === ''){
-            $class_css_html = 'btn-primary';
-        }
-
-        if($icon !==''){
-            $icon = "<i class='$icon'></i>";
-        }
-
-        $link = "./index.php?seccion=$seccion&accion=$accion&session_id=".$session_id;
-        $link .= "&registro_id=$id";
-        return "<a class='btn $class_css_html' href='$link' role='button'>$icon $etiqueta </a>";
-    }
-
-
-
-
-
-    /**
-     * NO SE MUEVE
      * @param string $seccion Seccion del controlador a ejecutar
      * @param string $accion Accion del controlador a ejecutar
      * @param int $registro_id Identificador del registro

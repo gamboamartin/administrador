@@ -14,15 +14,6 @@ class etiquetas{
     }
 
 
-    /**
-     * PROBADO PARAMS INT PARAMS ORDER ERRORREV
-     * @param string $campo_busca
-     * @return string|string[]
-     */
-    public function etiqueta_campo_vista(string $campo_busca): array|string
-    {
-        return str_replace(array('_', '.', '[', ']'), ' ', $campo_busca);
-    }
 
 
     /**
