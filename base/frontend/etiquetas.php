@@ -14,46 +14,6 @@ class etiquetas{
     }
 
 
-
-
-    /**
-     * Genera la etiqueta de unb input
-     * @param string $etiqueta Etiqueta input Prioridad
-     * @param string $tabla Tabla o estructura base para input
-     * @return array|string
-     * @version 1.455.49
-     */
-    public function etiqueta_label(string $etiqueta, string $tabla): array|string
-    {
-        $etiqueta_label = strtoupper($tabla);
-
-        $etiqueta_label_mostrable = $this->etiqueta_label_mostrable(etiqueta:  $etiqueta, etiqueta_label: $etiqueta_label);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label_mostrable);
-        }
-        return $etiqueta_label_mostrable;
-    }
-
-    /**
-     * Genera una etiqueta para un input
-     * @param string $etiqueta_label Etiqueta input
-     * @param string $etiqueta Etiqueta input Prioridad
-     * @return string
-     * @version 1.455.49
-     */
-    private function etiqueta_label_mostrable(string $etiqueta, string $etiqueta_label): string
-    {
-        $etiqueta = trim($etiqueta);
-        $etiqueta_label = trim($etiqueta_label);
-        $etiqueta_label_mostrable = $etiqueta_label;
-        if($etiqueta!==''){
-            $etiqueta_label_mostrable = $etiqueta;
-        }
-        return $etiqueta_label_mostrable;
-    }
-
-
-
     /**
      * Genera un label de un input de tipo file
      * @param string $etiqueta Etiqueta a mostrar

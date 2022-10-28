@@ -307,7 +307,7 @@ class selectsTest extends test {
         $required = true;
         $tabla = 'a';
         $tipo_letra = '';
-        $resultado = $val->genera_contenedor_select(cols:$cols,tabla:  $tabla,tipo_letra:  $tipo_letra);
+        $resultado = $val->genera_contenedor_select(cols:$cols,tabla:  $tabla);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('selectpicker form-control form-contr', $resultado);

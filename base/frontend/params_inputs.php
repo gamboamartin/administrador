@@ -71,27 +71,6 @@ class params_inputs{
     }
 
 
-
-    /**
-     * Genera un salto de linea html
-     * @param bool $ln Si salto genera un div col 12
-     * @param string $size sm lg etc
-     * @return string|array
-     * @version 1.310.41
-     */
-    public function ln(bool $ln, string $size): string|array
-    {
-        $size = trim($size);
-        if($size === ''){
-            return $this->error->error(mensaje: 'Error size no puede venir vacio',data: $size);
-        }
-        $html = '';
-        if($ln){
-            $html = "<div class='col-$size-12'></div>";
-        }
-        return $html;
-    }
-
     /**
      * Aplica un multiple al input
      * @param bool $multiple si multiple hace el el input se integre para multiples selecciones

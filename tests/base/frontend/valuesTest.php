@@ -244,44 +244,6 @@ class valuesTest extends test {
         $this->assertEquals('-$1.00', $resultado);
 
         errores::$error = false;
-
-
     }
-
-    public function test_value_fecha(): void{
-        errores::$error = false;
-        $val = new values();
-        //$inicializacion = new liberator($inicializacion);
-
-        $value = '';
-        $tipo = '';
-        $value_vacio = false;
-
-        $resultado = $val->value_fecha(tipo:  $tipo, value: $value,value_vacio:  $value_vacio);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-
-        $value = 'a';
-        $tipo = '';
-
-        $resultado = $val->value_fecha(tipo:  $tipo, value: $value,value_vacio:  $value_vacio);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado);
-
-        $value = '';
-        $tipo = 'date';
-
-        $resultado = $val->value_fecha(tipo:  $tipo, value: $value,value_vacio:  $value_vacio);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase(date('Y'), $resultado);
-        errores::$error = false;
-    }
-
 
 }

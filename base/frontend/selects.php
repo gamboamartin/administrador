@@ -179,10 +179,6 @@ class selects{
             }
         }
 
-        $ln_html = (new params_inputs())->ln(ln: $datos->ln, size: $datos->size);
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar ln '.$datos->tabla,data: $ln_html);
-        }
 
         $header_fg = (new forms())->header_form_group(cols: $datos->cols);
         if(errores::$error) {
@@ -190,8 +186,8 @@ class selects{
         }
 
         $contenedor = $this->genera_contenedor_select(cols: $datos->cols,tabla: $datos->tabla,
-            tipo_letra: $datos->tipo_letra, aplica_etiqueta:  $datos->aplica_etiqueta, etiqueta: $datos->etiqueta,
-            multiple: $datos->multiple, name_input:  $datos->name_input, size: $datos->size);
+            aplica_etiqueta:  $datos->aplica_etiqueta, multiple: $datos->multiple,
+            name_input:  $datos->name_input, size: $datos->size);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar contenedor',data:  $contenedor);
 
@@ -202,7 +198,6 @@ class selects{
             return $this->error->error(mensaje: 'Error al generar options', data: $options_html);
         }
 
-        $datos->ln_html = $ln_html;
         $datos->header_fg = $header_fg;
         $datos->contenedor = $contenedor;
         $datos->options_html = $options_html;
@@ -349,9 +344,7 @@ class selects{
      * Genera un contenedor div
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param string $tabla Tabla - estructura modelo sistema
-     * @param string $tipo_letra Tipo letra para etiquetas
      * @param bool $aplica_etiqueta si aplica etiqueta muestra la etiqueta
-     * @param string $etiqueta Etiqueta input Prioridad
      * @param bool $multiple si multiple se integra un select multiple
      * @param string $name_input Nombre previo del input
      * @param string $size tamaño de css
@@ -363,8 +356,7 @@ class selects{
      * @internal $this->genera_texto_etiqueta($etiqueta_label, $tipo_letra);
      * @version 1.506.50
      */
-    private function genera_contenedor_select(int $cols, string $tabla, string $tipo_letra,
-                                              bool $aplica_etiqueta = true, string $etiqueta = '',
+    private function genera_contenedor_select(int $cols, string $tabla, bool $aplica_etiqueta = true,
                                               bool $multiple = false, string $name_input = '',
                                               string $size = 'md'):array|string{
 
@@ -373,16 +365,9 @@ class selects{
             return $this->error->error(mensaje: 'Error al validar elementos',data: $valida_elementos);
         }
 
-
-        $etiqueta_label_mostrable = (new etiquetas())->etiqueta_label(etiqueta:  $etiqueta, tabla: $tabla);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_label_mostrable);
-        }
-
-
         $html = "";
         if($aplica_etiqueta) {
-            $html .=  "<label class='col-form-label-$size' for='$tabla'>$etiqueta_label_mostrable</label>";
+            $html .=  "<label class='col-form-label-$size' for='$tabla'></label>";
         }
 
         $campo_name_html = $this->campo_name_html(name_input:  $name_input, tabla: $tabla);
@@ -393,7 +378,6 @@ class selects{
 
         $css_class = $tabla. '_id';
 
-        $etiqueta_title = $etiqueta_label_mostrable;
         $css_id = 'select_'.$tabla;
 
 
@@ -405,7 +389,7 @@ class selects{
 
 
         $html .= "<select name='$campo_name_html$multiple_data->data' class='$css_class  
-                    selectpicker form-control form-control-$size' data-live-search='true' title='$etiqueta_title'  
+                    selectpicker form-control form-control-$size' data-live-search='true'  
                     id='$css_id'  $multiple_data->multiple >";
 
         return $html;

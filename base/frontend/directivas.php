@@ -31,24 +31,20 @@ class directivas extends html {
      * @param string $campo Nombre o identificador del campo del input
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param string $etiqueta Etiqueta a mostrar
-     * @param bool $ln salto de linea
      * @param string $size tamaño de div base css
      * @param string $tipo tipo de fecha
      * @param string $tipo_letra Tipo de leta ucwords capitalize ect
      * @param string $value Valor asignado
-     * @param bool $value_vacio si vacio deja el elemento vacio
      * @return array|string informacion de input en forma html
      * @example
      *     $controlador->inputs['fecha'] = $controlador->directiva->fecha(4, 'fecha','capitalize',true, false, true, 'Fecha',$controlador->valores['fecha']);
      *
-     * @uses  TODO EL SISTEMA
      * @internal $this->valida_elementos_base_input($campo,$cols);
      * @internal $this->genera_texto_etiqueta($etiqueta, $tipo_letra);
      * @version 1.352.41
      */
-    public function fecha(string $campo, int $cols = 4, string $etiqueta = '', bool $ln = false, string $size = 'md',
-                          string $tipo = 'date', string $tipo_letra='capitalize', string $value = '',
-                          bool $value_vacio = false):array|string{
+    public function fecha(string $campo, int $cols = 4, string $etiqueta = '', string $size = 'md',
+                          string $tipo = 'date', string $tipo_letra='capitalize', string $value = ''):array|string{
 
         if($etiqueta === ''){
             $etiqueta = ucwords($campo);
@@ -67,27 +63,7 @@ class directivas extends html {
         }
 
 
-        $value = (new values())->value_fecha(tipo: $tipo, value: $value, value_vacio: $value_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor',data: $value);
-        }
-
-        $html = '';
-
-
-        $ln_html = (new params_inputs())->ln(ln: $ln,size:  $size);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar ln',data: $ln_html);
-        }
-
-        $html.=$ln_html;
-
-
-
-
-        $html .= "<div class='form-group col-$size-$cols'>";
-
-
+        $html = "<div class='form-group col-$size-$cols'>";
 
 
         $container_html = $this->html_fecha(campo:  $campo, size: $size, tipo: $tipo, value: $value);
@@ -1291,11 +1267,8 @@ class directivas extends html {
      * @param string $campo Nombre del campo
      * @param int $cols numero de columnas entre 1 y 12
      * @param bool $required si required el input sera obligatorio
-     * @param array $class_css clases css
      * @param string $codigo Codigo del tipo de documento
      * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param array $ids Id de tipo css para ser integrados con java o css
-     * @param bool $ln inserta <div class="col-md-12"></div> antes del input
      * @param bool $multiple Si multiple integra in file de multiple docs
      * @return array|string html con info del input a mostrar
      * @example
@@ -1307,8 +1280,8 @@ class directivas extends html {
      * @uses modifica views
      * @version 1.331.41
      */
-    public function upload_file(string $campo,int $cols, bool $required, string $codigo='',
-                                string $etiqueta = '', bool $ln=false, bool $multiple = false):array|string{
+    public function upload_file(string $campo,int $cols, bool $required, string $codigo='', string $etiqueta = '',
+                                bool $multiple = false):array|string{
 
         /**
          * REFACTORIZAR
@@ -1333,12 +1306,7 @@ class directivas extends html {
 
         $html = '';
 
-        $ln_html = (new params_inputs())->ln(ln: $ln,size:  'md');
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener ln',data: $ln_html);
-        }
 
-        $html.=$ln_html;
 
         if($multiple){
 

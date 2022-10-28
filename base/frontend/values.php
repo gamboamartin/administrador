@@ -379,25 +379,6 @@ class values{
         return $registro;
     }
 
-    /**
-     * Genera un valor fecha default
-     * @param string $value valor init
-     * @param bool $value_vacio is vacio deja vacio
-     * @param string $tipo Tipo de fecha date, datetime local
-     * @return string
-     * @version 1
-     * 1.310.41
-     */
-    public function value_fecha(string $tipo, string $value, bool $value_vacio): string
-    {
-        if($value === '' && !$value_vacio && $tipo ==='date'){
-            $value = date('Y-m-d');
-        }
-        if($value==='' && !$value_vacio && $tipo === 'datetime-local'){
-            $value = date("Y-m-d\Th:i");
-        }
-        return $value;
-    }
 
     /**
      * PROBADO P ORDER P INT

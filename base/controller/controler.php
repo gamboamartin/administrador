@@ -537,7 +537,7 @@ class controler{
             return $this->errores->error(mensaje: 'Error al validar not in',data:  $valida);
         }
 
-        $keys = array('llave','values');
+        $keys = array('llave');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $_POST['not_in']);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al validar not in',data:  $valida);

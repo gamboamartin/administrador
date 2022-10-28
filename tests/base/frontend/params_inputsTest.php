@@ -61,35 +61,6 @@ class params_inputsTest extends test {
     }
 
 
-    public function test_ln()
-    {
-        errores::$error = false;
-        $params = new params_inputs();
-
-        $size = '';
-        $resultado = $params->ln(ln: false, size: $size);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error size no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $size = 'a';
-        $resultado = $params->ln(ln: false, size: $size);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-        $size = 'a';
-        $resultado = $params->ln(ln: true, size: $size);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<div class='col-a-12'></div>", $resultado);
-        errores::$error = false;
-    }
-
     public function test_multiple_html(){
         errores::$error = false;
         $params = new params_inputs();

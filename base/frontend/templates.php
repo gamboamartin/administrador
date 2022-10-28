@@ -374,21 +374,20 @@ class templates{
      * Genera un input de tipo HTML
      *
      * @param string $campo_name Name del input
-     * @param string $tipo tipo de input
-     * @param int $cols Columnas para css
-     * @param string $valor Valor del input
-     * @param bool $required Si required genera un atributo de tipo required para input
-     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
-     * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta Etiqueta de input
-     * @param string $pattern Regex para validacion de input
      * @param string $css_id Identificador css para java
-     * @param array $data_extra Elementos para integrar extraparams
-     * @param array $filtro Filtro para selects
-     * @param string $tabla_foranea Tabla de enlace para select
-     * @param bool $select_vacio_alta si true deja select vacio
+     * @param int $cols Columnas para css
      * @param string $columnas Columnas para select
+     * @param array $data_extra Elementos para integrar extraparams
+     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
+     * @param string $etiqueta Etiqueta de input
+     * @param array $filtro Filtro para selects
      * @param string $llaves_valores LLaves para select
+     * @param bool $ln Si true aplica div 12
+     * @param bool $required Si required genera un atributo de tipo required para input
+     * @param bool $select_vacio_alta si true deja select vacio
+     * @param string $tabla_foranea Tabla de enlace para select
+     * @param string $tipo tipo de input
+     * @param string $valor Valor del input
      * @return array|string html con info del input a mostrar
      * @example
      *      $$data_html = $this->genera_dato_html();
@@ -422,14 +421,14 @@ class templates{
 
         if( $tipo === 'documento'){
             $data_html = $directiva->upload_file(campo: $campo_name, cols: $cols, required: $required,
-                etiqueta: $etiqueta, ln: $ln);
+                etiqueta: $etiqueta);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al crear upload_file',data: $data_html);
             }
         }
 
         if( $tipo === 'fecha') {
-            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, etiqueta: $etiqueta, ln: $ln, value: $valor);
+            $data_html =  $directiva->fecha( campo: $campo_name, cols: $cols, etiqueta: $etiqueta, value: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar input fecha',data: $data_html);
@@ -575,24 +574,23 @@ class templates{
     /**
      * P INT
      * Genera un input de tipo HTML
-     * @param string $tipo tipo de input
-     * @param string $campo_name Name del input
-     * @param int $cols Columnas para css
-     * @param string $valor Valor del input
-     * @param bool $required indica si es requerido o no
-     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
-     * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta Etiqueta de input
-     * @param string $pattern Regex para validacion html
-     * @param string $css_id Identificador css para java
-     * @param array $data_extra Elementos para integrar extraparams
-     * @param string $tabla_foranea Tabla de ligue
-     * @param bool $select_vacio_alta si true no mostrara datos el select
-     * @param string $columnas columnas para select
-     * @param string $llaves_valores llaves en forma json
-     * @param array $filtro Filtro para selects
-     * @param array $vistas Conjunto de views permitidas
      * @param string $accion Accion para view
+     * @param string $campo_name Name del input
+     * @param string $css_id Identificador css para java
+     * @param int $cols Columnas para css
+     * @param string $columnas columnas para select
+     * @param array $data_extra Elementos para integrar extraparams
+     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
+     * @param string $etiqueta Etiqueta de input
+     * @param array $filtro Filtro para selects
+     * @param string $llaves_valores llaves en forma json
+     * @param bool $ln Si true aplica div 12
+     * @param bool $required indica si es requerido o no
+     * @param bool $select_vacio_alta si true no mostrara datos el select
+     * @param string $tabla_foranea Tabla de ligue
+     * @param string $tipo tipo de input
+     * @param string $valor Valor del input
+     * @param array $vistas Conjunto de views permitidas
      * @return array|string array con errores o string con html
      * @example
      *      $html = $this->genera_html_input($this->filtro);
