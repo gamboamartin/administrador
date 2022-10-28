@@ -14,16 +14,6 @@ class forms{
 
 
     /**
-     *
-     * @return string
-     */
-    public function data_form_base(): string
-    {
-        return 'method="POST" enctype="multipart/form-data"';
-    }
-
-
-    /**
      * Obtiene el header de un formulario
      * @param string $seccion Seccion en ejecucion
      * @param string $accion Accion ene ejecucion

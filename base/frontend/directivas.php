@@ -26,93 +26,12 @@ class directivas extends html {
 
 
     /**
-     * NO SE MUEVE
-     * @param string $seccion Seccion del controlador a ejecutar
-     * @param string $accion Accion del controlador a ejecutar
-     * @param int $registro_id Identificador del registro
-     * @param array $var_get_extra Variables por get que se añaden extra forma es array(name_variable=>value)
-     * @return array|string
-     */
-    public function data_form_id(string $seccion, string $accion, int $registro_id, array $var_get_extra): array|string
-    {
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->errores->error('Error $seccion no puede venir vacio',$seccion);
-        }
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->errores->error('Error $accion no puede venir vacio',$accion);
-        }
-
-        if($registro_id <=0){
-            return $this->errores->error('Error $registro_id debe ser mayor a 0',$registro_id);
-        }
-
-        $action_form = (new forms())->action_form_id($seccion, $accion, $registro_id,$var_get_extra);
-        if(errores::$error){
-            return $this->errores->error("Error al generar accion_form", $action_form);
-        }
-        $data_form_base = (new forms())->data_form_base();
-        if(errores::$error){
-            return $this->errores->error("Error al generar data_form_base", $data_form_base);
-        }
-
-        return 'action="'.$action_form.'" '.$data_form_base;
-    }
-
-    /**
-     * NO SE MUEVE
-     * @param string $seccion
-     * @param string $accion
-     * @param array $var_get_extra
-     * @return array|string
-     */
-    public function data_form_sin_id(string $seccion, string $accion, array $var_get_extra): array|string
-    {
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->errores->error('Error $seccion no puede venir vacio',$seccion);
-        }
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->errores->error('Error $accion no puede venir vacio',$accion);
-        }
-
-        $action_form = (new forms())->action_form($seccion, $accion,$var_get_extra);
-        if(errores::$error){
-            return $this->errores->error("Error al generar accion_form", $action_form);
-        }
-        $data_form_base = (new forms())->data_form_base();
-        if(errores::$error){
-            return $this->errores->error("Error al generar data_form_base", $data_form_base);
-        }
-
-        return 'action="'.$action_form.'" '.$data_form_base;
-    }
-
-    /**
-     * NO SE MUEVE
-     * @param string $target
-     * @param string $include
-     * @return void
-     */
-    public function data_pestana(string $target, string $include){
-        $header_section = '';
-        echo  '<div id="'.$target.'" class="collapse" data-parent=".view">';
-        require $include;
-        echo '</div>';
-    }
-
-
-    /**
      *
      * Genera un input fecha
      * @param string $campo Nombre o identificador del campo del input
-     * @param array $css Conjunto de css a integrar a elemento
      * @param int $cols Columnas para asignacion de html entre 1 y 12
      * @param string $etiqueta Etiqueta a mostrar
      * @param bool $ln salto de linea
-     * @param bool $required Si required deja input como requerido
      * @param string $size tamaño de div base css
      * @param string $tipo tipo de fecha
      * @param string $tipo_letra Tipo de leta ucwords capitalize ect

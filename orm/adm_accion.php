@@ -86,14 +86,25 @@ class adm_accion extends modelo{ //FINALIZADAS
         return $r_accion;
     }
 
-    public function acciones_id_por_grupo(int $adm_grupo_id): array
+    private function acciones_id_maqueta(array $adm_acciones_grupos): array
     {
-        if($adm_grupo_id <=0){
-            return $this->error->error('Error adm_grupo_id debe ser mayor a 0', $adm_grupo_id);
+        $acciones = array();
+        foreach ($adm_acciones_grupos as $adm_accion_grupo){
+            $acciones[] = $adm_accion_grupo['adm_accion_id'];
         }
-        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        return $acciones;
+    }
+
+    public function acciones_id_por_grupo(int $adm_grupo_id = -1, int $adm_seccion_id = -1): array
+    {
+        $filtro = $this->filtro_seccion_grupo(adm_grupo_id: $adm_grupo_id,adm_seccion_id:  $adm_seccion_id);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener filtro', $filtro);
+        }
+
         $group_by[] = 'adm_accion.id';
         $columnas = array('adm_accion_id');
+
         $r_acciones_grupo = (new adm_accion_grupo($this->link))->filtro_and(
             columnas: $columnas, filtro: $filtro, group_by: $group_by);
         if (errores::$error) {
@@ -101,12 +112,13 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
         $adm_acciones_grupos = $r_acciones_grupo->registros;
 
-        $grupos = array();
-        foreach ($adm_acciones_grupos as $adm_accion_grupo){
-            $grupos[] = $adm_accion_grupo['adm_accion_id'];
+
+        $acciones = $this->acciones_id_maqueta(adm_acciones_grupos: $adm_acciones_grupos);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener acciones', $r_acciones_grupo);
         }
 
-        return $grupos;
+        return $acciones;
 
     }
 
@@ -338,6 +350,18 @@ class adm_accion extends modelo{ //FINALIZADAS
         return $filtro;
     }
 
+    private function filtro_seccion_grupo(int $adm_grupo_id, int $adm_seccion_id): array
+    {
+        $filtro = array();
+        if($adm_grupo_id > 0){
+            $filtro['adm_grupo.id'] = $adm_grupo_id;
+        }
+        if($adm_seccion_id > 0){
+            $filtro['adm_seccion.id'] = $adm_seccion_id;
+        }
+        return $filtro;
+    }
+
     private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
     {
         $n_permisos = $this->n_permisos(accion: $accion, grupo_id: $grupo_id, seccion: $seccion);
@@ -351,6 +375,8 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
         return $permiso_valido;
     }
+
+
 
 
     public function grupos_id_por_accion(int $adm_accion_id): array
