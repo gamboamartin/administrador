@@ -13,61 +13,7 @@ class params_inputs{
         $this->validacion = new validaciones_directivas();
     }
 
-    /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * Asigna los parametros de un input para ser utilizados en java o css
-     * @param string $campo nombre de input
-     * @param string $pattern Regex para ser integrado en validacion de input via html5
-     * @param string $value valor inicial del input puede ser vacio
-     * @return array|stdClass Valor en un objeto para ser integrados en un input
-     */
-    private function base_input(string $campo, string $pattern, string $value): array|stdClass
-    {
-        $campo = trim($campo);
 
-        if($campo === ''){
-            return $this->error->error('Error el campo no puede venir vacio', $campo);
-        }
-
-        $html_pattern = $this->pattern_html(pattern: $pattern);
-        if(errores::$error){
-            return $this->error->error('Error al generar pattern css', $html_pattern);
-        }
-
-        $value = str_replace("'","`",$value);
-
-        $datas = new stdClass();
-        $datas->pattern = $html_pattern;
-        $datas->value = $value;
-
-        return $datas;
-    }
-
-    /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $etiqueta
-     * @param string $campo
-     * @return stdClass|array
-     */
-    private function base_input_dinamic( string $campo, string $etiqueta): stdClass|array
-    {
-        $etiqueta = trim($etiqueta);
-        $campo = trim($campo);
-
-        if($campo === ''){
-            return $this->error->error('Error el campo no puede venir vacio', $campo);
-        }
-
-        $campo_mostrable = $etiqueta;
-        $place_holder = $campo_mostrable;
-        $name = $campo;
-
-        $data = new stdClass();
-        $data->campo_mostrable = $etiqueta;
-        $data->place_holder = $place_holder;
-        $data->name = $name;
-        return $data;
-    }
 
 
     /**
@@ -164,59 +110,6 @@ class params_inputs{
         $data->multiple = $multiple_html;
         $data->data = $data_array;
         return $data;
-    }
-
-
-
-    /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param string $campo
-     * @param string $etiqueta
-     * @param string $pattern
-     * @param string $value
-     * @return array|stdClass
-     */
-    public function params_input(string $campo, string $etiqueta, string $pattern, string $value): array|stdClass
-    {
-        $campo = trim($campo);
-
-        if($campo === ''){
-            return $this->error->error('Error el campo no puede venir vacio', $campo);
-        }
-
-        $base_input_dinamic = $this->base_input_dinamic(campo:  $campo, etiqueta: $etiqueta);
-        if(errores::$error){
-            return $this->error->error('Error al genera base input', $base_input_dinamic);
-        }
-
-        $data_base_input = $this->base_input(campo: $campo, pattern: $pattern, value: $value);
-
-        if(errores::$error){
-            return $this->error->error('Error al genera base input', $data_base_input);
-        }
-
-        $obj = new stdClass();
-        foreach ($base_input_dinamic as $name=>$base){
-            $obj->$name = $base;
-        }
-        foreach ($data_base_input as $name=>$base){
-            $obj->$name = $base;
-        }
-        return $obj;
-    }
-
-    /**
-     * PROBADO - PARAMS-ORDER PARAMS INT
-     * @param string $pattern
-     * @return string
-     */
-    private function pattern_html(string $pattern): string
-    {
-        $html_pattern = '';
-        if($pattern){
-            $html_pattern = "pattern='$pattern'";
-        }
-        return $html_pattern;
     }
 
     /**

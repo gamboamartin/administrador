@@ -42,47 +42,6 @@ class html  {
 
 
     /**
-     * P INT
-     * Genera un input para ser mostrado en html del front
-     *
-     * @param string $campo Nombre del campo
-     * @param string $value Valor default a mostrar en el input
-     * @param string $pattern expresion regular a validar en el evento submit
-     * @param string $tipo tipo de input ej  text, file
-     * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param bool $aplica_etiqueta si aplica etiqueta mostrar el label del campo si no no integra label
-     * @param string $size Tamano del input sm md lg
-     * @return string|array html con info del input a mostrar
-     * @example
-     *      $input = $this->genera_input($campo, $value, $required, $pattern,$disabled,'text',$etiqueta,$clases_css,$ids_css);
-     */
-    protected function genera_input(string $campo, string $value, string $pattern, string $tipo,
-                                    string $etiqueta, bool $aplica_etiqueta = true,
-                                    string $size = 'sm'):string|array{
-
-
-        $valida = $this->validacion->valida_input_text(aplica_etiqueta: $aplica_etiqueta, etiqueta: $etiqueta,
-            campo: $campo, tipo: $tipo);
-        if(errores::$error){
-            return $this->error->error('Error al validar', $valida);
-        }
-
-        $params = (new params_inputs())->params_input(campo: $campo, etiqueta: $etiqueta, pattern: $pattern, value: $value);
-
-        if(errores::$error){
-            return $this->error->error('Error al genera base input', $params);
-        }
-
-        $html = $this->integra_html_input(params: $params, size: $size, tipo: $tipo);
-        if(errores::$error){
-            return $this->error->error('Error al integrar html', $html);
-        }
-
-        return $html;
-    }
-
-
-    /**
      * Genera un html con un input de fecha
      * @param string $campo Campo a integra = name
      * @param string $size sm o md para div
@@ -123,44 +82,5 @@ class html  {
     }
 
 
-    /**
-     * P INT
-     * @param string $tipo
-     * @param string $size
-     * @param stdClass $params
-     * @return string|array
-     */
-    private function integra_html_input(stdClass $params, string $size, string $tipo): string|array
-    {
-        $tipo = trim($tipo);
-        if($tipo === ''){
-            return $this->error->error('Error tipo no puede venir vacio', $tipo);
-        }
-        $size = trim($size);
-        if($size === ''){
-            return $this->error->error('Error $size no puede venir vacio', $size);
-        }
-
-        $keys = array('class','ids','name','place_holder','required','campo_mostrable','pattern','value','disabled','data_extra');
-        foreach($keys as $key){
-            if(!isset($params->$key)){
-                $params->$key = '';
-            }
-        }
-
-        $html = "<input type='$tipo' ";
-        $html .= " class='form-control form-control-$size $params->class"."' ";
-        $html .= " id='$params->ids"."' ";
-        $html .= " name='".$params->name."' ";
-        $html .= " placeholder='$params->place_holder' ";
-        $html .= " $params->required ";
-        $html .= " title='$params->campo_mostrable' ";
-        $html .= " $params->pattern ";
-        $html .= " value='$params->value' ";
-        $html .= " $params->disabled ";
-        $html .= " $params->data_extra ";
-        $html .= " > ";
-        return $html;
-    }
 
 }

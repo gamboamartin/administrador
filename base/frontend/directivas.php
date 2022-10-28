@@ -26,61 +26,6 @@ class directivas extends html {
 
 
     /**
-     * P INT
-     * Genera un input con un pattern para telefono
-     *
-     * @param array $inputs
-     * @param string $campo Nombre del campo
-     * @param array $valores valores default de los inputs a mostrar
-     * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param string $tipo_campo text o telefono
-     * @param int $cols columnas css
-     * @param string $pattern Regex de ejecucion en html5
-     * @param bool $ln
-     * @return array|string html con info del input a mostrar dependiendo el tipo de input
-     * @example
-     *      $this->inputs[$campo] = $this->asigna_campo_template($campo,$data_input_template['valores'],
-     *          $data_input_template['etiqueta'],$clases_css,'telefono',$required);
-     */
-    private function asigna_campo_template(array $inputs, string $campo, array $valores, string $etiqueta,
-                                           string $tipo_campo, int $cols = 4, string $pattern = '', bool $ln = false):array|string{
-
-        if(count($valores) === 0){
-            return $this->errores->error('Valores no puede venir vacio',$valores);
-        }
-        if($tipo_campo === ''){
-            return $this->errores->error('El tipo campo no puede venir vacio ' . $campo,$tipo_campo);
-        }
-        if($tipo_campo !=='text' && $tipo_campo !=='telefono'){
-            return $this->errores->error('El tipo campo debe ser text o telefono ' . $campo,$tipo_campo);
-        }
-        if(!isset($valores[$campo])){
-            $valores[$campo] = '';
-        }
-        if($etiqueta === ''){
-            return $this->errores->error('Etiqueta no puede venir vacio ' . $campo,$etiqueta);
-        }
-
-        if($tipo_campo === 'text') {
-
-            $inputs[$campo] = $this->genera_input_text(campo: $campo,cols:  $cols,value:  $valores[$campo],
-                ln:  $ln,etiqueta: $etiqueta, pattern: $pattern);
-            if (errores::$error) {
-                return $this->errores->error('Error al generar ' . $campo,$inputs[$campo]);
-            }
-        }
-        if($tipo_campo === 'telefono'){
-            $inputs[$campo] =  $this->telefono(campo: $campo,cols: $cols, value: $valores[$campo],
-                ln:  $ln,etiqueta: $etiqueta,size: 'md');
-            if(errores::$error){
-                return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
-            }
-        }
-
-        return $inputs[$campo];
-    }
-
-    /**
      * NO SE MUEVE
      * @param string $seccion
      * @param string $accion
@@ -116,43 +61,6 @@ class directivas extends html {
 
 
 
-
-    /**
-     * NO SE MUEVE
-     * @param string $etiqueta_campo_busca
-     * @param string $campo_busca
-     * @param string $valor_busca_fault
-     * @return array
-     */
-    private function busqueda_base(string $etiqueta_campo_busca, string $campo_busca, string $valor_busca_fault): array
-    {
-
-
-        $campo_busca_r = $this->campo_busca($etiqueta_campo_busca, $campo_busca, $valor_busca_fault);
-        if(errores::$error){
-            return $this->errores->error('Error al campo de busqueda',$campo_busca_r);
-
-        }
-
-        return array('campo_busca'=>$campo_busca_r);
-    }
-
-    /**
-     * NO SE MUEVE
-     * @param string $etiqueta_campo_busca
-     * @param string $campo_busca
-     * @param string $valor_busca_fault
-     * @return array|string
-     */
-    private function campo_busca(string $etiqueta_campo_busca, string $campo_busca, string $valor_busca_fault): array|string
-    {
-        $campo_busca_r = $this->genera_input_text($campo_busca,1,$valor_busca_fault,
-            true,false,$etiqueta_campo_busca);
-        if(errores::$error){
-            return $this->errores->error('Error al campo de busqueda',$campo_busca_r);
-        }
-        return $campo_busca_r;
-    }
 
     /**
      * NO SE MUEVE
@@ -578,63 +486,6 @@ class directivas extends html {
 
 
     /**
-     * P INT
-     * Genera un input para ser mostrado en html del front
-     *
-     * @param string $campo Nombre del campo
-     * @param int $cols numero de columnas entre 1 y 12
-     * @param string $value Valor default a mostrar en el input
-     * @param bool $ln inserta <div class="col-md-12"></div> antes del input
-     * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param string $pattern expresion regular a validar en el evento submit
-     * @param bool $aplica_etiqueta si aplica etiqueta mostrar el label del campo si no no integra label
-     * @param string $size
-     * @return array|string html con info del input a mostrar
-     * @example
-     *      $input = $directiva->genera_input_text($campo,12,'',true,'',false,'capitalize',false,'',array(),array(),false);
-     */
-    public function genera_input_text(string $campo, int $cols = 12 , string $value = '', bool $ln = false,
-                                      string $etiqueta = '', string $pattern = '', bool $aplica_etiqueta = true,
-                                      string $size = 'md'):array|string{
-
-        if($etiqueta === ''){
-            $etiqueta = $campo;
-        }
-
-        $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar", data: $valida);
-        }
-        if($aplica_etiqueta) {
-            $etiqueta = str_replace('_',' ',$etiqueta);
-            $etiqueta_valida = $this->validacion->letra_numero_espacio(txt: $etiqueta);
-            if (!$etiqueta_valida) {
-                return $this->error->error(mensaje: "Error etiqueta invalida", data: $etiqueta);
-            }
-        }
-
-        $html = '';
-
-        if($ln){
-            $html .= "<div class='col-md-12'></div>";
-        }
-
-
-
-        $tipo = 'text';
-        $input = $this->genera_input(campo: $campo,value:  $value, pattern: $pattern,
-            tipo: $tipo,etiqueta: $etiqueta, aplica_etiqueta: false,size: $size);
-
-        if(errores::$error){
-            return $this->error->error('Error al generar input', $input);
-        }
-
-        $html = str_replace(array('|label|', '|input|'), array( $input), $html);
-        $this->html = $html;
-        return $html;
-    }
-
-    /**
      * NO SE MUEVE
      * Genera un input con un pattern para telefono
      *
@@ -660,12 +511,7 @@ class directivas extends html {
         if(errores::$error){
             return $this->errores->error('Error al obtener datos ',$data_input_template);
         }
-        $inputs[$campo] = $this->asigna_campo_template($inputs,$campo,$data_input_template['valores'],
-            $data_input_template['etiqueta'],'text',$cols, $pattern);
 
-        if(errores::$error){
-            return $this->errores->error('Error al generar '.$campo,$inputs[$campo]);
-        }
 
         return $inputs;
     }
@@ -1276,30 +1122,6 @@ class directivas extends html {
         return $html;
     }
 
-    /**
-     * NO SE MUEVE
-     * @param string $campo_busca
-     * @param string $valor_busca_fault
-     * @return array
-     */
-    public function panel_busca(string $campo_busca, string $valor_busca_fault): array
-    {
-        $etiqueta_campo_busca = (new etiquetas())->etiqueta_campo_vista(campo_busca: $campo_busca);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar etiqueta',data: $etiqueta_campo_busca);
-        }
-
-        $inputs_busca = $this->busqueda_base(etiqueta_campo_busca: $etiqueta_campo_busca, campo_busca: $campo_busca,
-            valor_busca_fault: $valor_busca_fault);
-        if(errores::$error){
-            return $this->errores->error('Error al generar datos de busqueda',$inputs_busca);
-        }
-
-
-        return $inputs_busca;
-    }
-
-
 
     /**
      * NO SE MUEVE
@@ -1518,39 +1340,6 @@ class directivas extends html {
         return $html;
     }
 
-    /**
-     * P INT
-     * Genera un input con un pattern para telefono
-     *
-     * @param string $campo Nombre del campo
-     * @param int $cols numero de columnas entre 1 y 12
-     * @param string $value Valor default a mostrar en el input
-     * @param bool $ln inserta <div class="col-md-12"></div> antes del input
-     *
-     * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param string $size
-     * @return array|string html con info del input a mostrar con pattern de telefono
-     * @example
-     *      $this->inputs[$campo] =  $this->directiva->telefono($campo,4, $valores[$campo], $required,'', 'capitalize',
-     *          false,$etiqueta,$clases_css);
-     */
-    public function telefono(string $campo, int $cols, string $value, bool $ln, string $etiqueta, string $size = 'sm'):array|string{
-
-        $valida = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $campo);
-        if(errores::$error){
-            return $this->error->error('Error al validar '.$campo,$valida);
-        }
-
-        $html = $this->genera_input_text(campo: $campo,cols: $cols,value: $value,ln:  $ln,
-            etiqueta: $etiqueta,pattern: '[0-9]{10}',size: $size);
-
-        if(errores::$error){
-            return $this->error->error('Error al generar text '.$campo,$html);
-        }
-
-
-        return $html;
-    }
 
     /**
      * P INT

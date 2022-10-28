@@ -110,15 +110,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->filtro_boton_lista = $filtro_boton_lista;
 
 
-        $inputs_busca = $this->directiva->panel_busca(campo_busca: $this->campo_busca,
-            valor_busca_fault: $this->valor_busca_fault);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar datos de busqueda',data: $inputs_busca);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->campo_busca = $inputs_busca['campo_busca'];
 
 
         parent::__construct();

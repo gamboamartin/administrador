@@ -405,10 +405,9 @@ class listas{
     /**
      *
      * @param string $seccion
-     * @param array $campos_filtro
      * @return array|string
      */
-    private function filtros_para_lista(string $seccion, array $campos_filtro): array|string
+    private function filtros_para_lista(string $seccion): array|string
     {
         $namespace = 'models\\';
         $seccion = str_replace($namespace,'',$seccion);
@@ -427,17 +426,8 @@ class listas{
             return $this->error->error('Error filtro debe ser un array',$filtro);
         }
 
-        $inputs_filtro_html = $this->genera_filtros_html_lista(filtro: $filtro,campos_filtro:  $campos_filtro);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtros de lista',$inputs_filtro_html);
-        }
 
-        $btn = (new directivas())->btn_enviar(label:'Filtro',type: 'button',class_css: array('btn-filtro'));
-        if(errores::$error){
-            return $this->error->error('Error al generar boton',$btn);
-        }
-
-        return '<div class="col-md-12"><hr></div><div class="row col-md-12">'.$btn.'</div><div class="row col-md-12 form-row filtro-base">'.$inputs_filtro_html.'</div>';;
+        return '<div class="col-md-12"><hr></div><div class="row col-md-12">'.'</div><div class="row col-md-12 form-row filtro-base">'.'</div>';
     }
 
     /**
@@ -625,28 +615,7 @@ class listas{
         return $filtro_btn_html;
     }
 
-    /**
-     *
-     * @param array $filtro
-     * @param array $campos_filtro
-     * @return array|string
-     */
-    private function genera_filtros_html_lista(array $filtro, array $campos_filtro): array|string
-    {
-        $inputs_filtro_html = '';
-        foreach($campos_filtro as $campo) {
-            if(!is_array($campo)){
-                return $this->error->error(mensaje: 'Error campo debe ser un array',data: $campo);
-            }
-            $input_text = $this->genera_input_text_filtro(campo: $campo,filtro: $filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
-            }
-            $inputs_filtro_html .= $input_text;
-        }
 
-        return $inputs_filtro_html;
-    }
 
     /**
      * P INT
@@ -657,7 +626,7 @@ class listas{
      * @return array|string
      */
 
-    public function genera_filtros_lista(array $botones_filtros, string $seccion, array $campos_filtro, string $session_id ): array|string
+    public function genera_filtros_lista(array $botones_filtros, string $seccion, string $session_id ): array|string
     {
         $html = '';
 
@@ -668,7 +637,7 @@ class listas{
         }
         $html.=$filtro_btn_html;
 
-        $inputs_filtro_html = $this->filtros_para_lista(seccion: $seccion, campos_filtro: $campos_filtro);
+        $inputs_filtro_html = $this->filtros_para_lista(seccion: $seccion);
         if(errores::$error){
             return $this->error->error('Error al generar filtros de lista',$inputs_filtro_html);
         }
@@ -694,47 +663,7 @@ class listas{
         return $html;
     }
 
-    /**
-     *
-     * @param array $campo
-     * @param array $filtro
-     * @return string|array
-     */
-    private function genera_input_text_filtro(array $campo, array $filtro): string|array
-    {
-        $keys = array('etiqueta','tabla_externa','campo');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar campo',data: $valida);
-        }
-        $etiqueta = $campo['etiqueta'];
-        $value = $filtro[$campo['tabla_externa']][$campo['campo']]['value']??false;
 
-        $input_text = $this->genera_text_filtro_lista(campo: $campo,etiqueta: $etiqueta,value: $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
-        }
-
-        return $input_text;
-    }
-
-    /**
-     *
-     * @param array $campo
-     * @param string $etiqueta
-     * @param string $value
-     * @return array|string
-     */
-    private function genera_text_filtro_lista(array $campo, string $etiqueta, string $value):array|string{
-        $directiva = new directivas();
-        $clases_css = array('filtro');
-        $input_text = $directiva->genera_input_text(campo: "filtro[$campo[tabla_externa]][$campo[campo]]",
-            cols: 2,value: $value,etiqueta: $etiqueta, clases_css: $clases_css,size: 'sm');
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar input',data: $input_text);
-        }
-        return $input_text;
-    }
 
     /**
      * P ORDER P INT
@@ -886,38 +815,23 @@ class listas{
         $html.="        <div class='row col-md-12 no-print'>";
 
 
-        $btn = $directiva->btn_enviar(label: 'Filtrar',name: 'btn_filtrar',value: 'activo', stilo: 'success btn-sm',
-            class_css: array('filtro-base'));
-        if(errores::$error){
-            return $this->error->error('Error al generar btn',$btn);
-        }
+
         $html.="<div class='col-md-4'>";
-        $html .=  $btn;
+
         $html.="</div>";
 
-        $btn = $directiva->btn_enviar(label: 'Limpiar',name: 'btn_limpiar',value: 'activo',
-            stilo: 'warning btn-sm',class_css: array('filtro-base'));
-        if(errores::$error){
-            return $this->error->error('Error al generar btn',$btn);
-        }
+
         $html.="<div class='col-md-4'>";
-        $html .=  $btn;
+
         $html.="</div>";
 
         $seccion_xls = $seccion;
         $accion_xls = 'xls_lista';
 
-        $btn =  "
-                <a href='./index.php?seccion=" . $seccion_xls . '&accion=' . $accion_xls . '&session_id=' . $session_id . $filtro_boton_seleccionado_html."'  
-                title='Exporta Excel' alt='Exporta Excel' class='no-print'>
-            " . $directiva->btn_enviar(label: 'Exporta Excel',name: 'btn_xls',value: 'activo',type: 'button',stilo: 'info btn-sm') . '</a>';
 
-        if(errores::$error){
-            return $this->error->error('Error al generar btn',$btn);
-        }
 
         $html.="<div class='col-md-4'>";
-        $html .=  $btn;
+
         $html.="</div>";
 
         $html.=         "</div>";
