@@ -2,42 +2,16 @@
 namespace base\frontend;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use PDO;
-use stdClass;
+
 
 class links{
     private errores $error;
-    private validaciones_directivas $validacion;
+
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validaciones_directivas();
+
     }
 
-    /**
-     * P INT
-     * @param PDO|bool $link
-     * @param bool $valida_accion
-     * @param string $seccion
-     * @param string $accion
-     * @param array $accion_registro
-     * @return bool|array|stdClass
-     */
-    public function aplica_data_link_validado(PDO|bool $link, bool $valida_accion, string $seccion, string $accion, array $accion_registro): bool|array|stdClass
-    {
-        $data_link = false;
-        if($link && $valida_accion) {
-            $valida = $this->validacion->seccion_accion(seccion: $seccion,accion:  $accion);
-            if(errores::$error){
-                return  $this->error->error(mensaje: 'Error al validar seccion', data: $valida, params: get_defined_vars());
-            }
-
-            $data_link = $this->data_link_conectado(seccion: $seccion,accion:  $accion,accion_registro:  $accion_registro);
-            if(errores::$error){
-                return   $this->error->error('Error al generar datos ', $data_link);
-            }
-        }
-        return $data_link;
-    }
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
@@ -76,70 +50,6 @@ class links{
         data-toggle = "'.$data_toggle.'" '.$datas_html.' >'.$label.' '.$icon.'</button>';
 
         return $btn;
-    }
-
-    /**
-     * P INT
-     * @param array $accion_registro
-     * @return bool|array|stdClass
-     */
-    private function data_link_bd(array $accion_registro): bool|array|stdClass
-    {
-        $data_link = false;
-        if( count($accion_registro) > 0 ){
-            $data_link = $this->data_link_br(accion_registro: $accion_registro);
-            if(errores::$error){
-                return   $this->error->error('Error al generar datos ', $data_link);
-            }
-
-        }
-        return $data_link;
-    }
-
-    /**
-     * P INT
-     * @param string $seccion
-     * @param string $accion
-     * @param array $accion_registro
-     * @return bool|array|stdClass
-     */
-    private function data_link_conectado(string $seccion, string $accion, array $accion_registro): bool|array|stdClass
-    {
-        $valida = $this->validacion->seccion_accion(seccion: $seccion,accion:  $accion);
-        if(errores::$error){
-            return  $this->error->error('Error al validar seccion',$valida);
-        }
-
-
-        $data_link = $this->data_link_bd(accion_registro: $accion_registro);
-        if(errores::$error){
-            return   $this->error->error('Error al generar datos ', $data_link);
-        }
-        return $data_link;
-    }
-
-    /**
-     * P INT
-     * @param array $accion_registro
-     * @return stdClass
-     */
-    private function data_link_br(array $accion_registro): stdClass
-    {
-
-
-        $seccion_br = '';
-        $accion_br = '';
-        if((string)$accion_registro['seccion_menu_etiqueta_label'] !== '') {
-            $seccion_br = $accion_registro['seccion_menu_etiqueta_label'];
-        }
-        if((string)$accion_registro['accion_etiqueta_label'] !=='') {
-            $accion_br = $accion_registro['accion_etiqueta_label'];
-        }
-
-        $data = new stdClass();
-        $data->seccion = $seccion_br;
-        $data->accion = $accion_br;
-        return $data;
     }
 
 

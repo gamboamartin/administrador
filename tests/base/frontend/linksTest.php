@@ -138,5 +138,5 @@ class linksTest extends test {
         errores::$error = false;
     }
 
-    
+
 }

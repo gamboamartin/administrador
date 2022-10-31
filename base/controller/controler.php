@@ -179,8 +179,7 @@ class controler{
                 return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $acciones);
             }
 
-            $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->link,
-                $accion_registro,$this->session_id);
+            $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->session_id);
             if (errores::$error) {
                 return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs);
             }

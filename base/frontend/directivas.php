@@ -126,11 +126,7 @@ class directivas  {
      * @param string $seccion Seccion de un controlador o modelo
      * @param string $accion
      * @param array $etiquetas conjunto de etiquetas a generar
-     * @param PDO $link
-     * @param array $accion_registro
      * @param string $session_id
-     * @param bool $valida_accion valida si la accion existe en el modelo accion
-     *
      * @return array|string html con info de los breadcrumbs
      * @example
      *      $breadcrumbs = $this->genera_breadcrumbs(array('lista'));
@@ -141,8 +137,7 @@ class directivas  {
      * @uses  controlador_reporte
      * @uses  controlador_salida
      */
-    public function genera_breadcrumbs(string $seccion, string $accion, array $etiquetas, PDO $link,
-                                       array $accion_registro, string $session_id, bool $valida_accion = true):array|string{
+    public function genera_breadcrumbs(string $seccion, string $accion, array $etiquetas, string $session_id):array|string{
         if($seccion === ''){
             return  $this->errores->error("Error la seccion esta vacia",$seccion);
         }
@@ -154,8 +149,7 @@ class directivas  {
             return  $this->errores->error('Error al generar breads',$breadcrumbs);
         }
 
-        $data_breadcrumbs = $this->nav_breadcumbs(
-            $breadcrumbs,$seccion,$accion, $link, $accion_registro,$session_id, $valida_accion);
+        $data_breadcrumbs = $this->nav_breadcumbs($breadcrumbs,$seccion,$accion,$session_id);
         if(errores::$error){
             return  $this->errores->error(mensaje: 'Error al generar nav breads',data: $data_breadcrumbs,
                 params: get_defined_vars());
@@ -800,7 +794,6 @@ class directivas  {
     }
 
 
-
     /**
      * NO SE MUEVE
      * Genera el html de la barra de navegacion
@@ -808,11 +801,7 @@ class directivas  {
      * @param array $breadcrumbs Arreglo con parametro para generacion
      * @param string $seccion Seccion para su aplicacion
      * @param string $accion para definir accion active
-     * @param PDO $link
-     * @param array $accion_registro
      * @param string $session_id
-     * @param bool $valida_accion valida si la accion existe
-     *
      * @return array|string html para incrustarlo y mostrarlo
      * @example
      *      $breadcrumbs = $controlador->breadcrumbs_con_label(array('alta', 'lista'));
@@ -825,8 +814,7 @@ class directivas  {
      * @internal $this->breadcrumbs_con_label($link, $seccion, $accion,$valida_accion);
      * @internal $this->breadcrumbs($breadcrumbs, $accion, $seccion);
      */
-    public function nav_breadcumbs(array $breadcrumbs, string $seccion, string $accion, PDO $link,
-                                   array $accion_registro, string $session_id, bool $valida_accion = true):array|string{
+    public function nav_breadcumbs(array $breadcrumbs, string $seccion, string $accion, string $session_id):array|string{
 
         if($seccion === ''){
             return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion, params: get_defined_vars());
@@ -835,7 +823,7 @@ class directivas  {
             return $this->error->error('$accion no puede venir vacia',$accion);
         }
 
-        $breads = (new menus())->breadcrumbs_con_label($link, $seccion, $accion, $accion_registro,$valida_accion);
+        $breads = (new menus())->breadcrumbs_con_label( $seccion, $accion);
         if(errores::$error){
             return  $this->error->error('Error al generar breads', $breads);
         }

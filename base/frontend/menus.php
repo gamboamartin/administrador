@@ -82,11 +82,8 @@ class menus{
      *
      * Ajusta el texto enviado para breadcrumbs
      *
-     * @param PDO|bool $link Conexion a bd
      * @param string $seccion seccion tabla modelo
      * @param string $accion accion
-     * @param array $accion_registro
-     * @param bool $valida_accion valida o no la existencia de un accion en acciones
      * @return array|stdClass con datos para generar html
      * @example
      *      $breads = $this->breadcrumbs_con_label($link, $seccion, $accion,$valida_accion);
@@ -95,8 +92,7 @@ class menus{
      * @internal   $this->valida_estructura_seccion_accion($seccion,$accion);
      * @internal   $accion_modelo->filtro_and($filtro,'numeros',array(),array(),0,0,array());
      */
-    public function breadcrumbs_con_label(PDO|bool $link, string $seccion, string $accion, array $accion_registro,
-                                          bool $valida_accion = true): array|stdClass{
+    public function breadcrumbs_con_label( string $seccion, string $accion): array|stdClass{
 
         $seccion_br = str_replace('_',' ', $seccion);
         $seccion_br = ucwords($seccion_br);
@@ -104,16 +100,7 @@ class menus{
         $accion_br = ucwords($accion_br);
 
 
-        $data_link = (new links())->aplica_data_link_validado(link: $link, valida_accion: $valida_accion,seccion:  $seccion,accion:  $accion,accion_registro:  $accion_registro);
-        if(errores::$error){
-            return   $this->error->error(mensaje: 'Error al generar datos ',data:  $data_link, params: get_defined_vars());
-        }
-        if(is_object($data_link)) {
-            if($data_link->seccion!=='' && $data_link->accion !=='') {
-                $seccion_br = $data_link->seccion;
-                $accion_br = $data_link->accion;
-            }
-        }
+
 
         $data = new stdClass();
         $data->seccion = $seccion;
