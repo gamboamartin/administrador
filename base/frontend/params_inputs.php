@@ -14,40 +14,31 @@ class params_inputs{
     }
 
 
-
-
     /**
      * Integra los extra params a un option
-     * @param array $value Valor  integrar
      * @param string $tabla tabla en ejecucion
      * @param int $valor_envio Valor de option
-     * @param array $data_extra extra params
-     * @param array $data_con_valor extra params
+     * @param array $value Valor  integrar
      * @return array|stdClass
      * @version 1.509.51
      */
-    public function data_content_option(array $data_con_valor, array $data_extra, string $tabla, int $valor_envio,
-                                        array $value): array|stdClass
+    public function data_content_option(string $tabla, int $valor_envio, array $value): array|stdClass
     {
         $selected = $this->validacion->valida_selected(id: $valor_envio, tabla: $tabla, value: $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar selected', data: $selected);
         }
 
-        $data_extra_html = (new extra_params())->datas_extra(data_con_valor:$data_con_valor,data_extra: $data_extra,
-            value: $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar datas extra', data: $data_extra_html);
-        }
+
 
         $value_html = (new values())->content_option_value(tabla: $tabla, value: $value);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar value',data:  $data_extra_html);
+            return $this->error->error(mensaje: 'Error al generar value',data:  $value_html);
         }
 
         $datas = new stdClass();
         $datas->selected = $selected;
-        $datas->data_extra_html = $data_extra_html;
+
         $datas->value_html = $value_html;
 
         return $datas;

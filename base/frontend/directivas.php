@@ -9,9 +9,10 @@ use JetBrains\PhpStorm\Pure;
 
 use PDO;
 
-class directivas extends html {
+class directivas  {
     private errores $error;
     public errores $errores;
+    private validaciones_directivas $validacion;
 
     public array $input = array();
     public string $html;
@@ -20,8 +21,8 @@ class directivas extends html {
     #[Pure] public function __construct(){
         $this->error = new errores();
         $this->errores = new errores();
+        $this->validacion = new validaciones_directivas();
 
-        parent::__construct();
     }
 
 
@@ -211,11 +212,7 @@ class directivas extends html {
             $etiqueta = strtoupper($encabezado['elemento_lista_etiqueta']);
             $valor = $registro[$campo];
 
-            $data_encabezado = $this->crea_elemento_encabezado(contenido: $valor, label: $etiqueta);
-            if(errores::$error){
-                return $this->error->error('Error al generar $encabezado_html',$data_encabezado);
-            }
-            $encabezado_html.=$data_encabezado;
+
             $encabezado_html_print = $encabezado_html_print."<label> $etiqueta: </label> <span> $valor | </span>";
         }
 
@@ -330,18 +327,13 @@ class directivas extends html {
      * @param bool $aplica_etiqueta
      * @return array|string
      */
-    public function genera_link_accion(array $accion, string $id, string $session_id, string $class_link='',
+    public function genera_link_accion( string $id, string $session_id, string $class_link='',
                                        string $st_btn = 'info', bool $aplica_etiqueta = true ):array|string{ //FIN PROT
 
 
-        $valida = (new validaciones_directivas())->valida_link(accion: $accion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar accion',data:  $valida, params: get_defined_vars());
-        }
 
 
-        $datos = (new links())->data_para_link(accion:$accion,aplica_etiqueta:  $aplica_etiqueta,id:  $id,
-            session_id:  $session_id,st_btn:  $st_btn);
+        $datos = (new links())->data_para_link(aplica_etiqueta:  $aplica_etiqueta,id:  $id, session_id:  $session_id,st_btn:  $st_btn);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa datos',data: $datos, params: get_defined_vars());
         }
@@ -821,23 +813,19 @@ class directivas extends html {
     /**
      *
      *  NO SE MEUEV
-     * @param string $url_image_min
      * @param string $url_tb_image
      * @param string $css_id
      * @param array $class_tb_html
      * @return array|string
      */
-    public function modal_foto(string $url_image_min, string $url_tb_image, string $css_id, array $class_tb_html = array()): array|string
+    public function modal_foto(string $url_tb_image, string $css_id, array $class_tb_html = array()): array|string
     {
         $img_tb = $this->img_btn_modal($url_tb_image, $css_id, $class_tb_html);
         if(errores::$error){
             return $this->errores->error('Error al obtener tb',$img_tb);
         }
-        $modal = (new modals())->modal_base_img($css_id, $url_image_min);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener modal',$modal);
-        }
-        return $img_tb.$modal;
+
+        return $img_tb;
     }
 
     /**
@@ -1185,125 +1173,6 @@ class directivas extends html {
 
         return $html;
     }
-
-    /**
-     * NO SE MUEVE
-     * @param PDO $link
-     * @param string $valor
-     * @param int $cols
-     * @param array $registros
-     * @return array|string
-     */
-    public function ubicacion_id(PDO $link, string $valor  = '-1', int $cols = 4, array $registros = array()): array|string
-    {
-        $input = $this->input_select_columnas(campo_name: 'ubicacion_id', link: $link, tabla: 'ubicacion', cols: $cols,
-            columnas: array('ubicacion_descripcion_completa'), data_extra: array(), etiqueta: 'ubicacion',
-            registros: $registros, valor: $valor);
-
-        if(errores::$error){
-            return $this->errores->error('Error al generar input',$input);
-        }
-        return $input;
-    }
-
-    /**
-     *
-     * Genera un input para subida de archivos
-     *
-     * @param string $campo Nombre del campo
-     * @param int $cols numero de columnas entre 1 y 12
-     * @param bool $required si required el input sera obligatorio
-     * @param string $codigo Codigo del tipo de documento
-     * @param string $etiqueta Etiqueta a mostrar en input es un label
-     * @param bool $multiple Si multiple integra in file de multiple docs
-     * @return array|string html con info del input a mostrar
-     * @example
-     *      $input = $directiva->upload_file(12,'tipo_documento_id['.$tipo_documento['tipo_documento_id'].']',false,$tipo_documento['tipo_documento_descripcion']);
-     *
-     * @uses template_documentos
-     * @uses templates
-     * @uses alta views
-     * @uses modifica views
-     * @version 1.331.41
-     */
-    public function upload_file(string $campo,int $cols, bool $required, string $codigo='', string $etiqueta = '',
-                                bool $multiple = false):array|string{
-
-        /**
-         * REFACTORIZAR
-         */
-
-        $valida = $this->validacion->valida_base_input(campo: $campo,cols:  $cols);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar input',data: $valida);
-        }
-
-        if($etiqueta===''){
-            $etiqueta = $campo;
-        }
-        if($codigo===''){
-            $codigo = $campo;
-        }
-        $required_html = '';
-        if($required){
-            $required_html = 'required';
-        }
-
-
-        $html = '';
-
-
-
-        if($multiple){
-
-            $input_file = (new inputs_files())->input_file_multiple(campo: $campo, codigo: $codigo,
-                etiqueta:  $etiqueta, required_html: $required_html);
-            if(errores::$error){
-                return  $this->error->error(mensaje: 'Error al obtener input',data: $input_file);
-            }
-            $html.=$input_file;
-
-        }
-        else {
-            $html.="<div class='col-md-12'>";
-            $html .=  "
-                        <div class='input-group mb-3'>
-                            <div class='input-group-prepend'>
-                                <span class='input-group-text' >$codigo</span>
-                            </div>
-                            <div class='custom-file'>
-                                <input type='file' class='custom-file-input input-file ' name='$campo' $required_html >
-                                <label class='custom-file-label' for='$etiqueta'>$etiqueta</label>
-                            </div>
-                        </div>
-                    </div>";
-
-        }
-
-        return $html;
-    }
-
-
-    /**
-     * NO SE MUEVE
-     * @param PDO $link
-     * @param string $valor
-     * @param int $cols
-     * @param array $registros
-     * @return array|string
-     */
-    public function valuador_id(PDO $link, string $valor  = '-1', int $cols = 4, array $registros = array()): array|string
-    {
-        $input = $this->input_select_columnas(campo_name: 'valuador_id', link: $link, tabla: 'valuador', cols: $cols,
-            columnas: array('valuador_codigo','proveedor_razon_social'), data_extra: array(), etiqueta: 'valuador',
-            registros: $registros, valor: $valor);
-
-        if(errores::$error){
-            return $this->errores->error('Error al generar input',$input);
-        }
-        return $input;
-    }
-
 
 
 }

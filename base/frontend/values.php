@@ -216,22 +216,7 @@ class values{
         return $etiqueta;
     }
 
-    /**
-     * Genera el contenido de un option
-     * @param string $value_html Valor value input html
-     * @param string $data_extra_html Extra param html
-     * @param string $selected atributo selected
-     * @return string|array
-     * @version 1.516.51
-     */
-    public function content_option(string $data_extra_html, string $selected, string $value_html): string|array
-    {
-        $value_html = trim($value_html);
-        if($value_html === ''){
-            return $this->error->error(mensaje: 'Error $value_html esta vacio ',data: $value_html);
-        }
-        return "$value_html $data_extra_html $selected";
-    }
+
 
     /**
      * Integra un value a un option
@@ -253,45 +238,8 @@ class values{
         return "value='" . $value[$key] . "'";
     }
 
-    /**
-     * Integra un extra param en un option
-     * @param string $data Dato a integrar
-     * @param string $value Valor del extra param
-     * @return string|array
-     * @version 1.507.50
-     */
-    public function data_extra_html_base(string $data, string $value): string|array
-    {
-        $data = trim($data);
-        if($data === ''){
-            return $this->error->error(mensaje: 'Error al data esta vacio',data: $data);
-        }
-        $data_extra_html = 'data-'.$data;
-        $data_extra_html .= '  =  ';
-        $data_extra_html .= "'".$value."'";
-        $data_extra_html .= ' ';
-        return $data_extra_html;
-    }
 
-    /**
-     * Integra valores a select
-     * @param array $data_con_valor Datos extra params
-     * @return array|string
-     * @version 1.509.51
-     */
-    public function datas_con_valor(array $data_con_valor): array|string
-    {
-        $data_extra_html = '';
-        foreach($data_con_valor as $key_value=>$valor){
-            $data_ex = $this->data_extra_html_base(data: $key_value, value: $valor);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar data extra',data: $data_ex);
-            }
-            $data_extra_html.=$data_ex;
 
-        }
-        return $data_extra_html;
-    }
 
     /**
      * P INT

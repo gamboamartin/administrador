@@ -14,36 +14,7 @@ class menus{
         $this->validacion = new validaciones_directivas();
     }
 
-    /**
-     *
-     * Genera el breadcrumb en forma html
-     *
-     * @param string $etiqueta Etiqueta a mostrar en un boton de breadcrumb
-     * @param string $accion Accion para la ejecucion en un controlador
-     *
-     * @example
-     *      $breadcrumb  = $this->breadcrumb($seccion,'');
-     *
-     * @return array|string html para breadcrumbs
-     * @throws errores$etiqueta === ''
-     * @uses  $directivas->genera_texto_etiqueta
-     * @internal   $this->genera_texto_etiqueta($etiqueta,'capitalize');
-     */
-    private function breadcrumb(string $etiqueta, string $accion, string $seccion, string $session_id):array|string{
-        if($etiqueta === ''){
-            return $this->error->error("Error texto vacio",$etiqueta);
-        }
 
-
-        $etiqueta = str_replace('_', ' ', $etiqueta);
-        if($accion === ''){
-            $link = '#';
-        }
-        else{
-            $link = './index.php?seccion='.$seccion.'&session_id='.$session_id."&accion=$accion";
-        }
-        return "<a type='button' class='btn btn-info btn-sm no-print' href='$link'>$etiqueta</a>";
-    }
 
     /**
      *
@@ -96,37 +67,6 @@ class menus{
 
         $html = '';
 
-        foreach ($breadcrumbs as $value ) {
-            if(!is_array($value)){
-                return $this->error->error('Error elemento invalido $breadcrumbs[]=array(etiqueta=>txt,link=>txt)',$value);
-            }
-            if(!isset($value['etiqueta'])){
-                return $this->error->error('Error etiqueta vacia elemento invalido $breadcrumbs[]=array(etiqueta=>txt,link=>txt)',$value);
-            }
-            if(!isset($value['link'])){
-                return $this->error->error('Error link vacia elemento invalido $breadcrumbs[]=array(etiqueta=>txt,link=>txt)',$value);
-            }
-            if($value['etiqueta']===''){
-                return $this->error->error('Error etiqueta vacia elemento invalido $breadcrumbs[]=array(etiqueta=>txt,link=>txt)',$value);
-
-            }
-            if($value['link']===''){
-                return $this->error->error('Error link vacia elemento invalido $breadcrumbs[]=array(etiqueta=>txt,link=>txt)',$value);
-
-            }
-
-            $etiqueta = strtolower($value['etiqueta']);
-            $link = strtolower($value['link']);
-
-
-            $bread = $this->breadcrumb(etiqueta: $etiqueta, accion: $link, seccion: $seccion,session_id:  $session_id);
-
-            if(errores::$error){
-                return $this->error->error('Error al generar bread',$bread);
-            }
-
-            $html = $html.$bread;
-        }
 
         $br_active = $this->breadcrumb_active($active);
 

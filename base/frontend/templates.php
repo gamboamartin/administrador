@@ -54,21 +54,13 @@ class templates{
                          string $seccion,string $session_id, string $path_base, array $campos_disabled,
                          array $valores_default, array $campos_invisibles):array|string{
         $directiva = new directivas();
-        $valida_metodo = $directiva->validacion->valida_metodos(accion: 'alta', tabla: $seccion);
+        $valida_metodo = (new validaciones_directivas())->valida_metodos(accion: 'alta', tabla: $seccion);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al validar metodo",data:$valida_metodo);
         }
         $html = '';
-        if($aplica_form) {
-            $header_form = (new forms())->header_form(accion:  'alta', accion_request: 'alta_bd', seccion: $seccion,
-                session_id:  $session_id);
-            if(errores::$error){
-                return  $this->error->error(mensaje: "Error al generar header form",data:$header_form);
-            }
-            $html.=$header_form;
 
-        }
-        $header_section = 'Alta';
+
         $html .= file_get_contents($path_base.'views/_templates/__header_section.php');
         $html .= "<div class='form-row  alta'>";
         $data_html = $this->genera_campos_alta(campos:  $campos, valores_filtrados: $valores_filtrados,
@@ -419,14 +411,6 @@ class templates{
         $directiva = new directivas();
 
 
-        if( $tipo === 'documento'){
-            $data_html = $directiva->upload_file(campo: $campo_name, cols: $cols, required: $required,
-                etiqueta: $etiqueta);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al crear upload_file',data: $data_html);
-            }
-        }
-
 
         if($tipo === 'select_columnas' || $tipo === 'select'){
             $columnas_sl = array();
@@ -676,14 +660,10 @@ class templates{
             return $this->error->error('Error al obtener filtros', $filtros_html);
         }
 
-        $acciones_completas = (new inicializacion())->acciones( acciones_asignadas:$acciones_asignadas);
-        if(errores::$error){
-            return $this->error->error('Error al obtener acciones',$acciones_completas);
-        }
 
-        $acciones_autorizadas_base = (new listas())->obten_acciones(acciones: $acciones_completas,
-            id:'{registro_id}', status: '{registro_status}',seccion:  $seccion,class_link: 'icono_menu_lista',
-            link: $this->link, session_id: $session_id);
+
+        $acciones_autorizadas_base = (new listas())->obten_acciones(id:'{registro_id}', seccion:  $seccion,
+            class_link: 'icono_menu_lista', link: $this->link, session_id: $session_id);
         if(errores::$error){
             return $this->error->error('Error al obtener acciones autorizadas',$acciones_autorizadas_base);
         }

@@ -15,56 +15,8 @@ class listasTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_accion_activa_desactiva(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
-        $accion = '';
-        $status = '';
-        $resultado = $ls->accion_activa_desactiva($accion, $status);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error accion esta vacia', $resultado['mensaje']);
 
-        errores::$error = false;
-        $accion = 'activa_bd';
-        $status = '';
-        $resultado = $ls->accion_activa_desactiva($accion, $status);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('activa_bd', $resultado->accion);
-
-        errores::$error = false;
-        $accion = 'activa_bd';
-        $status = 'activo';
-        $resultado = $ls->accion_activa_desactiva($accion, $status);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('desactiva_bd', $resultado->accion);
-
-        errores::$error = false;
-    }
-
-    public function test_activa_desactiva(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
-        $status = '';
-        $resultado = $ls->activa_desactiva($status);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('activa_bd', $resultado);
-
-        errores::$error = false;
-        $status = 'activo';
-        $resultado = $ls->activa_desactiva($status);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('desactiva_bd', $resultado);
-        errores::$error = false;
-    }
+    
 
     public function test_campos_lista_html(): void
     {

@@ -16,91 +16,25 @@ class listas{
 
     }
 
-    /**
-     *  FULL
-     * @param string $accion
-     * @param string $status
-     * @return bool|array|stdClass
-     */
-    private function accion_activa_desactiva(string $accion, string $status): bool|array|stdClass
-    {
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error(mensaje: 'Error accion esta vacia',data: $accion, params: get_defined_vars());
-        }
-        if ($accion === 'desactiva_bd' || $accion === 'activa_bd') {
-
-            $act_dec = $this->activa_desactiva(status: $status);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener accion',data: $act_dec,
-                    params: get_defined_vars());
-            }
-            $accion = $act_dec;
-        }
-
-        $data = new stdClass();
-        $data->accion = $accion;
-        return $data;
-    }
-
-    /**
-     * FULL
-     * @param string $status
-     * @return string
-     */
-    private function activa_desactiva(string $status): string
-    {
-        if ($status === 'activo') {
-            $accion = 'desactiva_bd';
-        }
-        else {
-            $accion = 'activa_bd';
-        }
-        return $accion;
-    }
-
-    /**
-     * P INT ERRORREV P ORDER
-     * @param PDO $link
-     * @param string $accion
-     * @param string $seccion
-     * @return array
-     */
-    private function asigna_accion_to_session(PDO $link, string $accion, string $seccion): array
-    {
-        $datos_accion_bd = $this->datos_accion_bd(accion: $accion, link: $link,seccion: $seccion);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener acciones', data: $datos_accion_bd,
-                params: get_defined_vars());
-        }
-        $_SESSION['datos_accion'][$seccion][$accion] = $datos_accion_bd;
-
-        return $datos_accion_bd;
-    }
 
     /**
      * P INT ERRORREV
-     * @param string $id
-     * @param string $seccion
      * @param string $accion
+     * @param string $id
      * @param $session_id
      * @param string $class_link
-     * @param PDO $link
      * @return array|string
      */
-    private function asigna_datos_accion_link(string $accion, string $id, string $seccion, $session_id,
-                                              string $class_link, PDO $link): array|string
+    private function asigna_datos_accion_link(string $accion, string $id, $session_id,
+                                              string $class_link): array|string
     {
         if ($accion === '') {
             return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion);
         }
         $directiva = new directivas();
-        $datos_accion = $this->datos_accion(accion: $accion, seccion: $seccion,link:  $link);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener acciones',data:$datos_accion);
-        }
 
-        $link_accion = $directiva->genera_link_accion(accion:$datos_accion, id: $id,session_id:  $session_id, class_link: $class_link);
+
+        $link_accion = $directiva->genera_link_accion(id: $id,session_id:  $session_id, class_link: $class_link);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar link',data:$link_accion);
         }
@@ -352,55 +286,9 @@ class listas{
         return $dato;
     }
 
-    /**
-     * P INT ERROREV
-     * @param string $seccion
-     * @param string $accion
-     * @param PDO $link
-     * @return array
-     */
-    private function datos_accion(string $accion, string $seccion, PDO $link): array
-    {
 
-        $valida = $this->validacion->valida_datos_accion(accion: $accion, seccion: $seccion);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar datos', data: $valida, params: get_defined_vars());
-        }
 
-        if(!isset($_SESSION['datos_accion'][$seccion][$accion])) {
-            $datos_accion_bd = $this->asigna_accion_to_session(link: $link,accion: $accion,seccion: $seccion);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al asignar acciones',data: $datos_accion_bd,
-                    params: get_defined_vars());
-            }
-        }
 
-        return $_SESSION['datos_accion'][$seccion][$accion];
-    }
-
-    /**
-     * P INT ERRORREV P ORDER
-     * @param PDO $link
-     * @param string $accion
-     * @param string $seccion
-     * @return array
-     */
-    private function datos_accion_bd(string $accion, PDO $link, string $seccion): array
-    {
-        $accion_modelo = new adm_accion(link: $link);
-
-        $filtro['adm_accion.descripcion'] = $accion;
-        $filtro['adm_seccion.descripcion'] =$seccion;
-
-        $resultado = $accion_modelo->filtro_and(filtro: $filtro);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener acciones', data: $resultado);
-        }
-        if ((int)($resultado->n_registros) === 0) {
-            return $this->error->error( mensaje: 'Error no existen acciones', data:  $resultado);
-        }
-        return $resultado->registros[0];
-    }
 
     /**
      *
@@ -735,16 +623,13 @@ class listas{
     /**
      * P INT ERRORREV
      * @param string $id
-     * @param string $status
-     * @param array $acciones
      * @param string $seccion
      * @param string $class_link
      * @param PDO $link
      * @param string $session_id
      * @return array|string
      */
-    public function obten_acciones(array $acciones,  string $id, string $status, string $seccion,
-                                    string $class_link, PDO $link, string $session_id): array|string
+    public function obten_acciones( string $id,  string $seccion, string $class_link, PDO $link, string $session_id): array|string
     {
         $html = '';
 
@@ -760,8 +645,8 @@ class listas{
             }
 
             if ($acciones_permitidas) {
-                $link_accion = $this->asigna_datos_accion_link(accion: $accion, id: $id,seccion:  $seccion,
-                    session_id: $session_id,class_link:  $class_link, link: $link);
+                $link_accion = $this->asigna_datos_accion_link(accion: $accion, id: $id,
+                    session_id: $session_id,class_link:  $class_link);
                 if(errores::$error){
                     return $this->error->error(mensaje: 'Error al generar link',data: $link_accion);
                 }

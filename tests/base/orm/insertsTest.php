@@ -10,6 +10,7 @@ use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use models\adm_accion;
 use models\adm_menu;
+use models\adm_mes;
 use models\adm_seccion;
 
 use stdClass;
@@ -241,6 +242,22 @@ class insertsTest extends test {
         $value = '';
 
         $resultado = $ins->sql_base_alta($campo, $campos, $valores, $value);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_transacciones(){
+        errores::$error = false;
+        $ins = new inserts();
+        //$ins = new liberator($ins);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 1;
+        $modelo = new adm_mes($this->link);
+        $modelo->registro['descripcion'] = 1;
+        $modelo->registro['codigo'] = mt_rand(0,9999999999999);
+        $resultado = $ins->transacciones($modelo);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

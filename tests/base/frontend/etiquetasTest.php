@@ -16,27 +16,7 @@ class etiquetasTest extends test {
     }
 
 
-    public function test_label_input_upload(){
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        $inicializacion = new liberator($etiquetas);
 
-        $etiqueta = '';
-        $resultado = $inicializacion->label_input_upload(etiqueta: $etiqueta);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error etiqueta esta vacio", $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $etiqueta = 'x';
-        $resultado = $inicializacion->label_input_upload(etiqueta: $etiqueta);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('<label class="custom-file-label" for="x">x</label>', $resultado);
-
-        errores::$error = false;
-    }
 
     public function test_label_upload(){
         errores::$error = false;
@@ -96,28 +76,6 @@ class etiquetasTest extends test {
 
 
 
-
-    public function test_title(){
-        errores::$error = false;
-        $etiquetas = new etiquetas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $txt = '';
-        $resultado = $etiquetas->title(txt: $txt);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error title esta vacio", $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $txt = 'xa';
-        $resultado = $etiquetas->title(txt: $txt);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("Xa", $resultado);
-
-        errores::$error = false;
-    }
 
 
 }

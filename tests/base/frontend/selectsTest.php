@@ -31,34 +31,7 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
-    public function test_columnas_base_select(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        $val = new liberator($val);
 
-        $tabla = '';
-        $resultado = $val->columnas_base_select($tabla);
-
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-        $tabla = 'a';
-        $resultado = $val->columnas_base_select($tabla);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a_id', $resultado[0]);
-        $this->assertEquals('a_codigo', $resultado[1]);
-        $this->assertEquals('a_descripcion', $resultado[2]);
-
-
-
-        errores::$error = false;
-
-
-    }
 
     public function test_columnas_input_select(): void
     {
@@ -73,15 +46,7 @@ class selectsTest extends test {
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error tabla no puede venir vacio', $resultado['mensaje']);
 
-        errores::$error = false;
-        $tabla = 'b';
-        $columnas = array();
-        $resultado = $val->columnas_input_select($columnas, $tabla);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('b_id', $resultado[0]);
-        $this->assertEquals('b_codigo', $resultado[1]);
-        $this->assertEquals('b_descripcion', $resultado[2]);
+
 
         errores::$error = false;
         $tabla = 'b';
@@ -155,30 +120,12 @@ class selectsTest extends test {
         $resultado = $sl->data_for_select($columnas,$data_con_valor, $data_extra,$tabla,$valor);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-        $valor = '';
-        $tabla = 'adm_mes';
-        $data_extra = array();
-        $data_con_valor = array();
-        $columnas = array();
-        $resultado = $sl->data_for_select($columnas,$data_con_valor, $data_extra,$tabla,$valor);
-        $this->assertIsObject( $resultado);
 
 
-        errores::$error = false;
-        $valor = '';
-        $tabla = 'prueba';
-        $data_extra = array();
-        $data_con_valor = array();
-        $columnas = array();
-        $resultado = $sl->data_for_select($columnas,$data_con_valor, $data_extra,$tabla,$valor);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('prueba_id', $resultado->columnas['0']);
-        $this->assertEquals('prueba_codigo', $resultado->columnas['1']);
-        $this->assertEquals('prueba_descripcion', $resultado->columnas['2']);
+
+
+
+
         errores::$error = false;
     }
 
@@ -318,7 +265,7 @@ class selectsTest extends test {
     {
         errores::$error = false;
         $val = new selects();
-        $val = new liberator($val);
+        //$val = new liberator($val);
 
         $data_con_valor = array();
         $data_extra = array();
@@ -326,10 +273,10 @@ class selectsTest extends test {
         $valor = '';
         $value = array();
         $value['a_id'] = 1;
-        $resultado = $val->html_content_option($data_con_valor, $data_extra, $tabla, $valor, $value);
+        $resultado = $val->html_content_option( $tabla, $valor, $value);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("value='1'   ", $resultado);
+
         errores::$error = false;
     }
 

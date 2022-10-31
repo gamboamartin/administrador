@@ -15,44 +15,7 @@ class inicializacionTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_acciones(){
-        errores::$error = false;
-        $inicializacion = new inicializacion();
-        //$inicializacion = new liberator($inicializacion);
-        $acciones_asignadas = array();
-        $resultado = $inicializacion->acciones($acciones_asignadas);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
 
-        errores::$error = false;
-        $acciones_asignadas = array();
-        $acciones_asignadas[] = '';
-        $resultado = $inicializacion->acciones($acciones_asignadas);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $acciones_asignadas[] debe ser un array', $resultado['mensaje']);
-
-        errores::$error = false;
-        $acciones_asignadas = array();
-        $acciones_asignadas[] = array();
-        $resultado = $inicializacion->acciones($acciones_asignadas);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar registro', $resultado['mensaje']);
-
-        errores::$error = false;
-        $acciones_asignadas = array();
-        $acciones_asignadas[0]['adm_accion_descripcion'] = 'a';
-        $resultado = $inicializacion->acciones($acciones_asignadas);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado[0]);
-
-
-        errores::$error = false;
-
-    }
 
     public function test_asigna_datos_campo(){
         errores::$error = false;

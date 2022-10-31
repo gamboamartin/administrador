@@ -53,7 +53,7 @@ class params_inputsTest extends test {
         $tabla = 'a';
         $valor_envio = '1';
         $value = array();
-        $resultado = $params->data_content_option($data_con_valor, $data_extra, $tabla, $valor_envio, $value);
+        $resultado = $params->data_content_option( $tabla, $valor_envio, $value);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al validar selected', $resultado['mensaje']);

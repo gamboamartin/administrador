@@ -389,9 +389,21 @@ class inserts{
      * Genera las transacciones en sql
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * Genera las transacciones para un alta
+     * @version 1.604.54
      */
     public function transacciones(modelo $modelo): array|stdClass
     {
+        if(count($modelo->registro) === 0){
+            return $this->error->error(mensaje: 'Error registro vacio',data:  $modelo->registro);
+        }
+
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
+        }
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
         }

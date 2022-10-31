@@ -34,23 +34,7 @@ class selects{
         }
         return $campo_name_html;
     }
-    /**
-     * Obtiene los elementos base para un select
-     * @param string $tabla Tabla en ejecucion
-     * @version 1.97.23
-     * @return array
-     */
-    PUBLIC function columnas_base_select(string $tabla): array
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
-        }
-        $columnas[] = $tabla.'_id';
-        $columnas[] = $tabla.'_codigo';
-        $columnas[] = $tabla.'_descripcion';
-        return $columnas;
-    }
+
 
     /**
      * Maqueta las columnas de un select a mostrar en un option
@@ -65,13 +49,7 @@ class selects{
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
         }
-        if(count($columnas) === 0){
 
-            $columnas = $this->columnas_base_select(tabla: $tabla);
-            if(errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar columnas base',data:  $columnas);
-            }
-        }
         return $columnas;
     }
 
@@ -397,16 +375,13 @@ class selects{
 
     /**
      * Genera el contenido html de un option
-     * @param string $valor Valor de input
      * @param string $tabla Tabla o estrcutura
-     * @param array $data_extra extraparams
-     * @param array $data_con_valor  extra params
+     * @param string $valor Valor de input
      * @param array $value values
      * @return array|string
      * @version 1.580.51
      */
-    private function html_content_option(array $data_con_valor, array $data_extra, string $tabla, string $valor,
-                                        array $value): array|string
+    PUBLIC function html_content_option( string $tabla, string $valor, array $value): array|string
     {
 
         $valor_envio = (new values())->valor_envio(valor: $valor);
@@ -419,18 +394,13 @@ class selects{
             return $this->error->error(mensaje: 'Error al validar selected', data: $selected);
         }
 
-        $data_content = (new params_inputs())->data_content_option(data_con_valor: $data_con_valor,
-            data_extra:  $data_extra, tabla:  $tabla, valor_envio: $valor_envio, value: $value);
+        $data_content = (new params_inputs())->data_content_option(tabla:  $tabla, valor_envio: $valor_envio, value: $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data de contenido',data:  $data_content);
         }
 
-        $content_option = (new values())->content_option(data_extra_html:  $data_content->data_extra_html,
-            selected: $data_content->selected, value_html: $data_content->value_html);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar contenido option', data: $content_option);
-        }
-        return $content_option;
+
+        return $data_content->value_html;
     }
 
     /**
@@ -549,17 +519,15 @@ class selects{
 
     /**
      * P INT P ORDER
-     * @param string $valor Valor de input
-     * @param string $tabla Estructura o modelo
-     * @param array $data_extra
-     * @param array $data_con_valor
-     * @param array $value
      * @param array $columnas
-     * @param string $separador_select_columnas
      * @param int $i
+     * @param string $separador_select_columnas
+     * @param string $tabla Estructura o modelo
+     * @param string $valor Valor de input
+     * @param array $value
      * @return array|string
      */
-    private function option_select(array $columnas, array $data_con_valor, array $data_extra, int $i,
+    private function option_select(array $columnas,  int $i,
                                    string $separador_select_columnas, string $tabla, string $valor,  array $value): array|string
     {
 
@@ -567,8 +535,7 @@ class selects{
             return $this->error->error(mensaje: 'Error columnas esta vacio', data: $columnas);
         }
 
-        $content_option = $this->html_content_option(data_con_valor: $data_con_valor, data_extra: $data_extra,
-            tabla: $tabla, valor: $valor,value:  $value);
+        $content_option = $this->html_content_option(tabla: $tabla, valor: $valor,value:  $value);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar contenido option',data:  $content_option);
         }
@@ -675,8 +642,7 @@ class selects{
                 return $this->error->error(mensaje: 'Error al value debe ser un array', data: array('value'=>$value,'key'=>$key));
             }
 
-            $option_select = $this->option_select(columnas:  $datos->columnas, data_con_valor: $datos->data_con_valor,
-                data_extra:  $datos->data_extra,  i: $i, separador_select_columnas: $separador_select_columnas,
+            $option_select = $this->option_select(columnas:  $datos->columnas,  i: $i, separador_select_columnas: $separador_select_columnas,
                 tabla: $datos->tabla, valor: $datos->valor, value: $value);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar  option', data: $option_select);

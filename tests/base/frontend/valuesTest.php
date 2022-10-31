@@ -96,21 +96,7 @@ class valuesTest extends test {
         errores::$error = false;
     }
 
-    public function test_content_option(): void
-    {
-        errores::$error = false;
-        $val = new values();
-        //$val = new liberator($val);
 
-        $data_extra_html = '';
-        $selected = '';
-        $value_html = 'a';
-        $resultado = $val->content_option($data_extra_html, $selected, $value_html);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('a  ', $resultado);
-        errores::$error = false;
-    }
 
     public function test_content_option_value(): void
     {
@@ -137,61 +123,9 @@ class valuesTest extends test {
 
     }
 
-    public function test_data_extra_html_base(){
-        errores::$error = false;
-        $val = new values();
-        //$inicializacion = new liberator($inicializacion);
 
-        $data = '';
-        $value = '';
-        $resultado =  $val->data_extra_html_base(data: $data, value: $value);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al data esta vacio', $resultado['mensaje']);
 
-        errores::$error = false;
 
-        $data = 'x';
-        $value = '';
-        $resultado =  $val->data_extra_html_base(data: $data, value: $value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("data-x  =  '' ", $resultado);
-
-        errores::$error = false;
-    }
-
-    public function test_datas_con_valor(){
-        errores::$error = false;
-        $val = new values();
-        //$inicializacion = new liberator($inicializacion);
-
-        $data_con_valor = array();
-        $data_con_valor['x'] = '';
-        $resultado = $val->datas_con_valor(data_con_valor: $data_con_valor);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("data-x  =  '' ", $resultado);
-
-        errores::$error = false;
-
-        $data_con_valor = array();
-        $data_con_valor['x'] = 'a';
-        $resultado = $val->datas_con_valor(data_con_valor: $data_con_valor);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("data-x  =  'a' ", $resultado);
-
-        errores::$error = false;
-
-        $data_con_valor = array();
-        $resultado = $val->datas_con_valor(data_con_valor: $data_con_valor);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("", $resultado);
-
-        errores::$error = false;
-    }
 
     public function test_valor_envio(): void
     {

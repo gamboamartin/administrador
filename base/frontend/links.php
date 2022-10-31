@@ -125,10 +125,7 @@ class links{
      */
     private function data_link_br(array $accion_registro): stdClass
     {
-        $accion_registro = $this->limpia_keys_accion(row: $accion_registro);
-        if(errores::$error){
-            return   $this->error->error('Error al limpiar datos ', $accion_registro);
-        }
+
 
         $seccion_br = '';
         $accion_br = '';
@@ -147,16 +144,15 @@ class links{
 
     /**
      * P ORDER P INT ERRORREV
-     * @param array $accion
      * @param bool $aplica_etiqueta
      * @param string $id
      * @param string $session_id
      * @param string $st_btn
      * @return array|stdClass
      */
-    public function data_para_link(array $accion, bool $aplica_etiqueta, string $id, string $session_id, string $st_btn): array|stdClass
+    public function data_para_link(bool $aplica_etiqueta, string $id, string $session_id, string $st_btn): array|stdClass
     {
-        $init = $this->init_link(accion: $accion);
+        $init = $this->init_link();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar link', data: $init, params: get_defined_vars());
         }
@@ -209,57 +205,8 @@ class links{
         return "./index.php?seccion=$seccion&accion=$accion&session_id=".$session_id."&registro_id=$id";
     }
 
-    /**
-     * P ORDER P INT PROBADO ERRROEV
-     * @param array $accion
-     * @return array|stdClass
-     */
-    private function init_link(array $accion): array|stdClass
-    {
-        $keys = array('adm_seccion_descripcion','adm_accion_descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $accion',data:  $valida, params: get_defined_vars());
-        }
 
 
-        if(!isset($accion['adm_accion_icono'])){
-            $accion['adm_accion_icono'] = '';
-        }
-        $seccion_envio = $accion['adm_seccion_descripcion'];
-        $accion_descripcion_envio = $accion['adm_accion_descripcion'];
-        $title = (new etiquetas())->title(txt: $accion_descripcion_envio);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar titulo', data:$title, params: get_defined_vars());
-        }
-        $icono = $accion['adm_accion_icono'];
-
-        $data = new stdClass();
-
-        $data->accion = $accion;
-        $data->seccion_envio = $seccion_envio;
-        $data->accion_descripcion_envio = $accion_descripcion_envio;
-        $data->title = $title;
-        $data->icono = $icono;
-
-        return $data;
-    }
-
-    /**
-     * PROBADO - PARAMS ORDER PARAMS INT
-     * @param array $row
-     * @return array
-     */
-    private function limpia_keys_accion(array $row): array
-    {
-        $keys = array('seccion_menu_etiqueta_label','accion_etiqueta_label');
-        foreach ($keys as $key){
-            if(!isset($row[$key])){
-                $row[$key] = '';
-            }
-        }
-        return $row;
-    }
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT

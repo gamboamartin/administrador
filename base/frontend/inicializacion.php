@@ -13,27 +13,7 @@ class inicializacion{
         $this->validacion = new validaciones_directivas();
     }
 
-    /**
-     *
-     * P ORDER P INT
-     * @param array $acciones_asignadas
-     * @return array
-     */
-    public function acciones(array $acciones_asignadas): array{
-        $acciones = array();
-        foreach ($acciones_asignadas as $accion){
-            if(!is_array($accion)){
-                return $this->error->error('Error $acciones_asignadas[] debe ser un array', $accion);
-            }
-            $keys = array('adm_accion_descripcion');
-            $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $accion);
-            if(errores::$error){
-                return $this->error->error("Error al validar registro", $valida);
-            }
-            $acciones[] = $accion['adm_accion_descripcion'];
-        }
-        return $acciones;
-    }
+
 
     /**
      * Ajusta los elementos para ser mostrados en lista

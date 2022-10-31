@@ -197,20 +197,19 @@ class modelo extends modelo_base {
     }
 
     /**
-     * P INT ERRORREV
-     * inserta un registro por registro enviado
+     *
+     * Inserta un registro por registro enviado
      * @return array|stdClass con datos del registro insertado
 
      * @internal  $this->valida_campo_obligatorio();
      * @internal  $this->valida_estructura_campos();
      * @internal  $this->asigna_data_user_transaccion();
      * @internal  $this->bitacora($this->registro,__FUNCTION__,$consulta);
-     * @uses  todo el sistema
      * @example
      *      $entrada_modelo->registro = array('tipo_entrada_id'=>1,'almacen_id'=>1,'fecha'=>'2020-01-01',
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
-     *
+     * @version 1.603.54
      */
     public function alta_bd(): array|stdClass{
 
@@ -251,6 +250,9 @@ class modelo extends modelo_base {
         $data->registro_id = $this->registro_id;
         $data->sql = $transacciones->sql;
         $data->registro = $registro;
+        $data->registro_obj = (object)$registro;
+        $data->registro_ins = $this->registro;
+        $data->campos = $this->campos_tabla;
 
         return $data;
     }

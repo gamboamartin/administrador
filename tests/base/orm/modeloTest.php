@@ -8,6 +8,7 @@ use gamboamartin\test\test;
 use models\adm_accion;
 use models\adm_dia;
 use models\adm_menu;
+use models\adm_mes;
 use models\adm_seccion;
 
 
@@ -27,12 +28,28 @@ class modeloTest extends test {
         $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
 
+
         $modelo->registro_id = 1;
         $resultado = $modelo->activa_bd();
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('Registro activado con éxito en adm_seccion', $resultado->mensaje);
 
+        errores::$error = false;
+    }
+
+    public function test_alta_bd(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_mes($this->link);
+        //$modelo = new liberator($modelo);
+        $_SESSION['usuario_id'] = 1;
+        //$modelo->registro_id = 1;
+        $modelo->registro['codigo'] = mt_rand(0,999999999999999);
+        $modelo->registro['descripcion'] = mt_rand(0,999999999999999);
+        $resultado = $modelo->alta_bd();
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 
