@@ -94,7 +94,7 @@ class normalizacionTest extends test {
         $resultado = $nm->asigna_registro_alta(controler: $controler,registro:  $registro);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error al limpiar registro", $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error $controler->seccion no puede venir vacia', $resultado['mensaje']);
 
         errores::$error = false;
         $controler = new controler();

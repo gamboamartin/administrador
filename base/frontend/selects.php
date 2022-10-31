@@ -36,22 +36,6 @@ class selects{
     }
 
 
-    /**
-     * Maqueta las columnas de un select a mostrar en un option
-     * @param array $columnas conjunto de columnas a mostrar en input select
-     * @param string $tabla Tabla o estructura de select
-     * @return array
-     * @version 1.354.41
-     */
-    private function columnas_input_select(array $columnas, string $tabla): array
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
-        }
-
-        return $columnas;
-    }
 
     /**
      * Obtiene los datos de un select desde la base de datos
@@ -114,10 +98,6 @@ class selects{
         $datos->data_extra = $data_extra;
         $datos->data_con_valor = $data_con_valor;
 
-        $columnas = $this->columnas_input_select(columnas: $columnas,tabla:  $tabla);
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas);
-        }
 
         $valida = $this->validacion->valida_estructura_input_base(columnas: $columnas,tabla: $tabla);
         if(errores::$error) {

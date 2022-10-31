@@ -69,6 +69,13 @@ class normalizacion{
      */
     public function asigna_registro_alta(controler $controler, array $registro): array
     {
+
+        $controler->seccion = trim($controler->seccion);
+        if($controler->seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error $controler->seccion no puede venir vacia',data:  $controler->seccion);
+        }
+
         $registro_r = $this->init_registro(controler: $controler,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al limpiar registro', data: $registro_r);
@@ -423,6 +430,12 @@ class normalizacion{
      */
     private function init_registro( controler $controler, array $registro): array
     {
+        $controler->seccion = trim($controler->seccion);
+        if($controler->seccion === ''){
+            return $this->error->error(
+                mensaje: 'Error $controler->seccion no puede venir vacia',data:  $controler->seccion);
+        }
+
         $clase = $this->name_class(seccion: $controler->seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener name clase', data: $clase);

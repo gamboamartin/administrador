@@ -39,7 +39,7 @@ class initTest extends test {
     {
 
         errores::$error = false;
-
+        $_SESSION['usuario_id'] = 2;
         $init = new init();
         //$init = new liberator($init);
 

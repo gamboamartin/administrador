@@ -10,45 +10,7 @@ class values{
     #[Pure] public function __construct(){
         $this->error = new errores();
     }
-    /**
-     * PROBADO P ORDER P INT
-     * @param array $campos
-     * @param string $key
-     * @param array $registro
-     * @return array
-     */
-    private function adapta_valor_campo(array $campos,string $key, array $registro): array{
-        $key = trim($key);
-        if(count($campos) === 0){
-            return $this->error->error('Error campos no puede venir vacio',$campos);
-        }
-        if(trim($key) === ''){
-            return $this->error->error('Error $key no puede venir vacio',$key);
-        }
 
-        if(count($registro) === 0){
-            return $this->error->error('Error $registro no puede venir vacio',$registro);
-        }
-        if(!isset($campos[$key])){
-            return $this->error->error('Error $campos['.$key.'] no existe',$campos);
-        }
-
-        if(!isset($campos[$key]['representacion'])){
-            return $this->error->error('Error $campos['.$key.'][representacion] no existe',$campos);
-
-        }
-        if(!isset($registro[$key])){
-            $registro[$key] = '';
-        }
-        if($campos[$key]['representacion'] === 'moneda'){
-            if(!is_numeric($registro[$key])){
-                return $this->error->error('Error $registro['.$key.'] debe ser un numero',$registro);
-            }
-            $registro[$key] = '$'.number_format($registro[$key],2);
-        }
-
-        return $registro;
-    }
 
     /**
      * P ORDER P INT
@@ -90,10 +52,6 @@ class values{
             return $this->error->error('Error no existe representacion',$campos);
         }
 
-        $registro = $this->adapta_valor_campo(campos: $campos,key: $key, registro: $registro);
-        if(errores::$error){
-            return $this->error->error('Error al adaptar valor',$registro);
-        }
 
         return $registro;
     }

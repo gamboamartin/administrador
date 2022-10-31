@@ -33,32 +33,6 @@ class selectsTest extends test {
 
 
 
-    public function test_columnas_input_select(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        $val = new liberator($val);
-
-        $tabla = '';
-        $columnas = array();
-        $resultado = $val->columnas_input_select($columnas, $tabla);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla no puede venir vacio', $resultado['mensaje']);
-
-
-
-        errores::$error = false;
-        $tabla = 'b';
-        $columnas = array();
-        $columnas['a'] = 1;
-        $resultado = $val->columnas_input_select($columnas, $tabla);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1, $resultado['a']);
-
-
-    }
 
     public function test_data_bd(){
         errores::$error = false;
