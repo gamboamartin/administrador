@@ -662,19 +662,8 @@ class templates{
 
 
 
-        $acciones_autorizadas_base = (new listas())->obten_acciones(id:'{registro_id}', seccion:  $seccion,
-            class_link: 'icono_menu_lista', link: $this->link, session_id: $session_id);
-        if(errores::$error){
-            return $this->error->error('Error al obtener acciones autorizadas',$acciones_autorizadas_base);
-        }
-
         $html = $filtros_html;
 
-        $modal = (new directivas())->modal_menu_acciones(acciones_autorizadas_base:$acciones_autorizadas_base);
-        if(errores::$error){
-            return $this->error->error('Error al generar modal',$modal);
-        }
-        $html.=$modal;
 
         $modal = (new directivas())->modal_ejecuta_accion();
         if(errores::$error){

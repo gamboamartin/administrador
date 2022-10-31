@@ -17,30 +17,7 @@ class listas{
     }
 
 
-    /**
-     * P INT ERRORREV
-     * @param string $accion
-     * @param string $id
-     * @param $session_id
-     * @param string $class_link
-     * @return array|string
-     */
-    private function asigna_datos_accion_link(string $accion, string $id, $session_id,
-                                              string $class_link): array|string
-    {
-        if ($accion === '') {
-            return $this->error->error(mensaje: 'Error la accion esta vacia', data: $accion);
-        }
-        $directiva = new directivas();
 
-
-        $link_accion = $directiva->genera_link_accion(id: $id,session_id:  $session_id, class_link: $class_link);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar link',data:$link_accion);
-        }
-
-        return $link_accion;
-    }
 
     /**
      * ERRORREV
@@ -620,42 +597,7 @@ class listas{
         return $html;
     }
 
-    /**
-     * P INT ERRORREV
-     * @param string $id
-     * @param string $seccion
-     * @param string $class_link
-     * @param PDO $link
-     * @param string $session_id
-     * @return array|string
-     */
-    public function obten_acciones( string $id,  string $seccion, string $class_link, PDO $link, string $session_id): array|string
-    {
-        $html = '';
 
-        $modelo_accion = new \models\adm_accion(link: $link);
-
-        foreach ($acciones as $accion){
-
-
-            $acciones_permitidas = $modelo_accion->obten_accion_permitida_session(seccion:$seccion, accion:$accion);
-
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener acciones permitidas',data: $acciones_permitidas);
-            }
-
-            if ($acciones_permitidas) {
-                $link_accion = $this->asigna_datos_accion_link(accion: $accion, id: $id,
-                    session_id: $session_id,class_link:  $class_link);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al generar link',data: $link_accion);
-                }
-                $html.=$link_accion;
-            }
-        }
-
-        return $html;
-    }
 
     /**
      * P ORDER P INT ERROREV

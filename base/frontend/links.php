@@ -142,68 +142,6 @@ class links{
         return $data;
     }
 
-    /**
-     * P ORDER P INT ERRORREV
-     * @param bool $aplica_etiqueta
-     * @param string $id
-     * @param string $session_id
-     * @param string $st_btn
-     * @return array|stdClass
-     */
-    public function data_para_link(bool $aplica_etiqueta, string $id, string $session_id, string $st_btn): array|stdClass
-    {
-        $init = $this->init_link();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar link', data: $init, params: get_defined_vars());
-        }
-
-        $data_accion = $this->link_accion_base(accion: $init->accion,accion_envio:  $init->accion_descripcion_envio,
-            id:$id, seccion: $init->seccion_envio, session_id: $session_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar link', data: $data_accion,
-                params: get_defined_vars());
-        }
-
-        $etiqueta = $init->accion_descripcion_envio;
-        if(!$aplica_etiqueta){
-            $etiqueta = '';
-        }
-
-        $texto_link = $this->txt_link(etiqueta: $etiqueta,init:  $init,st_btn:  $st_btn);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al inicializar texto link',data:  $texto_link,
-                params: get_defined_vars());
-        }
-
-        $data = new stdClass();
-        $data->texto_link = $texto_link;
-        $data->href = $data_accion->href;
-        $data->title = $init->title;
-        $data->accion_descripcion_envio = $init->accion_descripcion_envio;
-        $data->btn_modal = $data_accion->btn_modal;
-        $data->modal = $data_accion->modal;
-
-        return $data;
-    }
-
-    /**
-     * P ORDER P INT PROBADO ERROREV
-     * @param string $accion
-     * @param string $id
-     * @param string $seccion
-     * @param string $session_id
-     * @return string|array
-     */
-    private function href_base(string $accion, string $id, string $seccion, string $session_id): string|array
-    {
-        $valida = (new validaciones_directivas())->valida_href(accion: $accion,id:  $id,seccion:  $seccion,
-            session_id:  $session_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos', data: $valida, params: get_defined_vars());
-        }
-
-        return "./index.php?seccion=$seccion&accion=$accion&session_id=".$session_id."&registro_id=$id";
-    }
 
 
 
@@ -229,39 +167,6 @@ class links{
         return "<a href=$href>$btn</a>";
     }
 
-    /**
-     * PROBADO - P ORDER P INT ERRORREV
-     * @param array $accion
-     * @param string $accion_envio
-     * @param string $id
-     * @param string $seccion
-     * @param string $session_id
-     * @return array|stdClass
-     */
-    private function link_accion_base(array $accion, string $accion_envio, string $id, string $seccion, string $session_id): array|stdClass
-    {
-        $href = $this->href_base(accion: $accion_envio, id: $id,seccion:  $seccion, session_id: $session_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar href', data: $href,params: get_defined_vars());
-        }
-
-
-        $data_accion = new stdClass();
-        $data_accion->href = $href;
-        $data_accion->modal = '';
-        $data_accion->btn_modal = '';
-
-        if(isset($accion['accion_es_modal'])&&$accion['accion_es_modal'] === 'activo'){
-
-            $data_accion = (new listas())->data_accion_limpia();
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar data accion modal', data: $data_accion,
-                    params: get_defined_vars());
-            }
-
-        }
-        return $data_accion;
-    }
 
     /**
      * PROBADO - PARAMS ORDER PARAMS INT
@@ -296,21 +201,5 @@ class links{
         return $html;
     }
 
-    /**
-     * PROBADO - P ORDER P INT ERRORREV
-     * @param string $etiqueta
-     * @param stdClass $init
-     * @param string $st_btn
-     * @return string
-     */
-    private function txt_link(string $etiqueta, stdClass $init, string $st_btn): string
-    {
-        $texto_link = "<button class='btn btn-sm btn-$st_btn'><i class='$init->icono'></i> $etiqueta</button>";
 
-        if ($init->icono === '') {
-            $texto_link = $init->title;
-        }
-
-        return $texto_link;
-    }
 }

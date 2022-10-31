@@ -317,35 +317,6 @@ class directivas  {
         return $inputs;
     }
 
-    /**
-     * P INT ERRORREV
-     * @param array $accion
-     * @param string $id
-     * @param string $session_id
-     * @param string $class_link
-     * @param string $st_btn
-     * @param bool $aplica_etiqueta
-     * @return array|string
-     */
-    public function genera_link_accion( string $id, string $session_id, string $class_link='',
-                                       string $st_btn = 'info', bool $aplica_etiqueta = true ):array|string{ //FIN PROT
-
-
-
-
-        $datos = (new links())->data_para_link(aplica_etiqueta:  $aplica_etiqueta,id:  $id, session_id:  $session_id,st_btn:  $st_btn);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializa datos',data: $datos, params: get_defined_vars());
-        }
-
-        $html = "<a href='$datos->href' title='$datos->title' ";
-        $html.= "class='$datos->accion_descripcion_envio $class_link $datos->btn_modal' ";
-        $html.= "data-name_accion='$datos->accion_descripcion_envio' $datos->modal>$datos->texto_link</a>";
-
-
-        return $html;
-
-    }
 
     /**
      * PARAMS ORDER P INT
@@ -828,35 +799,7 @@ class directivas  {
         return $img_tb;
     }
 
-    /**
-     * P ORDER P INT
-     * @param string $acciones_autorizadas_base
-     * @return string
-     */
-    public function modal_menu_acciones(string $acciones_autorizadas_base): string
-    {
 
-        return "
-<div class='menu_acciones_lista modal fade' role='dialog'  aria-labelledby='menu_acciones_lista' aria-hidden='true'>
-    <div class='modal-dialog' role='document'>
-        <div class='modal-content'>
-            <div class='modal-header'>
-                <h4 class='modal-title' id=''>Acciones</h4>
-                <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                    <span aria-hidden='true'>&times;</span>
-                </button>
-            </div>
-            <div class='modal-body'>
-                $acciones_autorizadas_base
-            </div>
-            <div class='modal-footer'>
-                <button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>
-            </div>
-        </div>
-    </div>
-</div>";
-
-    }
 
     /**
      * NO SE MUEVE

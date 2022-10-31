@@ -54,62 +54,6 @@ class linksTest extends test {
         errores::$error = false;
     }
 
-    public function test_href_base(){
-        errores::$error = false;
-        $links = new links();
-        $links = new liberator($links);
-
-        $accion = '';
-        $id = '';
-        $seccion = '';
-        $session_id = '';
-
-        $resultado = $links->href_base($accion, $id, $seccion, $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar datos', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = '';
-        $id = '';
-        $seccion = 'a';
-        $session_id = '';
-
-        $resultado = $links->href_base($accion, $id, $seccion, $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar datos', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = 'b';
-        $id = '';
-        $seccion = 'a';
-        $session_id = '';
-
-        $resultado = $links->href_base($accion, $id, $seccion, $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar datos', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = 'b';
-        $id = '';
-        $seccion = 'a';
-        $session_id = 'c';
-
-        $resultado = $links->href_base($accion, $id, $seccion, $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar datos', $resultado['mensaje']);
-        errores::$error = false;
-    }
-
-
-
-
 
     public function test_link_accion(){
         errores::$error = false;
@@ -147,76 +91,7 @@ class linksTest extends test {
         errores::$error= false;
     }
 
-    public function test_link_accion_base(){
-        errores::$error = false;
-        $links = new links();
-        $links = new liberator($links);
 
-        $accion = array();
-        $accion_envio = '';
-        $id = '';
-        $seccion = '';
-        $session_id = '';
-        $resultado = $links->link_accion_base(accion: $accion, accion_envio: $accion_envio, id: $id, seccion: $seccion,
-        session_id: $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar href', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = array();
-        $accion_envio = '';
-        $id = '';
-        $seccion = 'x';
-        $session_id = '';
-        $resultado = $links->link_accion_base(accion: $accion, accion_envio: $accion_envio, id: $id, seccion: $seccion,
-        session_id: $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar href', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = array();
-        $accion_envio = 'x';
-        $id = '';
-        $seccion = 'x';
-        $session_id = '';
-        $resultado = $links->link_accion_base(accion: $accion, accion_envio: $accion_envio, id: $id, seccion: $seccion,
-        session_id: $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar href', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = array();
-        $accion_envio = 'x';
-        $id = '';
-        $seccion = 'x';
-        $session_id = 'x';
-        $resultado = $links->link_accion_base(accion: $accion, accion_envio: $accion_envio, id: $id, seccion: $seccion,
-        session_id: $session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar href', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $accion = array();
-        $accion_envio = 'x';
-        $id = 'x';
-        $seccion = 'x';
-        $session_id = 'x';
-        $resultado = $links->link_accion_base(accion: $accion, accion_envio: $accion_envio, id: $id, seccion: $seccion,
-        session_id: $session_id);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('./index.php?seccion=x&accion=x&session_id=x&registro_id=x', $resultado->href);
-
-        errores::$error = false;
-    }
 
     public function test_link_menu(){
         errores::$error = false;
@@ -263,45 +138,5 @@ class linksTest extends test {
         errores::$error = false;
     }
 
-    public function test_txt_link(){
-        errores::$error = false;
-        $links = new links();
-        $links = new liberator($links);
-
-        $etiqueta = '';
-        $init = new stdClass();
-        $init->icono = '';
-        $init->title = '';
-        $st_btn = '';
-        $resultado = $links->txt_link(etiqueta: $etiqueta, init: $init, st_btn: $st_btn);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-        $etiqueta = '';
-        $init = new stdClass();
-        $init->icono = 'x';
-        $init->title = '';
-        $st_btn = '';
-        $resultado = $links->txt_link(etiqueta: $etiqueta, init: $init, st_btn: $st_btn);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<button class='btn btn-sm btn-'><i class='x'></i> </button>", $resultado);
-
-        errores::$error = false;
-
-        $etiqueta = 'x';
-        $init = new stdClass();
-        $init->icono = 'x';
-        $init->title = '';
-        $st_btn = 'x';
-        $resultado = $links->txt_link(etiqueta: $etiqueta, init: $init, st_btn: $st_btn);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<button class='btn btn-sm btn-x'><i class='x'></i> x</button>", $resultado);
-
-        errores::$error = false;
-    }
+    
 }
