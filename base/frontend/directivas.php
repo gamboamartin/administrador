@@ -25,28 +25,6 @@ class directivas  {
     }
 
 
-    /**
-     * P INT P ORDER ERORREV
-     * @param array $filtro
-     * @return array|string
-     */
-    public function format_filtro_base_html(array $filtro):array|string{
-        $filtro_html = '';
-        foreach($filtro as $key=>$data){
-            if($key === ''){
-                return $this->errores->error(mensaje: 'Error el key no puede venir vacio',data:  $key,
-                    params: get_defined_vars());
-            }
-            $data_key = str_replace(array('.', '_'), ' ', $key);
-            $data_key = ucwords($data_key);
-
-            $value = $data['value'] ?? $data;
-            $filtro_html.='<b>'.$data_key.'</b> contiene : <b>'.$value.' </b>';
-        }
-
-        return $filtro_html;
-
-    }
 
     /**
      * NO SE MUEVE

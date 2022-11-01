@@ -769,19 +769,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             exit;
         }
 
-        $filtro_html = $this->directiva->format_filtro_base_html(filtro: $filtros);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al $filtro_html',data: $filtro_html);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
 
         $this->registros['n_registros'] = $n_registros;
-        $this->registros['filtros'] = $filtro_html;
         $this->registros['ip'] = $this->get_real_ip();
         $this->registros['registros'] = $registros;
         $this->registros['data'] = $registros;
