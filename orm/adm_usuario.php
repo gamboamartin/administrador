@@ -93,30 +93,34 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $existe = false;
         if((int)$adm_usuario_id > 0) {
 
-            $adm_grupo_id = $_SESSION['grupo_id'];
-
-            if(isset($_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion])){
-                if((int)$_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] === 1){
-                    $existe = true;
-                }
+            $adm_grupo_id = -1;
+            if(isset($_SESSION['grupo_id'])){
+                $adm_grupo_id = (int)$_SESSION['grupo_id'];
             }
-            else {
-                $filtro['adm_grupo.id'] = $adm_grupo_id;
-                $filtro['adm_accion.descripcion'] = $adm_accion;
-                $filtro['adm_grupo.status'] = 'activo';
-                $filtro['adm_accion.status'] = 'activo';
-                $filtro['adm_seccion.descripcion'] = $adm_seccion;
-                $filtro['adm_seccion.status'] = 'activo';
 
-                $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+            if($adm_grupo_id > 0) {
+                if (isset($_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion])) {
+                    if ((int)$_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] === 1) {
+                        $existe = true;
+                    }
+                } else {
+                    $filtro['adm_grupo.id'] = $adm_grupo_id;
+                    $filtro['adm_accion.descripcion'] = $adm_accion;
+                    $filtro['adm_grupo.status'] = 'activo';
+                    $filtro['adm_accion.status'] = 'activo';
+                    $filtro['adm_seccion.descripcion'] = $adm_seccion;
+                    $filtro['adm_seccion.status'] = 'activo';
+
+                    $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
+                    if (errores::$error) {
+                        return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+                    }
+                    $val_session = 0;
+                    if ($existe) {
+                        $val_session = 1;
+                    }
+                    $_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] = $val_session;
                 }
-                $val_session = 0;
-                if($existe){
-                    $val_session = 1;
-                }
-                $_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] = $val_session;
             }
         }
         return $existe;

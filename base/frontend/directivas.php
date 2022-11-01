@@ -25,43 +25,9 @@ class directivas  {
 
 
 
-    /**
-     * NO SE MEUEVE
-     * @param string $seccion
-     * @param string $accion
-     * @param int $registro_id
-     * @return array|string
-     */
-    public function link_xls(string $seccion, string $accion, int $registro_id, string $session_id): array|string
-    {
 
-        $link = (new links())->link_accion(accion: $accion, icon: 'bi bi-arrow-counterclockwise',
-            registro_id: $registro_id, seccion: $seccion, session_id: $session_id, styles: array('btn-success'));
-        if(errores::$error){
-            return $this->errores->error("Error al generar boton", $link);
-        }
 
-        return $link;
-    }
 
-    /**
-     * NO SE MEUEV
-     * @param string $seccion
-     * @param string $accion
-     * @param int $registro_id
-     * @return array|string
-     */
-    public function link_xml(string $seccion, string $accion, int $registro_id, string $session_id): array|string
-    {
-
-        $link = (new links())->link_accion(accion: $accion, icon: 'bi bi-cloud-download-fill',
-            registro_id: $registro_id, seccion: $seccion, session_id: $session_id, styles: array('btn-info'));
-        if(errores::$error){
-            return $this->errores->error("Error al generar boton", $link);
-        }
-
-        return $link;
-    }
 
     /**
      * P ORDER P INT
