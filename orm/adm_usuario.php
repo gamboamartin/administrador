@@ -86,23 +86,30 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     public function tengo_permiso(string $adm_accion, string $adm_seccion): array|bool
     {
-        $adm_usuario_id = $_SESSION['usuario_id'];
-        $adm_usuario = $this->registro(registro_id: $adm_usuario_id,columnas_en_bruto: true,retorno_obj: true);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener usuario',data: $adm_usuario);
+        $adm_usuario_id = -1;
+        if(isset($_SESSION['usuario_id'])) {
+            $adm_usuario_id = $_SESSION['usuario_id'];
         }
-        $adm_grupo_id = $adm_usuario->adm_grupo_id;
+        $existe = false;
+        if((int)$adm_usuario_id > 0) {
 
-        $filtro['adm_grupo.id'] = $adm_grupo_id;
-        $filtro['adm_accion.descripcion'] = $adm_accion;
-        $filtro['adm_grupo.status'] = 'activo';
-        $filtro['adm_accion.status'] = 'activo';
-        $filtro['adm_seccion.descripcion'] = $adm_seccion;
-        $filtro['adm_seccion.status'] = 'activo';
+            $adm_usuario = $this->registro(registro_id: $adm_usuario_id, columnas_en_bruto: true, retorno_obj: true);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener usuario', data: $adm_usuario);
+            }
+            $adm_grupo_id = $adm_usuario->adm_grupo_id;
 
-        $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si existe',data: $existe);
+            $filtro['adm_grupo.id'] = $adm_grupo_id;
+            $filtro['adm_accion.descripcion'] = $adm_accion;
+            $filtro['adm_grupo.status'] = 'activo';
+            $filtro['adm_accion.status'] = 'activo';
+            $filtro['adm_seccion.descripcion'] = $adm_seccion;
+            $filtro['adm_seccion.status'] = 'activo';
+
+            $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+            }
         }
         return $existe;
 

@@ -341,16 +341,8 @@ class templates{
      * @param string $campo_name Name del input
      * @param string $css_id Identificador css para java
      * @param int $cols Columnas para css
-     * @param string $columnas Columnas para select
-     * @param array $data_extra Elementos para integrar extraparams
-     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
      * @param string $etiqueta Etiqueta de input
-     * @param array $filtro Filtro para selects
      * @param string $llaves_valores LLaves para select
-     * @param bool $ln Si true aplica div 12
-     * @param bool $required Si required genera un atributo de tipo required para input
-     * @param bool $select_vacio_alta si true deja select vacio
-     * @param string $tabla_foranea Tabla de enlace para select
      * @param string $tipo tipo de input
      * @param string $valor Valor del input
      * @return array|string html con info del input a mostrar
