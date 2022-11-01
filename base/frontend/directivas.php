@@ -25,23 +25,9 @@ class directivas  {
     }
 
 
-
-    /**
-     * NO SE MEUVE
-     * @param string $name
-     * @param string $value
-     * @return string|array
-     */
-    public function hidden(string $name, string $value):string|array{
-        $name = trim($name);
-        if($name === ''){
-            return $this->error->error('Error name no puede venir vacio',$name);
-        }
-        return "<input type='hidden'   name='" . $name . "' value='" . $value . "' >";
-    }
-
     /**
      * NO SE MEUEVE
+     * @param string $session_id
      * @return string
      */
     public function hidden_session_id(string $session_id):string{
