@@ -111,8 +111,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->filtro_boton_lista = $filtro_boton_lista;
 
 
-
-
         parent::__construct();
 
         $aplica_seguridad = (new generales())->aplica_seguridad;
@@ -130,13 +128,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         }
 
-        $breadcrumbs = $this->data_bread(aplica_seguridad: $aplica_seguridad);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar nav breads',data: $breadcrumbs);
-            print_r($error);
-            die('Error');
-        }
-        $this->breadcrumbs = $breadcrumbs;
 
         /**
          * @author kevin.acuna

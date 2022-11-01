@@ -144,52 +144,6 @@ class controler{
 
 
 
-    /**
-     * Obtiene los datos de un breadcrumb
-     * @param bool $aplica_seguridad si aplica seguridad validara los elementos necesarios de seguridad
-     * y permisos de acceso
-     * @return array|string
-     */
-    protected function data_bread(bool $aplica_seguridad):array|string{
-        if($aplica_seguridad && !isset($_SESSION['grupo_id']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {
-            header('Location: index.php?seccion=adm_session&accion=login');
-            exit;
-        }
-
-        $es_vista = false;
-        $file_view = $this->path_base.'views/'.$this->seccion.'/'.$this->accion.'.php';
-        if(file_exists($file_view)){
-            $es_vista = true;
-        }
-        $file_view_base = $this->path_base.'views/vista_base/'.$this->accion.'.php';
-        if(file_exists($file_view_base)){
-            $es_vista = true;
-        }
-        if($this->seccion === 'adm_session' && $this->accion === 'login'){
-            $es_vista = false;
-        }
-        $breadcrumbs = '';
-        if($es_vista && $aplica_seguridad) {
-
-            $accion_modelo = new adm_accion($this->link);
-
-            $accion_registro = $accion_modelo->accion_registro(accion:  $this->accion, seccion: $this->seccion);
-            if(errores::$error){
-                return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $accion_registro);
-            }
-            $acciones =  $accion_modelo->acciones_permitidas(accion: $this->accion, modelo: $this->modelo, seccion: $this->seccion);
-            if(errores::$error){
-                return  $this->errores->error(mensaje: 'Error al obtener acciones',data: $acciones);
-            }
-
-            $breadcrumbs = $this->directiva->genera_breadcrumbs( $this->seccion, $this->accion, $acciones, $this->session_id);
-            if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al generar nav breads',data:  $breadcrumbs);
-            }
-        }
-        return $breadcrumbs;
-    }
-
     private function asigna_filtro(string $campo, array $filtro, string $tabla): array
     {
         $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
