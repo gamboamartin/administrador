@@ -71,50 +71,7 @@ class selects{
         return $resultado->registros;
     }
 
-    /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param string $llave_json
-     * @return array|stdClass
-     */
-    private function elemento_select_fijo(string $llave_json): array|stdClass
-    {
-        $llave_json = trim($llave_json);
-        if($llave_json === ''){
-            return $this->error->error('Error $llave_json esta vacia',$llave_json);
-        }
-        $explode_datos = explode(":", $llave_json);
-        if(count($explode_datos)!==2){
-            return $this->error->error('Error $llaves_valores debe venir en formato json string',$explode_datos);
-        }
 
-        $data = new stdClass();
-        $data->key = trim($explode_datos[0]);
-        $data->dato = trim($explode_datos[1]);
-
-        return $data;
-    }
-
-    /**
-     * PARAMS ORDER P INT
-     * @param string $llaves_valores
-     * @return array
-     */
-    public function elementos_for_select_fijo(string $llaves_valores): array
-    {
-        $elementos_select = array();
-        $explode_llaves = explode(',',$llaves_valores);
-        foreach ($explode_llaves as  $value){
-
-            $data = (new selects())->elemento_select_fijo(llave_json: $value);
-            if(errores::$error){
-                return $this->error->error('Error al data para option', $data);
-            }
-
-            $elementos_select[$data->key] = $data->dato;
-        }
-        return $elementos_select;
-
-    }
 
 
 
@@ -161,64 +118,6 @@ class selects{
 
         return $registros;
     }
-
-
-
-    /**
-     * PARAMS ORDER P INT
-     * @param string $key
-     * @param string $value_data
-     * @param string $value_select
-     * @return array|string
-     */
-    private function option_for_select(string $key, string $value_data, string $value_select): array|string
-    {
-        $selected = (new selects())->selected_value(value_base: $value_data,value_tabla: $value_select);
-        if(errores::$error){
-            return $this->error->error('Error al generar selected', $selected);
-        }
-
-        $option = (new selects())->option_value(key: $key, selected: $selected, value: $value_data);
-        if(errores::$error){
-            return $this->error->error('Error al generar option', $option);
-        }
-        return $option;
-    }
-
-    /**
-     * PARAMS ORDER P INT
-     * @param array $elementos_select
-     * @param string $valor
-     * @return array|string
-     */
-    public function options_for_select(array $elementos_select, string $valor): array|string
-    {
-        $options = '';
-        foreach ($elementos_select as $key => $value){
-
-            $option = (new selects())->option_for_select(key:  $key, value_data: $value,value_select:  $valor);
-            if(errores::$error){
-                return $this->error->error('Error al generar option', $option);
-            }
-
-            $options .= $option;
-        }
-        return $options;
-    }
-
-
-    /**
-     * PARAMS ORDER P INT
-     * @param string $key
-     * @param string $selected
-     * @param string $value
-     * @return string
-     */
-    private function option_value(string $key, string $selected, string $value): string
-    {
-        return "<option value = '$value' $selected>".$key."</option>";
-    }
-
 
 
 
@@ -305,27 +204,5 @@ class selects{
         return $registros;
     }
 
-    /**
-     * PROBADO-PARAMS ORDER P INT
-     * @param string $value_base
-     * @param string $value_tabla
-     * @return string|array
-     */
-    private function selected_value(string $value_base, string $value_tabla): string|array
-    {
-        $value_base = trim($value_base);
-        $value_tabla = trim($value_tabla);
-
-        if($value_base === ''){
-            return $this->error->error('Error $value_base esta vacio ',$value_base);
-        }
-
-
-        $selected = '';
-        if($value_base === $value_tabla){
-            $selected = 'selected';
-        }
-        return $selected;
-    }
 
 }

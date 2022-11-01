@@ -193,8 +193,8 @@ class templates{
      * @param array $registro
      * @return array|string
      */
-    public function carga_html_form(string $tipo, string $campo_name, int $cols, string $etiqueta, string $css_id,
-                                    array $valores_filtrados,  array $input, string $llaves_foraneas,
+    public function carga_html_form(string $tipo, string $campo_name, int $cols, string $etiqueta,
+                                    array $valores_filtrados,  array $input,
                                     array $campos_invisibles, array $vistas, array $registro):array|string{ //fin
         $keys = array('etiqueta','vista','cols','tabla_foranea','campo_tabla_externa');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $input);
@@ -212,7 +212,7 @@ class templates{
         }
 
         $html = $this->genera_html_form(tipo: $tipo,campo_name:  $campo_name,cols:  $cols, etiqueta: $etiqueta,
-            css_id: $css_id, valores_filtrados:  $valores_filtrados, llaves_foraneas: $llaves_foraneas,
+            valores_filtrados:  $valores_filtrados,
             vistas: $vistas, campos_invisibles: $campos_invisibles,key_validar:  $key_validar, html: '',
             registro: $registro);
         if(errores::$error){
@@ -238,8 +238,8 @@ class templates{
      * @param array $vistas Conjunto de views permitidas
      * @return array|string
      */
-    public function genera_campos(string $accion, string $campo_name, array $campos_invisibles, string $css_id,
-                                  int $cols, string $etiqueta, string $llaves_foraneas, string $tipo, mixed $valor,
+    public function genera_campos(string $accion, string $campo_name, array $campos_invisibles,
+                                  int $cols, string $etiqueta, string $tipo, mixed $valor,
                                   array $valores_filtrados, array $vistas):array|string{
 
         if($accion === ''){
@@ -256,8 +256,8 @@ class templates{
         $filtro = $valores_filtrados[$campo_name] ?? array();
 
 
-        $html = $this->genera_html_input(accion: $accion, campo_name: $campo_name, css_id: $css_id, cols: $cols,
-            etiqueta: $etiqueta, llaves_valores: $llaves_foraneas, tipo: $tipo, valor: $valor, vistas: $vistas);
+        $html = $this->genera_html_input(accion: $accion, campo_name: $campo_name, cols: $cols,
+            etiqueta: $etiqueta, tipo: $tipo, valor: $valor, vistas: $vistas);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar html',data: $html);
@@ -303,8 +303,8 @@ class templates{
 
             $accion = 'alta';
             $data_html = $this->genera_campos(accion: $accion, campo_name: $campo_name,
-                campos_invisibles: $campos_invisibles, css_id: $input['css_id'], cols: $input['cols'],
-                etiqueta: $input['etiqueta'], llaves_foraneas: $input['llaves_foraneas'], tipo: $input['tipo'],
+                campos_invisibles: $campos_invisibles, cols: $input['cols'],
+                etiqueta: $input['etiqueta'], tipo: $input['tipo'],
                 valor: $valor, valores_filtrados: $valores_filtrados, vistas: array('alta'));
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al generar campos',data: $data_html);
@@ -358,8 +358,8 @@ class templates{
      * @internal $directiva->input_select_columnas($tabla_foranea,$this->valor,$this->cols,$disabled,$columnas,$this->link,$required,'capitalize',$this->ln,$select_vacio_alta,$registros = array(),$valor_extra,$this->filtro);
      * @internal $directiva->genera_select_estatico($llaves_valores, $this->cols, $this->campo,$etiqueta,false,false,$this->valor,$css_id);
      */
-    public function genera_dato_html(string $campo_name, string $css_id, int $cols, string $etiqueta,
-                                     string $llaves_valores, string $tipo, mixed $valor):array|string{
+    public function genera_dato_html(string $campo_name, int $cols, string $etiqueta,
+                                      string $tipo, mixed $valor):array|string{
 
         if($cols <0){
             return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data: $cols);
@@ -373,18 +373,6 @@ class templates{
         $directiva = new directivas();
 
 
-
-        if( $tipo === 'select_estatico') {
-
-
-            $data_html =  $directiva->genera_select_estatico(campo_name: $campo_name, llaves_valores: $llaves_valores,
-                css_id: $css_id, cols: $cols, etiqueta: $etiqueta, valor: $valor );
-
-            if(errores::$error){
-                return  $this->error->error('Error al obtener genera_select_estatico',$data_html);
-            }
-
-        }
 
         if( $tipo === 'textarea') {
             $data_html = $directiva->textarea(campo_name: $campo_name,cols: $cols,value:  $valor,etiqueta:  $etiqueta);
@@ -417,8 +405,8 @@ class templates{
                 continue;
             }
             $html_data = $this->carga_html_form(tipo: $data['tipo'],campo_name:  $campo_name, cols: $data['cols'],
-                etiqueta: $data['etiqueta'], css_id:   $data['css_id'],valores_filtrados: $valores_filtrados,
-                input:  $data, llaves_foraneas: $data['llaves_foraneas'], campos_invisibles: $this->campos_invisibles,
+                etiqueta: $data['etiqueta'],valores_filtrados: $valores_filtrados,
+                input:  $data, campos_invisibles: $this->campos_invisibles,
                 vistas: array('modifica'), registro:  $registro);
             if(errores::$error){
                 return $this->error->error('Error al generar $html',$html_data);
@@ -446,8 +434,8 @@ class templates{
      * @param array $registro
      * @return array|string
      */
-    public function genera_html_form(string $tipo,string $campo_name, int $cols, string $etiqueta, string $css_id,
-                                     array $valores_filtrados, string $llaves_foraneas, array $vistas,
+    public function genera_html_form(string $tipo,string $campo_name, int $cols, string $etiqueta,
+                                     array $valores_filtrados, array $vistas,
                                      array $campos_invisibles, string $key_validar, string $html, array $registro):array|string{
 
 
@@ -460,8 +448,8 @@ class templates{
         $accion ='modifica';
 
         $campos_html = $this->genera_campos(accion: $accion, campo_name: $campo_name,
-            campos_invisibles: $campos_invisibles, css_id: $css_id, cols: $cols, etiqueta: $etiqueta,
-            llaves_foraneas: $llaves_foraneas, tipo: $tipo, valor: $valor, valores_filtrados: $valores_filtrados,
+            campos_invisibles: $campos_invisibles, cols: $cols, etiqueta: $etiqueta, tipo: $tipo,
+            valor: $valor, valores_filtrados: $valores_filtrados,
             vistas: $vistas);
         if(errores::$error){
             return $this->error->error('Error al generar campos',$campos_html);
@@ -493,8 +481,8 @@ class templates{
      * @internal $this->validacion->valida_existencia_keys($this->input, $keys);
      * @internal $this->genera_dato_html();
      */
-    public function genera_html_input(string $accion, string $campo_name, string $css_id, int $cols,
-                                      string $etiqueta, string $llaves_valores, string $tipo, mixed $valor,
+    public function genera_html_input(string $accion, string $campo_name, int $cols,
+                                      string $etiqueta, string $tipo, mixed $valor,
                                       array $vistas):array|string{
 
         $html = '';
@@ -508,8 +496,8 @@ class templates{
             if($cols>12){
                 return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data: $cols);
             }
-            $data_html = $this->genera_dato_html(campo_name: $campo_name, css_id: $css_id, cols: $cols,
-                etiqueta: $etiqueta, llaves_valores: $llaves_valores, tipo: $tipo, valor: $valor);
+            $data_html = $this->genera_dato_html(campo_name: $campo_name, cols: $cols,
+                etiqueta: $etiqueta, tipo: $tipo, valor: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar html',data: $data_html);

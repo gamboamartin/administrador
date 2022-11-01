@@ -106,45 +106,6 @@ class selectsTest extends test {
 
     }
 
-    public function test_elemento_select_fijo(): void{
-        errores::$error = false;
-        $sl = new selects();
-        $sl = new liberator($sl);
-        $llave_json = '';
-        $resultado = $sl->elemento_select_fijo($llave_json);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $llave_json esta vacia', $resultado['mensaje']);
-
-        errores::$error = false;
-        $llave_json = 'a';
-        $resultado = $sl->elemento_select_fijo($llave_json);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('$llaves_valores debe venir en formato json string', $resultado['mensaje']);
-
-        errores::$error = false;
-        $llave_json = 'a:';
-        $resultado = $sl->elemento_select_fijo($llave_json);
-
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->key);
-        $this->assertEquals('', $resultado->dato);
-
-        errores::$error = false;
-        $llave_json = 'a:1';
-        $resultado = $sl->elemento_select_fijo($llave_json);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->key);
-        $this->assertEquals('1', $resultado->dato);
-
-        errores::$error = false;
-    }
-
-
-
 
     public function test_obten_registros_select(): void{
         errores::$error = false;
@@ -212,39 +173,7 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
-    public function test_selected_value(): void{
-        errores::$error = false;
-        $sl = new selects();
-        $sl = new liberator($sl);
 
-        $value_base = '';
-        $value_tabla = '';
-
-        $resultado = $sl->selected_value($value_base, $value_tabla);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $value_base esta vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-        $value_base = 'a';
-        $value_tabla = '';
-
-        $resultado = $sl->selected_value($value_base, $value_tabla);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-        $value_base = 'a';
-        $value_tabla = 'a';
-
-        $resultado = $sl->selected_value($value_base, $value_tabla);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('selected', $resultado);
-        errores::$error = false;
-    }
 
 
 }
