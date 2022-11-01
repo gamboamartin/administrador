@@ -78,7 +78,8 @@ class controler{
 
 
 
-    public function __construct(){
+    public function __construct(PDO $link){
+        $this->link = $link;
 
         $generals = (new generales());
         if(!isset($_SESSION['grupo_id']) && $generals->aplica_seguridad){

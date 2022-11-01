@@ -109,7 +109,7 @@ class initTest extends test {
 
         $init = new init();
         //$init = new liberator($init);
-        $controler = new controler();
+        $controler = new controler($this->link);
         $resultado = $init->init_data_controler($controler);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

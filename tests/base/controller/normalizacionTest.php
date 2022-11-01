@@ -89,7 +89,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         //$nm = new liberator($nm);
 
-        $controler = new controler();
+        $controler = new controler($this->link);
         $registro = array();
         $resultado = $nm->asigna_registro_alta(controler: $controler,registro:  $registro);
         $this->assertIsArray($resultado);
@@ -97,7 +97,7 @@ class normalizacionTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error $controler->seccion no puede venir vacia', $resultado['mensaje']);
 
         errores::$error = false;
-        $controler = new controler();
+        $controler = new controler($this->link);
         $controler->seccion = 'z';
         $controler->tabla = 'z';
         $registro = array();
@@ -112,7 +112,7 @@ class normalizacionTest extends test {
         $this->assertEquals(1, $resultado['a']);
 
         errores::$error = false;
-        $controler = new controler();
+        $controler = new controler($this->link);
         $controler->modelo = new adm_seccion($this->link);
         $controler->seccion = 'adm_seccion';
         $controler->tabla = 'adm_seccion';
@@ -131,7 +131,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         //$nm = new liberator($nm);
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $resultado = $nm->clase_model($controler);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -141,7 +141,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         //$nm = new liberator($nm);
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $controler->seccion = 'a';
         $resultado = $nm->clase_model($controler);
         $this->assertIsString($resultado);
@@ -173,7 +173,7 @@ class normalizacionTest extends test {
         $nm = new liberator($nm);
 
         $filtro_default_btn = array();
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $controler->tabla = 'x';
         $resultado = $nm->ejecuta_filtro($controler, $filtro_default_btn);
         $this->assertIsBool($resultado);
@@ -183,7 +183,7 @@ class normalizacionTest extends test {
         errores::$error = false;
 
         $filtro_default_btn = array();
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $controler->tabla = 'x';
 
         unset($_SESSION['filtros'][$controler->tabla]);
@@ -203,7 +203,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         //$nm = new liberator($nm);
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $resultado = $nm->filtro_btn($controler);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -215,7 +215,7 @@ class normalizacionTest extends test {
         errores::$error = false;
         $nm = new normalizacion();
         //$nm = new liberator($nm);
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
 
         $registro = array();
         //$registro[] = '';
@@ -278,7 +278,7 @@ class normalizacionTest extends test {
         errores::$error = false;
         $nm = new normalizacion();
         $nm = new liberator($nm);
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
 
         $registros = array();
         $resultado = $nm->genera_registros_envio($controler, $registros);
@@ -288,7 +288,7 @@ class normalizacionTest extends test {
 
         errores::$error = false;
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $controler->seccion = 'x';
         $controler->modelo = new adm_seccion($this->link);
         $registros = array();
@@ -324,7 +324,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         $nm = new liberator($nm);
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $registro = array();
         $controler->seccion = 'adm_accion';
         $controler->tabla = 'a';
@@ -395,7 +395,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         //$nm = new liberator($nm);
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $r_fotos = array();
         $tabla = '';
         $resultado = $nm->maqueta_data_galeria(controler: $controler,r_fotos:  $r_fotos,tabla:  $tabla);
@@ -405,7 +405,7 @@ class normalizacionTest extends test {
 
         errores::$error = false;
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $r_fotos = array();
         $tabla = '';
         $r_fotos['registros'] = '';
@@ -416,7 +416,7 @@ class normalizacionTest extends test {
 
         errores::$error = false;
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $r_fotos = array();
         $tabla = '';
         $r_fotos['registros'] = array();
@@ -427,7 +427,7 @@ class normalizacionTest extends test {
 
         errores::$error = false;
 
-        $controler = new controler('', '');
+        $controler = new controler($this->link, '', '');
         $r_fotos = array();
         $tabla = 'a';
         $r_fotos['registros'] = array();
@@ -466,7 +466,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         $nm = new liberator($nm);
 
-        $controler = new controler();
+        $controler = new controler($this->link);
         $key = '';
         $resultado = $nm->obten_key_envio($controler, $key);
         $this->assertIsArray($resultado);
@@ -475,7 +475,7 @@ class normalizacionTest extends test {
 
         errores::$error = false;
 
-        $controler = new controler();
+        $controler = new controler($this->link);
         $controler->seccion = 'a';
         $key = '';
         $resultado = $nm->obten_key_envio($controler, $key);
@@ -485,7 +485,7 @@ class normalizacionTest extends test {
 
         errores::$error = false;
 
-        $controler = new controler();
+        $controler = new controler($this->link);
 
         $controler->seccion = 'a';
         $key = 'c';
@@ -502,7 +502,7 @@ class normalizacionTest extends test {
         $nm = new normalizacion();
         $nm = new liberator($nm);
 
-        $controler = new controler();
+        $controler = new controler($this->link);
         $registro = array();
         $registro['a'] = 'a';
         $controler->seccion = 'a';

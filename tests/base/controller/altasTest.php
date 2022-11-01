@@ -31,7 +31,7 @@ class altasTest extends test {
 
         $_SESSION['usuario_id'] = 1;
 
-        $controler = new controler();
+        $controler = new controler($this->link);
         $controler->seccion = 'adm_mes';
         $controler->tabla = 'adm_mes';
         $controler->modelo = new adm_mes($this->link);

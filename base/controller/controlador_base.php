@@ -111,7 +111,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->filtro_boton_lista = $filtro_boton_lista;
 
 
-        parent::__construct();
+        parent::__construct(link: $link);
 
         $aplica_seguridad = (new generales())->aplica_seguridad;
         if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){

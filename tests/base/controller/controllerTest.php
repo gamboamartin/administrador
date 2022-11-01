@@ -22,7 +22,7 @@ class controllerTest extends test {
 
         errores::$error = false;
 
-        $ctl = new controler();
+        $ctl = new controler($this->link);
         $ctl = new liberator($ctl);
 
         $keys = array();
@@ -84,7 +84,7 @@ class controllerTest extends test {
 
         errores::$error = false;
 
-        $ctl = new controler();
+        $ctl = new controler($this->link);
         $ctl = new liberator($ctl);
 
         $keys = array();
@@ -103,7 +103,7 @@ class controllerTest extends test {
 
         errores::$error = false;
 
-        $ctl = new controler();
+        $ctl = new controler($this->link);
         $ctl = new liberator($ctl);
 
         $_POST['not_in']['llave'] = 'a';
