@@ -1,11 +1,10 @@
 <?php
 namespace models;
 use base\orm\modelo;
-use gamboamartin\errores\errores;
 
 use PDO;
 
-class sistema extends modelo{
+class adm_sistema extends modelo{
     public function __construct(PDO $link){
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);

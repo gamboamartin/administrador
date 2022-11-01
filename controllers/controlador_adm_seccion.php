@@ -47,7 +47,7 @@ class controlador_adm_seccion extends controlador_base{
         }
 
         $this->breadcrumbs = $this->directiva->nav_breadcumbs(breadcrumbs: $breadcrumbs,seccion: $this->seccion,
-            accion: $this->accion, link: $this->link,accion_registro:  $accion_registro, session_id: $this->session_id);
+            accion: $this->accion, session_id: $this->session_id);
         $this->seccion_menu_id = $_GET['registro_id'];
         $this->operaciones_controlador->encabezados($this);
         setcookie('seccion_menu_id' , $this->seccion_menu_id);

@@ -8,6 +8,7 @@ use config\views;
 use gamboamartin\errores\errores;
 
 use models\adm_accion;
+use models\adm_seccion;
 use PDO;
 use stdClass;
 use Throwable;
@@ -74,9 +75,12 @@ class controler{
 
     public int $number_active = -1;
 
+    public array $secciones_permitidas = array();
+
 
 
     public function __construct(){
+
         $generals = (new generales());
         if(!isset($_SESSION['grupo_id']) && $generals->aplica_seguridad){
             if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {

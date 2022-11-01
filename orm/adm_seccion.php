@@ -2,6 +2,7 @@
 namespace models;
 use base\orm\columnas;
 use base\orm\modelo;
+use config\generales;
 use gamboamartin\errores\errores;
 
 
@@ -98,7 +99,6 @@ class adm_seccion extends modelo{
 
     }
 
-
     /**
      *
      * @param int $menu_id
@@ -148,4 +148,70 @@ class adm_seccion extends modelo{
         $result->closeCursor();
 	    return array('registros' => $new_array, 'n_registros' => $n_registros);
 	}
+
+    public function secciones_permitidas(): array
+    {
+
+        $r_adm_seccion = new stdClass();
+        $r_adm_seccion->registros = array();
+
+        $adm_usuario_id = -1;
+        if(isset($_SESSION['usuario_id'])){
+            $adm_usuario_id = $_SESSION['usuario_id'];
+        }
+
+        if($adm_usuario_id > 0) {
+
+            $secciones_sistema = $this->secciones_sistema();
+            if (errores::$error) {
+                return $this->error->error('Error al obtener secciones ', $secciones_sistema);
+            }
+
+            if(count($secciones_sistema)>0) {
+
+                $adm_usuario = (new adm_usuario(link: $this->link))->registro(
+                    registro_id: $adm_usuario_id, columnas_en_bruto: true, retorno_obj: true);
+                if (errores::$error) {
+                    return $this->error->error('Error al obtener usuario ', $adm_usuario);
+                }
+
+                $adm_grupo = (new adm_grupo(link: $this->link))->registro(
+                    registro_id: $adm_usuario->adm_grupo_id, columnas_en_bruto: true, retorno_obj: true);
+                if (errores::$error) {
+                    return $this->error->error('Error al obtener grupo ', $adm_grupo);
+                }
+
+
+                $seccion_sistema_in = array();
+                foreach ($secciones_sistema as $seccion_sistema) {
+                    $seccion_sistema_in[] = $seccion_sistema['adm_seccion_id'];
+                }
+
+                $filtro['adm_grupo.id'] = $adm_grupo->id;
+                $group_by[] = 'adm_seccion.id';
+                $in['llave'] = 'adm_seccion.id';
+                $in['values'] = $seccion_sistema_in;
+
+                $r_adm_seccion = (new adm_accion_grupo(link: $this->link))->filtro_and(
+                    filtro: $filtro, group_by: $group_by, in: $in);
+                if (errores::$error) {
+                    return $this->error->error('Error al obtener secciones ', $r_adm_seccion);
+                }
+            }
+
+        }
+
+        return $r_adm_seccion->registros;
+
+    }
+
+    public function secciones_sistema(): array
+    {
+        $filtro['adm_sistema.descripcion'] = (new generales())->sistema;
+        $r_seccion_pertenece = (new adm_seccion_pertenece(link: $this->link))->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener secciones ', data: $r_seccion_pertenece);
+        }
+        return $r_seccion_pertenece->registros;
+    }
 }

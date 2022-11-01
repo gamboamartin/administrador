@@ -14,6 +14,7 @@ use JsonException;
 
 use models\adm_accion;
 use models\adm_elemento_lista;
+use models\adm_seccion;
 use models\adm_session;
 use models\adm_usuario;
 use PDO;
@@ -150,6 +151,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             }
             $this->datos_session_usuario = $datos_session_usuario;
         }
+
+        $secciones_permitidas = (new adm_seccion($this->link))->secciones_permitidas();
+        if(errores::$error){
+            $error =  $this->errores->error(mensaje: 'Error al obtener secciones permitidas',data: $secciones_permitidas);
+            print_r($error);
+            exit;
+        }
+        $this->secciones_permitidas = $secciones_permitidas;
 
     }
 

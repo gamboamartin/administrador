@@ -1018,7 +1018,6 @@ class where{
     {
         $in_sql = '';
         if(count($in)>0){
-
             $keys = array('llave','values');
             $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $in);
             if(errores::$error){
