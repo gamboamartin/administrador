@@ -93,11 +93,8 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $existe = false;
         if((int)$adm_usuario_id > 0) {
 
-            $adm_usuario = $this->registro(registro_id: $adm_usuario_id, columnas: array('adm_grupo_id'));
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener usuario', data: $adm_usuario);
-            }
-            $adm_grupo_id = $adm_usuario['adm_grupo_id'];
+
+            $adm_grupo_id = $_SESSION['grupo_id'];
 
             $filtro['adm_grupo.id'] = $adm_grupo_id;
             $filtro['adm_accion.descripcion'] = $adm_accion;

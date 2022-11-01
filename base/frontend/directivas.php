@@ -11,7 +11,6 @@ use PDO;
 class directivas  {
     private errores $error;
     public errores $errores;
-    private validaciones_directivas $validacion;
 
     public array $input = array();
     public string $html;
@@ -20,118 +19,8 @@ class directivas  {
     #[Pure] public function __construct(){
         $this->error = new errores();
         $this->errores = new errores();
-        $this->validacion = new validaciones_directivas();
 
     }
-
-
-    /**
-     * NO SE MEUEVE
-     * @param string $session_id
-     * @return string
-     */
-    public function hidden_session_id(string $session_id):string{
-        return "<input type='hidden'   name='session_id' value='" . $session_id . "' >";
-    }
-
-    /**
-     * NO SE MUEVE
-     * @param int $cols
-     * @param string $campo
-     * @param string $tipo_letra
-     * @param bool $con_label
-     * @param bool $ln
-     * @param bool $required
-     * @param string $etiqueta
-     * @param string $value
-     * @param bool $disabled
-     * @param array $data_extra
-     * @param bool $value_vacio
-     * @return array|string
-     */
-    public function hora(int $cols, string $campo,string $tipo_letra='capitalize', bool $con_label=true,
-                         bool $ln=false, bool $required=false, string $etiqueta = '', string $value="",
-                         bool $disabled=false, array $data_extra = array(), bool $value_vacio = false){ //FIN PROT
-
-        if($etiqueta === ''){
-            $etiqueta = ucwords($campo);
-        }
-        if($value === '' && !$value_vacio){
-            $value = date('Y-m-d');
-        }
-
-        if($etiqueta === ''){
-            return $this->errores->error('Error $etiqueta no puede venir vacio',$etiqueta);
-        }
-        if($tipo_letra === ''){
-            return $this->errores->error('Envie un tipo de letra valido capitalize normal',$tipo_letra);
-        }
-        $valida = $this->validacion->valida_elementos_base_input($campo,$cols);
-        if(isset($valida['error'])){
-            return $this->errores->error('Error al validar',$valida);
-        }
-
-
-        $html = '';
-        if($ln){
-            $html = $html."<div class='col-md-12'></div>";
-        }
-        $disabled_html = '';
-        if($disabled){
-            $disabled_html = 'disabled';
-        }
-
-        $required_html = '';
-        if($required){
-            $required_html = 'required';
-        }
-        $html = $html."
-		<div class='form-group col-md-$cols'>";
-        if($con_label) {
-            $html = $html . "<label for='$campo'></label>";
-        }
-
-        $data_extra_html = '';
-
-        foreach($data_extra as $key=>$dato){
-            $data_txt = "data-$key = '$dato'";
-            $data_extra_html.= ' '.$data_txt;
-        }
-
-
-        $html = $html."
-			<input 
-				type='time' class='form-control input-md' name='$campo' id='$campo' placeholder='Ingresa ' 
-				$required_html title='Ingrese una $campo' value='$value' $disabled_html $data_extra_html>
-		</div>";
-        return $html;
-    }
-
-    /**
-     * NO SE MUEVE
-     * @param string $src
-     * @param int $css_id
-     * @param array $class_css
-     * @param array $data_extra
-     * @return string|array
-     */
-    public function img_btn_modal(string $src, int $css_id, array $class_css = array(), array $data_extra = array()): string|array
-    {
-        if($css_id<=0){
-            return $this->errores->error('Error $css_id debe ser mayor a 0',$css_id);
-        }
-
-        $class_html = '';
-        foreach ($class_css as $class){
-            $class_html.=' '.$class;
-        }
-
-        $img = '<img class="img-thumbnail '.$class_html.'" src="'.$src.'" data-foto_previa_id = "'.$css_id.'"';
-        $img.= ' role="button" data-toggle="modal" data-target="#_'.$css_id.'">';
-        return $img;
-    }
-
-
 
 
     /**
@@ -332,24 +221,6 @@ class directivas  {
         </div>
     </div>';
         return $html;
-    }
-
-    /**
-     *
-     *  NO SE MEUEV
-     * @param string $url_tb_image
-     * @param string $css_id
-     * @param array $class_tb_html
-     * @return array|string
-     */
-    public function modal_foto(string $url_tb_image, string $css_id, array $class_tb_html = array()): array|string
-    {
-        $img_tb = $this->img_btn_modal($url_tb_image, $css_id, $class_tb_html);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener tb',$img_tb);
-        }
-
-        return $img_tb;
     }
 
 
