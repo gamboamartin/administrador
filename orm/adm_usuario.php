@@ -3,9 +3,6 @@ namespace models;
 
 use base\orm\modelo;
 use gamboamartin\errores\errores;
-
-
-use JsonException;
 use PDO;
 
 class adm_usuario extends modelo{ //PRUEBAS en proceso
@@ -21,19 +18,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         parent::__construct(link: $link,tabla: $tabla,columnas: $columnas);
     }
 
-
-    /**
-     * @throws JsonException
-     */
-    public function alta_usuario(): array|int
-    {
-
-        $r_usuario_alta_bd = $this->alta_bd();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar usuario',data: $r_usuario_alta_bd);
-        }
-        return (int)$r_usuario_alta_bd->registro_id;
-    }
 
     /**
      * Valida que el grupo que va a filtrar exista en la base de datos. En caso de que
@@ -98,6 +82,28 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
 
         return $filtro;
+    }
+
+    public function tengo_permiso(string $adm_accion): array|bool
+    {
+        $adm_usuario_id = $_SESSION['usuario_id'];
+        $adm_usuario = $this->registro(registro_id: $adm_usuario_id,columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener usuario',data: $adm_usuario);
+        }
+        $adm_grupo_id = $adm_usuario->adm_grupo_id;
+
+        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        $filtro['adm_accion.descripcion'] = $adm_accion;
+        $filtro['adm_grupo.status'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
+
+        $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe',data: $existe);
+        }
+        return $existe;
+
     }
 
     /**

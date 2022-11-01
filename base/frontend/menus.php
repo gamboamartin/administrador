@@ -2,19 +2,15 @@
 namespace base\frontend;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use PDO;
 use stdClass;
 
 
 class menus{
     private errores $error;
-    private validaciones_directivas $validacion;
+
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validaciones_directivas();
     }
-
-
 
     /**
      *
@@ -110,81 +106,6 @@ class menus{
 
         return $data;
     }
-
-    /**
-     *
-     * Genera los breadcrumbs de un html
-     *
-     * @param array $etiquetas_accion conjunto de etiquetas para la creacion de un breadcrums
-     * @param string $seccion Seccion de un controlador o modelo
-     * @return array arreglo con parametros
-     * @example
-     *      $breadcrumbs = $controlador->breadcrumbs_con_label(array('alta', 'lista'));
-     *
-     * @uses clientes
-     * @uses controlador_cliente
-     */
-    public function breadcrumbs_con_label_html(array $etiquetas_accion, string $seccion):array{
-        $seccion = str_replace('models\\','',$seccion);
-        if($seccion === ''){
-            return $this->error->error('Error seccion no puede venir vacio',$seccion);
-        }
-
-        $etiquetas_array = $this->etiquetas_array(etiquetas_accion: $etiquetas_accion);
-        if(errores::$error){
-            return $this->error->error('Error al generar etiquetas', $etiquetas_array);
-        }
-
-        return $etiquetas_array;
-    }
-
-    /**
-     * Obtiene los datos de un menu
-     * @param array $etiqueta Datos para mostrar una etiqueta en un menu
-     * @return array
-     * @version 1.568.51
-     */
-    private function data_menu(array $etiqueta): array
-    {
-        $keys = array('adm_accion_descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $etiqueta);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar etiqueta', data: $valida);
-        }
-
-        if(!isset($etiqueta['adm_accion_icono'])){
-            $etiqueta['adm_accion_icono'] = '';
-        }
-
-        $data['etiqueta'] = $etiqueta['adm_accion_descripcion'];
-        $data['link'] = $etiqueta['adm_accion_descripcion'];
-        $data['icon'] = $etiqueta['adm_accion_icono'];
-
-        return$data;
-    }
-
-    /**
-     * Funcion la generar las etiquetas de una accion mostrable en el menu
-     * @param array $etiquetas_accion Datos con las etiquetas a mostrar
-     * @return array
-     * @version 1.568.51
-     */
-    private function etiquetas_array(array $etiquetas_accion): array
-    {
-        $etiquetas_array = array();
-        foreach($etiquetas_accion as $etiqueta){
-            if(!is_array($etiqueta)){
-                return  $this->error->error('Error etiqueta debe ser un array',$etiqueta);
-            }
-            $data = $this->data_menu($etiqueta);
-            if(errores::$error){
-                return $this->error->error('Error al generar data', $data);
-            }
-            $etiquetas_array[] = $data;
-        }
-        return $etiquetas_array;
-    }
-
 
 
 }

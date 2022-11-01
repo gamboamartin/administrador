@@ -8,7 +8,6 @@ use config\views;
 use gamboamartin\errores\errores;
 
 use models\adm_accion;
-use models\adm_seccion;
 use PDO;
 use stdClass;
 use Throwable;

@@ -25,33 +25,6 @@ class directivas  {
     }
 
 
-
-    /**
-     * NO SE MUEVE
-     * @param array $filtro
-     * @return array|string
-     */
-    public function format_filtro_rango_html(array $filtro):array|string{ //FIN
-        $filtro_html = '';
-        foreach($filtro as $key=>$value){
-            if(is_numeric($key)){
-                return $this->errores->error('Error el key debe ser un tabla.valor',$filtro);
-            }
-            if(!isset($value['valor1'])){
-                return $this->errores->error('Error el valor del filtro debe tener valor1',$filtro);
-            }
-            if(!isset($value['valor2'])){
-                return $this->errores->error('Error el valor del filtro debe tener valor2',$filtro);
-            }
-            $data_key = str_replace(array('.', '_'), ' ', $key);
-
-            $filtro_html.='<b>'.$data_key.'</b> es mayor o igual a: <b>'.$value['valor1'].'</b> y es menor o igual a: <b>'.$value['valor2'].'</b>';
-        }
-
-        return $filtro_html;
-
-    }
-
     /**
      * NO SE MUEVE
      * Genera y asigna los breadcrumbs de una vista

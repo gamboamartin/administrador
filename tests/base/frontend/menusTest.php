@@ -40,46 +40,5 @@ class menusTest extends test {
         errores::$error = false;
     }
 
-    public function test_data_menu(){
-        errores::$error = false;
-        $m = new menus();
-        $m = new liberator($m);
-
-        $etiqueta = array();
-        $resultado = $m->data_menu($etiqueta);
-
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error al validar etiqueta", $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $etiqueta = array();
-        $etiqueta['adm_accion_descripcion'] = 'a';
-        $etiqueta['adm_accion_icono'] = 'a';
-        $resultado = $m->data_menu($etiqueta);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("a", $resultado['etiqueta']);
-
-        errores::$error = false;
-
-
-    }
-
-    public function test_etiquetas_array(){
-        errores::$error = false;
-        $m = new menus();
-        $m = new liberator($m);
-
-        $etiquetas_accion = array();
-        $resultado = $m->etiquetas_array($etiquetas_accion);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
-
-
-
 
 }
