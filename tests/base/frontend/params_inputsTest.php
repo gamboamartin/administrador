@@ -44,43 +44,6 @@ class params_inputsTest extends test {
     }
 
 
-    public function test_data_content_option(){
-        errores::$error = false;
-        $params = new params_inputs();
-        //$params = new liberator($params);
-        $data_con_valor = array();
-        $data_extra = array();
-        $tabla = 'a';
-        $valor_envio = '1';
-        $value = array();
-        $resultado = $params->data_content_option( $tabla, $valor_envio, $value);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar selected', $resultado['mensaje']);
-        errores::$error = false;
-    }
-
-
-    public function test_multiple_html(){
-        errores::$error = false;
-        $params = new params_inputs();
-
-        $resultado =  $params->multiple_html(multiple: false);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("", $resultado->multiple);
-
-        errores::$error = false;
-
-        $resultado =  $params->multiple_html(multiple: true);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("multiple", $resultado->multiple);
-
-        errores::$error = false;
-    }
-
-
     public function test_required_html(): void
     {
         errores::$error = false;

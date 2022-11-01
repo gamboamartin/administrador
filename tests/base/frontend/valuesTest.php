@@ -17,36 +17,6 @@ class valuesTest extends test {
 
 
 
-
-    public function test_content_option_value(): void
-    {
-        errores::$error = false;
-        $val = new values();
-        //$val = new liberator($val);
-
-        $tabla = '';
-        $value = array();
-        $resultado = $val->content_option_value($tabla, $value);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla esta vacia', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $tabla = 'a';
-        $value = array();
-        $resultado = $val->content_option_value($tabla, $value);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("value=''", $resultado);
-        errores::$error = false;
-
-    }
-
-
-
-
-
     public function test_valor_envio(): void
     {
         errores::$error = false;

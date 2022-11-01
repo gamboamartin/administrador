@@ -369,6 +369,27 @@ class normalizacionTest extends test {
 
     }
 
+    public function test_limpia_registro_en_proceso(){
+        errores::$error = false;
+        $nm = new normalizacion();
+        //$nm = new liberator($nm);
+
+        $resultado = $nm->limpia_registro_en_proceso();
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotContains('registro_en_proceso',$resultado);
+
+        errores::$error = false;
+        $_SESSION['registro_en_proceso'] = 'X';
+        $resultado = $nm->limpia_registro_en_proceso();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotContains('registro_en_proceso',$resultado);
+
+        errores::$error = false;
+    }
+
     public function test_maqueta_data_galeria(){
         errores::$error = false;
         $nm = new normalizacion();

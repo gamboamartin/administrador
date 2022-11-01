@@ -286,54 +286,22 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
          * REFACTORIZA
          */
 
-
-        $transaccion_previa = false;
-        if($this->link->inTransaction()){
-            $transaccion_previa = true;
+        $transaccion_previa = $this->transaccion_previa();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al validar transaccion_previa', data: $transaccion_previa,
+                header: $header, ws: $ws);
         }
+
         if(!$transaccion_previa) {
             $this->link->beginTransaction();
         }
 
-        $valida = $this->validacion->valida_clase(controler: $this);
+        $valida = $this->valida_alta_bd();
         if(errores::$error){
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al validar clase', data: $valida, header: $header, ws: $ws);
-        }
-
-        if($this->tabla===''){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error seccion por get debe existir',data:  $_GET, header: $header,
-                ws:  $ws);
-        }
-
-        $limpia = (new normalizacion())->limpia_post_alta();
-        if(errores::$error){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error al limpiar POST', data: $limpia,header:  $header,ws:  $ws);
-        }
-
-        $valida = $this->validacion->valida_post_alta();
-        if(errores::$error){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error al validar POST', data: $valida,header:  $header,ws:  $ws);
-        }
-
-
-        if($this->seccion === ''){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error al seccion no puede venir vacia',data:  $this->seccion,
-                header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al validar datos', data: $valida,header:  $header,ws:  $ws);
         }
 
 
@@ -346,7 +314,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->retorno_error(mensaje: 'Error al insertar', data: $resultado, header: $header,ws:  $ws);
 
         }
-
 
         $this->registro_id = $resultado->registro_id;
 
@@ -1171,6 +1138,45 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
         return $upd;
+    }
+
+    private function transaccion_previa(): bool
+    {
+        $transaccion_previa = false;
+        if($this->link->inTransaction()){
+            $transaccion_previa = true;
+        }
+        return $transaccion_previa;
+    }
+
+    private function valida_alta_bd(): bool|array
+    {
+        $valida = $this->validacion->valida_clase(controler: $this);
+        if(errores::$error){
+
+            return $this->errores->error(mensaje: 'Error al validar clase', data: $valida);
+        }
+
+        if($this->tabla===''){
+            return $this->errores->error(mensaje: 'Error seccion por get debe existir',data:  $_GET);
+        }
+
+        $limpia = (new normalizacion())->limpia_post_alta();
+        if(errores::$error){
+
+            return $this->errores->error(mensaje: 'Error al limpiar POST', data: $limpia);
+        }
+
+        $valida = $this->validacion->valida_post_alta();
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar POST', data: $valida);
+        }
+
+
+        if($this->seccion === ''){
+            return $this->errores->error(mensaje: 'Error al seccion no puede venir vacia',data:  $this->seccion);
+        }
+        return true;
     }
 
     /**

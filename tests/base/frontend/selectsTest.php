@@ -16,20 +16,7 @@ class selectsTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_campo_name_html(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        $val = new liberator($val);
 
-        $name_input = '';
-        $tabla = 'a';
-        $resultado = $val->campo_name_html($name_input, $tabla);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a_id', $resultado);
-        errores::$error = false;
-    }
 
 
 
@@ -42,7 +29,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = '';
 
-        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false  );
+        $resultado = $sl->data_bd( $this->link, $name_modelo  );
 
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
@@ -53,7 +40,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = 'a';
 
-        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
+        $resultado = $sl->data_bd( $this->link, $name_modelo );
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
@@ -63,7 +50,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = 'models\\adm_seccion';
 
-        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
+        $resultado = $sl->data_bd( $this->link, $name_modelo);
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -74,7 +61,7 @@ class selectsTest extends test {
         $filtro = array();
         $name_modelo = 'models\\adm_seccion';
 
-        $resultado = $sl->data_bd($filtro, $this->link, $name_modelo, false );
+        $resultado = $sl->data_bd( $this->link, $name_modelo );
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertNotEmpty($resultado);
@@ -96,71 +83,10 @@ class selectsTest extends test {
         $this->assertTrue(errores::$error);
 
 
-
-
-
-
         errores::$error = false;
     }
 
-    public function test_data_option(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        $val = new liberator($val);
 
-        $columna = '';
-        $i = '1';
-        $value = array();
-        $separador_select_columnas = '';
-        $resultado = $val->data_option($columna, $i, $separador_select_columnas, $value);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error la columna esta vacia', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $columna = 'a';
-        $i = '1';
-        $value = array();
-        $separador_select_columnas = '';
-        $resultado = $val->data_option($columna, $i, $separador_select_columnas, $value);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe dato en registro columna a', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $columna = 'a';
-        $i = '1';
-        $value = array();
-        $separador_select_columnas = '';
-        $value['a'] = 1;
-        $resultado = $val->data_option($columna, $i, $separador_select_columnas, $value);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' 1 ', $resultado);
-        errores::$error = false;
-    }
-
-    public function test_data_options_select(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        $val = new liberator($val);
-
-        $columnas = array();
-        $i = '1';
-        $value = array();
-        $separador_select_columnas = '';
-        $columnas[] = 'a';
-        $value['a'] = 'z';
-        $resultado = $val->data_options_select($columnas, $i, $separador_select_columnas, $value);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' z ', $resultado);
-        errores::$error = false;
-    }
 
     public function test_data_select(){
         errores::$error = false;
@@ -172,7 +98,7 @@ class selectsTest extends test {
         $link = $this->link;
         $todos = true;
 
-        $resultado = $sl->data_select($filtro, $link, $name_modelo, $todos);
+        $resultado = $sl->data_select( $link, $name_modelo);
 
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -217,42 +143,8 @@ class selectsTest extends test {
         errores::$error = false;
     }
 
-    public function test_genera_contenedor_select(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        $val = new liberator($val);
 
-        $cols = 1;
-        $disabled = true;
-        $required = true;
-        $tabla = 'a';
-        $tipo_letra = '';
-        $resultado = $val->genera_contenedor_select(cols:$cols,tabla:  $tabla);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('selectpicker form-control form-contr', $resultado);
-        errores::$error = false;
-    }
 
-    public function test_html_content_option(): void
-    {
-        errores::$error = false;
-        $val = new selects();
-        //$val = new liberator($val);
-
-        $data_con_valor = array();
-        $data_extra = array();
-        $tabla = 'a';
-        $valor = '';
-        $value = array();
-        $value['a_id'] = 1;
-        $resultado = $val->html_content_option( $tabla, $valor, $value);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-    }
 
     public function test_obten_registros_select(): void{
         errores::$error = false;
@@ -298,7 +190,7 @@ class selectsTest extends test {
         $todos = true;
         $tabla = 'models\\adm_seccion';
         $datos->tabla = 'x';
-        $resultado = $sl->registros_for_select($datos, $filtro, $link, $registros, $select_vacio_alta, $todos, $tabla);
+        $resultado = $sl->registros_for_select( $filtro, $link, $registros, $select_vacio_alta, $tabla);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

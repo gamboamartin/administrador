@@ -318,41 +318,6 @@ class validaciones_directivas extends validacion{
         return true;
     }
 
-    /**
-     *
-     * valida los datos de selected
-     * @param array $value Valor de selected
-     * @param string $tabla Tabla - estructura modelo sistema
-     * @param int $id Identificador
-
-     * @example
-     *     $selected = $this->valida_selected($value,$tabla,$valor_envio);
-     * @return array|string selected o vacio
-     * @throws errores $tabla === ''
-     * @throws errores !class_exists ( 'controlador_'.$tabla )
-     * @throws errores !isset($value[$key_id])
-     * @uses  directivas
-     * @version 1.507.50
-     */
-    public function valida_selected(int $id,string $tabla, array $value):array|string{
-        $namespace = 'models\\';
-        $tabla = str_replace($namespace,'',$tabla);
-
-        if($tabla === ''){
-            return $this->error->error(mensaje:'Error tabla no puede venir vacia',data: $tabla);
-        }
-
-        $key_id = $tabla . '_id';
-        if(!isset($value[$key_id])){
-            return $this->error->error(mensaje: 'Error no existe $value['.$key_id.']',data: $value);
-        }
-        if ((int)$value[$key_id] === $id) {
-            $selected = 'selected';
-        } else {
-            $selected = '';
-        }
-        return $selected;
-    }
 
 
     public function valida_vars_get(string $key, string $value): bool|array

@@ -183,16 +183,9 @@ class templates{
      * @param string $tipo
      * @param string $campo_name
      * @param int $cols
-     * @param bool $required
-     * @param bool $disabled
-     * @param bool $ln
      * @param string $etiqueta
-     * @param string $pattern
      * @param string $css_id
-     * @param array $data_extra
-     * @param bool $select_vacio_alta
      * @param array $valores_filtrados
-     * @param string $columnas
      * @param array $input
      * @param string $llaves_foraneas
      * @param array $campos_invisibles
@@ -200,10 +193,9 @@ class templates{
      * @param array $registro
      * @return array|string
      */
-    public function carga_html_form(string $tipo, string $campo_name, int $cols, bool $required, bool $disabled,
-                                    bool $ln,string $etiqueta, string $css_id, array $data_extra,
-                                    bool $select_vacio_alta, array $valores_filtrados, string $columnas, array $input,
-                                    string $llaves_foraneas, array $campos_invisibles, array $vistas, array $registro):array|string{ //fin
+    public function carga_html_form(string $tipo, string $campo_name, int $cols, string $etiqueta, string $css_id,
+                                    array $valores_filtrados,  array $input, string $llaves_foraneas,
+                                    array $campos_invisibles, array $vistas, array $registro):array|string{ //fin
         $keys = array('etiqueta','vista','cols','tabla_foranea','campo_tabla_externa');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $input);
         if(errores::$error){
@@ -219,10 +211,8 @@ class templates{
             $registro[$key_validar] = '';
         }
 
-        $html = $this->genera_html_form(tipo: $tipo,campo_name:  $campo_name,cols:  $cols,required:  $required,
-            disabled:  $disabled, ln: $ln, etiqueta: $etiqueta, css_id: $css_id,
-            data_extra:  $data_extra,tabla_foranea:  $tabla_foranea,select_vacio_alta:  $select_vacio_alta,
-            valores_filtrados:  $valores_filtrados, columnas: $columnas, llaves_foraneas: $llaves_foraneas,
+        $html = $this->genera_html_form(tipo: $tipo,campo_name:  $campo_name,cols:  $cols, etiqueta: $etiqueta,
+            css_id: $css_id, valores_filtrados:  $valores_filtrados, llaves_foraneas: $llaves_foraneas,
             vistas: $vistas, campos_invisibles: $campos_invisibles,key_validar:  $key_validar, html: '',
             registro: $registro);
         if(errores::$error){
@@ -233,34 +223,23 @@ class templates{
     }
 
 
-
     /**
      * P INT
-     * @param string $tipo tipo de input
-     * @param string $campo_name Name del input
-     * @param int $cols Columnas para css
-     * @param string $valor Valor del input
-     * @param bool $required indica si es requerido o no
-     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
-     * @param bool $ln Si true aplica div 12
-     * @param string $etiqueta Etiqueta de input
-     * @param string $pattern Regex para validacion html
-     * @param string $css_id Identificador css para java
-     * @param array $data_extra Elementos para integrar extraparams
-     * @param string $tabla_foranea Tabla de ligue
-     * @param bool $select_vacio_alta si true no mostrar datos en el select
-     * @param array $valores_filtrados Valores a mostrar en select filtrados
-     * @param string $columnas columnas para select
-     * @param string $llaves_foraneas llaves para integrar con select
-     * @param array $vistas Conjunto de views permitidas
      * @param string $accion Accion para view
+     * @param string $campo_name Name del input
      * @param array $campos_invisibles
+     * @param string $css_id Identificador css para java
+     * @param int $cols Columnas para css
+     * @param string $etiqueta Etiqueta de input
+     * @param string $llaves_foraneas llaves para integrar con select
+     * @param string $tipo tipo de input
+     * @param string $valor Valor del input
+     * @param array $valores_filtrados Valores a mostrar en select filtrados
+     * @param array $vistas Conjunto de views permitidas
      * @return array|string
      */
     public function genera_campos(string $accion, string $campo_name, array $campos_invisibles, string $css_id,
-                                  int $cols, string $columnas, array $data_extra, bool $disabled, string $etiqueta,
-                                  string $llaves_foraneas, bool $ln, bool $required,
-                                  bool $select_vacio_alta, string $tipo, mixed $valor, string $tabla_foranea,
+                                  int $cols, string $etiqueta, string $llaves_foraneas, string $tipo, mixed $valor,
                                   array $valores_filtrados, array $vistas):array|string{
 
         if($accion === ''){
@@ -278,10 +257,7 @@ class templates{
 
 
         $html = $this->genera_html_input(accion: $accion, campo_name: $campo_name, css_id: $css_id, cols: $cols,
-            columnas: $columnas, data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta, filtro: $filtro,
-            llaves_valores: $llaves_foraneas, ln: $ln, required: $required,
-            select_vacio_alta: $select_vacio_alta, tabla_foranea: $tabla_foranea, tipo: $tipo, valor: $valor,
-            vistas: $vistas);
+            etiqueta: $etiqueta, llaves_valores: $llaves_foraneas, tipo: $tipo, valor: $valor, vistas: $vistas);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar html',data: $html);
@@ -328,11 +304,8 @@ class templates{
             $accion = 'alta';
             $data_html = $this->genera_campos(accion: $accion, campo_name: $campo_name,
                 campos_invisibles: $campos_invisibles, css_id: $input['css_id'], cols: $input['cols'],
-                columnas: $input['columnas'], data_extra: $input['data_extra'], disabled: $disabled,
-                etiqueta: $input['etiqueta'], llaves_foraneas: $input['llaves_foraneas'], ln: $input['ln'],
-                required: $input['required'],
-                select_vacio_alta: $input['select_vacio_alta'], tipo: $input['tipo'], valor: $valor,
-                tabla_foranea: $input['tabla_foranea'], valores_filtrados: $valores_filtrados, vistas: array('alta'));
+                etiqueta: $input['etiqueta'], llaves_foraneas: $input['llaves_foraneas'], tipo: $input['tipo'],
+                valor: $valor, valores_filtrados: $valores_filtrados, vistas: array('alta'));
             if(errores::$error){
                 return  $this->error->error(mensaje: 'Error al generar campos',data: $data_html);
             }
@@ -393,11 +366,8 @@ class templates{
      * @internal $directiva->input_select_columnas($tabla_foranea,$this->valor,$this->cols,$disabled,$columnas,$this->link,$required,'capitalize',$this->ln,$select_vacio_alta,$registros = array(),$valor_extra,$this->filtro);
      * @internal $directiva->genera_select_estatico($llaves_valores, $this->cols, $this->campo,$etiqueta,false,false,$this->valor,$css_id);
      */
-    public function genera_dato_html(string $campo_name, string $css_id, int $cols, string $columnas,
-                                     array $data_extra, bool $disabled, string $etiqueta, array $filtro,
-                                     string $llaves_valores, bool $ln, bool $required,
-                                     bool $select_vacio_alta, string $tabla_foranea, string $tipo,
-                                     mixed $valor):array|string{
+    public function genera_dato_html(string $campo_name, string $css_id, int $cols, string $etiqueta,
+                                     string $llaves_valores, string $tipo, mixed $valor):array|string{
 
         if($cols <0){
             return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data: $cols);
@@ -411,28 +381,6 @@ class templates{
         $directiva = new directivas();
 
 
-
-        if($tipo === 'select_columnas' || $tipo === 'select'){
-            $columnas_sl = array();
-            if(($tipo === 'select_columnas') && $columnas !== '') {
-                $columnas_sl = explode(',', $columnas);
-            }
-
-            if( $tipo === 'select') {
-                $columnas_sl = array($tabla_foranea.'_id',$tabla_foranea.'_descripcion');
-            }
-
-            $data_html = $directiva->input_select_columnas(campo_name: $campo_name, link: $this->link,
-                tabla: $tabla_foranea, cols: $cols, columnas: $columnas_sl, data_extra: $data_extra, disabled: $disabled,
-                etiqueta: $etiqueta, filtro: $filtro, ln: $ln, select_vacio_alta: $select_vacio_alta,
-                required: $required, valor: $valor);
-
-            if(errores::$error){
-                return  $this->error->error(mensaje: 'Error al obtener select columnas del modelo '.$tabla_foranea,
-                    data: $data_html);
-            }
-
-        }
 
         if( $tipo === 'select_estatico') {
 
@@ -477,11 +425,9 @@ class templates{
                 continue;
             }
             $html_data = $this->carga_html_form(tipo: $data['tipo'],campo_name:  $campo_name, cols: $data['cols'],
-                required:  $data['required'], disabled: $data['disabled'],ln:  $data['ln'],etiqueta: $data['etiqueta'],
-                css_id:   $data['css_id'], data_extra: $data['data_extra'],
-                select_vacio_alta:  $data['select_vacio_alta'],valores_filtrados: $valores_filtrados,
-                columnas:  $data['columnas'],input:  $data, llaves_foraneas: $data['llaves_foraneas'],
-                campos_invisibles: $this->campos_invisibles, vistas: array('modifica'), registro:  $registro);
+                etiqueta: $data['etiqueta'], css_id:   $data['css_id'],valores_filtrados: $valores_filtrados,
+                input:  $data, llaves_foraneas: $data['llaves_foraneas'], campos_invisibles: $this->campos_invisibles,
+                vistas: array('modifica'), registro:  $registro);
             if(errores::$error){
                 return $this->error->error('Error al generar $html',$html_data);
             }
@@ -497,17 +443,9 @@ class templates{
      * @param string $tipo
      * @param string $campo_name
      * @param int $cols
-     * @param bool $required
-     * @param bool $disabled
-     * @param bool $ln
      * @param string $etiqueta
-     * @param string $pattern
      * @param string $css_id
-     * @param array $data_extra
-     * @param string $tabla_foranea
-     * @param bool $select_vacio_alta
      * @param array $valores_filtrados
-     * @param string $columnas
      * @param string $llaves_foraneas
      * @param array $vistas
      * @param array $campos_invisibles
@@ -516,11 +454,9 @@ class templates{
      * @param array $registro
      * @return array|string
      */
-    public function genera_html_form(string $tipo,string $campo_name, int $cols, bool $required, bool $disabled,
-                                     bool $ln, string $etiqueta, string $css_id, array $data_extra,
-                                     string $tabla_foranea, bool $select_vacio_alta, array $valores_filtrados,
-                                     string $columnas, string $llaves_foraneas, array $vistas,array $campos_invisibles,
-                                     string $key_validar, string $html, array $registro):array|string{
+    public function genera_html_form(string $tipo,string $campo_name, int $cols, string $etiqueta, string $css_id,
+                                     array $valores_filtrados, string $llaves_foraneas, array $vistas,
+                                     array $campos_invisibles, string $key_validar, string $html, array $registro):array|string{
 
 
         if(!isset($registro[trim($key_validar)])){
@@ -532,10 +468,9 @@ class templates{
         $accion ='modifica';
 
         $campos_html = $this->genera_campos(accion: $accion, campo_name: $campo_name,
-            campos_invisibles: $campos_invisibles, css_id: $css_id, cols: $cols, columnas: $columnas,
-            data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta, llaves_foraneas: $llaves_foraneas,
-            ln: $ln, required: $required, select_vacio_alta: $select_vacio_alta, tipo: $tipo,
-            valor: $valor, tabla_foranea: $tabla_foranea, valores_filtrados: $valores_filtrados, vistas: $vistas);
+            campos_invisibles: $campos_invisibles, css_id: $css_id, cols: $cols, etiqueta: $etiqueta,
+            llaves_foraneas: $llaves_foraneas, tipo: $tipo, valor: $valor, valores_filtrados: $valores_filtrados,
+            vistas: $vistas);
         if(errores::$error){
             return $this->error->error('Error al generar campos',$campos_html);
         }
@@ -553,16 +488,8 @@ class templates{
      * @param string $campo_name Name del input
      * @param string $css_id Identificador css para java
      * @param int $cols Columnas para css
-     * @param string $columnas columnas para select
-     * @param array $data_extra Elementos para integrar extraparams
-     * @param bool $disabled Si disabled genera un atributo de tipo disabled para input
      * @param string $etiqueta Etiqueta de input
-     * @param array $filtro Filtro para selects
      * @param string $llaves_valores llaves en forma json
-     * @param bool $ln Si true aplica div 12
-     * @param bool $required indica si es requerido o no
-     * @param bool $select_vacio_alta si true no mostrara datos el select
-     * @param string $tabla_foranea Tabla de ligue
      * @param string $tipo tipo de input
      * @param string $valor Valor del input
      * @param array $vistas Conjunto de views permitidas
@@ -574,10 +501,8 @@ class templates{
      * @internal $this->validacion->valida_existencia_keys($this->input, $keys);
      * @internal $this->genera_dato_html();
      */
-    public function genera_html_input(string $accion, string $campo_name, string $css_id, int $cols, string $columnas,
-                                      array $data_extra, bool $disabled, string $etiqueta, array $filtro,
-                                      string $llaves_valores, bool $ln, bool $required,
-                                      bool $select_vacio_alta, string $tabla_foranea, string $tipo, mixed $valor,
+    public function genera_html_input(string $accion, string $campo_name, string $css_id, int $cols,
+                                      string $etiqueta, string $llaves_valores, string $tipo, mixed $valor,
                                       array $vistas):array|string{
 
         $html = '';
@@ -592,9 +517,7 @@ class templates{
                 return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data: $cols);
             }
             $data_html = $this->genera_dato_html(campo_name: $campo_name, css_id: $css_id, cols: $cols,
-                columnas: $columnas, data_extra: $data_extra, disabled: $disabled, etiqueta: $etiqueta,
-                filtro: $filtro, llaves_valores: $llaves_valores, ln: $ln, required: $required,
-                select_vacio_alta: $select_vacio_alta, tabla_foranea: $tabla_foranea, tipo: $tipo, valor: $valor);
+                etiqueta: $etiqueta, llaves_valores: $llaves_valores, tipo: $tipo, valor: $valor);
 
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar html',data: $data_html);

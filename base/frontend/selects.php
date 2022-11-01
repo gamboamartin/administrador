@@ -14,40 +14,18 @@ class selects{
         $this->validacion = new validaciones_directivas();
     }
 
-    /**
-     * Integra el name en un input
-     * @param string $tabla Tabla o estructura
-     * @param string $name_input Nombre previo del input
-     * @return string|array
-     * @version 1.505.50
-     */
-    private function campo_name_html(string $name_input, string $tabla): string|array
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia',data: $tabla);
-        }
-        $campo_name_html = $tabla. '_id';
-
-        if($name_input !==''){
-            $campo_name_html = $name_input;
-        }
-        return $campo_name_html;
-    }
 
 
 
     /**
      * Obtiene los datos de un select desde la base de datos
-     * @param bool $todos si todos = true traera todos los registros, si todos false, solo registros activos
      * @param PDO $link conexion a base de datos
      * @param string $name_modelo nombre del modelo
-     * @param array $filtro filtro a aplicar de la forma filtro_and para obtener los registros
      * @return array|stdClass registros obtenidos por registros activos o todos los registros segun bool $todos
      *
      * @version 1.441.48
      */
-    private function data_bd(array $filtro, PDO $link, string $name_modelo, bool $todos): array|stdClass
+    private function data_bd( PDO $link, string $name_modelo): array|stdClass
     {
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
@@ -58,189 +36,31 @@ class selects{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
-        if(!$todos) {
-            $resultado = $modelo->obten_registros_activos(filtro: $filtro, order: array());
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
-            }
+        $resultado = $modelo->obten_registros();
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros del modelo '.$modelo->tabla,
+                data: $resultado);
         }
-        else{
-            $resultado = $modelo->obten_registros();
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener registros del modelo '.$modelo->tabla,
-                    data: $resultado);
-            }
-        }
+
         return $resultado;
-    }
-
-    /**
-     * Integra los datos para los options de un select
-     * @param string $valor Valor para selected
-     * @param string $tabla Tabla o estructura de select
-     * @param array $data_extra Extra params
-     * @param array $data_con_valor datos con valor para integrar en option
-     * @param array $columnas conjunto de columnas a mostrar en input select
-     * @return array|stdClass
-     * @version 1.354.41
-     */
-    private function data_for_select(array $columnas, array $data_con_valor,array $data_extra, string $tabla,
-                                     string $valor): array|stdClass
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacio', data: $tabla);
-        }
-
-        $datos = new stdClass();
-        $datos->valor = $valor;
-        $datos->tabla = $tabla;
-        $datos->data_extra = $data_extra;
-        $datos->data_con_valor = $data_con_valor;
-
-
-        $valida = $this->validacion->valida_estructura_input_base(columnas: $columnas,tabla: $tabla);
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar estructura de input', data: $valida);
-        }
-
-        $datos->columnas = $columnas;
-        return $datos;
-    }
-
-    /**
-     * Obtiene los datos de un select
-     * @param stdClass $datos Conjunto de parametros para la creacion de un select
-     * @return array|stdClass
-     */
-    private function data_html_for_select(stdClass $datos): array|stdClass
-    {
-        $keys = array('ln','size','tabla','cols','disabled','required','tipo_letra','aplica_etiqueta','name_input',
-            'etiqueta','multiple','inline','registros');
-        foreach($keys as $key){
-            if(!isset($datos->$key)){
-                return $this->error->error(mensaje: 'Error no existe datos '.$key,data: $datos);
-            }
-        }
-
-        $keys = array('cols');
-        foreach($keys as $key){
-            if(!is_numeric($datos->$key)){
-                return $this->error->error(mensaje: 'Error debe ser un entero datos '.$key,data: $datos);
-            }
-        }
-
-        $keys = array('registros');
-        foreach($keys as $key){
-            if(!is_array($datos->$key)){
-                return $this->error->error(mensaje: 'Error debe ser un array datos '.$key,data: $datos);
-            }
-        }
-
-
-        $header_fg = (new forms())->header_form_group(cols: $datos->cols);
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar header '.$datos->tabla,data: $header_fg);
-        }
-
-        $contenedor = $this->genera_contenedor_select(cols: $datos->cols,tabla: $datos->tabla,
-            aplica_etiqueta:  $datos->aplica_etiqueta, multiple: $datos->multiple,
-            name_input:  $datos->name_input, size: $datos->size);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar contenedor',data:  $contenedor);
-
-        }
-
-        $options_html = $this->options_html(datos:  $datos, registros: $datos->registros);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar options', data: $options_html);
-        }
-
-        $datos->header_fg = $header_fg;
-        $datos->contenedor = $contenedor;
-        $datos->options_html = $options_html;
-
-        return $datos;
-
-
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $value
-     * @param string $columna
-     * @param int $i
-     * @param string $separador_select_columnas
-     * @return array|string
-     */
-    private function data_option(string $columna, int $i, string $separador_select_columnas, array $value):array|string{
-        $columna = trim($columna);
-        if($columna === ''){
-            return $this->error->error('Error la columna esta vacia', $columna);
-        }
-        $separador = '';
-        if(!isset($value[$columna])){
-            return $this->error->error('Error no existe dato en registro columna '.$columna, $value);
-        }
-        if($i > 0) {
-            $separador .= $separador_select_columnas;
-        }
-        return $separador .' '.$value[$columna].' ';
-    }
-
-    /**
-     * P INT P ORDER PROBADO
-     * @param array $columnas
-     * @param array $value
-     * @param string $separador_select_columnas
-     * @param int $i
-     * @return array|string
-     */
-    private function data_options_select(array $columnas, int $i, string $separador_select_columnas,
-                                        array $value): array|string
-    {
-        if(count($columnas) === 0){
-            return $this->error->error('Error columnas esta vacio', $columnas);
-        }
-        $html = '';
-        foreach ($columnas as $columna){
-            $columna = trim($columna);
-            if($columna === ''){
-                return $this->error->error('Error la columna esta vacia', $columnas);
-            }
-            if(!isset($value[$columna])){
-                return $this->error->error('Error no existe dato en registro columna '.$columna, $value);
-            }
-
-            $data_option = $this->data_option(columna: $columna,i: $i,
-                separador_select_columnas: $separador_select_columnas, value: $value);
-            if(errores::$error){
-                return $this->error->error('Error al generar data option', $data_option);
-            }
-            $html.=$data_option;
-            $i++;
-        }
-        return $html;
     }
 
 
     /**
      * Genera los datos para un select
-     * @param bool $todos Si todos genera todos los registros completos
      * @param PDO $link Conexion a la base de datos
      * @param string $name_modelo Nombre del modelo del select
-     * @param array $filtro Filtro de datos
      * @return array
      * @version 1.442.8
      */
-    private function data_select(array $filtro, PDO $link, string $name_modelo, bool $todos):array{
+    private function data_select(PDO $link, string $name_modelo):array{
 
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
         }
 
-        $resultado = $this->data_bd(filtro: $filtro, link: $link, name_modelo: $name_modelo, todos: $todos);
+        $resultado = $this->data_bd(link: $link, name_modelo: $name_modelo);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
         }
@@ -297,168 +117,14 @@ class selects{
     }
 
 
-    /**
-     *
-     * Genera un contenedor div
-     * @param int $cols Columnas para asignacion de html entre 1 y 12
-     * @param string $tabla Tabla - estructura modelo sistema
-     * @param bool $aplica_etiqueta si aplica etiqueta muestra la etiqueta
-     * @param bool $multiple si multiple se integra un select multiple
-     * @param string $name_input Nombre previo del input
-     * @param string $size tamaño de css
-     * @return array|string informacion de div en forma html
-     * @example
-     *     $contenedor = $this->genera_contenedor_select($tabla,$cols,$disabled,$required,$tipo_letra, $aplica_etiqueta,$name_input,$etiqueta);
-     * @uses  directivas
-     * @internal $this->valida_elementos_base_input($tabla,$cols);
-     * @internal $this->genera_texto_etiqueta($etiqueta_label, $tipo_letra);
-     * @version 1.506.50
-     */
-    private function genera_contenedor_select(int $cols, string $tabla, bool $aplica_etiqueta = true,
-                                              bool $multiple = false, string $name_input = '',
-                                              string $size = 'md'):array|string{
-
-        $valida_elementos = $this->validacion->valida_elementos_base_input(cols: $cols, tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar elementos',data: $valida_elementos);
-        }
-
-        $html = "";
-        if($aplica_etiqueta) {
-            $html .=  "<label class='col-form-label-$size' for='$tabla'></label>";
-        }
-
-        $campo_name_html = $this->campo_name_html(name_input:  $name_input, tabla: $tabla);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar campo name',data: $campo_name_html);
-        }
-
-
-        $css_class = $tabla. '_id';
-
-        $css_id = 'select_'.$tabla;
-
-
-
-        $multiple_data = (new params_inputs())->multiple_html(multiple: $multiple);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar multiple',data: $multiple_data);
-        }
-
-
-        $html .= "<select name='$campo_name_html$multiple_data->data' class='$css_class  
-                    selectpicker form-control form-control-$size' data-live-search='true'  
-                    id='$css_id'  $multiple_data->multiple >";
-
-        return $html;
-    }
-
-    /**
-     * Genera el contenido html de un option
-     * @param string $tabla Tabla o estrcutura
-     * @param string $valor Valor de input
-     * @param array $value values
-     * @return array|string
-     * @version 1.580.51
-     */
-    PUBLIC function html_content_option( string $tabla, string $valor, array $value): array|string
-    {
-
-        $valor_envio = (new values())->valor_envio(valor: $valor);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar valor', data: $valor_envio);
-        }
-
-        $selected = $this->validacion->valida_selected(id: $valor_envio, tabla: $tabla, value: $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar selected', data: $selected);
-        }
-
-        $data_content = (new params_inputs())->data_content_option(tabla:  $tabla, valor_envio: $valor_envio, value: $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar data de contenido',data:  $data_content);
-        }
-
-
-        return $data_content->value_html;
-    }
-
-    /**
-     * P INT ERROREV
-     * @param bool $aplica_etiqueta Si aplica etiqueta mostrara una etiqueta en ele select
-     * @param int $cols Columnas css
-     * @param array $columnas conjunto de columnas a mostrar en input select
-     * @param array $data_con_valor Datos a integrar para options
-     * @param array $data_extra Extra params
-     * @param bool $disabled si disabled el input queda deshabilitado
-     * @param string $etiqueta Etiqueta de select
-     * @param array $filtro Filtro para obtencion de datos de un select
-     * @param bool $inline Genera el input inline
-     * @param PDO $link Conexion a la base de datos
-     * @param bool $ln Salto de linea si true
-     * @param bool $multiple Si multiple integra un input con multiple seleccion
-     * @param string $name_input
-     * @param array $registros
-     * @param bool $required
-     * @param string $select_vacio_alta Si true no genera options
-     * @param string $size
-     * @param string $tabla Tabla o estructura de select
-     * @param string $tipo_letra
-     * @param bool $todos Si todos genera todos los registros completos
-     * @param string $valor Valor para selected
-     * @return array|stdClass
-     */
-    public function init_datos_select(bool $aplica_etiqueta, int $cols, array $columnas, array $data_con_valor,
-                                      array $data_extra, bool $disabled, string $etiqueta, array $filtro, bool $inline,
-                                      PDO $link, bool $ln, bool $multiple, string $name_input, array $registros,
-                                      bool $required, string $select_vacio_alta, string $size, string $tabla,
-                                      string $tipo_letra, bool $todos, string $valor ): array|stdClass
-    {
-        $datos = $this->data_for_select(columnas:$columnas, data_con_valor: $data_con_valor, data_extra:$data_extra,
-            tabla: $tabla ,valor: $valor );
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener datos para columnas',data:  $datos);
-        }
-
-
-        $registros = $this->registros_for_select(datos: $datos, filtro: $filtro, link: $link, registros: $registros,
-            select_vacio_alta: $select_vacio_alta, todos: $todos, tabla: $tabla);
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros);
-        }
-
-
-        $datos->ln = $ln;
-        $datos->size = $size;
-        $datos->cols = $cols;
-        $datos->disabled = $disabled;
-        $datos->required = $required;
-        $datos->tipo_letra = $tipo_letra;
-        $datos->aplica_etiqueta = $aplica_etiqueta;
-        $datos->name_input = $name_input;
-        $datos->etiqueta = $etiqueta;
-        $datos->multiple = $multiple;
-        $datos->inline = $inline;
-        $datos->registros = $registros;
-
-        $datos = $this->data_html_for_select(datos: $datos);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar options',data:  $datos);
-
-        }
-
-        return $datos;
-    }
 
     /**
      *
      * Genera los registros a mostrar en un select
-     * @param bool $select_vacio_alta Si true no genera options
      * @param array $filtro Filtro para obtencion de datos de un select
-     * @param string $name_modelo Nombre del modelo de datos
      * @param PDO $link Conexion a la base de datos
-     * @param bool $todos Si todos genera todos los registros completos
-     *
+     * @param string $name_modelo Nombre del modelo de datos
+     * @param bool $select_vacio_alta Si true no genera options
      * @return array conjunto de datos del resultado del modelo
      * @example
      *      $registros = $this->obten_registros_select($select_vacio_alta,$modelo, $filtro,$todos);
@@ -469,8 +135,7 @@ class selects{
      * @internal $modelo->obten_registros_activos(array(), $filtro);
      * @version 1.449.48
      */
-    private function obten_registros_select(array $filtro, PDO $link, string $name_modelo, bool $select_vacio_alta,
-                                            bool $todos= false): array
+    private function obten_registros_select(array $filtro, PDO $link, string $name_modelo, bool $select_vacio_alta): array
     {
 
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
@@ -481,7 +146,7 @@ class selects{
         $registros = array();
 
         if(!$select_vacio_alta) {
-            $registros = $this->data_select(filtro: $filtro, link: $link, name_modelo: $name_modelo, todos: $todos);
+            $registros = $this->data_select( link: $link, name_modelo: $name_modelo);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros del modelo '.$name_modelo,
                     data: $registros);
@@ -497,40 +162,7 @@ class selects{
         return $registros;
     }
 
-    /**
-     * P INT P ORDER
-     * @param array $columnas
-     * @param int $i
-     * @param string $separador_select_columnas
-     * @param string $tabla Estructura o modelo
-     * @param string $valor Valor de input
-     * @param array $value
-     * @return array|string
-     */
-    private function option_select(array $columnas,  int $i,
-                                   string $separador_select_columnas, string $tabla, string $valor,  array $value): array|string
-    {
 
-        if(count($columnas) === 0){
-            return $this->error->error(mensaje: 'Error columnas esta vacio', data: $columnas);
-        }
-
-        $content_option = $this->html_content_option(tabla: $tabla, valor: $valor,value:  $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar contenido option',data:  $content_option);
-        }
-
-
-
-        $data_options = $this->data_options_select(columnas: $columnas, i:  $i,
-            separador_select_columnas:  $separador_select_columnas, value:  $value);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar data options en tabla '.$tabla,data:  $data_options);
-        }
-        return  "<option $content_option > $data_options </option>";
-
-
-    }
 
     /**
      * PARAMS ORDER P INT
@@ -589,50 +221,7 @@ class selects{
 
 
 
-    /**
-     * P INT P ORDER
-     * @param array $registros Registros para integrar select
-     * @param stdClass $datos
-     * @return array|string
-     */
-    private function options_html(stdClass $datos, array $registros): array|string
-    {
 
-        $keys = array('valor','tabla','data_extra','data_con_valor','columnas');
-        foreach($keys aS $key){
-            if(!isset($datos->$key)){
-                return $this->error->error(mensaje: 'Error datos->'.$key.' Debe existir',data:  $datos);
-            }
-        }
-
-        $keys = array('data_extra','data_con_valor','columnas');
-        foreach($keys as $key){
-            if(!is_array($datos->$key)){
-                return $this->error->error('Error datos->'.$key.' Debe ser un array', $datos);
-            }
-        }
-
-
-        $html = '';
-        $i = 0;
-        $separador_select_columnas = ' ';
-        foreach ($registros as $key => $value) {
-
-            if(!is_array($value)){
-                return $this->error->error(mensaje: 'Error al value debe ser un array', data: array('value'=>$value,'key'=>$key));
-            }
-
-            $option_select = $this->option_select(columnas:  $datos->columnas,  i: $i, separador_select_columnas: $separador_select_columnas,
-                tabla: $datos->tabla, valor: $datos->valor, value: $value);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar  option', data: $option_select);
-            }
-            $html.=$option_select;
-            $i = 0;
-
-        }
-        return $html;
-    }
 
     /**
      * Obtiene los registros activos para un select
@@ -662,32 +251,24 @@ class selects{
 
     /**
      * Obtiene los registros de un select para integrar los options
-     * @param stdClass $datos Datos init select
      * @param array $filtro Filtro para obtencion de datos de un select
      * @param PDO $link Conexion a la base de datos
      * @param array $registros Conjunto de registros a asignar a options
      * @param string $select_vacio_alta Si true no genera options
-     * @param bool $todos Si todos genera todos los registros completos
      * @param string $tabla Tabla de datos
      * @return array
      * @version 1.455.49
      */
-    private function registros_for_select(stdClass $datos, array $filtro, PDO $link, array $registros,
-                                          string $select_vacio_alta, bool $todos, string $tabla): array
+    private function registros_for_select(array $filtro, PDO $link, array $registros, string $select_vacio_alta, string $tabla): array
     {
-        if(!isset($datos->tabla)){
-            return $this->error->error(mensaje: 'Error no existe tabla en datos',data: $datos);
-        }
-        if(trim($datos->tabla) === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data: $datos);
-        }
+
         $valida = $this->validacion->valida_data_modelo(name_modelo: $tabla);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al validar tabla",data: $valida);
         }
 
         $registros = $this->registros_select(filtro: $filtro, link: $link, name_modelo: $tabla, registros: $registros,
-            select_vacio_alta: $select_vacio_alta, todos: $todos);
+            select_vacio_alta: $select_vacio_alta);
         if(errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros '.$tabla,data: $registros);
         }
@@ -697,17 +278,16 @@ class selects{
 
     /**
      * Obtiene los registros para un select
+     * @param array $filtro Filtro para obtencion de datos de un select
+     * @param PDO $link Conexion a la base de datos
+     * @param string $name_modelo Nombre del modelo de datos
      * @param array $registros Registros precargados
      * @param bool $select_vacio_alta Si true no genera options
-     * @param array $filtro Filtro para obtencion de datos de un select
-     * @param bool $todos Si todos genera todos los registros completos
-     * @param string $name_modelo Nombre del modelo de datos
-     * @param PDO $link Conexion a la base de datos
      * @return array
      * @version 1.453.49
      */
     private function registros_select(array $filtro, PDO $link, string $name_modelo, array $registros,
-                                      bool $select_vacio_alta, bool $todos): array
+                                      bool $select_vacio_alta): array
     {
 
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
@@ -717,7 +297,7 @@ class selects{
 
         if(count($registros)===0 ) {
             $registros = $this->obten_registros_select(filtro: $filtro, link: $link, name_modelo: $name_modelo,
-                select_vacio_alta: $select_vacio_alta, todos: $todos);
+                select_vacio_alta: $select_vacio_alta);
             if(errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener registros '.$name_modelo,data: $registros);
             }

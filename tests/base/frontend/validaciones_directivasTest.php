@@ -306,36 +306,9 @@ class validaciones_directivasTest extends test {
         $this->assertTrue($resultado);
 
 
-
     }
 
-    public function test_valida_selected(){
-        errores::$error = false;
-        $val = new validaciones_directivas();
-        //$inicializacion = new liberator($inicializacion);
 
-        $id = '1';
-        $tabla = '';
-        $value = array();
-        $resultado = $val->valida_selected($id, $tabla, $value);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla no puede venir vacia', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $id = '1';
-        $tabla = 'a';
-        $value = array();
-        $resultado = $val->valida_selected($id, $tabla, $value);
-
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe $value[a_id]', $resultado['mensaje']);
-
-        errores::$error = false;
-
-    }
 
 
 }

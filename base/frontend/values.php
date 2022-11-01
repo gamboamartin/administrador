@@ -177,29 +177,6 @@ class values{
 
 
     /**
-     * Integra un value a un option
-     * @param array $value Valor a integrar
-     * @param string $tabla Tabla en ejecucion
-     * @return string|array
-     * @version 1.509.51
-     */
-    public function content_option_value(string $tabla, array $value): string|array
-    {
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error('Error tabla esta vacia ',$tabla);
-        }
-        $key = $tabla.'_id';
-        if(!isset($value[$key])){
-            $value[$key] = '';
-        }
-        return "value='" . $value[$key] . "'";
-    }
-
-
-
-
-    /**
      * P INT
      * Asigna los valores parseados para su procesamiento, hace lo mismo para las etiquetas de ese campo
      *

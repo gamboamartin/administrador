@@ -535,11 +535,15 @@ class normalizacion{
     }
 
     /**
-     * ERROREV
+     * Limpia session registro en proceso
      * @return array
+     * @version 1.607.55
      */
     public function limpia_registro_en_proceso(): array
     {
+        if(!isset($_SESSION)){
+            $_SESSION = array();
+        }
         if(isset($_SESSION['registro_en_proceso'])) {
             unset($_SESSION['registro_en_proceso']);
         }
