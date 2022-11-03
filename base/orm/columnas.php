@@ -34,7 +34,6 @@ class columnas{
 
     /**
      * Genera las columnas sql para un select
-     * @version 1.47.14
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
@@ -42,10 +41,10 @@ class columnas{
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @return array|string
+     * @version 1.47.14
      */
     private function ajusta_columnas_completas(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
-                                               modelo_base $modelo, string $tabla,
-                                               string $tabla_renombrada): array|string
+                                               modelo_base $modelo, string $tabla, string $tabla_renombrada): array|string
     {
         $tabla = str_replace('models\\','',$tabla);
         if(is_numeric($tabla)){
@@ -157,9 +156,9 @@ class columnas{
     /**
      *
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @version 1.44.14
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
+     * @version 1.44.14
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -267,13 +266,13 @@ class columnas{
 
     /**
      * Carga a un string de forma SQL los campos SELECTS
-     * @version 1.51.14
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $data Datos para la maquetacion del JOIN
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|string
+     * @version 1.51.14
      */
     private function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
                                             string $tabla): array|string
@@ -296,7 +295,6 @@ class columnas{
 
     /**
      * Obtiene las columnas para un select dependiendo de si aplica o no una tabla o todas
-     * @version 1.97.21
      * @param bool $aplica_columnas_by_table Si aplica columnas by table solo se tra la info de las columnas
      * cargadas en el array
      * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
@@ -307,13 +305,14 @@ class columnas{
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
+     * @return array|string
+     * @version 1.97.21
      * @version 1.55.16
      * @example Si $aplica_columnas_by_table es true debe haber columnas_by_table con
      * datos columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] =nombre_tabla
      * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
-     * @return array|string
      */
-    PUBLIC function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
+    private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
                               array $columnas_sql, array $extension_estructura, modelo_base $modelo, array $renombres,
                               array $tablas_select): array|string
     {
@@ -384,7 +383,6 @@ class columnas{
 
     /**
      * Genera las columnas en forma de SQL para un select con todas las configuracion nativas de un modelo
-     * @version 1.56.16
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
@@ -393,6 +391,7 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
+     * @version 1.56.16
      */
     private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, array $extension_estructura,
                                    modelo_base $modelo, array $renombres, array $tablas_select): array|string
@@ -420,10 +419,10 @@ class columnas{
 
     /**
      * Funcion para obtener las columnas de manera nativa
-     * @version 1.26.14
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array
+     * @version 1.26.14
      */
     public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
@@ -577,8 +576,8 @@ class columnas{
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
-     * @version 1.55.16
      * @return array|string
+     * @version 1.55.16
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, modelo_base $modelo, array $renombres,
@@ -607,14 +606,15 @@ class columnas{
 
     /**
      * Genera las columnas con renombre para integrarlas en un SELECT
-     * @version 1.52.16
-     * @param array $renombres Conjunto de tablas para renombrar
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
+     * @param array $renombres Conjunto de tablas para renombrar
      * @return array|string
+     * @version 1.52.16
      */
-    private function columnas_renombre(string $columnas, array $columnas_sql, modelo_base $modelo, array $renombres): array|string
+    private function columnas_renombre(
+        string $columnas, array $columnas_sql, modelo_base $modelo, array $renombres): array|string
     {
         foreach($renombres as $tabla=>$data){
             if(!is_array($data)){
@@ -744,12 +744,12 @@ class columnas{
 
     /**
      * Genera las columnas para un sql con joins
-     * @version 1.49.14
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
+     * @version 1.49.14
      */
     private function columnas_tablas_select(bool $columnas_en_bruto, array $columnas_sql, modelo_base $modelo,
                                             array $tablas_select): array|string
@@ -779,13 +779,13 @@ class columnas{
 
     /**
      * Obtiene las columnas para la ejecucion de un SELECT
-     * @version 1.46.14
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @return array|stdClass
+     * @version 1.46.14
      */
     private function data_for_columnas_envio(array $columnas, bool $columnas_en_bruto, modelo_base $modelo,
                                              string $tabla_original, string $tabla_renombrada): array|stdClass
@@ -819,13 +819,13 @@ class columnas{
 
     /**
      * Funcion que genera las columnas de una tabla junto con sus relaciones
-     * @version 1.48.14
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
      * @param string $key Tabla a verificar obtencion de sql
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @return array|string
+     * @version 1.48.14
      */
     private function genera_columna_tabla(string $columnas, bool $columnas_en_bruto, array $columnas_sql, string $key,
                                           modelo_base $modelo): array|string
@@ -847,13 +847,13 @@ class columnas{
     /**
      *
      * Genera las columnas en forma de sql para ser utilizado en un SELECT
-     * @version 1.47.14
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @return array|string
+     * @version 1.47.14
      * @example
      *      $resultado_columnas = $this->genera_columnas_consulta($key,'',$columnas_sql);
      */
@@ -919,9 +919,9 @@ class columnas{
     /**
      *
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @version 1.44.14
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
+     * @version 1.44.14
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {

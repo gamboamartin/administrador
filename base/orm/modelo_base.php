@@ -53,15 +53,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public string $key_id = '';
     public string $key_filtro_id = '';
     public string $NAMESPACE = '';
+    public bool $temp = false;
 
 
     /**
      * @param PDO $link Conexion a la BD
      */
-    #[Pure] public function __construct(PDO $link){ //PRUEBAS EN PROCESO
+    #[Pure] public function __construct(PDO $link, bool $temp = false ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
+        $this->temp = $temp;
 
 
         $this->patterns['double'] = "/^\\$?[1-9]+,?([0-9]*,?[0,9]*)*.?[0-9]{0,4}$/";
@@ -327,35 +329,47 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $this->link->errorInfo(),$consulta));
         }
         $this->transaccion = 'SELECT';
-        $result = $this->ejecuta_sql(consulta: $consulta);
 
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
+        if(isset($_SESSION['temporales'][$consulta]) && $this->temp) {
+            $data = unserialize($_SESSION['temporales'][$consulta]);
+
         }
+        else{
 
-        $r_sql = $result->result;
+            $result = $this->ejecuta_sql(consulta: $consulta);
 
-        $new_array = $this->parsea_registros_envio( r_sql: $r_sql, campos_encriptados: $campos_encriptados);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al parsear registros",data:  $new_array);
-        }
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
+            }
 
-        $n_registros = $r_sql->rowCount();
-        $r_sql->closeCursor();
+            $r_sql = $result->result;
 
-        $this->registros = $new_array;
-        $this->n_registros = (int)$n_registros;
-        $this->sql = $consulta;
+            $new_array = $this->parsea_registros_envio(r_sql: $r_sql, campos_encriptados: $campos_encriptados);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
+            }
 
-        $data = new stdClass();
-        $data->registros = $new_array;
-        $data->n_registros = (int)$n_registros;
-        $data->sql = $consulta;
+            $n_registros = $r_sql->rowCount();
+            $r_sql->closeCursor();
 
-        $data->registros_obj = array();
-        foreach ($data->registros as $row){
-            $row_obj = (object)$row;
-            $data->registros_obj[] = $row_obj;
+            $this->registros = $new_array;
+            $this->n_registros = (int)$n_registros;
+            $this->sql = $consulta;
+
+
+            $data = new stdClass();
+            $data->registros = $new_array;
+            $data->n_registros = (int)$n_registros;
+            $data->sql = $consulta;
+
+            $data->registros_obj = array();
+            foreach ($data->registros as $row) {
+                $row_obj = (object)$row;
+                $data->registros_obj[] = $row_obj;
+            }
+
+            $_SESSION['temporales'][$consulta] = serialize($data);
+
         }
 
         return $data;
@@ -569,16 +583,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  modelos->accion_grupo->obten_accion_permitida
      */
 
-    public function genera_consulta_base(array $columnas = array(), $columnas_by_table = array(),
+    public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
                                             bool $columnas_en_bruto = false, array $extension_estructura = array(),
                                             array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
-        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this, columnas_by_table:$columnas_by_table,
-            columnas_en_bruto:$columnas_en_bruto, columnas_sql: $columnas_seleccionables,
-            extension_estructura:  $extension_estructura, renombres:  $renombradas);
+        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
+            columnas_sql: $columnas_seleccionables, extension_estructura: $extension_estructura, renombres: $renombradas);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql);
         }

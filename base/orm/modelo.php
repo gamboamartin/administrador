@@ -43,6 +43,7 @@ class modelo extends modelo_base {
      * @param bool $validation
      * @param array $campos_no_upd Conjunto de campos no modificables, por default id
      * @param array $parents
+     * @param bool $temp
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
@@ -50,7 +51,10 @@ class modelo extends modelo_base {
                                 array $campos_view= array(), array $columnas_extra = array(),
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
-                                bool $validation = false,array $campos_no_upd = array(), array $parents = array()){
+                                bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
+                                bool $temp = false){
+
+
 
         /**
          * REFCATORIZAR
@@ -58,9 +62,9 @@ class modelo extends modelo_base {
 
 
         $tabla = str_replace('models\\','',$tabla);
-        parent::__construct($link);
+        parent::__construct(link:$link, temp: $temp);
 
-
+        $this->temp = $temp;
         $this->tabla = $tabla;
         $this->columnas_extra = $columnas_extra;
         $this->columnas = $columnas;
@@ -539,7 +543,7 @@ class modelo extends modelo_base {
      */
     protected function estado_inicial():array{
         $filtro[$this->tabla.'.inicial'] ='activo';
-        $r_estado = $this->filtro_and($filtro);
+        $r_estado = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al filtrar estado',$r_estado);
         }
@@ -862,13 +866,14 @@ class modelo extends modelo_base {
      * @param array $order
      * @return array|stdClass
      */
-    public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(), array $columnas_by_table = array(),
-                              bool $columnas_en_bruto = false, array $filtro = array(), array $group_by = array(),
-                              array $hijo = array(), int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{
+    public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
+                              array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                              array $filtro = array(), array $group_by = array(), array $hijo = array(),
+                              int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, extension_estructura:  $this->extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas,
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $this->extension_estructura, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
@@ -983,6 +988,7 @@ class modelo extends modelo_base {
 
     /**
      * Obtiene los datos para datatable
+     * @param array $filtro
      * @param array $filtro_especial Filtro para get data
      * @param int $n_rows_for_page N rows
      * @param int $pagina Num pag
@@ -1316,9 +1322,9 @@ class modelo extends modelo_base {
         }
         $tabla = $this->tabla;
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, extension_estructura: $extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas,
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
         }
