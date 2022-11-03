@@ -35,40 +35,6 @@ class templates{
 
     }
 
-
-    /**
-     *
-     * Asigna valores bool a inputs
-     * @example
-     *      $this->input = $this->asigna_valores_booleanos_input();
-     *
-     * @return array informacion de input
-     * @throws errores !isset($this->input['pattern'])
-     * @throws errores !isset($this->input['pattern']
-     * @throws errores !isset($this->input['con_label'])
-     * @throws errores !is_bool($this->input['con_label'])
-     * @uses  templates
-     */
-    private function asigna_valores_booleanos_input(string $campo_name, array $input, bool $disabled,
-                                                    array $campos_disabled): array{
-
-        if (!isset($input['pattern'])) {
-            $input['pattern'] = '';
-        }
-        if (!isset($input['pattern'])) {
-            $input['select_vacio_alta'] = false;
-        }
-
-        $input['disabled'] = $disabled;
-        if(in_array($campo_name, $campos_disabled, true)){
-            $input['disabled'] = true;
-        }
-
-        return $input;
-    }
-
-
-
     /**
      * P INT
      * @param string $campo_id

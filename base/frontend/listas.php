@@ -18,21 +18,6 @@ class listas{
 
 
 
-    /**
-     * P ORDER P INT PROBADO ERROREV
-     * @return stdClass
-     */
-    #[Pure] public function data_accion_limpia(): stdClass
-    {
-        $href = '#';
-        $modal = "data-toggle='modal' data-target='#modalAccion'";
-        $btn_modal = 'btn_modal';
-        $data = new stdClass();
-        $data->href = $href;
-        $data->modal = $modal;
-        $data->btn_modal = $btn_modal;
-        return $data;
-    }
 
     /**
      * P ORDER P INT PROBADO
@@ -132,14 +117,7 @@ class listas{
             return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
                 params: get_defined_vars());
         }
-        $dato_env = $dato;
-        if($campo['representacion'] === 'moneda'){
-            $dato_env = (new values())->valor_moneda(valor: $dato);
-            if(errores::$error){
-                return $this->error->error('Error al asignar valor moneda',$dato_env);
-            }
-        }
-        return $dato_env;
+        return $dato;
     }
 
     /**

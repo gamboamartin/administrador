@@ -16,26 +16,12 @@ class listasTest extends test {
     }
 
 
-    public function test_data_accion_limpia(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        //$ls = new liberator($ls);
-
-        $resultado = $ls->data_accion_limpia();
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("#", $resultado->href);
-        $this->assertEquals("data-toggle='modal' data-target='#modalAccion'", $resultado->modal);
-        $this->assertEquals("btn_modal", $resultado->btn_modal);
-        errores::$error = false;
-    }
 
     public function test_data_html(): void
     {
         errores::$error = false;
         $ls = new listas();
-        $ls = new liberator($ls);
+        //$ls = new liberator($ls);
 
         $campo = array();
         $registro = array();
@@ -54,7 +40,7 @@ class listasTest extends test {
         $resultado = $ls->data_html($campo, $registro);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("title='$0.00'>$0.00", $resultado);
+
         errores::$error = false;
     }
 
@@ -146,7 +132,7 @@ class listasTest extends test {
         $resultado = $ls->dato_moneda($campo, $dato);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('$111.00', $resultado);
+
         errores::$error = false;
     }
 

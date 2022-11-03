@@ -9,6 +9,7 @@ class adm_sistema extends modelo{
         $tabla = __CLASS__;
         $columnas = array($tabla=>false);
         parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
 }

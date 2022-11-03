@@ -2,13 +2,11 @@
 namespace base\controller;
 
 use base\frontend\templates;
-use base\frontend\values;
 use base\orm\modelo;
 use config\generales;
 use config\views;
 use gamboamartin\errores\errores;
 
-use gamboamartin\plugins\exportador;
 use JsonException;
 
 use models\adm_accion;

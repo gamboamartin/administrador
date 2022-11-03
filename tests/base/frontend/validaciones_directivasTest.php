@@ -13,34 +13,7 @@ class validaciones_directivasTest extends test {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
     }
-    public function test_valida_base_input(){
-        errores::$error = false;
-        $val = new validaciones_directivas();
-        //$inicializacion = new liberator($inicializacion);
-        $campo = '';
-        $cols = '0';
-        $resultado = $val->valida_base_input($campo, $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
 
-        errores::$error = false;
-        $campo = 'a';
-        $cols = '0';
-        $resultado = $val->valida_base_input($campo, $cols);
-
-        $this->assertIsBool($resultado);
-
-
-        errores::$error = false;
-        $campo = 'a';
-        $cols = '6';
-        $resultado = $val->valida_base_input($campo, $cols);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-        errores::$error = false;
-    }
 
 
 

@@ -10,22 +10,6 @@ use gamboamartin\validacion\validacion;
 class validaciones_directivas extends validacion{
 
 
-    /**
-     * Valida los elementos de un input
-     * @param string $campo Nombre del campo
-     * @param int $cols Columnas css
-     * @return bool|array
-     * @version 1.309.41
-     */
-    public function valida_base_input(string $campo, int $cols): bool|array
-    {
-        if($campo === ''){
-            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
-        }
-
-
-        return true;
-    }
 
 
     /**
