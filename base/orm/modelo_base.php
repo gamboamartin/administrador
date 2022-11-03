@@ -841,18 +841,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * Genera el key para temporal en sql
+     * @param string $consulta Consulta a ejecutar
+     * @return array|string
+     * @version 1.624.56
+     */
     private function key_tmp(string $consulta): array|string
     {
         $key_tmp = trim($consulta);
-        $key_tmp = str_replace(' ','',$key_tmp);
-        $key_tmp = str_replace("'",'',$key_tmp);
-        $key_tmp = str_replace(",",'',$key_tmp);
-        $key_tmp = str_replace(".",'',$key_tmp);
-        $key_tmp = str_replace("_",'',$key_tmp);
-        $key_tmp = str_replace("(",'',$key_tmp);
-        $key_tmp = str_replace(")",'',$key_tmp);
-        $key_tmp = str_replace("",'',$key_tmp);
-        return str_replace("%",'',$key_tmp);
+
+        if($key_tmp === ''){
+            return $this->error->error(mensaje: 'Error consulta esta vacia', data:$consulta);
+        }
+
+        $key = base64_encode($key_tmp);
+        return md5($key);
     }
 
 

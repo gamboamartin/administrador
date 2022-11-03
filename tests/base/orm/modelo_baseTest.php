@@ -10,6 +10,7 @@ use models\accion;
 use models\adm_accion;
 use models\adm_dia;
 use models\adm_mes;
+use models\adm_seccion;
 use models\adm_usuario;
 use models\seccion;
 use stdClass;
@@ -126,8 +127,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-
-
     public function test_asigna_registros_hijo(){
 
 
@@ -190,7 +189,6 @@ class modelo_baseTest extends test {
 
     }
 
-
     public function test_descripcion_alta()
     {
 
@@ -209,9 +207,6 @@ class modelo_baseTest extends test {
         $this->assertEquals('alta', $resultado);
         errores::$error = false;
     }
-
-
-
 
     public function test_ejecuta_sql()
     {
@@ -240,12 +235,6 @@ class modelo_baseTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
-
-
-
-
-
-
 
     public function test_genera_consulta_base(){
 
@@ -454,6 +443,21 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_key_tmp()
+    {
+
+
+        errores::$error = false;
+        $mb = new adm_seccion($this->link);
+        $mb = new liberator($mb);
+
+        $consulta = 'SELECTcatsatisridAScatsatisridcatsatisrdescripcionAScatsatisrdescripcioncatsatisrcodigoAScatsatisrcodigocatsatisrstatusAScatsatisrstatuscatsatisrusuarioaltaidAScatsatisrusuarioaltaidcatsatisrusuarioupdateidAScatsatisrusuarioupdateidcatsatisrfechaaltaAScatsatisrfechaaltacatsatisrfechaupdateAScatsatisrfechaupdatecatsatisrdescripcionselectAScatsatisrdescripcionselectcatsatisraliasAScatsatisraliascatsatisrcodigobisAScatsatisrcodigobiscatsatisrlimiteinferiorAScatsatisrlimiteinferiorcatsatisrlimitesuperiorAScatsatisrlimitesuperiorcatsatisrcuotafijaAScatsatisrcuotafijacatsatisrporcentajeexcedenteAScatsatisrporcentajeexcedentecatsatisrcatsatperiodicidadpagonomidAScatsatisrcatsatperiodicidadpagonomidcatsatisrfechainicioAScatsatisrfechainiciocatsatisrfechafinAScatsatisrfechafincatsatperiodicidadpagonomidAScatsatperiodicidadpagonomidcatsatperiodicidadpagonomdescripcionAScatsatperiodicidadpagonomdescripcioncatsatperiodicidadpagonomcodigoAScatsatperiodicidadpagonomcodigocatsatperiodicidadpagonomstatusAScatsatperiodicidadpagonomstatuscatsatperiodicidadpagonomusuarioaltaidAScatsatperiodicidadpagonomusuarioaltaidcatsatperiodicidadpagonomusuarioupdateidAScatsatperiodicidadpagonomusuarioupdateidcatsatperiodicidadpagonomfechaaltaAScatsatperiodicidadpagonomfechaaltacatsatperiodicidadpagonomfechaupdateAScatsatperiodicidadpagonomfechaupdatecatsatperiodicidadpagonomdescripcionselectAScatsatperiodicidadpagonomdescripcionselectcatsatperiodicidadpagonomaliasAScatsatperiodicidadpagonomaliascatsatperiodicidadpagonomcodigobisAScatsatperiodicidadpagonomcodigobiscatsatperiodicidadpagonomndiasAScatsatperiodicidadpagonomndiasFROMcatsatisrAScatsatisrLEFTJOINcatsatperiodicidadpagonomAScatsatperiodicidadpagonomONcatsatperiodicidadpagonomid=catsatisrcatsatperiodicidadpagonomidWHEREcatsatisrid=1';
+
+        $resultado = $mb->key_tmp($consulta);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('75d700445ebf129b3195e1af7d6df67e', $resultado);
+    }
 
     public function test_maqueta_arreglo_registros(){
 
