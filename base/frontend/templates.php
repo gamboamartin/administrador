@@ -234,35 +234,4 @@ class templates{
     }
 
 
-
-
-    /**
-     * P ORDER P INT
-     * @param array $elementos_lista
-     * @return array
-     */
-    public function obten_campos_filtro(array $elementos_lista): array
-    {
-
-        $this->campos_filtro = array();
-        foreach ($elementos_lista as $elemento_lista) {
-
-            $campo_filtro = (new inicializacion())->campo_filtro($elemento_lista);
-            if(errores::$error){
-                return $this->error->error('Error al limpiar datos', $campo_filtro);
-            }
-
-            $elemento = array(
-                'campo_filtro'=>$campo_filtro,
-                'tabla_externa'=>$elemento_lista['adm_elemento_lista_tabla_externa'],
-                'campo'=>$elemento_lista['adm_elemento_lista_campo'],
-                'etiqueta'=>$elemento_lista['adm_elemento_lista_etiqueta'],
-                'columnas'=> '' ,
-                'tipo' => $elemento_lista['adm_elemento_lista_tipo']);
-            $this->campos_filtro[] = $elemento;
-        }
-        return $this->campos_filtro;
-
-    }
-
 }

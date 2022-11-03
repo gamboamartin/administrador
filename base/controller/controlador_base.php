@@ -778,7 +778,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
 
         }
-        $elementos_lista = $resultado->registros;
 
 
 
@@ -794,16 +793,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->errores->error('Error al obtener registros',$resultado);
         }
 
-        $elementos_lista_filtro = $resultado->registros;
 
         $template = new templates($this->link);
 
 
-
-        $campos_filtro = $template->obten_campos_filtro(elementos_lista: $elementos_lista_filtro);
-        if(errores::$error){
-            return $this->retorno_error('Error al obtener campos de filtro', $campos_filtro, $header, $ws);
-        }
 
         $accion_modelo = new adm_accion($this->link);
 

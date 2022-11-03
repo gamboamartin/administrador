@@ -16,44 +16,7 @@ class listas{
 
     }
 
-    /**
-     * P ORDER P INT
-     * @param string $campo
-     * @param int $valor
-     * @param string $etiqueta
-     * @param string $seccion
-     * @param string $session_id
-     * @param string $class
-     * @return array|string
-     */
-    private function btn_filtro_rapido(string $campo, string $etiqueta, string $seccion,  string $session_id,
-                                       int $valor, string $class='primary'):array|string{
-        $namespace = 'models\\';
-        $seccion = str_replace($namespace,'',$seccion);
-        $clase = $namespace.$seccion;
-        if($campo === ''){
-            return  $this->error->error(mensaje: "Error campo vacio",data: $campo, params: get_defined_vars());
-        }
-        if($valor <=0 ){
-            return  $this->error->error("Error el valor er menor a 0",$valor);
-        }
-        if($etiqueta === ''){
-            return $this->error->error("Etiqueta vacia",$etiqueta);
-        }
-        if($seccion === ''){
-            return $this->error->error("Error la seccion esta vacia",$seccion);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error("Error la clase es invalida",$clase);
-        }
-        if(is_numeric($campo)){
-            return $this->error->error("Error el campo es un numero",$campo);
-        }
 
-        $boton = "<a class='btn btn-$class btn-sm' href='index.php?seccion=$seccion&accion=lista&session_id=";
-        $boton.=$session_id."&filtro_btn[$campo]=$valor' role='button'>$etiqueta</a>";
-        return $boton;
-    }
 
 
 
@@ -286,110 +249,9 @@ class listas{
         return $data;
     }
 
-    /**
-     * P ORDER P INT
-     * @param array $boton
-     * @param string $filtro_btn_html
-     * @param string $seccion
-     * @param string $session_id
-     * @return array|string
-     */
-    private function genera_botones_filtro_rapido_seccion(array $boton, string $filtro_btn_html, string $seccion,
-                                                          string $session_id): array|string
-    {
-
-        foreach($boton as $data_boton){
-            if(!is_array($data_boton)){
-                return $this->error->error('Error $data_boton debe ser un array',$data_boton);
-            }
-
-            $valida = $this->validacion->valida_data_btn_template(data_boton: $data_boton);
-            if(errores::$error){
-                return $this->error->error('Error al validar boton',$valida);
-            }
-
-            $boton_html = $this->genera_btn_filtro_rapido_completo(data_boton: $data_boton,seccion:  $seccion,
-                session_id: $session_id);
-            if(errores::$error){
-                return $this->error->error('Error al generar boton',$boton_html);
-            }
-            $filtro_btn_html.=$boton_html;
-        }
 
 
-        return $filtro_btn_html;
-    }
 
-    /**
-     * P ORDER P INT
-     * @param array $data_boton
-     * @param string $seccion
-     * @param string $session_id
-     * @return array|string
-     */
-    private function genera_btn_filtro_rapido(array $data_boton, string $seccion, string $session_id): array|string
-    { //FIN
-        $valida = $this->validacion->btn_base(data_boton: $data_boton);
-        if(errores::$error){
-            return $this->error->error('Error al validar data_boton',$valida);
-        }
-
-        if(is_array($data_boton['etiqueta'])){
-            return $this->error->error('Error $data_boton[etiqueta] debe ser un string',$data_boton);
-        }
-        if(is_array($data_boton['id'])){
-            return $this->error->error('Error $data_boton[id] debe ser un int',$data_boton);
-        }
-        if($data_boton['id'] === ''){
-            return $this->error->error('Error id no puede venir vacio',$data_boton['id']);
-        }
-        $valida = $this->validacion->btn_second(data_boton: $data_boton);
-        if(errores::$error){
-            return $this->error->error('Error al validar data_boton',$valida);
-        }
-        if(!is_numeric($data_boton['id'])){
-            return $this->error->error('Error $data_boton[id] debe ser numero',$data_boton);
-        }
-        $campo = key($data_boton['filtro']);
-        if(is_numeric($campo)){
-            return $this->error->error('Error campo debe ser un string ',$campo);
-        }
-        if($campo === NULL){
-            return $this->error->error('Error campo debe ser un string con datos',$campo);
-        }
-        $valor = (int)$data_boton['id'];
-        $boton = $this->btn_filtro_rapido(campo: $campo, etiqueta: $data_boton['etiqueta'], seccion:  $seccion,
-            session_id: $session_id, valor: $valor, class: $data_boton['class']);
-        if(errores::$error){
-            return $this->error->error('Error al generar boton',$boton);
-        }
-
-        return $boton;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param array $data_boton
-     * @param string $seccion
-     * @param string $session_id
-     * @return array|string
-     */
-    private function genera_btn_filtro_rapido_completo(array $data_boton, string $seccion, string $session_id): array|string
-    {
-
-        $valida = $this->validacion->valida_data_btn_template(data_boton: $data_boton);
-        if(errores::$error){
-            return $this->error->error('Error al validar boton',$valida);
-        }
-        $boton = $this->genera_btn_filtro_rapido(data_boton: $data_boton, seccion: $seccion, session_id: $session_id);
-        if(errores::$error){
-            return $this->error->error('Error al generar boton',$boton);
-        }
-
-        $boton.='';
-        return $boton;
-
-    }
 
 
 
@@ -428,11 +290,7 @@ class listas{
         if(errores::$error){
             return $this->error->error('Error al generar titulos',$filtro_btn_html);
         }
-        $filtro_btn_html = $this->genera_botones_filtro_rapido_seccion(boton: $boton,filtro_btn_html: $filtro_btn_html,
-            seccion:  $seccion,session_id:  $session_id);
-        if(errores::$error){
-            return $this->error->error('Error al generar botones',$filtro_btn_html);
-        }
+
 
         return $filtro_btn_html;
     }
