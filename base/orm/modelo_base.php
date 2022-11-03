@@ -281,6 +281,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
+    private function data_result(array $campos_encriptados, string $consulta): array|stdClass
+    {
+        $result_sql = $this->result_sql(campos_encriptados: $campos_encriptados,consulta:  $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al ejecutar sql", data: $result_sql);
+        }
+
+        $data = $this->maqueta_result(consulta: $consulta,n_registros:  $result_sql->n_registros,
+            new_array:  $result_sql->new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
+        }
+        return $data;
+    }
+
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -330,64 +345,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $this->transaccion = 'SELECT';
 
-        /**
-         * REFACTORIZAR
-         */
 
-        $key_tmp = $this->key_tmp(consulta: $consulta);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
-        }
-
-        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp);
+        $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
         }
 
-        if(file_exists($archivos_sql_tmp) && $this->temp) {
-            $data = unserialize(file_get_contents($archivos_sql_tmp));
+        $data = $this->result_out(
+            archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
-        else{
 
-            $result = $this->ejecuta_sql(consulta: $consulta);
-
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
-            }
-
-            $r_sql = $result->result;
-
-            $new_array = $this->parsea_registros_envio(r_sql: $r_sql, campos_encriptados: $campos_encriptados);
-            if (errores::$error) {
-                return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
-            }
-
-            $n_registros = $r_sql->rowCount();
-            $r_sql->closeCursor();
-
-            $this->registros = $new_array;
-            $this->n_registros = (int)$n_registros;
-            $this->sql = $consulta;
-
-
-            $data = new stdClass();
-            $data->registros = $new_array;
-            $data->n_registros = (int)$n_registros;
-            $data->sql = $consulta;
-
-            $data->registros_obj = array();
-            foreach ($data->registros as $row) {
-                $row_obj = (object)$row;
-                $data->registros_obj[] = $row_obj;
-            }
-
-            if($this->temp) {
-                mkdir($archivos_sql_tmp);
-                file_put_contents($archivos_sql_tmp, serialize($data));
-
-            }
-
-        }
 
         return $data;
 
@@ -474,6 +443,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
+    private function file_tmp_sql(string $consulta): array|string
+    {
+        $key_tmp = $this->key_tmp(consulta: $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
+        }
+
+        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
+        }
+        return $archivos_sql_tmp;
+    }
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -847,6 +829,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $archivos_tmp_model;
     }
 
+    private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
+    {
+        $this->registros = $new_array;
+        $this->n_registros = (int)$n_registros;
+        $this->sql = $consulta;
+        $data = new stdClass();
+        $data->registros = $new_array;
+        $data->n_registros = $n_registros;
+        $data->sql = $consulta;
+        return $data;
+    }
+
     private function key_tmp(string $consulta): array|string
     {
         $key_tmp = trim($consulta);
@@ -894,6 +888,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $new_array;
+    }
+
+    private function maqueta_result(string $consulta, int $n_registros, array $new_array ): array|stdClass
+    {
+        $init = $this->init_result_base(consulta: $consulta,n_registros:  $n_registros,new_array:  $new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear resultado", data: $init);
+        }
+
+
+        $data = $this->result(consulta: $consulta,n_registros:  $n_registros, new_array: $new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
+        }
+        return $data;
     }
 
     /**
@@ -1000,6 +1009,66 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener los registros', data: $data);
         }
+        return $data;
+    }
+
+    private function result(string $consulta, int $n_registros, array $new_array): stdClass
+    {
+        $data = new stdClass();
+        $data->registros = $new_array;
+        $data->n_registros = (int)$n_registros;
+        $data->sql = $consulta;
+
+        $data->registros_obj = array();
+        foreach ($data->registros as $row) {
+            $row_obj = (object)$row;
+            $data->registros_obj[] = $row_obj;
+        }
+        return $data;
+    }
+
+    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta){
+        if(file_exists($archivos_sql_tmp) && $this->temp) {
+            $data = unserialize(file_get_contents($archivos_sql_tmp));
+        }
+        else{
+
+            $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error al parsear registros", data: $data);
+            }
+
+            if($this->temp) {
+                file_put_contents($archivos_sql_tmp, serialize($data));
+            }
+
+        }
+        return $data;
+    }
+
+    private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
+    {
+        $result = $this->ejecuta_sql(consulta: $consulta);
+
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
+        }
+
+        $r_sql = $result->result;
+
+        $new_array = $this->parsea_registros_envio(r_sql: $r_sql, campos_encriptados: $campos_encriptados);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
+        }
+
+        $n_registros = $r_sql->rowCount();
+        $r_sql->closeCursor();
+
+        $data = new stdClass();
+        $data->result = $result;
+        $data->r_sql = $r_sql;
+        $data->new_array = $new_array;
+        $data->n_registros = $n_registros;
         return $data;
     }
 

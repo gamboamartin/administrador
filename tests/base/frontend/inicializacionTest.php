@@ -53,8 +53,9 @@ class inicializacionTest extends test {
         $elementos_lista[0]['adm_elemento_lista_etiqueta'] = 'd';
 
         $resultado = $inicializacion->asigna_datos_campo($elementos_lista);
+
         $this->assertIsObject( $resultado);
-        $this->assertNotEmpty($resultado->campos);
+        $this->assertEmpty($resultado->campos);
         $this->assertNotEmpty($resultado->etiqueta_campos);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('d', $resultado->etiqueta_campos[0]);
@@ -93,7 +94,7 @@ class inicializacionTest extends test {
         $elementos_lista[0]['adm_elemento_lista_etiqueta'] = 'h';
         $resultado = $inicializacion->campos_lista($elementos_lista);
         $this->assertIsObject( $resultado);
-        $this->assertNotEmpty($resultado->campos);
+        $this->assertEmpty($resultado->campos);
         $this->assertNotEmpty($resultado->etiqueta_campos);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('h', $resultado->etiqueta_campos[0]);
@@ -104,31 +105,5 @@ class inicializacionTest extends test {
 
     }
 
-    public function test_datos_campo(){
-        errores::$error = false;
-        $inicializacion = new inicializacion();
-        $inicializacion = new liberator($inicializacion);
-        $registro = array();
-        $resultado = $inicializacion->datos_campo($registro);
-        $this->assertIsArray( $resultado);
-        $this->assertStringContainsStringIgnoringCase('Error al validar registro', $resultado['mensaje']);
-        $this->assertTrue(errores::$error);
-
-        errores::$error = false;
-
-        $registro = array();
-        $registro['adm_elemento_lista_descripcion'] = 'prueba';
-        $registro['adm_elemento_lista_tipo'] = 'prueba';
-        $registro['adm_elemento_lista_representacion'] = 'prueba';
-        $resultado = $inicializacion->datos_campo($registro);
-        $this->assertIsArray( $resultado);
-        $this->assertStringContainsStringIgnoringCase('prueba', $resultado['nombre_campo']);
-        $this->assertStringContainsStringIgnoringCase('prueba', $resultado['tipo']);
-        $this->assertStringContainsStringIgnoringCase('prueba', $resultado['representacion']);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-
-    }
 
 }

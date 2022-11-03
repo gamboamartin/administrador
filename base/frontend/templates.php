@@ -59,11 +59,6 @@ class templates{
             $input['select_vacio_alta'] = false;
         }
 
-        $con_label = $this->con_label($input);
-        if(errores::$error){
-            return $this->error->error('Error al asignar con label',$con_label);
-        }
-
         $ln = $this->input_ln($input);
         if(errores::$error){
             return $this->error->error('Error al asignar ln',$ln);
@@ -94,21 +89,6 @@ class templates{
 
     }
 
-    /**
-     *
-     * @param array $input
-     * @return array
-     */
-    private function con_label(array $input): array
-    {
-        if (!isset($input['con_label'])) {
-            $input['con_label'] = false;
-        }
-        else if(!is_bool($input['con_label'])){
-            return $this->error->error('Error al input[con_label] deb ser un bool',$input);
-        }
-        return $input;
-    }
 
     /**
      * PHPUNIT

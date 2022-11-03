@@ -53,9 +53,10 @@ class templatesTest extends test {
         $elementos_lista[0]['adm_elemento_lista_representacion'] = 'a';
         $elementos_lista[0]['adm_elemento_lista_etiqueta'] = 'a';
         $resultado = $tmp->campos_lista($elementos_lista);
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->campos[0]['nombre_campo']);
+
 
 
     }

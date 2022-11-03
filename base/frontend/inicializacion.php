@@ -44,11 +44,7 @@ class inicializacion{
                 return $this->error->error(mensaje: "Error al validar registro",data:  $valida);
             }
 
-            $datos_campo = $this->datos_campo(registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar $datos_campo', data: $datos_campo);
-            }
-            $campos[] = $datos_campo;
+
             $etiqueta_campos[] = $registro['adm_elemento_lista_etiqueta'];
         }
 
@@ -87,28 +83,6 @@ class inicializacion{
 
     }
 
-    /**
-     * Asigna datos para el mostrado en la lista de un registro basado en elementos lista
-     * @version 1.24.14
-     * @param array $registro Registro de tipo elemento lista
-     * @return array
-     */
-    private function datos_campo(array $registro): array
-    {
-        if(!isset($registro['adm_elemento_lista_representacion'])){
-            $registro['adm_elemento_lista_representacion'] = '';
-        }
-        $valida = $this->validacion->valida_elemento_lista_template($registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar registro",data:  $valida);
-        }
-
-        $datos_campo['nombre_campo'] = $registro['adm_elemento_lista_descripcion'];
-        $datos_campo['tipo'] = $registro['adm_elemento_lista_tipo'];
-        $datos_campo['representacion'] = $registro['adm_elemento_lista_representacion'];
-
-        return $datos_campo;
-    }
 
     /**
      * P ORDER P INT

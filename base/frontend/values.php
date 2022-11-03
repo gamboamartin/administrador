@@ -13,80 +13,6 @@ class values{
 
 
     /**
-     * P ORDER P INT
-     * @param array $registro
-     * @param array $campos
-     * @return array
-     */
-    private function adapta_valor_registro(array $campos, array $registro): array{
-
-        if(count($registro) === 0){
-            return $this->error->error('Error $registro no puede venir vacio',$registro);
-        }
-        if(count($campos) === 0){
-            return $this->error->error('Error $campos no puede venir vacio',$campos);
-        }
-
-        $registro = $this->valores_registro(campos: $campos, registro: $registro);
-        if(errores::$error){
-            return $this->error->error('Error al adaptar valor',$registro);
-        }
-
-        return $registro;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param array $campos
-     * @param string $key
-     * @param array $registro
-     * @return array
-     */
-    private function adapta_valor_campo_val(array$campos, string $key, array $registro): array
-    {
-        $key = trim($key);
-        if($key === ''){
-            return $this->error->error('Error key no puede venir vacio',$key);
-        }
-        if(!isset($campos[$key]['representacion'])){
-            return $this->error->error('Error no existe representacion',$campos);
-        }
-
-
-        return $registro;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param array $campos
-     * @param array $registros
-     * @return array
-     */
-    public function ajusta_formato_salida_registros(array $campos, array $registros): array{
-        if(count($campos) === 0){
-            $this->error->error('Error $campos no puede venir vacio',$campos);
-        }
-
-        $registros_ajustados = array();
-
-        foreach($registros as $registro){
-            if(!is_array($registro)){
-                return $this->error->error('Error $registro tiene que ser un array',$registro);
-            }
-            if(count($registro) === 0){
-                return $this->error->error('Error $registro no puede venir vacio',$registro);
-            }
-            $registro = $this->adapta_valor_registro(campos: $campos, registro: $registro);
-            if(errores::$error){
-                return $this->error->error('Error al adaptar valor',$registro);
-            }
-            $registros_ajustados[] = $registro;
-        }
-
-        return $registros_ajustados;
-    }
-
-    /**
      *
      * @param array $data
      * @param array $keys_moneda
@@ -124,44 +50,7 @@ class values{
         return $valor_envio;
     }
 
-    /**
-     * P ORDER P INT
-     * @param string $key
-     * @param array $campos
-     * @param array $registro
-     * @return array
-     */
-    private function valor_registro_row(array $campos, string $key, array $registro): array
-    {
-        if(is_numeric($key)){
-            return $this->error->error('$registro['.$key.'] key invalido tiene que ser un txt',$registro);
-        }
-        if(isset($campos[$key])){
-            $registro = $this->adapta_valor_campo_val(campos: $campos, key:  $key, registro:  $registro);
-            if(errores::$error){
-                return $this->error->error('Error al adaptar valor',$registro);
-            }
-        }
 
-        return $registro;
-    }
-
-    /**
-     * P ORDER P INT
-     * @param array $campos
-     * @param array $registro
-     * @return array
-     */
-    private function valores_registro(array $campos, array $registro): array
-    {
-        foreach($registro as $key=>$valor){
-            $registro = $this->valor_registro_row(campos:  $campos, key: $key, registro: $registro);
-            if(errores::$error){
-                return $this->error->error('Error al adaptar valor',$registro);
-            }
-        }
-        return $registro;
-    }
 
 
     /**

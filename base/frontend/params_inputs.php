@@ -43,24 +43,4 @@ class params_inputs{
         return $required_html;
     }
 
-    /**
-     * Genera un salto de linea aplicando div 12
-     * @param bool $ln Si true aplica div 12
-     * @return string
-     * @version 1.246.39
-     * @verfuncion 1.1.0
-     * @author mgamboa
-     * @fecha 2022-08-01 17:06
-
-    private function salto(bool $ln): string
-    {
-        $salto = '';
-        if($ln){
-            $salto = "<div class='col-md-12'></div>";
-        }
-        return $salto;
-    }*/
-
-
-
 }

@@ -17,57 +17,6 @@ class selectsTest extends test {
     }
 
 
-
-
-
-
-    public function test_data_bd(){
-        errores::$error = false;
-        $sl = new selects();
-        $sl = new liberator($sl);
-
-        $filtro = array();
-        $name_modelo = '';
-
-        $resultado = $sl->data_bd( $this->link, $name_modelo  );
-
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar modelo', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $filtro = array();
-        $name_modelo = 'a';
-
-        $resultado = $sl->data_bd( $this->link, $name_modelo );
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $filtro = array();
-        $name_modelo = 'models\\adm_seccion';
-
-        $resultado = $sl->data_bd( $this->link, $name_modelo);
-
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertNotEmpty($resultado);
-
-        errores::$error = false;
-
-        $filtro = array();
-        $name_modelo = 'models\\adm_seccion';
-
-        $resultado = $sl->data_bd( $this->link, $name_modelo );
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertNotEmpty($resultado);
-        errores::$error = false;
-    }
-
     public function test_data_for_select(): void{
         errores::$error = false;
         $sl = new selects();
@@ -84,26 +33,6 @@ class selectsTest extends test {
 
 
         errores::$error = false;
-    }
-
-
-
-    public function test_data_select(){
-        errores::$error = false;
-        $sl = new selects();
-        $sl = new liberator($sl);
-
-        $filtro = array();
-        $name_modelo = 'models\\adm_accion';
-        $link = $this->link;
-        $todos = true;
-
-        $resultado = $sl->data_select( $link, $name_modelo);
-
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-
     }
 
 
@@ -151,7 +80,8 @@ class selectsTest extends test {
         $todos = true;
         $tabla = 'models\\adm_seccion';
         $datos->tabla = 'x';
-        $resultado = $sl->registros_for_select( $filtro, $link, $registros, $select_vacio_alta, $tabla);
+        $resultado = $sl->registros_for_select( $filtro, $link, $registros, $tabla);
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

@@ -16,18 +16,6 @@ class listas{
 
     }
 
-
-
-
-    /**
-     * ERRORREV
-     * @return string
-     */
-    private function btn_acciones_row(): string
-    {
-        return '<button class="btn btn-outline-info  btn-sm"><i class="bi bi-chevron-down"></i> Acciones </button>';
-    }
-
     /**
      * P ORDER P INT
      * @param string $campo
@@ -850,19 +838,6 @@ class listas{
         return'<td class="no-print">ACCIONES</td>';
     }
 
-    private function td_acciones_row(): array|string
-    {
-        $boton_acciones = $this->btn_acciones_row();
-        if(errores::$error){
-            return $this->error->error('Error al generar boton',$boton_acciones);
-        }
-
-        $html = '<td data-toggle="modal" data-target=".menu_acciones_lista" class="no-print">';
-        $html .= $boton_acciones;
-        $html .= '</td>';
-
-        return $html;
-    }
 
     /**
      * P ORDER P INT ERROREV

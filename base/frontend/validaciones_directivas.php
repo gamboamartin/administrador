@@ -22,49 +22,23 @@ class validaciones_directivas extends validacion{
         if($campo === ''){
             return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
         }
-        $valida = $this->valida_cols(cols: $cols);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar cols',data: $valida);
-        }
+
 
         return true;
     }
 
-    /**
-     * Valida si las columnas estan en un rango correcto
-     * @param int $cols Columnas para css
-     * @return bool|array
-     * @version 1.267.40
-     * @verfuncion 1.1.0
-     * @fecha 2022-08-04 11:18
-     * @author mgamboa
-     */
-    public function valida_cols(int $cols): bool|array
-    {
-        if($cols<=0){
-            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data:  $cols);
-        }
-        if($cols>=13){
-            return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data:  $cols);
-        }
-        return true;
-    }
 
     /**
      * Valida los elementos de un boton
-     * @param int $cols Columnas para css
      * @param string $label Etiqueta a mostrar
      * @param string $name Nombre del boton
-     * @param string $value Valor d eboton
+     * @param string $value Valor de boton
      * @return bool|array
      * @version 1.309.41
      */
-    public function valida_data_btn(int $cols, string $label, string $name, string $value): bool|array
+    public function valida_data_btn( string $label, string $name, string $value): bool|array
     {
-        $valida = $this->valida_cols(cols: $cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar cols',data:  $valida);
-        }
+
         if($name===''){
             return $this->error->error(mensaje:'Error $name no puede venir vacio',data: $label);
         }
@@ -157,10 +131,7 @@ class validaciones_directivas extends validacion{
         if($tabla === ''){
             return $this->error->error(mensaje: "Error tabla vacia", data: $tabla);
         }
-        $valida = $this->valida_cols(cols: $cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar columnas", data: $valida);
-        }
+
 
         return true;
     }

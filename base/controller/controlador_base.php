@@ -1118,7 +1118,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header
      * @param bool $ws
      * @return array|string
-     * @throws JsonException
      */
     public function xls_lista(bool $header = true, bool $ws = false): array|string
     {
@@ -1144,8 +1143,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $elm = new adm_elemento_lista($this->link);
 
-
-        $exportador = new exportador();
 
         $campos = $elm->obten_campos_el(estructura_bd: array(), modelo: $this->modelo,vista: 'lista');
         if(errores::$error){
@@ -1177,26 +1174,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        $registros_xls = (new values())->ajusta_formato_salida_registros(campos: $campos, registros: $registros);
-        if(errores::$error){
-            return $this->retorno_error('Error al ajusta formato de salida', $registros_xls, $header, false);
 
-        }
-
-        $resultado = $exportador->listado_base_xls(header: $header, name: $this->seccion, keys:  $keys,
-            path_base: $this->path_base,registros:  $registros_xls,totales:  array());
-        if(errores::$error){
-            $error =  $this->errores->error('Error al generar xls',$resultado);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        if(!$header){
-            return $resultado;
-        }
         exit;
 
     }

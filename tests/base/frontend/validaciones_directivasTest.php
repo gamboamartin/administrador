@@ -28,9 +28,9 @@ class validaciones_directivasTest extends test {
         $campo = 'a';
         $cols = '0';
         $resultado = $val->valida_base_input($campo, $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar cols', $resultado['mensaje']);
+
+        $this->assertIsBool($resultado);
+
 
         errores::$error = false;
         $campo = 'a';
@@ -42,35 +42,7 @@ class validaciones_directivasTest extends test {
         errores::$error = false;
     }
 
-    public function test_valida_cols(){
-        errores::$error = false;
-        $val = new validaciones_directivas();
-        //$inicializacion = new liberator($inicializacion);
 
-        $cols = '-1';
-        $resultado = $val->valida_cols(cols: $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error cols debe ser mayor a 0', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $cols = '13';
-        $resultado = $val->valida_cols(cols: $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error cols debe ser menor a 13', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $cols = '12';
-        $resultado = $val->valida_cols(cols: $cols);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-
-        errores::$error = false;
-    }
 
     public function test_valida_data_btn(){
         errores::$error = false;
@@ -82,9 +54,8 @@ class validaciones_directivasTest extends test {
         $name = '-1';
         $value = '-1';
         $resultado = $val->valida_data_btn($cols, $label, $name, $value);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar cols', $resultado['mensaje']);
+        $this->assertIsBool($resultado);
+
 
         errores::$error = false;
 
@@ -145,9 +116,8 @@ class validaciones_directivasTest extends test {
         $tabla = 'a';
         $cols = '0';
         $resultado = $val->valida_elementos_base_input($cols, $tabla);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar columnas', $resultado['mensaje']);
+        $this->assertIsBool($resultado);
+
 
         errores::$error = false;
 
