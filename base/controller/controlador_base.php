@@ -798,10 +798,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $template = new templates($this->link);
 
-        $campos = $template->campos_lista(elementos_lista: $elementos_lista);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener campos', data: $campos,header:  $header,ws:  $ws);
-        }
+
 
         $campos_filtro = $template->obten_campos_filtro(elementos_lista: $elementos_lista_filtro);
         if(errores::$error){
@@ -823,8 +820,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $lista_html = $template->lista_completa(campo_id:  $this->tabla.'_id', registros: $registros,
             n_paginas:  $n_paginas, pagina_seleccionada: $pag_seleccionada,seccion:  $this->seccion,
-            acciones_asignadas:  $acciones_asignadas,seccion_link: $this->seccion,accion_link: $this->accion,
-            session_id: $this->session_id,campos:  $campos->campos,etiqueta_campos:  $campos->etiqueta_campos,
+            seccion_link: $this->seccion,accion_link: $this->accion,
+            session_id: $this->session_id,
             botones_filtros: $botones_filtro, filtro_boton_seleccionado: $filtro_btn);
 
 

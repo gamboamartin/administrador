@@ -55,34 +55,7 @@ class listas{
         return $boton;
     }
 
-    /**
-     * ajusta los campos para ser mostrados en una lista
-     * @version 1.34.14
-     * @param array $etiqueta_campos Conjunto de etiqueta a mostrar en un th
-     * @param string $seccion Seccion en ejecucion
-     * @return array|string
-     */
-    private function campos_lista_html(array $etiqueta_campos, string $seccion): array|string
-    {
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error la seccion esta vacia',data: $seccion);
-        }
-        $html = '';
-        foreach($etiqueta_campos as $campo){
-            $campo = trim($campo);
-            if($campo === '' ){
-                return $this->error->error(mensaje: 'Error campo no puede venir vacio',data: $campo);
-            }
-            $campo_ajustado = $this->parsea_ths_html(campo:  $campo, seccion: $seccion);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al ajustar campos',data: $campo_ajustado);
-            }
-            $html .=$campo_ajustado;
-        }
 
-        return $html;
-    }
 
     /**
      * P INT P ORDER
@@ -427,7 +400,7 @@ class listas{
      * @param array $etiqueta_campos campos para ajustar la lista
      * @return array|string
      */
-    private function genera_campos_elementos_lista(array $etiqueta_campos, string $seccion):array|string{
+    private function genera_campos_elementos_lista():array|string{
 
 
         $td_acciones_html = $this->td_acciones_html();
@@ -435,12 +408,8 @@ class listas{
             return $this->error->error(mensaje: 'Error al generar td',data: $td_acciones_html);
         }
 
-        $campos_lista_html = $this->campos_lista_html(etiqueta_campos: $etiqueta_campos,seccion:  $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ajustar campos',data: $campos_lista_html);
-        }
 
-        return $td_acciones_html.$campos_lista_html;
+        return $td_acciones_html;
     }
 
     /**
@@ -524,9 +493,9 @@ class listas{
      * @param array $etiqueta_campos
      * @return array|string
      */
-    public function genera_th(array $etiqueta_campos, string $seccion):array|string{
+    public function genera_th():array|string{
 
-        $html = $this->genera_campos_elementos_lista(etiqueta_campos: $etiqueta_campos, seccion: $seccion);
+        $html = $this->genera_campos_elementos_lista();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar campos',data: $html);
         }
@@ -562,7 +531,7 @@ class listas{
      * @param array $campos
      * @return array|string
      */
-    public function lista(string $campo_id, array $campos, array $registros, string $seccion): array|string
+    public function lista(string $campo_id, array $registros, string $seccion): array|string
     {
 
         $html = '';
@@ -572,7 +541,7 @@ class listas{
                 return $this->error->error(mensaje: 'Error no existe campo $registro['.$seccion . '_id]',data: $registro);
             }
 
-            $panel_html = $this->panel_completo(campos: $campos, id:  $registro[$campo_id], registro: $registro,
+            $panel_html = $this->panel_completo( id:  $registro[$campo_id], registro: $registro,
                 seccion: $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar panel html',data: $panel_html);
@@ -687,7 +656,7 @@ class listas{
      * @param array $campos
      * @return array|string
      */
-    private function panel_completo(array $campos,  int $id, array $registro, string $seccion): array|string
+    private function panel_completo( int $id, array $registro, string $seccion): array|string
     {
 
         $html = '';
@@ -699,37 +668,12 @@ class listas{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar panel',data: $panel_class);
         }
-        $registro_html = $this->registro( campos: $campos, id:  $id, panel_class: $panel_class,registro:  $registro,
-            seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar registro',data: $registro_html);
-        }
-        $html .=$registro_html;
 
 
         return $html;
     }
 
-    /**
-     * Parsea elementos para mostrarse en lista
-     * @version 1.34.14
-     * @param string $seccion Seccion o modelo de ejecucion
-     * @param string $campo Campo a mostrar
-     * @return array|string
-     */
-    private function parsea_ths_html(string $campo, string $seccion):array|string{
-        $campo = trim($campo);
-        if($campo === '' ){
-            return $this->error->error(mensaje: 'Error campo no puede venir vacio',data: $campo);
-        }
-        $html = '';
-        $campo_sin_tabla = str_replace($seccion,' ', $campo);
-        $campo_sin_guion = str_replace('_',' ',$campo_sin_tabla);
-        $campo_mayuscula = ucwords($campo_sin_guion);
-        $html .= "<th class='text-uppercase text-truncate td-90'>$campo_mayuscula</th>";
-        return $html;
 
-    }
 
     /**
      * P ORDER P INT

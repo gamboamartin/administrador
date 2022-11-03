@@ -16,48 +16,6 @@ class listasTest extends test {
     }
 
 
-    
-
-    public function test_campos_lista_html(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
-        $etiqueta_campos = array();
-        $seccion = 'a';
-        $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('', $resultado);
-
-        errores::$error = false;
-
-        $etiqueta_campos = array();
-        $seccion = 'a';
-        $etiqueta_campos[] = '';
-        $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $etiqueta_campos = array();
-        $seccion = 'A';
-        $etiqueta_campos[] = 'a';
-        $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<th class='text-uppercase text-truncate td-90'>A</th>", $resultado);
-
-
-
-        errores::$error = false;
-
-
-
-    }
-
     public function test_data_accion_limpia(): void
     {
         errores::$error = false;
@@ -261,20 +219,6 @@ class listasTest extends test {
         errores::$error = false;
     }
 
-    public function test_genera_campos_elementos_lista(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
-        $etiqueta_campos = array();
-        $seccion = 'a';
-        $etiqueta_campos[] = 'a';
-        $resultado = $ls->campos_lista_html($etiqueta_campos, $seccion);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<th class='text-uppercase text-truncate td-90'> </th>", $resultado);
-        errores::$error = false;
-    }
 
     public function test_genera_html_dato(): void
     {
@@ -379,35 +323,7 @@ class listasTest extends test {
         errores::$error = false;
     }
 
-    public function test_parsea_ths_html(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
 
-        $seccion = '';
-        $campo = '';
-        $resultado = $ls->parsea_ths_html(campo:$campo, seccion:$seccion);
-
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error campo no puede venir vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $seccion = '';
-        $campo = 'a';
-        $resultado = $ls->parsea_ths_html(campo:$campo, seccion:$seccion);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("<th class='text-uppercase text-truncate td-90'>A</th>", $resultado);
-
-
-
-        errores::$error = false;
-
-
-    }
 
     public function test_registro_status(): void
     {

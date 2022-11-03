@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\files;
 use JsonException;
 use models\adm_seccion;
 use PDO;
@@ -153,6 +154,17 @@ class modelo extends modelo_base {
      * @version 1.495.49
      */
     public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
 
         if($registro_id>0){
             $this->registro_id  = $registro_id;

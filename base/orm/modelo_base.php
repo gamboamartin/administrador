@@ -812,7 +812,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    private function init_archivos_tmp_model(): string
+    protected function init_archivos_tmp_model(): string
     {
         $archivos = (new generales())->path_base.'archivos';
         if(!file_exists($archivos)){

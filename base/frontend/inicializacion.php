@@ -7,7 +7,6 @@ use stdClass;
 
 class inicializacion{
     private errores $error;
-    private validaciones_directivas $validacion;
     #[Pure] public function __construct(){
         $this->error = new errores();
         $this->validacion = new validaciones_directivas();
@@ -15,45 +14,6 @@ class inicializacion{
 
 
 
-    /**
-     * Ajusta los elementos para ser mostrados en lista
-     * @version 1.30.14
-     * @param array $elementos_lista Registro de tipo elemento lista
-     * @return array|stdClass
-     */
-    private function asigna_datos_campo(array $elementos_lista): array|stdClass
-    {
-
-        $campos = array();
-        $etiqueta_campos = array();
-        foreach ($elementos_lista as $registro){
-            if(!is_array($registro)){
-                return $this->error->error(mensaje: 'Error $elementos_lista[] debe ser un array',data:  $registro);
-            }
-            if(!isset($registro['adm_elemento_lista_representacion'])){
-                $registro['adm_elemento_lista_representacion'] = '';
-            }
-
-            $valida = $this->validacion->valida_elemento_lista_template(registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: "Error al validar registro", data: $valida);
-            }
-            $keys = array('adm_elemento_lista_etiqueta');
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: "Error al validar registro",data:  $valida);
-            }
-
-
-            $etiqueta_campos[] = $registro['adm_elemento_lista_etiqueta'];
-        }
-
-        $data = new stdClass();
-        $data->campos = $campos;
-        $data->etiqueta_campos = $etiqueta_campos;
-
-        return $data;
-    }
 
     public function campo_filtro(array $elemento_lista): array|string
     {
@@ -64,24 +24,7 @@ class inicializacion{
 
         return $datas->seccion . '.' . $datas->campo;
     }
-    /**
-     * Obtiene los campos para ser mostrados en una lista
-     * @version 1.30.14
-     * @param array $elementos_lista Registro de tipo elementos para lista
-     *
-     *
-     * @return stdClass|array
-     */
-    public function campos_lista(array $elementos_lista): stdClass|array{
 
-        $data = $this->asigna_datos_campo(elementos_lista: $elementos_lista);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar $datos',data:  $data);
-        }
-
-        return $data;
-
-    }
 
 
     /**

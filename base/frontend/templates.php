@@ -73,24 +73,6 @@ class templates{
     }
 
     /**
-     * Genera los campos para una lista basado en elementos de lista
-     * @version 1.30.14
-     * @param array $elementos_lista Registros de tipo elementos de lista
-     * @return array|stdClass
-     */
-    public function campos_lista(array $elementos_lista): array|stdClass
-    {
-
-        $campos_lista = (new inicializacion())->campos_lista(elementos_lista: $elementos_lista);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar campos lista',data: $campos_lista);
-        }
-        return $campos_lista;
-
-    }
-
-
-    /**
      * PHPUNIT
      * @param array $input
      * @return bool|array
@@ -109,8 +91,8 @@ class templates{
 
     /**
      * P INT
-     * @param array $registros
      * @param string $campo_id
+     * @param array $registros
      * @param int $n_paginas
      * @param int $pagina_seleccionada
      * @param string $seccion
@@ -118,15 +100,14 @@ class templates{
      * @param string $seccion_link
      * @param string $accion_link
      * @param string $session_id
+     * @param array $etiqueta_campos
      * @param array $botones_filtros
      * @param array $filtro_boton_seleccionado
-     * @param array $etiqueta_campos
-     * @param array $campos
      * @return array|string
      */
     public function lista_completa(string $campo_id, array $registros, int $n_paginas, int $pagina_seleccionada,
-                                   string $seccion, array $acciones_asignadas, string $seccion_link,
-                                   string $accion_link, string $session_id, array $campos, array $etiqueta_campos,
+                                   string $seccion, string $seccion_link,
+                                   string $accion_link, string $session_id,
                                    array $botones_filtros = array(), array $filtro_boton_seleccionado = array()): array|string
     {
 
@@ -141,7 +122,7 @@ class templates{
 
         $this->botones_filtros = $botones_filtros;
 
-        $ths = (new listas())->genera_th(etiqueta_campos:  $etiqueta_campos, seccion: $seccion);
+        $ths = (new listas())->genera_th();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar ths',data: $ths);
         }
@@ -170,7 +151,7 @@ class templates{
 
         $html .= "<thead class='thead-azul-light'><tr>$ths</tr></thead><tbody class='listado'>";
 
-        $lista_html = (new listas())->lista(campo_id:  $campo_id, campos:  $campos, registros: $registros,
+        $lista_html = (new listas())->lista(campo_id:  $campo_id, registros: $registros,
             seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar lista',data: $lista_html);
