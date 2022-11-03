@@ -330,13 +330,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $this->transaccion = 'SELECT';
 
+        /**
+         * REFACTORIZAR
+         */
+
         $key_tmp = $this->key_tmp(consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
         }
 
-        if(isset($_SESSION['temporales'][$key_tmp]) && $this->temp) {
-            $data = unserialize($_SESSION['temporales'][$key_tmp]);
+        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
+        }
+
+        if(file_exists($archivos_sql_tmp) && $this->temp) {
+            $data = unserialize(file_get_contents($archivos_sql_tmp));
         }
         else{
 
@@ -373,7 +382,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             }
 
             if($this->temp) {
-                $_SESSION['temporales'][$key_tmp] = serialize($data);
+                mkdir($archivos_sql_tmp);
+                file_put_contents($archivos_sql_tmp, serialize($data));
+
             }
 
         }
@@ -561,7 +572,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $key_filtro = $this->tabla.'.id';
         $filtro[$key_filtro] = $registro_id;
-        $r_foto = $modelo_foto->filtro_and($filtro);
+        $r_foto = $modelo_foto->filtro_and(filtro:$filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener fotos',$r_foto);
         }
@@ -819,6 +830,23 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
+    private function init_archivos_tmp_model(): string
+    {
+        $archivos = (new generales())->path_base.'archivos';
+        if(!file_exists($archivos)){
+            mkdir($archivos);
+        }
+        $archivos_tmp = $archivos.'/tmp';
+        if(!file_exists($archivos_tmp)){
+            mkdir($archivos_tmp);
+        }
+        $archivos_tmp_model = $archivos_tmp."/$this->tabla";
+        if(!file_exists($archivos_tmp_model)){
+            mkdir($archivos_tmp_model);
+        }
+        return $archivos_tmp_model;
+    }
+
     private function key_tmp(string $consulta): array|string
     {
         $key_tmp = trim($consulta);
@@ -973,6 +1001,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al obtener los registros', data: $data);
         }
         return $data;
+    }
+
+    private function ruta_file_tmp_sql(string $key_tmp): array|string
+    {
+        $archivos_tmp_model = $this->init_archivos_tmp_model();
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener archivos_tmp_model", data: $archivos_tmp_model);
+        }
+
+
+        return $archivos_tmp_model."/$key_tmp";
     }
 
 
