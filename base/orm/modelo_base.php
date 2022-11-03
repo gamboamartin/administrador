@@ -4,6 +4,7 @@ namespace base\orm;
 use config\generales;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\files;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use models\adm_elemento_lista;
@@ -59,7 +60,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * @param PDO $link Conexion a la BD
      */
-    #[Pure] public function __construct(PDO $link, bool $temp = false ){ //PRUEBAS EN PROCESO
+    #[Pure] public function __construct(PDO $link, bool $temp = true ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
@@ -1032,10 +1033,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta){
-        if(file_exists($archivos_sql_tmp) && $this->temp) {
+
+        if(file_exists($archivos_sql_tmp) && $this->temp ) {
             $data = unserialize(file_get_contents($archivos_sql_tmp));
         }
         else{
+
+            $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+            }
+            if(file_exists($init_archivos_tmp_model)){
+                $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+                if (errores::$error) {
+                    return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+                }
+            }
 
             $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
             if (errores::$error) {

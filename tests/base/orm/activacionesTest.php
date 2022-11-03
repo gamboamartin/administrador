@@ -185,7 +185,9 @@ class activacionesTest extends test {
             die('Error');
         }
 
+
         $resultado = $act->valida_activacion($modelo);
+
 
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
