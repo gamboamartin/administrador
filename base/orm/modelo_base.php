@@ -1032,10 +1032,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta){
+    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta): array|stdClass
+    {
 
         if(file_exists($archivos_sql_tmp) && $this->temp ) {
-            $data = unserialize(file_get_contents($archivos_sql_tmp));
+            $data_out = file_get_contents($archivos_sql_tmp);
+            $data_out = base64_decode($data_out);
+            $data = unserialize($data_out);
+
         }
         else{
 
@@ -1056,7 +1060,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             }
 
             if($this->temp) {
-                file_put_contents($archivos_sql_tmp, serialize($data));
+                $data_out = serialize($data);
+                $data_out = base64_encode($data_out);
+                file_put_contents($archivos_sql_tmp, $data_out);
             }
 
         }

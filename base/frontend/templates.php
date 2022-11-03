@@ -59,11 +59,6 @@ class templates{
             $input['select_vacio_alta'] = false;
         }
 
-        $ln = $this->input_ln($input);
-        if(errores::$error){
-            return $this->error->error('Error al asignar ln',$ln);
-        }
-
         $input['disabled'] = $disabled;
         if(in_array($campo_name, $campos_disabled, true)){
             $input['disabled'] = true;
@@ -72,21 +67,6 @@ class templates{
         return $input;
     }
 
-    /**
-     * PHPUNIT
-     * @param array $input
-     * @return bool|array
-     */
-    private function input_ln(array $input): bool|array
-    {
-        if (!isset($input['ln'])) {
-            $input['ln'] = false;
-        }
-        else if(!is_bool($input['ln'])){
-            return $this->error->error('Error al input[ln] deb ser un bool',$input);
-        }
-        return $input['ln'];
-    }
 
 
     /**
@@ -96,11 +76,9 @@ class templates{
      * @param int $n_paginas
      * @param int $pagina_seleccionada
      * @param string $seccion
-     * @param array $acciones_asignadas
      * @param string $seccion_link
      * @param string $accion_link
      * @param string $session_id
-     * @param array $etiqueta_campos
      * @param array $botones_filtros
      * @param array $filtro_boton_seleccionado
      * @return array|string
@@ -128,8 +106,8 @@ class templates{
         }
 
 
-        $filtros_lista = (new listas())->genera_filtros_lista(botones_filtros:  $this->botones_filtros,
-            seccion: $seccion,session_id: $session_id);
+        $filtros_lista = (new listas())->genera_filtros_lista(
+            seccion: $seccion);
         if(errores::$error){
             return $this->error->error('Error al obtener filtros', $filtros_lista);
         }

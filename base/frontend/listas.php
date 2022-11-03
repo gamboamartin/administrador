@@ -18,31 +18,6 @@ class listas{
 
 
 
-
-
-    /**
-     * P INT P ORDER
-     * @param string $seccion
-     * @param array $botones_filtro
-     * @param string $session_id
-     * @return array|string
-     */
-    private function carga_botones_filtro_rapido(array $botones_filtro, string $seccion, string $session_id): array|string
-    {
-        $filtro_btn_html = '';
-        foreach($botones_filtro as $tabla=>$boton){
-            $filtro_btn_html = $this->genera_conjunto_filtro_rapido(boton:  $boton, filtro_btn_html: $filtro_btn_html,
-                seccion:  $seccion,session_id:  $session_id, tabla: $tabla);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar conjunto de botones',data: $filtro_btn_html,
-                    params: get_defined_vars());
-            }
-        }
-
-        return $filtro_btn_html;
-
-    }
-
     /**
      * P ORDER P INT PROBADO ERROREV
      * @return stdClass
@@ -274,48 +249,17 @@ class listas{
         return $td_acciones_html;
     }
 
-    /**
-     * P INT P ORDER
-     * @param string $tabla
-     * @param string $filtro_btn_html
-     * @param array $boton
-     * @param string $seccion
-     * @param string $session_id
-     * @return array|string
-     */
-    private function genera_conjunto_filtro_rapido(array $boton, string $filtro_btn_html, string $seccion,
-                                                   string $session_id, string $tabla): array|string
-    {
-        $filtro_btn_html = $this->titulo_conjunto_filtro_rapido(filtro_btn_html: $filtro_btn_html, tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error('Error al generar titulos',$filtro_btn_html);
-        }
-
-
-        return $filtro_btn_html;
-    }
-
-
 
     /**
      * P INT
      * @param string $seccion
-     * @param array $botones_filtros
-     * @param array $campos_filtro
-     * @param string $session_id
      * @return array|string
      */
 
-    public function genera_filtros_lista(array $botones_filtros, string $seccion, string $session_id ): array|string
+    public function genera_filtros_lista( string $seccion ): array|string
     {
         $html = '';
 
-        $filtro_btn_html = $this->carga_botones_filtro_rapido(botones_filtro:  $botones_filtros,
-            seccion: $seccion, session_id: $session_id);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtros rapidos',$filtro_btn_html);
-        }
-        $html.=$filtro_btn_html;
 
         $inputs_filtro_html = $this->filtros_para_lista(seccion: $seccion);
         if(errores::$error){
@@ -640,24 +584,6 @@ class listas{
         return'<td class="no-print">ACCIONES</td>';
     }
 
-
-    /**
-     * P ORDER P INT ERROREV
-     * @param string $tabla
-     * @param string $filtro_btn_html
-     * @return string
-     */
-    private function titulo_conjunto_filtro_rapido(string $filtro_btn_html, string $tabla):string{
-        $titulo =str_replace('_',' ',$tabla);
-        $titulo =ucwords($titulo);
-
-        $filtro_btn_html.='<div class="col-12 filtro_rapido">';
-        $filtro_btn_html.='<span class="letra-grande"><b>'.$titulo.'</b></span>';
-        $filtro_btn_html.='</div>';
-
-
-        return $filtro_btn_html;
-    }
 
     /**
      * P ORDER P INT PROBADO
