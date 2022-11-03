@@ -1,7 +1,6 @@
 <?php //DEBUG FIN
 namespace base\controller;
 
-use base\frontend\directivas;
 use base\frontend\templates;
 use base\frontend\values;
 use base\orm\modelo;
@@ -82,7 +81,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->tabla = $modelo->tabla;
         $this->modelo = $modelo;
 
-        $this->directiva = new directivas();
 
         $init = (new normalizacion())->init_controler(controler: $this);
         if(errores::$error){
@@ -244,29 +242,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $elm = new adm_elemento_lista($this->link);
 
-
-        $template = new templates($this->link);
-        $template->valores =$this->valores;
-        $template->campos_invisibles =$this->campos_invisibles;
         $this->registro_en_proceso = $registro_en_proceso;
 
-        $campos = $elm->obten_campos_el(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
-        if(errores::$error){
-            return  $this->retorno_error(mensaje: 'Error al obtener campos',data: $campos,header: $header,ws: false);
-        }
 
-        $alta_html = $template->alta(aplica_form: true, directivas_extra: $this->directivas_extra,
-            valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
-            session_id: $this->session_id,path_base: $this->path_base,
-            campos_disabled: $this->campos_disabled,valores_default: $this->valores_asignados_default,
-            campos_invisibles: $this->campos_invisibles);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template alta', data: $alta_html, header: $header,
-                ws: false);
-        }
-        $this->alta_html = $alta_html;
+        $this->alta_html = '';
 
 
         return $this->alta_html;
@@ -875,17 +855,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $namespace = 'models\\';
         $this->seccion = str_replace($namespace,'',$this->seccion);
-        $clase = $namespace.$this->seccion;
-
-        if((string)$this->seccion === ''){
-            $error = $this->errores->error('Error no existe seccion', $_GET);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if(errores::$error){
@@ -893,33 +862,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->registro = $resultado;
 
-        $elm = new adm_elemento_lista($this->link);
-
-        $template = new templates($this->link);
-
-        $campos = $elm->obten_campos_el(estructura_bd: array(), modelo: $this->modelo, vista: 'modifica');
-        if(errores::$error){
-            return $this->errores->error('Error al obtener campos',$campos);
-        }
-
-        $campos_alta = $campos['campos'];
 
 
-        $modifica_html =  $template->modifica(registro: $this->registro, seccion: $this->seccion,
-            breadcrumbs:  $breadcrumbs, valores_filtrados: $this->valores_filtrados, campos_alta: $campos_alta,
-            session_id:  $this->session_id,path_base:  $this->path_base,aplica_form:  $aplica_form);
-
-
-        if(errores::$error){
-            $error = $this->errores->error('Error al generar template', $modifica_html);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        $this->modifica_html = $modifica_html;
+        $this->modifica_html = '';
 
         $registro_puro = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true,
             retorno_obj: true);

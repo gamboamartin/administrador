@@ -634,7 +634,6 @@ class listas{
         if($filtros_lista === ''){
             return $this->error->error('Error $filtros_lista no puede venir vacio',$filtros_lista);
         }
-        $directiva = new directivas();
 
         $html  =  '<form method="POST" action="./index.php?seccion='.$seccion.'&accion=aplica_filtro&session_id='.$session_id.'" class="no-print">';
         $html .=    "<div class='col-md-12 no-print'><hr></div>";

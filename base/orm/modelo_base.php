@@ -331,7 +331,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->transaccion = 'SELECT';
 
         if(isset($_SESSION['temporales'][$consulta]) && $this->temp) {
-            $data = unserialize($_SESSION['temporales'][$consulta]);
+            $key_tmp = $this->key_tmp(consulta: $consulta);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
+            }
+            $data = unserialize($_SESSION['temporales'][$key_tmp]);
 
         }
         else{
@@ -368,7 +372,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $data->registros_obj[] = $row_obj;
             }
 
-            $_SESSION['temporales'][$consulta] = serialize($data);
+            if($this->temp) {
+                $key_tmp = $this->key_tmp(consulta: $consulta);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
+                }
+
+                $_SESSION['temporales'][$key_tmp] = serialize($data);
+            }
 
         }
 
@@ -811,6 +822,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $row;
+    }
+
+    private function key_tmp(string $consulta): array|string
+    {
+        $key_tmp = trim($consulta);
+        $key_tmp = str_replace(' ','',$key_tmp);
+        $key_tmp = str_replace("'",'',$key_tmp);
+        $key_tmp = str_replace(",",'',$key_tmp);
+        $key_tmp = str_replace(".",'',$key_tmp);
+        $key_tmp = str_replace("_",'',$key_tmp);
+        $key_tmp = str_replace("(",'',$key_tmp);
+        $key_tmp = str_replace(")",'',$key_tmp);
+        $key_tmp = str_replace("",'',$key_tmp);
+        return str_replace("%",'',$key_tmp);
     }
 
 

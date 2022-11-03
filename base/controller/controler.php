@@ -1,13 +1,11 @@
 <?php
 namespace base\controller;
 
-use base\frontend\directivas;
 use base\orm\modelo;
 use config\generales;
 use config\views;
 use gamboamartin\errores\errores;
 
-use models\adm_accion;
 use PDO;
 use stdClass;
 use Throwable;
@@ -27,7 +25,6 @@ class controler{
     public string $tabla = '';
     public string $accion = '';
     public array|stdClass $inputs = array();
-    public directivas $directiva;
     public string $breadcrumbs = '';
     public array $registros = array();
     public array $orders = array();

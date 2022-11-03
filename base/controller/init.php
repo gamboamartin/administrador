@@ -1,7 +1,6 @@
 <?php
 namespace base\controller;
 use base\conexion;
-use base\frontend\directivas;
 use base\seguridad;
 use config\generales;
 use config\views;
@@ -487,7 +486,6 @@ class init{
 
         $controler->errores = new errores();
         $controler->validacion = new valida_controller();
-        $controler->directiva = new directivas();
         $controler->pestanas = new stdClass();
         $controler->pestanas->includes = array();
         $controler->pestanas->targets = array();
@@ -540,7 +538,7 @@ class init{
         }
 
         /**
-         * REFCATORIZAR SIMPLICAR RERGISTRO DE PAQUETES
+         * REFCATORIZAR SIMPLICAR REGISTRO DE PAQUETES
          */
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
@@ -704,7 +702,7 @@ class init{
      * P INT
      * Funcion utilizada para verificar las solicitudes de un permiso.
      *
-     * @param PDO $link Representa la conexion entre PHP y la base dedatos
+     * @param PDO $link Representa la conexion entre PHP y la base de datos
      *
      * @param seguridad $seguridad llamada a la clase "seguridad"
      *

@@ -6,10 +6,7 @@ use stdClass;
 
 
 class params_inputs{
-
-
-
-
+    
     /**
      * Si disabled retorna attr disabled  en string
      * @stable true
