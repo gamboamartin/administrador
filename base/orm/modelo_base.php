@@ -330,13 +330,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $this->transaccion = 'SELECT';
 
-        if(isset($_SESSION['temporales'][$consulta]) && $this->temp) {
-            $key_tmp = $this->key_tmp(consulta: $consulta);
-            if (errores::$error) {
-                return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
-            }
-            $data = unserialize($_SESSION['temporales'][$key_tmp]);
+        $key_tmp = $this->key_tmp(consulta: $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
+        }
 
+        if(isset($_SESSION['temporales'][$key_tmp]) && $this->temp) {
+            $data = unserialize($_SESSION['temporales'][$key_tmp]);
         }
         else{
 
@@ -373,11 +373,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             }
 
             if($this->temp) {
-                $key_tmp = $this->key_tmp(consulta: $consulta);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
-                }
-
                 $_SESSION['temporales'][$key_tmp] = serialize($data);
             }
 
