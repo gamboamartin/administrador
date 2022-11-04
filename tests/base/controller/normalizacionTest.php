@@ -19,70 +19,9 @@ class normalizacionTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_asigna_filtro_btn_get(){
-        errores::$error = false;
-        $nm = new normalizacion();
-        $nm = new liberator($nm);
 
-        $filtro_default_btn = array();
-        $resultado = $nm->asigna_filtro_btn_get(filtro_default_btn: $filtro_default_btn);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error validar filtro_default_btn", $resultado['mensaje']);
 
-        errores::$error = false;
-        $filtro_default_btn = array();
-        $filtro_default_btn[] = '';
-        $resultado = $nm->asigna_filtro_btn_get(filtro_default_btn: $filtro_default_btn);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error validar filtro_default_btn", $resultado['mensaje']);
 
-        errores::$error = false;
-        $filtro_default_btn = array();
-        $filtro_default_btn['tabla'] = '';
-        $resultado = $nm->asigna_filtro_btn_get(filtro_default_btn: $filtro_default_btn);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error validar filtro_default_btn", $resultado['mensaje']);
-
-        errores::$error = false;
-        $filtro_default_btn = array();
-        $filtro_default_btn['tabla'] = 'a';
-        $resultado = $nm->asigna_filtro_btn_get(filtro_default_btn: $filtro_default_btn);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error validar filtro_default_btn", $resultado['mensaje']);
-
-        errores::$error = false;
-        $filtro_default_btn = array();
-        $filtro_default_btn['tabla'] = 'a';
-        $filtro_default_btn['valor_default'] = 'b';
-        $resultado = $nm->asigna_filtro_btn_get(filtro_default_btn: $filtro_default_btn);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("b", $resultado['filtro_btn']['a.id']);
-
-        errores::$error = false;
-    }
-
-    public function test_asigna_filtros(){
-        errores::$error = false;
-        $nm = new normalizacion();
-        $nm = new liberator($nm);
-;
-        unset($_GET);
-        $filtro_btn = array();
-        $filtro_default_btn = array();
-        $filtro_default_btn['tabla'] = 'a';
-        $filtro_default_btn['valor_default'] = 'a';
-        $resultado = $nm->asigna_filtros($filtro_btn, $filtro_default_btn);
-
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("a", $resultado['a.id']);
-        errores::$error = false;
-    }
 
     public function test_asigna_registro_alta(){
         errores::$error = false;
@@ -150,65 +89,10 @@ class normalizacionTest extends test {
         errores::$error = false;
     }
 
-    public function test_determina_filtro_btn(){
-        errores::$error = false;
-        $nm = new normalizacion();
-        $nm = new liberator($nm);
 
-        $filtro_default_btn = array();
-        $filtro_btn = array();
-        $filtro_default_btn['tabla'] = 'x';
-        $filtro_default_btn['valor_default'] = '1';
-        $resultado = $nm->determina_filtro_btn($filtro_btn, $filtro_default_btn);
 
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1',$resultado['x.id']);
-        errores::$error = false;
-    }
 
-    public function test_ejecuta_filtro(){
-        errores::$error = false;
-        $nm = new normalizacion();
-        $nm = new liberator($nm);
 
-        $filtro_default_btn = array();
-        $controler = new controler($this->link, '', '');
-        $controler->tabla = 'x';
-        $resultado = $nm->ejecuta_filtro($controler, $filtro_default_btn);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertFalse($resultado);
-
-        errores::$error = false;
-
-        $filtro_default_btn = array();
-        $controler = new controler($this->link, '', '');
-        $controler->tabla = 'x';
-
-        unset($_SESSION['filtros'][$controler->tabla]);
-        unset($_GET['filtro_btn']);
-        $filtro_default_btn['valor_default'] = 1;
-
-        $resultado = $nm->ejecuta_filtro($controler, $filtro_default_btn);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-
-        errores::$error = false;
-    }
-
-    public function test_filtro_btn(){
-        errores::$error = false;
-        $nm = new normalizacion();
-        //$nm = new liberator($nm);
-
-        $controler = new controler($this->link, '', '');
-        $resultado = $nm->filtro_btn($controler);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_init_upd_base(): void
     {

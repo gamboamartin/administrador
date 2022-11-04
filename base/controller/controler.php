@@ -232,102 +232,10 @@ class controler{
     }
 
 
-    /**
-     * P INT P ORDER ERROREV
-     * @param int $limit
-     * @param int $offset
-     * @param array $filtro
-     * @param array $orders
-     * @param array $filtro_especial
-     * @param array $columnas
-     * @return array|stdClass
-     */
-    private function asigna_registros(array $columnas, array $filtro, array $filtro_especial, int $limit, int $offset,
-                                      array $orders): array|stdClass{
-        if($limit < 0){
-            return $this->errores->error(
-                mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',data: $limit);
-        }
-
-        $resultado = $this->modelo->filtro_and(columnas: $columnas, filtro: $filtro, filtro_especial: $filtro_especial,
-            group_by: array(), limit: $limit, offset: $offset, order: $orders, tipo_filtro: 'textos');
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al filtrar',data: $resultado);
-        }
-
-        return $resultado;
-    }
-
-    /**
-     * P ORDER P INT ERROREV
-     * @param array $data_para_boton
-     * @param string $filtro_boton_lista
-     * @return array
-     */
-    private function genera_data_btn(array $data_para_boton, string $filtro_boton_lista):array{
-        if($filtro_boton_lista === ''){
-            return $this->errores->error(mensaje: 'Error $filtro_boton_lista no puede venir vacio',
-                data: $this->seccion, params: get_defined_vars());
-        }
-
-        $key_id = $filtro_boton_lista.'_id';
-        $key_descripcion = $filtro_boton_lista.'_descripcion';
-        if(!isset($data_para_boton[$key_id])){
-            return $this->errores->error(mensaje: 'Error $data_para_boton['.$key_id.'] no existe',
-                data: $data_para_boton, params: get_defined_vars());
-        }
-        if(!isset($data_para_boton[$key_descripcion])){
-            return $this->errores->error(mensaje: 'Error $data_para_boton['.$key_descripcion.'] no existe',
-                data: $data_para_boton, params: get_defined_vars());
-        }
-        $data_btn = array();
-        $data_btn['id'] = $data_para_boton[$key_id];
-        $data_btn['filtro'] = array($filtro_boton_lista.'.id'=>$data_para_boton[$key_id]);
-        $data_btn['etiqueta'] = $data_para_boton[$key_descripcion];
-        $class = 'outline-primary';
-        if(isset($_GET['filtro_btn'][$filtro_boton_lista.'.id'])){
-            if((int)$_GET['filtro_btn'][$filtro_boton_lista.'.id'] === (int)$data_btn['id']) {
-                $class = 'warning';
-            }
-        }
-        $data_btn['class'] = $class;
 
 
-        return $data_btn;
-    }
 
-    /**
-     * P INT P ORDER ERROREV
-     * @param int $limit
-     * @param int $pag_seleccionada
-     * @param array $filtro
-     * @param array $orders
-     * @param array $filtro_especial
-     * @param array $columnas
-     * @return array
-     */
-    private function genera_resultado_filtrado( array $columnas, array $filtro, array $filtro_especial, int $limit,
-                                                array $orders, int $pag_seleccionada):array{
 
-        if($limit < 0){
-            return $this->errores->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $limit, params: get_defined_vars());
-        }
-        if($pag_seleccionada < 0){
-            return $this->errores->error(
-                mensaje: 'Error $pag_seleccionada debe ser mayor o igual a 0 ',data: $pag_seleccionada,
-                params: get_defined_vars());
-        }
-        $offset = ($pag_seleccionada - 1) * $limit;
-        $resultado = $this->asigna_registros(columnas: $columnas, filtro: $filtro, filtro_especial:  $filtro_especial,
-            limit: $limit, offset: $offset, orders: $orders);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al asignar registros',data: $resultado,
-                params: get_defined_vars());
-        }
-
-        return $resultado->registros;
-    }
 
     /**
      * Generacion de metodo para ser utilizado en cualquier llamada get con filtros
@@ -510,73 +418,11 @@ class controler{
         return $not_in;
     }
 
-    /**
-     * Obtiene los botones para el filtro de lista
-     * @return array
-     */
-    protected function obten_botones_para_filtro():array{
-        $botones_filtro = array();
-        foreach($this->filtro_boton_lista as $filtro_boton_lista){
-            $registros_botones_filtro = $this->obten_registros_para_boton_filtro(
-                filtro_boton_lista: $filtro_boton_lista['tabla']);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al obtener registros de filtro',
-                    data: $registros_botones_filtro);
-            }
-            $data_para_botones = $registros_botones_filtro['registros'];
-            foreach ($data_para_botones as $data_para_boton){
-                $data_btn = $this->genera_data_btn(data_para_boton: $data_para_boton,
-                    filtro_boton_lista: $filtro_boton_lista['tabla']);
-                if(errores::$error){
-                    return  $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $data_btn);
-                }
-                $botones_filtro[$filtro_boton_lista['tabla']][] = $data_btn;
-            }
-        }
-
-        return $botones_filtro;
-    }
 
 
-    /**
-     * PHPUNIT
-     * @param array $campos
-     * @return array
-     */
-    protected function obten_encabezados_xls(array $campos):array{
-        $valida_seccion = $this->validacion->valida_seccion_base($this->seccion);
-        if(errores::$error){
-            return $this->errores->error('Error al validar datos de la seccion',$valida_seccion);
-        }
-
-        $campos = $this->obten_estructura($campos);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener campos',$campos);
-        }
-        $keys = (new normalizacion())->genera_campos_lista($campos);
-        if(errores::$error){
-            return $this->errores->error('Error al genera keys',$keys);
-        }
 
 
-        return $keys;
-    }
 
-    /**
-     * PHPUNIT
-     * @param array $campos
-     * @return array
-     */
-    protected function obten_estructura(array $campos): array
-    {
-        $valida_seccion = $this->validacion->valida_seccion_base($this->seccion);
-        if(errores::$error){
-            return $this->errores->error('Error al validar datos de la seccion',$valida_seccion);
-        }
-
-        return $campos['campos_completos'];
-
-    }
 
     /**
      * Genera salida para eventos controller
@@ -671,95 +517,6 @@ class controler{
         return $r_modelo;
     }
 
-
-    /**
-     *
-     * Obtiene todos los registros de un modelo para la muestra de los botones de filtros rapidos
-     * @param string $filtro_boton_lista nombre del modelo para traerse todos
-     * @example
-     *       $registros_botones_filtro = $this->obten_registros_para_boton_filtro($filtro_boton_lista['tabla']);
-     *
-     * @return array conjunto de registros obtenidos
-     * @throws errores $filtro_boton_lista===''
-     */
-    private function obten_registros_para_boton_filtro(string $filtro_boton_lista):array{
-        $filtro_boton_lista = str_replace('models\\','', $filtro_boton_lista);
-        $class = 'models\\'.$filtro_boton_lista;
-        if($filtro_boton_lista===''){
-            return $this->errores->error(mensaje: 'Error $filtro_boton_lista no puede venir vacio',
-                data: $filtro_boton_lista);
-
-        }
-        if(!class_exists($class)){
-            return  $this->errores->error(mensaje: 'Error modelo no existe '.$filtro_boton_lista,
-                data: $filtro_boton_lista);
-        }
-        $modelo_filtro_btns = $this->modelo->genera_modelo(modelo:$filtro_boton_lista);
-        if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al generar modelo', data: $modelo_filtro_btns);
-        }
-        $registros_botones_filtro = $modelo_filtro_btns->obten_registros();
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener registros de filtro',
-                data:  $registros_botones_filtro);
-        }
-        return $registros_botones_filtro;
-    }
-
-    /**
-     * P INT ERORREV P ORDER
-     * @param int $limit
-     * @param int $pag_seleccionada
-     * @param array $filtro
-     * @param array $filtro_btn
-     * @param array $columnas
-     * @return array
-     */
-    protected function obten_registros_para_lista(array $filtro, int $limit, int $pag_seleccionada,
-                                                  array $columnas = array(), array $filtro_btn = array()): array{
-        $this->seccion = str_replace('models\\','',$this->seccion);
-        $class = 'models\\'.$this->seccion;
-        if($this->seccion === ''){
-            return $this->errores->error(mensaje: "Error la seccion esta vacia",data: $this->seccion,
-                params: get_defined_vars());
-        }
-        if(!class_exists($class)){
-            return $this->errores->error(mensaje: "Error la clase es invalida",data: $class, params: get_defined_vars());
-        }
-        if($limit < 0){
-            return $this->errores->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $limit, params: get_defined_vars());
-        }
-        if($pag_seleccionada < 0){
-            return $this->errores->error(mensaje: 'Error $pag_seleccionada debe ser mayor o igual a 0 ',
-                data: $pag_seleccionada, params: get_defined_vars());
-        }
-
-
-
-        $filtro_modelado = (new normalizacion())->genera_filtro_modelado(controler:  $this, filtro: $filtro);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar filtro modelado',data: $filtro_modelado,
-                params: get_defined_vars());
-
-        }
-        $filtro_especial = array();
-        $contador = 0;
-        foreach($filtro_btn as $campo => $valor){
-            $filtro_especial[$contador][$campo]['operador'] = '=';
-            $filtro_especial[$contador][$campo]['valor'] = $valor;
-            $contador++;
-        }
-        $registros = $this->genera_resultado_filtrado(columnas: $columnas, filtro: $filtro_modelado,
-            filtro_especial: $filtro_especial, limit: $limit, orders: $this->orders,
-            pag_seleccionada: $pag_seleccionada);
-        if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al generar resultado filtrado',data: $registros,
-                params: get_defined_vars());
-        }
-        return $registros;
-
-    }
 
 
 

@@ -1,7 +1,6 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use base\frontend\templates;
 use config\generales;
 use gamboamartin\errores\errores;
 use JsonException;
@@ -17,7 +16,6 @@ class controlador_adm_seccion extends controlador_base{
     public $accion_modelo;
     public $accion_basica_modelo;
     public $seccion_menu_id = false;
-    public $template_accion;
 
 
     public function __construct(PDO $link, stdClass $paths_conf = new stdClass()){
@@ -29,34 +27,12 @@ class controlador_adm_seccion extends controlador_base{
         $this->accion_modelo = new adm_accion($link);
         $this->accion_basica_modelo = new adm_accion_basica($link);
         $this->seccion_menu_modelo = new adm_seccion($link);
-        $this->template_accion = new templates($link,'accion');
+
 
     }
 
-    public function asigna_accion(){
-        $breadcrumbs = array('lista', 'alta');
 
-        $accion_modelo = new adm_accion($this->link);
-        if(errores::$error){
-            return  $this->errores->error(mensaje: 'Error al generar modelo',data: $accion_modelo);
-        }
 
-        $accion_registro = $accion_modelo->accion_registro(accion: $this->accion, seccion: $this->seccion);
-        if(errores::$error){
-            return  $this->errores->error('Error al obtener acciones',$accion_registro);
-        }
-
-        $this->breadcrumbs = $this->directiva->nav_breadcumbs(breadcrumbs: $breadcrumbs,seccion: $this->seccion,
-            accion: $this->accion, session_id: $this->session_id);
-        $this->seccion_menu_id = $_GET['registro_id'];
-        $this->operaciones_controlador->encabezados($this);
-        setcookie('seccion_menu_id' , $this->seccion_menu_id);
-
-    }
-
-    public function accion_alta_bd(){
-
-    }
 
     /**
      * @param bool $header Si header muestra resultado en front
