@@ -1,12 +1,10 @@
 <?php
 namespace base\frontend;
 
-use config\generales;
 use gamboamartin\errores\errores;
 
 use JetBrains\PhpStorm\Pure;
 use PDO;
-use stdClass;
 
 
 class templates{
@@ -37,11 +35,8 @@ class templates{
 
     /**
      * P INT
-     * @param string $campo_id
-     * @param array $registros
      * @param int $n_paginas
      * @param int $pagina_seleccionada
-     * @param string $seccion
      * @param string $seccion_link
      * @param string $accion_link
      * @param string $session_id
@@ -49,10 +44,9 @@ class templates{
      * @param array $filtro_boton_seleccionado
      * @return array|string
      */
-    public function lista_completa(string $campo_id, array $registros, int $n_paginas, int $pagina_seleccionada,
-                                   string $seccion, string $seccion_link,
-                                   string $accion_link, string $session_id,
-                                   array $botones_filtros = array(), array $filtro_boton_seleccionado = array()): array|string
+    public function lista_completa(int $n_paginas, int $pagina_seleccionada, string $seccion_link,
+                                   string $accion_link, string $session_id, array $botones_filtros = array(),
+                                   array $filtro_boton_seleccionado = array()): array|string
     {
 
 
@@ -75,14 +69,8 @@ class templates{
 
         $html .= "<thead class='thead-azul-light'><tr></tr></thead><tbody class='listado'>";
 
-        $lista_html = (new listas())->lista(campo_id:  $campo_id, registros: $registros,
-            seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar lista',data: $lista_html);
-        }
 
 
-        $html .= $lista_html;
         $html .= '</tbody></table>';
         $html.= "<div>";
 

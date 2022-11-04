@@ -22,6 +22,12 @@ class adm_seccion_pertenece extends modelo{
     public function alta_bd(): array|stdClass
     {
 
+        $keys = array('adm_seccion_id','adm_sistema_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        }
+
         $adm_seccion = (new adm_seccion(link: $this->link))->registro(
             registro_id: $this->registro['adm_seccion_id'], columnas_en_bruto: true, retorno_obj: true);
         if(errores::$error){

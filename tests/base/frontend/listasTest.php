@@ -56,85 +56,8 @@ class listasTest extends test {
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('inactivo', $resultado->registro['adm_seccion_status']);
-
-        errores::$error = false;
-    }
 
 
-
-    public function test_obten_panel(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
-
-        $status = '';
-
-        $resultado = $ls->obten_panel($status);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error status debe tener datos', $resultado['mensaje']);
-
-        errores::$error = false;
-        $status = 'a';
-
-        $resultado = $ls->obten_panel($status);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('bg-danger', $resultado);
-
-        errores::$error = false;
-        $status = 'inactivo';
-
-        $resultado = $ls->obten_panel($status);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('bg-danger', $resultado);
-
-        errores::$error = false;
-        $status = 'activo';
-
-        $resultado = $ls->obten_panel($status);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-        errores::$error = false;
-    }
-
-
-
-    public function test_registro_status(): void
-    {
-        errores::$error = false;
-        $ls = new listas();
-        $ls = new liberator($ls);
-
-        $registro = array();
-        $seccion = '';
-        $resultado = $ls->registro_status($registro, $seccion);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error seccion esta vacia', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $registro = array();
-        $seccion = 'a';
-        $resultado = $ls->registro_status($registro, $seccion);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('inactivo', $resultado['a_status']);
-
-        errores::$error = false;
-
-        $registro = array();
-        $registro['a_status'] = 'activo';
-        $seccion = 'a';
-        $resultado = $ls->registro_status($registro, $seccion);
-        $this->assertIsArray( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('activo', $resultado['a_status']);
         errores::$error = false;
     }
 

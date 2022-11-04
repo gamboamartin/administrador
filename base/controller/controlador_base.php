@@ -807,12 +807,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(errores::$error){
             return $this->retorno_error('Error al obtener acciones', $resultado, $header, $ws);
         }
-        $acciones_asignadas = $resultado->registros;
 
-        $lista_html = $template->lista_completa(campo_id:  $this->tabla.'_id', registros: $registros,
-            n_paginas:  $n_paginas, pagina_seleccionada: $pag_seleccionada,seccion:  $this->seccion,
-            seccion_link: $this->seccion,accion_link: $this->accion,
-            session_id: $this->session_id,
+        $lista_html = $template->lista_completa(n_paginas:  $n_paginas, pagina_seleccionada: $pag_seleccionada,
+            seccion_link: $this->seccion,accion_link: $this->accion, session_id: $this->session_id,
             botones_filtros: $botones_filtro, filtro_boton_seleccionado: $filtro_btn);
 
 
