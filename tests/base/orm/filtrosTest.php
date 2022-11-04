@@ -3,11 +3,11 @@ namespace tests\base\orm;
 
 use base\orm\filtros;
 
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
 use stdClass;
 
 

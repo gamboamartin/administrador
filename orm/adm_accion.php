@@ -1,25 +1,26 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
-use JsonException;
+
 use PDO;
 use stdClass;
 
 
-class adm_accion extends modelo{ //FINALIZADAS
+class adm_accion extends modelo{
     /**
      * DEBUG INI
      * accion constructor.
      * @param PDO $link
      */
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_accion';
         $columnas = array($tabla=>false, 'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista','titulo','css');
         $tipo_campos['adm_seccion_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas:  $columnas,
             tipo_campos:  $tipo_campos );
+        $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new \validacion\accion();
     }
 

@@ -1,16 +1,14 @@
 <?php
 namespace tests\base\orm;
 
-use base\orm\sql;
-use base\orm\sql_bass;
 use base\orm\upd;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_dia;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_dia;
-use models\adm_seccion;
 use stdClass;
 
 
@@ -69,6 +67,8 @@ class updTest extends test {
         $modelo->registro_upd['bn'] = '';
 
         $resultado = $upd->campos_sql($modelo);
+
+
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("a = '', bn = '',usuario_update_id=2",$resultado);

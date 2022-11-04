@@ -2,12 +2,11 @@
 namespace tests\base\orm;
 
 use base\orm\columnas;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
-
-use models\adm_usuario;
 use stdClass;
 
 

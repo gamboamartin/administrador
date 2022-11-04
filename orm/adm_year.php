@@ -1,21 +1,22 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 
-class year extends modelo{
+class adm_year extends modelo{
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_year';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
 
     public function hoy(){
         $year = date('Y');
         $filtro['year.codigo'] = $year;
-        $r_year = $this->filtro_and($filtro);
+        $r_year = $this->filtro_and(filtro:$filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener year', $r_year);
         }

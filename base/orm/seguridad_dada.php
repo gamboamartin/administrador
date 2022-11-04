@@ -1,7 +1,7 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
-use models\adm_usuario;
 
 class seguridad_dada{
     private errores $error;

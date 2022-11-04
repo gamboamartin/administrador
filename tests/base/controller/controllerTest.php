@@ -1,12 +1,12 @@
 <?php
 namespace tests\base\controller;
 
-use base\controller\base_html;
 use base\controller\controler;
+use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_atributo;
+
 
 
 class controllerTest extends test {

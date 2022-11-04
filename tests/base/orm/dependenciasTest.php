@@ -2,11 +2,10 @@
 namespace tests\base\orm;
 
 use base\orm\dependencias;
-use base\orm\estructuras;
+use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_mes;
 
 
 class dependenciasTest extends test {
@@ -56,7 +55,8 @@ class dependenciasTest extends test {
         $parent_id = 1;
         $tabla = 'adm_menu';
         $tabla_children = 'adm_seccion';
-        $resultado = $dep->data_dependientes($link, $parent_id, $tabla, $tabla_children);
+        $resultado = $dep->data_dependientes(link: $link, namespace_model: 'gamboamartin\\administrador\\models',
+            parent_id: $parent_id, tabla: $tabla, tabla_children: $tabla_children);
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
@@ -73,7 +73,8 @@ class dependenciasTest extends test {
         $tabla = 'adm_accion';
         $modelo_dependiente = 'adm_accion_grupo';
         $registro_id = 1;
-        $resultado = $dep->elimina_data_modelo($modelo_dependiente, $link, $registro_id, $tabla);
+        $resultado = $dep->elimina_data_modelo($modelo_dependiente,'gamboamartin\\administrador\\models', $link, $registro_id, $tabla);
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
         errores::$error = false;
@@ -87,8 +88,10 @@ class dependenciasTest extends test {
         $link = $this->link;
         $tabla = 'adm_accion_grupo';
         $registro_id = 1;
-        $models_dependientes = array('adm_accion_grupo');
+        $models_dependientes[0]['dependiente'] = 'adm_accion_grupo';
+        $models_dependientes[0]['namespace_model'] = 'gamboamartin\\administrador\\models';
         $resultado = $dep->elimina_data_modelos_dependientes($models_dependientes, $link, $registro_id, $tabla);
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
         errores::$error = false;

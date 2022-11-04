@@ -7,7 +7,6 @@ use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
-use models\adm_elemento_lista;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -85,7 +84,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $row Registro a integrar elementos encriptados o con dependientes
      * @return array Registro con los datos ajustados tanto en la encriptacion como de sus dependientes
      */
-    private function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
+    PUBLIC function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
     {
         $row = (new inicializacion())->asigna_valor_desencriptado(campos_encriptados: $campos_encriptados,
             row: $row);
@@ -255,10 +254,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @example
      *     $row = $this->asigna_registros_hijo($name_modelo,$filtro,$row, $data_modelo['nombre_estructura']);
      * @return array conjunto de registros encontrados al registro row
-
-
      */
-    private function asigna_registros_hijo(array $filtro, string $name_modelo, string $nombre_estructura, array $row):array{
+    private function asigna_registros_hijo(array $filtro, string $name_modelo, string $namespace_model,
+                                           string $nombre_estructura, array $row):array{
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida);
@@ -268,7 +266,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 data: $nombre_estructura);
         }
 
-        $modelo = $this->genera_modelo(modelo: $name_modelo);
+        $modelo = $this->genera_modelo(modelo: $name_modelo, namespace_model: $namespace_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo);
         }
@@ -637,6 +635,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
          * PRODUCTO NO CONFORME
          */
         $namespaces = array();
+
+        $namespaces[]  = 'gamboamartin\\administrador\\models\\';
         $namespaces[]  = 'gamboamartin\\empleado\\models\\';
         $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
         $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
@@ -751,6 +751,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
      */
     private function genera_registro_hijo(array $data_modelo, string $name_modelo, array $row):array{
+
+        $keys = array('nombre_estructura','namespace_model');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $data_modelo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar data_modelo",data: $valida);
+        }
+
         if(!isset($data_modelo['nombre_estructura'])){
             return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
                 data: $data_modelo);
@@ -760,7 +767,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return  $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
         $row = $this->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
-            nombre_estructura: $data_modelo['nombre_estructura'],row: $row);
+            namespace_model: $data_modelo['namespace_model'], nombre_estructura: $data_modelo['nombre_estructura'],
+            row: $row);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row);
         }
@@ -789,6 +797,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
                 return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, fix: $fix);
             }
+            $keys = array('nombre_estructura','namespace_model');
+            $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $data_modelo);
+            if(errores::$error){
+                return  $this->error->error(mensaje: "Error al validar data_modelo",data: $valida);
+            }
 
             if(!isset($data_modelo['nombre_estructura'])){
                 return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
@@ -802,8 +815,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo);
             }
 
-            $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo,
-                row: $row);
+            $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo, row: $row);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row);
             }

@@ -2,10 +2,10 @@
 namespace tests\base\orm;
 
 use base\orm\val_sql;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
 
 
 class val_sqlTest extends test {

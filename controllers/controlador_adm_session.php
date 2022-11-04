@@ -12,12 +12,11 @@ use base\controller\init;
 use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JsonException;
-use models\adm_session;
-use models\adm_usuario;
 use PDO;
 use stdClass;
 

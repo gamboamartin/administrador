@@ -2,16 +2,14 @@
 namespace tests\base\orm;
 
 use base\orm\inserts;
-use gamboamartin\encripta\encriptador;
-use gamboamartin\errores\errores;
 
-use base\orm\inicializacion;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_menu;
+use gamboamartin\administrador\models\adm_mes;
+use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_menu;
-use models\adm_mes;
-use models\adm_seccion;
+
 
 use stdClass;
 

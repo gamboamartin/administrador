@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 
 use base\orm\modelo;
 use gamboamartin\errores\errores;
@@ -13,9 +13,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      */
     public function __construct(PDO $link){
         
-        $tabla = __CLASS__;
+        $tabla = 'adm_usuario';
         $columnas = array($tabla=>false,'adm_grupo'=>$tabla);
         parent::__construct(link: $link,tabla: $tabla,columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
 

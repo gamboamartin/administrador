@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
 
@@ -7,7 +7,7 @@ use PDO;
 
 class adm_grupo extends modelo{
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_grupo';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array();
         parent::__construct(link: $link, tabla: $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);

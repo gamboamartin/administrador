@@ -2,12 +2,11 @@
 namespace tests\base\orm;
 
 use base\orm\seguridad_dada;
-use base\orm\sql_bass;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
 
 class seguridad_dadaTest extends test {
     public errores $errores;

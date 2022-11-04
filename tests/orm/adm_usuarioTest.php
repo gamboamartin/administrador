@@ -1,11 +1,11 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_session;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
-use models\adm_bitacora;
-use models\adm_session;
-use models\adm_usuario;
 
 
 class adm_usuarioTest extends test {

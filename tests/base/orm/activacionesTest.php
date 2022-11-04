@@ -2,13 +2,13 @@
 namespace tests\base;
 
 use base\orm\activaciones;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_campo;
+use gamboamartin\administrador\models\adm_dia;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use JsonException;
-use models\adm_accion_grupo;
-use models\adm_campo;
-use models\adm_dia;
 
 
 class activacionesTest extends test {

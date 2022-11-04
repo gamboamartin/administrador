@@ -704,7 +704,7 @@ class inicializacion{
      */
     public function tablas_select(modelo_base $modelo): array
     {
-        $modelo->tabla = str_replace('models\\','',$modelo->tabla);
+        $modelo->tabla = str_replace($modelo->NAMESPACE,'',$modelo->tabla);
 
         $consulta_base = new sql_bass();
         $consulta_base->estructura_bd[$modelo->tabla]['columnas'] = $modelo->columnas;

@@ -2,18 +2,15 @@
 namespace tests\base\orm;
 
 use base\orm\modelo_base;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_dia;
+use gamboamartin\administrador\models\adm_mes;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\accion;
-use models\adm_accion;
-use models\adm_dia;
-use models\adm_mes;
-use models\adm_seccion;
-use models\adm_usuario;
-use models\seccion;
-use stdClass;
+
 
 
 class modelo_baseTest extends test {
@@ -31,16 +28,18 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
+        //$mb = new liberator($mb);
 
         $campos_encriptados = array('z');
         $modelos_hijos = array();
         $modelos_hijos['adm_dia']['nombre_estructura'] = 'adm_accion';
+        $modelos_hijos['adm_dia']['namespace_model'] = 'gamboamartin\\administrador\\models';
         $modelos_hijos['adm_dia']['filtros'] = array();
         $modelos_hijos['adm_dia']['filtros_con_valor'] = array();
         $row = array();
         $row['z'] = 'PHDA/NloYgF1lc+UHzxaUw==';
         $resultado = $mb->ajusta_row_select($campos_encriptados, $modelos_hijos, $row);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -138,8 +137,9 @@ class modelo_baseTest extends test {
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
-            nombre_estructura: $nombre_estructura,row:  $row);
+        $namespace_model = 'gamboamartin\\administrador\\models';
+        $resultado = $mb->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
+            namespace_model: $namespace_model, nombre_estructura: $nombre_estructura, row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al validar entrada para modelo', $resultado['mensaje']);
@@ -149,7 +149,7 @@ class modelo_baseTest extends test {
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
+        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo, namespace_model: $namespace_model,
             nombre_estructura: $nombre_estructura,row:  $row);
 
         $this->assertIsArray($resultado);
@@ -162,7 +162,7 @@ class modelo_baseTest extends test {
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
+        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,namespace_model: $namespace_model,
             nombre_estructura: $nombre_estructura,row:  $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -176,7 +176,7 @@ class modelo_baseTest extends test {
         $row = array();
         $nombre_estructura = 'adm_seccion';
 
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
+        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,namespace_model: $namespace_model,
             nombre_estructura: $nombre_estructura,row:  $row);
 
 
@@ -280,14 +280,14 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $modelo = 'adm_accion';
-        $resultado = $mb->genera_modelo($modelo);
+        $resultado = $mb->genera_modelo($modelo,'gamboamartin\\administrador\\models');
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
 
         errores::$error = false;
         $modelo = 'adm_seccion';
-        $resultado = $mb->genera_modelo($modelo);
+        $resultado = $mb->genera_modelo($modelo,'gamboamartin\\administrador\\models');
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -317,9 +317,10 @@ class modelo_baseTest extends test {
         $mb = new liberator($mb);
 
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: '',row: $row);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('nombre_estructura', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
 
         errores::$error = false;
@@ -331,7 +332,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: '',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $data_modelo['nombre_estructura'] = '';
@@ -340,7 +341,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: '',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al asignar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
 
         errores::$error = false;
@@ -350,14 +351,16 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'x',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
 
         errores::$error = false;
         $data_modelo['nombre_estructura'] = 'x';
+        $data_modelo['namespace_model'] = 'gamboamartin\\administrador\\models';
         $data_modelo['filtros'] = array();
         $data_modelo['filtros_con_valor'] = array();
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'adm_seccion',row: $row);
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -399,7 +402,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('nombre_estructura', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -412,7 +415,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('generar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $modelos_hijos = array();
@@ -424,13 +427,14 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('generar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $modelos_hijos = array();
         $row = array();
         $modelos_hijos['adm_seccion'] = array();
         $modelos_hijos['adm_seccion']['nombre_estructura'] = 'ne';
+        $modelos_hijos['adm_seccion']['namespace_model'] = 'gamboamartin\\administrador\\models';
         $modelos_hijos['adm_seccion']['filtros'] = array();
         $modelos_hijos['adm_seccion']['filtros_con_valor'] = array();
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);

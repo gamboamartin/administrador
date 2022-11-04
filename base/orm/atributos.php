@@ -1,8 +1,9 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use models\adm_atributo;
+
 use PDO;
 
 class atributos{
@@ -123,7 +124,7 @@ class atributos{
      * @return array
      * @version 1.543.51
      */
-    PUBLIC function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
+    private function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
     {
         $keys = array('adm_atributo_descripcion','adm_atributo_descripcion');
         $valida = $this->valida_attr(atributo: $atributo,keys:  $keys, registro_id: $registro_id);
@@ -142,7 +143,7 @@ class atributos{
             return $this->error->error(mensaje: 'Error al maquetar atributos', data: $data_ins);
         }
 
-        $modelo = $modelo_base->genera_modelo(modelo: $tabla);
+        $modelo = $modelo_base->genera_modelo(modelo: $tabla, namespace_model: $modelo_base->NAMESPACE);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo);
         }
@@ -162,7 +163,7 @@ class atributos{
      * @return array
      * @version 1.556.51
      */
-    private function inserta_atributos( modelo $modelo, int $registro_id, string $tabla_attr): array
+    private function inserta_atributos(modelo $modelo, int $registro_id, string $tabla_attr): array
     {
         if($modelo->tabla === ''){
             return $this->error->error(mensaje: 'Error this->tabla esta vacia',data:  $modelo->tabla);
@@ -200,7 +201,8 @@ class atributos{
      * @return array
      * @version 1.557.51
      */
-    private function inserta_data_attr(string $clase_attr,modelo $modelo, int $registro_id): array
+    private function inserta_data_attr(
+        string $clase_attr,modelo $modelo, int $registro_id): array
     {
         if($registro_id<=0){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id);
@@ -210,13 +212,12 @@ class atributos{
             return $this->error->error(mensaje: 'Error clase_attr esta vacia', data: $clase_attr);
         }
 
-        $model_attr = $modelo->genera_modelo(modelo: $clase_attr);
+        $model_attr = $modelo->genera_modelo(modelo: $clase_attr, namespace_model: $modelo->NAMESPACE);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo',data:  $model_attr);
         }
 
-        $r_ins = $this->inserta_atributos(modelo:$modelo, registro_id:  $registro_id,
-            tabla_attr:  $model_attr->tabla);
+        $r_ins = $this->inserta_atributos(modelo:$modelo, registro_id:  $registro_id, tabla_attr:  $model_attr->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar atributos', data: $r_ins);
         }

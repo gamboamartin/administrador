@@ -67,12 +67,9 @@ class validaciones_directivas extends validacion{
      */
     public function valida_datos_accion( string $accion, string $seccion): bool|array
     {
-        $valida = $this->valida_name_clase(tabla: $seccion);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar seccion', data: $valida, params: get_defined_vars());
-        }
+
         if ($accion === '') {
-            return $this->error->error(mensaje:'Error la accion esta vacia', data:$accion, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error la accion esta vacia', data:$accion);
         }
         return true;
     }

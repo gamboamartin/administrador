@@ -49,15 +49,16 @@ class validaciones_directivasTest extends test {
         //$inicializacion = new liberator($inicializacion);
         $seccion = '';
         $accion = '';
-        $resultado = $val->valida_datos_accion($accion, $seccion);
-        $this->assertIsArray($resultado);
+        $resultado = $val->valida_datos_accion(accion:$accion,seccion:  $seccion);
+
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar seccion', $resultado['mensaje']);
+
 
         errores::$error = false;
         $seccion = 'adm_seccion';
         $accion = '';
         $resultado = $val->valida_datos_accion($accion, $seccion);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error la accion esta vacia', $resultado['mensaje']);

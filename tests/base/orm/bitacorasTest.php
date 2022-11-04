@@ -1,19 +1,13 @@
 <?php
 namespace tests\base;
 
-use base\controller\normalizacion;
-use base\orm\activaciones;
-use base\orm\atributos;
 use base\orm\bitacoras;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use JsonException;
-use models\adm_accion;
-use models\adm_accion_grupo;
-use models\adm_campo;
-use models\adm_dia;
-use models\atributo;
+
 use stdClass;
 
 
@@ -38,8 +32,7 @@ class bitacorasTest extends test {
         $tabla = 'adm_seccion';
 
 
-        $resultado = $bitacora->aplica_bitacora($consulta, $funcion, $modelo,'', $registro_id, $tabla);
-
+        $resultado = $bitacora->aplica_bitacora($consulta, $funcion, $modelo, $registro_id, $tabla);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
@@ -164,7 +157,7 @@ class bitacorasTest extends test {
         $tabla = 'adm_seccion';
 
 
-        $resultado = $bitacora->ejecuta_transaccion($tabla, $funcion , $modelo,'', $registro_id);
+        $resultado = $bitacora->ejecuta_transaccion($tabla, $funcion , $modelo, $registro_id);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

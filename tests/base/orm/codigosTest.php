@@ -2,14 +2,12 @@
 namespace tests\base\orm;
 
 use base\orm\codigos;
-use base\orm\filtros;
 
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_seccion;
 use stdClass;
 
 

@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 
 use base\orm\modelo;
 use gamboamartin\errores\errores;
@@ -8,7 +8,7 @@ use stdClass;
 
 class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_accion_grupo';
         $columnas = array($tabla=>false,'adm_accion'=>$tabla,'adm_grupo'=>$tabla,
             'adm_seccion'=>'adm_accion','adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('adm_accion_id');
@@ -16,6 +16,7 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         $tipo_campos['adm_grupo_id'] = 'id';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             tipo_campos:  $tipo_campos);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
     public function acciones_por_grupo(int $adm_grupo_id): array

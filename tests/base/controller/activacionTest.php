@@ -2,11 +2,10 @@
 namespace tests\base\controller;
 
 use base\controller\activacion;
-use base\controller\base_html;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
+
 
 
 class activacionTest extends test {
@@ -29,7 +28,7 @@ class activacionTest extends test {
         $modelo = new adm_accion($this->link);
         $registro_id = 1;
         $seccion = '';
-        $resultado = $act->activa_bd_base($modelo, $registro_id, $seccion);
+        $resultado = $act->activa_bd_base(modelo: $modelo,registro_id:  $registro_id, seccion: $seccion);
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

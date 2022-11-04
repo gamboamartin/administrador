@@ -64,18 +64,17 @@ class dependencias{
     /**
      * Obtiene los dependientes de una tabla
      * @param PDO $link Conexion a la base de datos
+     * @param string $namespace_model
      * @param int $parent_id Registro padre
      * @param string $tabla Tabla origen
      * @param string $tabla_children Tabla hija
      * @return array
      * @version 1.400.45
      */
-    private function data_dependientes(PDO $link, int $parent_id, string $tabla, string $tabla_children): array
+    private function data_dependientes(
+        PDO $link, string $namespace_model, int $parent_id, string $tabla, string $tabla_children): array
     {
-        $valida = $this->validacion->valida_name_clase(tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
-        }
+
         if($parent_id<=0){
             return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id);
         }
@@ -85,7 +84,8 @@ class dependencias{
             return $this->error->error(mensaje: 'Error al validar $tabla_children',data: $valida);
         }
 
-        $modelo_children = (new modelo_base(link: $link))->genera_modelo(modelo: $tabla_children);
+        $modelo_children = (new modelo_base(link: $link))->genera_modelo(modelo: $tabla_children,
+            namespace_model: $namespace_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo_children);
         }
@@ -119,7 +119,8 @@ class dependencias{
             return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo_);
         }
 
-        $desactiva = $this->desactiva_dependientes($modelo_, $modelo->registro_id, $modelo_->tabla);
+        $desactiva = $this->desactiva_dependientes(modelo: $modelo_, namespace_model: $modelo_->NAMESPACE,
+            parent_id: $modelo->registro_id, tabla_dep: $modelo_->tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
         }
@@ -135,7 +136,8 @@ class dependencias{
     public function desactiva_data_modelos_dependientes(modelo_base $modelo): array
     {
         $data = array();
-        foreach ($modelo->models_dependientes as $dependiente) {
+        foreach ($modelo->models_dependientes as $data_dep) {
+            $dependiente = $data_dep['dependiente'];
             $desactiva = $this->desactiva_data_modelo(modelo: $modelo,modelo_dependiente:  $dependiente);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al desactivar dependiente', data: $desactiva);
@@ -148,12 +150,14 @@ class dependencias{
     /**
      * PHPUNIT
      * @param modelo $modelo
+     * @param string $namespace_model
      * @param int $parent_id
      * @param string $tabla_dep
      * @return array
      * @throws JsonException
      */
-    private function desactiva_dependientes(modelo_base $modelo, int $parent_id, string $tabla_dep): array
+    private function desactiva_dependientes(
+        modelo_base $modelo, string $namespace_model, int $parent_id, string $tabla_dep): array
     {
         $valida = $this->validacion->valida_name_clase($modelo->tabla);
         if(errores::$error){
@@ -163,8 +167,8 @@ class dependencias{
             return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id);
         }
 
-        $dependientes = $this->data_dependientes(link: $modelo->link,parent_id: $parent_id,
-            tabla: $modelo->tabla, tabla_children: $tabla_dep);
+        $dependientes = $this->data_dependientes(link: $modelo->link, namespace_model: $namespace_model,
+            parent_id: $parent_id, tabla: $modelo->tabla, tabla_children: $tabla_dep);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener dependientes',data: $dependientes);
         }
@@ -195,13 +199,15 @@ class dependencias{
     /**
      * Elimina los registros dependientes de un modelo
      * @param string $modelo_dependiente Modelo Hijo
+     * @param string $namespace_model
      * @param PDO $link Conexion a la bd
      * @param int $registro_id Registro en proceso
      * @param string $tabla Tabla origen
      * @return array
      * @version 1.410.47
      */
-    private function elimina_data_modelo(string $modelo_dependiente,PDO $link, int $registro_id, string $tabla): array
+    private function elimina_data_modelo(string $modelo_dependiente, string $namespace_model,PDO $link,
+                                         int $registro_id, string $tabla): array
     {
         $modelo_dependiente = trim($modelo_dependiente);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
@@ -213,12 +219,9 @@ class dependencias{
             return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',data:$registro_id);
         }
 
-        $valida = $this->validacion->valida_name_clase(tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
-        }
 
-        $modelo = (new modelo_base($link))->genera_modelo(modelo: $modelo_dependiente);
+        $modelo = (new modelo_base($link))->genera_modelo(
+            modelo: $modelo_dependiente, namespace_model: $namespace_model);
         if (errores::$error) {
             return $this->error->error(mensaje:'Error al generar modelo', data:$modelo);
         }
@@ -244,8 +247,15 @@ class dependencias{
                                                        string $tabla): array
     {
         $data = array();
-        foreach ($models_dependientes as $dependiente) {
-            $dependiente = trim($dependiente);
+        foreach ($models_dependientes as $data_dep) {
+
+            $keys = array('namespace_model','dependiente');
+            $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $data_dep);
+            if(errores::$error){
+                return  $this->error->error(mensaje: "Error al validar data_dep",data: $valida);
+            }
+
+            $dependiente = trim($data_dep['dependiente']);
             $valida = $this->validacion->valida_data_modelo(name_modelo: $dependiente);
             if(errores::$error){
                 return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
@@ -254,13 +264,9 @@ class dependencias{
                 return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',
                     data:$registro_id);
             }
-            $valida = $this->validacion->valida_name_clase(tabla: $tabla);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
-            }
 
             $desactiva = $this->elimina_data_modelo(modelo_dependiente: $dependiente,
-                link: $link,registro_id: $registro_id,tabla: $tabla);
+                namespace_model: $data_dep['namespace_model'], link: $link, registro_id: $registro_id, tabla: $tabla);
             if (errores::$error) {
                 return $this->error->error(mensaje:'Error al desactivar dependiente', data:$desactiva);
             }
@@ -279,16 +285,13 @@ class dependencias{
      */
     private function elimina_dependientes(modelo $model, int $parent_id, string $tabla): array
     {
-        $valida = $this->validacion->valida_name_clase(tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
-        }
+
         if($parent_id<=0){
             return $this->error->error(mensaje:'Error $parent_id debe ser mayor a 0',data: $parent_id);
         }
 
-        $dependientes = $this->data_dependientes(link: $model->link, parent_id: $parent_id,
-            tabla: $tabla,tabla_children:  $model->tabla);
+        $dependientes = $this->data_dependientes(link: $model->link, namespace_model: $model->NAMESPACE,
+            parent_id: $parent_id, tabla: $tabla, tabla_children: $model->tabla);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener dependientes',data:$dependientes);
         }

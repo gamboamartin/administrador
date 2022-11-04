@@ -2,12 +2,11 @@
 namespace tests\base\orm;
 
 use base\orm\sql;
-use base\orm\sql_bass;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_session;
 use stdClass;
 
 

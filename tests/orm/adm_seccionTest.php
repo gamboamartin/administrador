@@ -1,13 +1,10 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_menu;
-use models\adm_seccion;
-use models\adm_seccion_pertenece;
 
 
 class adm_seccionTest extends test {

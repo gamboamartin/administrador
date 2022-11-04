@@ -1,16 +1,16 @@
 <?php
 namespace tests\base\controller;
 
-use base\controller\activacion;
+
 use base\controller\altas;
-use base\controller\base_html;
+
 use base\controller\controler;
-use gamboamartin\controllers\controlador_adm_mes;
+
+use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
+
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_mes;
+
 
 
 class altasTest extends test {

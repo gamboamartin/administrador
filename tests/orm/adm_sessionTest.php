@@ -1,10 +1,10 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_session;
 use stdClass;
 
 
@@ -64,12 +64,15 @@ class adm_sessionTest extends test {
         errores::$error = false;
 
         $resultado = $session->obten_filtro_session('x');
+
         $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
 
         errores::$error = false;
 
         $resultado = $session->obten_filtro_session('adm_grupo');
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 

@@ -2,11 +2,11 @@
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
 use config\generales;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use JsonException;
-use models\adm_accion;
-use models\adm_accion_basica;
-use models\adm_seccion;
 use PDO;
 use stdClass;
 

@@ -1,13 +1,14 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 use base\orm\modelo;
-use gamboamartin\errores\errores;
+
 use PDO;
 
 class adm_estado_civil extends modelo{
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_estado_civil';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 }

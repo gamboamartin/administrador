@@ -4,14 +4,12 @@ namespace base\controller;
 use base\orm\modelo;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 
 use JsonException;
 
-use models\adm_elemento_lista;
-use models\adm_seccion;
-use models\adm_session;
-use models\adm_usuario;
 use PDO;
 use stdClass;
 use validacion\confs\configuraciones;

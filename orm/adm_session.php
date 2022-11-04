@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 
 use base\orm\modelo;
 use config\generales;
@@ -14,9 +14,10 @@ use Throwable;
 
 class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_session';
         $columnas = array($tabla=>false, 'adm_usuario'=>$tabla,'adm_grupo'=>'adm_usuario');
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
     /**
@@ -317,17 +318,14 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $seccion = str_replace('models\\','',$seccion);
         $class = 'models\\'.$seccion;
         if($seccion===''){
-            return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje: "Error la clase es invalida",data: $class, params: get_defined_vars());
-        }
+
         $filtro = array();
         if(isset($_SESSION['filtros'][$seccion])){
             $filtro = $_SESSION['filtros'][$seccion];
             if(!is_array($filtro)){
-                return $this->error->error(mensaje: 'Error filtro invalido',data: $filtro, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error filtro invalido',data: $filtro);
             }
         }
 

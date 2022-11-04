@@ -1,11 +1,9 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_accion_grupo;
 
 
 class adm_accion_grupoTest extends test {

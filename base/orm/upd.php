@@ -1,8 +1,7 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\errores\errores;
-use JsonException;
-use models\adm_elemento_lista;
 use stdClass;
 
 class upd{

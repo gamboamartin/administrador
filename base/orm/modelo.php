@@ -1,9 +1,9 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
 use JsonException;
-use models\adm_seccion;
 use PDO;
 use stdClass;
 
@@ -180,8 +180,7 @@ class modelo extends modelo_base {
         }
 
         $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
-            modelo: $this, namespace_model: $this->NAMESPACE, registro_id: $this->registro_id,
-            sql: $data_activacion->consulta);
+            modelo: $this, registro_id: $this->registro_id, sql: $data_activacion->consulta);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
         }
@@ -491,8 +490,8 @@ class modelo extends modelo_base {
         $this->consulta = /** @lang MYSQL */
             "UPDATE $tabla SET status = 'inactivo' WHERE id = $this->registro_id";
         $this->transaccion = 'DESACTIVA';
-        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
-            modelo: $this, namespace_model: $this->NAMESPACE,registro_id:  $this->registro_id);
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,
+            registro_id:  $this->registro_id);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION',data: $transaccion);
         }

@@ -1,15 +1,15 @@
 <?php
 namespace tests\src;
 
-use base\orm\filtros;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_dia;
+use gamboamartin\administrador\models\adm_menu;
+use gamboamartin\administrador\models\adm_mes;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_dia;
-use models\adm_menu;
-use models\adm_mes;
-use models\adm_seccion;
+
 
 
 
@@ -665,6 +665,7 @@ class modeloTest extends test {
 
         $seccion = 'a';
         $resultado = $modelo->seccion_menu_id($seccion);
+
 
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);

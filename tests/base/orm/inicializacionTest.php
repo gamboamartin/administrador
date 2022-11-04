@@ -1,13 +1,13 @@
 <?php
 namespace tests\base\orm;
 
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 
 use base\orm\inicializacion;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
 
 use stdClass;
 
@@ -677,9 +677,10 @@ class inicializacionTest extends test {
 
         $modelo = new adm_seccion($this->link);
         $resultado = $inicializacion->tablas_select($modelo);
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado['models\\adm_seccion']);
+        $this->assertEquals('', $resultado['adm_seccion']);
         errores::$error = false;
     }
 

@@ -1,11 +1,10 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_menu;
+
 
 
 class adm_menuTest extends test {

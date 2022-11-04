@@ -1,6 +1,5 @@
 <?php
-namespace models;
-use base\orm\columnas;
+namespace gamboamartin\administrador\models;
 use base\orm\modelo;
 use config\generales;
 use gamboamartin\errores\errores;
@@ -16,10 +15,11 @@ class adm_seccion extends modelo{
      * @param PDO $link
      */
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_seccion';
         $columnas = array($tabla=>false, 'adm_menu'=>$tabla);
         $campos_obligatorios = array('status','descripcion','adm_menu_id');
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
     /**

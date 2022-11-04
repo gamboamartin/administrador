@@ -1,10 +1,10 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_elemento_lista;
 
 
 class adm_elemento_listaTest extends test {
