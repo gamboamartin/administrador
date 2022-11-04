@@ -67,25 +67,10 @@ class templates{
         $this->botones_filtros = $botones_filtros;
 
 
-        $filtros_lista = (new listas())->genera_filtros_lista(
-            seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error('Error al obtener filtros', $filtros_lista);
-        }
-
-        $filtros_html = (new listas())->obten_html_filtros(filtros_lista: $filtros_lista,
-            filtro_boton_seleccionado_html:  $filtro_boton_seleccionado_html,seccion:  $seccion,session_id: $session_id);
-        if(errores::$error){
-            return $this->error->error('Error al obtener filtros', $filtros_html);
-        }
 
 
 
-        $html = $filtros_html;
-
-
-
-        $html.= "<div class='table-responsive'>";
+        $html = "<div class='table-responsive'>";
         $html .= "<table class='table table-striped table-bordered table-hover letra-mediana text-truncate table-lista'>";
 
         $html .= "<thead class='thead-azul-light'><tr></tr></thead><tbody class='listado'>";

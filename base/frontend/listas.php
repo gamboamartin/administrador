@@ -18,37 +18,6 @@ class listas{
 
 
 
-
-
-
-    /**
-     *
-     * @param string $seccion
-     * @return array|string
-     */
-    private function filtros_para_lista(string $seccion): array|string
-    {
-        $namespace = 'models\\';
-        $seccion = str_replace($namespace,'',$seccion);
-        $clase = $namespace.$seccion;
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje: 'Error no existe la clase '.$clase,data: $clase);
-        }
-        $filtro = $this->obten_filtros_session(seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error('Error al obtener filtros de session',$filtro);
-        }
-        if(!is_array($filtro)){
-            return $this->error->error('Error filtro debe ser un array',$filtro);
-        }
-
-
-        return '<div class="col-md-12"><hr></div><div class="row col-md-12">'.'</div><div class="row col-md-12 form-row filtro-base">'.'</div>';
-    }
-
     /**
      * P INT P ORDER PROBADO
      * @param string $seccion
@@ -82,30 +51,6 @@ class listas{
 
 
     /**
-     * P INT
-     * @param string $seccion
-     * @return array|string
-     */
-
-    public function genera_filtros_lista( string $seccion ): array|string
-    {
-        $html = '';
-
-
-        $inputs_filtro_html = $this->filtros_para_lista(seccion: $seccion);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtros de lista',$inputs_filtro_html);
-        }
-
-        $html.=$inputs_filtro_html;
-
-
-
-        return $html;
-    }
-
-
-    /**
      * P ORDER P INT
      * @param string $campo_id
      * @param array $registros
@@ -135,77 +80,6 @@ class listas{
         return $html;
     }
 
-
-
-    /**
-     * P ORDER P INT ERROREV
-     * @param string $seccion
-     * @return mixed
-     */
-    private function obten_filtros_session(string $seccion): mixed
-    {
-        $namespace = 'models\\';
-        $seccion = str_replace($namespace,'',$seccion);
-        $clase = $namespace.$seccion;
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $seccion, params: get_defined_vars());
-        }
-        if(!class_exists($clase)){
-            return $this->error->error(mensaje: 'Error no existe la clase '.$seccion,data: $seccion,
-                params: get_defined_vars());
-        }
-
-        return $_SESSION['filtros'][$seccion]??array();
-    }
-
-    /**
-     * P INT
-     * @param string $filtros_lista
-     * @param string $filtro_boton_seleccionado_html
-     * @param string $seccion
-     * @param string $session_id
-     * @return array|string
-     */
-    public function obten_html_filtros(string $filtros_lista, string $filtro_boton_seleccionado_html,
-                                       string $seccion, string $session_id): array|string
-    {
-        if($filtros_lista === ''){
-            return $this->error->error('Error $filtros_lista no puede venir vacio',$filtros_lista);
-        }
-
-        $html  =  '<form method="POST" action="./index.php?seccion='.$seccion.'&accion=aplica_filtro&session_id='.$session_id.'" class="no-print">';
-        $html .=    "<div class='col-md-12 no-print'><hr></div>";
-        $html .=        $filtros_lista;
-        $html.="        <div class='row col-md-12 no-print'>";
-
-
-
-        $html.="<div class='col-md-4'>";
-
-        $html.="</div>";
-
-
-        $html.="<div class='col-md-4'>";
-
-        $html.="</div>";
-
-        $seccion_xls = $seccion;
-        $accion_xls = 'xls_lista';
-
-
-
-        $html.="<div class='col-md-4'>";
-
-        $html.="</div>";
-
-        $html.=         "</div>";
-        $html .=  "<div class='col-md-12'><hr></div>";
-
-        $html.='</form>';
-
-
-        return $html;
-    }
 
     /**
      * Ajusta el panel si es inactivo como rojo
