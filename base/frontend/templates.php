@@ -66,11 +66,6 @@ class templates{
 
         $this->botones_filtros = $botones_filtros;
 
-        $ths = (new listas())->genera_th();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar ths',data: $ths);
-        }
-
 
         $filtros_lista = (new listas())->genera_filtros_lista(
             seccion: $seccion);
@@ -93,7 +88,7 @@ class templates{
         $html.= "<div class='table-responsive'>";
         $html .= "<table class='table table-striped table-bordered table-hover letra-mediana text-truncate table-lista'>";
 
-        $html .= "<thead class='thead-azul-light'><tr>$ths</tr></thead><tbody class='listado'>";
+        $html .= "<thead class='thead-azul-light'><tr></tr></thead><tbody class='listado'>";
 
         $lista_html = (new listas())->lista(campo_id:  $campo_id, registros: $registros,
             seccion: $seccion);

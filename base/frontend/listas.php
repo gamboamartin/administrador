@@ -19,129 +19,6 @@ class listas{
 
 
 
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campo
-     * @param array $registro
-     * @return array|string
-     */
-    PUBLIC function data_html(array $campo, array $registro): array|string
-    {
-        $keys = array('representacion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida);
-        }
-
-        $dato = $this->init_dato_campo(campo: $campo,registro: $registro);
-        if(errores::$error){
-            return $this->error->error('Error al obtener dato',$dato);
-        }
-
-        $dato = $this->dato_campo(campo: $campo,dato:  $dato);
-        if(errores::$error){
-            return $this->error->error('Error al asignar valor',$dato);
-        }
-
-        $data_html = $this->genera_html_dato(dato: $dato);
-        if(errores::$error){
-            return $this->error->error('Error al generar html',$data_html);
-        }
-        return $data_html;
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campo
-     * @param array $registro
-     * @return array|string
-     */
-    PUBLIC function data_row_html(array $campo, array $registro): array|string
-    {
-        $keys = array('representacion','nombre_campo');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida);
-        }
-
-        if(!isset($registro[$campo['nombre_campo']])){
-            $registro[$campo['nombre_campo']] = '';
-        }
-
-        $data_html = $this->data_html(campo: $campo, registro: $registro);
-        if(errores::$error){
-            return $this->error->error('Error al generar html',$data_html);
-        }
-
-        return $data_html;
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campo
-     * @param float|string|int $dato
-     * @return float|int|array|string
-     */
-    private function dato_campo(array $campo, float|string|int $dato): float|int|array|string
-    {
-        $keys = array('representacion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
-        }
-        $dato_env = $this->dato_moneda(campo: $campo,dato:  $dato);
-        if(errores::$error){
-            return $this->error->error('Error al asignar valor moneda',$dato_env);
-        }
-
-        $dato_env = $this->dato_telefono(campo: $campo,dato:  $dato_env);
-        if(errores::$error){
-            return $this->error->error('Error al asignar valor telefono',$dato_env);
-        }
-
-        return $dato_env;
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campo
-     * @param float|int|string $dato
-     * @return float|int|array|string
-     */
-    private function dato_moneda(array $campo, float|int|string $dato): float|int|array|string
-    {
-        $keys = array('representacion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
-        }
-        return $dato;
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campo
-     * @param float|int|string $dato
-     * @return float|int|string|array
-     */
-    private function dato_telefono(array $campo, float|int|string $dato): float|int|string|array
-    {
-        $keys = array('representacion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar valor campo',data: $valida,
-                params: get_defined_vars());
-        }
-        if($campo['representacion'] === 'telefono'){
-            $dato = "<a href='tel:$dato'>$dato</a>";
-        }
-        return $dato;
-    }
-
-
-
 
 
     /**
@@ -204,30 +81,6 @@ class listas{
 
 
 
-
-
-
-
-    /**
-     * Funcion que genera los elementos para un listado
-     * @version 1.36.14
-     * @param string $seccion Seccion en ejecucion
-     * @param array $etiqueta_campos campos para ajustar la lista
-     * @return array|string
-     */
-    private function genera_campos_elementos_lista():array|string{
-
-
-        $td_acciones_html = $this->td_acciones_html();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar td',data: $td_acciones_html);
-        }
-
-
-        return $td_acciones_html;
-    }
-
-
     /**
      * P INT
      * @param string $seccion
@@ -251,64 +104,12 @@ class listas{
         return $html;
     }
 
-    /**
-     * PROBADO P ORDER P INT
-     * @param string $dato
-     * @return string
-     */
-    private function genera_html_dato(string $dato): string{
-        $class = 'text-uppercase text-truncate td-90';
-        $html = "<td class='$class' data-toggle='tooltip' data-placement='top' title='$dato'>";
-        $html .= $dato;
-        $html .= '</td>';
-
-        return $html;
-    }
-
-
 
     /**
      * P ORDER P INT
-     * @param string $seccion
-     * @param array $etiqueta_campos
-     * @return array|string
-     */
-    public function genera_th():array|string{
-
-        $html = $this->genera_campos_elementos_lista();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar campos',data: $html);
-        }
-        $html .= '<th class="no-print">ACCIONES</th>';
-        return $html;
-    }
-
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campo
-     * @param array $registro
-     * @return string|array
-     */
-    private function init_dato_campo(array $campo, array $registro): string|array
-    {
-        $keys = array('nombre_campo');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $campo);
-        if(errores::$error){
-            return $this->error->error('Error al validar campo', $valida);
-        }
-
-        if(!isset($registro[$campo['nombre_campo']])){
-            $registro[$campo['nombre_campo']] = '';
-        }
-        return (string)$registro[$campo['nombre_campo']];
-    }
-
-    /**
-     * P ORDER P INT
-     * @param array $registros
      * @param string $campo_id
+     * @param array $registros
      * @param string $seccion
-     * @param array $campos
      * @return array|string
      */
     public function lista(string $campo_id, array $registros, string $seccion): array|string
@@ -454,20 +255,18 @@ class listas{
     }
 
 
-
     /**
      * P ORDER P INT
+     * @param int $id
      * @param string $panel_class
      * @param array $registro
-     * @param int $id
      * @param string $seccion
-     * @param array $campos
      * @return array|string
      */
-    private function registro(array $campos, int $id, string $panel_class, array $registro, string $seccion): array|string
+    private function registro( int $id, string $panel_class, array $registro, string $seccion): array|string
     {
 
-        $tr_data = $this->tr_data(campos: $campos,registro: $registro, seccion: $seccion);
+        $tr_data = $this->tr_data(registro: $registro, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar tr',data: $tr_data);
         }
@@ -501,31 +300,6 @@ class listas{
 
     }
 
-    /**
-     * P ORDER P INT PROBADO
-     * @param array $campos
-     * @param array $registro
-     * @return array|string
-     */
-    private function row_html(array $campos, array $registro): array|string
-    {
-        $html = '';
-        foreach ($campos as $campo) {
-            if(!is_array($campo)){
-                return $this->error->error('Error el campo debe ser un array',$campos);
-            }
-            if(!isset($campo['representacion']) || $campo['representacion'] === ''){
-                $campo['representacion'] = 'NO APLICA';
-            }
-            $data_html = $this->data_row_html(campo: $campo, registro: $registro);
-            if(errores::$error){
-                return $this->error->error('Error al generar html',$data_html);
-            }
-
-            $html .= $data_html;
-        }
-        return $html;
-    }
 
     /**
      * PROBADO-PARAMS ORDER
@@ -552,42 +326,28 @@ class listas{
         return $html;
     }
 
-    /**
-     * Genera un td con acciones
-     * @version 1.33.14
-     * @return string
-     */
-    private function td_acciones_html(): string
-    {
-        return'<td class="no-print">ACCIONES</td>';
-    }
 
 
     /**
      * P ORDER P INT PROBADO
-     * @param array $campos
      * @param array $registro
      * @param string $seccion
      * @return array|string
      */
-    private function tr_data(array $campos, array $registro, string $seccion): array|string
+    private function tr_data( array $registro, string $seccion): array|string
     {
         $valida = $this->validacion->valida_footer_row(registro: $registro,seccion:  $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos',data: $valida, params: get_defined_vars());
         }
 
-        $row_html = $this->row_html(campos: $campos, registro: $registro);
-        if(errores::$error){
-            return $this->error->error('Error al generar row',$row_html);
-        }
 
         $footer = $this->footer_registro(registro: $registro, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar footer',data: $footer);
         }
 
-        return $footer->td_acciones.$row_html.$footer->td_acciones;
+        return $footer->td_acciones.$footer->td_acciones;
     }
 
 }

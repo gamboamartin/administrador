@@ -350,6 +350,13 @@ class adm_accion extends modelo{ //FINALIZADAS
         return $filtro;
     }
 
+    /**
+     * Genera un filtro para obtencion de acciones
+     * @param int $adm_grupo_id Identificador de grupo
+     * @param int $adm_seccion_id Identificador de seccion
+     * @return array
+     * @version 1.630.56
+     */
     private function filtro_seccion_grupo(int $adm_grupo_id, int $adm_seccion_id): array
     {
         $filtro = array();
@@ -358,6 +365,12 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
         if($adm_seccion_id > 0){
             $filtro['adm_seccion.id'] = $adm_seccion_id;
+        }
+        if(count($filtro) === 0){
+            $data = new stdClass();
+            $data->adm_grupo_id = $adm_grupo_id;
+            $data->adm_seccion_id = $adm_seccion_id;
+            return $this->error->error(mensaje:'Error adm_grupo_id o adm_seccion_id deben der mayor a 0', data: $data);
         }
         return $filtro;
     }
