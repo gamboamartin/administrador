@@ -1,7 +1,8 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\adm_seccion_pertenece;
+
+use gamboamartin\administrador\models\adm_seccion_pertenece;
 use PDO;
 use stdClass;
 

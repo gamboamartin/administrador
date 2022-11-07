@@ -1,7 +1,7 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\adm_bitacora;
+use gamboamartin\administrador\models\adm_bitacora;
 
 
 class controlador_adm_bitacora extends controlador_base{

@@ -2,14 +2,16 @@
 namespace gamboamartin\controllers;
 
 use base\controller\controlador_base;
-use models\accion;
-use models\accion_grupo;
-use models\grupo;
-use models\menu;
-use models\seccion;
+use base\orm\modelo;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_grupo;
+use gamboamartin\administrador\models\adm_menu;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\errores\errores;
 
 
-class controlador_grupo extends controlador_base{
+class controlador_adm_grupo extends controlador_base{
     public string $grupo_descripcion;
     public $menus;
     public $secciones;
@@ -24,53 +26,23 @@ class controlador_grupo extends controlador_base{
     private $menu_modelo;
     public $encabezado_grupo;
     private $operaciones_controlador;
-    private accion $accion_modelo;
+    private adm_accion $accion_modelo;
     public array $filtro = array();
     public $resultado;
 
     public function __construct($link){
-        $modelo = new grupo($link);
+        $modelo = new adm_grupo($link);
 
         parent::__construct($link, $modelo);
 
-        $this->grupo_modelo = new grupo($link);
-        $this->menu_modelo = new menu($link);
+        $this->grupo_modelo = new adm_grupo($link);
+        $this->menu_modelo = new adm_menu($link);
 
-        $this->seccion_menu_modelo = new seccion($link);
-        $this->accion_modelo = new accion($link);
+        $this->seccion_menu_modelo = new adm_seccion($link);
+        $this->accion_modelo = new adm_accion($link);
     }
 
-    public function acl_tipo_documento(){
-        $acl = (new grupo($this->link))->acl_tipo_documento($this->registro_id);
-        if(isset($acl['error'])){
-            $error = $this->errores->error('Error al obtner acl',$acl);
-            print_r($error);
-            die('Error');
-        }
 
-        foreach($acl as $key=>$data){
-            $link_asigna = '<a href="index.php?seccion=tipo_documento&accion=asigna_permiso&registro_id=';
-            $link_asigna .= $data['tipo_documento_id']."&grupo_id=$this->registro_id&session_id=".SESSION_ID.'">';
-            $link_asigna .= "Asigna";
-            $link_asigna .= '</a>';
-
-            $link_elimina = '<a href="index.php?seccion=tipo_documento&accion=elimina_permiso&registro_id=';
-            $link_elimina .= $data['tipo_documento_id']."&grupo_id=$this->registro_id&session_id=".SESSION_ID.'">';
-            $link_elimina .= "Elimina";
-            $link_elimina .= '</a>';
-
-            $acl[$key]['link_asigna'] = '';
-            $acl[$key]['link_elimina'] = '';
-            if($data['existe'] === 'inactivo'){
-                $acl[$key]['link_asigna'] = $link_asigna;
-            }
-            if($data['existe'] === 'activo'){
-                $acl[$key]['link_elimina'] = $link_elimina;
-            }
-        }
-
-        $this->registros['acl'] = $acl;
-    }
 
     public function asigna_accion($header, $ws){
         if(!isset($_GET['registro_id'])){
@@ -89,20 +61,19 @@ class controlador_grupo extends controlador_base{
         }
 
         $this->grupo_id = $_GET['registro_id'];
-        $menu_modelo = new menu($this->link);
-        $grupo_modelo = new grupo($this->link);
-        $seccion_menu_modelo = new seccion_($this->link);
-        $accion_modelo = new accion($this->link);
-        $accion_grupo_modelo = new accion_grupo($this->link);
+        $menu_modelo = new adm_menu($this->link);
+        $grupo_modelo = new adm_grupo($this->link);
+        $seccion_menu_modelo = new adm_seccion($this->link);
+        $accion_modelo = new adm_accion($this->link);
+        $accion_grupo_modelo = new adm_accion_grupo($this->link);
 
 
         $this->filtro['grupo_id']['campo'] = 'grupo_id';
         $this->filtro['grupo_id']['value'] = $this->grupo_id;
 
-        $this->resultado = $accion_grupo_modelo->filtro_and($this->filtro,'numeros',array(),array(),
-            0,0,array());
+        $this->resultado = $accion_grupo_modelo->filtro_and(filtro:$this->filtro);
 
-        if(isset($this->resultado['error'])){
+        if(errores::$error){
             $error = $this->errores->error('Error al obtener datos',$this->resultado);
             if(!$header){
                 return $error;
@@ -220,7 +191,7 @@ class controlador_grupo extends controlador_base{
     }
 
     public function elimina_accion_bd(bool $header){
-        $modelo = new accion_grupo($this->link);
+        $modelo = new adm_accion_grupo($this->link);
         $tabla = 'accion_grupo';
         $grupo_id = $_POST['grupo_id'];
         $accion_id = $_POST['accion_id'];
@@ -231,7 +202,7 @@ class controlador_grupo extends controlador_base{
         $filtros['accion_id']['campo'] = 'accion_id';
         $filtros['accion_id']['value'] = $accion_id;
 
-        $resultado = $modelo->filtro_and($filtros);
+        $resultado = $modelo->filtro_and(filtro:$filtros);
 
         if(isset($resultado['error'])){
             $error = $this->errores->error('Error al obtener datos',$this->breadcrumbs);

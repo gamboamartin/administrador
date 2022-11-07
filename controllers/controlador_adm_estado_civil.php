@@ -1,7 +1,7 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\adm_estado_civil;
+use gamboamartin\administrador\models\adm_estado_civil;
 use PDO;
 use stdClass;
 

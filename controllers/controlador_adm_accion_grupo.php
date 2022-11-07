@@ -1,9 +1,10 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
+use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
 
-use models\adm_accion_grupo;
+
 
 class controlador_adm_accion_grupo extends controlador_base{
     public function __construct($link){
