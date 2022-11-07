@@ -13,6 +13,7 @@ use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
 use gamboamartin\administrador\models\adm_session;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
