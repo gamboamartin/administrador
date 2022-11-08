@@ -845,7 +845,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $upd;
     }
 
-    private function transaccion_previa(): bool
+    /**
+     * Verifica si esta en transaccion previa
+     * @return bool
+     * @version 2.6.2
+     */
+    PUBLIC function transaccion_previa(): bool
     {
         $transaccion_previa = false;
         if($this->link->inTransaction()){

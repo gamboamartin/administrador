@@ -23,7 +23,7 @@ class seguridadTest extends test {
             unset($_SESSION['activa']);
         }
         $seg = new seguridad();
-        //$seg = new liberator($seg);
+        $seg = new liberator($seg);
 
         $resultado = $seg->init();
         $this->assertIsObject($resultado);
