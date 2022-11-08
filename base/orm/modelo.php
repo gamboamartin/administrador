@@ -643,7 +643,7 @@ class modelo extends modelo_base {
      * @return string[]
      * @version 1.564.51
      */
-    public function elimina_con_filtro_and(): array{
+    public function elimina_con_filtro_and(array $filtro): array{
         $init_archivos_tmp_model = $this->init_archivos_tmp_model();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
@@ -654,11 +654,11 @@ class modelo extends modelo_base {
                 return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
             }
         }
-        if(count($this->filtro) === 0){
-            return $this->error->error('Error no existe filtro', $this->filtro);
+        if(count($filtro) === 0){
+            return $this->error->error('Error no existe filtro', $filtro);
         }
 
-        $result = $this->filtro_and(filtro: $this->filtro);
+        $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros '.$this->tabla,data:  $result);
         }

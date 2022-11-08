@@ -183,9 +183,9 @@ class modeloTest extends test {
             print_r($error);
             exit;
         }
-        $modelo->filtro = array();
-        $modelo->filtro['adm_dia.id'] = 1;
-        $resultado = $modelo->elimina_con_filtro_and();
+        $filtro = array();
+        $filtro['adm_dia.id'] = 1;
+        $resultado = $modelo->elimina_con_filtro_and(filtro: $filtro);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
 
