@@ -37,6 +37,20 @@ class adm_seccion_perteneceTest extends test {
         errores::$error = false;
     }
 
+    public function test_secciones_paquete(){
+
+        errores::$error = false;
+        $modelo = new adm_seccion_pertenece($this->link);
+        //$modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id']= 2;
+
+        $resultado = $modelo->secciones_paquete();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+    }
+
 
 
 }

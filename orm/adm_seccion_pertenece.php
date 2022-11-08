@@ -107,6 +107,11 @@ class adm_seccion_pertenece extends modelo{
         return $registro;
     }
 
+    /**
+     * Obtiene las secciones del paquete en ejecucion
+     * @return array
+     * @version 2.7.2
+     */
     public function secciones_paquete(): array
     {
         $filtro['adm_sistema.descripcion'] = (new generales())->sistema;
