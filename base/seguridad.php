@@ -18,55 +18,12 @@ class seguridad{
     public function __construct(bool $aplica_seguridad = true){
 
         $this->error = new errores();
-        if(isset($_GET['seccion'])){
-            $this->seccion = $_GET['seccion'];
-        }
-        if(isset($_GET['accion'])){
-            $this->accion = $_GET['accion'];
-        }
-        if(isset($_GET['webservice'])) {
-            $this->webservice = $_GET['webservice'];
-        }
 
-        if(!$this->seccion){
-            $this->seccion = 'adm_session';
-            $this->accion = "inicio";
-            if(!isset($_SESSION['activa']) && $aplica_seguridad){
-                $this->accion = "login";
-            }
-        }
-
-
-        if(($this->seccion === 'adm_session') && $this->accion === 'login' && isset($_SESSION['activa']) && $aplica_seguridad) {
-            $this->seccion = 'adm_session';
-            $this->accion = 'inicio';
-        }
-
-        if(isset($_SESSION['activa']) && (int)$_SESSION['activa'] === 1) {
-            $this->menu = true;
-        }
-
-        if(!isset($_SESSION['activa']) && ($this->seccion !== 'adm_session') && $this->accion !== 'loguea' && $aplica_seguridad) {
-
-            $data = $this->init_menu_login();
-            if(errores::$error){
-                $error = $this->error->error(mensaje: 'Error al inicializar login',data:  $data,
-                    params: get_defined_vars());
-                print_r($error);
-                die('Error');
-            }
-
-        }
-
-        if($this->seccion === 'adm_session' && $this->accion === 'inicio' && $aplica_seguridad){
-
-            $accion = $this->init_accion();
-            if(errores::$error){
-                $error = $this->error->error(mensaje: 'Error al inicializar accion',data:  $accion,
-                    params: get_defined_vars());
-                print_r($error);
-                die('Error');
-            }
+        $init = $this->inicializa_data(aplica_seguridad: $aplica_seguridad);
+        if(errores::$error){
+            $error = $this->error->error(mensaje: 'Error al inicializar menu',data:  $init);
+            print_r($error);
+            die('Error');
         }
 
     }
@@ -83,7 +40,7 @@ class seguridad{
 
         $r_session = $session_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error("Error al obtener registro", $r_session);
+            return $this->error->error(mensaje:"Error al obtener registro",data:  $r_session);
         }
         $elimina = true;
         if((int)$r_session->n_registros === 1){
@@ -103,6 +60,40 @@ class seguridad{
         return $elimina;
     }
 
+    private function inicializa_data(bool $aplica_seguridad): array|static
+    {
+        $init = $this->init_vars(aplica_seguridad:$aplica_seguridad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar data',data:  $init);
+
+        }
+
+        $init = $this->init_full_menu(aplica_seguridad: $aplica_seguridad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar menu',data:  $init);
+        }
+        return $init;
+    }
+
+    /**
+     * Inicializa los datos para implementar seguridad
+     * @return $this
+     * @version 2.5.2
+     */
+    private function init(): static
+    {
+        if(isset($_GET['seccion'])){
+            $this->seccion = $_GET['seccion'];
+        }
+        if(isset($_GET['accion'])){
+            $this->accion = $_GET['accion'];
+        }
+        if(isset($_GET['webservice'])) {
+            $this->webservice = $_GET['webservice'];
+        }
+        return $this;
+    }
+
     /**
      * TODO
      * Inicializa this->accion si session esta activa asigna a inicio
@@ -115,6 +106,59 @@ class seguridad{
             $this->accion = 'inicio';
         }
         return $this->accion;
+    }
+
+    private function init_full_menu(bool $aplica_seguridad): array|static
+    {
+        $init = $this->init_menu_inicial(aplica_seguridad: $aplica_seguridad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar menu',data:  $init);
+        }
+
+        $init = $this->init_menu_accion(aplica_seguridad: $aplica_seguridad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar menu',data:  $init);
+
+        }
+        return $init;
+    }
+
+    private function init_menu(): static
+    {
+        if(isset($_SESSION['activa']) && (int)$_SESSION['activa'] === 1) {
+            $this->menu = true;
+        }
+        return $this;
+    }
+
+    private function init_menu_accion(bool $aplica_seguridad): array|static
+    {
+        if($this->seccion === 'adm_session' && $this->accion === 'inicio' && $aplica_seguridad){
+
+            $accion = $this->init_accion();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar accion',data:  $accion);
+            }
+        }
+        return $this;
+    }
+
+    private function init_menu_inicial(bool $aplica_seguridad): array|static
+    {
+        $init = $this->init_menu();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar menu',data:  $init);
+        }
+
+        if(!isset($_SESSION['activa']) && ($this->seccion !== 'adm_session') && $this->accion !== 'loguea' && $aplica_seguridad) {
+
+            $data = $this->init_menu_login();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar login',data:  $data);
+
+            }
+        }
+        return $this;
     }
 
     /**
@@ -133,6 +177,45 @@ class seguridad{
         $data->seccion = $this->seccion;
         $data->accion = $this->accion;
         return $data;
+    }
+
+    private function init_val_inicio(bool $aplica_seguridad): static
+    {
+        if(($this->seccion === 'adm_session') && $this->accion === 'login' && isset($_SESSION['activa']) && $aplica_seguridad) {
+            $this->seccion = 'adm_session';
+            $this->accion = 'inicio';
+        }
+        return $this;
+    }
+
+    private function init_val_login(bool $aplica_seguridad): static
+    {
+        if(!$this->seccion){
+            $this->seccion = 'adm_session';
+            $this->accion = "inicio";
+            if(!isset($_SESSION['activa']) && $aplica_seguridad){
+                $this->accion = "login";
+            }
+        }
+        return $this;
+    }
+
+    private function init_vars(bool $aplica_seguridad): array|static
+    {
+        $init = $this->init();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar data',data:  $init);
+        }
+
+        $init = $this->init_val_login(aplica_seguridad: $aplica_seguridad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar data',data:  $init);
+        }
+        $init = $this->init_val_inicio(aplica_seguridad: $aplica_seguridad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar data',data:  $init);
+        }
+        return $this;
     }
 
     /**
