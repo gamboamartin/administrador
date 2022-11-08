@@ -2,8 +2,8 @@
 namespace base;
 
 use config\generales;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
-use models\adm_session;
 use PDO;
 use stdClass;
 
@@ -93,10 +93,9 @@ class seguridad{
             }
         }
         if($elimina) {
-            $session_modelo->filtro = $filtro;
-            $result = $session_modelo->elimina_con_filtro_and();
+            $result = $session_modelo->elimina_con_filtro_and($filtro);
             if (errores::$error) {
-                return $this->error->error("Error al eliminar registro", $result);
+                return $this->error->error(mensaje:"Error al eliminar registro",data:  $result);
             }
             unset ($_SESSION['username']);
             session_destroy();

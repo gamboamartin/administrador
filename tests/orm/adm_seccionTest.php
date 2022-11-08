@@ -3,6 +3,7 @@ namespace tests\orm;
 
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
 
@@ -26,6 +27,23 @@ class adm_seccionTest extends test {
         $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_sistema($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $sistema_ins['id'] = 1;
+        $sistema_ins['descripcion'] = 'administrador';
+        $sistema_ins['codigo'] = 'administrador';
+        $alta = (new adm_sistema($this->link))->alta_registro($sistema_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
             exit;
         }
