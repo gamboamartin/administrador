@@ -59,7 +59,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * @param PDO $link Conexion a la BD
      */
-    #[Pure] public function __construct(PDO $link, bool $temp = true ){ //PRUEBAS EN PROCESO
+    #[Pure] public function __construct(PDO $link, bool $temp = false ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
@@ -336,7 +336,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion_grupo
      */
     public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                     array $hijo = array()): array|stdClass{
+                                     array $hijo = array(), bool $valida_tabla = true): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
@@ -345,13 +345,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->transaccion = 'SELECT';
 
 
-        $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta);
+        $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta, valida_tabla: $valida_tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
         }
 
         $data = $this->result_out(
-            archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta);
+            archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta,
+            valida_tabla: $valida_tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
@@ -442,14 +443,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
-    private function file_tmp_sql(string $consulta): array|string
+    private function file_tmp_sql(string $consulta, bool $valida_tabla = true): array|string
     {
         $key_tmp = $this->key_tmp(consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
         }
 
-        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp);
+        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp, valida_tabla: $valida_tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
         }
@@ -812,7 +813,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
                 $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
                 $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
-                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo);
+                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo, fix: $fix);
             }
 
             $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo, row: $row);
@@ -825,17 +826,37 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    protected function init_archivos_tmp_model(): string
+    /**
+     * Inicializa las carpetas para models temps
+     * @param bool $valida_tabla
+     * @return string|array
+     * @version 2.10.2.4
+     */
+    protected function init_archivos_tmp_model(bool $valida_tabla = true): string|array
     {
+        $tabla = $this->tabla;
+        $tabla = trim($tabla);
+        if($valida_tabla) {
+            if ($tabla === '') {
+                return $this->error->error(mensaje: 'Error tabla vacia', data: $tabla);
+            }
+        }
+
         $archivos = (new generales())->path_base.'archivos';
+        $archivos = str_replace('//', '/', $archivos);
         if(!file_exists($archivos)){
             mkdir($archivos);
         }
         $archivos_tmp = $archivos.'/tmp';
+
+        $archivos_tmp = str_replace('//', '/', $archivos_tmp);
         if(!file_exists($archivos_tmp)){
             mkdir($archivos_tmp);
         }
         $archivos_tmp_model = $archivos_tmp."/$this->tabla";
+
+        $archivos_tmp_model = str_replace('//', '/', $archivos_tmp_model);
+
         if(!file_exists($archivos_tmp_model)){
             mkdir($archivos_tmp_model);
         }
@@ -1044,7 +1065,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta): array|stdClass
+    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta,
+                                bool $valida_tabla = true): array|stdClass
     {
 
         if(file_exists($archivos_sql_tmp) && $this->temp ) {
@@ -1055,7 +1077,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         else{
 
-            $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+            $init_archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
             }
@@ -1107,9 +1129,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function ruta_file_tmp_sql(string $key_tmp): array|string
+    private function ruta_file_tmp_sql(string $key_tmp, bool $valida_tabla = true): array|string
     {
-        $archivos_tmp_model = $this->init_archivos_tmp_model();
+        $archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener archivos_tmp_model", data: $archivos_tmp_model);
         }

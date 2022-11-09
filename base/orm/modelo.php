@@ -53,7 +53,7 @@ class modelo extends modelo_base {
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
                                 bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
-                                bool $temp = true){
+                                bool $temp = false){
 
 
 

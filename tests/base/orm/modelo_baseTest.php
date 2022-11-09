@@ -447,6 +447,21 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_init_archivos_tmp_model(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $mb->tabla = 'a';
+        $resultado = $mb->init_archivos_tmp_model();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertFileExists($resultado);
+        errores::$error = false;
+    }
+
     public function test_key_tmp()
     {
 

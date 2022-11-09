@@ -421,10 +421,11 @@ class columnas{
      * Funcion para obtener las columnas de manera nativa
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
+     * @param bool $valida_tabla
      * @return array
      * @version 1.26.14
      */
-    public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
+    public function columnas_bd_native(modelo_base $modelo, string $tabla_bd, bool $valida_tabla = true): array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
@@ -439,7 +440,7 @@ class columnas{
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
-        $result = $modelo->ejecuta_consulta(consulta: $sql);
+        $result = $modelo->ejecuta_consulta(consulta: $sql, valida_tabla: $valida_tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
