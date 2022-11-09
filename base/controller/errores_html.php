@@ -131,14 +131,18 @@ class errores_html extends base_html {
     }
 
     /**
+     * Maqueta los errores para dar salida html
      * @param array $errores_previos arreglo de session con errores cargados
      * @return array|string
+     * @version 2.11.2
      */
     private function errores_previos_detalle(array $errores_previos): array|string
     {
         $html = '';
         foreach ($errores_previos as $error_previo) {
-
+            if(!is_array($error_previo)){
+                return $this->error->error('Error error_previo debe ser un array', $error_previo);
+            }
             $error_previo_detalle = $this->error_previo_detalle(error_previo:  $error_previo);
             if(errores::$error){
                 return $this->error->error('Error al generar error', $error_previo_detalle);
