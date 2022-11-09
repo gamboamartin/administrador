@@ -426,7 +426,7 @@ class modeloTest extends test {
         $resultado = $modelo->get_data_lista();
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(255,$resultado['n_registros']);
+        $this->assertEquals(213,$resultado['n_registros']);
 
         errores::$error = false;
         $modelo = new adm_accion($this->link);
@@ -437,7 +437,7 @@ class modeloTest extends test {
 
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(80,$resultado['n_registros']);
+        $this->assertEquals(69,$resultado['n_registros']);
         $this->assertEquals(1,$resultado['registros'][0]['adm_accion_id']);
 
         errores::$error = false;
@@ -454,7 +454,7 @@ class modeloTest extends test {
         $resultado = $modelo->get_data_lista(filtro_especial: $filtro_especial);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(80,$resultado['n_registros']);
+        $this->assertEquals(69,$resultado['n_registros']);
         $this->assertStringContainsStringIgnoringCase("WHERE    ( (adm_accion.id LIKE '%1%'  OR  adm_accion.descripcion LIKE '%1%'))",$resultado['data_result']->sql);
 
         errores::$error = false;

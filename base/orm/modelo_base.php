@@ -57,7 +57,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
+     * Modelado
      * @param PDO $link Conexion a la BD
+     * @param bool $temp Si temp, crea cache de sql del modelo en ejecucion
+     * @version 2.12.2.1
      */
     #[Pure] public function __construct(PDO $link, bool $temp = false ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
@@ -348,7 +351,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta, valida_tabla: $valida_tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
-        } 
+        }
 
         $data = $this->result_out(
             archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta,

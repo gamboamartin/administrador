@@ -15,6 +15,20 @@ class adm_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_accion_registro(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $accion= 'alta';
+        $seccion= 'adm_seccion';
+        $resultado = $modelo->accion_registro($accion, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_accion_seccion(){
 
         errores::$error = false;

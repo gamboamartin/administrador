@@ -25,7 +25,7 @@ class adm_accion extends modelo{
     }
 
     /**
-     * P INT
+     *
      *
      * Funcion que obtiene y genera un registro de tipo acción. basado en los resultados de los
      * filtros recibidos (accion y seccion). Valida si hay registros no, Devuelve un error en caso de no encontrarlos.
@@ -35,11 +35,12 @@ class adm_accion extends modelo{
      *
      * @return array
      *
-     *@functions $valida   = adm_accion->validacion->seccion_accion. Usada para validar los resultados de la funcion "seccion_accion".
+     * @functions $valida   = adm_accion->validacion->seccion_accion. Usada para validar los resultados de la funcion "seccion_accion".
      *En caso de error lanzará un mensaje
      *
-     *@functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
-     *En caso de error lanzará un mensaje
+     * @functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
+     * En caso de error lanzará un mensaje
+     * @version 2.12.2.1
      */
     public function accion_registro(string $accion, string $seccion):array{
         $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
@@ -406,13 +407,16 @@ class adm_accion extends modelo{
         return $permiso_valido;
     }
 
-
-
-
+    /**
+     * Obtiene en un arreglo los grupos por accion
+     * @param int $adm_accion_id Accion a buscar
+     * @return array
+     * @version 2.12.2.1
+     */
     public function grupos_id_por_accion(int $adm_accion_id): array
     {
         if($adm_accion_id <=0){
-            return $this->error->error('Error adm_accion_id debe ser mayor a 0', $adm_accion_id);
+            return $this->error->error(mensaje: 'Error adm_accion_id debe ser mayor a 0',data:  $adm_accion_id);
         }
         $filtro['adm_accion.id'] = $adm_accion_id;
         $group_by[] = 'adm_grupo.id';
