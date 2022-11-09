@@ -125,6 +125,23 @@ class errores_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_mensaje_error_detalle(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $errores_previos = array();
+        $errores_previos[] = array();
+
+        $resultado = $html->mensaje_error_detalle($errores_previos);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_modal_btns(): void
     {
 
