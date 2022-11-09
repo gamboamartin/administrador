@@ -348,7 +348,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta, valida_tabla: $valida_tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
-        }
+        } 
 
         $data = $this->result_out(
             archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta,
