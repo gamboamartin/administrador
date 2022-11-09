@@ -158,6 +158,7 @@ class errores_html extends base_html {
     /**
      * Genera los errores para formato html
      * @return array|string
+     * @version 2.10.2.3
      */
     public function errores_transaccion(): array|string
     {
@@ -168,7 +169,7 @@ class errores_html extends base_html {
         if(count($errores_previos)>0) {
             $errores_html = '<div class="alert alert-danger no-margin-bottom alert-dismissible fade show" role="alert">';
 
-            $data_modal_error = (new errores_html())->data_modal_error(errores_previos: $errores_previos);
+            $data_modal_error = $this->data_modal_error(errores_previos: $errores_previos);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar errores', data: $data_modal_error);
             }

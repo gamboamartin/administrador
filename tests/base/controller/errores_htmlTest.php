@@ -145,6 +145,28 @@ class errores_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_errores_transaccion(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        //$html = new liberator($html);
+        $_SESSION['error_resultado'] = array();
+        $_SESSION['error_resultado'][0] = array();
+        $_SESSION['error_resultado'][0]['mensaje'] = 'a';
+        $_SESSION['error_resultado'][0]['line'] = 'b';
+        $_SESSION['error_resultado'][0]['function'] = 'c';
+        $_SESSION['error_resultado'][0]['class'] = 'd';
+
+
+        $resultado = $html->errores_transaccion();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_mensaje_error_detalle(): void
     {
 
