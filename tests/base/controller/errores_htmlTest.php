@@ -37,6 +37,26 @@ class errores_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_modal_error(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $errores_previos = array();
+        $errores_previos[0]['mensaje'] = 'a';
+        $errores_previos[0]['line'] = 'a';
+        $errores_previos[0]['function'] = 'a';
+        $errores_previos[0]['class'] = 'a';
+
+        $resultado = $html->data_modal_error($errores_previos);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_detalle_btn(): void
     {
 
