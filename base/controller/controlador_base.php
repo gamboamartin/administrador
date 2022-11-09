@@ -78,8 +78,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $init = (new normalizacion())->init_controler(controler: $this);
         if(errores::$error){
-            $error = $this->errores->error(mensaje:'Error al incializar entradas',data: $init,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje:'Error al incializar entradas',data: $init);
             print_r($error);
             die('Error');
         }

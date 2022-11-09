@@ -72,6 +72,22 @@ class errores_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_error_previo_detalle(): void
+    {
+
+        errores::$error = false;
+
+        $html = new errores_html();
+        $html = new liberator($html);
+
+        $error_previo = array();
+        $resultado = $html->error_previo_detalle($error_previo);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_errores_previos(): void
     {
 

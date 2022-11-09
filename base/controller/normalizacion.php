@@ -114,9 +114,10 @@ class normalizacion{
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
-     * @param controler $controler
+     * Inicializa los elementos de un controller
+     * @param controler $controler Controlador en ejecucion
      * @return controler
+     * @version 2.10.2
      */
     public function init_controler(controler $controler): controler
     {

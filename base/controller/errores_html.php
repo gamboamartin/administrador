@@ -88,8 +88,10 @@ class errores_html extends base_html {
     }
 
     /**
+     * Integra el texto de un error
      * @param array $error_previo arreglo de session con errores cargados
      * @return string
+     * @version 2.10.2
      */
     private function error_previo_detalle(array $error_previo): string
     {
