@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\models;
 
+use base\orm\inicializacion;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
@@ -37,16 +38,6 @@ class adm_accion_basica extends modelo{
         return $r_alta_bd;
     }
 
-    private function aplica_status_inactivo(string $key, array $registro): array
-    {
-        if(!isset($registro[$key])){
-            $registro = $this->init_key_status_inactivo(key: $key, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializa status',data: $registro);
-            }
-        }
-        return $registro;
-    }
 
     private function css(): string
     {
@@ -73,17 +64,6 @@ class adm_accion_basica extends modelo{
         return ucwords($etiqueta_label);
     }
 
-    private function inicializa_statuses(array $keys, array $registro): array
-    {
-        foreach ($keys as $key) {
-            $registro = $this->aplica_status_inactivo(key: $key, registro: $registro);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al inicializa status', data: $registro);
-            }
-        }
-        return $registro;
-
-    }
 
     private function init_alias(array $registro): array
     {
@@ -201,17 +181,12 @@ class adm_accion_basica extends modelo{
         return $registro;
     }
 
-    private function init_key_status_inactivo(string $key, array $registro): array
-    {
-        $registro[$key] = 'inactivo';
-        return $registro;
-    }
 
     private function init_statuses_alta(array $registro): array
     {
         $keys_statuses = array('es_lista','es_modal','es_status','es_view','inicio','lista','seguridad','visible');
 
-        $registro = $this->inicializa_statuses(keys: $keys_statuses, registro: $registro);
+        $registro = (new inicializacion())->inicializa_statuses(keys: $keys_statuses, registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializa status',data: $registro);
         }

@@ -114,6 +114,17 @@ class inicializacion{
         return $modelo->registro_upd;
     }
 
+    private function aplica_status_inactivo(string $key, array $registro): array
+    {
+        if(!isset($registro[$key])){
+            $registro = $this->init_key_status_inactivo(key: $key, registro: $registro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializa status',data: $registro);
+            }
+        }
+        return $registro;
+    }
+
 
     /**
      * Funcion para asignar los parametros de una view
@@ -357,6 +368,18 @@ class inicializacion{
         return $in;
     }
 
+    public function inicializa_statuses(array $keys, array $registro): array
+    {
+        foreach ($keys as $key) {
+            $registro = $this->aplica_status_inactivo(key: $key, registro: $registro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al inicializa status', data: $registro);
+            }
+        }
+        return $registro;
+
+    }
+
     /**
      * Inicializa valores booleanos
      * @version 1.148.31
@@ -440,6 +463,12 @@ class inicializacion{
             }
         }
         return $datos;
+    }
+
+    private function init_key_status_inactivo(string $key, array $registro): array
+    {
+        $registro[$key] = 'inactivo';
+        return $registro;
     }
 
     /**
