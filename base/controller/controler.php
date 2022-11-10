@@ -72,7 +72,7 @@ class controler{
     public int $number_active = -1;
 
     public array $secciones_permitidas = array();
-    
+
     public function __construct(PDO $link){
         $this->link = $link;
 
