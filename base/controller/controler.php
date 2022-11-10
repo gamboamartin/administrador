@@ -207,30 +207,13 @@ class controler{
     public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
         foreach ($this->modelo->campos_view as $key => $value){
-
             if(!is_array($value)){
                 return $this->errores->error(mensaje: 'Error value debe ser un array',data: $value);
             }
-
-            $keys = array('type');
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $value);
+            $inputs_controller = $this->inputs_view(inputs: $inputs,key:  $key,value:  $value);
             if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al validar value filtro',data: $valida);
+                return $this->errores->error(mensaje: 'Error al obtener inputs',data: $inputs_controller);
             }
-
-            $key = trim($key);
-            if($key === ''){
-                return $this->errores->error(mensaje: 'Error key esta vacio',data: $key);
-            }
-
-
-            $type = $this->type_validado(inputs: $inputs,value:  $value);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al obtener type',data: $type);
-            }
-
-
-            $this->inputs->$key = $inputs[$type]->$key;
         }
 
         return $this->inputs;
@@ -366,6 +349,31 @@ class controler{
             }
             exit;
         }
+    }
+
+    private function inputs_view(array $inputs, string $key, array $value): array|stdClass
+    {
+        $keys = array('type');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $value);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar value filtro',data: $valida);
+        }
+        $key = trim($key);
+        if($key === ''){
+            return $this->errores->error(mensaje: 'Error key esta vacio',data: $key);
+        }
+        $type = $this->type_validado(inputs: $inputs,value:  $value);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener type',data: $type);
+        }
+
+        if(!is_object($this->inputs)){
+            return $this->errores->error(
+                mensaje: 'Error controlador->inputs debe se run objeto',data: $this->inputs);
+        }
+
+        $this->inputs->$key = $inputs[$type]->$key;
+        return $this->inputs;
     }
 
     private function integra_not_in_post(): array
