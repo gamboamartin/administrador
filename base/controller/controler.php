@@ -208,10 +208,33 @@ class controler{
         return $filtro;
     }
 
-    public function asigna_inputs(mixed $inputs): array|stdClass
+    public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
         foreach ($this->modelo->campos_view as $key => $value){
-            $this->inputs->$key = $inputs[$value['type']]->$key;
+
+            if(!is_array($value)){
+                return $this->errores->error(mensaje: 'Error value debe ser un array',data: $value);
+            }
+
+            $keys = array('type');
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $value);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al validar value filtro',data: $valida);
+            }
+
+            $key = trim($key);
+            if($key === ''){
+                return $this->errores->error(mensaje: 'Error key esta vacio',data: $key);
+            }
+
+
+            $type = $this->type_validado(inputs: $inputs,value:  $value);
+            if(errores::$error){
+                return $this->errores->error(mensaje: 'Error al obtener type',data: $type);
+            }
+
+
+            $this->inputs->$key = $inputs[$type]->$key;
         }
 
         return $this->inputs;
@@ -230,12 +253,6 @@ class controler{
         $filtro[$key_filter] = $_GET[$key_get];
         return $filtro;
     }
-
-
-
-
-
-
 
     /**
      * Generacion de metodo para ser utilizado en cualquier llamada get con filtros
@@ -336,7 +353,6 @@ class controler{
         return $tabla.'.'.$campo;
     }
 
-
     protected function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig = ''): void
     {
         if($header){
@@ -419,11 +435,6 @@ class controler{
     }
 
 
-
-
-
-
-
     /**
      * Genera salida para eventos controller
      * @param string $mensaje Mensaje a mostrar
@@ -501,8 +512,6 @@ class controler{
         return $r_modelo;
     }
 
-
-
     /**
      * PHPUNIT
      * @param array $filtros
@@ -517,7 +526,31 @@ class controler{
         return $r_modelo;
     }
 
+    private function type(array $value): array|string
+    {
+        $type = $value['type'];
 
+        $type = trim($type);
+        if($type === ''){
+            return $this->errores->error(mensaje: 'Error type esta vacio',data: $type);
+        }
+        return $type;
+    }
+
+    private function type_validado(array|stdClass $inputs, array $value): array|string
+    {
+        $type = $this->type(value: $value);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener type',data: $type);
+        }
+
+        $keys = array($type);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $inputs);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar value filtro',data: $valida);
+        }
+        return $type;
+    }
 
 
     private function valida_data_filtro(string $campo, string $tabla): bool|array
