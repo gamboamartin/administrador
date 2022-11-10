@@ -615,13 +615,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      *
      * @param bool $header
      * @param bool $ws
-     * @param string $breadcrumbs
-     * @param bool $aplica_form
-     * @param bool $muestra_btn
-     * @return array|string
+     * @return array|string|stdClass
      */
-    public function modifica(bool $header, bool $ws = false, string $breadcrumbs='',
-                             bool $aplica_form = true, bool $muestra_btn = true):array|string{
+    public function modifica(bool $header, bool $ws = false):array|string|stdClass{
 
         $namespace = 'models\\';
         $this->seccion = str_replace($namespace,'',$this->seccion);
@@ -632,10 +628,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->registro = $resultado;
 
-
-
-        $this->modifica_html = '';
-
         $registro_puro = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true,
             retorno_obj: true);
         if(errores::$error){
@@ -645,7 +637,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $this->row_upd =  $registro_puro;
 
-        return $this->modifica_html;
+        $data = new stdClass();
+        $data->registro = $this->registro;
+        $data->row_upd = $registro_puro;
+
+        return $data;
     }
 
     /**
