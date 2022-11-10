@@ -542,6 +542,13 @@ class controler{
         return $type;
     }
 
+    /**
+     * Obtiene el type para templates alta validado
+     * @param array|stdClass $inputs Inputs precargados
+     * @param array $value Valor de modelo campos views
+     * @return array|string
+     * @version 2.14.2.2
+     */
     private function type_validado(array|stdClass $inputs, array $value): array|string
     {
         $type = $this->type(value: $value);
@@ -552,7 +559,7 @@ class controler{
         $keys = array($type);
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $inputs);
         if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar value filtro',data: $valida);
+            return $this->errores->error(mensaje: 'Error al validar value',data: $valida);
         }
         return $type;
     }

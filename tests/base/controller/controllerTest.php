@@ -134,6 +134,26 @@ class controllerTest extends test {
         errores::$error = false;
     }
 
+    public function test_type_validado(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler($this->link);
+        $ctl = new liberator($ctl);
+
+        $value = array();
+        $value['type'] = 'x';
+        $inputs = array();
+        $inputs['x'] = 'a';
+        $resultado = $ctl->type_validado($inputs, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado);
+        errores::$error = false;
+
+    }
+
 
 
 
