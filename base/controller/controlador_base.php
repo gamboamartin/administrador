@@ -612,15 +612,25 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
 
     /**
-     *
-     * @param bool $header
-     * @param bool $ws
-     * @return array|string|stdClass
+     * Inicializa la vista de modifica
+     * @param bool $header Si header retorna en html
+     * @param bool $ws retorna json
+     * @return array|stdClass
+     * @version 2.17.2.1
      */
-    public function modifica(bool $header, bool $ws = false):array|string|stdClass{
+    public function modifica(bool $header, bool $ws = false):array|stdClass{
 
         $namespace = 'models\\';
         $this->seccion = str_replace($namespace,'',$this->seccion);
+
+        if($this->seccion === ''){
+            return $this->retorno_error(
+                mensaje: 'Error seccion no puede venir vacio', data: $this->seccion,header: $header, ws: $ws);
+        }
+        if($this->registro_id<=0){
+            return  $this->retorno_error(
+                mensaje:'Error registro_id debe sr mayor a 0', data:$this->registro_id,header: $header, ws: $ws);
+        }
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if(errores::$error){

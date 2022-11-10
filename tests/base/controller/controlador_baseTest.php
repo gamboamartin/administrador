@@ -24,6 +24,24 @@ class controlador_baseTest extends test {
         $this->paths_conf->views = '/var/www/html/administrador/config/views.php';
     }
 
+    public function test_modifica(): void
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_year($this->link);
+        $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
+        //$ctl = new liberator($ctl);
+        $ctl->seccion = 'a';
+        $ctl->registro_id = '1';
+
+        $resultado = $ctl->modifica(false);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_transaccion_previa(): void
     {
 
