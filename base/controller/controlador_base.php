@@ -27,6 +27,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public int $reg_x_pagina;
 
     public array $valores_asignados_default = array();
+
     public array $selects_registros_completos = array();
 
     public bool $registros_alta = false;

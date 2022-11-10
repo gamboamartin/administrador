@@ -7,6 +7,7 @@ use config\views;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 use Throwable;
@@ -28,6 +29,12 @@ class init{
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
+
+        $valida = (new validacion())->seccion_accion(accion: $seguridad->accion, seccion: $seguridad->seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
+        }
+
         $accion = (new adm_accion($link))->accion_registro(accion: $seguridad->accion, seccion: $seguridad->seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
@@ -407,6 +414,11 @@ class init{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al verificar seguridad',data: $seguridad);
 
+        }
+
+        $valida = (new validacion())->seccion_accion(accion: $seguridad->accion, seccion: $seguridad->seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
         }
 
         $aplica_view = $this->aplica_view( link:$link, seguridad: $seguridad);
