@@ -117,6 +117,23 @@ class controllerTest extends test {
 
     }
 
+    public function test_type(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler($this->link);
+        $ctl = new liberator($ctl);
+
+        $value = array();
+        $value['type'] = 'x';
+        $resultado = $ctl->type($value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado);
+        errores::$error = false;
+    }
+
 
 
 

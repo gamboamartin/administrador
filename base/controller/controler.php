@@ -72,9 +72,7 @@ class controler{
     public int $number_active = -1;
 
     public array $secciones_permitidas = array();
-
-
-
+    
     public function __construct(PDO $link){
         $this->link = $link;
 
@@ -139,8 +137,6 @@ class controler{
 
 
     }
-
-
 
     private function asigna_filtro(string $campo, array $filtro, string $tabla): array
     {
@@ -255,6 +251,20 @@ class controler{
     }
 
     /**
+     * PHPUNIT
+     * @param array $filtros
+     * @return array
+     */
+    private function filtra(array $filtros): array
+    {
+        $r_modelo = $this->modelo->filtro_and(filtro: $filtros,filtro_especial: array());
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener datos',data: $r_modelo);
+        }
+        return $r_modelo;
+    }
+
+    /**
      * Generacion de metodo para ser utilizado en cualquier llamada get con filtros
      * @param bool $header si header da info en http
      * @param array $keys conjunto de datos a integrar en filtros
@@ -315,7 +325,6 @@ class controler{
         }
     }
 
-
     /**
      * PHPUNIT
      * @param string $name
@@ -332,25 +341,6 @@ class controler{
             return $this->errores->error('Error no existe la clase',$class);
         }
         return new $class($this->link);
-    }
-
-    private function key_get(string $campo, string $tabla): string|array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-
-        return $tabla.'_'.$campo;
-    }
-
-    private function key_filter(string $campo, string $tabla): string|array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        return $tabla.'.'.$campo;
     }
 
     protected function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig = ''): void
@@ -396,6 +386,25 @@ class controler{
         return $not_in;
     }
 
+    private function key_get(string $campo, string $tabla): string|array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+
+        return $tabla.'_'.$campo;
+    }
+
+    private function key_filter(string $campo, string $tabla): string|array
+    {
+        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
+        }
+        return $tabla.'.'.$campo;
+    }
+
     /**
      * Maqueta un not in obtenido por POST
      * @return array
@@ -433,7 +442,6 @@ class controler{
 
         return $not_in;
     }
-
 
     /**
      * Genera salida para eventos controller
@@ -513,21 +521,18 @@ class controler{
     }
 
     /**
-     * PHPUNIT
-     * @param array $filtros
-     * @return array
+     * Obtiene el tipo de input para templates de alta
+     * @param array $value Value de modelo->campos_view
+     * @return array|string
+     * @version 2.14.2.1
      */
-    private function filtra(array $filtros): array
-    {
-        $r_modelo = $this->modelo->filtro_and(filtro: $filtros,filtro_especial: array());
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener datos',data: $r_modelo);
-        }
-        return $r_modelo;
-    }
-
     private function type(array $value): array|string
     {
+        $keys = array('type');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $value);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al validar value',data: $valida);
+        }
         $type = $value['type'];
 
         $type = trim($type);
@@ -552,7 +557,6 @@ class controler{
         return $type;
     }
 
-
     private function valida_data_filtro(string $campo, string $tabla): bool|array
     {
         $campo = trim($campo);
@@ -565,7 +569,5 @@ class controler{
         }
         return true;
     }
-
-
 
 }
