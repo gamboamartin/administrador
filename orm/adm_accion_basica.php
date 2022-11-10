@@ -44,8 +44,19 @@ class adm_accion_basica extends modelo{
         return 'info';
     }
 
-    private function codigo_bis(array $registro): string
+    /**
+     * Obtiene un codigo bid de accion
+     * @param array $registro $registro en proceso de alta bd
+     * @return string|array
+     * @version 2.13.2.3
+     */
+    private function codigo_bis(array $registro): string|array
     {
+        $keys = array('codigo','descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
         $codigo_bis = $registro['codigo'];
         $codigo_bis .= ' '.$registro['descripcion'];
         return $codigo_bis;
