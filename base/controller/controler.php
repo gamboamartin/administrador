@@ -206,6 +206,10 @@ class controler{
 
     public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
+        if(!is_object($this->inputs)){
+            return $this->errores->error(
+                mensaje: 'Error controlador->inputs debe se run objeto',data: $this->inputs);
+        }
         foreach ($this->modelo->campos_view as $key => $value){
             if(!is_array($value)){
                 return $this->errores->error(mensaje: 'Error value debe ser un array',data: $value);
