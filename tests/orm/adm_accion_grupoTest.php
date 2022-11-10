@@ -29,7 +29,7 @@ class adm_accion_grupoTest extends test {
 
         errores::$error = false;
 
-        $adm_accion_id= 2;
+        $adm_accion_id= 4;
         $resultado = $modelo->grupos_por_accion($adm_accion_id);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

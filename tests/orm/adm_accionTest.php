@@ -182,8 +182,10 @@ class adm_accionTest extends test {
         $modelo = new adm_accion($this->link);
         //$modelo = new liberator($modelo);
 
-        $adm_accion_id= 2;
+        $adm_accion_id= 4;
         $resultado = $modelo->grupos_id_por_accion($adm_accion_id);
+
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(2, $resultado[0]);

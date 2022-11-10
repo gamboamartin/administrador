@@ -182,6 +182,10 @@ class adm_accion extends modelo{
      */
     public function alta_bd(): array|stdClass{
 
+        $valida = $this->valida_alta_bd(registro:$this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
 
         $registro = $this->init_row_alta(registro: $this->registro);
         if(errores::$error){
@@ -254,6 +258,11 @@ class adm_accion extends modelo{
 
     private function codigo_default(array $registro): array
     {
+        $valida = $this->valida_alta_bd(registro:$registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
         if(!isset($registro['codigo'])){
 
             $codigo = $this->codigo_alta_default(adm_seccion_id: $registro['adm_seccion_id'],
@@ -451,6 +460,11 @@ class adm_accion extends modelo{
 
     private function init_row_alta(array $registro): array
     {
+        $valida = $this->valida_alta_bd(registro:$registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
         $registro = $this->asigna_full_status_alta(registro:$registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar status',data: $registro);
@@ -716,6 +730,21 @@ class adm_accion extends modelo{
             }
         }
         return $registro;
+    }
+
+    private function valida_alta_bd(array $registro): bool|array
+    {
+        $keys = array('adm_seccion_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+        $keys = array('descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+        return true;
     }
 
     /**

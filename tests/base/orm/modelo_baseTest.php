@@ -253,17 +253,20 @@ class modelo_baseTest extends test {
 
 
         errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
         $mb = new modelo_base($this->link);
         $mb = new liberator($mb);
 
         $modelo = new adm_accion($this->link);
 
+
+
         $registro = array();
-        $registro['adm_accion_id'] = 2;
+        $registro['adm_accion_id'] = 1;
         $resultado = $mb->genera_descripcion($modelo, $registro);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('lista', $resultado);
+        $this->assertEquals('alta', $resultado);
         errores::$error = false;
     }
 
