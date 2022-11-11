@@ -164,6 +164,31 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_include_action_local_base_data(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = '';
+        $resultado = $init->include_action_local_base_data($accion);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error la $accion esta vacia',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+
+        $accion = 'a';
+        $resultado = $init->include_action_local_base_data($accion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_include_action_template_base(){
 
         errores::$error = false;

@@ -286,8 +286,19 @@ class init{
         return $data;
     }
 
-    private function include_action_local_base_data(string $accion): stdClass
+    /**
+     * Data para include de fronted
+     * @param string $accion Accion en ejecucion
+     * @return stdClass|array
+     * @version 2.30.3
+     */
+    private function include_action_local_base_data(string $accion): stdClass|array
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_local_base(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local base', data: $include_action);
@@ -659,11 +670,11 @@ class init{
     public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
 
-        if(!isset($keys_selects->inputs)){
+        if(!isset($keys->inputs)){
             $keys->inputs = array();
         }
 
-        if(!isset($keys_selects->selects)){
+        if(!isset($keys->selects)){
             $keys->selects = array();
         }
 
