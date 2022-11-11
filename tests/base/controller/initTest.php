@@ -210,6 +210,22 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_output_include(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $existe = false;
+        $include_action = '';
+        $resultado = $init->output_include($existe, $include_action);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */

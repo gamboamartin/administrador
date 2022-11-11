@@ -566,7 +566,7 @@ class init{
         return $campos_view;
     }
 
-    public function model_init_campos_inputs(array $campos_view, array $keys): array
+    private function model_init_campos_inputs(array $campos_view, array $keys): array
     {
 
         foreach ($keys as $key){
@@ -579,13 +579,13 @@ class init{
         return $campos_view;
     }
 
-    public function model_init_campos_selects(
-        array $campos_view, array $keys, PDO $link, string $name_model, string $namespace_model): array
+    private function model_init_campos_selects(array $campos_view, array $keys, PDO $link): array
     {
 
-        foreach ($keys as $key){
-            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $key, link: $link,
-                name_model: $name_model, namespace_model: $namespace_model);
+        foreach ($keys as $campo =>$data){
+
+            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $campo, link: $link,
+                name_model: $data->name_model, namespace_model: $data->namespace_model);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
             }
@@ -610,6 +610,29 @@ class init{
         $campos_view[$key]['model'] = $modelo;
 
         return $campos_view;
+    }
+
+    public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
+    {
+
+        $keys_inputs = $keys->inputs;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_inputs);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_selects = $keys->selects;
+
+        $campos_view = $this->model_init_campos_selects(
+            campos_view: $campos_view, keys: $keys_selects, link: $link);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+        return $campos_view;
+
     }
 
     /**
@@ -727,6 +750,13 @@ class init{
         return $name_ctl;
     }
 
+    /**
+     * Da lña salida para web
+     * @param bool $existe Verifica si existe view
+     * @param string $include_action Accion include para front
+     * @return stdClass
+     * @version 2.28.3
+     */
     private function output_include(bool $existe, string $include_action): stdClass
     {
         $data = new stdClass();
