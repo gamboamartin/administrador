@@ -16,8 +16,9 @@ class adm_grupo extends modelo{
 
 
     /**
-     * 
+     * Obtiene los grupos de tipo root
      * @return array
+     * @version 2.22.2
      */
     public function grupos_root(): array
     {

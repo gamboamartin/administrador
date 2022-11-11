@@ -10,7 +10,12 @@ class adm_menu extends modelo{
         $tabla = 'adm_menu';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array('etiqueta_label');
-        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);
+
+        $columnas_extra['n_secciones'] = /** @lang sql */
+            "SELECT COUNT(*) FROM adm_seccion WHERE adm_seccion.adm_menu_id = adm_menu.id";
+
+        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,
+            columnas: $columnas, columnas_extra: $columnas_extra);
         $this->NAMESPACE = __NAMESPACE__;
     }
 
