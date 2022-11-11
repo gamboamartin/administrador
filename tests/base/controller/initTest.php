@@ -21,6 +21,22 @@ class initTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_aplica_view()
+    {
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $seguridad = new seguridad();
+        $resultado = $init->aplica_view($this->link, $seguridad);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_asigna_session_get(){
 
         errores::$error = false;

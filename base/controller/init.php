@@ -26,6 +26,7 @@ class init{
      *
      * @functions $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);.
      * Obtiene la accion ejecutada en base a seccion y accion. En caso de error lanzará un mensaje
+     * @version 2.24.3
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
@@ -529,6 +530,12 @@ class init{
         $data->ws = true;
         $data->view = false;
         return $data;
+    }
+
+    public function model_init_campos_input(array $campos_view, string $key): array
+    {
+        $campos_view[$key]['type'] = 'inputs';
+        return $campos_view;
     }
 
     /**
