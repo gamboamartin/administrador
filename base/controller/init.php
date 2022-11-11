@@ -232,6 +232,13 @@ class init{
         return './views/vista_base/' . $accion . '.php';
     }
 
+    /**
+     * Integra un include de template
+     * @param string $accion Accion ej ejecucion
+     * @param string $seccion Seccion en ejecucion
+     * @return string|array
+     * @version 2.31.3
+     */
     private function include_action_template(string $accion, string $seccion): string|array
     {
         $seccion = trim($seccion);
@@ -247,7 +254,8 @@ class init{
             return $this->error->error(mensaje: 'Error debe existir views->ruta_template_base', data: (new views()));
         }
 
-        return (new views())->ruta_template_base.'views/'.$seccion.'/'. $accion . '.php';
+        $include = (new views())->ruta_template_base.'views/'.$seccion.'/'. $accion . '.php';
+        return str_replace('//', '/', $include);
     }
 
     /**
@@ -628,9 +636,18 @@ class init{
 
         foreach ($keys as $campo =>$data){
 
+            if(!is_object($data)){
+                return $this->error->error(mensaje: 'Error al data de ser un obj',data:  $data);
+            }
+
             $campo = trim($campo);
             if($campo === ''){
                 return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo);
+            }
+            $keys_val = array('name_model','namespace_model');
+            $valida = (new validacion())->valida_existencia_keys(keys:$keys_val, registro: $data);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
             }
 
             $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $campo, link: $link,
@@ -651,6 +668,14 @@ class init{
         $key = trim($key);
         if($key === ''){
             return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+        $namespace_model = trim($namespace_model);
+        if($namespace_model === ''){
+            return $this->error->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model);
+        }
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model);
         }
 
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');

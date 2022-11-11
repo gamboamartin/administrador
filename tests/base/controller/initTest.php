@@ -189,6 +189,22 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_include_action_template(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'v';
+        $seccion = 'a';
+        $resultado = $init->include_action_template($accion, $seccion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('/var/www/html/administrador/vendor/gamboa.martin/template_1/views/a/v.php',$resultado);
+        $init = new init();
+    }
+
     public function test_include_action_template_base(){
 
         errores::$error = false;
