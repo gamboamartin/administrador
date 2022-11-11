@@ -464,6 +464,7 @@ class init{
         $data->js_view = $data_custom->js_view;
 
         $data->menu = $seguridad->menu;
+        $data->acceso_denegado = $seguridad->acceso_denegado;
 
         $data->link = $link;
         $data->path_base = $conf_generales->path_base;
@@ -741,6 +742,7 @@ class init{
             if (!$permiso) {
                 $seguridad->seccion = 'adm_session';
                 $seguridad->accion = 'denegado';
+                $seguridad->acceso_denegado = true;
             }
 
             $n_acciones = $modelo_accion->cuenta_acciones();

@@ -13,6 +13,22 @@ if(errores::$error){
     die('Error');
 }
 
+if($data->acceso_denegado && isset($_GET['ws']) && $_GET['ws'] === '1'){
+
+    $error = (new gamboamartin\errores\errores())->error(mensaje: 'Acceso denegado ',data: array());
+    ob_clean();
+    header('Content-Type: application/json');
+    try {
+        echo json_encode($error, JSON_THROW_ON_ERROR);
+        exit;
+    }
+    catch (Throwable $e){
+        print_r($e);
+        exit;
+    }
+
+}
+
 $controlador = $data->controlador;
 $link = $data->link;
 $conf_generales = $data->conf_generales;

@@ -13,6 +13,7 @@ class seguridad{
     public string|bool $accion = false ;
     public string|bool $menu = false;
     public string|bool $webservice = false;
+    public bool $acceso_denegado = false;
     private errores $error;
 
     public function __construct(bool $aplica_seguridad = true){
