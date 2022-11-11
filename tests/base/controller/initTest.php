@@ -135,6 +135,21 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_include_action_local_base(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'a';
+        $resultado = $init->include_action_local_base($accion);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('./views/vista_base/a.php',$resultado);
+        errores::$error = false;
+    }
+
     public function test_include_action_template_base(){
 
         errores::$error = false;

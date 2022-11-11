@@ -1,6 +1,7 @@
 <?php
 namespace base\controller;
 use base\conexion;
+use base\orm\modelo_base;
 use base\seguridad;
 use config\generales;
 use config\views;
@@ -203,6 +204,12 @@ class init{
         return './views/' . $seccion . '/' . $accion . '.php';
     }
 
+    /**
+     * Genera un include para view
+     * @param string $accion Accion a crear
+     * @return string|array
+     * @version 2.27.3
+     */
     private function include_action_local_base(string $accion): string|array
     {
         $accion = trim($accion);
@@ -572,25 +579,36 @@ class init{
         return $campos_view;
     }
 
-    public function model_init_campos_selects(array $campos_view, array $keys): array
+    public function model_init_campos_selects(
+        array $campos_view, array $keys, PDO $link, string $name_model, string $namespace_model): array
     {
 
         foreach ($keys as $key){
-            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $key);
+            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $key, link: $link,
+                name_model: $name_model, namespace_model: $namespace_model);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
             }
+
         }
 
         return $campos_view;
     }
 
-    private function model_init_campos_select(array $campos_view, string $key): array
+    private function model_init_campos_select(
+        array $campos_view, string $key, PDO $link, string $name_model, string $namespace_model): array
     {
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
+
+        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model,namespace_model: $namespace_model);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al genera modelo',data:  $modelo);
+        }
+        $campos_view[$key]['model'] = $modelo;
+
         return $campos_view;
     }
 
