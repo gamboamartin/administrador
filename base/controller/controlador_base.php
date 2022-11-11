@@ -12,6 +12,7 @@ use JsonException;
 
 use PDO;
 use stdClass;
+use Throwable;
 use validacion\confs\configuraciones;
 
 
@@ -247,18 +248,15 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     * ERROREV
+     *
      * Función que al validar los datos de una clase inserta los registros en la base de datos.
      * Si los registros no son válidos, éstos se limpian para ser capturados de nuevo.
      * @param bool $header Si header muestra resultado en front
      * @param bool $ws si ws retorna json
      * @return array|stdClass con datos del registro insertado
-     * @throws JsonException retorna un arreglo
+     * @version 2.36.3
      */
     public function alta_bd(bool $header, bool $ws): array|stdClass{
-        /**
-         * REFACTORIZA
-         */
 
         $transaccion_previa = $this->transaccion_previa();
         if(errores::$error){
@@ -311,8 +309,13 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         if($ws){
             header('Content-Type: application/json');
-            echo json_encode($resultado, JSON_THROW_ON_ERROR);
-            exit;
+            try {
+                echo json_encode($resultado, JSON_THROW_ON_ERROR);
+                exit;
+            }
+            catch (Throwable $e){
+                return $this->retorno_error(mensaje: 'Error de salida', data: $e, header: true,ws:  false);
+            }
         }
         return $resultado;
     }
