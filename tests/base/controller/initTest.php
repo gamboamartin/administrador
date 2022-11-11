@@ -220,6 +220,21 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_include_action_template_data(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 's';
+        $seccion = 'a';
+        $resultado = $init->include_action_template_data($accion, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_init_data_controler(){
 
         errores::$error = false;

@@ -318,8 +318,24 @@ class init{
         return $data;
     }
 
+    /**
+     * Integra en include de un template
+     * @param string $accion Accion en ejecucion
+     * @param string $seccion Seccion en ejecucion
+     * @return array|stdClass
+     * @version 2.32.3
+     */
     private function include_action_template_data(string $accion, string $seccion): array|stdClass
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_template(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $include_action);
@@ -578,6 +594,16 @@ class init{
         $data->ws = true;
         $data->view = false;
         return $data;
+    }
+
+    public function maqueta_key_select_input(string $name_model, string $namespace_paquete): array
+    {
+        $name_model_id = $name_model.'_id';
+        $selects[$name_model_id] = new stdClass();
+        $selects[$name_model_id]->name_model = $name_model;
+        $selects[$name_model_id]->namespace_model = "$namespace_paquete\\models";
+
+        return $selects;
     }
 
     private function model_init_campos(array $campos_view, string $key, string $type): array
