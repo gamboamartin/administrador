@@ -102,6 +102,20 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_salida(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $include_action = 'a';
+        $resultado = $init->genera_salida($include_action);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
     public function test_include_action(){

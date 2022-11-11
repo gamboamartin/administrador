@@ -146,8 +146,20 @@ class init{
         return $data_include;
     }
 
+    /**
+     * Genera la salida para controller
+     * @param string $include_action Accion include a integrar para frontend
+     * @return array|stdClass
+     * @version 2.29.3
+     *
+     */
     private function genera_salida(string $include_action): array|stdClass
     {
+        $include_action = trim($include_action);
+        if($include_action === ''){
+            return $this->error->error(mensaje: 'Error include_action esta vacio', data: $include_action);
+        }
+
         $existe = $this->existe_include(include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar include', data: $include_action);
@@ -551,6 +563,15 @@ class init{
 
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
+        $type = trim($type);
+        if($type === ''){
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+        }
 
         $campos_view[$key]['type'] = $type;
         return $campos_view;
@@ -559,6 +580,12 @@ class init{
 
     private function model_init_campos_input(array $campos_view, string $key): array
     {
+
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'inputs');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
@@ -570,6 +597,12 @@ class init{
     {
 
         foreach ($keys as $key){
+
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+            }
+
             $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
@@ -583,6 +616,11 @@ class init{
     {
 
         foreach ($keys as $campo =>$data){
+
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo);
+            }
 
             $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $campo, link: $link,
                 name_model: $data->name_model, namespace_model: $data->namespace_model);
@@ -598,6 +636,12 @@ class init{
     private function model_init_campos_select(
         array $campos_view, string $key, PDO $link, string $name_model, string $namespace_model): array
     {
+
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
@@ -614,6 +658,14 @@ class init{
 
     public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
+
+        if(!isset($keys_selects->inputs)){
+            $keys->inputs = array();
+        }
+
+        if(!isset($keys_selects->selects)){
+            $keys->selects = array();
+        }
 
         $keys_inputs = $keys->inputs;
 
