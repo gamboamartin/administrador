@@ -265,6 +265,22 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_include_template(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'alta';
+        $seccion = 'a';
+
+        $resultado = $init->include_template($accion, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_include_template_base(){
 
         errores::$error = false;

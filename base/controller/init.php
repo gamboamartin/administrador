@@ -392,10 +392,20 @@ class init{
      * para obtener un template. En caso de error, lanzará un mensaje.
      *
      * @functions $data_include = $init->include_template_base. Valida y maqueta el objeto requerido en base
-     * a "$accion" si éste existe. En caso de error, lanzará un mensaje.
+     *  "$accion" si éste existe. En caso de error, lanzará un mensaje.
+     * @version 2.35.3
      */
     private function include_template(string $accion, string $seccion): array|stdClass
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $data_include = $this->include_action_template_data(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
@@ -607,6 +617,14 @@ class init{
         $data->ws = true;
         $data->view = false;
         return $data;
+    }
+
+    public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder): array
+    {
+        $keys_selects[$key] = new stdClass();
+        $keys_selects[$key]->cols = $cols;
+        $keys_selects[$key]->place_holder = $place_holder;
+        return $keys_selects;
     }
 
     private function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
