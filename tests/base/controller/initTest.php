@@ -201,7 +201,7 @@ class initTest extends test {
         $resultado = $init->include_action_template($accion, $seccion);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('/var/www/html/administrador/vendor/gamboa.martin/template_1/views/a/v.php',$resultado);
+        $this->assertStringContainsStringIgnoringCase('/var/www/html/administrador/views/a/v.php',$resultado);
         $init = new init();
     }
 
@@ -262,6 +262,32 @@ class initTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
+        errores::$error = false;
+    }
+
+    public function test_include_template_base(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'a';
+
+        $resultado = $init->include_template_base($accion);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error no existe la view',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+
+        $accion = 'lista';
+
+        $resultado = $init->include_template_base($accion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('/var/www/html/administrador/views/vista_base/lista.php',$resultado->include_action);
         errores::$error = false;
     }
 
@@ -330,6 +356,8 @@ class initTest extends test {
 
         errores::$error = false;
     }
+
+
 
 
 

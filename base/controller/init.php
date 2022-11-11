@@ -276,7 +276,8 @@ class init{
             return $this->error->error(mensaje: 'Error debe existir views->ruta_template_base', data: (new views()));
         }
 
-        return (new views())->ruta_template_base.'views/vista_base/' . $accion . '.php';
+        $include = (new views())->ruta_template_base.'views/vista_base/' . $accion . '.php';
+        return str_replace('//', '/', $include);
     }
 
     private function include_action_local_data(string $accion, string $seccion): array|stdClass
@@ -417,10 +418,16 @@ class init{
      *
      * @functions $init->include_action_template_base_data. Genera una ruta contemplando "$accion"
      * para obtener un template. Si ocurre un error, lanzará un mensaje.
+     * @version 2.34.3
      *
      */
     private function include_template_base(string $accion): array|stdClass
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $data_include = $this->include_action_template_base_data(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
@@ -602,7 +609,7 @@ class init{
         return $data;
     }
 
-    public function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
+    private function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
     {
         $name_model_id = $name_model.'_id';
         $selects[$name_model_id] = new stdClass();
@@ -986,6 +993,18 @@ class init{
             }
         }
         return $seguridad;
+    }
+
+    public function select_key_input(array $init_data, array $selects): array
+    {
+
+        foreach ($init_data as $name_model=>$namespace_paquete){
+            $selects = $this->maqueta_key_select_input(selects: $selects,name_model: $name_model, namespace_paquete: $namespace_paquete);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar select',data:  $selects);
+            }
+        }
+        return $selects;
     }
 
     /**
