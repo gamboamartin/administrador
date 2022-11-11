@@ -15,6 +15,7 @@ class controler{
     public modelo $modelo;
     public int $registro_id = -1;
     public string $seccion = '';
+    public bool $acceso_denegado = false;
 
     public errores $errores;
 
