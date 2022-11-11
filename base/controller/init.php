@@ -359,9 +359,15 @@ class init{
      *
      * @functions  $data = $init->genera_salida. Valida y maqueta el objeto almacenado si existe tanto
      * el objeto como la ruta del archivo. En caso de error lanzará un mensaje.
+     * @version 2.33.3
      */
     private function include_action_template_base_data(string $accion): array|stdClass
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_template_base(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template base', data: $include_action);
@@ -596,7 +602,7 @@ class init{
         return $data;
     }
 
-    public function maqueta_key_select_input(string $name_model, string $namespace_paquete): array
+    public function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
     {
         $name_model_id = $name_model.'_id';
         $selects[$name_model_id] = new stdClass();
