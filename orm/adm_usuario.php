@@ -195,13 +195,15 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param string $usuario Usuario a verificar
      * @param string $accion_header elemento para regresar a accion especifica en el controlador
      * @param string $seccion_header elemento para regresar a seccion especifica en el controlador
-     * @return array|mixed
+     * @return array
      *
      * @function $r_usuario = $adm_usuario->filtro_and(filtro: $filtro); maqueta los datos obtenidos de un
      * usuario, antes siendo revisados por un filtro.
+     * @version 2.25.3
      */
     public function valida_usuario_password(string $password, string $usuario, string $accion_header = '',
-                                            string $seccion_header = ''){
+                                            string $seccion_header = ''): array
+    {
         if($usuario === ''){
             return $this->error->error(mensaje: 'El usuario no puede ir vacio',data: $usuario,
                 seccion_header: $seccion_header, accion_header: $accion_header);

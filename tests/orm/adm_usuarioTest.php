@@ -157,6 +157,24 @@ class adm_usuarioTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_usuario_password(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $password = 'b';
+        $usuario = 'a';
+
+        $resultado = $modelo->valida_usuario_password($password, $usuario);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error al validar usuario y pass',$resultado['mensaje_limpio']);
+        errores::$error = false;
+    }
+
 
 
 

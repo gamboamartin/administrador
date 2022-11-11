@@ -81,16 +81,16 @@ class init{
     }
 
     /**
-     * UNIT
+     *
      * Asigna una session aleatoria a get
      * @return array GET con session_id en un key
+     * @version 2.25.3
      */
     public function asigna_session_get(): array
     {
         $session_id = $this->session_id();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar session_id', data: $session_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar session_id', data: $session_id);
         }
 
         $_GET['session_id'] = $session_id;
@@ -532,9 +532,22 @@ class init{
         return $data;
     }
 
-    public function model_init_campos_input(array $campos_view, string $key): array
+    private function model_init_campos_input(array $campos_view, string $key): array
     {
         $campos_view[$key]['type'] = 'inputs';
+        return $campos_view;
+    }
+
+    public function model_init_campos_inputs(array $campos_view, array $keys): array
+    {
+
+        foreach ($keys as $key){
+            $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            }
+        }
+
         return $campos_view;
     }
 
@@ -765,9 +778,10 @@ class init{
     }
 
     /**
-     * UNIT
+     * Obtiene la session en curso
      * Genera la session_id basada en un rand
      * @return array|string string es la session generada
+     * @version 2.25.3
      */
     private function session_id(): array|string
     {
@@ -782,7 +796,7 @@ class init{
             $session_id .= random_int(10,99);
         }
         catch (Throwable $e){
-            return $this->error->error(mensaje: 'Error al generar session', data: $e,params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar session', data: $e);
         }
         return $session_id;
     }

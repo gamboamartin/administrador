@@ -36,7 +36,7 @@ class controlador_adm_sessionTest extends test {
         $this->assertStringContainsStringIgnoringCase('Acceso denegado', $resultado['mensaje']);
         errores::$error = false;
 
-        $url = 'http://localhost/administrador/index.php?seccion=adm_session&accion=denegado&ws=1';
+        $url = 'http://localhost/administrador/index.php?seccion=adm_session&accion=denegado';
 
         $curl = curl_init();
 
@@ -56,9 +56,9 @@ class controlador_adm_sessionTest extends test {
         //print_r($resultado);exit;
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('{"error":1,"mensaje":"<b><span style=\"color:red\">Acceso denegado<\/span><\/b>', $resultado);
-        $this->assertStringContainsStringIgnoringCase('Acceso denegado<\/span><\/b>","file":"<b>\/var\/www\/html\/administr', $resultado);
-        $this->assertStringContainsStringIgnoringCase('ion":"<b>denegado<\/b>","data":[],"params":[],"fix":""}', $resultado);
+        $this->assertStringContainsStringIgnoringCase('[error] => 1', $resultado);
+        $this->assertStringContainsStringIgnoringCase('[mensaje] => <b><span style="color:red">Acceso denegado</span></b>', $resultado);
+        $this->assertStringContainsStringIgnoringCase('[mensaje_limpio] => Acceso denegado', $resultado);
 
         errores::$error = false;
 
@@ -82,6 +82,32 @@ class controlador_adm_sessionTest extends test {
         $this->assertStringContainsStringIgnoringCase('[error] => 1', $resultado);
         $this->assertStringContainsStringIgnoringCase('[mensaje] => <b><span style="color:red">Acceso denegado</span></b>', $resultado);
         $this->assertStringContainsStringIgnoringCase('[class] => <b>gamboamartin\controllers\controlador_adm_session</b>', $resultado);
+
+        errores::$error = false;
+
+        $url = 'http://localhost/administrador/index.php?seccion=adm_session&accion=denegado&ws=1';
+
+        $curl = curl_init();
+
+        $opciones = array(
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => false,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPHEADER => array('Content-Type: application/json'),
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_POST => true
+        );
+
+        curl_setopt_array($curl, $opciones);
+
+        $resultado  = curl_exec($curl);
+        $this->assertIsString($resultado);
+        $this->assertStringContainsStringIgnoringCase('{"error":1,"mensaje":"<b><span style=\"c', $resultado);
+        $this->assertStringContainsStringIgnoringCase('style=\"color:red\">Acceso denegado<\/span>', $resultado);
+        $this->assertStringContainsStringIgnoringCase('negado<\/span><\/b>","mensaje_limpio":"Ac', $resultado);
+        $this->assertStringContainsStringIgnoringCase('limpio":"Acceso denegado","file":"<b>\/var\/www\/html\/ad', $resultado);
+        $this->assertStringContainsStringIgnoringCase('tml\/administrador\/controllers\/controlador_adm_sessio', $resultado);
+
 
         errores::$error = false;
     }
