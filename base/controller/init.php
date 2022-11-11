@@ -97,8 +97,18 @@ class init{
         return $_GET;
     }
 
-    private function existe_include(string $include_action): bool
+    /**
+     * Verifica si existe un archivo para include view
+     * @param string $include_action Ruta include
+     * @return bool|array
+     * @version 2.26.3
+     */
+    private function existe_include(string $include_action): bool|array
     {
+        $include_action = trim($include_action);
+        if($include_action === ''){
+            return $this->error->error(mensaje: 'Error include_action esta vacio', data: $include_action);
+        }
         $existe = false;
         if (file_exists($include_action)) {
             $existe = true;
@@ -532,9 +542,20 @@ class init{
         return $data;
     }
 
+    private function model_init_campos(array $campos_view, string $key, string $type): array
+    {
+
+        $campos_view[$key]['type'] = $type;
+        return $campos_view;
+
+    }
+
     private function model_init_campos_input(array $campos_view, string $key): array
     {
-        $campos_view[$key]['type'] = 'inputs';
+        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'inputs');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
         return $campos_view;
     }
 
@@ -548,6 +569,28 @@ class init{
             }
         }
 
+        return $campos_view;
+    }
+
+    public function model_init_campos_selects(array $campos_view, array $keys): array
+    {
+
+        foreach ($keys as $key){
+            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            }
+        }
+
+        return $campos_view;
+    }
+
+    private function model_init_campos_select(array $campos_view, string $key): array
+    {
+        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
         return $campos_view;
     }
 

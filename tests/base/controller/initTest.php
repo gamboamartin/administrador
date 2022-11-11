@@ -71,6 +71,37 @@ class initTest extends test {
 
     }
 
+    public function test_existe_include(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $include_action = '';
+        $resultado = $init->existe_include($include_action);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error include_action esta vacio',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $include_action = 'a';
+        $resultado = $init->existe_include($include_action);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+
+        $include_action = '/var';
+        $resultado = $init->existe_include($include_action);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
 
 
     public function test_include_action(){
