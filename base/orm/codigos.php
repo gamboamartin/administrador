@@ -149,6 +149,7 @@ class codigos{
         return $codigo;
     }
 
+
     /**
      * Genera codigo random
      * @return array|string
