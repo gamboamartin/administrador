@@ -637,6 +637,14 @@ class init{
         return $selects;
     }
 
+    /**
+     * Inicializa un campo de tipo model
+     * @param array $campos_view Conjunto de campos provenientes de modelo
+     * @param string $key Key a integrar
+     * @param string $type Tipo de input
+     * @return array
+     * @version 2.37.3.1
+     */
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
         $key = trim($key);

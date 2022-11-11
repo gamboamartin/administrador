@@ -116,8 +116,6 @@ class initTest extends test {
         errores::$error = false;
     }
 
-
-
     public function test_include_action(){
 
         errores::$error = false;
@@ -322,6 +320,23 @@ class initTest extends test {
         $this->assertNotTrue($resultado->view);
         errores::$error = false;
     }
+
+    public function test_model_init_campos(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+        $campos_view = array();
+        $key = 'a';
+        $type = 'v';
+        $resultado = $init->model_init_campos($campos_view, $key, $type);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('v',$resultado['a']['type']);
+        errores::$error = false;
+    }
+
 
     public function test_name_controler(){
 
