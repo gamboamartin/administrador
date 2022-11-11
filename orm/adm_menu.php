@@ -11,7 +11,7 @@ class adm_menu extends modelo{
         $columnas = array($tabla=>false);
         $campos_obligatorios = array('etiqueta_label');
 
-        $columnas_extra['n_secciones'] = /** @lang sql */
+        $columnas_extra['adm_menu_n_secciones'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_seccion WHERE adm_seccion.adm_menu_id = adm_menu.id)";
 
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,

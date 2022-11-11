@@ -15,6 +15,20 @@ class adm_menuTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_registro(){
+
+        errores::$error = false;
+        $modelo = new adm_menu($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->registro(registro_id: 1);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(9,$resultado['adm_menu_n_secciones']);
+        errores::$error = false;
+    }
+
     public function test_registros(){
 
         errores::$error = false;
@@ -25,7 +39,7 @@ class adm_menuTest extends test {
         $resultado = $modelo->registros();
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(9,$resultado[0]['n_secciones']);
+        $this->assertEquals(9,$resultado[0]['adm_menu_n_secciones']);
         errores::$error = false;
     }
 
