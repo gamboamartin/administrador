@@ -43,6 +43,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public string $btn = '';
 
 
+
     public array $registro_en_proceso = array();
 
 

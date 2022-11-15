@@ -154,6 +154,24 @@ class controllerTest extends test {
 
     }
 
+    public function test_valida_data_filtro(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler($this->link);
+        $ctl = new liberator($ctl);
+
+        $campo = 'a';
+        $tabla = 'c';
+
+        $resultado = $ctl->valida_data_filtro($campo, $tabla);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+
 
 
 

@@ -67,6 +67,7 @@ class controler{
     public string $include_inputs_modifica = '';
     public string $include_lista_row = '';
     public string $include_lista_thead= '';
+    public array $buttons = array(); //Usado para system e integrar botones permitidos
 
     public array $subtitulos_menu = array();
 
@@ -577,6 +578,13 @@ class controler{
         return $type;
     }
 
+    /**
+     * Valida los elementos de un filtro
+     * @param string $campo Campo de filtro
+     * @param string $tabla Tabla de filtro
+     * @return bool|array
+     * @version 2.41.4
+     */
     private function valida_data_filtro(string $campo, string $tabla): bool|array
     {
         $campo = trim($campo);
