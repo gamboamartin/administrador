@@ -108,6 +108,10 @@ class filtros{
             keys_data_filter: $modelo->keys_data_filter, not_in: $not_in, sql_extra: $sql_extra,
             tipo_filtro: $tipo_filtro);
 
+        if(!isset($filtros->in)){
+            $filtros->in = '';
+        }
+
         $filtros->in = str_replace('( (', '((', $filtros->in);
         $filtros->in = str_replace('  ', ' ', $filtros->in);
         $filtros->in = str_replace('  ', ' ', $filtros->in);
