@@ -491,10 +491,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     *
-     * @param bool $header
-     * @param bool $ws
+     * Elimina un registro
+     * @param bool $header Si header muestra resultado en nav
+     * @param bool $ws Si ws muestra resultado en json
      * @return array|stdClass
+     * @version 2.44.4
      */
     public function elimina_bd(bool $header, bool $ws): array|stdClass{
         $transacion_previa = false;

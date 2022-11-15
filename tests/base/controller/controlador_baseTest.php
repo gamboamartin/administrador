@@ -78,6 +78,42 @@ class controlador_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_elimina_bd(): void
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_year($this->link);
+
+        $del = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);exit;
+        }
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+        $alta = $modelo->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);exit;
+        }
+
+        $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
+        //$ctl = new liberator($ctl);
+        $ctl->seccion = 'a';
+        $ctl->registro_id = '1';
+
+        $resultado = $ctl->elimina_bd(false,false);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_modifica(): void
     {
 
@@ -89,6 +125,22 @@ class controlador_baseTest extends test {
         //$ctl = new liberator($ctl);
         $ctl->seccion = 'a';
         $ctl->registro_id = '1';
+
+        $del = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);exit;
+        }
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+        $alta = $modelo->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);exit;
+        }
 
         $resultado = $ctl->modifica(false);
         $this->assertIsObject($resultado);
