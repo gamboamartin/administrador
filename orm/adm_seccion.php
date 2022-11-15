@@ -18,7 +18,12 @@ class adm_seccion extends modelo{
         $tabla = 'adm_seccion';
         $columnas = array($tabla=>false, 'adm_menu'=>$tabla);
         $campos_obligatorios = array('status','descripcion','adm_menu_id');
-        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas);
+
+        $columnas_extra['adm_seccion_n_acciones'] = /** @lang sql */
+            "(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id)";
+
+        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas,
+            columnas_extra: $columnas_extra);
         $this->NAMESPACE = __NAMESPACE__;
     }
 
