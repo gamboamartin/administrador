@@ -889,6 +889,9 @@ class init{
         if($sistema === 'boletaje'){
             $namespace = 'gamboamartin\\boletaje\\';
         }
+        if($sistema === 'tg_cat_sat'){
+            $namespace = 'tglobally\\tg_cat_sat\\';
+        }
 
 
 
