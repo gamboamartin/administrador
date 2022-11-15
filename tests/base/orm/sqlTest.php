@@ -76,9 +76,10 @@ class sqlTest extends test {
         $llave = 'a';
         $values_sql = 'a';
         $resultado = $sql->in($llave, $values_sql);
+
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('a  IN (a)',$resultado);
+        $this->assertStringContainsStringIgnoringCase('a IN (a)',$resultado);
 
         errores::$error = false;
     }

@@ -297,8 +297,8 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->sentencia);
-        $this->assertEquals('a  IN (a ,c)', $resultado->in);
-        $this->assertEquals('a NOT IN (a ,c)', $resultado->not_in);
+        $this->assertEquals("a IN ('a' ,'c')", $resultado->in);
+        $this->assertEquals("a NOT IN ('a' ,'c')", $resultado->not_in);
 
 
 
@@ -321,8 +321,8 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado->sentencia);
-        $this->assertEquals('a  IN (a ,c)', $resultado->in);
-        $this->assertEquals('a NOT IN (a ,c)', $resultado->not_in);
+        $this->assertEquals("a IN ('a' ,'c')", $resultado->in);
+        $this->assertEquals("a NOT IN ('a' ,'c')", $resultado->not_in);
         $this->assertEquals("  a <> ''   AND  b <> '' ", $resultado->diferente_de);
 
 
@@ -831,7 +831,7 @@ class whereTest extends test {
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a  IN (a ,f)',$resultado->in);
+        $this->assertEquals("a IN ('a' ,'f')",$resultado->in);
         $this->assertEquals('xx',$resultado->sql_extra);
 
         errores::$error = false;
@@ -853,7 +853,7 @@ class whereTest extends test {
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a  IN (a ,f)',$resultado->in);
+        $this->assertEquals("a IN ('a' ,'f')",$resultado->in);
         $this->assertEquals('xx',$resultado->sql_extra);
         $this->assertEquals("  a <> 'x'   AND  b <> 's' ",$resultado->diferente_de);
 
@@ -873,7 +873,7 @@ class whereTest extends test {
         $resultado = $wh->genera_in($in);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a  IN (z)',$resultado);
+        $this->assertEquals("a IN ('z')",$resultado);
         errores::$error = false;
     }
 
@@ -889,7 +889,7 @@ class whereTest extends test {
         $resultado = $wh->genera_in_sql($in);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a  IN (z)',$resultado);
+        $this->assertEquals("a IN ('z')",$resultado);
         errores::$error = false;
     }
 
@@ -906,7 +906,7 @@ class whereTest extends test {
         $resultado = $wh->genera_not_in($not_in);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals( "a NOT IN (z ,f)", $resultado);
+        $this->assertEquals( "a NOT IN ('z' ,'f')", $resultado);
         errores::$error = false;
     }
 
@@ -922,9 +922,10 @@ class whereTest extends test {
         $not_in['values'] = array('z','f','d');
         $resultado = $wh->genera_not_in_sql($not_in);
 
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "a NOT IN (z ,f ,d)", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "a NOT IN ('z' ,'f' ,'d')", $resultado);
         errores::$error = false;
     }
 
@@ -1078,9 +1079,10 @@ class whereTest extends test {
         $llave = 'z';
         $values[] = 'a';
         $resultado = $wh->not_in_sql($llave, $values);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "z NOT IN (a)", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "z NOT IN ('a')", $resultado);
 
         errores::$error = false;
         $values = array();
@@ -1090,7 +1092,7 @@ class whereTest extends test {
         $resultado = $wh->not_in_sql($llave, $values);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "z NOT IN (a ,b)", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "z NOT IN ('a' ,'b')", $resultado);
         errores::$error = false;
     }
 
@@ -1292,7 +1294,7 @@ class whereTest extends test {
         $resultado = $wh->values_sql_in($values);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado);
+        $this->assertEquals("'a'", $resultado);
 
         errores::$error = false;
 
@@ -1302,7 +1304,7 @@ class whereTest extends test {
         $resultado = $wh->values_sql_in($values);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a ,b', $resultado);
+        $this->assertEquals("'a' ,'b'", $resultado);
         errores::$error = false;
     }
 

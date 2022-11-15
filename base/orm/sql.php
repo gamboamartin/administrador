@@ -41,8 +41,11 @@ class sql{
 
         $in_sql = '';
         if($values_sql!==''){
-            $in_sql.="$llave  IN ($values_sql)";
+            $in_sql.="$llave IN ($values_sql)";
         }
+        str_replace('  ', ' ', $in_sql);
+        str_replace('  ', ' ', $in_sql);
+        str_replace('  ', ' ', $in_sql);
         return $in_sql;
     }
 

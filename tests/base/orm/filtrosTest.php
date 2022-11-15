@@ -83,7 +83,7 @@ class filtrosTest extends test {
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("  ( (a  IN (a ,b)))",$resultado->in);
+        $this->assertEquals("((a IN ('a' ,'b')))",$resultado->in);
         $this->assertEquals("",$resultado->sentencia);
 
         errores::$error = false;
@@ -114,7 +114,7 @@ class filtrosTest extends test {
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("  ( (a  IN (a ,b)))",$resultado->in);
+        $this->assertEquals("((a IN ('a' ,'b')))",$resultado->in);
         $this->assertEquals("",$resultado->sentencia);
         $this->assertEquals("  AND  ( (zzz <> 'z'   AND  ppp <> 'z'))",$resultado->diferente_de);
 
@@ -148,7 +148,7 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a              ',$resultado);
+        $this->assertEquals('a',$resultado);
 
         errores::$error = false;
 
@@ -161,7 +161,7 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a          b    ',$resultado);
+        $this->assertEquals('a b',$resultado);
 
         errores::$error = false;
 
@@ -175,7 +175,7 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a     c     b    ',$resultado);
+        $this->assertEquals('a c b',$resultado);
 
 
         errores::$error = false;
@@ -191,7 +191,7 @@ class filtrosTest extends test {
         $resultado = $filtros->consulta_full_and($complemento, $consulta, $modelo);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
-        $this->assertEquals('a     c    g b    ',$resultado);
+        $this->assertEquals('a c g b',$resultado);
 
 
         errores::$error = false;

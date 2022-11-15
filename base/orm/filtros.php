@@ -108,6 +108,14 @@ class filtros{
             keys_data_filter: $modelo->keys_data_filter, not_in: $not_in, sql_extra: $sql_extra,
             tipo_filtro: $tipo_filtro);
 
+        $filtros->in = str_replace('( (', '((', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('( (', '((', $filtros->in);
+        $filtros->in = trim($filtros->in);
+
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
@@ -144,6 +152,7 @@ class filtros{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sql',data:$sql);
         }
+        $sql = trim($sql);
         $modelo->consulta = $sql;
         return $modelo->consulta;
     }
@@ -374,7 +383,13 @@ class filtros{
         $sql.= $complemento->params->group_by.' '.$complemento->params->order.' ';
         $sql.= $complemento->params->limit.' '.$complemento->params->offset;
 
-        return $sql;
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('( (', '((', $sql);
+
+        return str_replace('  ', ' ', $sql);
     }
 
 }

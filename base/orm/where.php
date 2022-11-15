@@ -955,6 +955,9 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sql',data:$in_sql);
         }
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        $in_sql = str_replace('( (', '(', $in_sql);
 
         $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
@@ -1027,9 +1030,15 @@ class where{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
             }
+            $in_sql = str_replace('  ', ' ', $in_sql);
+            $in_sql = str_replace('  ', ' ', $in_sql);
+            $in_sql = str_replace('( (', '(', $in_sql);
 
         }
-        return $in_sql;
+
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        return str_replace('( (', '(', $in_sql);
     }
 
     /**
@@ -1583,7 +1592,11 @@ class where{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error obtener datos de value',data: $data);
             }
-            $values_sql.="$data->coma$data->value";
+
+            $value = addslashes($value);
+            $value = "'$value'";
+
+            $values_sql.="$data->coma$value";
         }
         return $values_sql;
     }
