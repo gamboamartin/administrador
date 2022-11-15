@@ -108,6 +108,10 @@ class filtros{
             keys_data_filter: $modelo->keys_data_filter, not_in: $not_in, sql_extra: $sql_extra,
             tipo_filtro: $tipo_filtro);
 
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
+        }
+
         if(!isset($filtros->in)){
             $filtros->in = '';
         }
@@ -121,9 +125,7 @@ class filtros{
         $filtros->in = trim($filtros->in);
 
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
-        }
+
         $filtros->params = $params;
         return $filtros;
     }
