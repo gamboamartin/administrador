@@ -3,7 +3,12 @@ namespace tests\base;
 
 use base\orm\bitacoras;
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_campo;
+use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -166,6 +171,69 @@ class bitacorasTest extends test {
     public function test_genera_bitacora(){
 
         errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_bitacora($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 3;
+        $adm_seccion['descripcion'] = 'adm_accion_grupo';
+        $adm_seccion['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $bitacora = new bitacoras();
         $bitacora = (new liberator($bitacora));
         $modelo = new adm_accion_grupo($this->link);

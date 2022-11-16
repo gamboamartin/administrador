@@ -5,6 +5,14 @@ use base\controller\controler;
 use base\controller\init;
 use base\controller\normalizacion;
 use base\seguridad;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_campo;
+use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -26,8 +34,87 @@ class initTest extends test {
 
         errores::$error = false;
 
+        $_SESSION['usuario_id'] = 2;
         $init = new init();
         $init = new liberator($init);
+
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_bitacora($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+
+        $adm_seccion_ins['id'] = 2;
+        $adm_seccion_ins['descripcion'] = 'adm_session';
+        $adm_seccion_ins['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion_ins['descripcion'] = 'login';
+        $adm_accion_ins['titulo'] = 'login';
+        $adm_accion_ins['adm_seccion_id'] = 2;
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
 
         $seguridad = new seguridad();
         $resultado = $init->aplica_view($this->link, $seguridad);

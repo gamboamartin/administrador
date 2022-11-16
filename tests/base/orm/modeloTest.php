@@ -2,7 +2,12 @@
 namespace tests\src;
 
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_dia;
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\administrador\models\adm_seccion;
@@ -427,10 +432,68 @@ class modeloTest extends test {
         errores::$error = false;
         $modelo = new adm_accion($this->link);
         //$modelo = new liberator($modelo);
+
+
+        $_SESSION['usuario_id'] = 2;
+
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_seccion';
+        $adm_seccion['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $modelo->get_data_lista();
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(206,$resultado['n_registros']);
+        $this->assertEquals(7,$resultado['n_registros']);
 
         errores::$error = false;
         $modelo = new adm_accion($this->link);
@@ -441,8 +504,8 @@ class modeloTest extends test {
 
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(66,$resultado['n_registros']);
-        $this->assertEquals(1,$resultado['registros'][0]['adm_accion_id']);
+        $this->assertEquals(7,$resultado['n_registros']);
+        $this->assertIsNumeric($resultado['registros'][0]['adm_accion_id']);
 
         errores::$error = false;
         $modelo = new adm_accion($this->link);
@@ -459,7 +522,7 @@ class modeloTest extends test {
         //print_r($resultado);exit;
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(66,$resultado['n_registros']);
+        $this->assertEquals(7,$resultado['n_registros']);
         $this->assertEquals("SELECT adm_accion.id AS adm_accion_id, adm_accion.descripcion AS adm_accion_descripcion, adm_accion.etiqueta_label AS adm_accion_etiqueta_label, adm_accion.adm_seccion_id AS adm_accion_adm_seccion_id, adm_accion.status AS adm_accion_status, adm_accion.icono AS adm_accion_icono, adm_accion.visible AS adm_accion_visible, adm_accion.inicio AS adm_accion_inicio, adm_accion.lista AS adm_accion_lista, adm_accion.seguridad AS adm_accion_seguridad, adm_accion.usuario_update_id AS adm_accion_usuario_update_id, adm_accion.usuario_alta_id AS adm_accion_usuario_alta_id, adm_accion.fecha_alta AS adm_accion_fecha_alta, adm_accion.fecha_update AS adm_accion_fecha_update, adm_accion.es_modal AS adm_accion_es_modal, adm_accion.es_view AS adm_accion_es_view, adm_accion.titulo AS adm_accion_titulo, adm_accion.css AS adm_accion_css, adm_accion.es_status AS adm_accion_es_status, adm_accion.descripcion_select AS adm_accion_descripcion_select, adm_accion.codigo AS adm_accion_codigo, adm_accion.codigo_bis AS adm_accion_codigo_bis, adm_accion.alias AS adm_accion_alias, adm_accion.es_lista AS adm_accion_es_lista, adm_seccion.id AS adm_seccion_id, adm_seccion.descripcion AS adm_seccion_descripcion, adm_seccion.etiqueta_label AS adm_seccion_etiqueta_label, adm_seccion.status AS adm_seccion_status, adm_seccion.adm_menu_id AS adm_seccion_adm_menu_id, adm_seccion.icono AS adm_seccion_icono, adm_seccion.fecha_alta AS adm_seccion_fecha_alta, adm_seccion.fecha_update AS adm_seccion_fecha_update, adm_seccion.usuario_alta_id AS adm_seccion_usuario_alta_id, adm_seccion.usuario_update_id AS adm_seccion_usuario_update_id, adm_seccion.codigo AS adm_seccion_codigo, adm_seccion.codigo_bis AS adm_seccion_codigo_bis, adm_seccion.descripcion_select AS adm_seccion_descripcion_select, adm_seccion.alias AS adm_seccion_alias, adm_menu.id AS adm_menu_id, adm_menu.descripcion AS adm_menu_descripcion, adm_menu.etiqueta_label AS adm_menu_etiqueta_label, adm_menu.icono AS adm_menu_icono, adm_menu.observaciones AS adm_menu_observaciones, adm_menu.status AS adm_menu_status, adm_menu.usuario_update_id AS adm_menu_usuario_update_id, adm_menu.fecha_alta AS adm_menu_fecha_alta, adm_menu.fecha_update AS adm_menu_fecha_update, adm_menu.usuario_alta_id AS adm_menu_usuario_alta_id, adm_menu.codigo AS adm_menu_codigo, adm_menu.codigo_bis AS adm_menu_codigo_bis, adm_menu.descripcion_select AS adm_menu_descripcion_select, adm_menu.alias AS adm_menu_alias FROM adm_accion AS adm_accion LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = adm_accion.adm_seccion_id LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id WHERE ((adm_accion.id LIKE '%1%' OR adm_accion.descripcion LIKE '%1%')) LIMIT 10",$resultado['data_result']->sql);
 
         errores::$error = false;
@@ -659,6 +722,8 @@ class modeloTest extends test {
         $modelo = new adm_seccion($this->link);
         $modelo = new liberator($modelo);
 
+        $_SESSION['usuario_id'] = 2;
+
         $seccion = '';
         $resultado = $modelo->seccion_menu_id($seccion);
 
@@ -678,11 +743,71 @@ class modeloTest extends test {
 
         errores::$error = false;
 
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_bitacora($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $registro['id'] = 1;
+        $registro['descripcion'] = 'adm_seccion';
+        $registro['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $seccion = 'adm_seccion';
         $resultado = $modelo->seccion_menu_id($seccion);
         $this->assertIsInt( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(13, $resultado);
+        $this->assertEquals(1, $resultado);
 
         errores::$error = false;
 

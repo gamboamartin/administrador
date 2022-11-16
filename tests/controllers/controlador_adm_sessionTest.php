@@ -1,6 +1,13 @@
 <?php
 namespace tests\controllers;
 
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_campo;
+use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
@@ -27,8 +34,81 @@ class controlador_adm_sessionTest extends test {
         $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
         //$modelo = new liberator($modelo);
 
-        unset($_SESSION['grupo_id']);
+        $_SESSION['usuario_id'] = 2;
 
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_bitacora($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_session';
+        $adm_seccion['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'denegado';
+        $adm_accion['titulo'] = 'denegado';
+        $adm_accion['adm_seccion_id'] = '1';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        unset($_SESSION['grupo_id']);
         $resultado = $ctl->denegado(header: false);
 
         $this->assertIsArray($resultado);
@@ -53,7 +133,7 @@ class controlador_adm_sessionTest extends test {
 
         $resultado  = curl_exec($curl);
 
-        //print_r($resultado);exit;
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('[error] => 1', $resultado);

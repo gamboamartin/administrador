@@ -3,6 +3,7 @@ namespace tests\base\controller;
 
 use base\controller\activacion;
 use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
 
@@ -25,7 +26,7 @@ class activacionTest extends test {
         //$html = new liberator($html);
 
 
-        $modelo = new adm_accion($this->link);
+        $modelo = new adm_mes($this->link);
         $registro_id = 1;
         $seccion = '';
         $resultado = $act->activa_bd_base(modelo: $modelo,registro_id:  $registro_id, seccion: $seccion);

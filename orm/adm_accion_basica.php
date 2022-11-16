@@ -14,7 +14,10 @@ class adm_accion_basica extends modelo{
         $campos_obligatorios=array('descripcion','codigo','codigo_bis','visible','seguridad','inicio','lista',
             'status','es_view','descripcion_select','etiqueta_label','es_modal','titulo','css','es_status','alias',
             'es_lista');
-        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);
+
+        $no_duplicados[] = 'descripcion';
+        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
+            no_duplicados: $no_duplicados);
         $this->NAMESPACE = __NAMESPACE__;
     }
 
