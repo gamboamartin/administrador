@@ -114,6 +114,24 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_acciones_id_maqueta(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+
+        $adm_acciones_grupos= array();
+        $adm_acciones_grupos[0]['adm_accion_id']= 1;
+        $resultado = $modelo->acciones_id_maqueta($adm_acciones_grupos);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado[0]);
+        errores::$error = false;
+    }
+
     public function test_asigna_status(){
 
         errores::$error = false;
@@ -125,6 +143,7 @@ class adm_accionTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('activo', $resultado['a']);
+
         errores::$error = false;
     }
 

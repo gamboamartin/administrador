@@ -92,10 +92,28 @@ class adm_accion extends modelo{
         return $r_accion;
     }
 
+    /**
+     * Maqueta un array con un conjunto de acciones id
+     * @param array $adm_acciones_grupos Permisos
+     * @return array
+     * @version 2.49.4
+     */
     private function acciones_id_maqueta(array $adm_acciones_grupos): array
     {
         $acciones = array();
         foreach ($adm_acciones_grupos as $adm_accion_grupo){
+
+            $valida = $this->validacion->valida_array(value:  $adm_accion_grupo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar adm_accion_grupo',data:  $valida);
+            }
+
+            $keys = array('adm_accion_id');
+            $valida = $this->validacion->valida_ids(keys:$keys,registro:  $adm_accion_grupo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+            }
+
             $acciones[] = $adm_accion_grupo['adm_accion_id'];
         }
         return $acciones;
