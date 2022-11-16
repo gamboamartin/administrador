@@ -18,8 +18,12 @@ class adm_accion extends modelo{
         $columnas = array($tabla=>false, 'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista','titulo','css');
         $tipo_campos['adm_seccion_id'] = 'id';
-        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas:  $columnas,
-            tipo_campos:  $tipo_campos );
+
+        $columnas_extra['adm_accion_n_permisos'] = /** @lang sql */
+            "(SELECT COUNT(*) FROM adm_accion_grupo WHERE adm_accion_grupo.adm_accion_id = adm_accion.id)";
+
+        parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios, columnas: $columnas,
+            columnas_extra: $columnas_extra, tipo_campos: $tipo_campos);
         $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new \validacion\accion();
     }
