@@ -25,6 +25,26 @@ class activacionTest extends test {
         $act = new activacion();
         //$html = new liberator($html);
 
+        $_SESSION['usuario_id'] = 1;
+
+        $del = (new adm_mes($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_mes['id'] = 1;
+        $adm_mes['descripcion'] = '1';
+        $adm_mes['codigo'] = '1';
+
+        $alta = (new adm_mes($this->link))->alta_registro($adm_mes);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
 
         $modelo = new adm_mes($this->link);
         $registro_id = 1;

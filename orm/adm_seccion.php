@@ -31,6 +31,7 @@ class adm_seccion extends modelo{
      * Obtiene las acciones de una seccion
      * @param int $adm_seccion_id Seccion identificador
      * @return array
+     * @version 2.47.4
      */
     public function acciones(int $adm_seccion_id): array
     {
