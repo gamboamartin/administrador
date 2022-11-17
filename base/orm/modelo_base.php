@@ -87,7 +87,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $row Registro a integrar elementos encriptados o con dependientes
      * @return array Registro con los datos ajustados tanto en la encriptacion como de sus dependientes
      */
-    PUBLIC function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
+    private function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
     {
         $row = (new inicializacion())->asigna_valor_desencriptado(campos_encriptados: $campos_encriptados,
             row: $row);
@@ -210,6 +210,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $registro;
     }
 
+
     /**
      * Asigna una descripcion en caso de no existir
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -281,6 +282,52 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
         return $row;
+    }
+
+    protected function campos_base(array $data, modelo $modelo, int $id = -1): array
+    {
+
+        $data = (new data_base())->init_data_base(data: $data,id: $id, modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro previo',data: $data);
+        }
+
+        $keys = array('descripcion','codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        if(!isset($data['codigo_bis'])){
+            $data['codigo_bis'] =  $data['codigo'];
+        }
+
+        $data = $this->data_base(data: $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar data base', data: $data);
+        }
+
+        return $data;
+    }
+
+    protected function data_base(array $data): array
+    {
+        $keys = array('descripcion','codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        if(!isset($data['descripcion_select'])){
+            $ds = str_replace("_"," ",$data['descripcion']);
+            $ds = ucwords($ds);
+            $data['descripcion_select'] =  "{$data['codigo']} - {$ds}";
+        }
+
+        if(!isset($data['alias'])){
+            $data['alias'] = $data['codigo'];
+        }
+        return $data;
     }
 
     private function data_result(array $campos_encriptados, string $consulta): array|stdClass
@@ -866,6 +913,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $archivos_tmp_model;
     }
 
+
+
     private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
     {
         $this->registros = $new_array;
@@ -1256,6 +1305,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return true;
     }
+
+
 
 }
 

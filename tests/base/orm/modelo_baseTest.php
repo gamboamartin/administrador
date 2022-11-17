@@ -33,7 +33,7 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        //$mb = new liberator($mb);
+        $mb = new liberator($mb);
 
         $campos_encriptados = array('z');
         $modelos_hijos = array();
