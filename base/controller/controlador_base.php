@@ -4,6 +4,7 @@ namespace base\controller;
 use base\orm\modelo;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
@@ -269,7 +270,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $this->link->beginTransaction();
         }
 
-        $valida = $this->valida_alta_bd();
+        $valida = $this->validacion->valida_alta_bd(controler: $this);
         if(errores::$error){
             if(!$transaccion_previa) {
                 $this->link->rollBack();
@@ -844,7 +845,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      */
     public function status(bool $header, bool $ws): array|stdClass
     {
-        $upd = $this->modelo->status('status', $this->registro_id);
+        $upd = $this->modelo->status(campo: 'status',registro_id:  $this->registro_id);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al cambiar status',data:  $upd,header:  $header,ws:  $ws);
         }
@@ -861,7 +862,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @return bool
      * @version 2.6.2
      */
-    PUBLIC function transaccion_previa(): bool
+    protected function transaccion_previa(): bool
     {
         $transaccion_previa = false;
         if($this->link->inTransaction()){
@@ -870,35 +871,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $transaccion_previa;
     }
 
-    private function valida_alta_bd(): bool|array
-    {
-        $valida = $this->validacion->valida_clase(controler: $this);
-        if(errores::$error){
 
-            return $this->errores->error(mensaje: 'Error al validar clase', data: $valida);
-        }
-
-        if($this->tabla===''){
-            return $this->errores->error(mensaje: 'Error seccion por get debe existir',data:  $_GET);
-        }
-
-        $limpia = (new normalizacion())->limpia_post_alta();
-        if(errores::$error){
-
-            return $this->errores->error(mensaje: 'Error al limpiar POST', data: $limpia);
-        }
-
-        $valida = $this->validacion->valida_post_alta();
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar POST', data: $valida);
-        }
-
-
-        if($this->seccion === ''){
-            return $this->errores->error(mensaje: 'Error al seccion no puede venir vacia',data:  $this->seccion);
-        }
-        return true;
-    }
 
 
 

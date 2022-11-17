@@ -140,71 +140,6 @@ class controler{
 
     }
 
-    private function asigna_filtro(string $campo, array $filtro, string $tabla): array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        $key_get = $this->key_get(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar key',data: $key_get);
-        }
-
-        $filtro = $this->asigna_filtro_existe(campo: $campo,filtro: $filtro,key_get: $key_get,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar filtro',data: $filtro);
-        }
-        return $filtro;
-    }
-
-    private function asigna_filtro_existe(string $campo, array $filtro, string $key_get, string $tabla): array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        if(isset($_GET[$key_get])){
-            $filtro = $this->asigna_key_filter(campo: $campo,filtro: $filtro,key_get: $key_get,tabla: $tabla);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al generar filtro',data: $filtro);
-            }
-        }
-        return $filtro;
-    }
-
-    /**
-     * @param array $keys Keys a verificar para asignacion de filtros via GET
-     * @version 1.117.28
-     * @example
-     *      $keys['tabla'] = array('id','descripcion');
-     *      $filtro = $ctl->asigna_filtro_get(keys:$keys);
-     *      print_r($filtro);
-     *      //filtro[tabla.id] = $_GET['tabla_id']
-     * @return array
-     */
-    private function asigna_filtro_get(array $keys): array
-    {
-
-        $filtro = array();
-        foreach ($keys as $tabla=>$campos){
-            if(!is_array($campos)){
-                return $this->errores->error(mensaje: 'Error los campos deben ser un array', data: $campos);
-            }
-            foreach ($campos as $campo) {
-
-                $valida = $this->valida_data_filtro(campo: $campo, tabla: $tabla);
-                if (errores::$error) {
-                    return $this->errores->error(mensaje: 'Error al validar filtro', data: $valida);
-                }
-                $filtro = $this->asigna_filtro(campo: $campo, filtro: $filtro, tabla: $tabla);
-                if (errores::$error) {
-                    return $this->errores->error(mensaje: 'Error al generar filtro', data: $filtro);
-                }
-            }
-        }
-        return $filtro;
-    }
 
     public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
@@ -216,7 +151,7 @@ class controler{
             if(!is_array($value)){
                 return $this->errores->error(mensaje: 'Error value debe ser un array',data: $value);
             }
-            $inputs_controller = $this->inputs_view(inputs: $inputs,key:  $key,value:  $value);
+            $inputs_controller = (new inputs())->inputs_view(controler: $this, inputs: $inputs,key:  $key,value:  $value);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al obtener inputs',data: $inputs_controller);
             }
@@ -225,33 +160,6 @@ class controler{
         return $this->inputs;
     }
 
-    private function asigna_key_filter(string $campo, array $filtro, string $key_get, string $tabla): array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        $key_filter = $this->key_filter(campo:$campo,tabla:  $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al generar filtro',data: $key_filter);
-        }
-        $filtro[$key_filter] = $_GET[$key_get];
-        return $filtro;
-    }
-
-    /**
-     * PHPUNIT
-     * @param array $filtros
-     * @return array
-     */
-    private function filtra(array $filtros): array
-    {
-        $r_modelo = $this->modelo->filtro_and(filtro: $filtros,filtro_especial: array());
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener datos',data: $r_modelo);
-        }
-        return $r_modelo;
-    }
 
     /**
      * Generacion de metodo para ser utilizado en cualquier llamada get con filtros
@@ -263,7 +171,7 @@ class controler{
      */
     protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {
-        $filtro = $this->asigna_filtro_get(keys: $keys);
+        $filtro = (new filtros())->asigna_filtro_get(keys: $keys);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar filtros',data:  $filtro,header: $header,ws: $ws);
 
@@ -275,7 +183,7 @@ class controler{
          * @example $_POST[llave] = 'adm_seccion.id'
          * @example $_POST[values] = array(1,2,3);
          */
-        $not_in = $this->integra_not_in_post();
+        $not_in = (new not_in())->integra_not_in_post();
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al integrar not in',data:  $not_in,header: $header,ws: $ws);
         }
@@ -357,117 +265,7 @@ class controler{
         }
     }
 
-    private function inputs_view(array $inputs, string $key, array $value): array|stdClass
-    {
-        $keys = array('type');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $value);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar value filtro',data: $valida);
-        }
-        $key = trim($key);
-        if($key === ''){
-            return $this->errores->error(mensaje: 'Error key esta vacio',data: $key);
-        }
-        $type = $this->type_validado(inputs: $inputs,value:  $value);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener type',data: $type);
-        }
 
-        if(!is_object($this->inputs)){
-            return $this->errores->error(
-                mensaje: 'Error controlador->inputs debe se run objeto',data: $this->inputs);
-        }
-
-        $this->inputs->$key = $inputs[$type]->$key;
-        return $this->inputs;
-    }
-
-    private function integra_not_in_post(): array
-    {
-        $not_in = array();
-        if(isset($_POST['not_in'])){
-            /**
-             * llave = string tabla.campo
-             * values = array(n1,n2,n3,nn)
-             * @example $_POST[llave] = 'adm_seccion.id'
-             * @example $_POST[values] = array(1,2,3);
-             */
-
-            $keys = array('not_in');
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $_POST);
-            if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al validar not in',data:  $valida);
-            }
-
-            if(isset ($_POST['not_in']['values'])) {
-                if (count($_POST['not_in']['values']) > 0) {
-                    $not_in = $this->not_in_post();
-                    if (errores::$error) {
-                        return $this->errores->error(mensaje: 'Error al integrar not in', data: $not_in);
-                    }
-                }
-            }
-
-        }
-        return $not_in;
-    }
-
-    private function key_get(string $campo, string $tabla): string|array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-
-        return $tabla.'_'.$campo;
-    }
-
-    private function key_filter(string $campo, string $tabla): string|array
-    {
-        $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        return $tabla.'.'.$campo;
-    }
-
-    /**
-     * Maqueta un not in obtenido por POST
-     * @return array
-     * @version 1.600.54
-    *
-     * llave = string tabla.campo
-     * values = array(n1,n2,n3,nn)
-     * @example $_POST[llave] = 'adm_seccion.id'
-     * @example $_POST[values] = array(1,2,3);
-     */
-    private function not_in_post(): array
-    {
-
-        $keys = array('not_in');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $_POST);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar not in',data:  $valida);
-        }
-
-        $keys = array('llave');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $_POST['not_in']);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar not in',data:  $valida);
-        }
-
-        if(!is_array($_POST['not_in']['values'])){
-            return $this->errores->error(mensaje: 'Error POST[not_in][values] debe ser un array',data:  $_POST);
-        }
-        if(count($_POST['not_in']['values']) === 0){
-            return $this->errores->error(mensaje: 'Error POST[not_in][values] esta vacio',data:  $_POST);
-        }
-
-        $not_in['llave'] = $_POST['not_in']['llave'];
-        $not_in['values'] = $_POST['not_in']['values'];
-
-        return $not_in;
-    }
 
     /**
      * Genera salida para eventos controller
@@ -539,75 +337,12 @@ class controler{
             return $this->errores->error('Error al generar filtros',$filtros);
         }
 
-        $r_modelo = $this->filtra($filtros);
+        $r_modelo = (new filtros())->filtra(controler: $this, filtros: $filtros);
         if(errores::$error){
             return $this->errores->error('Error al obtener datos',$r_modelo);
         }
         return $r_modelo;
     }
 
-    /**
-     * Obtiene el tipo de input para templates de alta
-     * @param array $value Value de modelo->campos_view
-     * @return array|string
-     * @version 2.14.2.1
-     */
-    private function type(array $value): array|string
-    {
-        $keys = array('type');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $value);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar value',data: $valida);
-        }
-        $type = $value['type'];
-
-        $type = trim($type);
-        if($type === ''){
-            return $this->errores->error(mensaje: 'Error type esta vacio',data: $type);
-        }
-        return $type;
-    }
-
-    /**
-     * Obtiene el type para templates alta validado
-     * @param array|stdClass $inputs Inputs precargados
-     * @param array $value Valor de modelo campos views
-     * @return array|string
-     * @version 2.14.2.2
-     */
-    private function type_validado(array|stdClass $inputs, array $value): array|string
-    {
-        $type = $this->type(value: $value);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener type',data: $type);
-        }
-
-        $keys = array($type);
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $inputs);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al validar value',data: $valida);
-        }
-        return $type;
-    }
-
-    /**
-     * Valida los elementos de un filtro
-     * @param string $campo Campo de filtro
-     * @param string $tabla Tabla de filtro
-     * @return bool|array
-     * @version 2.41.4
-     */
-    private function valida_data_filtro(string $campo, string $tabla): bool|array
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->errores->error(mensaje: 'Error $campo esta vacio',data: $campo);
-        }
-        $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->errores->error(mensaje: 'Error $tabla esta vacio',data: $tabla);
-        }
-        return true;
-    }
 
 }

@@ -17,67 +17,7 @@ class controllerTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_asigna_filtro_get(): void
-    {
 
-        errores::$error = false;
-
-        $ctl = new controler($this->link);
-        $ctl = new liberator($ctl);
-
-        $keys = array();
-        $resultado = $ctl->asigna_filtro_get($keys);
-
-
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
-
-        errores::$error = false;
-
-        $keys = array();
-        $keys['campo'] = 'a';
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-
-
-        errores::$error = false;
-
-        $keys = array();
-        $keys['pais'] = 'id';
-        $_GET['pais_id'] = 1;
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-
-        errores::$error = false;
-
-
-
-        $keys = array();
-        $keys['pais'] = array();
-        $_GET['pais_id'] = 1;
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
-
-        errores::$error = false;
-
-
-
-        $keys = array();
-        $keys['pais'] = array('id');
-        $_GET['pais_id'] = 1;
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1',$resultado['pais.id']);
-
-        errores::$error = false;
-
-    }
 
     public function test_get_out(): void
     {
@@ -98,81 +38,8 @@ class controllerTest extends test {
         errores::$error = false;
     }
 
-    public function test_not_in_post(): void
-    {
-
-        errores::$error = false;
-
-        $ctl = new controler($this->link);
-        $ctl = new liberator($ctl);
-
-        $_POST['not_in']['llave'] = 'a';
-        $_POST['not_in']['values'] = array('1');
-        $resultado = $ctl->not_in_post();
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(1,$resultado['values'][0]);
-        $this->assertEquals('a',$resultado['llave']);
-        errores::$error = false;
-
-    }
-
-    public function test_type(): void
-    {
-
-        errores::$error = false;
-
-        $ctl = new controler($this->link);
-        $ctl = new liberator($ctl);
-
-        $value = array();
-        $value['type'] = 'x';
-        $resultado = $ctl->type($value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('x',$resultado);
-        errores::$error = false;
-    }
-
-    public function test_type_validado(): void
-    {
-
-        errores::$error = false;
-
-        $ctl = new controler($this->link);
-        $ctl = new liberator($ctl);
-
-        $value = array();
-        $value['type'] = 'x';
-        $inputs = array();
-        $inputs['x'] = 'a';
-        $resultado = $ctl->type_validado($inputs, $value);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('x',$resultado);
-        errores::$error = false;
-
-    }
-
-    public function test_valida_data_filtro(): void
-    {
-
-        errores::$error = false;
-
-        $ctl = new controler($this->link);
-        $ctl = new liberator($ctl);
-
-        $campo = 'a';
-        $tabla = 'c';
-
-        $resultado = $ctl->valida_data_filtro($campo, $tabla);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
 
 
 
-
-    }
+}

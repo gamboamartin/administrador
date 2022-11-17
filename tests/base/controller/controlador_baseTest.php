@@ -159,7 +159,7 @@ class controlador_baseTest extends test {
         $_SESSION['usuario_id'] = 2;
         $modelo = new adm_year($this->link);
         $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
-        //$ctl = new liberator($ctl);
+        $ctl = new liberator($ctl);
 
 
         $resultado = $ctl->transaccion_previa();
