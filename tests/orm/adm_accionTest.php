@@ -118,7 +118,7 @@ class adm_accionTest extends test {
 
         errores::$error = false;
         $modelo = new adm_accion($this->link);
-        //$modelo = new liberator($modelo);
+        $modelo = new liberator($modelo);
 
         $_SESSION['usuario_id'] = 2;
 

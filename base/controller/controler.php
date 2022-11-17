@@ -392,10 +392,22 @@ class controler{
              * @example $_POST[llave] = 'adm_seccion.id'
              * @example $_POST[values] = array(1,2,3);
              */
-            $not_in = $this->not_in_post();
+
+            $keys = array('not_in');
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $_POST);
             if(errores::$error){
-                return $this->errores->error(mensaje: 'Error al integrar not in',data:  $not_in);
+                return $this->errores->error(mensaje: 'Error al validar not in',data:  $valida);
             }
+
+            if(isset ($_POST['not_in']['values'])) {
+                if (count($_POST['not_in']['values']) > 0) {
+                    $not_in = $this->not_in_post();
+                    if (errores::$error) {
+                        return $this->errores->error(mensaje: 'Error al integrar not in', data: $not_in);
+                    }
+                }
+            }
+
         }
         return $not_in;
     }
