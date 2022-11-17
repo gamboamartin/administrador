@@ -17,6 +17,14 @@ class data_base{
         $this->validacion = new validacion();
     }
 
+    /**
+     * Asigna un valor para registro precargado
+     * @param array $data Registro en proceso
+     * @param string $key campo a integrar
+     * @param array $registro_previo Registro precargado
+     * @return array
+     * @version 2.53.6
+     */
     private function asigna_data_no_existe(array $data, string $key, array $registro_previo): array
     {
         $valida = $this->valida_init_data(key: $key,registro_previo:  $registro_previo);
