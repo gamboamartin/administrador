@@ -10,7 +10,15 @@ class adm_grupo extends _modelo_parent {
         $tabla = 'adm_grupo';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array('descripcion','descripcion_select','codigo','codigo_bis','alias');
-        parent::__construct(link: $link, tabla: $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);
+
+        $columnas_extra['adm_grupo_n_permisos'] = /** @lang sql */
+            "(SELECT COUNT(*) FROM adm_accion_grupo WHERE adm_accion_grupo.adm_grupo_id = adm_grupo.id)";
+
+        $columnas_extra['adm_grupo_n_usuarios'] = /** @lang sql */
+            "(SELECT COUNT(*) FROM adm_usuario WHERE adm_usuario.adm_grupo_id = adm_grupo.id)";
+
+        parent::__construct(link: $link, tabla: $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
+            columnas_extra: $columnas_extra);
         $this->NAMESPACE = __NAMESPACE__;
     }
 
