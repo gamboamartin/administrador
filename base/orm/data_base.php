@@ -83,6 +83,13 @@ class data_base{
         return $data;
     }
 
+    /**
+     * Valida que los elementos para incializar un campo sean validos
+     * @param mixed $key key a validar
+     * @param array $registro_previo Registro con datos para asignacion
+     * @return bool|array
+     * @version 2.52.5
+     */
     private function valida_init_data(mixed $key, array $registro_previo): bool|array
     {
         if(!is_string($key)){
