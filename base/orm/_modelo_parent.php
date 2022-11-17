@@ -16,7 +16,7 @@ class _modelo_parent extends modelo {
 
         $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar pais', data: $r_alta_bd);
+            return $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
         }
         return $r_alta_bd;
     }

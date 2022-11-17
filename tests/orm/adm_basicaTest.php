@@ -31,22 +31,7 @@ class adm_basicaTest extends test {
         errores::$error = false;
     }
 
-    public function test_codigo_bis(){
 
-        errores::$error = false;
-        $_SESSION['usuario_id'] = 1;
-        $modelo = new adm_accion_basica($this->link);
-        $modelo = new liberator($modelo);
-
-        $registro = array();
-        $registro['codigo'] = 'a';
-        $registro['descripcion'] = 'f';
-        $resultado = $modelo->codigo_bis($registro);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a f',$resultado);
-        errores::$error = false;
-    }
 
 }
 

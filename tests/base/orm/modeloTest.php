@@ -80,9 +80,10 @@ class modeloTest extends test {
         $registro['codigo'] = mt_rand(100000000000,999999999999);
         $registro['descripcion'] = '1';
         $resultado = $modelo->alta_registro($registro);
+
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('INSERT INTO adm_dia (codigo,descripcion,status,usuario_alta_id,usuario_update_id) VALUE', $resultado->sql);
+        $this->assertStringContainsStringIgnoringCase('INSERT INTO adm_dia (codigo,descripcion,codigo_bis,descripcion_select,alias,status,usuario_alta_id,usuario_update_id) VALUES ', $resultado->sql);
 
         errores::$error = false;
     }

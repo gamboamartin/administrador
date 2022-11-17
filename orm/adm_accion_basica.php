@@ -1,13 +1,14 @@
 <?php
 namespace gamboamartin\administrador\models;
 
+use base\orm\_modelo_parent;
 use base\orm\inicializacion;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
 
-class adm_accion_basica extends modelo{
+class adm_accion_basica extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'adm_accion_basica';
         $columnas = array($tabla=> false);
@@ -47,30 +48,6 @@ class adm_accion_basica extends modelo{
         return 'info';
     }
 
-    /**
-     * Obtiene un codigo bid de accion
-     * @param array $registro $registro en proceso de alta bd
-     * @return string|array
-     * @version 2.13.2.3
-     */
-    private function codigo_bis(array $registro): string|array
-    {
-        $keys = array('codigo','descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
-        }
-        $codigo_bis = $registro['codigo'];
-        $codigo_bis .= ' '.$registro['descripcion'];
-        return $codigo_bis;
-    }
-
-    private function descripcion_select(array $registro): string
-    {
-        $descripcion_select = $registro['descripcion'];
-        $descripcion_select .= ' '.$registro['codigo'];
-        return $descripcion_select;
-    }
 
     private function etiqueta_label(array $registro): string
     {
@@ -109,15 +86,6 @@ class adm_accion_basica extends modelo{
 
     private function init_alta_bd_base(array $registro): array
     {
-        $registro = $this->init_codigo_bis(registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al genera codigo bis',data: $registro);
-        }
-
-        $registro = $this->init_descripcion_select(registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al genera descripcion_select',data: $registro);
-        }
 
         $registro = $this->init_etiqueta_label(registro: $registro);
         if(errores::$error){
@@ -155,31 +123,7 @@ class adm_accion_basica extends modelo{
         return $registro;
     }
 
-    private function init_codigo_bis(array $registro): array
-    {
-        if(!isset($registro['codigo_bis'])){
 
-            $codigo_bis = $this->codigo_bis(registro:$registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al genera codigo bis',data: $codigo_bis);
-            }
-            $registro['codigo_bis'] = $codigo_bis;
-        }
-        return $registro;
-    }
-
-    private function init_descripcion_select(array $registro): array
-    {
-        if(!isset($registro['descripcion_select'])){
-
-            $descripcion_select = $this->descripcion_select(registro:$registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al genera descripcion_select',data: $descripcion_select);
-            }
-            $registro['descripcion_select'] = $descripcion_select;
-        }
-        return $registro;
-    }
 
     private function init_etiqueta_label(array $registro): array
     {

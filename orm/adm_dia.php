@@ -1,10 +1,10 @@
 <?php
 namespace gamboamartin\administrador\models;
-use base\orm\modelo;
+use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
 use PDO;
 
-class adm_dia extends modelo{
+class adm_dia extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'adm_dia';
         $columnas = array($tabla=>false);

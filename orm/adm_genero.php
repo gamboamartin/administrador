@@ -1,9 +1,9 @@
 <?php
 namespace gamboamartin\administrador\models;
-use base\orm\modelo;
+use base\orm\_modelo_parent;
 use PDO;
 
-class adm_genero extends modelo{
+class adm_genero extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'adm_genero';
         $columnas = array($tabla=>false);
