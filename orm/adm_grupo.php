@@ -9,7 +9,7 @@ class adm_grupo extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'adm_grupo';
         $columnas = array($tabla=>false);
-        $campos_obligatorios = array('descripcion','root','descripcion_select','codigo','codigo_bis','alias');
+        $campos_obligatorios = array('descripcion','descripcion_select','codigo','codigo_bis','alias');
         parent::__construct(link: $link, tabla: $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);
         $this->NAMESPACE = __NAMESPACE__;
     }
