@@ -63,6 +63,14 @@ class data_base{
         return $data;
     }
 
+    /**
+     * Asigna datos faltantes default
+     * @param array $data Registro en proceso
+     * @param array $keys Keys de asignacion
+     * @param array $registro_previo Registro previamente cargado
+     * @return array
+     * @version 2.56.6
+     */
     private function asigna_datas_no_existe(array $data, array $keys, array $registro_previo): array
     {
         foreach ($keys as $key){

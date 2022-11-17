@@ -47,6 +47,37 @@ class data_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_asigna_datas_no_existe(){
+        errores::$error = false;
+        $database = new data_base();
+        $database = new liberator($database);
+
+
+        $data = array();
+        $registro_previo = array();
+        $registro_previo['a'] = 'd';
+        $keys = array('a');
+        $resultado = $database->asigna_datas_no_existe($data, $keys, $registro_previo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('d',$resultado['a']);
+
+        errores::$error = false;
+
+
+        $data = array();
+        $data['a'] = 'f';
+        $registro_previo = array();
+        $registro_previo['a'] = 'd';
+        $keys = array('a');
+        $resultado = $database->asigna_datas_no_existe($data, $keys, $registro_previo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('f',$resultado['a']);
+
+        errores::$error = false;
+    }
+
     public function test_valida_init_data(){
         errores::$error = false;
         $database = new data_base();
