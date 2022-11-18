@@ -55,6 +55,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public string $NAMESPACE = '';
     public bool $temp = false;
 
+    public array $childrens = array();
+
 
     /**
      * Modelado

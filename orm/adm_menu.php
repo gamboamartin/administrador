@@ -2,7 +2,6 @@
 namespace gamboamartin\administrador\models;
 
 use base\orm\_modelo_parent;
-use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -12,12 +11,13 @@ class adm_menu extends _modelo_parent {
         $tabla = 'adm_menu';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array('etiqueta_label');
+        $childrens = array('adm_seccion'=>"gamboamartin\administrador\models");
 
         $columnas_extra['adm_menu_n_secciones'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_seccion WHERE adm_seccion.adm_menu_id = adm_menu.id)";
 
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, columnas_extra: $columnas_extra);
+            columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

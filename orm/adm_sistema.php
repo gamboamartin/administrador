@@ -9,7 +9,8 @@ class adm_sistema extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'adm_sistema';
         $columnas = array($tabla=>false);
-        parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas);
+        $childrens = array('adm_seccion_pertenece'=>"gamboamartin\administrador\models");
+        parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

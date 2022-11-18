@@ -17,8 +17,12 @@ class adm_grupo extends _modelo_parent {
         $columnas_extra['adm_grupo_n_usuarios'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_usuario WHERE adm_usuario.adm_grupo_id = adm_grupo.id)";
 
+        $childrens = array(
+            'adm_accion_grupo'=>"gamboamartin\\administrador\\models",
+            'adm_usuario'=>"gamboamartin\administrador\models");
+
         parent::__construct(link: $link, tabla: $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
-            columnas_extra: $columnas_extra);
+            columnas_extra: $columnas_extra, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

@@ -15,7 +15,9 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         
         $tabla = 'adm_usuario';
         $columnas = array($tabla=>false,'adm_grupo'=>$tabla);
-        parent::__construct(link: $link,tabla: $tabla,columnas: $columnas);
+        $childrens = array('adm_bitacora'=>"gamboamartin\administrador\models",
+            'adm_session'=>"gamboamartin\administrador\models");
+        parent::__construct(link: $link,tabla: $tabla,columnas: $columnas, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

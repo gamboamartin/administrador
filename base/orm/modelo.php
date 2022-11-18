@@ -53,7 +53,7 @@ class modelo extends modelo_base {
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
                                 bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
-                                bool $temp = false){
+                                bool $temp = false, array $childrens = array()){
 
 
 
@@ -78,6 +78,7 @@ class modelo extends modelo_base {
         $this->campos_encriptados = $campos_encriptados;
         $this->campos_no_upd = $campos_no_upd;
         $this->parents = $parents;
+        $this->childrens = $childrens;
 
         if(!in_array('id', $this->campos_no_upd, true)){
             $this->campos_no_upd[] = 'id';
@@ -606,6 +607,24 @@ class modelo extends modelo_base {
             models_dependientes: $this->models_dependientes,registro_id: $this->registro_id,tabla: $this->tabla);
         if (errores::$error) {
             return $this->error->error(mensaje:'Error al eliminar dependiente ', data:$elimina);
+        }
+
+        foreach ($this->childrens as $modelo_children=>$namespace){
+            $modelo = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al generar modelo', data:$modelo);
+            }
+
+            $filtro_children = array();
+            $filtro_children[$this->tabla.'.id'] = $id;
+            $existe = $modelo->existe(filtro: $filtro_children);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al validar si existe', data:$existe);
+            }
+            if($existe){
+                return $this->error->error(
+                    mensaje:'Error el registro tiene dependencias asignadas en '.$modelo_children, data:$existe);
+            }
         }
 
         $resultado = $this->ejecuta_sql(consulta: $this->consulta);
