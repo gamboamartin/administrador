@@ -52,9 +52,20 @@ class data_base{
         return $data;
     }
 
+    /**
+     * Asigna datos para una base inicial
+     * @param array $data Registro en proceso
+     * @param array $registro_previo Registro cargado anteriormente
+     * @return array
+     * @version 2.27.6
+     */
     private function asigna_datas_base(array $data, array $registro_previo): array
     {
         $keys = array('descripcion','codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro_previo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro previo',data: $valida);
+        }
 
         $data = $this->asigna_datas_no_existe(data: $data,keys:  $keys,registro_previo:  $registro_previo);
         if(errores::$error){
