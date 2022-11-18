@@ -813,6 +813,10 @@ class init{
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
+        if($sistema === 'cat_sat'){
+            $namespace = 'gamboamartin\\cat_sat\\';
+        }
+
         if($sistema === 'academico'){
             $namespace = 'gamboamartin\\academico\\';
         }
