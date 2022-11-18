@@ -15,10 +15,9 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         $tipo_campos['adm_accion_id'] = 'id';
         $tipo_campos['adm_grupo_id'] = 'id';
 
-        $childrens = array();
 
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
-            tipo_campos:  $tipo_campos, childrens: $childrens);
+            tipo_campos:  $tipo_campos);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

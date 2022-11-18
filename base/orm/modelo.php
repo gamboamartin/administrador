@@ -609,22 +609,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error al eliminar dependiente ', data:$elimina);
         }
 
-        foreach ($this->childrens as $modelo_children=>$namespace){
-            $modelo = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al generar modelo', data:$modelo);
-            }
-
-            $filtro_children = array();
-            $filtro_children[$this->tabla.'.id'] = $id;
-            $existe = $modelo->existe(filtro: $filtro_children);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al validar si existe', data:$existe);
-            }
-            if($existe){
-                return $this->error->error(
-                    mensaje:'Error el registro tiene dependencias asignadas en '.$modelo_children, data:$existe);
-            }
+        $valida = $this->valida_eliminacion_children(id:$id);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al validar children', data:$valida);
         }
 
         $resultado = $this->ejecuta_sql(consulta: $this->consulta);
@@ -706,6 +693,24 @@ class modelo extends modelo_base {
 
     }
 
+    public function elimina_full_childrens(): array
+    {
+        $dels = array();
+        foreach ($this->childrens as $modelo_children=>$namespace){
+
+            $modelo_children_obj = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al generar modelo', data:$modelo_children_obj);
+            }
+            $elimina_todo_children = $modelo_children_obj->elimina_todo();
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar children', data:$elimina_todo_children);
+            }
+            $dels[] = $elimina_todo_children;
+        }
+        return $dels;
+    }
+
     /**
      * PHPUNIT
      * @return string[]
@@ -722,6 +727,13 @@ class modelo extends modelo_base {
                 return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
             }
         }
+
+        $elimina_todo_children = $this->elimina_full_childrens();
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al eliminar childrens', data:$elimina_todo_children);
+        }
+
+
         $tabla = $this->tabla;
         $this->transaccion = 'DELETE';
         $this->consulta = /** @lang MYSQL */
@@ -2121,6 +2133,18 @@ class modelo extends modelo_base {
             }
             if($existe){
                 return $this->error->error(mensaje: 'Error ya existe elemento predeterminado',data:  $this->registro);
+            }
+        }
+        return true;
+    }
+
+    public function valida_eliminacion_children(int $id): bool|array
+    {
+        foreach ($this->childrens as $modelo_children=>$namespace){
+            $valida = (new validaciones())->verifica_eliminacion_children(
+                id:$id,modelo_base:  $this,modelo_children:  $modelo_children,namespace:  $namespace);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al validar children', data:$valida);
             }
         }
         return true;

@@ -2,8 +2,6 @@
 namespace tests\base\controller;
 
 use base\controller\controlador_base;
-use base\controller\controler;
-use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\administrador\models\adm_year;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;

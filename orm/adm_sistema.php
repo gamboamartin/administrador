@@ -6,10 +6,12 @@ use gamboamartin\errores\errores;
 use PDO;
 
 class adm_sistema extends _modelo_parent {
-    public function __construct(PDO $link){
+    public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'adm_sistema';
         $columnas = array($tabla=>false);
-        $childrens = array('adm_seccion_pertenece'=>"gamboamartin\administrador\models");
+
+
+        $childrens['adm_seccion_pertenece'] = "gamboamartin\\administrador\\models";
         parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }

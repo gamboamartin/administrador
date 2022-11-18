@@ -2,7 +2,6 @@
 namespace tests\base\controller;
 
 use base\controller\errores_html;
-use base\controller\exito_html;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;

@@ -7,11 +7,11 @@ use PDO;
 use stdClass;
 
 class adm_menu extends _modelo_parent {
-    public function __construct(PDO $link){
+    public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'adm_menu';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array('etiqueta_label');
-        $childrens = array('adm_seccion'=>"gamboamartin\administrador\models");
+        $childrens['adm_seccion'] ="gamboamartin\administrador\models";
 
         $columnas_extra['adm_menu_n_secciones'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_seccion WHERE adm_seccion.adm_menu_id = adm_menu.id)";

@@ -3,7 +3,6 @@ namespace gamboamartin\administrador\models;
 
 use base\orm\_modelo_parent;
 use base\orm\inicializacion;
-use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;

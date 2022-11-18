@@ -11,12 +11,13 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * usuario constructor.
      * @param PDO $link Conexion a la BD
      */
-    public function __construct(PDO $link){
+    public function __construct(PDO $link, array $childrens = array()){
         
         $tabla = 'adm_usuario';
         $columnas = array($tabla=>false,'adm_grupo'=>$tabla);
-        $childrens = array('adm_bitacora'=>"gamboamartin\administrador\models",
-            'adm_session'=>"gamboamartin\administrador\models");
+
+        $childrens['adm_bitacora'] = "gamboamartin\\administrador\\models";
+        $childrens['adm_session'] = "gamboamartin\\administrador\\models";
         parent::__construct(link: $link,tabla: $tabla,columnas: $columnas, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }

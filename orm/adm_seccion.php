@@ -14,18 +14,20 @@ class adm_seccion extends modelo{
      * seccion_menu constructor.
      * @param PDO $link
      */
-    public function __construct(PDO $link){
+    public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'adm_seccion';
         $columnas = array($tabla=>false, 'adm_menu'=>$tabla);
         $campos_obligatorios = array('status','descripcion','adm_menu_id');
-        $childrens = array(
-            'adm_accion'=>"gamboamartin\administrador\models", 'adm_atributo'=>"gamboamartin\administrador\models",
-            'adm_bitacora'=>"gamboamartin\administrador\models",'adm_campo'=>"gamboamartin\administrador\models",
-            'adm_elemento_lista'=>"gamboamartin\administrador\models",
-            'adm_seccion_pertenece'=>"gamboamartin\administrador\models");
+
+
+        $childrens['adm_accion'] = "gamboamartin\\administrador\\models";
+        $childrens['adm_bitacora'] = "gamboamartin\\administrador\\models";
+        $childrens['adm_elemento_lista'] = "gamboamartin\\administrador\\models";
+        $childrens['adm_seccion_pertenece'] = "gamboamartin\\administrador\\models";
 
         $columnas_extra['adm_seccion_n_acciones'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id)";
+
 
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas,
             columnas_extra: $columnas_extra, childrens: $childrens);
