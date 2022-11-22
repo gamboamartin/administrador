@@ -484,6 +484,43 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_alta_bd(){
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array();
+
+        $resultado = $modelo->valida_alta_bd($registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error al validar registro', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['adm_seccion_id'] = 1;
+
+        $resultado = $modelo->valida_alta_bd($registro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error al validar registro', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $registro = array();
+        $registro['adm_seccion_id'] = 1;
+        $registro['descripcion'] = 1;
+
+        $resultado = $modelo->valida_alta_bd($registro);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+    }
+
 
 
 
