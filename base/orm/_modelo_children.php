@@ -2,6 +2,7 @@
 namespace base\orm;
 
 use gamboamartin\errores\errores;
+use stdClass;
 
 class _modelo_children extends modelo {
 
@@ -49,10 +50,10 @@ class _modelo_children extends modelo {
     private function codigo_alta_default(array $parents_data, string $anexo_codigo = ''): array|string
     {
 
-        $codigo = $anexo_codigo;
+        $value_default = $anexo_codigo;
         foreach ($parents_data as $name_model=>$data){
             $data['registro_id'] = $this->registro[$data['key_id']];
-            $valida = $this->valida_codigo_default(name_model: $name_model, data: $data);
+            $valida = $this->valida_value_default(name_model: $name_model, data: $data);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
             }
@@ -73,14 +74,16 @@ class _modelo_children extends modelo {
                 return $this->error->error(mensaje: 'Error al al validar row_parent',data: $valida);
             }
 
-            foreach ($keys_parents as $key_parent){
-
-                $codigo .= $row_parent->$key_parent;
+            $value_default = $this->integra_valor_default(keys_parents: $keys_parents,row_parent:  $row_parent,value_previo:  $value_default);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar valor default',data: $value_default);
             }
-            $codigo = trim($codigo);
+
+
+            $value_default = trim($value_default);
         }
 
-        return $codigo;
+        return $value_default;
     }
 
     private function codigo_bis_alta_default(string $codigo): array|string
@@ -91,10 +94,10 @@ class _modelo_children extends modelo {
     private function descripcion_alta_default(array $parents_data, string $anexo_descripcion = ''): array|string
     {
 
-        $descripcion = $anexo_descripcion;
+        $value_default = $anexo_descripcion;
         foreach ($parents_data as $name_model=>$data){
             $data['registro_id'] = $this->registro[$data['key_id']];
-            $valida = $this->valida_descripcion_default(name_model: $name_model, data: $data);
+            $valida = $this->valida_value_default(name_model: $name_model, data: $data);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
             }
@@ -115,14 +118,15 @@ class _modelo_children extends modelo {
                 return $this->error->error(mensaje: 'Error al al validar row_parent',data: $valida);
             }
 
-            foreach ($keys_parents as $key_parent){
-
-                $descripcion .= $row_parent->$key_parent;
+            $value_default = $this->integra_valor_default(keys_parents: $keys_parents,row_parent:  $row_parent,value_previo:  $value_default);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar valor default',data: $value_default);
             }
-            $descripcion = trim($descripcion);
+
+            $value_default = trim($value_default);
         }
 
-        return $descripcion;
+        return $value_default;
     }
 
     public function descripcion_default(array $parents_data, array $registro): array
@@ -144,7 +148,7 @@ class _modelo_children extends modelo {
 
         foreach ($parents_data as $name_model=>$data){
             $data['registro_id'] = $this->registro[$data['key_id']];
-            $valida = $this->valida_descripcion_default(name_model: $name_model, data: $data);
+            $valida = $this->valida_value_default(name_model: $name_model, data: $data);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
             }
@@ -187,42 +191,17 @@ class _modelo_children extends modelo {
         return $registro;
     }
 
-    private function valida_codigo_default(mixed $name_model, mixed $data): bool|array
+    private function integra_valor_default(array $keys_parents, stdClass $row_parent, string $value_previo): string
     {
-        if(!is_string($name_model)){
-            return $this->error->error(mensaje: 'Error name_model no es un texto',data: $name_model);
+        foreach ($keys_parents as $key_parent){
+            $value_previo .= $row_parent->$key_parent;
         }
-
-        $name_model = trim($name_model);
-        if($name_model === ''){
-            return $this->error->error(mensaje: 'Error name_model esta vacio',data: $name_model);
-        }
-
-        $keys = array('namespace','registro_id','keys_parents');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $data);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
-        }
-
-        $keys = array('registro_id');
-        $valida = $this->validacion->valida_ids(keys: $keys, registro: $data);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
-        }
-
-        if(!is_array($data)){
-            return $this->error->error(mensaje: 'Error data no es un array',data: $data);
-        }
-
-        $keys = array('keys_parents');
-        $valida = $this->validacion->valida_arrays(keys: $keys, row: $data);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
-        }
-        return true;
+        return $value_previo;
     }
 
-    private function valida_descripcion_default(mixed $name_model, mixed $data): bool|array
+
+
+    private function valida_value_default(mixed $name_model, mixed $data): bool|array
     {
         if(!is_string($name_model)){
             return $this->error->error(mensaje: 'Error name_model no es un texto',data: $name_model);
