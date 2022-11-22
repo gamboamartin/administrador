@@ -112,7 +112,9 @@ class data_base{
 
     public function init_data_base(array $data, int $id, modelo $modelo): array
     {
+
         if((!isset($data['descripcion']) || !isset($data['codigo'])) && $id > 0){
+
             $data = $this->asigna_data_row_previo(data:$data,id :$id, modelo: $modelo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener registro previo',data: $data);

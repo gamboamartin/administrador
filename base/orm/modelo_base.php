@@ -296,6 +296,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected function campos_base(array $data, modelo $modelo, int $id = -1): array
     {
 
+        if( !isset($data['codigo'])){
+            if(isset($data['descripcion'])){
+                $data['codigo'] = $data['descripcion'];
+            }
+        }
+
         $data = (new data_base())->init_data_base(data: $data,id: $id, modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro previo',data: $data);
