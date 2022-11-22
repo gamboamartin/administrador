@@ -1,5 +1,6 @@
 <?php
 namespace gamboamartin\administrador\models;
+use base\orm\_modelo_children;
 use base\orm\modelo;
 use gamboamartin\errores\errores;
 
@@ -7,7 +8,7 @@ use PDO;
 use stdClass;
 
 
-class adm_accion extends modelo{
+class adm_accion extends _modelo_children {
     /**
      * DEBUG INI
      * accion constructor.
@@ -22,8 +23,17 @@ class adm_accion extends modelo{
         $columnas_extra['adm_accion_n_permisos'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_accion_grupo WHERE adm_accion_grupo.adm_accion_id = adm_accion.id)";
 
+        $parents_data['adm_seccion'] = array();
+        $parents_data['adm_seccion']['namespace'] = 'gamboamartin\\administrador\\models';
+        $parents_data['adm_seccion']['registro_id'] = -1;
+        $parents_data['adm_seccion']['keys_parents'] = array('adm_seccion_codigo');
+        $parents_data['adm_seccion']['key_id'] = 'adm_seccion_id';
+
+        $defaults['css'] = 'info';
+        //$defaults['titulo'] = 'info';
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios, columnas: $columnas,
-            columnas_extra: $columnas_extra, tipo_campos: $tipo_campos);
+            columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, defaults: $defaults, parents_data: $parents_data);
         $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new \validacion\accion();
     }
@@ -209,7 +219,7 @@ class adm_accion extends modelo{
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
         }
 
-        $registro = $this->init_row_alta(registro: $this->registro);
+        $registro = $this->init_row_alta(defaults: $this->defaults,parents_data: $this->parents_data, registro: $this->registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar registro',data: $registro);
         }
@@ -267,35 +277,8 @@ class adm_accion extends modelo{
         return $registro;
     }
 
-    private function codigo_alta_default(int $adm_seccion_id, string $adm_accion_descripcion): array|string
-    {
-        $adm_seccion = (new adm_seccion($this->link))->registro(registro_id:  $adm_seccion_id, retorno_obj: true);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener seccion',data: $adm_seccion);
-        }
-        $codigo = $adm_seccion->adm_menu_descripcion.' '.$adm_seccion->adm_seccion_descripcion;
-        $codigo .= ' '.$adm_accion_descripcion;
-        return $codigo;
-    }
 
-    private function codigo_default(array $registro): array
-    {
-        $valida = $this->valida_alta_bd(registro:$registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
-        }
 
-        if(!isset($registro['codigo'])){
-
-            $codigo = $this->codigo_alta_default(adm_seccion_id: $registro['adm_seccion_id'],
-                adm_accion_descripcion:  $registro['descripcion']);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar codigo',data: $codigo);
-            }
-            $registro['codigo'] = $codigo;
-        }
-        return $registro;
-    }
 
     /**
      * Funcion usada para registrar la cantidad de acciones realizadas por un grupo.
@@ -480,7 +463,7 @@ class adm_accion extends modelo{
         return $r_grupo->registros;
     }
 
-    private function init_row_alta(array $registro): array
+    private function init_row_alta(array $defaults, array $parents_data, array $registro): array
     {
         $valida = $this->valida_alta_bd(registro:$registro);
         if(errores::$error){
@@ -492,15 +475,44 @@ class adm_accion extends modelo{
             return $this->error->error(mensaje: 'Error al asignar status',data: $registro);
         }
 
-
-        if(!isset($registro['css'])){
-            $registro['css'] = 'info';
+        foreach ($defaults as $campo=>$value){
+            if(!isset($registro[$campo])){
+                $registro[$campo] = $value;
+            }
         }
 
-        $registro = $this->codigo_default(registro: $registro);
+
+        $registro = $this->codigo_default(parents_data: $parents_data, registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar codigo',data: $registro);
         }
+
+        $registro = $this->descripcion_default(parents_data: $parents_data, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar descripcion',data: $registro);
+        }
+
+        $registro = $this->codigo_bis_default( registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar codigo_bis',data: $registro);
+        }
+
+        $registro = $this->alias_default( registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar alias',data: $registro);
+        }
+
+        if(!isset($registro['titulo'])){
+            $titulo = str_replace('_', ' ', $registro['descripcion']);
+            $titulo = ucwords($titulo);
+            $registro['titulo'] = trim($titulo);
+        }
+
+        $registro = $this->descripcion_select(parents_data: $parents_data, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar descripcion_select',data: $registro);
+        }
+
         return $registro;
     }
 

@@ -21,6 +21,58 @@ class adm_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_alta_bd(){
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion_ins['id'] = 2;
+        $adm_seccion_ins['descripcion'] = 'adm_session';
+        $adm_seccion_ins['adm_menu_id'] = 1;
+
+        $alta = (new adm_seccion($this->link))->alta_registro(registro: $adm_seccion_ins);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $accion_ins['descripcion'] = 'z';
+        $accion_ins['adm_seccion_id'] = 2;
+
+
+        $modelo->registro = $accion_ins;
+
+        $resultado = $modelo->alta_bd();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Z ADM_SESSION', $resultado->registro['adm_accion_descripcion_select']);
+        errores::$error = false;
+        errores::$error = false;
+    }
+
     public function test_accion_registro(){
 
         errores::$error = false;

@@ -56,6 +56,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public bool $temp = false;
 
     public array $childrens = array();
+    protected array $defaults = array();
+    protected array $parents_data = array();
 
 
     /**
@@ -64,7 +66,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param bool $temp Si temp, crea cache de sql del modelo en ejecucion
      * @version 2.12.2.1
      */
-    #[Pure] public function __construct(PDO $link, bool $temp = false ){ //PRUEBAS EN PROCESO
+    #[Pure] public function __construct(
+        PDO $link, array $defaults = array(), array $parents_data = array(), bool $temp = false ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
@@ -78,6 +81,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','in',
             'not_in', 'diferente_de','sql_extra','filtro_fecha');
+
+        $this->defaults = $defaults;
+
+        $this->parents_data = $parents_data;
     }
 
     /**

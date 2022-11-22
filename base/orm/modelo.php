@@ -45,6 +45,8 @@ class modelo extends modelo_base {
      * @param array $campos_no_upd Conjunto de campos no modificables, por default id
      * @param array $parents
      * @param bool $temp
+     * @param array $childrens
+     * @param array $defaults
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
@@ -53,7 +55,8 @@ class modelo extends modelo_base {
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
                                 bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
-                                bool $temp = false, array $childrens = array()){
+                                bool $temp = false, array $childrens = array(), array $defaults = array(),
+                                array $parents_data = array()){
 
 
 
@@ -63,7 +66,7 @@ class modelo extends modelo_base {
 
 
         $tabla = str_replace('models\\','',$tabla);
-        parent::__construct(link:$link, temp: $temp);
+        parent::__construct(link:$link, defaults: $defaults, parents_data: $parents_data, temp: $temp);
 
         $this->temp = $temp;
         $this->tabla = $tabla;
@@ -77,7 +80,7 @@ class modelo extends modelo_base {
         $this->no_duplicados = $no_duplicados;
         $this->campos_encriptados = $campos_encriptados;
         $this->campos_no_upd = $campos_no_upd;
-        $this->parents = $parents;
+
         $this->childrens = $childrens;
 
         if(!in_array('id', $this->campos_no_upd, true)){
