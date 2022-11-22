@@ -110,6 +110,14 @@ class data_base{
         return $data;
     }
 
+    /**
+     * Inicializa campos
+     * @param array $data registro en proceso
+     * @param int $id Identificador
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array
+     * @version 2.68.6
+     */
     public function init_data_base(array $data, int $id, modelo $modelo): array
     {
 

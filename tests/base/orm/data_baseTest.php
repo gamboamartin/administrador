@@ -170,5 +170,23 @@ class data_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_data_base(){
+        errores::$error = false;
+        $database = new data_base();
+        //$database = new liberator($database);
+
+
+        $data = array();
+
+        $id = -1;
+        $modelo = new adm_mes($this->link);
+
+        $resultado = $database->init_data_base($data, $id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 }
