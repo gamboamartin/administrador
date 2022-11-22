@@ -3,6 +3,7 @@ namespace tests\base\orm;
 
 use base\orm\data_base;
 use base\orm\data_format;
+use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
@@ -44,6 +45,25 @@ class data_baseTest extends test {
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('gg',$resultado['a']);
+        errores::$error = false;
+    }
+
+    public function test_asigna_data_row_previo(){
+        errores::$error = false;
+        $database = new data_base();
+        $database = new liberator($database);
+
+
+        $data = array();
+
+        $id = 1;
+        $modelo = new adm_mes($this->link);
+
+        $resultado = $database->asigna_data_row_previo($data, $id, $modelo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1',$resultado['descripcion']);
+        $this->assertEquals('1',$resultado['codigo']);
         errores::$error = false;
     }
 

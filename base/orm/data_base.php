@@ -38,8 +38,19 @@ class data_base{
         return $data;
     }
 
+    /**
+     * Asigna los datos de un registro previo
+     * @param array $data Datos de registro en proceso
+     * @param int $id Identificador en proceso
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array
+     * @version 2.65.6
+     */
     private function asigna_data_row_previo(array $data, int $id, modelo $modelo): array
     {
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $id);
+        }
         $registro_previo = $modelo->registro(registro_id: $id, columnas_en_bruto: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro previo',data: $registro_previo);
