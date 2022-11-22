@@ -52,35 +52,10 @@ class _modelo_children extends modelo {
 
         $value_default = $anexo_codigo;
         foreach ($parents_data as $name_model=>$data){
-            $data['registro_id'] = $this->registro[$data['key_id']];
-            $valida = $this->valida_value_default(name_model: $name_model, data: $data);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
-            }
-
-            $modelo_parent = $this->genera_modelo(modelo: $name_model, namespace_model: $data['namespace']);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar modelo parent',data: $modelo_parent);
-            }
-            $row_parent = $modelo_parent->registro(registro_id: $data['registro_id'],retorno_obj: true);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener row parent',data: $row_parent);
-            }
-
-            $keys_parents = $data['keys_parents'];
-
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys_parents, registro: $row_parent);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al al validar row_parent',data: $valida);
-            }
-
-            $value_default = $this->integra_valor_default(keys_parents: $keys_parents,row_parent:  $row_parent,value_previo:  $value_default);
+            $value_default = $this->value_default(data:$data,name_model:  $name_model,value_default:  $value_default);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar valor default',data: $value_default);
             }
-
-
-            $value_default = trim($value_default);
         }
 
         return $value_default;
@@ -96,34 +71,10 @@ class _modelo_children extends modelo {
 
         $value_default = $anexo_descripcion;
         foreach ($parents_data as $name_model=>$data){
-            $data['registro_id'] = $this->registro[$data['key_id']];
-            $valida = $this->valida_value_default(name_model: $name_model, data: $data);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
-            }
-
-            $modelo_parent = $this->genera_modelo(modelo: $name_model, namespace_model: $data['namespace']);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar modelo parent',data: $modelo_parent);
-            }
-            $row_parent = $modelo_parent->registro(registro_id: $data['registro_id'],retorno_obj: true);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener row parent',data: $row_parent);
-            }
-
-            $keys_parents = $data['keys_parents'];
-
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys_parents, registro: $row_parent);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al al validar row_parent',data: $valida);
-            }
-
-            $value_default = $this->integra_valor_default(keys_parents: $keys_parents,row_parent:  $row_parent,value_previo:  $value_default);
+            $value_default = $this->value_default(data:$data,name_model:  $name_model,value_default:  $value_default);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar valor default',data: $value_default);
             }
-
-            $value_default = trim($value_default);
         }
 
         return $value_default;
@@ -234,6 +185,39 @@ class _modelo_children extends modelo {
             return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
         }
         return true;
+    }
+
+    private function value_default(array $data, string $name_model, string $value_default): array|string
+    {
+        $data['registro_id'] = $this->registro[$data['key_id']];
+        $valida = $this->valida_value_default(name_model: $name_model, data: $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
+        }
+
+        $modelo_parent = $this->genera_modelo(modelo: $name_model, namespace_model: $data['namespace']);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar modelo parent',data: $modelo_parent);
+        }
+        $row_parent = $modelo_parent->registro(registro_id: $data['registro_id'],retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener row parent',data: $row_parent);
+        }
+
+        $keys_parents = $data['keys_parents'];
+
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys_parents, registro: $row_parent);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar row_parent',data: $valida);
+        }
+
+        $value_default = $this->integra_valor_default(keys_parents: $keys_parents,row_parent:  $row_parent,value_previo:  $value_default);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar valor default',data: $value_default);
+        }
+
+
+        return trim($value_default);
     }
 
 
