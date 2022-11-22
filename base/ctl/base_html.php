@@ -1,5 +1,5 @@
 <?php
-namespace base\controller;
+namespace gamboamartin\administrador\ctl;
 use gamboamartin\errores\errores;
 
 class base_html{

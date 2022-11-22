@@ -1,6 +1,7 @@
 <?php
 namespace base\controller;
 use base\orm\validaciones;
+use gamboamartin\administrador\ctl\base_html;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 

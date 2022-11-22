@@ -46,6 +46,7 @@ class controlador_baseTest extends test {
         $ctl->registro_id = '1';
 
         $resultado = $ctl->alta_bd(false, false);
+        
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);

@@ -3,7 +3,7 @@ namespace base\controller;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
+
 use stdClass;
 
 class upd{

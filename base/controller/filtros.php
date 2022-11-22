@@ -2,16 +2,16 @@
 namespace base\controller;
 
 use gamboamartin\errores\errores;
-use gamboamartin\validacion\validacion;
+
 use JetBrains\PhpStorm\Pure;
 
 
 class filtros{
     private errores $error;
-    private validacion $validacion;
+
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validacion();
+
     }
 
     private function asigna_filtro(string $campo, array $filtro, string $tabla): array

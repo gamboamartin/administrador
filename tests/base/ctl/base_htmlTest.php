@@ -1,10 +1,9 @@
 <?php
-namespace tests\base\controller;
+namespace tests\base\ctl;
 
-use base\controller\base_html;
+use gamboamartin\administrador\ctl\base_html;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
-
 
 
 class base_htmlTest extends test {

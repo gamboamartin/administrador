@@ -1,6 +1,8 @@
 <?php
 namespace base\controller;
+
 use base\orm\validaciones;
+use gamboamartin\administrador\ctl\base_html;
 use gamboamartin\errores\errores;
 
 class exito_html extends base_html {

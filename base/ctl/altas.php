@@ -1,8 +1,9 @@
 <?php
-namespace base\controller;
+namespace gamboamartin\administrador\ctl;
+use base\controller\controler;
+use base\controller\normalizacion;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 use stdClass;
 
 class altas{

@@ -1,12 +1,10 @@
 <?php
-namespace tests\base\controller;
+namespace tests\base\ctl;
 
-use base\controller\activacion;
-use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\ctl\activacion;
 use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
-
 
 
 class activacionTest extends test {

@@ -1,16 +1,12 @@
 <?php
-namespace tests\base\controller;
+namespace tests\base\ctl;
 
-
-use base\controller\altas;
 
 use base\controller\controler;
-
+use gamboamartin\administrador\ctl\altas;
 use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\errores\errores;
-
 use gamboamartin\test\test;
-
 
 
 class altasTest extends test {
