@@ -129,8 +129,16 @@ class adm_accion extends _modelo_children {
         return $acciones;
     }
 
+    /**
+     * Integra un array con acciones id filtradas por un grupo de usuarios
+     * @param int $adm_grupo_id Grupo a filtrar
+     * @param int $adm_seccion_id seccion a filtrar
+     * @return array
+     * @version 2.64.6
+     */
     public function acciones_id_por_grupo(int $adm_grupo_id = -1, int $adm_seccion_id = -1): array
     {
+
         $filtro = $this->filtro_seccion_grupo(adm_grupo_id: $adm_grupo_id,adm_seccion_id:  $adm_seccion_id);
         if (errores::$error) {
             return $this->error->error('Error al obtener filtro', $filtro);

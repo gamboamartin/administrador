@@ -21,6 +21,19 @@ class adm_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_acciones_por_id_grupo(){
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->acciones_id_por_grupo(1);
+        $this->assertIsArray($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_alta_bd(){
         errores::$error = false;
         $_SESSION['usuario_id'] = 2;
