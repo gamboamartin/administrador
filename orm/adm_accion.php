@@ -29,11 +29,14 @@ class adm_accion extends _modelo_children {
         $parents_data['adm_seccion']['keys_parents'] = array('adm_seccion_codigo');
         $parents_data['adm_seccion']['key_id'] = 'adm_seccion_id';
 
+        $childrens['adm_accion_grupo'] = "gamboamartin\\administrador\\models";
+
         $defaults['css'] = 'info';
         //$defaults['titulo'] = 'info';
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios, columnas: $columnas,
-            columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, defaults: $defaults, parents_data: $parents_data);
+            columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens, defaults: $defaults,
+            parents_data: $parents_data);
         $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new \validacion\accion();
     }
