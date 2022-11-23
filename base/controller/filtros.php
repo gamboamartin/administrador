@@ -29,6 +29,7 @@ class filtros{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro);
         }
+
         return $filtro;
     }
 
@@ -44,18 +45,26 @@ class filtros{
                 return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro);
             }
         }
+        $filtro[$tabla.'.status'] = 'activo';
+        if(isset($_GET['no_valida_status'])){
+            unset($filtro[$tabla.'.status']);
+        }
+        if(isset($_GET['todos'])){
+            $filtro = array();
+        }
+
         return $filtro;
     }
 
     /**
      * @param array $keys Keys a verificar para asignacion de filtros via GET
+     * @return array
      * @version 1.117.28
      * @example
      *      $keys['tabla'] = array('id','descripcion');
      *      $filtro = $ctl->asigna_filtro_get(keys:$keys);
      *      print_r($filtro);
      *      //filtro[tabla.id] = $_GET['tabla_id']
-     * @return array
      */
     public function asigna_filtro_get(array $keys): array
     {
