@@ -5,7 +5,7 @@ namespace base\orm;
 use gamboamartin\errores\errores;
 use stdClass;
 
-class _modelo_parent extends modelo {
+class _modelo_parent extends _base {
 
     public function alta_bd(): array|stdClass
     {

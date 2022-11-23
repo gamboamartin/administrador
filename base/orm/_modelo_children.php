@@ -4,7 +4,7 @@ namespace base\orm;
 use gamboamartin\errores\errores;
 use stdClass;
 
-class _modelo_children extends modelo {
+class _modelo_children extends _base {
 
     private function alias_alta_default(string $descripcion): array|string
     {
@@ -157,6 +157,52 @@ class _modelo_children extends modelo {
 
             $registro['descripcion_select'] = $descripcion_select;
         }
+        return $registro;
+    }
+
+    protected function init_row_alta(array $defaults, array $parents_data, array $registro): array
+    {
+        $valida = $this->valida_alta_bd(registro:$registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
+        $registro = $this->asigna_full_status_alta(registro:$registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al asignar status',data: $registro);
+        }
+
+        foreach ($defaults as $campo=>$value){
+            if(!isset($registro[$campo])){
+                $registro[$campo] = $value;
+            }
+        }
+
+        $registro = $this->codigo_default(parents_data: $parents_data, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar codigo',data: $registro);
+        }
+
+        $registro = $this->descripcion_default(parents_data: $parents_data, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar descripcion',data: $registro);
+        }
+
+        $registro = $this->codigo_bis_default( registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar codigo_bis',data: $registro);
+        }
+
+        $registro = $this->alias_default( registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar alias',data: $registro);
+        }
+
+        $registro = $this->descripcion_select(parents_data: $parents_data, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar descripcion_select',data: $registro);
+        }
+
         return $registro;
     }
 

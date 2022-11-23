@@ -26,7 +26,7 @@ class adm_accion extends _modelo_children {
         $parents_data['adm_seccion'] = array();
         $parents_data['adm_seccion']['namespace'] = 'gamboamartin\\administrador\\models';
         $parents_data['adm_seccion']['registro_id'] = -1;
-        $parents_data['adm_seccion']['keys_parents'] = array('adm_seccion_codigo');
+        $parents_data['adm_seccion']['keys_parents'] = array('adm_seccion_descripcion');
         $parents_data['adm_seccion']['key_id'] = 'adm_seccion_id';
 
         $childrens['adm_accion_grupo'] = "gamboamartin\\administrador\\models";
@@ -231,7 +231,8 @@ class adm_accion extends _modelo_children {
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
         }
 
-        $registro = $this->init_row_alta(defaults: $this->defaults,parents_data: $this->parents_data, registro: $this->registro);
+        $registro = $this->init_row_alta(
+            defaults: $this->defaults,parents_data: $this->parents_data, registro: $this->registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar registro',data: $registro);
         }
@@ -258,7 +259,7 @@ class adm_accion extends _modelo_children {
         return $r_alta_bd;
     }
 
-    private function asigna_full_status_alta(array $registro): array
+    protected function asigna_full_status_alta(array $registro): array
     {
         $keys = array('visible','inicio','lista');
 
@@ -269,33 +270,8 @@ class adm_accion extends _modelo_children {
         return $registro;
     }
 
-    /**
-     * Asigna activo init a row alta
-     * @param string $key Key del row a inicializar
-     * @param array $registro registro previo
-     * @return array
-     * @version 1.569.51
-     */
-    private function asigna_status(string $key, array $registro): array
-    {
-        $key = trim($key);
-        if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data: $key);
-        }
-        $registro[$key] = 'activo';
-        return $registro;
-    }
 
-    private function asigna_status_alta(array $keys, array $registro): array
-    {
-        foreach ($keys as $key){
-            $registro = $this->status_alta(key: $key,registro:  $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar status',data: $registro);
-            }
-        }
-        return $registro;
-    }
+
 
     /**
      * Funcion usada para registrar la cantidad de acciones realizadas por un grupo.
@@ -480,54 +456,17 @@ class adm_accion extends _modelo_children {
         return $r_grupo->registros;
     }
 
-    private function init_row_alta(array $defaults, array $parents_data, array $registro): array
+    protected function init_row_alta(array $defaults, array $parents_data, array $registro): array
     {
-        $valida = $this->valida_alta_bd(registro:$registro);
+
+        $registro = parent::init_row_alta(defaults: $defaults,parents_data:  $parents_data, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+            return $this->error->error(mensaje: 'Error al generar descripcion_select',data: $registro);
         }
-
-        $registro = $this->asigna_full_status_alta(registro:$registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar status',data: $registro);
-        }
-
-        foreach ($defaults as $campo=>$value){
-            if(!isset($registro[$campo])){
-                $registro[$campo] = $value;
-            }
-        }
-
-
-        $registro = $this->codigo_default(parents_data: $parents_data, registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar codigo',data: $registro);
-        }
-
-        $registro = $this->descripcion_default(parents_data: $parents_data, registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar descripcion',data: $registro);
-        }
-
-        $registro = $this->codigo_bis_default( registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar codigo_bis',data: $registro);
-        }
-
-        $registro = $this->alias_default( registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar alias',data: $registro);
-        }
-
         if(!isset($registro['titulo'])){
             $titulo = str_replace('_', ' ', $registro['descripcion']);
             $titulo = ucwords($titulo);
             $registro['titulo'] = trim($titulo);
-        }
-
-        $registro = $this->descripcion_select(parents_data: $parents_data, registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar descripcion_select',data: $registro);
         }
 
         return $registro;
@@ -772,16 +711,7 @@ class adm_accion extends _modelo_children {
         return $permiso_valido;
     }
 
-    private function status_alta(string $key, array $registro): array
-    {
-        if(!isset($registro[$key])){
-            $registro = $this->asigna_status(key: $key, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar status',data: $registro);
-            }
-        }
-        return $registro;
-    }
+
 
     /**
      * Valida los elementos minimos necesarios para insertar una accion
@@ -789,15 +719,15 @@ class adm_accion extends _modelo_children {
      * @return bool|array
      * @version 2.66.6
      */
-    private function valida_alta_bd(array $registro): bool|array
+    protected function valida_alta_bd(array $registro): bool|array
     {
         $keys = array('adm_seccion_id');
         $valida = $this->validacion->valida_ids(keys: $keys,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
         }
-        $keys = array('descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+
+        $valida = parent::valida_alta_bd(registro:$registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
         }

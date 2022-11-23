@@ -67,14 +67,4 @@ class adm_menu extends _modelo_parent {
         return $r_adm_seccion->registros;
     }
 
-    private function valida_alta_bd(array $registro): bool|array
-    {
-
-        $keys = array('descripcion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
-        }
-        return true;
-    }
 }
