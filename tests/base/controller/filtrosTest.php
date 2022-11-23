@@ -27,7 +27,7 @@ class filtrosTest extends test {
         //$ctl = new liberator($ctl);
 
         $keys = array();
-        $resultado = $fl->asigna_filtro_get($keys);
+        $resultado = $fl->asigna_filtro_get($keys,'');
 
 
         $this->assertIsArray($resultado);
@@ -38,7 +38,7 @@ class filtrosTest extends test {
 
         $keys = array();
         $keys['campo'] = 'a';
-        $resultado = $fl->asigna_filtro_get($keys);
+        $resultado = $fl->asigna_filtro_get($keys, '');
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
 
@@ -48,7 +48,7 @@ class filtrosTest extends test {
         $keys = array();
         $keys['pais'] = 'id';
         $_GET['pais_id'] = 1;
-        $resultado = $fl->asigna_filtro_get($keys);
+        $resultado = $fl->asigna_filtro_get($keys, '');
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
 
@@ -59,7 +59,7 @@ class filtrosTest extends test {
         $keys = array();
         $keys['pais'] = array();
         $_GET['pais_id'] = 1;
-        $resultado = $fl->asigna_filtro_get($keys);
+        $resultado = $fl->asigna_filtro_get($keys, '');
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
@@ -71,10 +71,23 @@ class filtrosTest extends test {
         $keys = array();
         $keys['pais'] = array('id');
         $_GET['pais_id'] = 1;
-        $resultado = $fl->asigna_filtro_get($keys);
+        $resultado = $fl->asigna_filtro_get($keys, 'x');
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('1',$resultado['pais.id']);
+
+
+        errores::$error = false;
+
+        $keys = array();
+        $keys['pais'] = array('id');
+        $_GET['pais_id'] = 1;
+        $seccion = 's';
+        $resultado = $fl->asigna_filtro_get($keys, $seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1',$resultado['pais.id']);
+        $this->assertEquals('activo',$resultado['s.status']);
 
         errores::$error = false;
 
@@ -122,7 +135,7 @@ class filtrosTest extends test {
         $campo = 'a';
         $tabla = 'c';
 
-        $resultado = $fl->valida_data_filtro($campo, $tabla);
+        $resultado = $fl->valida_data_filtro($campo, 'x', $tabla);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

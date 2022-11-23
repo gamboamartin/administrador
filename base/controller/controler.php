@@ -171,7 +171,7 @@ class controler{
      */
     protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {
-        $filtro = (new filtros())->asigna_filtro_get(keys: $keys);
+        $filtro = (new filtros())->asigna_filtro_get(keys: $keys, seccion: $this->seccion);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al generar filtros',data:  $filtro,header: $header,ws: $ws);
 
