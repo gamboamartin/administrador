@@ -24,6 +24,7 @@ class adm_seccion extends modelo{
         $childrens['adm_bitacora'] = "gamboamartin\\administrador\\models";
         $childrens['adm_elemento_lista'] = "gamboamartin\\administrador\\models";
         $childrens['adm_seccion_pertenece'] = "gamboamartin\\administrador\\models";
+        $childrens['adm_campo'] = "gamboamartin\\administrador\\models";
 
         $columnas_extra['adm_seccion_n_acciones'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id)";
