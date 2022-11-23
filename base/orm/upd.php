@@ -50,11 +50,11 @@ class upd{
 
 
     /**
-     * @param stdClass $ejecuta_upd
-     * @param int $id
+     * @param stdClass $ejecuta_upd Ejecuta la actualizacion de un row
+     * @param int $id Identificador en proceso
      * @param modelo $modelo Modelo en ejecucion
-     * @param bool $reactiva
-     * @param array $registro
+     * @param bool $reactiva Si reactiva  valida si un upd es valido en el modelo
+     * @param array $registro Registro en proceso
      * @return array|stdClass
 
      */

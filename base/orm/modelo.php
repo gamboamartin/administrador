@@ -2017,9 +2017,7 @@ class modelo extends modelo_base {
         return $resultado->registros[0];
     }
 
-    /**
-     * @throws JsonException
-     */
+
     public function status(string $campo, int $registro_id): array|stdClass
     {
         $registro = $this->registro(registro_id: $registro_id,columnas_en_bruto: true,retorno_obj: true);
