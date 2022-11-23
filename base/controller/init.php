@@ -621,7 +621,9 @@ class init{
 
     public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder): array
     {
-        $keys_selects[$key] = new stdClass();
+        if(!isset($keys_selects[$key])) {
+            $keys_selects[$key] = new stdClass();
+        }
         $keys_selects[$key]->cols = $cols;
         $keys_selects[$key]->place_holder = $place_holder;
         return $keys_selects;
