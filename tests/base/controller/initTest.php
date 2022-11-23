@@ -293,6 +293,24 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_include_action_local_data()
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'f';
+        $seccion = 'a';
+        $resultado = $init->include_action_local_data($accion, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('./views/a/f.php',$resultado->include_action);
+        errores::$error = false;
+    }
+
     public function test_include_action_template(){
 
         errores::$error = false;
@@ -306,7 +324,7 @@ class initTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('/var/www/html/administrador/views/a/v.php',$resultado);
-        $init = new init();
+
     }
 
     public function test_include_action_template_base(){

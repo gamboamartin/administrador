@@ -287,8 +287,24 @@ class init{
         return str_replace('//', '/', $include);
     }
 
+    /**
+     * Obtiene los elementos de un include
+     * @param string $accion Accion en ejecucion
+     * @param string $seccion Seccion en ejecucion
+     * @return array|stdClass
+     * @version 2.77.6
+     */
     private function include_action_local_data(string $accion, string $seccion): array|stdClass
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_local(accion: $accion,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local', data: $include_action);
@@ -631,8 +647,12 @@ class init{
         if(!isset($keys_selects[$key])) {
             $keys_selects[$key] = new stdClass();
         }
-        $keys_selects[$key]->cols = $cols;
-        $keys_selects[$key]->place_holder = $place_holder;
+        if(!isset($keys_selects[$key]->cols)) {
+            $keys_selects[$key]->cols = $cols;
+        }
+        if(!isset($keys_selects[$key]->place_holder)) {
+            $keys_selects[$key]->place_holder = $place_holder;
+        }
         return $keys_selects;
     }
 
