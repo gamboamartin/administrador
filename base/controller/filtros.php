@@ -118,12 +118,21 @@ class filtros{
         return $r_modelo;
     }
 
+    /**
+     * Integra un filtro de get para get_out
+     * @param string $campo Campo a integrar filtro
+     * @param string $tabla Entidad en ejecucion
+     * @return string|array
+     * @version 2.79.6
+     */
     private function key_filter(string $campo, string $tabla): string|array
     {
         $valida = $this->valida_data_filtro(campo: $campo,tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
+        $tabla = trim($tabla);
+        $campo = trim($campo);
         return $tabla.'.'.$campo;
     }
 
@@ -153,6 +162,9 @@ class filtros{
         $tabla = trim($tabla);
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error $tabla esta vacio',data: $tabla);
+        }
+        if(is_numeric($tabla)){
+            return $this->error->error(mensaje: 'Error $tabla debe ser un texto no un numero',data: $tabla);
         }
         return true;
     }

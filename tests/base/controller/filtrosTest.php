@@ -80,6 +80,37 @@ class filtrosTest extends test {
 
     }
 
+    public function test_key_filter(): void
+    {
+
+        errores::$error = false;
+
+        $fl = new filtros($this->link);
+        $fl = new liberator($fl);
+
+        $campo ='a';
+        $tabla ='d';
+        $resultado = $fl->key_filter($campo, $tabla);
+
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('d.a',$resultado);
+
+        errores::$error = false;
+
+        $campo ='1';
+        $tabla ='     d      ';
+        $resultado = $fl->key_filter($campo, $tabla);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('d.1',$resultado);
+
+        errores::$error = false;
+
+
+    }
+
     public function test_valida_data_filtro(): void
     {
 
