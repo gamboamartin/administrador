@@ -158,6 +158,25 @@ class initTest extends test {
 
     }
 
+    public function test_data_include_base()
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $init = new init();
+        $init = new liberator($init);
+
+        $accion = 'lista';
+        $seccion = 'b';
+        $resultado = $init->data_include_base($accion, $seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado->existe);
+        $this->assertStringContainsStringIgnoringCase("vista_base/lista.php",$resultado->include_action);
+        errores::$error = false;
+    }
+
     public function test_existe_include(){
 
         errores::$error = false;

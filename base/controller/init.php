@@ -120,19 +120,26 @@ class init{
     /**
      * Obtiene los datos de un template de una accion
      * @param string $accion Accion a verificar
-     *
      * @param string $seccion Seccion a verificar
-     *
      * @return array|stdClass
-     *
-     *@functions $data_include = $init->include_action_local_base_data. Verifica si existe una view en base a
+     * @functions $data_include = $init->include_action_local_base_data. Verifica si existe una view en base a
      * "$accion" y "$seccion" obtenidas. En caso de error mostrará un mensaje
      *
-     *@functions $data_include = $init->include_template. valida y obtiene la ruta de un template para posterior maquetarla.
+     * @functions $data_include = $init->include_template. valida y obtiene la ruta de un template para posterior maquetarla.
      * En caso de ocurrir un error, mostrará un mensaje
+     * @version 2.75.6
      */
     private function data_include_base(string $accion, string $seccion): array|stdClass
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+
         $data_include = $this->include_action_local_base_data(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local base', data: $data_include);
