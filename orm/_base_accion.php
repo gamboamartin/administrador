@@ -30,7 +30,7 @@ class _base_accion{
     private function init_css(array $registro, stdClass $registro_previo): array
     {
         if(!isset($registro['css'])){
-            $registro['css'] = $registro_previo['css'];
+            $registro['css'] = $registro_previo->adm_accion_css;
         }
         return $registro;
     }
