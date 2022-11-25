@@ -2,8 +2,8 @@
 namespace gamboamartin\administrador\models;
 use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
-
 use PDO;
+use stdClass;
 
 class adm_grupo extends _modelo_parent {
     public function __construct(PDO $link, array $childrens = array()){
@@ -26,7 +26,6 @@ class adm_grupo extends _modelo_parent {
         $this->NAMESPACE = __NAMESPACE__;
     }
 
-
     /**
      * Obtiene los grupos de tipo root
      * @return array
@@ -41,5 +40,6 @@ class adm_grupo extends _modelo_parent {
         }
         return $r_grupo->registros;
     }
+
 
 }

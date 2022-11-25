@@ -1,11 +1,13 @@
 <?php
 namespace gamboamartin\administrador\models;
-use base\orm\_modelo_parent;
 
+
+use base\orm\_modelo_parent_sin_codigo;
 use gamboamartin\errores\errores;
 use PDO;
 
-class adm_sistema extends _modelo_parent {
+
+class adm_sistema extends _modelo_parent_sin_codigo {
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'adm_sistema';
         $columnas = array($tabla=>false);
@@ -15,6 +17,8 @@ class adm_sistema extends _modelo_parent {
         parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
+
+
 
     public function secciones_pertenece(int $adm_sistema_id): array
     {
