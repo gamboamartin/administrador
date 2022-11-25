@@ -27,9 +27,23 @@ class _base_accion{
         return $registro;
     }
 
+    /**
+     * Inicializa el campo para css de accion
+     * @param array $registro Registro en proceso
+     * @param stdClass $registro_previo Registro previo a la actualizacion
+     * @return array
+     * @version 2.93.9
+     */
     private function init_css(array $registro, stdClass $registro_previo): array
     {
+        $keys = array('adm_accion_css');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro_previo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro previo',data: $valida);
+        }
         if(!isset($registro['css'])){
+
+
             $registro['css'] = $registro_previo->adm_accion_css;
         }
         return $registro;
