@@ -461,6 +461,23 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_model_init_campos_input(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $campos_view = array();
+        $key = 'a';
+        $campos_view[] = '';
+        $resultado = $init->model_init_campos_input($campos_view, $key);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('inputs',$resultado['a']['type']);
+        errores::$error = false;
+    }
+
 
     public function test_name_controler(){
 

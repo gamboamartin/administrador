@@ -691,6 +691,13 @@ class init{
 
     }
 
+    /**
+     * Integra los elementos de una view para system
+     * @param array $campos_view Campos de modelo
+     * @param string $key Key a integrar
+     * @return array
+     * @version 2.81.6
+     */
     private function model_init_campos_input(array $campos_view, string $key): array
     {
 
