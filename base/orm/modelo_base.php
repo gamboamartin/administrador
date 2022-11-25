@@ -293,7 +293,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    protected function campos_base(array $data, modelo $modelo, int $id = -1): array
+    protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
     {
 
         if( !isset($data['codigo'])){
@@ -317,7 +317,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $data['codigo_bis'] =  $data['codigo'];
         }
 
-        $data = $this->data_base(data: $data);
+        $data = $this->data_base(data: $data, keys_integra_ds: $keys_integra_ds);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar data base', data: $data);
         }
@@ -333,23 +333,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
-        if(!isset($data['descripcion_select'])){
-
-            $ds = '';
-            foreach ($keys_integra_ds as $key){
-                $key = trim($key);
-                if($key === 'codigo'){
-                    $ds_init = $data[$key];
-                }
-                else{
-                    $ds_init = str_replace("_"," ",$data[$key]);
-                    $ds_init = ucwords($ds_init);
-                }
-                $ds.= $ds_init.' ';
-            }
-            $ds = trim($ds);
-
-            $data['descripcion_select'] =  $ds;
+        $data = $this->registro_descripcion_select(data: $data,keys_integra_ds:  $keys_integra_ds);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integra descripcion select descripcion select', data: $data);
         }
 
         if(!isset($data['alias'])){
@@ -394,6 +380,76 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $row[$modelo->tabla.'_descripcion'];
+    }
+
+    private function descripcion_select(array $data, array $keys_integra_ds): array|string
+    {
+        $ds = '';
+        foreach ($keys_integra_ds as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+            }
+
+            $keys = array($key);
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+            }
+            $ds = $this->integra_ds(data: $data,ds:  $ds,key:  $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds);
+            }
+        }
+        return trim($ds);
+    }
+
+    private function ds_init(array $data, string $key){
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        if($key === 'codigo'){
+            $ds_init = $data[$key];
+        }
+        else{
+            $ds_init = $this->ds_init_no_codigo(data: $data,key:  $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds_init);
+            }
+        }
+        return $ds_init;
+    }
+
+    /**
+     *
+     * Integra una descripcion select basada en un campo
+     * @param array $data Registro en proceso
+     * @param string $key Key a integrar
+     * @return string|array
+     */
+    private function ds_init_no_codigo(array $data, string $key): string|array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        $ds_init = trim(str_replace("_"," ",$data[$key]));
+        return ucwords($ds_init);
     }
 
     /**
@@ -942,6 +998,26 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    private function integra_ds(array $data, string $ds, string $key): array|string
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+        $ds_init = $this->ds_init(data:$data,key:  $key);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds_init);
+        }
+        $ds.= $ds_init.' ';
+        return $ds;
+    }
+
 
     private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
     {
@@ -1109,6 +1185,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $buscar = array('/^','$/');
 
         return str_replace($buscar,'',$pattern);
+    }
+
+    private function registro_descripcion_select(array $data, array $keys_integra_ds): array
+    {
+        if(!isset($data['descripcion_select'])){
+
+            $ds = $this->descripcion_select(data: $data,keys_integra_ds:  $keys_integra_ds);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds);
+            }
+            $data['descripcion_select'] =  $ds;
+        }
+        return $data;
     }
 
     /**

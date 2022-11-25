@@ -7,9 +7,9 @@ use stdClass;
 
 class _modelo_parent extends _base {
 
-    public function alta_bd(): array|stdClass
+    public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {
-        $this->registro = $this->campos_base(data:$this->registro,modelo: $this);
+        $this->registro = $this->campos_base(data:$this->registro,modelo: $this, keys_integra_ds: $keys_integra_ds);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
         }

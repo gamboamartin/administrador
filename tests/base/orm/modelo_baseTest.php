@@ -194,6 +194,24 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_ds_init_no_codigo()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $key = 'a';
+        $data['a'] = 'x__hJlxIUJ';
+        $resultado = $mb->ds_init_no_codigo($data, $key);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X  HJlxIUJ', $resultado);
+        errores::$error = false;
+    }
+
     public function test_descripcion_alta()
     {
 
