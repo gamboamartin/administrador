@@ -60,6 +60,9 @@ class upd{
      */
     public function aplica_ejecucion(stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
         $resultado = $ejecuta_upd->resultado;
 
         if($ejecuta_upd->ejecuta_upd) {
@@ -107,6 +110,9 @@ class upd{
      */
     private function campos_sql(modelo $modelo): array|string
     {
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
         if(count($modelo->registro_upd) === 0){
             return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
                 data: $modelo->registro_upd);
@@ -146,6 +152,9 @@ class upd{
         }
         if($id<=0){
             return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
         }
 
         $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
@@ -348,6 +357,9 @@ class upd{
         }
         if($id<=0){
             return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
         }
 
         $reactiva_row = $this->reactiva(modelo: $modelo,reactiva:  $reactiva,registro:  $registro);

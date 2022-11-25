@@ -198,6 +198,44 @@ class adm_seccionTest extends test {
         errores::$error = false;
     }
 
+    public function test_modifica_bd(){
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion = array();
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'z';
+        $adm_seccion['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $registro['descripcion'] = 'x';
+        $id = 1;
+        $resultado = $modelo->modifica_bd($registro, $id);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_secciones_permitidas(){
 
         errores::$error = false;

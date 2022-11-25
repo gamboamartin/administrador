@@ -1350,6 +1350,10 @@ class modelo extends modelo_base {
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
+        if($this->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
+        }
+
         $init_archivos_tmp_model = $this->init_archivos_tmp_model();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);

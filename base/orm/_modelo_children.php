@@ -38,7 +38,7 @@ class _modelo_children extends _base {
     public function codigo_default(array $parents_data, array $registro): array
     {
         if(!isset($registro['codigo'])){
-            $codigo = $this->codigo_alta_default($parents_data,anexo_codigo: $registro['descripcion']);
+            $codigo = $this->codigo_alta_default(parents_data: $parents_data, registro: $registro,anexo_codigo: $registro['descripcion']);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar codigo',data: $codigo);
             }
@@ -47,12 +47,12 @@ class _modelo_children extends _base {
         return $registro;
     }
 
-    private function codigo_alta_default(array $parents_data, string $anexo_codigo = ''): array|string
+    private function codigo_alta_default(array $parents_data, array $registro, string $anexo_codigo = ''): array|string
     {
 
         $value_default = $anexo_codigo;
         foreach ($parents_data as $name_model=>$data){
-            $value_default = $this->value_default(data:$data,name_model:  $name_model,value_default:  $value_default);
+            $value_default = $this->value_default(data:$data,name_model:  $name_model, registro: $registro,value_default:  $value_default);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar valor default',data: $value_default);
             }
@@ -66,9 +66,24 @@ class _modelo_children extends _base {
         return strtoupper($codigo);
     }
 
-    private function data_default(array $data, string $name_model): array|stdClass
+    private function data_default(array $data, string $name_model, array $registro): array|stdClass
     {
-        $data['registro_id'] = $this->registro[$data['key_id']];
+
+        $keys = array('key_id');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
+        }
+
+        $key_id = $data['key_id'];
+
+        $keys = array($key_id);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al al validar registro',data: $valida);
+        }
+
+        $data['registro_id'] = $registro[$key_id];
         $valida = $this->valida_value_default(name_model: $name_model, data: $data);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
@@ -121,14 +136,14 @@ class _modelo_children extends _base {
         return $registro;
     }
 
-    private function descripcion_select_alta_default(array $parents_data, string $anexo_descripcion_select = ''): array|string
+    private function descripcion_select_alta_default(array $parents_data, array $registro, string $anexo_descripcion_select = ''): array|string
     {
 
         $descripcion_select = $anexo_descripcion_select;
 
         foreach ($parents_data as $name_model=>$data){
 
-            $data_default = $this->data_default(data: $data,name_model:  $name_model);
+            $data_default = $this->data_default(data: $data,name_model:  $name_model, registro: $registro);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener datos',data: $data_default);
             }
@@ -150,7 +165,7 @@ class _modelo_children extends _base {
     public function descripcion_select(array $parents_data, array $registro): array
     {
         if(!isset($registro['descripcion_select'])){
-            $descripcion_select = $this->descripcion_select_alta_default($parents_data,anexo_descripcion_select: $registro['descripcion']);
+            $descripcion_select = $this->descripcion_select_alta_default(parents_data: $parents_data,registro: $registro ,anexo_descripcion_select: $registro['descripcion']);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar descripcion',data: $descripcion_select);
             }
@@ -251,9 +266,9 @@ class _modelo_children extends _base {
         return true;
     }
 
-    private function value_default(array $data, string $name_model, string $value_default): array|string
+    private function value_default(array $data, string $name_model, array $registro, string $value_default): array|string
     {
-        $data_default = $this->data_default(data: $data,name_model:  $name_model);
+        $data_default = $this->data_default(data: $data,name_model:  $name_model, registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener datos',data: $data_default);
         }
