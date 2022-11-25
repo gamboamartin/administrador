@@ -652,6 +652,25 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_ds()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $key = 'a';
+        $ds = '';
+        $data['a'] = 'x';
+        $resultado = $mb->integra_ds($data, $ds, $key);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X ', $resultado);
+        errores::$error = false;
+    }
+
     public function test_key_tmp()
     {
 
@@ -735,10 +754,6 @@ class modelo_baseTest extends test {
 
     }
 
-
-
-
-
     public function test_obten_nombre_tabla(){
 
         errores::$error = false;
@@ -776,8 +791,6 @@ class modelo_baseTest extends test {
         $this->assertEquals('x', $resultado);
         errores::$error = false;
     }
-
-
 
     public function test_parsea_registros_envio(){
 

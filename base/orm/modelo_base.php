@@ -1008,6 +1008,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    /**
+     * Integra un value para descripcion select
+     * @param array $data Registro en proceso
+     * @param string $ds Descripcion previa
+     * @param string $key Key de value a integrar
+     * @return array|string
+     * @version 2.92.6
+     */
     private function integra_ds(array $data, string $ds, string $key): array|string
     {
         $key = trim($key);
