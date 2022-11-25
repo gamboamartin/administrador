@@ -48,6 +48,25 @@ class adm_basicaTest extends test {
 
     }
 
+    public function test_init_etiqueta_label(){
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 1;
+        $modelo = new adm_accion_basica($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array();
+        $registro['descripcion'] = 'x';
+
+        $resultado = $modelo->init_etiqueta_label($registro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado['descripcion']);
+        $this->assertEquals('X',$resultado['etiqueta_label']);
+        errores::$error = false;
+
+    }
+
 
 
 }

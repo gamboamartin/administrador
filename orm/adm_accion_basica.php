@@ -138,10 +138,20 @@ class adm_accion_basica extends _modelo_parent {
         return $registro;
     }
 
-
-
+    /**
+     * Inicializa etiqueta label
+     * @param array $registro Registro en proceso
+     * @return array
+     * @version 2.90.6
+     */
     private function init_etiqueta_label(array $registro): array
     {
+        $keys = array('descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
         if(!isset($registro['etiqueta_label'])){
 
             $etiqueta_label = $this->etiqueta_label(registro: $registro);
