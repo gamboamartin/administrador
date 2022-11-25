@@ -404,7 +404,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return trim($ds);
     }
 
-    private function ds_init(array $data, string $key){
+    /**
+     *
+     * Integra una descripcion select basada en un campo
+     * @param array $data Registro en proceso
+     * @param string $key Key a integrar
+     * @return string|array
+     * @version 2.83.6
+     */
+    private function ds_init(array $data, string $key): array|string
+    {
         $key = trim($key);
         if($key === ''){
             return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
@@ -417,7 +426,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         if($key === 'codigo'){
-            $ds_init = $data[$key];
+            $ds_init = trim($data[$key]);
         }
         else{
             $ds_init = $this->ds_init_no_codigo(data: $data,key:  $key);
@@ -434,6 +443,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Registro en proceso
      * @param string $key Key a integrar
      * @return string|array
+     * @version 2.83.6
      */
     private function ds_init_no_codigo(array $data, string $key): string|array
     {

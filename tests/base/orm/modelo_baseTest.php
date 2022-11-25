@@ -194,6 +194,26 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_ds_init()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $key = 'codigo   ';
+        $data['codigo'] = '   xx hgfs';
+
+        $resultado = $mb->ds_init($data, $key);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('xx hgfs', $resultado);
+        errores::$error = false;
+
+    }
+
     public function test_ds_init_no_codigo()
     {
 
