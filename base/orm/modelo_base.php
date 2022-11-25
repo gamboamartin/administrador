@@ -325,18 +325,31 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    protected function data_base(array $data): array
+    protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
     {
-        $keys = array('descripcion','codigo');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $data);
+
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys_integra_ds,registro:  $data);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
         if(!isset($data['descripcion_select'])){
-            $ds = str_replace("_"," ",$data['descripcion']);
-            $ds = ucwords($ds);
-            $data['descripcion_select'] =  "{$data['codigo']} - {$ds}";
+
+            $ds = '';
+            foreach ($keys_integra_ds as $key){
+                $key = trim($key);
+                if($key === 'codigo'){
+                    $ds_init = $data[$key];
+                }
+                else{
+                    $ds_init = str_replace("_"," ",$data[$key]);
+                    $ds_init = ucwords($ds_init);
+                }
+                $ds.= $ds_init.' ';
+            }
+            $ds = trim($ds);
+
+            $data['descripcion_select'] =  $ds;
         }
 
         if(!isset($data['alias'])){

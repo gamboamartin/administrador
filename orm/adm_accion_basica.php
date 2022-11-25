@@ -47,9 +47,19 @@ class adm_accion_basica extends _modelo_parent {
         return 'info';
     }
 
-
-    private function etiqueta_label(array $registro): string
+    /**
+     * Genera la etiqueta para label
+     * @param array $registro Registro en proceso
+     * @return string|array
+     * @version 2.82.6
+     */
+    private function etiqueta_label(array $registro): string|array
     {
+        $keys = array('descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
         $etiqueta_label = str_replace('_', ' ', $registro['descripcion']);
         return ucwords($etiqueta_label);
     }
