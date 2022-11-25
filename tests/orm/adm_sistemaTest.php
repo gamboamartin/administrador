@@ -29,7 +29,7 @@ class adm_sistemaTest extends test {
         //$modelo = new liberator($modelo);
 
         $_SESSION['usuario_id']= 2;
-        
+
         $adm_sistema_id = 1;
         $resultado = $modelo->secciones_pertenece($adm_sistema_id);
         $this->assertIsArray($resultado);

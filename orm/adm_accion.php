@@ -32,7 +32,7 @@ class adm_accion extends _modelo_children {
         $childrens['adm_accion_grupo'] = "gamboamartin\\administrador\\models";
 
         $defaults['css'] = 'info';
-        //$defaults['titulo'] = 'info';
+
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens, defaults: $defaults,
