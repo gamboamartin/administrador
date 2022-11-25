@@ -2,6 +2,7 @@
 namespace gamboamartin\administrador\models;
 
 use base\orm\_modelo_parent;
+use base\orm\base_accion;
 use base\orm\inicializacion;
 use gamboamartin\errores\errores;
 use PDO;
@@ -188,7 +189,7 @@ class adm_accion_basica extends _modelo_parent {
     public function modifica_bd(array $registro, int $id, bool $reactiva = false, array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
     {
 
-        $registro (new _adm_accion())->registro_validado(id: $id, modelo: $this,registro: $registro );
+        $registro (new base_accion())->registro_validado_css(id: $id, modelo: $this,registro: $registro );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar css',data: $registro);
         }

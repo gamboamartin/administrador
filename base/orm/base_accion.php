@@ -1,11 +1,10 @@
 <?php
-namespace gamboamartin\administrador\models;
-use base\orm\modelo;
+namespace base\orm;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
-class _adm_accion{
+class base_accion{
     private errores $error;
     private validacion $validacion;
     public function __construct(){
