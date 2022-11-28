@@ -36,6 +36,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      *
      * @function $grupo_modelo = new adm_grupo($adm_usuario->link); Obtiene los datos de
      * un grupo por medio del enlace a una base de datos
+     * @version 2.96.9
      */
     public function data_grupo(array $filtro): array
     {
@@ -44,7 +45,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         if(errores::$error){
             return $this->error->error('Error al obtener grupo',$r_grupo);
         }
-        if((int)$r_grupo['n_registros'] === 0){
+        if((int)$r_grupo->n_registros === 0){
             return $this->error->error('Error al obtener grupo no existe',$r_grupo);
         }
         if((int)$r_grupo->n_registros > 1){

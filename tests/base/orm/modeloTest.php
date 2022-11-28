@@ -499,10 +499,27 @@ class modeloTest extends test {
             exit;
         }
 
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['adm_seccion_id'] = '1';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $modelo->get_data_lista();
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals(8,$resultado['n_registros']);
+        $this->assertEquals(1,$resultado['n_registros']);
 
         errores::$error = false;
         $modelo = new adm_accion($this->link);

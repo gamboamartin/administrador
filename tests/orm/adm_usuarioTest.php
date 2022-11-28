@@ -16,6 +16,24 @@ class adm_usuarioTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_data_grupo(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $filtro = array();
+        $resultado = $modelo->data_grupo($filtro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(2, $resultado['adm_grupo_id']);
+        errores::$error = false;
+
+    }
+
     public function test_filtro_seguridad(): void
     {
 
