@@ -932,6 +932,9 @@ class init{
         if($sistema === 'tg_cat_sat'){
             $namespace = 'tglobally\\tg_cat_sat\\';
         }
+        if($sistema === 'academico'){
+            $namespace = 'gamboamartin\\academico\\';
+        }
 
 
 
