@@ -706,6 +706,10 @@ class init{
         if($key === ''){
             return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
         }
+        $type = trim($type);
+        if($type === ''){
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+        }
 
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  $type);
         if(errores::$error){
@@ -714,8 +718,20 @@ class init{
         return $campos_view;
     }
 
+    /**
+     * Inicializa los campos para un template
+     * @param array $campos_view Campos precargados
+     * @param array $keys Keys a inicializar con nombre de los campos
+     * @param string $type Typo de campo inputs o password
+     * @return array
+     * @version 2.100.9
+     */
     private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
+        $type = trim($type);
+        if($type === ''){
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+        }
 
         foreach ($keys as $key){
 
