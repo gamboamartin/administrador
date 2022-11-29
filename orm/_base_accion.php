@@ -20,7 +20,7 @@ class _base_accion{
             return $this->error->error(mensaje: 'Error al obtener accion',data: $registro_previo);
         }
 
-        $registro = $this->init_css(registro: $registro, registro_previo: $registro_previo);
+        $registro = $this->init_css(registro: $registro, registro_previo: $registro_previo, tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar css',data: $registro);
         }
@@ -31,12 +31,18 @@ class _base_accion{
      * Inicializa el campo para css de accion
      * @param array $registro Registro en proceso
      * @param stdClass $registro_previo Registro previo a la actualizacion
+     * @param string $tabla Tabla del modelo en ejecucion
      * @return array
      * @version 2.93.9
      */
-    private function init_css(array $registro, stdClass $registro_previo): array
+    private function init_css(array $registro, stdClass $registro_previo, string $tabla): array
     {
-        $keys = array('adm_accion_css');
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data: $tabla);
+        }
+        $key = $tabla.'_css';
+        $keys = array($key);
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro_previo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro previo',data: $valida);
@@ -44,7 +50,7 @@ class _base_accion{
         if(!isset($registro['css'])){
 
 
-            $registro['css'] = $registro_previo->adm_accion_css;
+            $registro['css'] = $registro_previo->$key;
         }
         return $registro;
     }

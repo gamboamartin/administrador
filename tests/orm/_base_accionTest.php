@@ -29,7 +29,8 @@ class _base_accionTest extends test {
         $registro= array();
         $registro_previo= new stdClass();
         $registro_previo->adm_accion_css = 'x';
-        $resultado = $modelo->init_css($registro, $registro_previo);
+        $resultado = $modelo->init_css($registro, $registro_previo, 'adm_accion');
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
