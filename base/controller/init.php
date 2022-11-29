@@ -766,18 +766,27 @@ class init{
         return $campos_view;
     }
 
+    /**
+     * Inicializa los campos de tipo select
+     * @param array $campos_view Campos de view template
+     * @param array $keys Keys a integrar
+     * @param PDO $link Conexion a la base de datos
+     * @return array
+     * @version 2.105.10
+     */
     private function model_init_campos_selects(array $campos_view, array $keys, PDO $link): array
     {
 
         foreach ($keys as $campo =>$data){
-
             if(!is_object($data)){
                 return $this->error->error(mensaje: 'Error al data de ser un obj',data:  $data);
             }
-
             $campo = trim($campo);
             if($campo === ''){
                 return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo);
+            }
+            if(is_numeric($campo)){
+                return $this->error->error(mensaje: 'Error campo es un numero debe ser un texto',data:  $campo);
             }
             $keys_val = array('name_model','namespace_model');
             $valida = (new validacion())->valida_existencia_keys(keys:$keys_val, registro: $data);
