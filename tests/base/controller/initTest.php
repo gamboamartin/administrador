@@ -471,7 +471,7 @@ class initTest extends test {
         $campos_view = array();
         $key = 'a';
         $campos_view[] = '';
-        $resultado = $init->model_init_campos_input($campos_view, $key);
+        $resultado = $init->model_init_campos_input($campos_view, $key, 'inputs');
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('inputs',$resultado['a']['type']);

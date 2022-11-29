@@ -695,10 +695,11 @@ class init{
      * Integra los elementos de una view para system
      * @param array $campos_view Campos de modelo
      * @param string $key Key a integrar
+     * @param string $type Tipo de input
      * @return array
      * @version 2.81.6
      */
-    private function model_init_campos_input(array $campos_view, string $key): array
+    private function model_init_campos_input(array $campos_view, string $key, string $type): array
     {
 
         $key = trim($key);
@@ -706,14 +707,14 @@ class init{
             return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
         }
 
-        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'inputs');
+        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  $type);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
         return $campos_view;
     }
 
-    private function model_init_campos_inputs(array $campos_view, array $keys): array
+    private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
 
         foreach ($keys as $key){
@@ -723,7 +724,7 @@ class init{
                 return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
             }
 
-            $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key);
+            $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key, type: $type);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
             }
@@ -803,10 +804,21 @@ class init{
         if(!isset($keys->selects)){
             $keys->selects = array();
         }
+        if(!isset($keys->passwords)){
+            $keys->passwords = array();
+        }
 
         $keys_inputs = $keys->inputs;
 
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_inputs);
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_inputs, type: 'inputs');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_passwords = $keys->inputs;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_passwords, type: 'passwords');
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
