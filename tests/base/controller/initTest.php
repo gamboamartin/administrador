@@ -515,6 +515,26 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_model_init_campos_select(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $campos_view = array();
+        $key = 'a';
+        $link = $this->link;
+        $name_model = 'adm_seccion';
+        $namespace_model = 'gamboamartin\\administrador\\models';
+        $resultado = $init->model_init_campos_select($campos_view, $key, $link, $name_model, $namespace_model);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+    }
+
 
     public function test_name_controler(){
 
