@@ -1,7 +1,9 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
@@ -47,6 +49,36 @@ class adm_usuarioTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+    }
+
+    public function test_tengo_permiso(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = -1;
+
+        $adm_accion = '';
+        $adm_seccion = '';
+        $resultado = $modelo->tengo_permiso($adm_accion, $adm_seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+
+        $adm_accion = '';
+        $adm_seccion = '';
+        $resultado = $modelo->tengo_permiso($adm_accion, $adm_seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+
     }
 
     public function test_usuario(): void

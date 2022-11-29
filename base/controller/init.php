@@ -849,7 +849,7 @@ class init{
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
 
-        $keys_passwords = $keys->inputs;
+        $keys_passwords = $keys->passwords;
 
         $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_passwords, type: 'passwords');
 

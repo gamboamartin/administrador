@@ -99,6 +99,13 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $filtro;
     }
 
+    /**
+     * Verifica si el usuario en ejecucion tiene permiso
+     * @param string $adm_accion Accion en ejecion
+     * @param string $adm_seccion Seccion en ejecucion
+     * @return array|bool
+     * @version 2.103.9
+     */
     public function tengo_permiso(string $adm_accion, string $adm_seccion): array|bool
     {
         $adm_usuario_id = -1;
