@@ -445,6 +445,25 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_maqueta_key_select_input(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+        $selects = array();
+        $name_model = 'a';
+        $namespace_paquete = 'c';
+        $resultado = $init->maqueta_key_select_input($selects, $name_model, $namespace_paquete);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado['a_id']->name_model);
+        $this->assertEquals('c\models',$resultado['a_id']->namespace_model);
+        errores::$error = false;
+    }
+
     public function test_model_init_campos(){
 
         errores::$error = false;

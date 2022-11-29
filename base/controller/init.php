@@ -656,8 +656,25 @@ class init{
         return $keys_selects;
     }
 
+    /**
+     * Integra los inputs de un select para parametros
+     * @param array $selects Selects
+     * @param string $name_model Nombre del modelo
+     * @param string $namespace_paquete Paquete
+     * @return array
+     * @version 2.101.9
+     */
     private function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
     {
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model);
+        }
+        $namespace_paquete = trim($namespace_paquete);
+        if($namespace_paquete === ''){
+            return $this->error->error(mensaje: 'Error namespace_paquete esta vacio',data:  $namespace_paquete);
+        }
+
         $name_model_id = $name_model.'_id';
         $selects[$name_model_id] = new stdClass();
         $selects[$name_model_id]->name_model = $name_model;
