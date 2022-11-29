@@ -850,6 +850,12 @@ class init{
         if(!isset($keys->passwords)){
             $keys->passwords = array();
         }
+        if(!isset($keys->telefonos)){
+            $keys->telefonos = array();
+        }
+        if(!isset($keys->emails)){
+            $keys->emails = array();
+        }
 
         $keys_inputs = $keys->inputs;
 
@@ -866,6 +872,23 @@ class init{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
+
+        $keys_telefonos = $keys->telefonos;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_telefonos, type: 'telefonos');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_emails = $keys->emails;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_emails, type: 'emails');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
 
         $keys_selects = $keys->selects;
 
