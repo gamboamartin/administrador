@@ -33,9 +33,17 @@ class data_format{
             if($campo === ''){
                 return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo);
             }
+            if(!is_string($tipo_dato)){
+                $fix = 'modelo->tipo_campos debe llevar esta forma $modelo->tipo_campos[campo] = regex 
+                donde el regex debe existir en el paquete de validaciones en validacion->patterns';
+                return $this->error->error(mensaje: 'Error el tipo_dato debe ser un string', data: $tipo_dato, fix: $fix);
+            }
+
             $tipo_dato = trim($tipo_dato);
             if($tipo_dato === ''){
-                return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato);
+                $fix = 'modelo->tipo_campos debe llevar esta forma $modelo->tipo_campos[campo] = regex 
+                donde el regex debe existir en el paquete de validaciones en validacion->patterns';
+                return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato, fix: $fix);
             }
 
             $registro = $this->asignacion_campo_moneda(campo: $campo, registro: $registro,tipo_dato:  $tipo_dato);
@@ -81,9 +89,13 @@ class data_format{
         if($campo === ''){
             return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo);
         }
+
+
         $tipo_dato = trim($tipo_dato);
         if($tipo_dato === ''){
-            return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato);
+            $fix = 'modelo->tipo_campos debe llevar esta forma $modelo->tipo_campos[campo] = regex 
+                donde el regex debe existir en el paquete de validaciones en validacion->patterns';
+            return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato, fix: $fix);
         }
         if(isset($registro[$campo]) && ($tipo_dato === 'double' || $tipo_dato === 'moneda')){
             $registro = $this->asigna_campo_moneda(campo: $campo, registro: $registro);
