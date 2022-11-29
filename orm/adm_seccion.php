@@ -103,12 +103,13 @@ class adm_seccion extends _modelo_children {
             $accion['seguridad'] = $accion_basica['adm_accion_basica_seguridad'];
             $accion['inicio'] = $accion_basica['adm_accion_basica_inicio'];
             $accion['lista'] = $accion_basica['adm_accion_basica_lista'];
+            $accion['es_lista'] = $accion_basica['adm_accion_basica_es_lista'];
             $accion['status'] = $accion_basica['adm_accion_basica_status'];
+            $accion['es_status'] = $accion_basica['adm_accion_basica_es_status'];
             $accion['adm_seccion_id'] = $registro_id;
             $accion['es_view'] = $accion_basica['adm_accion_basica_es_view'];
-            $accion['titulo'] =str_replace('_',' ',$accion_basica['adm_accion_basica_descripcion']);
-            $accion['titulo'] =ucwords($accion['titulo']);
-            $accion['css'] ='info';
+            $accion['titulo'] =ucwords($accion_basica['adm_accion_basica_titulo']);
+            $accion['css'] =$accion_basica['adm_accion_basica_css'];
             $adm_accion_modelo = new adm_accion($this->link);
             $adm_accion_modelo->registro = $accion;
             $r_alta_accion =$adm_accion_modelo->alta_bd();
