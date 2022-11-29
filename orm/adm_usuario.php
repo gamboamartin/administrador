@@ -21,8 +21,14 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
         $childrens['adm_bitacora'] = "gamboamartin\\administrador\\models";
         $childrens['adm_session'] = "gamboamartin\\administrador\\models";
+
+        $tipo_campos = array();
+        $tipo_campos['email'] = 'correo';
+        $tipo_campos['telefono'] = 'telefono_mx';
+        $tipo_campos['adm_grupo_id'] = 'id';
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, childrens: $childrens);
+            columnas: $columnas, tipo_campos: $tipo_campos, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
 
