@@ -324,6 +324,31 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_descripcion_select()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $_SESSION['usuario_id'] = 2;
+
+
+        $data = array();
+        $keys_integra_ds = array();
+        $keys_integra_ds[] = 'x';
+
+        $data['x'] = 'z';
+
+        $resultado = $mb->descripcion_select($data, $keys_integra_ds);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Z',$resultado);
+
+        errores::$error = false;
+    }
+
     public function test_ejecuta_sql()
     {
         errores::$error = false;

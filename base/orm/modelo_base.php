@@ -382,6 +382,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row[$modelo->tabla.'_descripcion'];
     }
 
+    /**
+     * Ajusta un registro en su descripcion select
+     * @param array $data Datos de registro1
+     * @param array $keys_integra_ds Keys para integracion de descripcion
+     * @return array|string
+     * @version 2.107.12
+     */
     private function descripcion_select(array $data, array $keys_integra_ds): array|string
     {
         $ds = '';
