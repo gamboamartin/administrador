@@ -865,6 +865,9 @@ class init{
         if(!isset($keys->emails)){
             $keys->emails = array();
         }
+        if(!isset($keys->fechas)){
+            $keys->fechas = array();
+        }
 
         $keys_inputs = $keys->inputs;
 
@@ -893,6 +896,14 @@ class init{
         $keys_emails = $keys->emails;
 
         $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_emails, type: 'emails');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_fechas = $keys->fechas;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_fechas, type: 'fechas');
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
