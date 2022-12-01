@@ -24,6 +24,13 @@ class _base extends modelo{
         return $registro;
     }
 
+    /**
+     * Asigna un valor de tipo status inicializado
+     * @param string $key Key de tipo status
+     * @param array $registro Registro en proceso
+     * @return array
+     * @version 2.110.12
+     */
     private function asigna_status(string $key, array $registro): array
     {
         $key = trim($key);

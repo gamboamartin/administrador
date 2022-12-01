@@ -15,6 +15,24 @@ class _baseTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_status()
+    {
+
+        errores::$error = false;
+        $tabla = 'adm_mes';
+        $base = new _base($this->link, $tabla);
+        $base = new liberator($base);
+
+        $registro = array();
+        $key = 'a';
+        $resultado = $base->asigna_status($key, $registro);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals('activo',$resultado['a']);
+        errores::$error = false;
+
+    }
+
     public function test_valida_alta_bd()
     {
 
