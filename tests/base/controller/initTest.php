@@ -445,6 +445,24 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_key_select_txt(){
+
+        errores::$error = false;
+
+        $init = new init();
+        //$init = new liberator($init);
+
+        $cols = -1;
+        $key = 'a';
+        $keys_selects = array();
+        $place_holder = '';
+        $resultado = $init->key_select_txt($cols, $key, $keys_selects, $place_holder);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(-1,$resultado['a']->cols);
+        errores::$error = false;
+    }
+
     public function test_maqueta_key_select_input(){
 
         errores::$error = false;

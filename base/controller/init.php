@@ -642,8 +642,22 @@ class init{
         return $data;
     }
 
+    /**
+     * Integra los keys para parametros base de un input
+     * @param int $cols Cols css
+     * @param string $key Campo de input
+     * @param array $keys_selects Conjunto de keys precargados
+     * @param string $place_holder Tag de input
+     * @return array
+     * @version 2.115.12
+     */
     public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
         if(!isset($keys_selects[$key])) {
             $keys_selects[$key] = new stdClass();
         }
