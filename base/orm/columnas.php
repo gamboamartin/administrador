@@ -1020,8 +1020,19 @@ class columnas{
         return $data;
     }
 
+    /**
+     * Intega un campo obligatorio para validacion
+     * @param string $campo Campo a integrar
+     * @param array $campos_obligatorios Campos obligatorios precargados
+     * @return array
+     * @version 2.114.12
+     */
     private function integra_campo_obligatorio(string $campo, array $campos_obligatorios): array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo no puede ser vacio', data: $campo);
+        }
         $campos_obligatorios[]=$campo;
         return $campos_obligatorios;
     }

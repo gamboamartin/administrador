@@ -1101,6 +1101,21 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_campo_obligatorio(){
+        errores::$error = false;
+
+        $modelo = new columnas();
+        $modelo = new liberator($modelo);
+
+        $campos_obligatorios = array();
+        $campo = 'a';
+        $resultado = $modelo->integra_campo_obligatorio($campo, $campos_obligatorios);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado[0]);
+        errores::$error = false;
+    }
+
     public function test_integra_columnas(){
         errores::$error = false;
         $mb = new columnas();
