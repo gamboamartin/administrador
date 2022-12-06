@@ -881,6 +881,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $modelos_hijos[$key]['filtros']= $modelo['filtros'];
             $modelos_hijos[$key]['filtros_con_valor']= $modelo['filtros_con_valor'];
             $modelos_hijos[$key]['nombre_estructura']= $modelo['nombre_estructura'];
+            $modelos_hijos[$key]['namespace_model']= $modelo['namespace_model'];
         }
         return $modelos_hijos;
     }
@@ -1100,7 +1101,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $row_new = $this->ajusta_row_select(campos_encriptados: $campos_encriptados,
                 modelos_hijos: $modelos_hijos, row: $row);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al ajustar rows', data:$row);
+                return $this->error->error(mensaje: 'Error al ajustar rows', data:$row_new);
             }
 
             $new_array[] = $row_new;
