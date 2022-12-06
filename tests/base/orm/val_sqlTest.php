@@ -2,10 +2,10 @@
 namespace tests\base\orm;
 
 use base\orm\val_sql;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
 
 
 class val_sqlTest extends test {
@@ -546,7 +546,7 @@ class val_sqlTest extends test {
         $tabla = 'a';
         $registro[] = '';
         $resultado = $val->valida_base_alta($campos_obligatorios, $modelo, $no_duplicados, $registro, $tabla,
-            $tipo_campos);
+            $tipo_campos, array());
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);

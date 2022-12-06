@@ -1,23 +1,19 @@
 <?php //DEBUG FIN
 namespace base\controller;
 
-use base\frontend\directivas;
-use base\frontend\templates;
-use base\frontend\values;
 use base\orm\modelo;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\ctl\activacion;
+use gamboamartin\administrador\ctl\altas;
+use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
-
-use gamboamartin\plugins\exportador;
 use JsonException;
-
-use models\adm_accion;
-use models\adm_elemento_lista;
-use models\adm_session;
-use models\adm_usuario;
 use PDO;
 use stdClass;
+use Throwable;
 use validacion\confs\configuraciones;
 
 
@@ -33,6 +29,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public int $reg_x_pagina;
 
     public array $valores_asignados_default = array();
+
     public array $selects_registros_completos = array();
 
     public bool $registros_alta = false;
@@ -45,6 +42,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public string $lista_html = '';
     public string $modifica_html = '';
     public string $btn = '';
+
 
 
     public array $registro_en_proceso = array();
@@ -81,12 +79,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->tabla = $modelo->tabla;
         $this->modelo = $modelo;
 
-        $this->directiva = new directivas();
 
         $init = (new normalizacion())->init_controler(controler: $this);
         if(errores::$error){
-            $error = $this->errores->error(mensaje:'Error al incializar entradas',data: $init,
-                params: get_defined_vars());
+            $error = $this->errores->error(mensaje:'Error al incializar entradas',data: $init);
             print_r($error);
             die('Error');
         }
@@ -110,18 +106,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->filtro_boton_lista = $filtro_boton_lista;
 
 
-        $inputs_busca = $this->directiva->panel_busca(campo_busca: $this->campo_busca,
-            valor_busca_fault: $this->valor_busca_fault);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar datos de busqueda',data: $inputs_busca);
-            print_r($error);
-            die('Error');
-        }
-
-        $this->campo_busca = $inputs_busca['campo_busca'];
-        $this->btn_busca = $inputs_busca['btn_busca'];
-
-        parent::__construct();
+        parent::__construct(link: $link);
 
         $aplica_seguridad = (new generales())->aplica_seguridad;
         if(!isset($_SESSION['grupo_id']) && $aplica_seguridad){
@@ -138,13 +123,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         }
 
-        $breadcrumbs = $this->data_bread(aplica_seguridad: $aplica_seguridad);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar nav breads',data: $breadcrumbs);
-            print_r($error);
-            die('Error');
-        }
-        $this->breadcrumbs = $breadcrumbs;
 
         /**
          * @author kevin.acuna
@@ -153,12 +131,20 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         if(isset($_SESSION['usuario_id']) && (int)$_SESSION['usuario_id']>0) {
             $datos_session_usuario = (new adm_usuario(link: $this->link))->usuario_activo();
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al generar nav breads', data: $datos_session_usuario);
+                $error = $this->errores->error(mensaje: 'Error al verificar usuario activo', data: $datos_session_usuario);
                 print_r($error);
                 die('Error');
             }
             $this->datos_session_usuario = $datos_session_usuario;
         }
+
+        $secciones_permitidas = (new adm_seccion($this->link))->secciones_permitidas();
+        if(errores::$error){
+            $error =  $this->errores->error(mensaje: 'Error al obtener secciones permitidas',data: $secciones_permitidas);
+            print_r($error);
+            exit;
+        }
+        $this->secciones_permitidas = $secciones_permitidas;
 
     }
 
@@ -168,12 +154,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * correspondiente al id del registro en cuestión.
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array almacena en un arreglo todos los datos del registro
-     * @throws JsonException
      */
     public function activa_bd(bool $header ): array{
         if($this->registro_id === -1){
             return $this->errores->error('No existe id para activar',$_GET);
         }
+
         $registro = $this->modelo->registro(registro_id: $this->registro_id);
         if(errores::$error){
             $error = $this->errores->error('Error al obtener registro',$registro);
@@ -185,8 +171,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
         $valida = $this->validacion->valida_transaccion_activa(
-            aplica_transaccion_inactivo: $this->modelo->aplica_transaccion_inactivo, registro_id: $this->registro_id,
-            tabla: $this->modelo->tabla,registro: $registro);
+            aplica_transaccion_inactivo: $this->modelo->aplica_transaccion_inactivo, registro: $registro,
+            registro_id: $this->registro_id, tabla: $this->modelo->tabla);
 
         if(errores::$error){
             $error = $this->errores->error('Error al validar transaccion activa',$valida);
@@ -197,7 +183,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $error;
         }
 
-        $resultado = (new activacion())->activa_bd_base(modelo:  $this->modelo, registro_id: $this->registro_id,seccion:  $this->seccion);
+        $resultado = (new activacion())->activa_bd_base(
+            modelo:  $this->modelo, registro_id: $this->registro_id,seccion:  $this->seccion);
         if(errores::$error){
             $error = $this->errores->error('Error al activar registro', $resultado);
 
@@ -252,102 +239,43 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
 
 
-        $elm = new adm_elemento_lista($this->link);
 
-
-        $template = new templates($this->link);
-        $template->valores =$this->valores;
-        $template->campos_invisibles =$this->campos_invisibles;
         $this->registro_en_proceso = $registro_en_proceso;
 
-        $campos = $elm->obten_campos_el(estructura_bd:  array(), modelo: $this->modelo,vista: 'alta');
-        if(errores::$error){
-            return  $this->retorno_error(mensaje: 'Error al obtener campos',data: $campos,header: $header,ws: false);
-        }
 
-        $alta_html = $template->alta(aplica_form: true, directivas_extra: $this->directivas_extra,
-            muestra_btn_guardar:  true,valores_filtrados: $this->valores_filtrados,campos: $campos ,seccion:  $this->seccion,
-            session_id: $this->session_id,path_base: $this->path_base,
-            campos_disabled: $this->campos_disabled,valores_default: $this->valores_asignados_default,
-            campos_invisibles: $this->campos_invisibles);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template alta', data: $alta_html, header: $header,
-                ws: false);
-        }
-        $this->alta_html = $alta_html;
-        $directiva = new directivas();
-        $btn = $directiva->btn_enviar(label: 'Agrega',name: 'btn_agrega',value: 'btn_agrega',stilo: 'success');
+        $this->alta_html = '';
 
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar btn', data: $btn , header: $header, ws: false);
 
-        }
-        $this->btn = $btn;
         return $this->alta_html;
     }
 
     /**
-     * ERROREV
-     * Función que al validar los datos de una clase inserta los regitros en la base de datos.
+     *
+     * Función que al validar los datos de una clase inserta los registros en la base de datos.
      * Si los registros no son válidos, éstos se limpian para ser capturados de nuevo.
      * @param bool $header Si header muestra resultado en front
      * @param bool $ws si ws retorna json
      * @return array|stdClass con datos del registro insertado
-     * @throws JsonException retorna un arreglo
+     * @version 2.36.3
      */
     public function alta_bd(bool $header, bool $ws): array|stdClass{
-        /**
-         * REFACTORIZA
-         */
 
-
-        $transaccion_previa = false;
-        if($this->link->inTransaction()){
-            $transaccion_previa = true;
+        $transaccion_previa = $this->transaccion_previa();
+        if(errores::$error){
+            return $this->retorno_error(mensaje: 'Error al validar transaccion_previa', data: $transaccion_previa,
+                header: $header, ws: $ws);
         }
+
         if(!$transaccion_previa) {
             $this->link->beginTransaction();
         }
 
-        $valida = $this->validacion->valida_clase(controler: $this);
+        $valida = $this->validacion->valida_alta_bd(controler: $this);
         if(errores::$error){
             if(!$transaccion_previa) {
                 $this->link->rollBack();
             }
-            return $this->retorno_error(mensaje: 'Error al validar clase', data: $valida, header: $header, ws: $ws);
-        }
-
-        if($this->tabla===''){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error seccion por get debe existir',data:  $_GET, header: $header,
-                ws:  $ws);
-        }
-
-        $limpia = (new normalizacion())->limpia_post_alta();
-        if(errores::$error){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error al limpiar POST', data: $limpia,header:  $header,ws:  $ws);
-        }
-
-        $valida = $this->validacion->valida_post_alta();
-        if(errores::$error){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error al validar POST', data: $valida,header:  $header,ws:  $ws);
-        }
-
-
-        if($this->seccion === ''){
-            if(!$transaccion_previa) {
-                $this->link->rollBack();
-            }
-            return $this->retorno_error(mensaje: 'Error al seccion no puede venir vacia',data:  $this->seccion,
-                header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al validar datos', data: $valida,header:  $header,ws:  $ws);
         }
 
 
@@ -360,7 +288,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             return $this->retorno_error(mensaje: 'Error al insertar', data: $resultado, header: $header,ws:  $ws);
 
         }
-
 
         $this->registro_id = $resultado->registro_id;
 
@@ -384,8 +311,13 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         if($ws){
             header('Content-Type: application/json');
-            echo json_encode($resultado, JSON_THROW_ON_ERROR);
-            exit;
+            try {
+                echo json_encode($resultado, JSON_THROW_ON_ERROR);
+                exit;
+            }
+            catch (Throwable $e){
+                return $this->retorno_error(mensaje: 'Error de salida', data: $e, header: true,ws:  false);
+            }
         }
         return $resultado;
     }
@@ -393,7 +325,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     /**
      * P INT
      * Función que aplica filtro sobre los registro de una tabla después de
-     * válidar los parámetros de la solicicutd y la existencia de botón filtrar o botón limpiar.
+     * válidar los parámetros de la solicitud y la existencia de botón filtrar o botón limpiar.
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array
      */
@@ -506,12 +438,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
 
-
     /**
      *
      * @param bool $header
      * @param bool $ws
      * @return array
+     * @throws JsonException
      */
     public function desactiva_bd(bool $header, bool $ws): array{//FINPROTEOCOMPLETA
         if($this->registro_id<=0){
@@ -560,10 +492,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     *
-     * @param bool $header
-     * @param bool $ws
+     * Elimina un registro
+     * @param bool $header Si header muestra resultado en nav
+     * @param bool $ws Si ws muestra resultado en json
      * @return array|stdClass
+     * @version 2.44.4
      */
     public function elimina_bd(bool $header, bool $ws): array|stdClass{
         $transacion_previa = false;
@@ -679,305 +612,38 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      */
     public function lista(bool $header, bool $ws = false): array{
 
-        $valida = $this->validacion->valida_datos_lista_entrada(accion: $this->accion, seccion: $this->seccion);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al validar', data: $valida,header:  $header, ws: $ws);
-        }
-        $modelo = new adm_accion($this->link);
-
-        $acciones = $modelo->acciones_permitidas(accion:$this->accion, modelo:$this->modelo, seccion:$this->seccion);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener accion', data: $acciones, header: $header, ws: $ws);
-        }
-
-        $pag_seleccionada = 1;
-        if(isset($_GET['pag_seleccionada'])){
-            $pag_seleccionada = (int)$_GET['pag_seleccionada'];
-        }
-        $filtro_btn = (new normalizacion())->filtro_btn(controler: $this);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener filtro de boton', data: $filtro_btn,
-                header: $header, ws: $ws);
-        }
-
-        $elm = new adm_elemento_lista($this->link);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar modelo',data: $elm);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-
-        $filtro['adm_seccion.descripcion'] = trim($this->seccion);
-        $filtro['adm_elemento_lista.lista'] = 'activo';
-        $filtro['adm_elemento_lista.status'] = 'activo';
-
-        $r_elementos = $elm->filtro_and(filtro:$filtro);
-
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: "Error al filtrar",data: $r_elementos);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-
-        $elementos = $r_elementos->registros;
-        $columnas_mostrables = array();
-        $status_encontrado = false;
-        $id_encontrado = false;
-        foreach ($elementos as $elemento){
-            $columnas_mostrables[] = $elemento['adm_elemento_lista_descripcion'];
-            if(trim($elemento['adm_elemento_lista_descripcion']) === $this->seccion.'_status'){
-                $status_encontrado = true;
-            }
-            if(trim($elemento['adm_elemento_lista_descripcion']) === $this->seccion.'_id'){
-                $id_encontrado = true;
-            }
-        }
-        if(!$status_encontrado){
-            $columnas_mostrables[] = $this->seccion.'_status';
-        }
-        if(!$id_encontrado){
-            $columnas_mostrables[] = $this->seccion.'_id';
-        }
-
-        $session_modelo = new adm_session($this->link);
-
-
-        $filtro = $session_modelo->obten_filtro_session(seccion:$this->seccion);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener filtro',data: $filtro,header: $header, ws: $ws);
-        }
-
-
-        $registros = $this->obten_registros_para_lista(filtro:  $filtro, limit: 15,
-            pag_seleccionada:  $pag_seleccionada,columnas: $columnas_mostrables, filtro_btn: $filtro_btn);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al obtener registros',data: $registros);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-
-        $filtro = $session_modelo->obten_filtro_session(seccion:$this->seccion);
-        if(errores::$error){
-            return $this->errores->error(mensaje: 'Error al obtener filtro',data: $filtro);
-        }
-
-        $filtros =    (new normalizacion())->genera_filtro_modelado(controler:  $this, filtro: $filtro);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al $filtros',data: $filtros);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-
-
-        $filtro_especial = array();
-        $contador = 0;
-        foreach($filtro_btn as $campo => $valor){
-            $filtro_especial[$contador][$campo]['operador'] = '=';
-            $filtro_especial[$contador][$campo]['valor'] = $valor;
-            $contador++;
-        }
-        $n_registros = $this->modelo->cuenta(filtro: $filtros,tipo_filtro: 'textos',filtro_especial:  $filtro_especial);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al contar registros',data: $n_registros);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-        $filtro_html = $this->directiva->format_filtro_base_html(filtro: $filtros);
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al $filtro_html',data: $filtro_html);
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-        $this->registros['n_registros'] = $n_registros;
-        $this->registros['filtros'] = $filtro_html;
-        $this->registros['ip'] = $this->get_real_ip();
-        $this->registros['registros'] = $registros;
-        $this->registros['data'] = $registros;
-
-
-
-        $botones_filtro = $this->obten_botones_para_filtro();
-        if(errores::$error){
-            $error = $this->errores->error(mensaje: 'Error al generar datos para el boton',data: $botones_filtro);
-
-            if(!$header){
-                return $error;
-            }
-            $retorno = $_SERVER['HTTP_REFERER'];
-            header('Location:'.$retorno);
-            exit;
-        }
-
-        $n_paginas = ceil((int)$n_registros / 15);
-        $elm = new adm_elemento_lista($this->link);
-
-
-        $filtro = array();
-        $filtro['adm_seccion.descripcion'] = $this->seccion;
-        $filtro['adm_elemento_lista.status'] = 'activo';
-        $filtro['adm_elemento_lista.lista'] = 'activo';
-
-        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
-            columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
-        if(errores::$error){
-            $error =  $this->errores->error(mensaje: 'Error al obtener obten_registros_filtro_and_ordenado',
-                data: $resultado);
-            print_r($error);
-            die('Error');
-
-        }
-        $elementos_lista = $resultado->registros;
-
-
-
-        $filtro = array();
-        $filtro['adm_seccion.descripcion'] = $this->seccion;
-        $filtro['adm_elemento_lista.filtro'] = 'activo';
-        $filtro['adm_elemento_lista.status'] = 'activo';
-
-        $resultado = $elm->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
-            columnas_en_bruto: false, filtros: $filtro,orden: 'ASC');
-
-        if(errores::$error){
-            return $this->errores->error('Error al obtener registros',$resultado);
-        }
-
-        $elementos_lista_filtro = $resultado->registros;
-
-        $template = new templates($this->link);
-
-        $campos = $template->campos_lista(elementos_lista: $elementos_lista);
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al obtener campos', data: $campos,header:  $header,ws:  $ws);
-        }
-
-        $campos_filtro = $template->obten_campos_filtro(elementos_lista: $elementos_lista_filtro);
-        if(errores::$error){
-            return $this->retorno_error('Error al obtener campos de filtro', $campos_filtro, $header, $ws);
-        }
-
-        $accion_modelo = new adm_accion($this->link);
-
-
-        $filtro = array();
-        $filtro['adm_accion.status'] = 'activo';
-        $filtro['adm_seccion.descripcion'] = $this->seccion;
-        $filtro['adm_accion.lista'] = 'activo';
-        $resultado = $accion_modelo->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->retorno_error('Error al obtener acciones', $resultado, $header, $ws);
-        }
-        $acciones_asignadas = $resultado->registros;
-
-        $lista_html = $template->lista_completa(campo_id:  $this->tabla.'_id', registros: $registros,
-            n_paginas:  $n_paginas, pagina_seleccionada: $pag_seleccionada,seccion:  $this->seccion,
-            acciones_asignadas:  $acciones_asignadas,seccion_link: $this->seccion,accion_link: $this->accion,
-            session_id: $this->session_id,campos:  $campos->campos,etiqueta_campos:  $campos->etiqueta_campos,
-            botones_filtros: $botones_filtro, filtro_boton_seleccionado: $filtro_btn);
-
-
-        if(errores::$error){
-            return $this->retorno_error(mensaje: 'Error al generar template',data: $lista_html,header: $header,ws: $ws);
-        }
-
-        $this->lista_html = $lista_html;
-
-        $this->registros['html'] = $this->lista_html;
-
+        $this->registros = array();
         return $this->registros;
 
     }
 
 
     /**
-     *
-     * @param bool $header
-     * @param bool $ws
-     * @param string $breadcrumbs
-     * @param bool $aplica_form
-     * @param bool $muestra_btn
-     * @return array|string
+     * Inicializa la vista de modifica
+     * @param bool $header Si header retorna en html
+     * @param bool $ws retorna json
+     * @return array|stdClass
+     * @version 2.17.2.1
      */
-    public function modifica(bool $header, bool $ws = false, string $breadcrumbs='',
-                             bool $aplica_form = true, bool $muestra_btn = true):array|string{
+    public function modifica(bool $header, bool $ws = false):array|stdClass{
 
         $namespace = 'models\\';
         $this->seccion = str_replace($namespace,'',$this->seccion);
-        $clase = $namespace.$this->seccion;
 
-        if((string)$this->seccion === ''){
-            $error = $this->errores->error('Error no existe seccion', $_GET);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
+        if($this->seccion === ''){
+            return $this->retorno_error(
+                mensaje: 'Error seccion no puede venir vacio', data: $this->seccion,header: $header, ws: $ws);
         }
-
+        if($this->registro_id<=0){
+            return  $this->retorno_error(
+                mensaje:'Error registro_id debe sr mayor a 0', data:$this->registro_id,header: $header, ws: $ws);
+        }
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al asignar datos',data:  $resultado,header: $header,ws: $ws);
         }
         $this->registro = $resultado;
-
-        $elm = new adm_elemento_lista($this->link);
-
-        $template = new templates($this->link);
-
-        $campos = $elm->obten_campos_el(estructura_bd: array(), modelo: $this->modelo, vista: 'modifica');
-        if(errores::$error){
-            return $this->errores->error('Error al obtener campos',$campos);
-        }
-
-        $campos_alta = $campos['campos'];
-
-
-        $modifica_html =  $template->modifica(registro: $this->registro, seccion: $this->seccion,
-            breadcrumbs:  $breadcrumbs, valores_filtrados: $this->valores_filtrados, campos_alta: $campos_alta,
-            session_id:  $this->session_id,path_base:  $this->path_base,aplica_form:  $aplica_form,muestra_btn:  $muestra_btn);
-
-
-        if(errores::$error){
-            $error = $this->errores->error('Error al generar template', $modifica_html);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        $this->modifica_html = $modifica_html;
 
         $registro_puro = $this->modelo->registro(registro_id: $this->registro_id, columnas_en_bruto: true,
             retorno_obj: true);
@@ -988,7 +654,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
         $this->row_upd =  $registro_puro;
 
-        return $this->modifica_html;
+        $data = new stdClass();
+        $data->registro = $this->registro;
+        $data->row_upd = $registro_puro;
+
+        return $data;
     }
 
     /**
@@ -999,9 +669,25 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @throws JsonException
      */
     public function modifica_bd(bool $header, bool $ws): array|stdClass{
-        $namespace = 'models\\';
-        $this->seccion = str_replace($namespace,'',$this->seccion);
-        $clase = $namespace.$this->seccion;
+        $namespace = $this->modelo->NAMESPACE;
+
+        if ($namespace === ''){
+            $error = $this->errores->error(mensaje:'Error: NAMESPACE no esta inicializado',data: $_GET);
+            if(!$header){
+                return $error;
+            }
+            if($ws){
+                header('Content-Type: application/json');
+                echo json_encode($error, JSON_THROW_ON_ERROR);
+                exit;
+            }
+            $retorno = $_SERVER['HTTP_REFERER'];
+            header('Location:'.$retorno);
+            exit;
+        }
+
+        $clase = $this->modelo->NAMESPACE.'\\'.$this->seccion;
+
         if($this->seccion === ''){
             $error = $this->errores->error(mensaje:'Error seccion no puede venir vacia',data: $_GET);
             if(!$header){
@@ -1159,7 +845,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      */
     public function status(bool $header, bool $ws): array|stdClass
     {
-        $upd = $this->modelo->status('status', $this->registro_id);
+        $upd = $this->modelo->status(campo: 'status',registro_id:  $this->registro_id);
         if(errores::$error){
             return $this->retorno_error(mensaje: 'Error al cambiar status',data:  $upd,header:  $header,ws:  $ws);
         }
@@ -1172,91 +858,21 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     }
 
     /**
-     *
-     * @param bool $header
-     * @param bool $ws
-     * @return array|string
-     * @throws JsonException
+     * Verifica si esta en transaccion previa
+     * @return bool
+     * @version 2.6.2
      */
-    public function xls_lista(bool $header = true, bool $ws = false): array|string
+    protected function transaccion_previa(): bool
     {
-        $filtro_btn = $_GET['filtro_btn'] ?? array();
-
-        $session_modelo = new adm_session($this->link);
-
-
-        $filtro = $session_modelo->obten_filtro_session(seccion: $this->seccion);
-        if(errores::$error){
-            return $this->errores->error('Error al obtener filtro',$filtro);
+        $transaccion_previa = false;
+        if($this->link->inTransaction()){
+            $transaccion_previa = true;
         }
-
-        $registros = $this->obten_registros_para_lista(filtro: $filtro, limit: 0,pag_seleccionada: 1,filtro_btn: $filtro_btn);
-        if(errores::$error){
-            $error =  $this->errores->error('Error al generar resultado filtrado',$registros);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        $elm = new adm_elemento_lista($this->link);
-
-
-        $exportador = new exportador();
-
-        $campos = $elm->obten_campos_el(estructura_bd: array(), modelo: $this->modelo,vista: 'lista');
-        if(errores::$error){
-            return   $this->errores->error('Error al obtener campos',$campos);
-        }
-        $keys = $this->obten_encabezados_xls($campos);
-        if(isset($keys['error'])){
-            $error = $this->errores->error('Error al obtener encabezados',$keys);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        $campos = $elm->obten_campos_el(estructura_bd:  array(), modelo: $this->modelo,vista: 'lista');
-        if(errores::$error){
-            return   $this->errores->error('Error al obtener campos',$campos);
-        }
-
-        $campos = $this->obten_estructura($campos);
-
-        if(errores::$error){
-            $error =  $this->errores->error('Error al obtener estructura',$campos);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        $registros_xls = (new values())->ajusta_formato_salida_registros(campos: $campos, registros: $registros);
-        if(errores::$error){
-            return $this->retorno_error('Error al ajusta formato de salida', $registros_xls, $header, false);
-
-        }
-
-        $resultado = $exportador->listado_base_xls(header: $header, name: $this->seccion, keys:  $keys,
-            path_base: $this->path_base,registros:  $registros_xls,totales:  array());
-        if(errores::$error){
-            $error =  $this->errores->error('Error al generar xls',$resultado);
-            if(!$header){
-                return $error;
-            }
-            print_r($error);
-            die('Error');
-        }
-
-        if(!$header){
-            return $resultado;
-        }
-        exit;
-
+        return $transaccion_previa;
     }
+
+
+
+
 
 }

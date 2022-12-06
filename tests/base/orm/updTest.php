@@ -1,16 +1,14 @@
 <?php
 namespace tests\base\orm;
 
-use base\orm\sql;
-use base\orm\sql_bass;
 use base\orm\upd;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_dia;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_dia;
-use models\adm_seccion;
 use stdClass;
 
 
@@ -54,6 +52,27 @@ class updTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("x = ''",$resultado);
+        errores::$error = false;
+    }
+
+    public function test_campos_sql(){
+
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->registro_upd['a'] = NULL;
+        $modelo->registro_upd['bn'] = '';
+
+        $resultado = $upd->campos_sql($modelo);
+
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a = '', bn = '',usuario_update_id=2",$resultado);
+
         errores::$error = false;
     }
 
@@ -102,6 +121,28 @@ class updTest extends test {
         $this->assertNotTrue($resultado->ejecuta_upd);
 
 
+        errores::$error = false;
+    }
+
+    public function test_ejecuta_upd_modelo(){
+
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+
+        $id = 1;
+        $reactiva = false;
+        $registro = array();
+        $modelo->registro_upd['status'] = 'activo';
+
+
+        $resultado = $upd->ejecuta_upd_modelo($id, $modelo, $reactiva, $registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("UPDATE adm_accion SET status = 'activo',usuario_update_id=2  WHERE id = 1", $resultado->sql);
         errores::$error = false;
     }
 
@@ -223,6 +264,26 @@ class updTest extends test {
         $this->assertEquals('z, a = x', $resultado);
         errores::$error = false;
 
+    }
+    public function test_sql_update(){
+
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+
+        $id = 1;
+        $reactiva = false;
+        $registro['a'] = 'zxsss';
+        $modelo->registro_upd['a'] = 'zxssss';
+
+        $resultado = $upd->sql_update($id, $modelo, $reactiva, $registro);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("UPDATE adm_accion SET a = 'zxssss',usuario_update_id=2  WHERE id = 1", $resultado);
+        errores::$error = false;
     }
 
     public function test_slaches_value(): void

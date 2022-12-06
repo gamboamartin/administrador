@@ -1,15 +1,12 @@
 <?php
 namespace tests\base\orm;
 
-use base\orm\joins;
 use base\orm\params_sql;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\accion;
-use models\adm_accion;
-use models\seccion;
-use stdClass;
+
 
 
 class params_sqlTest extends test {

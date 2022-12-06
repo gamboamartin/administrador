@@ -1,20 +1,21 @@
 <?php
-namespace models;
-use base\orm\modelo;
+namespace gamboamartin\administrador\models;
+use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
 
 use PDO;
 
-class adm_hora extends modelo{
+class adm_hora extends _modelo_parent {
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_hora';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
     public function hoy(){
         $hora = date('H');
         $filtro['hora.codigo'] = $hora;
-        $r_hora = $this->filtro_and($filtro);
+        $r_hora = $this->filtro_and(filtro:$filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener dia', $r_hora);
         }

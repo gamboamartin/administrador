@@ -6,6 +6,37 @@ use gamboamartin\errores\errores;
 
 class valida_controller extends base_modelos{
 
+
+    public function valida_alta_bd(controler $controler): bool|array
+    {
+        $valida = $this->valida_clase(controler: $controler);
+        if(errores::$error){
+
+            return $this->error->error(mensaje: 'Error al validar clase', data: $valida);
+        }
+
+        if($controler->tabla===''){
+            return $this->error->error(mensaje: 'Error seccion por get debe existir',data:  $_GET);
+        }
+
+        $limpia = (new normalizacion())->limpia_post_alta();
+        if(errores::$error){
+
+            return $this->error->error(mensaje: 'Error al limpiar POST', data: $limpia);
+        }
+
+        $valida = $this->valida_post_alta();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar POST', data: $valida);
+        }
+
+
+        if($controler->seccion === ''){
+            return $this->error->error(mensaje: 'Error al seccion no puede venir vacia',data:  $controler->seccion);
+        }
+        return true;
+    }
+
     /**
      * Valida que los datos de una seccion de un controlador sean validos
      * @version 1.98.25

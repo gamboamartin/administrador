@@ -94,9 +94,10 @@ class sql_bass{
     }
 
     /**
-     * PROBADO P INT P ORDER
-     * @param string $columnas
+     * Anexa coma al SQL
+     * @param string $columnas Columnas previas
      * @return string
+     * @version 1.477.49
      */
     public function coma_sql(string $columnas): string
     {

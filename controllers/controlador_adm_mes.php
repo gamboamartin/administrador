@@ -1,7 +1,7 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\adm_mes;
+use gamboamartin\administrador\models\adm_mes;
 use stdClass;
 
 

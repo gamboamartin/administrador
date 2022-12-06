@@ -8,8 +8,13 @@ use Throwable;
 
 class configuraciones extends validacion {
 
+
     /**
-     * P ORDER P INT PROBADO ERRORREV
+     * Valida configuraciones
+     * @param stdClass $paths_conf Paths de configuracion
+     * @param string $tipo_conf Tipos de configuracion
+     * @return bool|array
+     * @version 1.522.51
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
@@ -28,8 +33,12 @@ class configuraciones extends validacion {
         }
         return true;
     }
+
     /**
      * Valida las configuraciones para ejecutar el sistema
+     * @param stdClass $paths_conf Archivos de configuracion
+     * @return bool|array
+     * @version 1.522.51
      */
     public function valida_confs(stdClass $paths_conf): bool|array
     {
@@ -48,7 +57,8 @@ class configuraciones extends validacion {
 
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * Valida los elementos de composer
+     * @version 1.522.51
      */
     private function valida_conf_composer(string $tipo_conf): bool|array
     {

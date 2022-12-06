@@ -15,6 +15,22 @@ class seguridadTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_init(){
+
+        errores::$error = false;
+
+        if(isset($_SESSION['activa'])){
+            unset($_SESSION['activa']);
+        }
+        $seg = new seguridad();
+        $seg = new liberator($seg);
+
+        $resultado = $seg->init();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_init_accion(){
 
         errores::$error = false;

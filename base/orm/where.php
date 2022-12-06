@@ -21,13 +21,13 @@ class where{
     /**
      * Asigna and  A FILTRO
      * @version 1.150.31
-     * @param string $filtro_fecha_sql Filtro en forma de sql
+     * @param string $txt Filtro en forma de sql
      * @return string
      */
-    private function and_filtro_fecha(string $filtro_fecha_sql): string
+    private function and_filtro_fecha(string $txt): string
     {
         $and = '';
-        if($filtro_fecha_sql !== ''){
+        if($txt !== ''){
             $and = ' AND ';
         }
         return $and;
@@ -35,21 +35,24 @@ class where{
 
     /**
      * Asigna los filtros a un objeto para ser utilizado en WHEREs de SQL FORMA select
-     * @version 1.191.34
-     * @verfuncion 1.0.0 Se integra prueba
+     * @param string $diferente_de_sql Integra un diferente de en SQL
+     * @param string $filtro_especial_sql Filtro en forma de SQL
+     * @param string $filtro_extra_sql Filtro enviado desde el origen
+     * @param string $filtro_fecha_sql Filtros en forma de fecha
+     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
+     * @param string $in_sql Filtro en forma de  IN SQL
+     * @param string $not_in_sql Filtro forma SQL NOT IN
+     * @param string $sentencia Sentencia SQL previamente maquetada
+     * @param string $sql_extra Sql Generado manualmente desde llamadas a esta funcion
+     * @return stdClass
      * @author mgamboa
      * @fecha 2022-07-25 11:25
-     * @param string $sentencia Sentencia SQL previamente maquetada
-     * @param string $filtro_especial_sql Filtro en forma de SQL
-     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
-     * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $not_in_sql Filtro forma SQL NOT IN
-     * @param string $sql_extra Sql Generado manualmente desde llamadas a esta funcion
-     * @param string $filtro_fecha_sql Filtros en forma de fecha
-     * @return stdClass
+     * @version 1.573.51
+     *
      */
-    #[Pure] private function asigna_data_filtro(string $filtro_especial_sql, string $filtro_extra_sql,
-                                                string $filtro_fecha_sql, string $filtro_rango_sql, string $not_in_sql,
+    #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
+                                                string $filtro_extra_sql, string $filtro_fecha_sql,
+                                                string $filtro_rango_sql, string $in_sql, string $not_in_sql,
                                                 string $sentencia, string $sql_extra): stdClass
     {
         $filtros = new stdClass();
@@ -57,7 +60,9 @@ class where{
         $filtros->filtro_especial = $filtro_especial_sql;
         $filtros->filtro_rango = $filtro_rango_sql;
         $filtros->filtro_extra = $filtro_extra_sql;
+        $filtros->in = $in_sql;
         $filtros->not_in = $not_in_sql;
+        $filtros->diferente_de = $diferente_de_sql;
         $filtros->sql_extra = $sql_extra;
         $filtros->filtro_fecha = $filtro_fecha_sql;
         return $filtros;
@@ -77,6 +82,21 @@ class where{
         }
         $campo = $data['campo'] ?? $key;
         return addslashes($campo);
+    }
+
+    /**
+     * si existe txt integra coma
+     * @param string $txt Texto previo
+     * @return string
+     * @version 1.571.51
+     */
+    private function coma(string $txt): string
+    {
+        $coma = '';
+        if($txt === ''){
+            $coma = ',';
+        }
+        return $coma;
     }
 
     /**
@@ -117,7 +137,11 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:"Error al validar maquetacion",data: $datas->value);
         }
-        if(isset($data['es_sq']) && $data['es_sq']){
+        $es_sq = false;
+        if(isset($columnas_extra[$key])){
+            $es_sq = true;
+        }
+        if($es_sq){
             $datas->campo = $columnas_extra[$key];
         }
 
@@ -177,24 +201,27 @@ class where{
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @version 1.199.34
-     * @verfuncion 1.1.0
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
+     * @version 1.575.51
      */
-    public function data_filtros_full(array $columnas_extra, array $filtro, array $filtro_especial, array $filtro_extra,
-                                      array $filtro_fecha, array $filtro_rango, array $keys_data_filter, array $not_in,
+    public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
+                                      array $filtro_especial, array $filtro_extra, array $filtro_fecha,
+                                      array $filtro_rango, array $in, array $keys_data_filter, array $not_in,
                                       string $sql_extra, string $tipo_filtro): array|stdClass
     {
+
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $filtros = $this->genera_filtros_sql(columnas_extra: $columnas_extra, filtro:  $filtro,
-            filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_rango:  $filtro_rango,
-            keys_data_filter: $keys_data_filter, not_in: $not_in, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
-            filtro_fecha: $filtro_fecha);
+        $filtros = $this->genera_filtros_sql(columnas_extra: $columnas_extra, diferente_de: $diferente_de,
+            filtro:  $filtro, filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra,
+            filtro_rango:  $filtro_rango, in: $in, keys_data_filter: $keys_data_filter, not_in: $not_in,
+            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha: $filtro_fecha);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtros', data:$filtros);
         }
@@ -214,11 +241,101 @@ class where{
     }
 
     /**
+     * Integra los valores de data in
+     * @param array $in in
+     * @return array|stdClass
+     * @version 1.549.51
+     */
+    private function data_in(array $in): array|stdClass
+    {
+        $keys = array('llave','values');
+        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+        }
+
+        $values = $in['values'];
+
+        if(!is_array($values)){
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
+        }
+        $data = new stdClass();
+        $data->llave = $in['llave'];
+        $data->values = $in['values'];
+        return $data;
+    }
+
+    /**
+     * Genera un elemento diferente de
+     * @param string $campo Campo de integracion del modelo
+     * @param string $diferente_de_sql sql previo
+     * @param string $value Valor a verificar
+     * @return string|array
+     * @version 1.571.51
+     */
+    private function diferente_de(string $campo, string $diferente_de_sql, string $value): string|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
+        }
+        if(is_numeric($campo)){
+            return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
+                data: $campo);
+        }
+        $and = $this->and_filtro_fecha(txt: $diferente_de_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al integrar AND", data: $and);
+        }
+
+        $campo = addslashes($campo);
+        $value = addslashes($value);
+
+        return " $and $campo <> '$value' ";
+    }
+
+    /**
+     * Integra el diferente de en sql
+     * @param array $diferente_de Parametros diferente de
+     * @return array|string
+     * @version 1.572.51
+     */
+    private function diferente_de_sql(array $diferente_de): array|string
+    {
+        $diferente_de_sql = '';
+        if(count($diferente_de)>0){
+
+            foreach ($diferente_de as $campo=>$value){
+
+                $campo = trim($campo);
+                if($campo === ''){
+                    return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
+                }
+                if(is_numeric($campo)){
+                    return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
+                        data: $campo);
+                }
+
+                $sql = $this->diferente_de(campo:$campo,diferente_de_sql:  $diferente_de_sql,value:  $value);
+                if(errores::$error){
+                    return $this->error->error(mensaje: "Error al integrar sql", data: $sql);
+                }
+
+                $diferente_de_sql .= $sql;
+            }
+
+        }
+        return $diferente_de_sql;
+    }
+
+    /**
      *
      * Genera las condiciones sql de un filtro especial
-     * @version 1.130.30
+     * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *
+     * @return array|string
+     * @version 1.130.30
      * @example
      *      Ej 1
      *      $filtro_especial[0][tabla.campo]['operador'] = '>';
@@ -246,11 +363,8 @@ class where{
      *      $resultado =  tabla.campo < 'x' OR tabla.campo2  >= x
      *
      *
-     * @return array|string
-     * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe, Debe existir $filtro_esp[$campo]['comparacion']
-     * @throws errores $filtro_especial_sql != '' = $data_sql = '',  data_sql debe tener info
      */
-    PUBLIC function filtro_especial_sql(array $filtro_especial):array|string{ //DEBUG
+    private function filtro_especial_sql(array $columnas_extra, array $filtro_especial):array|string{ //DEBUG
 
         $filtro_especial_sql = '';
         foreach ($filtro_especial as $campo=>$filtro_esp){
@@ -260,8 +374,8 @@ class where{
                     data: $filtro_esp);
             }
 
-            $filtro_especial_sql = $this->obten_filtro_especial(filtro_esp: $filtro_esp,
-                filtro_especial_sql: $filtro_especial_sql);
+            $filtro_especial_sql = $this->obten_filtro_especial(columnas_extra: $columnas_extra,
+                filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
             if(errores::$error){
                 return $this->error->error(mensaje:"Error filtro", data: $filtro_especial_sql);
             }
@@ -605,6 +719,8 @@ class where{
 
     }
 
+
+
     /**
      *
      * Genera la condicion sql de un filtro especial
@@ -726,28 +842,30 @@ class where{
 
     /**
      * Ajusta los filtros con parentesis y limpieza para su correcta ejecucion
-     * @param string $sentencia Sentencia SQL previamente maquetada
+     * @param string $diferente_de_sql Integra un diferente de
      * @param string $filtro_especial_sql Filtro en forma de SQL
-     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
      * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $not_in_sql Filtro en forma de NOT IN SQL
+     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
+     * @param string $in_sql Filtro en forma de  IN SQL
      * @param array $keys_data_filter Keys de los filtros
+     * @param string $not_in_sql Filtro en forma de NOT IN SQL
+     * @param string $sentencia Sentencia SQL previamente maquetada
      * @param string $sql_extra Sql generado de forma manual para la funcion en ejecucion
      * @param string $filtro_fecha_sql Filtro de fecha en forma de sql
-     * @version 1.195.34
-     * @verfuncion 1.0.0
+     * @return array|stdClass
      * @author mgamboa
      * @fecha 2022-07-25 12:16
-     * @return array|stdClass
+     * @version 1.575.51
      */
-    private function genera_filtros_iniciales(string $filtro_especial_sql, string $filtro_extra_sql,
-                                              string $filtro_rango_sql, array $keys_data_filter, string $not_in_sql,
-                                              string $sentencia, string $sql_extra,
-                                              string $filtro_fecha_sql = ''): array|stdClass
+    private function genera_filtros_iniciales(string $diferente_de_sql, string $filtro_especial_sql,
+                                              string $filtro_extra_sql, string $filtro_rango_sql, string $in_sql,
+                                              array $keys_data_filter, string $not_in_sql, string $sentencia,
+                                              string $sql_extra, string $filtro_fecha_sql = ''): array|stdClass
     {
-        $filtros = $this->asigna_data_filtro(filtro_especial_sql:  $filtro_especial_sql,
-            filtro_extra_sql: $filtro_extra_sql, filtro_fecha_sql:  $filtro_fecha_sql,
-            filtro_rango_sql:  $filtro_rango_sql, not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
+        $filtros = $this->asigna_data_filtro(diferente_de_sql: $diferente_de_sql,
+            filtro_especial_sql:  $filtro_especial_sql, filtro_extra_sql: $filtro_extra_sql,
+            filtro_fecha_sql:  $filtro_fecha_sql, filtro_rango_sql:  $filtro_rango_sql, in_sql: $in_sql,
+            not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar filtros',data: $filtros);
         }
@@ -791,15 +909,16 @@ class where{
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param string $sql_extra SQL maquetado de manera manual para su integracion en un WHERE
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @version 1.196.34
-     * @verfuncion 1.0.0
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
+     * @version 1.575.51
      */
-    private function genera_filtros_sql(array $columnas_extra, array $filtro, array $filtro_especial,
-                                        array $filtro_extra, array $filtro_rango, array $keys_data_filter,
-                                        array $not_in, string $sql_extra, string $tipo_filtro,
+    private function genera_filtros_sql(array $columnas_extra, array $diferente_de, array $filtro,
+                                        array $filtro_especial, array $filtro_extra, array $filtro_rango, array $in,
+                                        array $keys_data_filter, array $not_in, string $sql_extra, string $tipo_filtro,
                                         array $filtro_fecha = array()): array|stdClass
     {
         $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
@@ -812,7 +931,8 @@ class where{
             return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia);
         }
 
-        $filtro_especial_sql = $this->filtro_especial_sql(filtro_especial: $filtro_especial);
+        $filtro_especial_sql = $this->filtro_especial_sql(
+            columnas_extra: $columnas_extra, filtro_especial: $filtro_especial);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql);
         }
@@ -830,15 +950,31 @@ class where{
             return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql);
         }
 
+
+        $in_sql = $this->genera_in_sql(in: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al generar sql',data:$in_sql);
+        }
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        $in_sql = str_replace('( (', '(', $in_sql);
+
         $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql);
         }
 
-        $filtros = $this->genera_filtros_iniciales(filtro_especial_sql:  $filtro_especial_sql,
-            filtro_extra_sql: $filtro_extra_sql, filtro_rango_sql: $filtro_rango_sql,
-            keys_data_filter:  $keys_data_filter,not_in_sql:  $not_in_sql, sentencia: $sentencia,
-            sql_extra:  $sql_extra,filtro_fecha_sql:  $filtro_fecha_sql);
+        $diferente_de_sql = $this->diferente_de_sql(diferente_de: $diferente_de);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al generar sql',data:$diferente_de_sql);
+        }
+
+
+        $filtros = $this->genera_filtros_iniciales(diferente_de_sql: $diferente_de_sql,
+            filtro_especial_sql: $filtro_especial_sql, filtro_extra_sql: $filtro_extra_sql,
+            filtro_rango_sql: $filtro_rango_sql, in_sql: $in_sql, keys_data_filter: $keys_data_filter,
+            not_in_sql: $not_in_sql, sentencia: $sentencia, sql_extra: $sql_extra,
+            filtro_fecha_sql: $filtro_fecha_sql);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtros',data:$filtros);
         }
@@ -849,6 +985,63 @@ class where{
     }
 
     /**
+     * Genera el SQL para IN
+     * @param array $in params para in
+     * @return array|string
+     * @version 1.551.52
+     */
+    private function genera_in(array $in): array|string
+    {
+        $keys = array('llave','values');
+        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+        }
+
+        $data_in = $this->data_in(in: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
+        }
+
+
+        $in_sql = $this->in_sql(llave:  $data_in->llave, values:$data_in->values);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
+        }
+        return $in_sql;
+    }
+
+    /**
+     * Genera un sql para integrar sql
+     * @param array $in Arreglo con params para IN
+     * @return array|string
+     * @version 1.552.51
+     */
+    private function genera_in_sql(array $in): array|string
+    {
+        $in_sql = '';
+        if(count($in)>0){
+            $keys = array('llave','values');
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $in);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar in',data: $valida);
+            }
+            $in_sql = $this->genera_in(in: $in);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
+            }
+            $in_sql = str_replace('  ', ' ', $in_sql);
+            $in_sql = str_replace('  ', ' ', $in_sql);
+            $in_sql = str_replace('( (', '(', $in_sql);
+
+        }
+
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        $in_sql = str_replace('  ', ' ', $in_sql);
+        return str_replace('( (', '(', $in_sql);
+    }
+
+    /**
      * Genera un not in para sql
      * @version 1.135.31
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
@@ -856,20 +1049,12 @@ class where{
      */
     private function genera_not_in(array $not_in): array|string
     {
-        $keys = array('llave','values');
-        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $not_in);
+        $data_in = $this->data_in(in: $not_in);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
+            return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
 
-        $llave = $not_in['llave'];
-        $values = $not_in['values'];
-
-        if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
-        }
-
-        $not_in_sql = $this->not_in_sql(llave:  $llave, values:$values);
+        $not_in_sql = $this->not_in_sql(llave:  $data_in->llave, values:$data_in->values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql);
         }
@@ -953,7 +1138,7 @@ class where{
             return $this->error->error(mensaje:'Error al generar datos',data:$data);
         }
 
-        $and = $this->and_filtro_fecha(filtro_fecha_sql: $filtro_fecha_sql);
+        $and = $this->and_filtro_fecha(txt: $filtro_fecha_sql);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener and',data:$and);
         }
@@ -963,6 +1148,37 @@ class where{
             return $this->error->error(mensaje:'Error al obtener sql',data:$sql);
         }
         return $sql;
+    }
+
+    /**
+     * Genera un IN SQL
+     * @param string $llave Llave o campo
+     * @param array $values Valores a integrar a IN
+     * @return array|string
+     * @version 1.548.51
+     */
+    private function in_sql(string $llave, array $values): array|string
+    {
+        $llave = trim($llave);
+        if($llave === ''){
+            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave);
+        }
+
+        $values_sql = $this->values_sql_in(values:$values);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
+        }
+        $valida = (new sql())->valida_in(llave: $llave, values_sql: $values_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar in', data: $valida);
+        }
+
+        $in_sql = (new sql())->in(llave: $llave,values_sql:  $values_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
+        }
+
+        return $in_sql;
     }
 
     /**
@@ -991,10 +1207,10 @@ class where{
 
     /**
      * Limpia los elementos para usar en un filtro para WHERE en SQL
-     * @version 1.52.31
      * @param stdClass $filtros Filtros a limpiar o inicializar
      * @param array $keys_data_filter keys de los filtros
      * @return stdClass|array
+     * @version 1.574.51
      */
     public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
@@ -1018,10 +1234,12 @@ class where{
      *
      * Genera la condicion sql de un filtro especial
      *
-     * @version 1.127.29
-     *
      * @param string $campo campo de una tabla tabla.campo
+     * @param array $columnas_extra Campos en forma de subquery del modelo
      * @param array $filtro filtro a validar
+     *
+     * @return array|string
+     * @version 1.127.29
      *
      * @example
      *      Ej 1
@@ -1036,14 +1254,9 @@ class where{
      *      $resultado = maqueta_filtro_especial($campo, $filtro);
      *      $resultado = 'x'> x
      *
-     * @return array|string
-     * @throws errores $campo = '', Campo no puede venir vacio
-     * @throws errores $campo = int cualquier numero,  Campo no puede ser un numero
-     * @throws errores $filtro = array(), filtro[operador] debe existir
-     * @throws errores $filtro = array('operador'=>'x'), filtro[valor] debe existir
      * @uses modelo_basico->obten_filtro_especial
      */
-    private function maqueta_filtro_especial(string $campo, array $filtro):array|string{
+    private function maqueta_filtro_especial(string $campo, array $columnas_extra, array $filtro):array|string{
         $campo = trim($campo);
 
         $valida = (new validaciones())->valida_data_filtro_especial(campo: $campo,filtro:  $filtro);
@@ -1057,11 +1270,24 @@ class where{
             return $this->error->error(mensaje:'Error al validar filtro',  data:$valida);
         }
 
-        $data_sql = $campo . $filtro[$campo]['operador'] . "'" . $filtro[$campo]['valor'] . "'";
+        /**
+         * REFACTORIZAR
+         */
+        $campo_filtro = $campo;
+        $es_subquery = false;
+        if(isset($columnas_extra[$campo])){
+            $es_subquery = true;
+        }
 
-        if(isset($filtro[$campo]['valor_es_campo']) && $filtro[$campo]['valor_es_campo']){
+        if($es_subquery){
+            $campo = $columnas_extra[$campo];
+        }
 
-            $data_sql = "'".$campo."'".$filtro[$campo]['operador'].$filtro[$campo]['valor'];
+        $data_sql = " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
+
+        if(isset($filtro[$campo_filtro]['valor_es_campo']) && $filtro[$campo_filtro]['valor_es_campo']){
+
+            $data_sql = "'".$campo."'".$filtro[$campo_filtro]['operador'].$filtro[$campo_filtro]['valor'];
         }
 
         return $data_sql;
@@ -1097,10 +1323,12 @@ class where{
     /**
      *
      * Genera la condicion sql de un filtro especial
-     * @version 1.130.30
-     * @param string $filtro_especial_sql //condicion en forma de sql
+     * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_esp //array con datos del filtro $filtro_esp[tabla.campo]= array('operador'=>'AND','valor'=>'x');
      *
+     * @param string $filtro_especial_sql //condicion en forma de sql
+     * @return array|string
+     * @version 1.130.30
      * @example
      *      Ej 1
      *      $filtro_esp[tabla.campo]['operador'] = '>';
@@ -1118,13 +1346,10 @@ class where{
      *      $resultado =  tabla.campo > 'x' AND tabla.campo2 = 1
      *
      *
-     * @return array|string
-     * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe, Debe existir $filtro_esp[$campo]['comparacion']
-     * @throws errores $filtro_especial_sql != '' = $data_sql = '',  data_sql debe tener info
-     * @throws errores $filtro_esp[$campo] != array() $filtro_esp[$campo] debe ser un array
      */
 
-    private function obten_filtro_especial(array $filtro_esp, string $filtro_especial_sql):array|string{
+    private function obten_filtro_especial(
+        array $columnas_extra, array $filtro_esp, string $filtro_especial_sql):array|string{
         $campo = key($filtro_esp);
         $campo = trim($campo);
 
@@ -1132,7 +1357,7 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje: "Error en filtro ", data: $valida);
         }
-        $data_sql = $this->maqueta_filtro_especial(campo: $campo,filtro: $filtro_esp);
+        $data_sql = $this->maqueta_filtro_especial(campo: $campo, columnas_extra: $columnas_extra,filtro: $filtro_esp);
         if(errores::$error){
             return $this->error->error(mensaje:"Error filtro", data:$data_sql);
         }
@@ -1149,7 +1374,7 @@ class where{
      * Asigna los parentesis  de un conjunto de filtros para SQL
      * @param stdClass $filtros Conjunto de filtros
      * @param array $keys_data_filter Keys de los filtros
-     * @version 1.193.34
+     * @version 1.575.51
      * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 11:46
@@ -1367,7 +1592,11 @@ class where{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error obtener datos de value',data: $data);
             }
-            $values_sql.="$data->coma$data->value";
+
+            $value = addslashes($value);
+            $value = "'$value'";
+
+            $values_sql.="$data->coma$value";
         }
         return $values_sql;
     }
@@ -1405,7 +1634,7 @@ class where{
      * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
-     * @version 1.197.34
+     * @version 1.575.51
      * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 12:33
@@ -1504,6 +1733,7 @@ class where{
      * Antepone la palabra WHERE al filtro mandado por parametros
      * @param string $filtro_sql filtro por aplicar
      * @return string filtro enviado por parametros anteponiendo la palabra WHERE
+     * @version 1.489.49
      */
     public function where_suma(string $filtro_sql): string
     {

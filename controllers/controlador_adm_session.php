@@ -12,12 +12,12 @@ use base\controller\init;
 use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
+use gamboamartin\administrador\models\adm_session;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JsonException;
-use models\adm_session;
-use models\adm_usuario;
 use PDO;
 use stdClass;
 
@@ -69,17 +69,17 @@ class controlador_adm_session extends controlador_base{
         return $r_alta;
     }
 
-
     /**
-     * PRUEBAS FINALIZADAS
-     * @param bool $header
-     * @param bool $ws
+     * Envia acceso denegado
+     * @param bool $header Si header retorna acceso denegado
+     * @param bool $ws Si ws retorna acceso denegado en ws
      * @return array
      * @throws JsonException
+     * @version 2.19.2
      */
     public function denegado(bool $header, bool $ws = false):array{
 
-        $error = $this->errores->error('Acceso denegado ',array());
+        $error = $this->errores->error(mensaje: 'Acceso denegado ',data: array());
         if(isset($_GET['ws'])){
             ob_clean();
             header('Content-Type: application/json');
@@ -92,8 +92,6 @@ class controlador_adm_session extends controlador_base{
         }
         return $error;
     }
-
-
 
     public function header_error($datos_validos, $web_service){ // Finalizado
         if(!is_array($datos_validos)){

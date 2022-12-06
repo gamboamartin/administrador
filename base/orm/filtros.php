@@ -13,6 +13,33 @@ class filtros{
     }
 
     /**
+     * Genera un complemento con datos para filtro
+     * @param stdClass $complemento Complemento previo
+     * @param modelo $modelo Modelo en ejecucion
+     * @return array|stdClass
+     * @version 1.560.51
+     */
+    private function complemento(stdClass $complemento, modelo $modelo): array|stdClass
+    {
+        $complemento_ = (new where())->limpia_filtros(filtros: $complemento,keys_data_filter:  $modelo->columnas_extra);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al limpiar filtros',data:$complemento_);
+        }
+
+        $complemento_r = (new where())->init_params_sql(complemento: $complemento_,
+            keys_data_filter: $modelo->keys_data_filter);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r);
+        }
+
+        $complemento_r = $this->inicializa_complemento(complemento: $complemento_r);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al inicializar complemento',data:$complemento_r);
+        }
+        return $complemento_r;
+    }
+
+    /**
      * Genera el complemento completo para la ejecucion de un SELECT en forma de SQL
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
@@ -43,14 +70,15 @@ class filtros{
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @version 1.207.34
-     * @verfuncion 1.1.0
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de en SQL
      * @author mgamboa
      * @fecha 2022-07-27 11:07
      * @return array|stdClass
+     * @version 1.575.51
      */
-    public function complemento_sql(bool $aplica_seguridad, array $filtro, array $filtro_especial,
-                                    array $filtro_extra, array $filtro_rango, array $group_by, int $limit,
+    public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
+                                    array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
                                     modelo $modelo, array $not_in, int $offset, array $order, string $sql_extra,
                                     string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
     {
@@ -73,15 +101,31 @@ class filtros{
             return $this->error->error(mensaje: 'Error al generar parametros sql',data:$params);
         }
 
-        $filtros = (new where())->data_filtros_full(columnas_extra: $modelo->columnas_extra, filtro: $filtro,
-            filtro_especial:  $filtro_especial, filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha,
-            filtro_rango:  $filtro_rango, keys_data_filter: $modelo->keys_data_filter, not_in: $not_in,
-            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
 
+        $filtros = (new where())->data_filtros_full(columnas_extra: $modelo->columnas_extra,
+            diferente_de: $diferente_de, filtro: $filtro, filtro_especial:  $filtro_especial,
+            filtro_extra:  $filtro_extra, filtro_fecha:  $filtro_fecha, filtro_rango:  $filtro_rango, in: $in,
+            keys_data_filter: $modelo->keys_data_filter, not_in: $not_in, sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtros',data:$filtros);
         }
+
+        if(!isset($filtros->in)){
+            $filtros->in = '';
+        }
+
+        $filtros->in = str_replace('( (', '((', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('  ', ' ', $filtros->in);
+        $filtros->in = str_replace('( (', '((', $filtros->in);
+        $filtros->in = trim($filtros->in);
+
+
+
         $filtros->params = $params;
         return $filtros;
     }
@@ -92,10 +136,9 @@ class filtros{
      * @param string $consulta SQL PREVIO
      * @param modelo $modelo Modelo en ejecucion
      * @return string|array
-     * @version 1.261.40
-     * @verfuncion 1.1.0
      * @fecha 2022-08-02 15:53
      * @author mgamboa
+     * @version 1.562.51
      */
     public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
     {
@@ -105,57 +148,27 @@ class filtros{
             return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data: $consulta);
         }
 
-        $complemento_ = (new where())->limpia_filtros(filtros: $complemento,keys_data_filter:  $modelo->columnas_extra);
+        $complemento_r = $this->complemento(complemento: $complemento, modelo: $modelo);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al limpiar filtros',data:$complemento_);
+            return $this->error->error(mensaje:'Error al inicializar complemento',data:$complemento_r);
         }
 
-        $complemento_r = (new where())->init_params_sql(complemento: $complemento_,
-            keys_data_filter: $modelo->keys_data_filter);
+
+        $sql = $this->sql(complemento: $complemento_r, consulta_previa: $consulta);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r);
+            return $this->error->error(mensaje:'Error al generar sql',data:$sql);
         }
-
-
-        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','not_in','sentencia','sql_extra');
-
-        foreach ($keys as $key){
-            if(!isset($complemento_r->$key)){
-                $complemento_r->$key = '';
-            }
-        }
-
-
-        $modelo->consulta = $consulta.$complemento_r->where.$complemento_r->sentencia.' '.$complemento_r->filtro_especial.' ';
-        $modelo->consulta.= $complemento_r->filtro_rango.' '.$complemento_r->filtro_fecha.' ';
-        $modelo->consulta.= $complemento_r->filtro_extra.' '.$complemento_r->sql_extra.' '.$complemento_r->not_in.' ';
-        $modelo->consulta.= $complemento_r->params->group_by.' '.$complemento_r->params->order.' ';
-        $modelo->consulta.= $complemento_r->params->limit.' '.$complemento_r->params->offset;
+        $sql = trim($sql);
+        $modelo->consulta = $sql;
         return $modelo->consulta;
     }
 
-    /**
-     *
-     * Devuelve un arreglo que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de sql y por
-     * @param string $filtro_especial_sql sql previo
-     * @return array|string
-     * @example
-     *      $data_filtro_especial_final = $this->filtro_especial_final($filtro_especial_sql,$where);
-     *
-     * @uses modelo
-     */
 
-    private function filtro_especial_final(string $filtro_especial_sql):array|string{
-        $filtro_especial_sql_env = $filtro_especial_sql;
-        if($filtro_especial_sql !=='') {
-            $data_filtro_especial = $this->maqueta_filtro_especial_final($filtro_especial_sql);
-            if(errores::$error){
-                return  $this->error->error('Error al maquetar sql',$data_filtro_especial);
-            }
-            $filtro_especial_sql_env = $data_filtro_especial;
-        }
-
-        return $filtro_especial_sql_env;
+    public function filtro_children(string $tabla, int $id): array
+    {
+        $filtro_children = array();
+        $filtro_children[$tabla.'.id'] = $id;
+        return $filtro_children;
     }
 
     /**
@@ -166,24 +179,13 @@ class filtros{
      */
     public function filtro_fecha_final(string $fecha, modelo_base $modelo): array
     {
-        $valida = $this->validacion->valida_fecha($fecha);
+        $name_modelo = $this->init_name_model(fecha: $fecha,modelo:  $modelo);
         if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
-        }
-        if($modelo->tabla === ''){
-            return $this->error->error("Error tabla vacia", $modelo->tabla);
-        }
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
+            return $this->error->error("Error al inicializa name model", $name_modelo);
         }
 
-        $filtro[$fecha]['valor'] = $modelo->tabla.'.fecha_final';
+
+        $filtro[$fecha]['valor'] = $name_modelo.'.fecha_final';
         $filtro[$fecha]['operador'] = '<=';
         $filtro[$fecha]['comparacion'] = 'AND';
         $filtro[$fecha]['valor_es_campo'] = true;
@@ -199,23 +201,13 @@ class filtros{
      */
     public function filtro_fecha_inicial(string $fecha, modelo_base $modelo): array
     {
-        $valida = $this->validacion->valida_fecha($fecha);
+
+        $name_modelo = $this->init_name_model(fecha: $fecha,modelo:  $modelo);
         if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
+            return $this->error->error("Error al inicializa name model", $name_modelo);
         }
-        if($modelo->tabla === ''){
-            return $this->error->error("Error tabla vacia", $modelo->tabla);
-        }
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $filtro[$fecha]['valor'] = $modelo->tabla.'.fecha_inicial';
+
+        $filtro[$fecha]['valor'] = $name_modelo.'.fecha_inicial';
         $filtro[$fecha]['operador'] = '>=';
         $filtro[$fecha]['valor_es_campo'] = true;
 
@@ -223,47 +215,7 @@ class filtros{
 
     }
 
-    /**
-     *
-     * @param string $fecha
-     * @param array $filtro
-     * @param modelo_base $modelo
-     * @return array
-     */
-    private function filtro_fecha_rango(string $fecha, array $filtro, modelo_base $modelo): array
-    {
-        $valida = $this->validacion->valida_fecha($fecha);
-        if(errores::$error){
-            return $this->error->error("Error fecha", $valida);
-        }
-        if($modelo->tabla === ''){
-            return $this->error->error("Error tabla vacia", $modelo->tabla);
-        }
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
 
-        $filtro_ini = (new filtros())->filtro_fecha_inicial($fecha, $modelo);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro fecha', $filtro_ini);
-        }
-
-        $filtro_fin = (new filtros())->filtro_fecha_final($fecha,$modelo);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro fecha', $filtro_fin);
-        }
-        $filtro[] = $filtro_ini;
-        $filtro[] = $filtro_fin;
-
-        return $filtro;
-
-    }
 
     /**
      * PRUEBAS FINALIZADAS
@@ -274,27 +226,13 @@ class filtros{
      */
     public function filtro_monto_ini(string $monto, string $campo, modelo_base $modelo): array
     {
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
-        }
-        if($modelo->tabla === ''){
-            return $this->error->error("Error tabla vacia", $modelo->tabla);
-        }
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
+
+        $data_filtro = $this->init_filtro_monto(campo: $campo,modelo:  $modelo,monto:  $monto);
+        if(errores::$error){
+            return $this->error->error("Error inicializa filtros", $data_filtro);
         }
 
-        $filtro["$monto"]['valor'] = $modelo->tabla.'.'.$campo;
+        $filtro["$monto"]['valor'] = $data_filtro->tabla.'.'.$data_filtro->campo;
         $filtro["$monto"]['operador'] = '>=';
         $filtro["$monto"]['comparacion'] = 'AND';
         $filtro["$monto"]['valor_es_campo'] = true;
@@ -304,27 +242,12 @@ class filtros{
 
     public function filtro_monto_fin(string $monto, string $campo, modelo_base $modelo): array
     {
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
-        }
-        if($modelo->tabla === ''){
-            return $this->error->error("Error tabla vacia", $modelo->tabla);
-        }
-        $namespace = 'models\\';
-        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
-        if($modelo->tabla === ''){
-            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
-        }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error("Error campo vacio", $campo);
+        $data_filtro = $this->init_filtro_monto(campo: $campo,modelo:  $modelo,monto:  $monto);
+        if(errores::$error){
+            return $this->error->error("Error inicializa filtros", $data_filtro);
         }
 
-        $filtro["$monto"]['valor'] = $modelo->tabla.'.'.$campo;
+        $filtro["$monto"]['valor'] = $data_filtro->tabla.'.'.$data_filtro->campo;
         $filtro["$monto"]['operador'] = '<=';
         $filtro["$monto"]['comparacion'] = 'AND';
         $filtro["$monto"]['valor_es_campo'] = true;
@@ -332,75 +255,153 @@ class filtros{
         return $filtro;
     }
 
+
     /**
-     *
-     * @param string $monto
-     * @param stdClass $campos
-     * @param array $filtro
-     * @param modelo_base $modelo
-     * @return array
+     * Inicializa los datos de un complemento
+     * @param stdClass $complemento Complemento previamente cargado
+     * @return array|stdClass
+     * @version 1.555.51
      */
-    private function filtro_monto_rango(string $monto, stdClass $campos, array $filtro, modelo_base $modelo): array
+    private function inicializa_complemento(stdClass $complemento): array|stdClass
     {
-        $campos_arr = (array)$campos;
-        $keys = array('inf','sup');
-        $valida = $this->validacion->valida_existencia_keys($campos_arr, $keys);
+        $keys = $this->keys_complemento();
         if(errores::$error){
-            return $this->error->error("Error validar campos", $valida);
+            return $this->error->error(mensaje:'Error al obtener keys',data:$keys);
         }
 
+        $complemento = $this->init_complemento(complemento:$complemento,keys: $keys);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al inicializar complemento',data:$complemento);
+        }
+        return $complemento;
+    }
+
+    /**
+     * Inicializa los keys de un complemento para filtro
+     * @param stdClass $complemento complemento previo
+     * @param array $keys Keys a incializar
+     * @return stdClass|array
+     * @version 1.554.51
+     */
+    private function init_complemento(stdClass $complemento, array $keys): stdClass|array
+    {
+        if(count($keys) === 0){
+            return $this->error->error(mensaje:'Error los keys de un complemento esta vacio',data:$keys);
+        }
+        foreach ($keys as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje:'Error el key esta vacio',data:$key);
+            }
+            if(!isset($complemento->$key)){
+                $complemento->$key = '';
+            }
+        }
+        return $complemento;
+    }
+
+    private function init_filtro_monto(string $campo, modelo_base $modelo, float $monto): array|stdClass
+    {
+        if($monto<0.0){
+            return $this->error->error("Error el monto es menor a 0", $monto);
+        }
         if($modelo->tabla === ''){
             return $this->error->error("Error tabla vacia", $modelo->tabla);
         }
         $namespace = 'models\\';
         $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
-        $clase = $namespace.$modelo->tabla;
+
         if($modelo->tabla === ''){
             return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
         }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-        if((float)$monto<0.0){
-            return $this->error->error("Error el monto es menor a 0", $monto);
+
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error("Error campo vacio", $campo);
         }
 
-        $filtro_monto_ini = (new filtros())->filtro_monto_ini($monto, $campos->inf, $modelo);
+        $data = new stdClass();
+        $data->campo = $campo;
+        $data->tabla = $modelo->tabla;
+        return $data;
+
+    }
+
+    private function init_name_model(string $fecha, modelo_base $modelo): array|string
+    {
+        $valida = $this->validacion->valida_fecha($fecha);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro monto', $filtro_monto_ini);
+            return $this->error->error("Error fecha", $valida);
         }
-
-        $filtro_monto_fin = (new filtros())->filtro_monto_fin($monto, $campos->sup, $modelo);
-        if(errores::$error){
-            return $this->error->error('Error al generar filtro monto', $filtro_monto_fin);
+        if($modelo->tabla === ''){
+            return $this->error->error("Error tabla vacia", $modelo->tabla);
         }
+        $namespace = 'models\\';
+        $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
 
-        $filtro[] = $filtro_monto_ini;
-        $filtro[] = $filtro_monto_fin;
-
-        return $filtro;
+        if($modelo->tabla === ''){
+            return $this->error->error('Error this->tabla no puede venir vacio',$modelo->tabla);
+        }
+        return $modelo->tabla;
     }
 
     /**
-     *
-     * Devuelve un arreglo con la sentencia de sql que indica si se aplicaran una o dos condiciones
-     *
-     * @param string $filtro_especial_sql cadena que contiene una sentencia de sql a aplicar el filtro
-     * @return array|string
-     * @example
-     *      $data_filtro_especial = $this->maqueta_filtro_especial_final($filtro_especial_sql);
-     *
-     * @uses modelo_basico->filtro_especial_final(string $filtro_especial_sql);
+     * Obtiene los keys de un complemento de filtros para AND
+     * @return string[]
+     * @version 1.553.51
      */
-    private function maqueta_filtro_especial_final( string $filtro_especial_sql):array|string{//FIN
-        if($filtro_especial_sql===''){
-            return  $this->error->error('Error el filtro especial no puede venir vacio',$filtro_especial_sql);
-        }
-
-        return $filtro_especial_sql;
+    private function keys_complemento(): array
+    {
+        return array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra');
     }
 
+    /**
+     * Integra el resultado de complemento para un SQL
+     * @param stdClass $complemento Complemento
+     * @param string $consulta_previa Sql previo
+     * @return string
+     * @version 1.561.51
+     */
+    private function sql(stdClass $complemento, string $consulta_previa): string
+    {
+        $keys = array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','diferente_de',
+            'sentencia', 'sql_extra','where');
 
+        foreach ($keys as $key){
+            if(!isset($complemento->$key)){
+                $complemento->$key = '';
+            }
+        }
 
+        if(!isset($complemento->params)){
+            $complemento->params = new stdClass();
+        }
+
+        $keys = array('group_by','limit','offset','order');
+
+        foreach ($keys as $key){
+            if(!isset($complemento->params->$key)){
+                $complemento->params->$key = '';
+            }
+        }
+
+        $sql = $consulta_previa.$complemento->where.$complemento->sentencia.' '. $complemento->filtro_especial.' ';
+
+        $sql.= $complemento->filtro_rango.' '.$complemento->filtro_fecha.' ';
+
+        $sql.= $complemento->filtro_extra.' '.$complemento->in.' '.$complemento->not_in.' '.$complemento->diferente_de.' '.
+            $complemento->sql_extra.' ';
+
+        $sql.= $complemento->params->group_by.' '.$complemento->params->order.' ';
+        $sql.= $complemento->params->limit.' '.$complemento->params->offset;
+
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('  ', ' ', $sql);
+        $sql = str_replace('( (', '((', $sql);
+
+        return str_replace('  ', ' ', $sql);
+    }
 
 }

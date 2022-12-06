@@ -1,9 +1,7 @@
 <?php
 namespace base\controller;
-use base\orm\modelo;
 use base\seguridad;
 use gamboamartin\errores\errores;
-use JsonException;
 use stdClass;
 use Throwable;
 
@@ -27,6 +25,7 @@ class salida_data{
      * En caso de haber error lanzará un mensaje
      *
      * @return array|stdClass|void
+     * @version 1.499.49
      */
     private function salida(bool $header, array|stdClass $result, bool $ws){
         if($header){
@@ -58,19 +57,40 @@ class salida_data{
      * @param bool $header Variable utilizada que, en caso de ser solicitada, almacenará la dirección de la
      * pagina que emplea el usuario para la pagina actual en $_SERVER para ser almacenado en la variable
      * $retorno, finaliza almacenando en un header el valor de $retorno con la etiqueta 'Location'
+     * @param array $not_in Elementos de exclusion
+     * @example {
+     *      llave = string tabla.campo
+     *      values = array(n1,n2,n3,nn)
+     *      $_POST[not_in][llave] = 'adm_seccion.id'
+     *      $_POST[not_in][values] = array(1,2,3);
+     * }
      *
      * @param bool $ws variable utilizada para verificar si se ha realizado la maquetacion de estados en formato JSON.
      * En caso de haber error lanzará un mensaje
      *
      * @return array|stdClass
+     * @version 1.501.50
      */
-    public function salida_get(controler $controler, array $filtro, bool $header, bool $ws): array|stdClass
+    public function salida_get(controler $controler, array $filtro, bool $header, array $not_in, bool $ws): array|stdClass
     {
-        $r_modelo = $controler->modelo->filtro_and(filtro: $filtro);
+        $r_modelo = $controler->modelo->filtro_and(filtro: $filtro, not_in: $not_in);
         if(errores::$error){
             return $controler->retorno_error(mensaje: 'Error al obtener datos',data:  $r_modelo,header: $header,ws: $ws);
 
         }
+
+
+        $data_predeterminado = $controler->modelo->row_predeterminado();
+        if(errores::$error){
+            return $controler->retorno_error(mensaje: 'Error al obtener predeterminado',
+                data:  $data_predeterminado,header: $header,ws: $ws);
+        }
+
+        if($data_predeterminado->n_registros === 1){
+            $row_predeterminado = $data_predeterminado->registros[0];
+            $r_modelo->registros[] = $row_predeterminado;
+        }
+
 
         $salida = $this->salida(header: $header,result:  $r_modelo,ws:  $ws);
         if(errores::$error){

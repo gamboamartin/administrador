@@ -12,10 +12,11 @@
     "autoload": {
         "psr-4": {
             "gamboamartin\\controllers\\": "controllers",
+            "gamboamartin\\administrador\\ctl\\": "base/ctl",
             "config\\": "config/",
             "base\\": "base/",
             "orm\\": "orm/base",
-            "models\\": "orm",
+            "gamboamartin\\administrador\\models\\": "orm",
             "validacion\\": "validacion/",
             "tests\\": "tests/"
 

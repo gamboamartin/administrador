@@ -1,13 +1,13 @@
 <?php
-namespace models;
-use base\orm\modelo;
-use gamboamartin\errores\errores;
+namespace gamboamartin\administrador\models;
+use base\orm\_modelo_parent;
 use PDO;
 
-class adm_idioma extends modelo{
+class adm_idioma extends _modelo_parent {
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_idioma';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 }

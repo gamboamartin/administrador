@@ -1,26 +1,171 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
+
+use base\orm\_modelo_children;
 use base\orm\modelo;
+use gamboamartin\administrador\models\base\_adm_accion_base;
 use gamboamartin\errores\errores;
-use JsonException;
 use PDO;
 use stdClass;
 
 
-class adm_accion extends modelo{ //FINALIZADAS
+class adm_accion extends _modelo_children {
     /**
      * DEBUG INI
      * accion constructor.
      * @param PDO $link
      */
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_accion';
         $columnas = array($tabla=>false, 'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
-        $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista');
+        $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista','titulo','css');
         $tipo_campos['adm_seccion_id'] = 'id';
-        parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas:  $columnas,
-            tipo_campos:  $tipo_campos );
+
+        $columnas_extra['adm_accion_n_permisos'] = /** @lang sql */
+            "(SELECT COUNT(*) FROM adm_accion_grupo WHERE adm_accion_grupo.adm_accion_id = adm_accion.id)";
+
+        $parents_data['adm_seccion'] = array();
+        $parents_data['adm_seccion']['namespace'] = 'gamboamartin\\administrador\\models';
+        $parents_data['adm_seccion']['registro_id'] = -1;
+        $parents_data['adm_seccion']['keys_parents'] = array('adm_seccion_descripcion');
+        $parents_data['adm_seccion']['key_id'] = 'adm_seccion_id';
+
+        $childrens['adm_accion_grupo'] = "gamboamartin\\administrador\\models";
+
+        $defaults['css'] = 'info';
+
+
+        parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios, columnas: $columnas,
+            columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens, defaults: $defaults,
+            parents_data: $parents_data);
+        $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new \validacion\accion();
+    }
+
+    /**
+     *
+     *
+     * Funcion que obtiene y genera un registro de tipo acción. basado en los resultados de los
+     * filtros recibidos (accion y seccion). Valida si hay registros no, Devuelve un error en caso de no encontrarlos.
+     *
+     * @param string $seccion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
+     * @param string $accion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
+     *
+     * @return array
+     *
+     * @functions $valida   = adm_accion->validacion->seccion_accion. Usada para validar los resultados de la funcion "seccion_accion".
+     *En caso de error lanzará un mensaje
+     *
+     * @functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
+     * En caso de error lanzará un mensaje
+     * @version 2.12.2.1
+     */
+    public function accion_registro(string $accion, string $seccion):array{
+        $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
+        }
+        $r_accion = $this->accion_seccion(accion: $accion, seccion: $seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
+        }
+        if($r_accion->n_registros===0) {
+            return  $this->error->error(mensaje: 'Error no existen acciones',data: $r_accion);
+        }
+        return $r_accion->registros[0];
+    }
+
+    /**
+     * Funcion que valida entre la seccion y accion en base a lo que obtenga retorna un objeto de tipo accion".
+     * En caso de error en "$valida", "$filtro" o "$r_accion" lanzará un mensaje de error.
+     *
+     *@param string $seccion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
+     *
+     *@param string $accion  filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
+
+     * @return array|stdClass
+     * @functions $valida   = adm_accion->validacion->seccion_accion  Usada para validar los resultados de la funcion "seccion_accion". En caso de error lanzará un mensaje
+     * @functions $filtro   = adm_accion->filtro_accion_seccion  Usada para validar los resultados de la funcion "filtro_accion_seccion". En caso de error lanzará un mensaje
+     * @functions $r_accion = adm_accion->filtro_and  Usada para validar los resultados de la funcion "filtro_and". En caso de error lanzará un mensaje
+     * @version 1.577.51
+     */
+    private function accion_seccion(string $accion, string $seccion ):array|stdClass{
+        $valida = $this->validacion->seccion_accion(accion:  $accion, seccion: $seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
+        }
+
+        $filtro = $this->filtro_accion_seccion(accion: $accion, seccion: $seccion );
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener filtros',data: $filtro);
+        }
+        $r_accion = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
+        }
+        return $r_accion;
+    }
+
+    /**
+     * Maqueta un array con un conjunto de acciones id
+     * @param array $adm_acciones_grupos Permisos
+     * @return array
+     * @version 2.49.4
+     */
+    private function acciones_id_maqueta(array $adm_acciones_grupos): array
+    {
+        $acciones = array();
+        foreach ($adm_acciones_grupos as $adm_accion_grupo){
+
+            $valida = $this->validacion->valida_array(value:  $adm_accion_grupo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar adm_accion_grupo',data:  $valida);
+            }
+
+            $keys = array('adm_accion_id');
+            $valida = $this->validacion->valida_ids(keys:$keys,registro:  $adm_accion_grupo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar adm_accion_grupo', data: $valida);
+            }
+
+            $acciones[] = $adm_accion_grupo['adm_accion_id'];
+        }
+        return $acciones;
+    }
+
+    /**
+     * Integra un array con acciones id filtradas por un grupo de usuarios
+     * @param int $adm_grupo_id Grupo a filtrar
+     * @param int $adm_seccion_id seccion a filtrar
+     * @return array
+     * @version 2.64.6
+     */
+    public function acciones_id_por_grupo(int $adm_grupo_id = -1, int $adm_seccion_id = -1): array
+    {
+
+        $filtro = $this->filtro_seccion_grupo(adm_grupo_id: $adm_grupo_id,adm_seccion_id:  $adm_seccion_id);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener filtro', $filtro);
+        }
+
+        $group_by[] = 'adm_accion.id';
+        $columnas = array('adm_accion_id');
+
+        $r_acciones_grupo = (new adm_accion_grupo($this->link))->filtro_and(
+            columnas: $columnas, filtro: $filtro, group_by: $group_by);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener acciones', $r_acciones_grupo);
+        }
+        $adm_acciones_grupos = $r_acciones_grupo->registros;
+
+
+        $acciones = $this->acciones_id_maqueta(adm_acciones_grupos: $adm_acciones_grupos);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener acciones', $r_acciones_grupo);
+        }
+
+        return $acciones;
+
     }
 
     /**
@@ -69,7 +214,6 @@ class adm_accion extends modelo{ //FINALIZADAS
     /**
      * inserta un registro de tipo accion y agrega permisos a usuarios de tipo root
      * @return array|stdClass con datos del registro insertado
-     * @throws JsonException
      * @example
      *      $r_alta_accion = $this->accion_modelo->alta_bd();
      *
@@ -82,33 +226,49 @@ class adm_accion extends modelo{ //FINALIZADAS
      */
     public function alta_bd(): array|stdClass{
 
+
+        $valida = $this->valida_alta_bd(registro:$this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
+        $registro = $this->init_row_alta(
+            defaults: $this->defaults,parents_data: $this->parents_data, registro: $this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar registro',data: $registro);
+        }
+
+        $keys = array('css');
+        $valida = $this->validacion->valida_estilos_css(keys: $keys,row: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
+
+        $this->registro = $registro;
+
         $r_alta_bd =  parent::alta_bd(); // TODO: Change the autogenerated stub
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al dar de alta accion',data: $r_alta_bd);
         }
 
-        $grupo_modelo = new adm_grupo($this->link);
-        $filtro['adm_grupo.root']['campo'] = 'adm_grupo.root';
-        $filtro['adm_grupo.root']['value'] = 'activo';
-
-        $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
+        $r_accion_grupo = $this->inserta_grupos_permisos_root(adm_accion_id: $r_alta_bd->registro_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener grupo',data: $r_grupo);
-        }
-        $grupos = $r_grupo->registros;
-        $accion_grupo_modelo = new adm_accion_grupo($this->link);
-
-        foreach($grupos as $grupo){
-            $accion_grupo_modelo->registro['adm_accion_id'] = $r_alta_bd->registro_id;
-            $accion_grupo_modelo->registro['adm_grupo_id'] = $grupo['adm_grupo_id'];
-            $accion_grupo_modelo->registro['status'] = 'activo';
-            $r_accion_grupo = $accion_grupo_modelo->alta_bd();
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar accion a root',data: $r_accion_grupo);
-            }
+            return $this->error->error(mensaje: 'Error al insertar accion_grupo',data: $r_accion_grupo);
         }
 
         return $r_alta_bd;
+    }
+
+    protected function asigna_full_status_alta(array $registro): array
+    {
+        $keys = array('visible','inicio','lista');
+
+        $registro = $this->asigna_status_alta(keys:$keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar status',data: $registro);
+        }
+        return $registro;
     }
 
     /**
@@ -141,6 +301,241 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
 
         return (int)$n_permisos;
+    }
+
+    public function elimina_bd(int $id): array|stdClass
+    {
+
+        $filtro['adm_accion.id'] = $id;
+        $r_adm_accion_grupo = (new adm_accion_grupo(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error('Error al eliminar adm_accion_grupo', $r_adm_accion_grupo);
+        }
+
+        $r_elimina_bd = parent::elimina_bd($id); // TODO: Change the autogenerated stub
+        if(errores::$error){
+            return $this->error->error('Error al eliminar accion', $r_elimina_bd);
+        }
+        return $r_elimina_bd;
+    }
+
+    /**
+     * Funcion para maquetar filtro de "adm_seccion.descripcion" y "adm_accion.descripcion"
+     * @version 1.48.14
+     * @param string $seccion Seccion o modelo o tabla
+     * @param string $accion accion de ejecucion
+     * @return array
+     *
+     * @functions $valida = $adm_accion->validacion->seccion_accion( accion: $accion, seccion: $seccion);
+     * Valida que exista una accion comprobando "$seccion" y "accion". Mostrará un mensaje de error en caso
+     * de que ocurra uno
+     */
+    private function filtro_accion_seccion(string $accion, string $seccion, ):array{
+
+        $valida = $this->validacion->seccion_accion( accion: $accion, seccion: $seccion);
+        if(errores::$error){
+            return  $this->error->error('Error al validar seccion',$valida);
+        }
+
+        $filtro['adm_seccion.descripcion'] = strtolower(trim($seccion));
+        $filtro['adm_accion.descripcion'] = strtolower(trim($accion));
+
+        return $filtro;
+    }
+
+    /**
+     * Obtiene el filtro para determinar permisos de ejecucion
+     * @version 1.12.8
+     * @param string $accion Accion a ejecutar
+     * @param int $grupo_id Grupo a verificar si tiene permiso
+     * @param string $seccion Seccion a verificar
+     * @return array
+     */
+    private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
+    {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje:'Error accion esta vacia', data: $accion);
+        }
+        if($grupo_id<=0){
+            return $this->error->error(mensaje:'Error $grupo_id debe ser mayor a 0', data: $grupo_id);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje:'Error $seccion esta vacia', data: $seccion);
+        }
+        $filtro['adm_accion.status'] = 'activo';
+        $filtro['adm_grupo.status'] = 'activo';
+        $filtro['adm_seccion.status'] = 'activo';
+        $filtro['adm_accion_grupo.adm_grupo_id'] = $grupo_id;
+        $filtro['adm_seccion.descripcion'] = $seccion;
+        $filtro['adm_accion.descripcion'] = $accion;
+        return $filtro;
+    }
+
+    /**
+     * Genera un filtro para obtencion de acciones
+     * @param int $adm_grupo_id Identificador de grupo
+     * @param int $adm_seccion_id Identificador de seccion
+     * @return array
+     * @version 1.630.56
+     */
+    private function filtro_seccion_grupo(int $adm_grupo_id, int $adm_seccion_id): array
+    {
+        $filtro = array();
+        if($adm_grupo_id > 0){
+            $filtro['adm_grupo.id'] = $adm_grupo_id;
+        }
+        if($adm_seccion_id > 0){
+            $filtro['adm_seccion.id'] = $adm_seccion_id;
+        }
+        if(count($filtro) === 0){
+            $data = new stdClass();
+            $data->adm_grupo_id = $adm_grupo_id;
+            $data->adm_seccion_id = $adm_seccion_id;
+            return $this->error->error(mensaje:'Error adm_grupo_id o adm_seccion_id deben der mayor a 0', data: $data);
+        }
+        return $filtro;
+    }
+
+    private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
+    {
+        $n_permisos = $this->n_permisos(accion: $accion, grupo_id: $grupo_id, seccion: $seccion);
+        if (errores::$error) {
+            return $this->error->error('Error al contar acciones', $n_permisos);
+        }
+        $permiso_valido = $this->permiso_valido(accion: $accion, grupo_id: $grupo_id, n_permisos: $n_permisos,
+            seccion: $seccion);
+        if (errores::$error) {
+            return $this->error->error('Error al verificar permiso', $permiso_valido);
+        }
+        return $permiso_valido;
+    }
+
+    /**
+     * Obtiene en un arreglo los grupos por accion
+     * @param int $adm_accion_id Accion a buscar
+     * @return array
+     * @version 2.12.2.1
+     */
+    public function grupos_id_por_accion(int $adm_accion_id): array
+    {
+        if($adm_accion_id <=0){
+            return $this->error->error(mensaje: 'Error adm_accion_id debe ser mayor a 0',data:  $adm_accion_id);
+        }
+        $filtro['adm_accion.id'] = $adm_accion_id;
+        $group_by[] = 'adm_grupo.id';
+        $columnas = array('adm_grupo_id');
+        $r_acciones_grupo = (new adm_accion_grupo($this->link))->filtro_and(
+            columnas: $columnas, filtro: $filtro, group_by: $group_by);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener grupos', $r_acciones_grupo);
+        }
+        $adm_acciones_grupos = $r_acciones_grupo->registros;
+
+        $grupos = array();
+        foreach ($adm_acciones_grupos as $adm_accion_grupo){
+            $grupos[] = $adm_accion_grupo['adm_grupo_id'];
+        }
+
+        return $grupos;
+
+    }
+
+    private function grupos_root(): array
+    {
+        $grupo_modelo = new adm_grupo($this->link);
+        $filtro['adm_grupo.root'] = 'activo';
+
+        $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener grupo',data: $r_grupo);
+        }
+        return $r_grupo->registros;
+    }
+
+    protected function init_row_alta(array $defaults, array $parents_data, array $registro): array
+    {
+
+        $registro = parent::init_row_alta(defaults: $defaults,parents_data:  $parents_data, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar descripcion_select',data: $registro);
+        }
+        if(!isset($registro['titulo'])){
+            $titulo = str_replace('_', ' ', $registro['descripcion']);
+            $titulo = ucwords($titulo);
+            $registro['titulo'] = trim($titulo);
+        }
+
+        return $registro;
+    }
+
+    private function inserta_accion_grupo(adm_accion_grupo $accion_grupo_modelo, int $adm_accion_id, int $adm_grupo_id): array|stdClass
+    {
+        $accion_grupo_row = $this->maqueta_row_accion_grupo(accion_grupo_modelo: $accion_grupo_modelo,
+            adm_accion_id:  $adm_accion_id,adm_grupo_id:  $adm_grupo_id);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar row',data: $accion_grupo_row);
+        }
+
+        $r_accion_grupo = $accion_grupo_modelo->alta_bd();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar accion a root',data: $r_accion_grupo);
+        }
+        return $r_accion_grupo;
+    }
+
+    private function inserta_accion_grupo_root(int $adm_accion_id, array $grupos): array
+    {
+        $accion_grupo_modelo = new adm_accion_grupo($this->link);
+        $inserts = array();
+        foreach($grupos as $grupo){
+
+            $r_accion_grupo = $this->inserta_accion_grupo(accion_grupo_modelo: $accion_grupo_modelo,
+                adm_accion_id:  $adm_accion_id,adm_grupo_id:  $grupo['adm_grupo_id']);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar accion_grupo',data: $r_accion_grupo);
+            }
+            $inserts[] = $r_accion_grupo;
+        }
+        return $inserts;
+    }
+
+    private function inserta_grupos_permisos_root(int $adm_accion_id): array
+    {
+        $grupos = $this->grupos_root();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener grupos',data: $grupos);
+        }
+
+        $r_accion_grupo = $this->inserta_accion_grupo_root(adm_accion_id: $adm_accion_id,grupos:  $grupos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar accion_grupo',data: $r_accion_grupo);
+        }
+        return $r_accion_grupo;
+    }
+
+    private function maqueta_row_accion_grupo(adm_accion_grupo $accion_grupo_modelo, int $adm_accion_id, int $adm_grupo_id): array
+    {
+        $accion_grupo_modelo->registro['adm_accion_id'] = $adm_accion_id;
+        $accion_grupo_modelo->registro['adm_grupo_id'] = $adm_grupo_id;
+        $accion_grupo_modelo->registro['status'] = 'activo';
+        return $accion_grupo_modelo->registro;
+    }
+
+    public function modifica_bd(array $registro, int $id, bool $reactiva = false, array $keys = array('adm_seccion_id','descripcion')): array|stdClass
+    {
+
+        $registro = (new _base_accion())->registro_validado_css(id: $id, modelo: $this,registro: $registro );
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar css',data: $registro);
+        }
+
+        $r_modifica_bd = parent::modifica_bd(registro: $registro,id:  $id,reactiva:  $reactiva,keys:  $keys); // TODO: Change the autogenerated stub
+        if(errores::$error){
+            return $this->error->error('Error al modificar adm_seccion', $r_modifica_bd);
+        }
+        return $r_modifica_bd;
     }
 
     /**
@@ -197,63 +592,6 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     }
 
-    /**
-     * Funcion para maquetar filtro de "adm_seccion.descripcion" y "adm_accion.descripcion"
-     * @version 1.48.14
-     * @param string $seccion Seccion o modelo o tabla
-     * @param string $accion accion de ejecucion
-     * @return array
-     *
-     * @functions $valida = $adm_accion->validacion->seccion_accion( accion: $accion, seccion: $seccion);
-     * Valida que exista una accion comprobando "$seccion" y "accion". Mostrará un mensaje de error en caso
-     * de que ocurra uno
-     */
-    private function filtro_accion_seccion(string $accion, string $seccion, ):array{
-
-        $valida = $this->validacion->seccion_accion( accion: $accion, seccion: $seccion);
-        if(errores::$error){
-            return  $this->error->error('Error al validar seccion',$valida);
-        }
-
-        $filtro['adm_seccion.descripcion'] = strtolower(trim($seccion));
-        $filtro['adm_accion.descripcion'] = strtolower(trim($accion));
-
-        return $filtro;
-    }
-
-    /**
-     * P INT P ORDER
-     *
-     *
-     * Funcion que valida entre la seccion y accion en base a lo que obtenga retorna un objeto de tipo accion".
-     * En caso de error en "$valida", "$filtro" o "$r_accion" lanzará un mensaje de error.
-     *
-     *@param string $seccion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
-     *
-     *@param string $accion  filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
-
-     * @return array|stdClass
-     * @functions $valida   = adm_accion->validacion->seccion_accion  Usada para validar los resultados de la funcion "seccion_accion". En caso de error lanzará un mensaje
-     * @functions $filtro   = adm_accion->filtro_accion_seccion  Usada para validar los resultados de la funcion "filtro_accion_seccion". En caso de error lanzará un mensaje
-     * @functions $r_accion = adm_accion->filtro_and  Usada para validar los resultados de la funcion "filtro_and". En caso de error lanzará un mensaje
-     *
-     */
-    private function accion_seccion(string $accion, string $seccion ):array|stdClass{
-        $valida = $this->validacion->seccion_accion(accion:  $accion, seccion: $seccion);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
-        }
-
-        $filtro = $this->filtro_accion_seccion(accion: $accion, seccion: $seccion );
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener filtros',data: $filtro);
-        }
-        $r_accion = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
-        }
-        return $r_accion;
-    }
 
     /**
      * PRUEBAS FINALIZADAS
@@ -291,7 +629,7 @@ class adm_accion extends modelo{ //FINALIZADAS
         if(isset($_SESSION['acciones_breads'][$seccion][$accion])){
             return $_SESSION['acciones_breads'][$seccion][$accion];
         }
-        $accion_registro = $this->accion_registro($seccion, $accion);
+        $accion_registro = $this->accion_registro(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return  $this->error->error('Error al obtener acciones',$accion_registro);
         }
@@ -301,81 +639,6 @@ class adm_accion extends modelo{ //FINALIZADAS
         return $accion_registro;
     }
 
-    /**
-     * P INT
-     *
-     * Funcion que obtiene y genera un registro de tipo acción. basado en los resultados de los
-     * filtros recibidos (accion y seccion). Valida si hay registros no, Devuelve un error en caso de no encontrarlos.
-     *
-     * @param string $seccion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
-     * @param string $accion filtra entre la seccion y accion een base a lo que obtenga retorna un objeto de tipo accion
-     *
-     * @return array
-     *
-     *@functions $valida   = adm_accion->validacion->seccion_accion. Usada para validar los resultados de la funcion "seccion_accion".
-     *En caso de error lanzará un mensaje
-     *
-     *@functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
-     *En caso de error lanzará un mensaje
-     */
-    public function accion_registro(string $seccion, string $accion):array{
-        $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
-        }
-        $r_accion = $this->accion_seccion(accion: $accion, seccion: $seccion);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
-        }
-        if($r_accion->n_registros===0) {
-            return  $this->error->error(mensaje: 'Error no existen acciones',data: $r_accion);
-        }
-        return $r_accion->registros[0];
-    }
-
-    /**
-     * Obtiene el filtro para determinar permisos de ejecucion
-     * @version 1.12.8
-     * @param string $accion Accion a ejecutar
-     * @param int $grupo_id Grupo a verificar si tiene permiso
-     * @param string $seccion Seccion a verificar
-     * @return array
-     */
-    private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
-    {
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error(mensaje:'Error accion esta vacia', data: $accion);
-        }
-        if($grupo_id<=0){
-            return $this->error->error(mensaje:'Error $grupo_id debe ser mayor a 0', data: $grupo_id);
-        }
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje:'Error $seccion esta vacia', data: $seccion);
-        }
-        $filtro['adm_accion.status'] = 'activo';
-        $filtro['adm_grupo.status'] = 'activo';
-        $filtro['adm_seccion.status'] = 'activo';
-        $filtro['adm_accion_grupo.adm_grupo_id'] = $grupo_id;
-        $filtro['adm_seccion.descripcion'] = $seccion;
-        $filtro['adm_accion.descripcion'] = $accion;
-        return $filtro;
-    }
-
-    private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
-    {
-        $n_permisos = $this->n_permisos(accion: $accion, grupo_id: $grupo_id, seccion: $seccion);
-        if (errores::$error) {
-            return $this->error->error('Error al contar acciones', $n_permisos);
-        }
-        $permiso_valido = $this->permiso_valido(accion: $accion, grupo_id: $grupo_id, n_permisos: $n_permisos,
-            seccion: $seccion);
-        if (errores::$error) {
-            return $this->error->error('Error al verificar permiso', $permiso_valido);
-        }
-        return $permiso_valido;
-    }
 
     private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
     {
@@ -442,10 +705,13 @@ class adm_accion extends modelo{ //FINALIZADAS
 
     /**
      * P ORDER P INT
-     * @param string $accion
-     * @param int $grupo_id
-     * @param int $n_permisos
-     * @param string $seccion
+     *
+     * Funcion que maqueta la variable SESSION con un permiso, siendo valido o invalido.
+     *
+     * @param string $accion Accion a verificar
+     * @param int $grupo_id Identificador de un grupo
+     * @param int $n_permisos Numero del permiso otorgado al grupo
+     * @param string $seccion Seccion a verificar
      * @return bool
      */
     private function permiso_valido(string $accion, int $grupo_id, int $n_permisos, string $seccion): bool
@@ -456,6 +722,30 @@ class adm_accion extends modelo{ //FINALIZADAS
         }
         $_SESSION['valida_permiso'][$grupo_id][$seccion][$accion] = $permiso_valido;
         return $permiso_valido;
+    }
+
+
+
+    /**
+     * Valida los elementos minimos necesarios para insertar una accion
+     * @param array $registro Registro en proceso
+     * @return bool|array
+     * @version 2.66.6
+     */
+    protected function valida_alta_bd(array $registro): bool|array
+    {
+        $keys = array('adm_seccion_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
+        $valida = parent::valida_alta_bd(registro:$registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
+        return true;
     }
 
     /**

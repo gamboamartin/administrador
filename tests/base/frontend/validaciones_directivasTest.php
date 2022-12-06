@@ -13,64 +13,9 @@ class validaciones_directivasTest extends test {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
     }
-    public function test_valida_base_input(){
-        errores::$error = false;
-        $val = new validaciones_directivas();
-        //$inicializacion = new liberator($inicializacion);
-        $campo = '';
-        $cols = '0';
-        $resultado = $val->valida_base_input($campo, $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $campo no puede venir vacio', $resultado['mensaje']);
 
-        errores::$error = false;
-        $campo = 'a';
-        $cols = '0';
-        $resultado = $val->valida_base_input($campo, $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar cols', $resultado['mensaje']);
 
-        errores::$error = false;
-        $campo = 'a';
-        $cols = '6';
-        $resultado = $val->valida_base_input($campo, $cols);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-        errores::$error = false;
-    }
 
-    public function test_valida_cols(){
-        errores::$error = false;
-        $val = new validaciones_directivas();
-        //$inicializacion = new liberator($inicializacion);
-
-        $cols = '-1';
-        $resultado = $val->valida_cols(cols: $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error cols debe ser mayor a 0', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $cols = '13';
-        $resultado = $val->valida_cols(cols: $cols);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error cols debe ser menor a 13', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $cols = '12';
-        $resultado = $val->valida_cols(cols: $cols);
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-
-        errores::$error = false;
-    }
 
     public function test_valida_data_btn(){
         errores::$error = false;
@@ -82,9 +27,8 @@ class validaciones_directivasTest extends test {
         $name = '-1';
         $value = '-1';
         $resultado = $val->valida_data_btn($cols, $label, $name, $value);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar cols', $resultado['mensaje']);
+        $this->assertIsBool($resultado);
+
 
         errores::$error = false;
 
@@ -105,15 +49,16 @@ class validaciones_directivasTest extends test {
         //$inicializacion = new liberator($inicializacion);
         $seccion = '';
         $accion = '';
-        $resultado = $val->valida_datos_accion($accion, $seccion);
-        $this->assertIsArray($resultado);
+        $resultado = $val->valida_datos_accion(accion:$accion,seccion:  $seccion);
+
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar seccion', $resultado['mensaje']);
+
 
         errores::$error = false;
         $seccion = 'adm_seccion';
         $accion = '';
         $resultado = $val->valida_datos_accion($accion, $seccion);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error la accion esta vacia', $resultado['mensaje']);
@@ -145,9 +90,8 @@ class validaciones_directivasTest extends test {
         $tabla = 'a';
         $cols = '0';
         $resultado = $val->valida_elementos_base_input($cols, $tabla);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar columnas', $resultado['mensaje']);
+        $this->assertIsBool($resultado);
+
 
         errores::$error = false;
 
@@ -306,36 +250,9 @@ class validaciones_directivasTest extends test {
         $this->assertTrue($resultado);
 
 
-
     }
 
-    public function test_valida_selected(){
-        errores::$error = false;
-        $val = new validaciones_directivas();
-        //$inicializacion = new liberator($inicializacion);
 
-        $id = '1';
-        $tabla = '';
-        $value = array();
-        $resultado = $val->valida_selected($id, $tabla, $value);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error tabla no puede venir vacia', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $id = '1';
-        $tabla = 'a';
-        $value = array();
-        $resultado = $val->valida_selected($id, $tabla, $value);
-
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error no existe $value[a_id]', $resultado['mensaje']);
-
-        errores::$error = false;
-
-    }
 
 
 }

@@ -1,13 +1,14 @@
 <?php
 namespace base\controller;
 use base\conexion;
-use base\frontend\directivas;
+use base\orm\modelo_base;
 use base\seguridad;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
-use models\adm_accion;
-use models\adm_session;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 use Throwable;
@@ -26,10 +27,17 @@ class init{
      *
      * @functions $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);.
      * Obtiene la accion ejecutada en base a seccion y accion. En caso de error lanzará un mensaje
+     * @version 2.24.3
      */
     private function aplica_view(PDO $link, seguridad $seguridad): bool|array
     {
-        $accion = (new adm_accion($link))->accion_registro($seguridad->seccion,$seguridad->accion);
+
+        $valida = (new validacion())->seccion_accion(accion: $seguridad->accion, seccion: $seguridad->seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
+        }
+
+        $accion = (new adm_accion($link))->accion_registro(accion: $seguridad->accion, seccion: $seguridad->seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion', data: $accion);
         }
@@ -74,24 +82,34 @@ class init{
     }
 
     /**
-     * UNIT
+     *
      * Asigna una session aleatoria a get
      * @return array GET con session_id en un key
+     * @version 2.25.3
      */
     public function asigna_session_get(): array
     {
         $session_id = $this->session_id();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar session_id', data: $session_id,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar session_id', data: $session_id);
         }
 
         $_GET['session_id'] = $session_id;
         return $_GET;
     }
 
-    private function existe_include(string $include_action): bool
+    /**
+     * Verifica si existe un archivo para include view
+     * @param string $include_action Ruta include
+     * @return bool|array
+     * @version 2.26.3
+     */
+    private function existe_include(string $include_action): bool|array
     {
+        $include_action = trim($include_action);
+        if($include_action === ''){
+            return $this->error->error(mensaje: 'Error include_action esta vacio', data: $include_action);
+        }
         $existe = false;
         if (file_exists($include_action)) {
             $existe = true;
@@ -102,19 +120,26 @@ class init{
     /**
      * Obtiene los datos de un template de una accion
      * @param string $accion Accion a verificar
-     *
      * @param string $seccion Seccion a verificar
-     *
      * @return array|stdClass
-     *
-     *@functions $data_include = $init->include_action_local_base_data. Verifica si existe una view en base a
+     * @functions $data_include = $init->include_action_local_base_data. Verifica si existe una view en base a
      * "$accion" y "$seccion" obtenidas. En caso de error mostrará un mensaje
      *
-     *@functions $data_include = $init->include_template. valida y obtiene la ruta de un template para posterior maquetarla.
+     * @functions $data_include = $init->include_template. valida y obtiene la ruta de un template para posterior maquetarla.
      * En caso de ocurrir un error, mostrará un mensaje
+     * @version 2.75.6
      */
     private function data_include_base(string $accion, string $seccion): array|stdClass
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+
         $data_include = $this->include_action_local_base_data(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local base', data: $data_include);
@@ -128,8 +153,20 @@ class init{
         return $data_include;
     }
 
+    /**
+     * Genera la salida para controller
+     * @param string $include_action Accion include a integrar para frontend
+     * @return array|stdClass
+     * @version 2.29.3
+     *
+     */
     private function genera_salida(string $include_action): array|stdClass
     {
+        $include_action = trim($include_action);
+        if($include_action === ''){
+            return $this->error->error(mensaje: 'Error include_action esta vacio', data: $include_action);
+        }
+
         $existe = $this->existe_include(include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar include', data: $include_action);
@@ -186,6 +223,12 @@ class init{
         return './views/' . $seccion . '/' . $accion . '.php';
     }
 
+    /**
+     * Genera un include para view
+     * @param string $accion Accion a crear
+     * @return string|array
+     * @version 2.27.3
+     */
     private function include_action_local_base(string $accion): string|array
     {
         $accion = trim($accion);
@@ -196,6 +239,13 @@ class init{
         return './views/vista_base/' . $accion . '.php';
     }
 
+    /**
+     * Integra un include de template
+     * @param string $accion Accion ej ejecucion
+     * @param string $seccion Seccion en ejecucion
+     * @return string|array
+     * @version 2.31.3
+     */
     private function include_action_template(string $accion, string $seccion): string|array
     {
         $seccion = trim($seccion);
@@ -211,7 +261,8 @@ class init{
             return $this->error->error(mensaje: 'Error debe existir views->ruta_template_base', data: (new views()));
         }
 
-        return (new views())->ruta_template_base.'views/'.$seccion.'/'. $accion . '.php';
+        $include = (new views())->ruta_template_base.'views/'.$seccion.'/'. $accion . '.php';
+        return str_replace('//', '/', $include);
     }
 
     /**
@@ -232,11 +283,28 @@ class init{
             return $this->error->error(mensaje: 'Error debe existir views->ruta_template_base', data: (new views()));
         }
 
-        return (new views())->ruta_template_base.'views/vista_base/' . $accion . '.php';
+        $include = (new views())->ruta_template_base.'views/vista_base/' . $accion . '.php';
+        return str_replace('//', '/', $include);
     }
 
+    /**
+     * Obtiene los elementos de un include
+     * @param string $accion Accion en ejecucion
+     * @param string $seccion Seccion en ejecucion
+     * @return array|stdClass
+     * @version 2.77.6
+     */
     private function include_action_local_data(string $accion, string $seccion): array|stdClass
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_local(accion: $accion,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local', data: $include_action);
@@ -250,8 +318,19 @@ class init{
         return $data;
     }
 
-    private function include_action_local_base_data(string $accion): stdClass
+    /**
+     * Data para include de fronted
+     * @param string $accion Accion en ejecucion
+     * @return stdClass|array
+     * @version 2.30.3
+     */
+    private function include_action_local_base_data(string $accion): stdClass|array
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_local_base(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local base', data: $include_action);
@@ -263,8 +342,24 @@ class init{
         return $data;
     }
 
+    /**
+     * Integra en include de un template
+     * @param string $accion Accion en ejecucion
+     * @param string $seccion Seccion en ejecucion
+     * @return array|stdClass
+     * @version 2.32.3
+     */
     private function include_action_template_data(string $accion, string $seccion): array|stdClass
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_template(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $include_action);
@@ -288,9 +383,15 @@ class init{
      *
      * @functions  $data = $init->genera_salida. Valida y maqueta el objeto almacenado si existe tanto
      * el objeto como la ruta del archivo. En caso de error lanzará un mensaje.
+     * @version 2.33.3
      */
     private function include_action_template_base_data(string $accion): array|stdClass
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $include_action = $this->include_action_template_base(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template base', data: $include_action);
@@ -314,10 +415,20 @@ class init{
      * para obtener un template. En caso de error, lanzará un mensaje.
      *
      * @functions $data_include = $init->include_template_base. Valida y maqueta el objeto requerido en base
-     * a "$accion" si éste existe. En caso de error, lanzará un mensaje.
+     *  "$accion" si éste existe. En caso de error, lanzará un mensaje.
+     * @version 2.35.3
      */
     private function include_template(string $accion, string $seccion): array|stdClass
     {
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
+        }
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $data_include = $this->include_action_template_data(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
@@ -340,10 +451,16 @@ class init{
      *
      * @functions $init->include_action_template_base_data. Genera una ruta contemplando "$accion"
      * para obtener un template. Si ocurre un error, lanzará un mensaje.
+     * @version 2.34.3
      *
      */
     private function include_template_base(string $accion): array|stdClass
     {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
+        }
+
         $data_include = $this->include_action_template_base_data(accion: $accion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
@@ -384,7 +501,10 @@ class init{
         return $data_include;
     }
 
+
     /**
+     * @param bool $aplica_seguridad si aplica seguridad se implementa acl por accion
+     * @return array|stdClass
      */
     public function index(bool $aplica_seguridad): array|stdClass
     {
@@ -405,6 +525,11 @@ class init{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al verificar seguridad',data: $seguridad);
 
+        }
+
+        $valida = (new validacion())->seccion_accion(accion: $seguridad->accion, seccion: $seguridad->seccion);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al validar seccion',data: $valida);
         }
 
         $aplica_view = $this->aplica_view( link:$link, seguridad: $seguridad);
@@ -450,6 +575,7 @@ class init{
         $data->js_view = $data_custom->js_view;
 
         $data->menu = $seguridad->menu;
+        $data->acceso_denegado = $seguridad->acceso_denegado;
 
         $data->link = $link;
         $data->path_base = $conf_generales->path_base;
@@ -484,7 +610,6 @@ class init{
 
         $controler->errores = new errores();
         $controler->validacion = new valida_controller();
-        $controler->directiva = new directivas();
         $controler->pestanas = new stdClass();
         $controler->pestanas->includes = array();
         $controler->pestanas->targets = array();
@@ -518,6 +643,300 @@ class init{
     }
 
     /**
+     * Integra los keys para parametros base de un input
+     * @param int $cols Cols css
+     * @param string $key Campo de input
+     * @param array $keys_selects Conjunto de keys precargados
+     * @param string $place_holder Tag de input
+     * @return array
+     * @version 2.115.12
+     */
+    public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder): array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
+        if(!isset($keys_selects[$key])) {
+            $keys_selects[$key] = new stdClass();
+        }
+        if(!isset($keys_selects[$key]->cols)) {
+            $keys_selects[$key]->cols = $cols;
+        }
+        if(!isset($keys_selects[$key]->place_holder)) {
+            $keys_selects[$key]->place_holder = $place_holder;
+        }
+        return $keys_selects;
+    }
+
+    /**
+     * Integra los inputs de un select para parametros
+     * @param array $selects Selects
+     * @param string $name_model Nombre del modelo
+     * @param string $namespace_paquete Paquete
+     * @return array
+     * @version 2.101.9
+     */
+    private function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
+    {
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model);
+        }
+        $namespace_paquete = trim($namespace_paquete);
+        if($namespace_paquete === ''){
+            return $this->error->error(mensaje: 'Error namespace_paquete esta vacio',data:  $namespace_paquete);
+        }
+
+        $name_model_id = $name_model.'_id';
+        $selects[$name_model_id] = new stdClass();
+        $selects[$name_model_id]->name_model = $name_model;
+        $selects[$name_model_id]->namespace_model = "$namespace_paquete\\models";
+
+        return $selects;
+    }
+
+    /**
+     * Inicializa un campo de tipo model
+     * @param array $campos_view Conjunto de campos provenientes de modelo
+     * @param string $key Key a integrar
+     * @param string $type Tipo de input
+     * @return array
+     * @version 2.37.3.1
+     */
+    private function model_init_campos(array $campos_view, string $key, string $type): array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+
+        $type = trim($type);
+        if($type === ''){
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+        }
+
+        $campos_view[$key]['type'] = $type;
+        return $campos_view;
+
+    }
+
+    /**
+     * Integra los elementos de una view para system
+     * @param array $campos_view Campos de modelo
+     * @param string $key Key a integrar
+     * @param string $type Tipo de input
+     * @return array
+     * @version 2.81.6
+     */
+    private function model_init_campos_input(array $campos_view, string $key, string $type): array
+    {
+
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+        $type = trim($type);
+        if($type === ''){
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+        }
+
+        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  $type);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+        return $campos_view;
+    }
+
+    /**
+     * Inicializa los campos para un template
+     * @param array $campos_view Campos precargados
+     * @param array $keys Keys a inicializar con nombre de los campos
+     * @param string $type Typo de campo inputs o password
+     * @return array
+     * @version 2.100.9
+     */
+    private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
+    {
+        $type = trim($type);
+        if($type === ''){
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+        }
+
+        foreach ($keys as $key){
+
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+            }
+
+            $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key, type: $type);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            }
+        }
+
+        return $campos_view;
+    }
+
+    /**
+     * Inicializa los campos de tipo select
+     * @param array $campos_view Campos de view template
+     * @param array $keys Keys a integrar
+     * @param PDO $link Conexion a la base de datos
+     * @return array
+     * @version 2.105.10
+     */
+    private function model_init_campos_selects(array $campos_view, array $keys, PDO $link): array
+    {
+
+        foreach ($keys as $campo =>$data){
+            if(!is_object($data)){
+                return $this->error->error(mensaje: 'Error al data de ser un obj',data:  $data);
+            }
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo);
+            }
+            if(is_numeric($campo)){
+                return $this->error->error(mensaje: 'Error campo es un numero debe ser un texto',data:  $campo);
+            }
+            $keys_val = array('name_model','namespace_model');
+            $valida = (new validacion())->valida_existencia_keys(keys:$keys_val, registro: $data);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
+            }
+
+            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $campo, link: $link,
+                name_model: $data->name_model, namespace_model: $data->namespace_model);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            }
+
+        }
+
+        return $campos_view;
+    }
+
+    /**
+     * Inicializa los elementos para un input de tipo select
+     * @param array $campos_view Campos de template
+     * @param string $key Campos a integrar
+     * @param PDO $link Conexion a la base de datos
+     * @param string $name_model Nombre del modelo entidad
+     * @param string $namespace_model Paquete
+     * @return array
+     * @version 2.103.10
+     */
+    private function model_init_campos_select(
+        array $campos_view, string $key, PDO $link, string $name_model, string $namespace_model): array
+    {
+
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+        $namespace_model = trim($namespace_model);
+        if($namespace_model === ''){
+            return $this->error->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model);
+        }
+        $name_model = trim($name_model);
+        if($name_model === ''){
+            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model);
+        }
+
+        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model,namespace_model: $namespace_model);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al genera modelo',data:  $modelo);
+        }
+        $campos_view[$key]['model'] = $modelo;
+
+        return $campos_view;
+    }
+
+    public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
+    {
+
+        if(!isset($keys->inputs)){
+            $keys->inputs = array();
+        }
+
+        if(!isset($keys->selects)){
+            $keys->selects = array();
+        }
+        if(!isset($keys->passwords)){
+            $keys->passwords = array();
+        }
+        if(!isset($keys->telefonos)){
+            $keys->telefonos = array();
+        }
+        if(!isset($keys->emails)){
+            $keys->emails = array();
+        }
+        if(!isset($keys->fechas)){
+            $keys->fechas = array();
+        }
+
+        $keys_inputs = $keys->inputs;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_inputs, type: 'inputs');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_passwords = $keys->passwords;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_passwords, type: 'passwords');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_telefonos = $keys->telefonos;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_telefonos, type: 'telefonos');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_emails = $keys->emails;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_emails, type: 'emails');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+        $keys_fechas = $keys->fechas;
+
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_fechas, type: 'fechas');
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+
+
+        $keys_selects = $keys->selects;
+
+        $campos_view = $this->model_init_campos_selects(
+            campos_view: $campos_view, keys: $keys_selects, link: $link);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+        return $campos_view;
+
+    }
+
+    /**
      *
      * Retorna del nombre de cun controlador para su creacion posterior
      * @version 1.176.33
@@ -537,11 +956,15 @@ class init{
         }
 
         /**
-         * REFCATORIZAR SIMPLICAR RERGISTRO DE PAQUETES
+         * REFCATORIZAR SIMPLICAR REGISTRO DE PAQUETES
          */
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
+        if($sistema === 'cat_sat'){
+            $namespace = 'gamboamartin\\cat_sat\\';
+        }
+
         if($sistema === 'academico'){
             $namespace = 'gamboamartin\\academico\\';
         }
@@ -615,6 +1038,18 @@ class init{
         if($sistema === 'tg_cat_gen'){
             $namespace = 'tglobally\\tg_cat_gen\\';
         }
+        if($sistema === 'instalacion'){
+            $namespace = 'gamboamartin\\instalacion\\';
+        }
+        if($sistema === 'boletaje'){
+            $namespace = 'gamboamartin\\boletaje\\';
+        }
+        if($sistema === 'tg_cat_sat'){
+            $namespace = 'tglobally\\tg_cat_sat\\';
+        }
+        if($sistema === 'academico'){
+            $namespace = 'gamboamartin\\academico\\';
+        }
 
 
 
@@ -629,6 +1064,13 @@ class init{
         return $name_ctl;
     }
 
+    /**
+     * Da lña salida para web
+     * @param bool $existe Verifica si existe view
+     * @param string $include_action Accion include para front
+     * @return stdClass
+     * @version 2.28.3
+     */
     private function output_include(bool $existe, string $include_action): stdClass
     {
         $data = new stdClass();
@@ -698,7 +1140,7 @@ class init{
      * P INT
      * Funcion utilizada para verificar las solicitudes de un permiso.
      *
-     * @param PDO $link Representa la conexion entre PHP y la base dedatos
+     * @param PDO $link Representa la conexion entre PHP y la base de datos
      *
      * @param seguridad $seguridad llamada a la clase "seguridad"
      *
@@ -725,6 +1167,7 @@ class init{
             if (!$permiso) {
                 $seguridad->seccion = 'adm_session';
                 $seguridad->accion = 'denegado';
+                $seguridad->acceso_denegado = true;
             }
 
             $n_acciones = $modelo_accion->cuenta_acciones();
@@ -739,10 +1182,23 @@ class init{
         return $seguridad;
     }
 
+    public function select_key_input(array $init_data, array $selects): array
+    {
+
+        foreach ($init_data as $name_model=>$namespace_paquete){
+            $selects = $this->maqueta_key_select_input(selects: $selects,name_model: $name_model, namespace_paquete: $namespace_paquete);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar select',data:  $selects);
+            }
+        }
+        return $selects;
+    }
+
     /**
-     * UNIT
+     * Obtiene la session en curso
      * Genera la session_id basada en un rand
      * @return array|string string es la session generada
+     * @version 2.25.3
      */
     private function session_id(): array|string
     {
@@ -757,7 +1213,7 @@ class init{
             $session_id .= random_int(10,99);
         }
         catch (Throwable $e){
-            return $this->error->error(mensaje: 'Error al generar session', data: $e,params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al generar session', data: $e);
         }
         return $session_id;
     }

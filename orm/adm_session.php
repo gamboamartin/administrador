@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 
 use base\orm\modelo;
 use config\generales;
@@ -14,9 +14,10 @@ use Throwable;
 
 class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_session';
         $columnas = array($tabla=>false, 'adm_usuario'=>$tabla,'adm_grupo'=>'adm_usuario');
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
     /**
@@ -48,22 +49,43 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
         $carga = $this->init_data_session(r_session: $r_session,session_activa:  $session_activa);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al $asigna session', data: $carga, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al $asigna session', data: $carga);
         }
 
         return $_SESSION;
     }
 
     /**
-     * P ORDER P INT ERRORREV
      *
      * Asigna los datos a mostrar al usuario en base a su id de grupo y usuario
-     *
-     * @param stdClass $r_session Sesion a verificar
+     * @param stdClass $r_session Session a verificar
      * @return array
+     * @version 1.518.51
      */
     private function asigna_datos_session(stdClass $r_session): array
     {
+        if(!isset($r_session->registros)){
+            return $this->error->error(mensaje: 'Error r_session no tiene key registros',data:  $r_session);
+        }
+        if(!is_array($r_session->registros)){
+            return $this->error->error(mensaje: 'Error $r_session->registros debe ser un array',data:  $r_session);
+        }
+        if(count($r_session->registros) === 0){
+            return $this->error->error(mensaje: 'Error $r_session->registros esta vacio',data:  $r_session);
+        }
+        if(count($r_session->registros) > 1){
+            return $this->error->error(mensaje: 'Error $r_session->registros es incoherente',data:  $r_session);
+        }
+        if(!is_array($r_session->registros[0])){
+            return $this->error->error(mensaje: 'Error $r_session->registros[0] debe ser un array',data:  $r_session);
+        }
+
+        $keys = array('adm_grupo_id','adm_usuario_id');
+        $valida = $this->validacion->valida_ids(keys:$keys,registro:  $r_session->registros[0]);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
+        }
+
         $_SESSION['numero_empresa'] = 1;
         $_SESSION['activa'] = 1;
         $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
@@ -80,12 +102,12 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     {
         $init = $this->init_session(session_id:(new generales())->session_id);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al iniciar session',data:  $init, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al iniciar session',data:  $init);
         }
 
         $asigna = $this->asigna_datos_session(r_session: $r_session);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al $asigna session', data: $asigna, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al $asigna session', data: $asigna);
         }
         return $asigna;
     }
@@ -109,7 +131,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         if($session_activa) {
             $carga = $this->carga_session(r_session: $r_session);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al $asigna session',data:  $carga, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error al $asigna session',data:  $carga);
             }
         }
         else{
@@ -119,12 +141,13 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT PROBADO ERRORREV
-     * Funcion para generar una sesion, recibe un id de sesion y verifica que sea válido,
+     *
+     * Funcion para generar una session, recibe un id de session y verifica que sea válido,
      * en caso de error lanzará un mensaje.
      *
-     * @param string $session_id Identificador de la sesion que se usará
+     * @param string $session_id Identificador de la session que se usará
      * @return string|array
+     * @version 1.518.51
      *
      */
     private function init_session(string $session_id): string|array
@@ -295,17 +318,14 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $seccion = str_replace('models\\','',$seccion);
         $class = 'models\\'.$seccion;
         if($seccion===''){
-            return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: "Error la seccion esta vacia",data: $seccion);
         }
-        if(!class_exists($class)){
-            return $this->error->error(mensaje: "Error la clase es invalida",data: $class, params: get_defined_vars());
-        }
+
         $filtro = array();
         if(isset($_SESSION['filtros'][$seccion])){
             $filtro = $_SESSION['filtros'][$seccion];
             if(!is_array($filtro)){
-                return $this->error->error(mensaje: 'Error filtro invalido',data: $filtro, params: get_defined_vars());
+                return $this->error->error(mensaje: 'Error filtro invalido',data: $filtro);
             }
         }
 
@@ -323,8 +343,9 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT PROBADO ERROREV
+     * Dice si una session esta activa a no
      * @return bool
+     * @version 1.518.51
      */
     #[Pure] private function session_activa(): bool
     {

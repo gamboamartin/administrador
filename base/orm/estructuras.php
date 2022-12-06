@@ -46,7 +46,8 @@ class estructuras{
             return $this->error->error(mensaje: 'Error al obtener modelos', data: $modelos);
         }
         $keys_no_foraneas = array('usuario_alta','usuario_update');
-        $estructura_bd = $this->genera_estructura(keys_no_foraneas: $keys_no_foraneas, modelos:$modelos);
+        $estructura_bd = $this->genera_estructura(keys_no_foraneas: $keys_no_foraneas, modelos:$modelos,
+            valida_tabla: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar estructura', data: $estructura_bd);
         }
@@ -233,13 +234,14 @@ class estructuras{
         return $es_primaria;
     }
 
-    private function genera_estructura(array $keys_no_foraneas, array $modelos): array|stdClass
+    private function genera_estructura(array $keys_no_foraneas, array $modelos, bool $valida_tabla = true): array|stdClass
     {
         $estructura_bd = array();
         $modelo_base = new modelo_base($this->link);
         foreach ($modelos as $name_modelo){
 
-            $data_table = $this->init_dato_estructura(modelo_base: $modelo_base,name_modelo: $name_modelo);
+            $data_table = $this->init_dato_estructura(modelo_base: $modelo_base,name_modelo: $name_modelo,
+                valida_tabla: $valida_tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializa_estructura', data: $data_table);
             }
@@ -264,7 +266,7 @@ class estructuras{
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
-        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql);
+        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql, valida_tabla: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
@@ -272,9 +274,10 @@ class estructuras{
         return $result->registros;
     }
 
-    private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo): array
+    private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo, bool $valida_tabla = true): array
     {
-        $data_table = (new columnas())->columnas_bd_native(modelo: $modelo_base, tabla_bd: $name_modelo);
+        $data_table = (new columnas())->columnas_bd_native(modelo: $modelo_base, tabla_bd: $name_modelo,
+            valida_tabla: $valida_tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos', data: $data_table);
         }

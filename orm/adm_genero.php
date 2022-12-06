@@ -1,13 +1,13 @@
 <?php
-namespace models;
-use base\orm\modelo;
-use gamboamartin\errores\errores;
+namespace gamboamartin\administrador\models;
+use base\orm\_modelo_parent;
 use PDO;
 
-class adm_genero extends modelo{
+class adm_genero extends _modelo_parent {
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_genero';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 }

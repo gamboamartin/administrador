@@ -2,12 +2,11 @@
 namespace tests\base\orm;
 
 use base\orm\sql;
-use base\orm\sql_bass;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_session;
 use stdClass;
 
 
@@ -38,6 +37,50 @@ class sqlTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('DESCRIBE a',$resultado);
+        errores::$error = false;
+    }
+
+    public function test_in(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $llave = '';
+        $values_sql = '';
+        $resultado = $sql->in($llave, $values_sql);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+        $llave = 'a';
+        $values_sql = '';
+        $resultado = $sql->in($llave, $values_sql);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar in',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $llave = '';
+        $values_sql = 'a';
+        $resultado = $sql->in($llave, $values_sql);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar in',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $llave = 'a';
+        $values_sql = 'a';
+        $resultado = $sql->in($llave, $values_sql);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('a IN (a)',$resultado);
+
         errores::$error = false;
     }
 
@@ -268,6 +311,49 @@ class sqlTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('UPDATE a SET a  WHERE id = 1',$resultado);
         errores::$error = false;
+    }
+
+    public function test_valida_in(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $llave = '';
+        $values_sql = '';
+        $resultado = $sql->valida_in($llave, $values_sql);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+        $llave = 'a';
+        $values_sql = '';
+        $resultado = $sql->valida_in($llave, $values_sql);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error si llave tiene info values debe tener info',$resultado['mensaje']);
+
+        errores::$error = false;
+
+        $llave = 'a';
+        $values_sql = 'b';
+        $resultado = $sql->valida_in($llave, $values_sql);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+        $llave = '';
+        $values_sql = 'b';
+        $resultado = $sql->valida_in($llave, $values_sql);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error si values_sql tiene info llave debe tener info',$resultado['mensaje']);
+        errores::$error = false;
+
     }
 
 

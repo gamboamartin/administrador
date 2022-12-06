@@ -1,21 +1,22 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
+use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
-use base\orm\modelo;
 
 use PDO;
 
-class adm_minuto extends modelo{
+class adm_minuto extends _modelo_parent {
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_minuto';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios = array(),
             columnas: $columnas, tipo_campos: $tipo_campos = array());
+        $this->NAMESPACE = __NAMESPACE__;
     }
     public function hoy(){
         $minuto = date('i');
         $filtro['minuto.codigo'] = $minuto;
-        $r_minuto = $this->filtro_and($filtro);
+        $r_minuto = $this->filtro_and(filtro:$filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener minuto', $r_minuto);
         }

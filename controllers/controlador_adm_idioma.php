@@ -1,7 +1,8 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\adm_idioma;
+
+use gamboamartin\administrador\models\adm_idioma;
 use PDO;
 use stdClass;
 

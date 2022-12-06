@@ -1,6 +1,7 @@
 <?php
 namespace base\controller;
 use base\orm\validaciones;
+use gamboamartin\administrador\ctl\base_html;
 use gamboamartin\errores\errores;
 
 class errores_html extends base_html {
@@ -25,15 +26,17 @@ class errores_html extends base_html {
 
         $modal_btns = $this->modal_btns();
         if(errores::$error){
-            return $this->error->error('Error al generar botones', $modal_btns);
+            return $this->error->error(mensaje: 'Error al generar botones',data:  $modal_btns);
         }
 
         return $errores_previos_html.$modal_btns;
     }
 
     /**
+     * Maqueta los datos de errores para dar salida html
      * @param array $errores_previos Conjunto de errores
      * @return array|string
+     * @version 2.10.2.2
      */
     private function data_modal_error(array $errores_previos): array|string
     {
@@ -45,13 +48,13 @@ class errores_html extends base_html {
 
         $contenido_modal = $this->contenido_modal(errores_previos: $errores_previos);
         if(errores::$error){
-            return $this->error->error('Error al generar botones', $contenido_modal);
+            return $this->error->error(mensaje: 'Error al generar botones', data: $contenido_modal);
         }
 
 
         $mensaje_error_detalle = $this->mensaje_error_detalle(errores_previos:$errores_previos);
         if(errores::$error){
-            return $this->error->error('Error al generar errores', $mensaje_error_detalle);
+            return $this->error->error(mensaje: 'Error al generar errores',data:  $mensaje_error_detalle);
         }
 
         return $head_error.$contenido_modal.$mensaje_error_detalle;
@@ -88,8 +91,10 @@ class errores_html extends base_html {
     }
 
     /**
+     * Integra el texto de un error
      * @param array $error_previo arreglo de session con errores cargados
      * @return string
+     * @version 2.10.2
      */
     private function error_previo_detalle(array $error_previo): string
     {
@@ -129,17 +134,21 @@ class errores_html extends base_html {
     }
 
     /**
+     * Maqueta los errores para dar salida html
      * @param array $errores_previos arreglo de session con errores cargados
      * @return array|string
+     * @version 2.11.2
      */
     private function errores_previos_detalle(array $errores_previos): array|string
     {
         $html = '';
         foreach ($errores_previos as $error_previo) {
-
+            if(!is_array($error_previo)){
+                return $this->error->error(mensaje:'Error error_previo debe ser un array', data: $error_previo);
+            }
             $error_previo_detalle = $this->error_previo_detalle(error_previo:  $error_previo);
             if(errores::$error){
-                return $this->error->error('Error al generar error', $error_previo_detalle);
+                return $this->error->error(mensaje: 'Error al generar error', data: $error_previo_detalle);
             }
             $html.=$error_previo_detalle;
 
@@ -150,6 +159,7 @@ class errores_html extends base_html {
     /**
      * Genera los errores para formato html
      * @return array|string
+     * @version 2.10.2.3
      */
     public function errores_transaccion(): array|string
     {
@@ -160,7 +170,7 @@ class errores_html extends base_html {
         if(count($errores_previos)>0) {
             $errores_html = '<div class="alert alert-danger no-margin-bottom alert-dismissible fade show" role="alert">';
 
-            $data_modal_error = (new errores_html())->data_modal_error(errores_previos: $errores_previos);
+            $data_modal_error = $this->data_modal_error(errores_previos: $errores_previos);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar errores', data: $data_modal_error);
             }
@@ -177,15 +187,17 @@ class errores_html extends base_html {
     }
 
     /**
+     * Integra en html los errores
      * @param array $errores_previos arreglo de session con errores cargados
      * @return array|string
+     * @version 2.10.2.1
      */
     private function mensaje_error_detalle(array $errores_previos): array|string
     {
 
         $errores_previos_detalle = $this->errores_previos_detalle(errores_previos: $errores_previos);
         if(errores::$error){
-            return $this->error->error('Error al generar errores', $errores_previos_detalle);
+            return $this->error->error(mensaje: 'Error al generar errores', data: $errores_previos_detalle);
         }
 
         return '<div class="collapse" id="msj_error">'.$errores_previos_detalle."</div>";

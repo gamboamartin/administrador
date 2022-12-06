@@ -3,7 +3,7 @@ namespace base\controller;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
+
 use stdClass;
 
 class upd{
@@ -45,7 +45,6 @@ class upd{
      * @param controler $controler Controlador en ejecucion
      * @param array $registro_upd Registro con datos a modificar
      * @return array|stdClass
-     * @throws JsonException
      */
     public function modifica_bd_base(controler $controler, array $registro_upd): array|stdClass
     {
@@ -80,28 +79,16 @@ class upd{
      * @param controlador_base $controlador
      * @return array|string
      */
-    public function template_modifica(int $registro_id, controler $controlador):array|string{
-        $namespace = 'models\\';
-        $controlador->seccion = str_replace($namespace,'',$controlador->seccion);
-        $clase = $namespace.$controlador->seccion;
-        if($registro_id <=0){
-            return $this->error->error(mensaje: 'Error no existe registro_id debe ser mayor a 0',data: $_GET,
-                params: get_defined_vars());
-        }
-        if((string)$controlador->seccion === ''){
+    public function template_modifica(int $registro_id, controler $controlador):array|stdClass{
+
+        if($controlador->seccion === ''){
             return $this->error->error('Error seccion esta vacia',$_GET);
-
         }
-        if(!class_exists($clase)){
-            return $this->error->error('Error no existe la clase '.$clase,$clase);
-        }
-
         $controlador->registro_id = $registro_id;
 
-        $template_modifica = $controlador->modifica(false,' ',true,false,
-            false,array('status'));
+        $template_modifica = $controlador->modifica(false);
         if(errores::$error){
-            return $this->error->error('Error al generar $template_modifica',$template_modifica);
+            return $this->error->error(mensaje: 'Error al generar $template_modifica',data: $template_modifica);
         }
 
         return $template_modifica;

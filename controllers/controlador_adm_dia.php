@@ -1,7 +1,7 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\adm_dia;
+use gamboamartin\administrador\models\adm_dia;
 
 
 class controlador_adm_dia extends controlador_base{

@@ -2,7 +2,6 @@
 namespace base\orm;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -10,14 +9,14 @@ use Throwable;
 
 class inserts{
     private errores $error;
-    private validaciones $validacion;
+
     #[Pure] public function __construct(){
         $this->error = new errores();
-        $this->validacion = new validaciones();
+
     }
 
     /**
-     * P INT P ORDER ERROREV
+     *
      * Devuelve un arreglo con las columnas y el valor del ID del usuario
      *
      * @return array
@@ -26,11 +25,15 @@ class inserts{
      *      $data_asignacion = $this->asigna_data_user_transaccion();
      *
      * @uses modelos->alta_bd();
+     * @version 1.476.49
      */
     private function asigna_data_user_transaccion(): array
-    {//FIN
+    {
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+        }
         if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error no existe usuario',data: $_SESSION);
+            return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
         }
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
@@ -62,16 +65,39 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param bool|PDOStatement $alta_valido
-     * @param bool|PDOStatement $update_valido
-     * @param string $campos
-     * @param string $valores
+     * Integra los datos de log a alta SQÑ
+     * @param bool|PDOStatement $alta_valido String sql o resultado PDO
+     * @param bool|PDOStatement $update_valido String sql o resultado PDO
+     * @param string $campos Conjunto de campos previos a alta
+     * @param string $valores Conjunto de valores previos a alta
      * @return array|stdClass
+     * @version 1.479.49
      */
-    private function data_log(bool|PDOStatement $alta_valido, string $campos, bool|PDOStatement $update_valido, string $valores): array|stdClass
+    private function data_log(
+        bool|PDOStatement $alta_valido, string $campos, bool|PDOStatement $update_valido,
+        string $valores): array|stdClass
     {
+
+        $campos = trim($campos);
+        if($campos === ''){
+            return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos);
+        }
+        $valores = trim($valores);
+        if($valores === ''){
+            return $this->error->error(mensaje: 'Error valores esta vacio',data: $valores);
+        }
+
         if($alta_valido &&  $update_valido ){
+            if(!isset($_SESSION)){
+                return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+            }
+            if(!isset($_SESSION['usuario_id'])){
+                return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
+            }
+            if($_SESSION['usuario_id'] <= 0){
+                return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+            }
+
             $data_asignacion = $this->asigna_data_user_transaccion();
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al asignar datos de transaccion', data: $data_asignacion);
@@ -87,18 +113,40 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @return stdClass
+     * Integra los datos default de alta
+     * @param PDO $link Conexion  a la base de datos
+     * @param string $tabla Tabla o modelo
+     * @return stdClass|array
+     * @version 1.475.49
      */
-    private function data_para_log(PDO $link, string $tabla): stdClass
+    private function data_para_log(PDO $link, string $tabla): stdClass|array
     {
-        $existe_alta_id = /** @lang MYSQL */
-            "SELECT count(usuario_alta_id) FROM " . $tabla;
-        $existe_update_id = /** @lang MYSQL */
-            "SELECT count(usuario_alta_id) FROM $tabla";
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error tabla esta vacia', data: $tabla);
+        }
 
-        $alta_valido = $link->query($existe_alta_id);
-        $update_valido = $link->query($existe_update_id);
+        $existe_alta_id = /** @lang MYSQL */"SELECT count(usuario_alta_id) FROM " . $tabla;
+        $existe_update_id = /** @lang MYSQL */"SELECT count(usuario_alta_id) FROM $tabla";
+
+        try {
+            $alta_valido = $link->query($existe_alta_id);
+        }
+        catch (Throwable $e){
+            $data_error = new stdClass();
+            $data_error->e = $e;
+            $data_error->sql = $existe_alta_id;
+            return $this->error->error(mensaje:'Error al ejecutar sql', data: $data_error);
+        }
+        try {
+            $update_valido = $link->query($existe_update_id);
+        }
+        catch (Throwable $e){
+            $data_error = new stdClass();
+            $data_error->e = $e;
+            $data_error->sql = $existe_update_id;
+            return $this->error->error(mensaje:'Error al ejecutar sql', data: $data_error);
+        }
 
         $data = new stdClass();
         $data->alta_valido = $alta_valido;
@@ -107,14 +155,32 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera los datos de un log para alta
      * @param PDO $link Conexion a la base de datos
      * @param array $registro Registro previo a la insersion
-     * @param string $tabla
+     * @param string $tabla Tabla para integracion de datos logo
      * @return array|stdClass
+     * @version 1.487.49
      */
     private function genera_data_log(PDO $link, array $registro, string $tabla): array|stdClass
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error registro vacio',data:  $registro);
+        }
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error tabla esta vacia', data: $tabla);
+        }
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
+        }
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
+
         $sql_data_alta = $this->sql_alta_full(registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql ', data: $sql_data_alta);
@@ -135,8 +201,11 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
+     * Obtiene los datos de la session al ejecutar un alta
+     * @param int $registro_id Registro insertado
+     * @param string $tabla Tabla o entidad
      * @return  array
+     * @version 1.559.51
      */
     private function data_session_alta(int $registro_id, string $tabla): array
     {
@@ -151,10 +220,11 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERROREV
-     * @param stdClass $data_log
-     * @param modelo $modelo
+     * Inserta dato
+     * @param stdClass $data_log Conjunto de datos log
+     * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * @version 1.491.49
      */
     private function inserta_sql(stdClass $data_log, modelo $modelo): array|stdClass
     {
@@ -214,11 +284,12 @@ class inserts{
     }
 
     /**
-     * P ORDER P INT ERROREV
-     * @param string $campos
-     * @param string $tabla
-     * @param string $valores
+     * Genera el sql paar alta
+     * @param string $campos Campos para insert
+     * @param string $tabla Tabla o modelo
+     * @param string $valores Valores A INTEGRAR
      * @return string|array
+     * @version 1.488.49
      */
     private function sql_alta(string $campos,string $tabla, string $valores): string|array
     {
@@ -232,6 +303,8 @@ class inserts{
         if($valores === ''){
             return $this->error->error(mensaje:'Error valores esta vacio',data: $valores);
         }
+
+
         return /** @lang mysql */ 'INSERT INTO '. $tabla.' ('.$campos.') VALUES ('.$valores.')';
     }
 
@@ -239,12 +312,24 @@ class inserts{
      * Genera el SQL para insersion
      * @param array $registro Registro previo a la insersion
      * @return array|stdClass
+     * @version 1.474.49
      */
     private function sql_alta_full(array $registro): array|stdClass
     {
+        if(count($registro) === 0){
+            return $this->error->error(mensaje: 'Error registro vacio',data:  $registro);
+        }
         $campos = '';
         $valores = '';
         foreach ($registro as $campo => $value) {
+            if(is_numeric($campo)){
+                return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo);
+            }
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
+            }
+
             $sql_base = $this->sql_base_alta(campo: $campo, campos:  $campos, valores:  $valores, value:  $value);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql ',data:  $sql_base);
@@ -260,23 +345,29 @@ class inserts{
     }
 
     /**
-     * P INT P ORDER ERRORREV
+     * Genera el SQL base de un alta
      * @param string $campo Nombre del campo a integrar al sql
      * @param mixed $value Valor a insertar
-     * @param string $campos
-     * @param string $valores
+     * @param string $campos Campos a integrar
+     * @param string $valores Valores a integrar
      * @return array|stdClass
+     * @version 1.473.49
      */
     private function sql_base_alta(string $campo, string $campos, string $valores, mixed $value): array|stdClass
     {
         if(is_numeric($campo)){
             return $this->error->error(mensaje: 'Error el campo no es valido',data:  $campo);
         }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error el campo no puede venir vacio',data:  $campo);
+        }
 
         $slacheados = $this->slaches_campo(campo: $campo,value:  $value);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al ajustar campo ', data:$slacheados);
         }
+
 
         $campos_r = $this->campos_alta_sql(campo:  $slacheados->campo, campos: $campos);
         if(errores::$error){
@@ -295,11 +386,27 @@ class inserts{
     }
 
     /**
+     * Genera las transacciones en sql
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * Genera las transacciones para un alta
+     * @version 1.604.54
      */
     public function transacciones(modelo $modelo): array|stdClass
     {
+        if(count($modelo->registro) === 0){
+            return $this->error->error(mensaje: 'Error registro vacio',data:  $modelo->registro);
+        }
+
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no hay session iniciada',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error existe usuario',data: $_SESSION);
+        }
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
         $data_log = $this->genera_data_log(link: $modelo->link,registro: $modelo->registro,tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);
@@ -321,10 +428,11 @@ class inserts{
     }
 
     /**
-     * P INT ERROREV
+     *Ejecuta transacciones para alta
      * @param string $consulta texto en forma de SQL
-     * @param modelo $modelo
+     * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * @version 1.583.51
      */
     private function transacciones_default(string $consulta, modelo $modelo): array|stdClass
     {
@@ -370,7 +478,7 @@ class inserts{
             $value_aj = $value;
         }
         $value_aj = trim($value_aj);
-        $valores .= $valores === '' ? (string)$value_aj : ",$value_aj";
+        $valores .= $valores === '' ? $value_aj : ",$value_aj";
         return $valores;
     }
 

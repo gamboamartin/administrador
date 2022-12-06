@@ -2,12 +2,11 @@
 namespace tests\base\orm;
 
 use base\orm\columnas;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
-
-use models\adm_usuario;
 use stdClass;
 
 
@@ -283,6 +282,33 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_campos_tabla(){
+        errores::$error = false;
+
+        $col = new columnas();
+        //$modelo = new liberator($modelo);
+
+        $modelo = new adm_usuario($this->link);
+
+        $tabla = '';
+        $resultado = $col->campos_tabla($modelo, $tabla);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('id', $resultado[0]);
+        $this->assertEquals('user', $resultado[1]);
+        $this->assertEquals('password', $resultado[2]);
+        $this->assertEquals('email', $resultado[3]);
+        $this->assertEquals('adm_grupo_id', $resultado[4]);
+        $this->assertEquals('status', $resultado[5]);
+        $this->assertEquals('usuario_alta_id', $resultado[6]);
+        $this->assertEquals('usuario_update_id', $resultado[7]);
+        $this->assertEquals('fecha_alta', $resultado[8]);
+        $this->assertEquals('fecha_update', $resultado[9]);
+        $this->assertEquals('session', $resultado[10]);
+        $this->assertEquals('telefono', $resultado[11]);
+        errores::$error = false;
+    }
+
     public function test_carga_columna_renombre(){
 
         errores::$error = false;
@@ -380,9 +406,10 @@ class columnasTest extends test {
             $modelo, $renombres, $tablas_select);
 
 
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias', $resultado);
+        $this->assertEquals('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias,(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones', $resultado);
 
         errores::$error = false;
 
@@ -926,7 +953,7 @@ class columnasTest extends test {
         $resultado = $col->genera_columnas_extra($columnas,$modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("", $resultado);
+        $this->assertEquals("(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones", $resultado);
 
         errores::$error = false;
         $columnas = array();
@@ -1074,6 +1101,21 @@ class columnasTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_campo_obligatorio(){
+        errores::$error = false;
+
+        $modelo = new columnas();
+        $modelo = new liberator($modelo);
+
+        $campos_obligatorios = array();
+        $campo = 'a';
+        $resultado = $modelo->integra_campo_obligatorio($campo, $campos_obligatorios);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado[0]);
+        errores::$error = false;
+    }
+
     public function test_integra_columnas(){
         errores::$error = false;
         $mb = new columnas();
@@ -1134,7 +1176,7 @@ class columnasTest extends test {
 
         errores::$error = false;
         $col = new columnas();
-        //$col = (new liberator($col));
+        $col = (new liberator($col));
         $modelo = new adm_seccion($this->link);
         $resultado = $col->obten_columnas($modelo,'adm_seccion');
 

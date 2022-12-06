@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 use base\controller\valida_controller;
 use base\orm\modelo;
 use base\orm\modelo_base;
@@ -18,10 +18,11 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
      * @param PDO $link
      */
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_elemento_lista';
         $columnas = array($tabla=>false,'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('orden','etiqueta','filtro','campo','alta','modifica','tipo','cols','lista');
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
 
     /**

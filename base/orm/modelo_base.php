@@ -4,9 +4,9 @@ namespace base\orm;
 use config\generales;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\files;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
-use models\adm_elemento_lista;
 use PDO;
 use PDOStatement;
 use stdClass;
@@ -52,16 +52,26 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     public string $key_id = '';
     public string $key_filtro_id = '';
+    public string $NAMESPACE = '';
+    public bool $temp = false;
 
+    public array $childrens = array();
+    protected array $defaults = array();
+    protected array $parents_data = array();
 
 
     /**
+     * Modelado
      * @param PDO $link Conexion a la BD
+     * @param bool $temp Si temp, crea cache de sql del modelo en ejecucion
+     * @version 2.12.2.1
      */
-    #[Pure] public function __construct(PDO $link){ //PRUEBAS EN PROCESO
+    #[Pure] public function __construct(
+        PDO $link, array $defaults = array(), array $parents_data = array(), bool $temp = false ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
+        $this->temp = $temp;
 
 
         $this->patterns['double'] = "/^\\$?[1-9]+,?([0-9]*,?[0,9]*)*.?[0-9]{0,4}$/";
@@ -69,7 +79,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->patterns['telefono'] = "/^[0-9]{10}$/";
         $this->patterns['id'] = "/^[1-9]+[0-9]*$/";
 
-        $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','not_in','sql_extra','filtro_fecha');
+        $this->keys_data_filter = array('sentencia','filtro_especial','filtro_rango','filtro_extra','in',
+            'not_in', 'diferente_de','sql_extra','filtro_fecha');
+
+        $this->defaults = $defaults;
+
+        $this->parents_data = $parents_data;
     }
 
     /**
@@ -111,7 +126,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if($this->desactiva_dependientes) {
             $desactiva = (new dependencias())->desactiva_data_modelos_dependientes(modelo: $this);
             if (errores::$error) {
-                return $this->error->error('Error al desactivar dependiente', $desactiva);
+                return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
             }
             $data = $desactiva;
         }
@@ -204,6 +219,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $registro;
     }
 
+
     /**
      * Asigna una descripcion en caso de no existir
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -251,10 +267,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @example
      *     $row = $this->asigna_registros_hijo($name_modelo,$filtro,$row, $data_modelo['nombre_estructura']);
      * @return array conjunto de registros encontrados al registro row
-
-
      */
-    private function asigna_registros_hijo(array $filtro, string $name_modelo, string $nombre_estructura, array $row):array{
+    private function asigna_registros_hijo(array $filtro, string $name_modelo, string $namespace_model,
+                                           string $nombre_estructura, array $row):array{
         $valida = $this->validacion->valida_data_modelo(name_modelo: $name_modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar entrada para modelo',data: $valida);
@@ -264,7 +279,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 data: $nombre_estructura);
         }
 
-        $modelo = $this->genera_modelo(modelo: $name_modelo);
+        $modelo = $this->genera_modelo(modelo: $name_modelo, namespace_model: $namespace_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo);
         }
@@ -276,6 +291,72 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
         return $row;
+    }
+
+    protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
+    {
+
+        if( !isset($data['codigo'])){
+            if(isset($data['descripcion'])){
+                $data['codigo'] = $data['descripcion'];
+            }
+        }
+
+        $data = (new data_base())->init_data_base(data: $data,id: $id, modelo: $modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro previo',data: $data);
+        }
+
+        $keys = array('descripcion','codigo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        if(!isset($data['codigo_bis'])){
+            $data['codigo_bis'] =  $data['codigo'];
+        }
+
+        $data = $this->data_base(data: $data, keys_integra_ds: $keys_integra_ds);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar data base', data: $data);
+        }
+
+        return $data;
+    }
+
+    protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
+    {
+
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys_integra_ds,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        $data = $this->registro_descripcion_select(data: $data,keys_integra_ds:  $keys_integra_ds);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integra descripcion select descripcion select', data: $data);
+        }
+
+        if(!isset($data['alias'])){
+            $data['alias'] = $data['codigo'];
+        }
+        return $data;
+    }
+
+    private function data_result(array $campos_encriptados, string $consulta): array|stdClass
+    {
+        $result_sql = $this->result_sql(campos_encriptados: $campos_encriptados,consulta:  $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al ejecutar sql", data: $result_sql);
+        }
+
+        $data = $this->maqueta_result(consulta: $consulta,n_registros:  $result_sql->n_registros,
+            new_array:  $result_sql->new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
+        }
+        return $data;
     }
 
 
@@ -302,6 +383,93 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * Ajusta un registro en su descripcion select
+     * @param array $data Datos de registro1
+     * @param array $keys_integra_ds Keys para integracion de descripcion
+     * @return array|string
+     * @version 2.107.12
+     */
+    private function descripcion_select(array $data, array $keys_integra_ds): array|string
+    {
+        $ds = '';
+        foreach ($keys_integra_ds as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+            }
+
+            $keys = array($key);
+            $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+            }
+            $ds = $this->integra_ds(data: $data,ds:  $ds,key:  $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds);
+            }
+        }
+        return trim($ds);
+    }
+
+    /**
+     *
+     * Integra una descripcion select basada en un campo
+     * @param array $data Registro en proceso
+     * @param string $key Key a integrar
+     * @return string|array
+     * @version 2.83.6
+     */
+    private function ds_init(array $data, string $key): array|string
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        if($key === 'codigo'){
+            $ds_init = trim($data[$key]);
+        }
+        else{
+            $ds_init = $this->ds_init_no_codigo(data: $data,key:  $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds_init);
+            }
+        }
+        return $ds_init;
+    }
+
+    /**
+     *
+     * Integra una descripcion select basada en un campo
+     * @param array $data Registro en proceso
+     * @param string $key Key a integrar
+     * @return string|array
+     * @version 2.83.6
+     */
+    private function ds_init_no_codigo(array $data, string $key): string|array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
+        $ds_init = trim(str_replace("_"," ",$data[$key]));
+        return ucwords($ds_init);
+    }
+
+    /**
      *
      * Funcion que ejecuta un query de tipo select
      * @version 1.24.12
@@ -319,43 +487,27 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion_grupo
      */
     public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                     array $hijo = array()): array|stdClass{
+                                     array $hijo = array(), bool $valida_tabla = true): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
                 $this->link->errorInfo(),$consulta));
         }
         $this->transaccion = 'SELECT';
-        $result = $this->ejecuta_sql(consulta: $consulta);
 
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
+
+        $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta, valida_tabla: $valida_tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
         }
 
-        $r_sql = $result->result;
-
-        $new_array = $this->parsea_registros_envio( r_sql: $r_sql, campos_encriptados: $campos_encriptados);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al parsear registros",data:  $new_array);
+        $data = $this->result_out(
+            archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta,
+            valida_tabla: $valida_tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
 
-        $n_registros = $r_sql->rowCount();
-        $r_sql->closeCursor();
-
-        $this->registros = $new_array;
-        $this->n_registros = (int)$n_registros;
-        $this->sql = $consulta;
-
-        $data = new stdClass();
-        $data->registros = $new_array;
-        $data->n_registros = (int)$n_registros;
-        $data->sql = $consulta;
-
-        $data->registros_obj = array();
-        foreach ($data->registros as $row){
-            $row_obj = (object)$row;
-            $data->registros_obj[] = $row_obj;
-        }
 
         return $data;
 
@@ -390,7 +542,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
-                data: array($e->getCode().' '.$this->tabla.' '.$this->consulta.' '.$this->tabla,
+                data: array($e->getCode().' '.$this->tabla.' '.$consulta.' '.$this->tabla,
                     'registro'=>$this->registro));
         }
         if($this->transaccion ==='INSERT'){
@@ -442,6 +594,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
+    private function file_tmp_sql(string $consulta, bool $valida_tabla = true): array|string
+    {
+        $key_tmp = $this->key_tmp(consulta: $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
+        }
+
+        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp, valida_tabla: $valida_tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
+        }
+        return $archivos_sql_tmp;
+    }
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -540,7 +705,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $key_filtro = $this->tabla.'.id';
         $filtro[$key_filtro] = $registro_id;
-        $r_foto = $modelo_foto->filtro_and($filtro);
+        $r_foto = $modelo_foto->filtro_and(filtro:$filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener fotos',$r_foto);
         }
@@ -568,16 +733,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  modelos->accion_grupo->obten_accion_permitida
      */
 
-    public function genera_consulta_base(array $columnas = array(), $columnas_by_table = array(),
+    public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
                                             bool $columnas_en_bruto = false, array $extension_estructura = array(),
                                             array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
-        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this, columnas_by_table:$columnas_by_table,
-            columnas_en_bruto:$columnas_en_bruto, columnas_sql: $columnas_seleccionables,
-            extension_estructura:  $extension_estructura, renombres:  $renombradas);
+        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
+            columnas_sql: $columnas_seleccionables, extension_estructura: $extension_estructura, renombres: $renombradas);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql);
         }
@@ -606,6 +771,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @version 1.15.9
      *
      * @param string $modelo txt con el nombre del modelo a crear
+     * @param string $namespace_model paquete de origen modelo
      * @example
      *     $modelo = $modelo_base->genera_modelo($name_modelo);
      *
@@ -614,14 +780,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores $name_modelo no existe una clase con el nombre del modelo
 
      */
-    public function genera_modelo(string $modelo):array|modelo{
+    public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
 
         /**
          * PRODUCTO NO CONFORME
          */
         $namespaces = array();
+
+        $namespaces[]  = 'gamboamartin\\administrador\\models\\';
         $namespaces[]  = 'gamboamartin\\empleado\\models\\';
+        $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
+        $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
+        $namespaces[]  = 'gamboamartin\\direccion_postal\\models\\';
+        $namespaces[]  = 'gamboamartin\\cat_sat\\models\\';
+        $namespaces[]  = 'gamboamartin\\comercial\\models\\';
+        $namespaces[]  = 'gamboamartin\\boletaje\\models\\';
 
         $es_namespace_especial_como_mis_inges = false;
         foreach ($namespaces as $namespace) {
@@ -637,6 +811,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         if(!$es_namespace_especial_como_mis_inges) {
             $modelo = str_replace('models\\', '', $modelo);
             $modelo = 'models\\' . $modelo;
+        }
+
+        if($namespace_model !==''){
+
+            $modelo = str_replace($namespace_model, '', $modelo);
+            $modelo = str_replace('models\\', '', $modelo);
+            $modelo = $namespace_model.'\\'.$modelo;
         }
 
         $modelo = trim($modelo);
@@ -722,6 +903,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
      */
     private function genera_registro_hijo(array $data_modelo, string $name_modelo, array $row):array{
+
+        $keys = array('nombre_estructura','namespace_model');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $data_modelo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar data_modelo",data: $valida);
+        }
+
         if(!isset($data_modelo['nombre_estructura'])){
             return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
                 data: $data_modelo);
@@ -731,7 +919,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return  $this->error->error(mensaje: "Error filtro",data: $filtro);
         }
         $row = $this->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
-            nombre_estructura: $data_modelo['nombre_estructura'],row: $row);
+            namespace_model: $data_modelo['namespace_model'], nombre_estructura: $data_modelo['nombre_estructura'],
+            row: $row);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar registros de hijo', data: $row);
         }
@@ -760,6 +949,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
                 return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, fix: $fix);
             }
+            $keys = array('nombre_estructura','namespace_model');
+            $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $data_modelo);
+            if(errores::$error){
+                return  $this->error->error(mensaje: "Error al validar data_modelo",data: $valida);
+            }
 
             if(!isset($data_modelo['nombre_estructura'])){
                 return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
@@ -770,11 +964,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
                 $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
                 $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
-                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo);
+                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo, fix: $fix);
             }
 
-            $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo,
-                row: $row);
+            $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo, row: $row);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar registros de hijo', data: $row);
             }
@@ -782,6 +975,103 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $row;
+    }
+
+    /**
+     * Inicializa las carpetas para models temps
+     * @param bool $valida_tabla
+     * @return string|array
+     * @version 2.10.2.4
+     */
+    protected function init_archivos_tmp_model(bool $valida_tabla = true): string|array
+    {
+        $tabla = $this->tabla;
+        $tabla = trim($tabla);
+        if($valida_tabla) {
+            if ($tabla === '') {
+                return $this->error->error(mensaje: 'Error tabla vacia', data: $tabla);
+            }
+        }
+
+        $archivos = (new generales())->path_base.'archivos';
+        $archivos = str_replace('//', '/', $archivos);
+        if(!file_exists($archivos)){
+            mkdir($archivos);
+        }
+        $archivos_tmp = $archivos.'/tmp';
+
+        $archivos_tmp = str_replace('//', '/', $archivos_tmp);
+        if(!file_exists($archivos_tmp)){
+            mkdir($archivos_tmp);
+        }
+        $archivos_tmp_model = $archivos_tmp."/$this->tabla";
+
+        $archivos_tmp_model = str_replace('//', '/', $archivos_tmp_model);
+
+        if(!file_exists($archivos_tmp_model)){
+            mkdir($archivos_tmp_model);
+        }
+        return $archivos_tmp_model;
+    }
+
+
+    /**
+     * Integra un value para descripcion select
+     * @param array $data Registro en proceso
+     * @param string $ds Descripcion previa
+     * @param string $key Key de value a integrar
+     * @return array|string
+     * @version 2.92.6
+     */
+    private function integra_ds(array $data, string $ds, string $key): array|string
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error al key esta vacio', data: $key);
+        }
+
+        $keys = array($key);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+        $ds_init = $this->ds_init(data:$data,key:  $key);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds_init);
+        }
+        $ds.= $ds_init.' ';
+        return $ds;
+    }
+
+
+    private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
+    {
+        $this->registros = $new_array;
+        $this->n_registros = (int)$n_registros;
+        $this->sql = $consulta;
+        $data = new stdClass();
+        $data->registros = $new_array;
+        $data->n_registros = $n_registros;
+        $data->sql = $consulta;
+        return $data;
+    }
+
+    /**
+     * Genera el key para temporal en sql
+     * @param string $consulta Consulta a ejecutar
+     * @return array|string
+     * @version 1.624.56
+     */
+    private function key_tmp(string $consulta): array|string
+    {
+        $key_tmp = trim($consulta);
+
+        if($key_tmp === ''){
+            return $this->error->error(mensaje: 'Error consulta esta vacia', data:$consulta);
+        }
+
+        $key = base64_encode($key_tmp);
+        return md5($key);
     }
 
 
@@ -817,6 +1107,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return $new_array;
+    }
+
+    private function maqueta_result(string $consulta, int $n_registros, array $new_array ): array|stdClass
+    {
+        $init = $this->init_result_base(consulta: $consulta,n_registros:  $n_registros,new_array:  $new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear resultado", data: $init);
+        }
+
+
+        $data = $this->result(consulta: $consulta,n_registros:  $n_registros, new_array: $new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
+        }
+        return $data;
     }
 
     /**
@@ -907,6 +1212,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return str_replace($buscar,'',$pattern);
     }
 
+    private function registro_descripcion_select(array $data, array $keys_integra_ds): array
+    {
+        if(!isset($data['descripcion_select'])){
+
+            $ds = $this->descripcion_select(data: $data,keys_integra_ds:  $keys_integra_ds);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar descripcion select', data: $ds);
+            }
+            $data['descripcion_select'] =  $ds;
+        }
+        return $data;
+    }
+
     /**
      * Genera los registros por id
      * @param modelo $entidad Modelo o entidad de relacion
@@ -924,6 +1242,96 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al obtener los registros', data: $data);
         }
         return $data;
+    }
+
+    private function result(string $consulta, int $n_registros, array $new_array): stdClass
+    {
+        $data = new stdClass();
+        $data->registros = $new_array;
+        $data->n_registros = (int)$n_registros;
+        $data->sql = $consulta;
+
+        $data->registros_obj = array();
+        foreach ($data->registros as $row) {
+            $row_obj = (object)$row;
+            $data->registros_obj[] = $row_obj;
+        }
+        return $data;
+    }
+
+    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta,
+                                bool $valida_tabla = true): array|stdClass
+    {
+
+        if(file_exists($archivos_sql_tmp) && $this->temp ) {
+            $data_out = file_get_contents($archivos_sql_tmp);
+            $data_out = base64_decode($data_out);
+            $data = unserialize($data_out);
+
+        }
+        else{
+
+            $init_archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+            }
+            if(file_exists($init_archivos_tmp_model)){
+                $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+                if (errores::$error) {
+                    return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+                }
+            }
+
+            $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error al parsear registros", data: $data);
+            }
+
+            if($this->temp) {
+                $data_out = serialize($data);
+                $data_out = base64_encode($data_out);
+                file_put_contents($archivos_sql_tmp, $data_out);
+            }
+
+        }
+        return $data;
+    }
+
+    private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
+    {
+        $result = $this->ejecuta_sql(consulta: $consulta);
+
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
+        }
+
+        $r_sql = $result->result;
+
+        $new_array = $this->parsea_registros_envio(r_sql: $r_sql, campos_encriptados: $campos_encriptados);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
+        }
+
+        $n_registros = $r_sql->rowCount();
+        $r_sql->closeCursor();
+
+        $data = new stdClass();
+        $data->result = $result;
+        $data->r_sql = $r_sql;
+        $data->new_array = $new_array;
+        $data->n_registros = $n_registros;
+        return $data;
+    }
+
+    private function ruta_file_tmp_sql(string $key_tmp, bool $valida_tabla = true): array|string
+    {
+        $archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al obtener archivos_tmp_model", data: $archivos_tmp_model);
+        }
+
+
+        return $archivos_tmp_model."/$key_tmp";
     }
 
 
@@ -1039,6 +1447,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         return true;
     }
+
+
 
 }
 

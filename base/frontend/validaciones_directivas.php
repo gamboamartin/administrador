@@ -10,61 +10,19 @@ use gamboamartin\validacion\validacion;
 class validaciones_directivas extends validacion{
 
 
-    /**
-     * Valida los elementos de un input
-     * @param string $campo Nombre del campo
-     * @param int $cols Columnas css
-     * @return bool|array
-     * @version 1.309.41
-     */
-    public function valida_base_input(string $campo, int $cols): bool|array
-    {
-        if($campo === ''){
-            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
-        }
-        $valida = $this->valida_cols(cols: $cols);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar cols',data: $valida);
-        }
 
-        return true;
-    }
-
-    /**
-     * Valida si las columnas estan en un rango correcto
-     * @param int $cols Columnas para css
-     * @return bool|array
-     * @version 1.267.40
-     * @verfuncion 1.1.0
-     * @fecha 2022-08-04 11:18
-     * @author mgamboa
-     */
-    public function valida_cols(int $cols): bool|array
-    {
-        if($cols<=0){
-            return $this->error->error(mensaje: 'Error cols debe ser mayor a 0',data:  $cols);
-        }
-        if($cols>=13){
-            return $this->error->error(mensaje: 'Error cols debe ser menor a 13',data:  $cols);
-        }
-        return true;
-    }
 
     /**
      * Valida los elementos de un boton
-     * @param int $cols Columnas para css
      * @param string $label Etiqueta a mostrar
      * @param string $name Nombre del boton
-     * @param string $value Valor d eboton
+     * @param string $value Valor de boton
      * @return bool|array
      * @version 1.309.41
      */
-    public function valida_data_btn(int $cols, string $label, string $name, string $value): bool|array
+    public function valida_data_btn( string $label, string $name, string $value): bool|array
     {
-        $valida = $this->valida_cols(cols: $cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar cols',data:  $valida);
-        }
+
         if($name===''){
             return $this->error->error(mensaje:'Error $name no puede venir vacio',data: $label);
         }
@@ -109,12 +67,9 @@ class validaciones_directivas extends validacion{
      */
     public function valida_datos_accion( string $accion, string $seccion): bool|array
     {
-        $valida = $this->valida_name_clase(tabla: $seccion);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar seccion', data: $valida, params: get_defined_vars());
-        }
+
         if ($accion === '') {
-            return $this->error->error(mensaje:'Error la accion esta vacia', data:$accion, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error la accion esta vacia', data:$accion);
         }
         return true;
     }
@@ -157,10 +112,7 @@ class validaciones_directivas extends validacion{
         if($tabla === ''){
             return $this->error->error(mensaje: "Error tabla vacia", data: $tabla);
         }
-        $valida = $this->valida_cols(cols: $cols);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al validar columnas", data: $valida);
-        }
+
 
         return true;
     }
@@ -318,40 +270,6 @@ class validaciones_directivas extends validacion{
         return true;
     }
 
-    /**
-     * P ORDER P INT PROBADO
-     * valida los datos de selected
-     * @param array $value
-     * @param string $tabla Tabla - estructura modelo sistema
-     * @param int $id
-
-     * @example
-     *     $selected = $this->valida_selected($value,$tabla,$valor_envio);
-     * @return array|string selected o vacio
-     * @throws errores $tabla === ''
-     * @throws errores !class_exists ( 'controlador_'.$tabla )
-     * @throws errores !isset($value[$key_id])
-     * @uses  directivas
-     */
-    public function valida_selected(int $id,string $tabla, array $value):array|string{ //FIN PROT
-        $namespace = 'models\\';
-        $tabla = str_replace($namespace,'',$tabla);
-
-        if($tabla === ''){
-            return $this->error->error('Error tabla no puede venir vacia',$tabla);
-        }
-
-        $key_id = $tabla . '_id';
-        if(!isset($value[$key_id])){
-            return $this->error->error('Error no existe $value['.$key_id.']',$value);
-        }
-        if ((int)$value[$key_id] === $id) {
-            $selected = 'selected';
-        } else {
-            $selected = '';
-        }
-        return $selected;
-    }
 
 
     public function valida_vars_get(string $key, string $value): bool|array

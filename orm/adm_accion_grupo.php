@@ -1,5 +1,5 @@
 <?php
-namespace models;
+namespace gamboamartin\administrador\models;
 
 use base\orm\modelo;
 use gamboamartin\errores\errores;
@@ -8,14 +8,53 @@ use stdClass;
 
 class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_accion_grupo';
         $columnas = array($tabla=>false,'adm_accion'=>$tabla,'adm_grupo'=>$tabla,
             'adm_seccion'=>'adm_accion','adm_menu'=>'adm_seccion');
         $campos_obligatorios = array('adm_accion_id');
         $tipo_campos['adm_accion_id'] = 'id';
         $tipo_campos['adm_grupo_id'] = 'id';
+
+
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             tipo_campos:  $tipo_campos);
+        $this->NAMESPACE = __NAMESPACE__;
+    }
+
+    public function acciones_por_grupo(int $adm_grupo_id): array
+    {
+        if($adm_grupo_id <=0 ){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data: $adm_grupo_id);
+        }
+        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        $r_adm_grupo_accion = $this->filtro_and(filtro:$filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener r_adm_grupo_accion',data: $r_adm_grupo_accion);
+        }
+        return $r_adm_grupo_accion->registros;
+
+
+    }
+
+    /**
+     * Obtiene los grupos configurados por accion
+     * @param int $adm_accion_id Identificador de accion
+     * @return array
+     * @version 1.578.51
+     */
+    public function grupos_por_accion(int $adm_accion_id): array
+    {
+        if($adm_accion_id <=0 ){
+            return $this->error->error(mensaje: 'Error adm_accion_id debe ser mayor a 0',data: $adm_accion_id);
+        }
+        $filtro['adm_accion.id'] = $adm_accion_id;
+        $r_adm_grupo_accion = $this->filtro_and(filtro:$filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener r_adm_grupo_accion',data: $r_adm_grupo_accion);
+        }
+        return $r_adm_grupo_accion->registros;
+
+
     }
 
     /**

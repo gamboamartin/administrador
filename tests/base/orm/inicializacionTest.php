@@ -1,13 +1,13 @@
 <?php
 namespace tests\base\orm;
 
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 
 use base\orm\inicializacion;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_seccion;
 
 use stdClass;
 
@@ -226,6 +226,20 @@ class inicializacionTest extends test {
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('65RRm7OkwNx4LtwV7rJRnA==', $resultado['a']);
+        errores::$error = false;
+    }
+
+    public function test_data_in_sql(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $llave = 'a';
+        $values_in = array(1);
+        $resultado = $inicializacion->data_in_sql($llave, $values_in);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+
         errores::$error = false;
     }
 
@@ -486,6 +500,21 @@ class inicializacionTest extends test {
 
     }
 
+    public function test_integra_value_in(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $values_in = array();
+        $value = 1;
+        $resultado = $inicializacion->integra_value_in($value, $values_in);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1', $resultado[0]);
+
+    }
+
     public function test_limpia_valores(){
         errores::$error = false;
         $inicializacion = new inicializacion();
@@ -648,9 +677,10 @@ class inicializacionTest extends test {
 
         $modelo = new adm_seccion($this->link);
         $resultado = $inicializacion->tablas_select($modelo);
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado['models\\adm_seccion']);
+        $this->assertEquals('', $resultado['adm_seccion']);
         errores::$error = false;
     }
 

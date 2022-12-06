@@ -52,10 +52,56 @@ class whereTest extends test {
         $not_in_sql = '';
         $sentencia = '';
         $sql_extra = '';
-        $resultado = $wh->asigna_data_filtro($filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
-            $filtro_rango_sql, $not_in_sql, $sentencia, $sql_extra);
+        $in = '';
+        $resultado = $wh->asigna_data_filtro('',$filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
+            $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $filtro_especial_sql = '';
+        $filtro_extra_sql = '';
+        $filtro_rango_sql = 'c';
+        $filtro_fecha_sql = '';
+        $not_in_sql = '';
+        $sentencia = '';
+        $sql_extra = '';
+        $in = 'a';
+        $resultado = $wh->asigna_data_filtro('',$filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
+            $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->in);
+        $this->assertEquals('c', $resultado->filtro_rango);
+
+
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $filtro_especial_sql = '';
+        $filtro_extra_sql = '';
+        $filtro_rango_sql = 'c';
+        $filtro_fecha_sql = '';
+        $not_in_sql = '';
+        $sentencia = '';
+        $sql_extra = '';
+        $in = 'a';
+        $diferente_de_sql = 'dif';
+        $resultado = $wh->asigna_data_filtro($diferente_de_sql,$filtro_especial_sql, $filtro_extra_sql,
+            $filtro_fecha_sql, $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->in);
+        $this->assertEquals('c', $resultado->filtro_rango);
+        $this->assertEquals('dif', $resultado->diferente_de);
+
+
+
         errores::$error = false;
     }
 
@@ -124,6 +170,19 @@ class whereTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
+    public function test_coma(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $txt = '';
+        $resultado = $wh->coma($txt);
+        $this->assertEquals(',', $resultado);
+        $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
 
@@ -212,10 +271,156 @@ class whereTest extends test {
         $not_in = array();
         $sql_extra = 'x';
         $tipo_filtro = '';
-        $resultado = $wh->data_filtros_full($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
-            $filtro_rango, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+        $in = array();
+        $resultado = $wh->data_filtros_full($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+            $filtro_rango, $in, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+        $keys_data_filter = array();
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_fecha = array(array('campo_1'=>'a','campo_2'=>'b','fecha'=>'2020-01-01'));
+        $filtro_rango = array();
+        $not_in = array('llave'=>'a','values'=>array('a','c'));
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','c'));
+        $resultado = $wh->data_filtros_full($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+            $filtro_rango, $in, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->sentencia);
+        $this->assertEquals("a IN ('a' ,'c')", $resultado->in);
+        $this->assertEquals("a NOT IN ('a' ,'c')", $resultado->not_in);
+
+
+
+        $keys_data_filter = array();
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_fecha = array(array('campo_1'=>'a','campo_2'=>'b','fecha'=>'2020-01-01'));
+        $filtro_rango = array();
+        $not_in = array('llave'=>'a','values'=>array('a','c'));
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','c'));
+        $diferente_de['a'] = '';
+        $diferente_de['b'] = '';
+        $resultado = $wh->data_filtros_full($columnas_extra,$diferente_de, $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+            $filtro_rango, $in, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->sentencia);
+        $this->assertEquals("a IN ('a' ,'c')", $resultado->in);
+        $this->assertEquals("a NOT IN ('a' ,'c')", $resultado->not_in);
+        $this->assertEquals("  a <> ''   AND  b <> '' ", $resultado->diferente_de);
+
+
+        errores::$error = false;
+    }
+
+    public function test_data_in(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $in = array();
+        $resultado = $wh->data_in($in);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al validar not_in', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $in = array();
+        $in['llave'] = 'a';
+        $in['values'] = array();
+        $resultado = $wh->data_in($in);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->llave);
+        errores::$error = false;
+    }
+
+    public function test_diferente_de(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $campo = '';
+        $diferente_de_sql = '';
+        $value = '';
+        $resultado = $wh->diferente_de($campo, $diferente_de_sql, $value);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error campo esta vacio', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $diferente_de_sql = '';
+        $value = '';
+        $resultado = $wh->diferente_de($campo, $diferente_de_sql, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  a <> '' ", $resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $diferente_de_sql = 'z';
+        $value = '';
+        $resultado = $wh->diferente_de($campo, $diferente_de_sql, $value);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  AND  a <> '' ", $resultado);
+
+        errores::$error = false;
+    }
+
+    public function test_diferente_de_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $diferente_de = array();
+        $resultado = $wh->diferente_de_sql($diferente_de);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+
+        errores::$error = false;
+
+        $diferente_de = array();
+        $diferente_de['a'] = '';
+        $resultado = $wh->diferente_de_sql($diferente_de);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  a <> '' ", $resultado);
+
+        errores::$error = false;
+
+        $diferente_de = array();
+        $diferente_de['a'] = 'x';
+        $diferente_de['b'] = 'x';
+        $resultado = $wh->diferente_de_sql($diferente_de);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("  a <> 'x'   AND  b <> 'x' ", $resultado);
+
+
         errores::$error = false;
     }
 
@@ -227,7 +432,7 @@ class whereTest extends test {
 
         $filtro_especial = array();
         $filtro_especial[] = '';
-        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $resultado = $wh->filtro_especial_sql(array(),$filtro_especial);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error filtro debe ser un array filtro_especial[] = array()', $resultado['mensaje']);
@@ -236,7 +441,7 @@ class whereTest extends test {
 
         $filtro_especial = array();
         $filtro_especial[]['campo'] = array();
-        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $resultado = $wh->filtro_especial_sql(array(),$filtro_especial);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
@@ -246,7 +451,7 @@ class whereTest extends test {
         $filtro_especial = array();
         $filtro_especial[0]['x']['operador'] = 'x';
         $filtro_especial[0]['x']['valor'] = 'x';
-        $resultado = $wh->filtro_especial_sql($filtro_especial);
+        $resultado = $wh->filtro_especial_sql(array(),$filtro_especial);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -535,16 +740,59 @@ class whereTest extends test {
         $not_in_sql = '';
         $sentencia = 'z';
         $sql_extra = '';
-        $resultado = $wh->genera_filtros_iniciales($filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql,
+        $in_sql = '';
+        $resultado = $wh->genera_filtros_iniciales('',$filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql, $in_sql,
             $keys_data_filter, $not_in_sql, $sentencia, $sql_extra);
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
         errores::$error = false;
+
+        $filtro_extra_sql = '';
+        $filtro_especial_sql = '';
+        $filtro_rango_sql = '';
+        $keys_data_filter = array();
+        $not_in_sql = 'd';
+        $sentencia = 'z';
+        $sql_extra = '';
+        $in_sql = 'a';
+        $resultado = $wh->genera_filtros_iniciales('',$filtro_especial_sql, $filtro_extra_sql, $filtro_rango_sql, $in_sql,
+            $keys_data_filter, $not_in_sql, $sentencia, $sql_extra);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado->in);
+        $this->assertEquals('d',$resultado->not_in);
+        $this->assertEquals('z',$resultado->sentencia);
+
+        errores::$error = false;
+
+        $filtro_extra_sql = '';
+        $filtro_especial_sql = '';
+        $filtro_rango_sql = '';
+        $keys_data_filter = array();
+        $not_in_sql = 'd';
+        $sentencia = 'z';
+        $sql_extra = '';
+        $in_sql = 'a';
+        $diferente_sql = 'zzzz';
+        $resultado = $wh->genera_filtros_iniciales($diferente_sql,$filtro_especial_sql, $filtro_extra_sql,
+            $filtro_rango_sql, $in_sql, $keys_data_filter, $not_in_sql, $sentencia, $sql_extra);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado->in);
+        $this->assertEquals('d',$resultado->not_in);
+        $this->assertEquals('z',$resultado->sentencia);
+        $this->assertEquals('zzzz',$resultado->diferente_de);
+
+
+
+        errores::$error = false;
     }
 
-    public function test_genera_filtros_sqls(){
+    public function test_genera_filtros_sql(){
         errores::$error = false;
         $wh = new where();
         $wh = new liberator($wh);
@@ -559,13 +807,89 @@ class whereTest extends test {
         $sql_extra = 'xx';
         $not_in = array();
         $tipo_filtro = '';
-        $resultado = $wh->genera_filtros_sql($columnas_extra, $filtro, $filtro_especial, $filtro_extra, $filtro_rango,
+        $in = array();
+        $resultado = $wh->genera_filtros_sql($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
             $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
+        errores::$error = false;
 
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $keys_data_filter = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $sql_extra = 'xx';
+        $not_in = array();
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','f'));
+        $resultado = $wh->genera_filtros_sql($columnas_extra, array(), $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
+            $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('a' ,'f')",$resultado->in);
+        $this->assertEquals('xx',$resultado->sql_extra);
+
+        errores::$error = false;
+
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $keys_data_filter = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $sql_extra = 'xx';
+        $not_in = array();
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','f'));
+        $diferente_de['a'] = 'x';
+        $diferente_de['b'] = 's';
+        $resultado = $wh->genera_filtros_sql($columnas_extra, $diferente_de, $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
+            $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('a' ,'f')",$resultado->in);
+        $this->assertEquals('xx',$resultado->sql_extra);
+        $this->assertEquals("  a <> 'x'   AND  b <> 's' ",$resultado->diferente_de);
+
+
+        errores::$error = false;
+    }
+
+    public function test_genera_in(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $in = array();
+        $in['llave'] = 'a';
+        $in['values'] = array('z');
+        $resultado = $wh->genera_in($in);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('z')",$resultado);
+        errores::$error = false;
+    }
+
+    public function test_genera_in_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $in = array();
+        $in['llave'] = 'a';
+        $in['values'] = array('z');
+        $resultado = $wh->genera_in_sql($in);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('z')",$resultado);
         errores::$error = false;
     }
 
@@ -582,7 +906,7 @@ class whereTest extends test {
         $resultado = $wh->genera_not_in($not_in);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals( "a NOT IN (z ,f)", $resultado);
+        $this->assertEquals( "a NOT IN ('z' ,'f')", $resultado);
         errores::$error = false;
     }
 
@@ -598,9 +922,10 @@ class whereTest extends test {
         $not_in['values'] = array('z','f','d');
         $resultado = $wh->genera_not_in_sql($not_in);
 
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "a NOT IN (z ,f ,d)", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "a NOT IN ('z' ,'f' ,'d')", $resultado);
         errores::$error = false;
     }
 
@@ -680,6 +1005,22 @@ class whereTest extends test {
         errores::$error = false;
 
 
+        $filtros = new stdClass();
+        $filtros->d = ' x ';
+        $filtros->diferente_de = ' sss ';
+        $keys_data_filter = array();
+        $keys_data_filter['z'] = 'd';
+        $keys_data_filter['xxx'] = 'diferente_de';
+        $resultado = $wh->limpia_filtros($filtros, $keys_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals( 'x', $resultado->d);
+        $this->assertEquals( 'sss', $resultado->diferente_de);
+
+
+        errores::$error = false;
+
+
 
     }
 
@@ -691,7 +1032,7 @@ class whereTest extends test {
 
         $campo = '';
         $filtro = array();
-        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $resultado = $wh->maqueta_filtro_especial($campo, array(), $filtro);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase( "Error al validar filtro", $resultado['mensaje']);
@@ -701,7 +1042,7 @@ class whereTest extends test {
         $campo = 'a';
         $filtro = array();
         $filtro['a']['operador'] = 'b';
-        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $resultado = $wh->maqueta_filtro_especial($campo, array() ,$filtro);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase( "Error al validar filtro", $resultado['mensaje']);
@@ -712,10 +1053,10 @@ class whereTest extends test {
         $filtro = array();
         $filtro['a']['operador'] = 'b';
         $filtro['a']['valor'] = 'b';
-        $resultado = $wh->maqueta_filtro_especial($campo, $filtro);
+        $resultado = $wh->maqueta_filtro_especial($campo, array(), $filtro);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "ab'b'", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "a b 'b'", $resultado);
 
         errores::$error = false;
     }
@@ -738,9 +1079,10 @@ class whereTest extends test {
         $llave = 'z';
         $values[] = 'a';
         $resultado = $wh->not_in_sql($llave, $values);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "z NOT IN (a)", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "z NOT IN ('a')", $resultado);
 
         errores::$error = false;
         $values = array();
@@ -750,7 +1092,7 @@ class whereTest extends test {
         $resultado = $wh->not_in_sql($llave, $values);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "z NOT IN (a ,b)", $resultado);
+        $this->assertStringContainsStringIgnoringCase( "z NOT IN ('a' ,'b')", $resultado);
         errores::$error = false;
     }
 
@@ -762,7 +1104,7 @@ class whereTest extends test {
 
         $filtro_esp = array();
         $filtro_especial_sql = '';
-        $resultado = $wh->obten_filtro_especial($filtro_esp, $filtro_especial_sql);
+        $resultado = $wh->obten_filtro_especial(array(),$filtro_esp, $filtro_especial_sql);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error en filtro', $resultado['mensaje']);
@@ -773,7 +1115,7 @@ class whereTest extends test {
         $filtro_especial_sql = '';
         $filtro_esp['x']['operador'] = 'x';
         $filtro_esp['x']['valor'] = 'x';
-        $resultado = $wh->obten_filtro_especial($filtro_esp, $filtro_especial_sql);
+        $resultado = $wh->obten_filtro_especial(array(),$filtro_esp, $filtro_especial_sql);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -952,7 +1294,7 @@ class whereTest extends test {
         $resultado = $wh->values_sql_in($values);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado);
+        $this->assertEquals("'a'", $resultado);
 
         errores::$error = false;
 
@@ -962,7 +1304,7 @@ class whereTest extends test {
         $resultado = $wh->values_sql_in($values);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a ,b', $resultado);
+        $this->assertEquals("'a' ,'b'", $resultado);
         errores::$error = false;
     }
 
@@ -1018,6 +1360,17 @@ class whereTest extends test {
         $resultado = $wh->where($filtros, $keys_data_filter);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $keys_data_filter = array();
+        $filtros = new stdClass();
+        $filtros->z = 'a';
+        $keys_data_filter[] = 'z';
+        $resultado = $wh->where($filtros, $keys_data_filter);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' WHERE ', $resultado);
 
         errores::$error = false;
     }

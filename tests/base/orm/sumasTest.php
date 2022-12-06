@@ -16,6 +16,20 @@ class sumasTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_columnas_suma(){
+        errores::$error = false;
+        $sum = new sumas();
+        //$sum = new liberator($sum);
+
+        $campos = array();
+        $campos['x'] = 'z';
+        $resultado = $sum->columnas_suma($campos);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' IFNULL( SUM(z) ,0)AS x', $resultado);
+        errores::$error = false;
+    }
+
     public function test_data_campo_suma(){
         errores::$error = false;
         $sum = new sumas();

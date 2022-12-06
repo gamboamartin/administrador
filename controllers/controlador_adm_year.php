@@ -1,11 +1,12 @@
 <?php
 namespace gamboamartin\controllers;
 use base\controller\controlador_base;
-use models\year;
+use gamboamartin\administrador\models\adm_year;
 
-class controlador_year extends controlador_base{
+
+class controlador_adm_year extends controlador_base{
     public function __construct($link){
-        $modelo = new year($link);
+        $modelo = new adm_year($link);
         parent::__construct($link, $modelo);
     }
 }

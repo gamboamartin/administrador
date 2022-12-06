@@ -2,17 +2,20 @@
 namespace tests\base\orm;
 
 use base\orm\modelo_base;
+use gamboamartin\administrador\models\adm_accion;
+use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_bitacora;
+use gamboamartin\administrador\models\adm_campo;
+use gamboamartin\administrador\models\adm_dia;
+use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_mes;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\accion;
-use models\adm_accion;
-use models\adm_dia;
-use models\adm_mes;
-use models\adm_usuario;
-use models\seccion;
-use stdClass;
+
 
 
 class modelo_baseTest extends test {
@@ -35,11 +38,13 @@ class modelo_baseTest extends test {
         $campos_encriptados = array('z');
         $modelos_hijos = array();
         $modelos_hijos['adm_dia']['nombre_estructura'] = 'adm_accion';
+        $modelos_hijos['adm_dia']['namespace_model'] = 'gamboamartin\\administrador\\models';
         $modelos_hijos['adm_dia']['filtros'] = array();
         $modelos_hijos['adm_dia']['filtros_con_valor'] = array();
         $row = array();
         $row['z'] = 'PHDA/NloYgF1lc+UHzxaUw==';
         $resultado = $mb->ajusta_row_select($campos_encriptados, $modelos_hijos, $row);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -50,6 +55,7 @@ class modelo_baseTest extends test {
 
 
         errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
         $mb = new modelo_base($this->link);
         $mb->usuario_id = 2;
         $mb->campos_sql = 1;
@@ -57,9 +63,30 @@ class modelo_baseTest extends test {
         $keys_registro = array();
         $keys_row = array();
         $modelo = new adm_dia($this->link);
+
+        $r = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $r);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $registro['id'] = 1;
+        $registro['codigo'] = 1;
+        $registro['descripcion'] = 1;
+
+        $r = $modelo->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $r);
+            print_r($error);
+            exit;
+        }
+
         $registro = array();
         $registro['adm_dia_id'] = 1;
         $resultado = $mb->asigna_codigo($keys_registro, $keys_row, $modelo, $registro);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -104,8 +131,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-
-
     public function test_asigna_registros_hijo(){
 
 
@@ -117,8 +142,9 @@ class modelo_baseTest extends test {
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
-            nombre_estructura: $nombre_estructura,row:  $row);
+        $namespace_model = 'gamboamartin\\administrador\\models';
+        $resultado = $mb->asigna_registros_hijo(filtro: $filtro, name_modelo: $name_modelo,
+            namespace_model: $namespace_model, nombre_estructura: $nombre_estructura, row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al validar entrada para modelo', $resultado['mensaje']);
@@ -128,7 +154,7 @@ class modelo_baseTest extends test {
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
+        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo, namespace_model: $namespace_model,
             nombre_estructura: $nombre_estructura,row:  $row);
 
         $this->assertIsArray($resultado);
@@ -141,7 +167,7 @@ class modelo_baseTest extends test {
         $filtro = array();
         $row = array();
         $nombre_estructura = '';
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
+        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,namespace_model: $namespace_model,
             nombre_estructura: $nombre_estructura,row:  $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -155,7 +181,7 @@ class modelo_baseTest extends test {
         $row = array();
         $nombre_estructura = 'adm_seccion';
 
-        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,
+        $resultado = $mb->asigna_registros_hijo(filtro:  $filtro, name_modelo: $name_modelo,namespace_model: $namespace_model,
             nombre_estructura: $nombre_estructura,row:  $row);
 
 
@@ -168,6 +194,43 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_ds_init()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $key = 'codigo   ';
+        $data['codigo'] = '   xx hgfs';
+
+        $resultado = $mb->ds_init($data, $key);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('xx hgfs', $resultado);
+        errores::$error = false;
+
+    }
+
+    public function test_ds_init_no_codigo()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $key = 'a';
+        $data['a'] = 'x__hJlxIUJ';
+        $resultado = $mb->ds_init_no_codigo($data, $key);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X  HJlxIUJ', $resultado);
+        errores::$error = false;
+    }
 
     public function test_descripcion_alta()
     {
@@ -177,6 +240,79 @@ class modelo_baseTest extends test {
         $mb = new modelo_base($this->link);
         $mb = new liberator($mb);
 
+        $_SESSION['usuario_id'] = 2;
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_bitacora($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+
+        $registro['id'] = 1;
+        $registro['descripcion'] = 'adm_seccion';
+        $registro['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($registro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['titulo'] = 'test';
+        $adm_accion['adm_seccion_id'] = '1';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
 
         $modelo = new adm_accion($this->link);
         $registro = array();
@@ -184,12 +320,34 @@ class modelo_baseTest extends test {
         $resultado = $mb->descripcion_alta($modelo, $registro);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('alta', $resultado);
+        $this->assertEquals('test', $resultado);
         errores::$error = false;
     }
 
+    public function test_descripcion_select()
+    {
 
 
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $_SESSION['usuario_id'] = 2;
+
+
+        $data = array();
+        $keys_integra_ds = array();
+        $keys_integra_ds[] = 'x';
+
+        $data['x'] = 'z';
+
+        $resultado = $mb->descripcion_select($data, $keys_integra_ds);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Z',$resultado);
+
+        errores::$error = false;
+    }
 
     public function test_ejecuta_sql()
     {
@@ -219,12 +377,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-
-
-
-
-
-
     public function test_genera_consulta_base(){
 
         errores::$error = false;
@@ -242,17 +394,91 @@ class modelo_baseTest extends test {
 
 
         errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
         $mb = new modelo_base($this->link);
         $mb = new liberator($mb);
 
         $modelo = new adm_accion($this->link);
 
+        $filtro['adm_accion_basica.descripcion'] = 'a';
+        $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_campo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion_grupo($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_bitacora($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_seccion';
+        $adm_seccion['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['titulo'] = 'test';
+        $adm_accion['adm_seccion_id'] = '1';
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+
         $registro = array();
-        $registro['adm_accion_id'] = 2;
+        $registro['adm_accion_id'] = 1;
         $resultado = $mb->genera_descripcion($modelo, $registro);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('lista', $resultado);
+        $this->assertEquals('test', $resultado);
         errores::$error = false;
     }
 
@@ -269,14 +495,14 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $modelo = 'adm_accion';
-        $resultado = $mb->genera_modelo($modelo);
+        $resultado = $mb->genera_modelo($modelo,'gamboamartin\\administrador\\models');
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
 
         errores::$error = false;
         $modelo = 'adm_seccion';
-        $resultado = $mb->genera_modelo($modelo);
+        $resultado = $mb->genera_modelo($modelo,'gamboamartin\\administrador\\models');
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -306,9 +532,10 @@ class modelo_baseTest extends test {
         $mb = new liberator($mb);
 
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: '',row: $row);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('nombre_estructura', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
 
         errores::$error = false;
@@ -320,7 +547,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: '',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error filtro', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $data_modelo['nombre_estructura'] = '';
@@ -329,7 +556,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: '',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al asignar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
 
         errores::$error = false;
@@ -339,14 +566,16 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'x',row: $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
 
         errores::$error = false;
         $data_modelo['nombre_estructura'] = 'x';
+        $data_modelo['namespace_model'] = 'gamboamartin\\administrador\\models';
         $data_modelo['filtros'] = array();
         $data_modelo['filtros_con_valor'] = array();
         $resultado = $mb->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: 'adm_seccion',row: $row);
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -388,7 +617,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('nombre_estructura', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -401,7 +630,7 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('generar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $modelos_hijos = array();
@@ -413,13 +642,14 @@ class modelo_baseTest extends test {
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('generar registros de hijo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar data_modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $modelos_hijos = array();
         $row = array();
         $modelos_hijos['adm_seccion'] = array();
         $modelos_hijos['adm_seccion']['nombre_estructura'] = 'ne';
+        $modelos_hijos['adm_seccion']['namespace_model'] = 'gamboamartin\\administrador\\models';
         $modelos_hijos['adm_seccion']['filtros'] = array();
         $modelos_hijos['adm_seccion']['filtros_con_valor'] = array();
         $resultado = $mb->genera_registros_hijos($modelos_hijos, $row);
@@ -432,6 +662,55 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_init_archivos_tmp_model(){
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $mb->tabla = 'a';
+        $resultado = $mb->init_archivos_tmp_model();
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertFileExists($resultado);
+        errores::$error = false;
+    }
+
+    public function test_integra_ds()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $key = 'a';
+        $ds = '';
+        $data['a'] = 'x';
+        $resultado = $mb->integra_ds($data, $ds, $key);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X ', $resultado);
+        errores::$error = false;
+    }
+
+    public function test_key_tmp()
+    {
+
+
+        errores::$error = false;
+        $mb = new adm_seccion($this->link);
+        $mb = new liberator($mb);
+
+        $consulta = 'SELECTcatsatisridAScatsatisridcatsatisrdescripcionAScatsatisrdescripcioncatsatisrcodigoAScatsatisrcodigocatsatisrstatusAScatsatisrstatuscatsatisrusuarioaltaidAScatsatisrusuarioaltaidcatsatisrusuarioupdateidAScatsatisrusuarioupdateidcatsatisrfechaaltaAScatsatisrfechaaltacatsatisrfechaupdateAScatsatisrfechaupdatecatsatisrdescripcionselectAScatsatisrdescripcionselectcatsatisraliasAScatsatisraliascatsatisrcodigobisAScatsatisrcodigobiscatsatisrlimiteinferiorAScatsatisrlimiteinferiorcatsatisrlimitesuperiorAScatsatisrlimitesuperiorcatsatisrcuotafijaAScatsatisrcuotafijacatsatisrporcentajeexcedenteAScatsatisrporcentajeexcedentecatsatisrcatsatperiodicidadpagonomidAScatsatisrcatsatperiodicidadpagonomidcatsatisrfechainicioAScatsatisrfechainiciocatsatisrfechafinAScatsatisrfechafincatsatperiodicidadpagonomidAScatsatperiodicidadpagonomidcatsatperiodicidadpagonomdescripcionAScatsatperiodicidadpagonomdescripcioncatsatperiodicidadpagonomcodigoAScatsatperiodicidadpagonomcodigocatsatperiodicidadpagonomstatusAScatsatperiodicidadpagonomstatuscatsatperiodicidadpagonomusuarioaltaidAScatsatperiodicidadpagonomusuarioaltaidcatsatperiodicidadpagonomusuarioupdateidAScatsatperiodicidadpagonomusuarioupdateidcatsatperiodicidadpagonomfechaaltaAScatsatperiodicidadpagonomfechaaltacatsatperiodicidadpagonomfechaupdateAScatsatperiodicidadpagonomfechaupdatecatsatperiodicidadpagonomdescripcionselectAScatsatperiodicidadpagonomdescripcionselectcatsatperiodicidadpagonomaliasAScatsatperiodicidadpagonomaliascatsatperiodicidadpagonomcodigobisAScatsatperiodicidadpagonomcodigobiscatsatperiodicidadpagonomndiasAScatsatperiodicidadpagonomndiasFROMcatsatisrAScatsatisrLEFTJOINcatsatperiodicidadpagonomAScatsatperiodicidadpagonomONcatsatperiodicidadpagonomid=catsatisrcatsatperiodicidadpagonomidWHEREcatsatisrid=1';
+
+        $resultado = $mb->key_tmp($consulta);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('75d700445ebf129b3195e1af7d6df67e', $resultado);
+    }
 
     public function test_maqueta_arreglo_registros(){
 
@@ -500,10 +779,6 @@ class modelo_baseTest extends test {
 
     }
 
-
-
-
-
     public function test_obten_nombre_tabla(){
 
         errores::$error = false;
@@ -541,8 +816,6 @@ class modelo_baseTest extends test {
         $this->assertEquals('x', $resultado);
         errores::$error = false;
     }
-
-
 
     public function test_parsea_registros_envio(){
 

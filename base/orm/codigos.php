@@ -121,7 +121,7 @@ class codigos{
 
             $codigo_ = $this->codigo_concat_aut(codigo:$codigo_,key:  $key,keys:  $keys, registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo);
+                return $this->error->error(mensaje: 'Error al concatenar codigo', data: $codigo_);
             }
 
         }
@@ -148,6 +148,7 @@ class codigos{
         }
         return $codigo;
     }
+
 
     /**
      * Genera codigo random

@@ -1,8 +1,8 @@
 <?php
 namespace tests\base\controller;
 
-use base\controller\base_html;
 use base\controller\controler;
+use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -17,67 +17,27 @@ class controllerTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_asigna_filtro_get(): void
+
+
+    public function test_get_out(): void
     {
 
         errores::$error = false;
 
-        $ctl = new controler();
+        $ctl = new controler($this->link);
         $ctl = new liberator($ctl);
 
         $keys = array();
-        $resultado = $ctl->asigna_filtro_get($keys);
-
-
-        $this->assertIsArray($resultado);
+        $header = false;
+        $ws = false;
+        $ctl->modelo = new adm_atributo($this->link);
+        $resultado = $ctl->get_out($header, $keys, $ws);
+        $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
 
         errores::$error = false;
-
-        $keys = array();
-        $keys['campo'] = 'a';
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-
-
-        errores::$error = false;
-
-        $keys = array();
-        $keys['pais'] = 'id';
-        $_GET['pais_id'] = 1;
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-
-        errores::$error = false;
-
-
-
-        $keys = array();
-        $keys['pais'] = array();
-        $_GET['pais_id'] = 1;
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
-
-        errores::$error = false;
-
-
-
-        $keys = array();
-        $keys['pais'] = array('id');
-        $_GET['pais_id'] = 1;
-        $resultado = $ctl->asigna_filtro_get($keys);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1',$resultado['pais.id']);
-
-        errores::$error = false;
-
     }
+
 
 
 

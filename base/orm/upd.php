@@ -1,8 +1,7 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\errores\errores;
-use JsonException;
-use models\adm_elemento_lista;
 use stdClass;
 
 class upd{
@@ -46,24 +45,24 @@ class upd{
                 data: array($existe_user,$modelo->campos_sql, $modelo->usuario_id));
         }
 
-        $modelo->campos_sql .= ',usuario_update_id=' . $modelo->usuario_id;
-
-
-        return $modelo->campos_sql;
+        return 'usuario_update_id=' . $modelo->usuario_id;
     }
 
 
     /**
-     * @param stdClass $ejecuta_upd
-     * @param int $id
+     * @param stdClass $ejecuta_upd Ejecuta la actualizacion de un row
+     * @param int $id Identificador en proceso
      * @param modelo $modelo Modelo en ejecucion
-     * @param bool $reactiva
-     * @param array $registro
+     * @param bool $reactiva Si reactiva  valida si un upd es valido en el modelo
+     * @param array $registro Registro en proceso
      * @return array|stdClass
 
      */
     public function aplica_ejecucion(stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
         $resultado = $ejecuta_upd->resultado;
 
         if($ejecuta_upd->ejecuta_upd) {
@@ -107,34 +106,57 @@ class upd{
      * Obtiene los campos para un upd del modelo
      * @param modelo $modelo Modelo en ejecucion
      * @return array|string
+     * @version 1.565.51
      */
     private function campos_sql(modelo $modelo): array|string
     {
-        $campos_sql = $this->genera_campos_update(modelo: $modelo);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql);
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
         }
-        $modelo->campos_sql = $campos_sql;
-        $campos_sql = $this->agrega_usuario_session(modelo: $modelo);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
         }
 
-        $modelo->campos_sql .= ',' . $campos_sql;
+        $campos_sql_model = $this->genera_campos_update(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql_model);
+        }
+
+        $modelo->campos_sql = $campos_sql_model;
+        $campos_sql_user = $this->agrega_usuario_session(modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql_user);
+        }
+
+
+        $modelo->campos_sql =  $campos_sql_model.','.$campos_sql_user;
         return $modelo->campos_sql;
     }
 
 
     /**
-     * @param int $id
+     * Ejecuta un update en el motor d ebase de datos
+     * @param int $id Identificador
      * @param modelo $modelo Modelo en ejecucion
-     * @param bool $reactiva
-     * @param array $registro
+     * @param bool $reactiva Si reactiva el elemento sera validado
+     * @param array $registro Registro en ejecucion
      * @return array|stdClass
-
+     * @version 1.567.51
      */
     private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
+        }
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
+
         $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
@@ -318,14 +340,28 @@ class upd{
     }
 
     /**
-     * @param int $id
+     * Integra un sql para update
+     * @param int $id Identificador de registro
      * @param modelo $modelo Modelo en ejecucion
-     * @param bool $reactiva
-     * @param array $registro
+     * @param bool $reactiva Si reactiva el registro sera previamente validado
+     * @param array $registro Registro a actualizar
      * @return array|string
+     * @version 1.566.51
      */
     private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro): array|string
     {
+
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
+        }
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
+
         $reactiva_row = $this->reactiva(modelo: $modelo,reactiva:  $reactiva,registro:  $registro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $reactiva_row);

@@ -1,10 +1,10 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_session;
 use stdClass;
 
 
@@ -14,6 +14,20 @@ class adm_sessionTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_asigna_datos_session(){
+
+        errores::$error = false;
+        $session = new adm_session($this->link);
+        $session = new liberator($session);
+        $r_session = new stdClass();
+        $r_session->registros[0]['adm_grupo_id'] = 1;
+        $r_session->registros[0]['adm_usuario_id'] = 1;
+        $resultado = $session->asigna_datos_session($r_session);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
     public function test_init_session(){
@@ -50,12 +64,15 @@ class adm_sessionTest extends test {
         errores::$error = false;
 
         $resultado = $session->obten_filtro_session('x');
+
         $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
 
         errores::$error = false;
 
         $resultado = $session->obten_filtro_session('adm_grupo');
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 

@@ -38,6 +38,7 @@ class estructurasTest extends test {
         //$st = new liberator($st);
         $resultado = $st->asigna_datos_estructura('administrador');
 
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsObject($resultado);
         $this->assertTrue($resultado->adm_accion->data_campos->id->es_primaria);
@@ -102,9 +103,11 @@ class estructurasTest extends test {
         $st = new liberator($st);
         $resultado = $st->modelos('administrador');
 
+        //print_r($resultado);exit;
+
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('adm_dia',$resultado[5]);
+        $this->assertEquals('adm_campo',$resultado[5]);
 
         errores::$error = false;
 

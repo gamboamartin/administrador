@@ -1,11 +1,9 @@
 <?php
 namespace tests\orm;
 
+use gamboamartin\administrador\models\adm_accion_grupo;
 use gamboamartin\errores\errores;
-use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_accion;
-use models\adm_accion_grupo;
 
 
 class adm_accion_grupoTest extends test {
@@ -14,6 +12,30 @@ class adm_accion_grupoTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_grupos_por_accion(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_accion_grupo($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $adm_accion_id= 1;
+        $resultado = $modelo->grupos_por_accion($adm_accion_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $adm_accion_id= 4;
+        $resultado = $modelo->grupos_por_accion($adm_accion_id);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+
+        errores::$error = false;
     }
 
     public function test_obten_accion_permitida(): void

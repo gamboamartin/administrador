@@ -1,8 +1,9 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\files;
 use JsonException;
-use models\adm_seccion;
 use PDO;
 use stdClass;
 
@@ -20,6 +21,7 @@ class modelo extends modelo_base {
     public bool $validation;
     protected array $campos_encriptados;
     public array $campos_no_upd = array();
+    public array $parents = array();
 
 
     /**
@@ -41,6 +43,10 @@ class modelo extends modelo_base {
      * @param array $tipo_campos
      * @param bool $validation
      * @param array $campos_no_upd Conjunto de campos no modificables, por default id
+     * @param array $parents
+     * @param bool $temp
+     * @param array $childrens
+     * @param array $defaults
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
@@ -48,7 +54,11 @@ class modelo extends modelo_base {
                                 array $campos_view= array(), array $columnas_extra = array(),
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
-                                bool $validation = false,array $campos_no_upd = array()){
+                                bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
+                                bool $temp = false, array $childrens = array(), array $defaults = array(),
+                                array $parents_data = array()){
+
+
 
         /**
          * REFCATORIZAR
@@ -56,9 +66,9 @@ class modelo extends modelo_base {
 
 
         $tabla = str_replace('models\\','',$tabla);
-        parent::__construct($link);
+        parent::__construct(link:$link, defaults: $defaults, parents_data: $parents_data, temp: $temp);
 
-
+        $this->temp = $temp;
         $this->tabla = $tabla;
         $this->columnas_extra = $columnas_extra;
         $this->columnas = $columnas;
@@ -71,6 +81,8 @@ class modelo extends modelo_base {
         $this->campos_encriptados = $campos_encriptados;
         $this->campos_no_upd = $campos_no_upd;
 
+        $this->childrens = $childrens;
+
         if(!in_array('id', $this->campos_no_upd, true)){
             $this->campos_no_upd[] = 'id';
         }
@@ -78,31 +90,36 @@ class modelo extends modelo_base {
         if(isset($_SESSION['usuario_id'])){
             $this->usuario_id = (int)$_SESSION['usuario_id'];
         }
-        if($tabla !=='') {
 
-            $data = (new columnas())->obten_columnas(modelo:$this, tabla_original: $tabla);
-            if (errores::$error) {
-                $error = $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
-                print_r($error);
-                die('Error');
-            }
-            $this->campos_tabla = $data->columnas_parseadas;
+
+        $campos_tabla = (new columnas())->campos_tabla(modelo:$this, tabla: $tabla);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al obtener campos tabla '.$tabla, data: $campos_tabla);
+            print_r($error);
+            die('Error');
         }
+        $this->campos_tabla = $campos_tabla;
 
-        $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id');
 
-        foreach($campos_obligatorios_parciales as $campo){
-            if(in_array($campo, $this->campos_tabla, true)){
-                $this->campos_obligatorios[]=$campo;
-            }
+        $campos_obligatorios = (new columnas())->integra_campos_obligatorios(
+            campos_obligatorios: $campos_obligatorios, campos_tabla: $this->campos_tabla);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al integrar campos obligatorios '.$tabla, data: $campos_obligatorios);
+            print_r($error);
+            die('Error');
         }
+        $this->campos_obligatorios = $campos_obligatorios;
+
+
 
         $this->sub_querys = $sub_querys;
         $this->sql_seguridad_por_ubicacion = array();
         $this->campos_obligatorios = array_merge($this->campos_obligatorios,$campos_obligatorios);
 
         if(isset($campos_obligatorios[0]) && trim($campos_obligatorios[0]) === '*'){
-
+            /**
+             * REFACTORIZAR
+             */
             $this->campos_obligatorios = $this->campos_tabla;
 
             $unsets = array('fecha_alta','fecha_update','id','usuario_alta_id','usuario_update_id');
@@ -134,13 +151,28 @@ class modelo extends modelo_base {
 
 
     /**
-     * P INT ERRROREV P ORDER
-     * @param bool $reactiva
-     * @return array
-     * @throws JsonException
+     * Activa un elemento
+     * @param bool $reactiva Si reactiva valida si el registro se puede reactivar
+     * @param int $registro_id
+     * @return array|stdClass
+     * @version 1.495.49
      */
-    public function activa_bd(bool $reactiva = false): array{ //FIN
+    public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
 
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
+        if($registro_id>0){
+            $this->registro_id  = $registro_id;
+        }
         if($this->registro_id <= 0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en '.$this->tabla,data: $this->registro_id);
         }
@@ -151,13 +183,29 @@ class modelo extends modelo_base {
                 data:$data_activacion);
         }
 
-        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,
-            registro_id: $this->registro_id,sql: $data_activacion->consulta);
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
+            modelo: $this, registro_id: $this->registro_id, sql: $data_activacion->consulta);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
         }
 
-        return array('mensaje'=>'Registro activado con éxito en '.$this->tabla, 'registro_id'=>$this->registro_id);
+        $data = new stdClass();
+        $data->mensaje = 'Registro activado con éxito en '.$this->tabla;
+        $data->registro_id = $this->registro_id;
+        $data->transaccion = $transaccion;
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
+        return $data;
     }
 
     /**
@@ -167,6 +215,16 @@ class modelo extends modelo_base {
      */
     public function activa_todo(): array
     {
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
         $this->transaccion = 'UPDATE';
         $consulta = "UPDATE " . $this->tabla . " SET status = 'activo'  ";
 
@@ -175,26 +233,55 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al ejecutar sql',data: $resultado);
         }
 
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
         return array('mensaje'=>'Registros activados con éxito','sql'=>$this->consulta);
     }
 
     /**
-     * P INT ERRORREV
-     * inserta un registro por registro enviado
+     *
+     * Inserta un registro por registro enviado
      * @return array|stdClass con datos del registro insertado
 
      * @internal  $this->valida_campo_obligatorio();
      * @internal  $this->valida_estructura_campos();
      * @internal  $this->asigna_data_user_transaccion();
      * @internal  $this->bitacora($this->registro,__FUNCTION__,$consulta);
-     * @uses  todo el sistema
      * @example
      *      $entrada_modelo->registro = array('tipo_entrada_id'=>1,'almacen_id'=>1,'fecha'=>'2020-01-01',
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
-     *
+     * @version 1.603.54
      */
     public function alta_bd(): array|stdClass{
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
+        }
+
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
         $this->status_default = 'activo';
         $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
             registro: $this->registro,status_default: $this->status_default, tipo_campos: $this->tipo_campos);
@@ -205,7 +292,7 @@ class modelo extends modelo_base {
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
             no_duplicados: $this->no_duplicados, registro: $registro,tabla:  $this->tabla,
-            tipo_campos: $this->tipo_campos);
+            tipo_campos: $this->tipo_campos, parents: $this->parents);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
@@ -225,28 +312,74 @@ class modelo extends modelo_base {
         $data->registro_id = $this->registro_id;
         $data->sql = $transacciones->sql;
         $data->registro = $registro;
+        $data->registro_obj = (object)$registro;
+        $data->registro_ins = $this->registro;
+        $data->campos = $this->campos_tabla;
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
 
         return $data;
     }
 
     /**
-     * P ORDER P INT
+     * Inserta un registro
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
-
+     * @version 1.534.51
      */
-    public function alta_registro(array $registro):array|stdClass{ //FIN
+    public function alta_registro(array $registro):array|stdClass{
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
+        }
+
+        if($_SESSION['usuario_id'] <= 0){
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+        }
+
         $this->registro = $registro;
 
         $r_alta  = $this->alta_bd();
         if(errores::$error) {
             return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
         }
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
         return $r_alta;
     }
 
     /**
      * Cuenta los registros de un modelo conforme al filtro en aplicacion
+     * @param array $diferente_de Integra el sql para diferente de
      * @param array $filtro Filtro de ejecucion basico
      * @param string $tipo_filtro validos son numeros y textos
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -256,12 +389,13 @@ class modelo extends modelo_base {
      *                      Debe ser un array con la siguiente forma
      *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @param array $in Genera IN en sql
+     * @param array $not_in Genera NOT IN en SQL
      * @return array|int
-     * @version 1.306.41
      */
-    public function cuenta(
-        array $filtro = array(), string $tipo_filtro = 'numeros', array $filtro_especial = array(),
-        array $filtro_rango = array(), array $filtro_fecha = array()):array|int{
+    public function cuenta(array $diferente_de = array(), array $filtro = array(), string $tipo_filtro = 'numeros',
+                           array $filtro_especial = array(), array $filtro_rango = array(),
+                           array $filtro_fecha = array(), array $in = array(), array $not_in = array()):array|int{
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
@@ -273,10 +407,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
         }
 
-        $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra, filtro:  $filtro,
-            filtro_especial: $filtro_especial, filtro_extra: array(), filtro_fecha: $filtro_fecha,
-            filtro_rango: $filtro_rango, keys_data_filter: $this->keys_data_filter, not_in: array(), sql_extra: '',
-            tipo_filtro: $tipo_filtro);
+        $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra,diferente_de: $diferente_de,
+            filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: array(), filtro_fecha: $filtro_fecha,
+            filtro_rango: $filtro_rango, in:$in, keys_data_filter: $this->keys_data_filter, not_in: $not_in,
+            sql_extra: '', tipo_filtro: $tipo_filtro);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtros',data: $filtros);
@@ -327,37 +461,59 @@ class modelo extends modelo_base {
 
     /**
      * PHPUNIT
-     * @return array
+     * @return array|stdClass
      * @throws JsonException
      */
-    public function desactiva_bd(): array{ //FIN
+    public function desactiva_bd(): array|stdClass{
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
         if($this->registro_id<=0){
-            return  $this->error->error('Error $this->registro_id debe ser mayor a 0',$this->registro_id);
+            return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id);
         }
         $registro = $this->registro(registro_id: $this->registro_id);
         if(errores::$error){
-            return  $this->error->error('Error al obtener registro',$registro);
+            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
         }
+
 
         $valida = $this->validacion->valida_transaccion_activa(
             aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro: $registro,
             registro_id:  $this->registro_id, tabla: $this->tabla);
         if(errores::$error){
-            return  $this->error->error('Error al validar transaccion activa',$valida);
+            return  $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida);
         }
         $tabla = $this->tabla;
         $this->consulta = /** @lang MYSQL */
             "UPDATE $tabla SET status = 'inactivo' WHERE id = $this->registro_id";
         $this->transaccion = 'DESACTIVA';
-        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
-            modelo: $this,registro_id:  $this->registro_id);
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,
+            registro_id:  $this->registro_id);
         if(errores::$error){
-            return  $this->error->error('Error al EJECUTAR TRANSACCION',$transaccion);
+            return  $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION',data: $transaccion);
         }
 
         $desactiva = $this->aplica_desactivacion_dependencias();
         if (errores::$error) {
-            return $this->error->error('Error al desactivar dependiente', $desactiva);
+            return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
+        }
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
         }
 
         return array('mensaje'=>'Registro desactivado con éxito', 'registro_id'=>$this->registro_id);
@@ -370,6 +526,16 @@ class modelo extends modelo_base {
      */
     public function desactiva_todo(): array
     {
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
 
         $consulta = /** @lang MYSQL */
             "UPDATE  $this->tabla SET status='inactivo'";
@@ -379,12 +545,22 @@ class modelo extends modelo_base {
             return  $this->error->error($this->link->errorInfo()[0],'');
         }
         else{
+            $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+            }
+            if(file_exists($init_archivos_tmp_model)){
+                $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+                if (errores::$error) {
+                    return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+                }
+            }
             return array('mensaje'=>'Registros desactivados con éxito');
         }
     }
 
     /**
-     * P INT P ORDER
+     *
      * Elimina un registro por el id enviado
      * @param int $id id del registro a eliminar
      *
@@ -396,26 +572,27 @@ class modelo extends modelo_base {
      * @internal  $this->obten_data();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
-     * @uses  todo el sistema
+     * @version 1.563.51
      */
     public function elimina_bd(int $id): array|stdClass{
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
         if($id <= 0){
             return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
         }
         $this->registro_id = $id;
 
-        $registro = $this->registro(registro_id: $this->registro_id);
+        $valida = (new activaciones())->valida_activacion(modelo: $this);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro' .$this->tabla, data: $registro);
-
-        }
-
-        $valida = $this->validacion->valida_transaccion_activa(
-            aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro:  $registro,
-            registro_id:  $this->registro_id, tabla:  $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar transaccion activa en' .$this->tabla,data: $valida);
-
+            return $this->error->error(mensaje:'Error al validar transaccion activa en ' .$this->tabla,data: $valida);
         }
 
         $registro_bitacora = $this->obten_data();
@@ -432,7 +609,12 @@ class modelo extends modelo_base {
             desactiva_dependientes:$this->desactiva_dependientes,link: $this->link,
             models_dependientes: $this->models_dependientes,registro_id: $this->registro_id,tabla: $this->tabla);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al eliminar dependiente', data:$elimina);
+            return $this->error->error(mensaje:'Error al eliminar dependiente ', data:$elimina);
+        }
+
+        $valida = $this->valida_eliminacion_children(id:$id);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al validar children', data:$valida);
         }
 
         $resultado = $this->ejecuta_sql(consulta: $this->consulta);
@@ -448,23 +630,44 @@ class modelo extends modelo_base {
         $data = new stdClass();
         $data->registro_id = $id;
         $data->sql = $this->consulta;
-        $data->registro = $registro;
+        $data->registro = $registro_bitacora;
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
 
         return $data;
 
     }
 
     /**
-     * P INT P ORDER
+     * Elimina registros con filtro
      * @return string[]
-     * @throws JsonException
+     * @version 1.564.51
      */
-    public function elimina_con_filtro_and(): array{
-        if(count($this->filtro) === 0){
-            return $this->error->error('Error no existe filtro', $this->filtro);
+    public function elimina_con_filtro_and(array $filtro): array{
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+        if(count($filtro) === 0){
+            return $this->error->error('Error no existe filtro', $filtro);
         }
 
-        $result = $this->filtro_and(filtro: $this->filtro);
+        $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros '.$this->tabla,data:  $result);
         }
@@ -478,9 +681,37 @@ class modelo extends modelo_base {
             $dels[] = $del;
 
         }
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
 
         return $dels;
 
+    }
+
+    public function elimina_full_childrens(): array
+    {
+        $dels = array();
+        foreach ($this->childrens as $modelo_children=>$namespace){
+
+            $modelo_children_obj = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al generar modelo', data:$modelo_children_obj);
+            }
+            $elimina_todo_children = $modelo_children_obj->elimina_todo();
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar children', data:$elimina_todo_children);
+            }
+            $dels[] = $elimina_todo_children;
+        }
+        return $dels;
     }
 
     /**
@@ -489,6 +720,23 @@ class modelo extends modelo_base {
      */
     public function elimina_todo(): array
     {
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
+        $elimina_todo_children = $this->elimina_full_childrens();
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al eliminar childrens', data:$elimina_todo_children);
+        }
+
+
         $tabla = $this->tabla;
         $this->transaccion = 'DELETE';
         $this->consulta = /** @lang MYSQL */
@@ -500,6 +748,17 @@ class modelo extends modelo_base {
             return $this->error->error('Error al ejecutar sql',$resultado);
         }
 
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
         return array('mensaje'=>'Registros eliminados con éxito');
     }
 
@@ -509,7 +768,7 @@ class modelo extends modelo_base {
      */
     protected function estado_inicial():array{
         $filtro[$this->tabla.'.inicial'] ='activo';
-        $r_estado = $this->filtro_and($filtro);
+        $r_estado = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al filtrar estado',$r_estado);
         }
@@ -566,7 +825,7 @@ class modelo extends modelo_base {
         $filtro[$this->tabla.'.id'] = $registro_id;
         $existe = $this->existe(filtro: $filtro);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener pais remoto', data: $existe);
+            return  $this->error->error(mensaje: 'Error al obtener row', data: $existe);
         }
         return $existe;
     }
@@ -590,6 +849,22 @@ class modelo extends modelo_base {
             if ((string)$compare_1[$key] === (string)$compare_2[$key]) {
                 $existe = true;
             }
+        }
+        return $existe;
+    }
+
+    /**
+     * Verifica un elemento predetermindao de la entidad
+     * @return bool|array
+     * @version 1.485.49
+     */
+    public function existe_predeterminado(): bool|array
+    {
+        $key = $this->tabla.'.predeterminado';
+        $filtro[$key] = 'activo';
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
         }
         return $existe;
     }
@@ -661,6 +936,8 @@ class modelo extends modelo_base {
      * @param array $order array('tabla.campo'=>'ASC');
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
      * @return array|stdClass
      * @example
      *      Ej 1
@@ -754,16 +1031,16 @@ class modelo extends modelo_base {
      * @internal  $this->order_sql($order);
      * @internal  $this->filtro_especial_final($filtro_especial_sql,$where);
      * @internal  $this->ejecuta_consulta($hijo);
-     * @version 1.263.40
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-02 16:49
+     * @version 1.575.51
      */
     public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                array $columnas_by_table = array(), bool $columnas_en_bruto = false,
-                               array $filtro=array(), array $filtro_especial= array(), array $filtro_extra = array(),
-                               array $filtro_fecha = array(), array $filtro_rango = array(), array $group_by=array(),
-                               array $hijo = array(), int $limit=0,  array $not_in = array(), int $offset=0,
+                               array $diferente_de = array(), array $filtro=array(), array $filtro_especial= array(),
+                               array $filtro_extra = array(), array $filtro_fecha = array(),
+                               array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
+                               array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
                                array $order = array(), string $sql_extra = '',
                                string $tipo_filtro='numeros'): array|stdClass{
 
@@ -782,10 +1059,10 @@ class modelo extends modelo_base {
         }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table:$columnas_by_table,
-            columnas_en_bruto:$columnas_en_bruto, filtro:  $filtro, filtro_especial: $filtro_especial,
-            filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango, group_by:  $group_by, limit:  $limit,
-            not_in: $not_in, offset:  $offset, order: $order, sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro,
-            filtro_fecha:  $filtro_fecha);
+            columnas_en_bruto:$columnas_en_bruto, diferente_de: $diferente_de, filtro:  $filtro,
+            filtro_especial: $filtro_especial, filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango,
+            group_by:  $group_by, in: $in, limit:  $limit, not_in: $not_in, offset:  $offset, order: $order,
+            sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro, filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
@@ -802,20 +1079,26 @@ class modelo extends modelo_base {
 
     /**
      * Genera un filtro aplicando OR
+     * @param bool $aplica_seguridad
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Genera las columnas tal y como vienen en la base de datos
      * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
+     * @param array $group_by
      * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
+     * @param int $limit Limit de datos a motrar
+     * @param int $offset
+     * @param array $order
      * @return array|stdClass
      */
-    public function filtro_or(array $columnas = array(), array $columnas_by_table = array(),
-                              bool $columnas_en_bruto = false, array $filtro = array(),
-                              array $hijo = array()):array|stdClass{
+    public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
+                              array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                              array $filtro = array(), array $group_by = array(), array $hijo = array(),
+                              int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, extension_estructura:  $this->extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas,
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $this->extension_estructura, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
@@ -829,7 +1112,11 @@ class modelo extends modelo_base {
             $where = $data_sentencia->where;
             $sentencia = $data_sentencia->sentencia;
         }
-        $consulta .= $where . $sentencia;
+
+        $params_sql = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by:  $group_by,
+            limit:  $limit, modelo: $this, offset: $offset, order: $order, sql_where_previo: $sentencia);
+
+        $consulta .= $where . $sentencia.$params_sql->limit;
 
         $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
         if(errores::$error){
@@ -861,6 +1148,8 @@ class modelo extends modelo_base {
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @return array|string
      * @example
      *      $filtro_extra[0][tabla.campo]['operador'] = '<';
@@ -873,15 +1162,14 @@ class modelo extends modelo_base {
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
      *
-     * @version 1.262.40
-     * @verfuncion  1.1.0
      * @fecha 2022-08-02 16:38
      * @author mgamboa
+     * @version 1.575.51
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,
-                                       array $filtro, array $filtro_especial, array $filtro_extra,
-                                       array $filtro_rango, array $group_by, int $limit, array $not_in, int $offset,
-                                       array $order, string $sql_extra, string $tipo_filtro,
+                                       array $diferente_de, array $filtro, array $filtro_especial, array $filtro_extra,
+                                       array $filtro_rango, array $group_by, array $in, int $limit, array $not_in,
+                                       int $offset, array $order, string $sql_extra, string $tipo_filtro,
                                        array $filtro_fecha = array()): array|string
     {
         if($limit<0){
@@ -903,10 +1191,11 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
 
-        $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false,filtro:  $filtro,
-            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango,
-            group_by: $group_by, limit: $limit, modelo: $this, not_in: $not_in, offset:  $offset,order:  $order,
-            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha:  $filtro_fecha);
+        $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false, diferente_de: $diferente_de,
+            filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, modelo: $this, not_in: $not_in,
+            offset:  $offset, order:  $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
+            filtro_fecha:  $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data: $complemento_sql);
@@ -920,6 +1209,87 @@ class modelo extends modelo_base {
         $this->consulta = $sql;
 
         return $sql;
+    }
+
+    /**
+     * Obtiene los datos para datatable
+     * @param array $filtro
+     * @param array $filtro_especial Filtro para get data
+     * @param int $n_rows_for_page N rows
+     * @param int $pagina Num pag
+     * @return array
+     * @version 1.544.51
+     */
+    public function get_data_lista(array $filtro = array(),array $filtro_especial = array(), int $n_rows_for_page = 10, int $pagina = 1): array
+    {
+
+        $limit = $n_rows_for_page;
+
+        $n_rows = $this->cuenta(filtro_especial: $filtro_especial);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
+        }
+
+        $offset = ($pagina - 1) * $n_rows_for_page;
+
+        if($n_rows <= $limit){
+            $offset = 0;
+        }
+
+        $result = $this->filtro_and(filtro: $filtro,filtro_especial:$filtro_especial,limit: $limit, offset: $offset);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
+        }
+
+
+        $out = array();
+        $out['n_registros'] = $n_rows;
+        $out['registros'] = $result->registros;
+        $out['data_result'] = $result;
+
+        return $out;
+    }
+
+    private function get_predeterminado(): array|stdClass
+    {
+        $key = $this->tabla.'.predeterminado';
+        $filtro[$key] = 'activo';
+        $r_modelo = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $r_modelo->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+        }
+        if((int)$r_modelo->n_registros > 1){
+            return $r_modelo->error->error(mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+        }
+        return $r_modelo;
+    }
+
+    /**
+     * Obtiene un identificador predeterminado
+     * @return array|int
+     * @version 1.486.49
+     */
+    public function id_predeterminado(): array|int
+    {
+        $key = $this->tabla.'.predeterminado';
+
+        $filtro[$key] = 'activo';
+
+        $r_modelo = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener predeterminado',data:  $r_modelo);
+        }
+
+        if($r_modelo->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe predeterminado',data:  $r_modelo);
+        }
+        if($r_modelo->n_registros > 1){
+            return $this->error->error(
+                mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+        }
+
+        return (int) $r_modelo->registros[0][$this->key_id];
+
     }
 
 
@@ -970,7 +1340,6 @@ class modelo extends modelo_base {
      * @param int $id id del registro a modificar
      * @param bool $reactiva para evitar validacion de status inactivos
      * @return array|stdClass resultado de la insercion
-     * @throws JsonException
      * @example
      *      $r_modifica_bd =  parent::modifica_bd($registro, $id, $reactiva);
      * @internal  $this->validacion->valida_transaccion_activa($this, $this->aplica_transaccion_inactivo, $this->registro_id, $this->tabla);
@@ -978,10 +1347,23 @@ class modelo extends modelo_base {
      * @internal  $this->agrega_usuario_session();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($this->registro_upd,__FUNCTION__, $consulta);
-     * @uses  todo el sistema
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
+        if($this->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
+        }
+
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
 
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
@@ -1010,6 +1392,17 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
         }
 
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
 
         return $resultado;
     }
@@ -1023,6 +1416,16 @@ class modelo extends modelo_base {
      */
     public function modifica_con_filtro_and(array $filtro, array $registro): array
     {
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
         $this->registro_upd = $registro;
         if(count($this->registro_upd) === 0){
             return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
@@ -1045,6 +1448,17 @@ class modelo extends modelo_base {
             $data[] = $upd;
         }
 
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+
         return array('mensaje'=>'Registros modificados con exito',$data);
 
     }
@@ -1058,6 +1472,16 @@ class modelo extends modelo_base {
      */
     public function modifica_por_id(array $registro,int $id): array
     {
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
         $r_modifica = $this->modifica_bd($registro, $id);
         if(errores::$error){
             return $this->error->error("Error al modificar", $r_modifica);
@@ -1083,7 +1507,6 @@ class modelo extends modelo_base {
      * @throws errores $this->registro_id < 0
      * @throws errores no se encontro registro
      * @internal  $this->obten_por_id($hijo, $columnas);
-     * @uses  todo el sistema
      */
     public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
                                array $extension_estructura = array(), array $hijo= array()): array{
@@ -1095,7 +1518,7 @@ class modelo extends modelo_base {
         if(count($extension_estructura) === 0){
             $extension_estructura = $this->extension_estructura;
         }
-        $resultado = $this->obten_por_id(columnas:  $columnas, columnas_en_bruto: $columnas_en_bruto,
+        $resultado = $this->obten_por_id(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
             extension_estructura: $extension_estructura, hijo: $hijo);
 
         if(errores::$error){
@@ -1166,11 +1589,10 @@ class modelo extends modelo_base {
      * @internal  $this->genera_consulta_base($columnas);
      * @internal  $this->ejecuta_consulta($hijo);
      * @uses  modelo
-     * @uses  operacion_controladores
      */
     private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(),
-                                  bool $columnas_en_bruto = false, array $extension_estructura= array(),
-                                  array $hijo = array()):array|stdClass{
+                                  bool $columnas_en_bruto = false,
+                                  array $extension_estructura= array(), array $hijo = array()):array|stdClass{
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id);
         }
@@ -1179,9 +1601,9 @@ class modelo extends modelo_base {
         }
         $tabla = $this->tabla;
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, extension_estructura: $extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas,
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
         }
@@ -1189,7 +1611,8 @@ class modelo extends modelo_base {
         $where = " WHERE $tabla".".id = $this->registro_id ";
         $consulta .= $where;
 
-        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
+        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados,
+            hijo: $hijo);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
@@ -1376,6 +1799,7 @@ class modelo extends modelo_base {
      * @param int $registro_id $id Identificador del registro
      * @param array $columnas columnas a obtener del registro
      * @param bool $columnas_en_bruto
+     * @param bool $del_tmp
      * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas
      * a configuracion
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
@@ -1468,6 +1892,39 @@ class modelo extends modelo_base {
         return $registros;
     }
 
+    private function result_ini(){
+        $r_modelo = new stdClass();
+        $r_modelo->n_registros = 0;
+        $r_modelo->registros= array();
+        $r_modelo->sql= '';
+        $r_modelo->registros_obj= array();
+        return $r_modelo;
+    }
+
+    public function row_predeterminado(): array|stdClass
+    {
+
+        $r_modelo = $this->result_ini();
+        if(errores::$error){
+            return $r_modelo->error->error(mensaje: 'Error al inicializar result',data:  $r_modelo);
+        }
+
+
+        $tiene_predeterminado = $this->tiene_predeterminado();
+        if(errores::$error){
+            return $r_modelo->error->error(mensaje: 'Error al obtener si predeterminado',data:  $tiene_predeterminado);
+        }
+
+        if($tiene_predeterminado){
+            $r_modelo = $this->get_predeterminado();
+            if(errores::$error){
+                return $r_modelo->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+            }
+
+        }
+        return $r_modelo;
+    }
+
     /**
      * Obtiene el id de una seccion
      * @param string $seccion Seccion a obtener el id
@@ -1518,32 +1975,34 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PRUEBAS FINALIZADAS
+     * Suma sql
      * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
-     * @param array $filtro
+     * @param array $filtro Filtro para suma
      * @return array con la suma de los elementos seleccionados y filtrados
+     * @version 1.535.51
      */
     public function suma(array $campos, array $filtro = array()): array
     {
 
+
         $this->filtro = $filtro;
         if(count($campos)===0){
-            return $this->error->error('Error campos no puede venir vacio',$campos);
+            return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos);
         }
 
-        $columnas = (new sumas())->columnas_suma($campos);
+        $columnas = (new sumas())->columnas_suma(campos: $campos);
         if(errores::$error){
-            return $this->error->error('Error al agregar columnas',$columnas);
+            return $this->error->error(mensaje: 'Error al agregar columnas',data: $columnas);
         }
 
         $filtro_sql = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al generar filtro',$filtro_sql);
+            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_sql);
         }
 
-        $where = (new where())->where_suma($filtro_sql);
+        $where = (new where())->where_suma(filtro_sql: $filtro_sql);
         if(errores::$error){
-            return $this->error->error('Error al generar where',$where);
+            return $this->error->error(mensaje: 'Error al generar where',data: $where);
         }
 
         $tabla = $this->tabla;
@@ -1562,9 +2021,7 @@ class modelo extends modelo_base {
         return $resultado->registros[0];
     }
 
-    /**
-     * @throws JsonException
-     */
+
     public function status(string $campo, int $registro_id): array|stdClass
     {
         $registro = $this->registro(registro_id: $registro_id,columnas_en_bruto: true,retorno_obj: true);
@@ -1588,6 +2045,15 @@ class modelo extends modelo_base {
 
         return $upd;
 
+    }
+
+    public function tiene_predeterminado(): bool
+    {
+        $tiene_predeterminado = false;
+        if(in_array('predeterminado', $this->data_columnas->columnas_parseadas)){
+            $tiene_predeterminado = true;
+        }
+        return $tiene_predeterminado;
     }
 
     public function total_registros(): array|int
@@ -1656,6 +2122,37 @@ class modelo extends modelo_base {
             $resultado['registros'] = array();
         }
         return $resultado['registros'];
+    }
+
+    /**
+     * Valida si existe un elemento predeterminado previo a su alta
+     * @return bool|array
+     * @version 1.532.51
+     */
+    protected function valida_predetermiando(): bool|array
+    {
+        if(isset($this->registro['predeterminado']) && $this->registro['predeterminado'] === 'activo'){
+            $existe = $this->existe_predeterminado();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
+            }
+            if($existe){
+                return $this->error->error(mensaje: 'Error ya existe elemento predeterminado',data:  $this->registro);
+            }
+        }
+        return true;
+    }
+
+    public function valida_eliminacion_children(int $id): bool|array
+    {
+        foreach ($this->childrens as $modelo_children=>$namespace){
+            $valida = (new validaciones())->verifica_eliminacion_children(
+                id:$id,modelo_base:  $this,modelo_children:  $modelo_children,namespace:  $namespace);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al validar children', data:$valida);
+            }
+        }
+        return true;
     }
 
 }

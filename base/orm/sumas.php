@@ -18,7 +18,7 @@ class sumas{
     }
 
     /**
-     * PHPUNIT
+     *
      *
      * Funcion que recorre el arreglo de $campos para maquetar una cadena de texto. A su vez
      * verificando que no esté vacio y que sean validos los caracteres.
@@ -28,24 +28,29 @@ class sumas{
      *
      * @function $data = $sumas->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
      * La funcion enlista y maqueta el nombre de $campo y $alias para completar una cadena de texto.
+     * @version 1.478.49
      */
     public function columnas_suma(array $campos): array|string
     {
         if(count($campos)===0){
-            return $this->error->error('Error campos no puede venir vacio',$campos);
+            return $this->error->error(mensaje:'Error campos no puede venir vacio',data: $campos);
         }
         $columnas = '';
         foreach($campos as $alias =>$campo){
             if(is_numeric($alias)){
-                return $this->error->error('Error $alias no es txt $campos[alias]=campo',$campos);
+                return $this->error->error(mensaje: 'Error $alias no es txt $campos[alias]=campo',data: $campos);
             }
             if($campo === ''){
-                return $this->error->error('Error $campo esta vacio $campos[alias]=campo',$campos);
+                return $this->error->error(mensaje: 'Error $campo esta vacio $campos[alias]=campo',data: $campos);
+            }
+            $alias = trim($alias);
+            if($alias === ''){
+                return $this->error->error(mensaje: 'Error $alias esta vacio',data: $alias);
             }
 
             $data = $this->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
             if(errores::$error){
-                return $this->error->error('Error al agregar columna',$data);
+                return $this->error->error(mensaje: 'Error al agregar columna',data: $data);
             }
             $columnas .= "$data->coma $data->column";
 
@@ -54,7 +59,7 @@ class sumas{
     }
 
     /**
-     * PROBADO P ORDER P INT
+     *
      *
      * Funcion que obtiene el nombre del campo y el alias de la columna a sumar, validando
      * que no vengan espacios vacios y retornando un objeto que continene 2 cadenas maquetadas
@@ -71,27 +76,27 @@ class sumas{
      *
      * @function $coma = (new sql_bass())->coma_sql(columnas: $columnas); Funcion que hace llamado
      * al metodo "coma_sql" para maquetar una cadena de texto conforme a los valores de la variable $columnas
-     *
+     * @version 1.477.49
      */
     private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error('Error $campo no puede venir vacio', $campo);
+            return $this->error->error(mensaje:'Error $campo no puede venir vacio',data:  $campo);
         }
         $alias = trim($alias);
         if($alias === ''){
-            return $this->error->error('Error $alias no puede venir vacio', $alias);
+            return $this->error->error(mensaje: 'Error $alias no puede venir vacio', data: $alias);
         }
 
         $column = (new columnas())->add_column(alias: $alias, campo: $campo);
         if(errores::$error){
-            return $this->error->error('Error al agregar columna',$column);
+            return $this->error->error(mensaje: 'Error al agregar columna',data: $column);
         }
 
         $coma = (new sql_bass())->coma_sql(columnas: $columnas);
         if(errores::$error){
-            return $this->error->error('Error al agregar coma',$coma);
+            return $this->error->error(mensaje: 'Error al agregar coma',data: $coma);
         }
 
         $data = new stdClass();

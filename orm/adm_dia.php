@@ -1,19 +1,20 @@
 <?php
-namespace models;
-use base\orm\modelo;
+namespace gamboamartin\administrador\models;
+use base\orm\_modelo_parent;
 use gamboamartin\errores\errores;
 use PDO;
 
-class adm_dia extends modelo{
+class adm_dia extends _modelo_parent {
     public function __construct(PDO $link){
-        $tabla = __CLASS__;
+        $tabla = 'adm_dia';
         $columnas = array($tabla=>false);
         parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas);
+        $this->NAMESPACE = __NAMESPACE__;
     }
     public function hoy(){
         $dia = date('d');
         $filtro['adm_dia.codigo'] = $dia;
-        $r_dia = $this->filtro_and($filtro);
+        $r_dia = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al obtener dia', $r_dia);
         }
