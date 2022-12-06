@@ -531,7 +531,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @uses modelo_basico
      * @uses modelo
-     * @url http://doc.ciproteo.com:3443/en/home/Sistemas/Manuales/Tecnicos/modelo_basico/ejecuta_sql
      */
     public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
@@ -1298,8 +1297,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * Genera el resultado de un sql de tipo select
+     * @param array $campos_encriptados conjunto de campos encriptados del modelo
+     * @param string $consulta Sql
+     * @return array|stdClass
+     * @version 2.117.12
+     */
     private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
     {
+        $consulta = trim($consulta);
+        if($consulta === ''){
+            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla);
+        }
         $result = $this->ejecuta_sql(consulta: $consulta);
 
         if (errores::$error) {

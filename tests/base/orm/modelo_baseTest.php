@@ -853,6 +853,27 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_result_sql()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $_SESSION['usuario_id'] = 2;
+
+
+
+        $campos_encriptados = array();
+        $consulta = 'SELECT adm_grupo.id FROM adm_grupo';
+        $resultado = $mb->result_sql($campos_encriptados, $consulta);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
     public function test_str_replace_first(){
