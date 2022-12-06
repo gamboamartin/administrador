@@ -559,13 +559,11 @@ class init{
         $mensajeria = (new mensajes())->data();
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar mensajes',data: $mensajeria);
-
         }
 
         $data_custom = (new custom())->data(seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar datos custom',data: $data_custom);
-
         }
 
         $data = new stdClass();
