@@ -559,13 +559,11 @@ class init{
         $mensajeria = (new mensajes())->data();
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar mensajes',data: $mensajeria);
-
         }
 
         $data_custom = (new custom())->data(seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar datos custom',data: $data_custom);
-
         }
 
         $data = new stdClass();
@@ -995,6 +993,9 @@ class init{
         }
         if($sistema === 'tg_empleado'){
             $namespace = 'tglobally\\tg_empleado\\';
+        }
+        if($sistema === 'tg_acl'){
+            $namespace = 'tglobally\\tg_acl\\';
         }
         if($sistema === 'tg_nomina'){
             $namespace = 'tglobally\\tg_nomina\\';
