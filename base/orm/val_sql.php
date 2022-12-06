@@ -140,7 +140,23 @@ class val_sql extends validaciones {
 
     private function filtro_no_duplicado(string $campo, array $registro, string $tabla): array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacio', data: $tabla);
+        }
+
+        $keys = array($campo);
+        $valida = $this->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro ', data: $valida);
+        }
+
         $filtro = array();
+
         $key = $tabla.'.'.$campo;
         $filtro[$key] = $registro[$campo];
 
