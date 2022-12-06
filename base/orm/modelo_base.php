@@ -795,6 +795,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces[]  = 'gamboamartin\\cat_sat\\models\\';
         $namespaces[]  = 'gamboamartin\\comercial\\models\\';
         $namespaces[]  = 'gamboamartin\\boletaje\\models\\';
+        $namespaces[]  = 'gamboamartin\\banco\\models\\';
 
         $es_namespace_especial_como_mis_inges = false;
         foreach ($namespaces as $namespace) {
