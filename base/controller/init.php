@@ -573,6 +573,9 @@ class init{
         if($sistema === 'tg_empleado'){
             $namespace = 'tglobally\\tg_empleado\\';
         }
+        if($sistema === 'tg_acl'){
+            $namespace = 'tglobally\\tg_acl\\';
+        }
         if($sistema === 'tg_nomina'){
             $namespace = 'tglobally\\tg_nomina\\';
         }
