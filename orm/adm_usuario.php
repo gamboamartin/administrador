@@ -130,7 +130,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     /**
      * Verifica si el usuario en ejecucion tiene permiso
-     * @param string $adm_accion Accion en ejecion
+     * @param string $adm_accion Accion en ejecucion
      * @param string $adm_seccion Seccion en ejecucion
      * @return array|bool
      * @version 2.103.9
