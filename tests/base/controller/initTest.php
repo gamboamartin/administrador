@@ -387,6 +387,23 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_for_ws(){
+
+        errores::$error = false;
+
+        $init = new init();
+        $init = new liberator($init);
+
+
+        $resultado = $init->init_for_ws();
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertFalse($resultado->header);
+        $this->assertTrue($resultado->ws);
+        $this->assertFalse($resultado->view);
+        errores::$error = false;
+    }
+
     public function test_include_template(){
 
         errores::$error = false;
