@@ -646,10 +646,12 @@ class init{
      * @param string $key Campo de input
      * @param array $keys_selects Conjunto de keys precargados
      * @param string $place_holder Tag de input
+     * @param bool $required Atributo required
      * @return array
      * @version 2.115.12
      */
-    public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder): array
+    public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder,
+                                   bool $required = true): array
     {
         $key = trim($key);
         if($key === ''){
@@ -664,6 +666,9 @@ class init{
         }
         if(!isset($keys_selects[$key]->place_holder)) {
             $keys_selects[$key]->place_holder = $place_holder;
+        }
+        if(!isset($keys_selects[$key]->required)) {
+            $keys_selects[$key]->required = $required;
         }
         return $keys_selects;
     }
