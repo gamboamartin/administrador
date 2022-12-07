@@ -64,6 +64,12 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $r_grupo->registros[0];
     }
 
+    /**
+     * Elimina un registro de adm_usuario y las sessiones ligadas a ese usuario
+     * @param int $id Id de usuario
+     * @return array|stdClass
+     * @version 3.1.0
+     */
     public function elimina_bd(int $id): array|stdClass
     {
         if($id <=0){
