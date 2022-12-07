@@ -146,6 +146,8 @@ class adm_usuarioTest extends test {
         $usuario_ins['password'] = 2;
         $usuario_ins['email'] = 'a@a.com';
         $usuario_ins['telefono'] = 1235487596;
+        $usuario_ins['nombre'] = 1235487596;
+        $usuario_ins['ap'] = 1235487596;
         $r_alta_usuario = $modelo->alta_registro($usuario_ins);
         if (errores::$error) {
             $error = (new errores())->error('Error al dar de alta usuario', $r_alta_usuario);

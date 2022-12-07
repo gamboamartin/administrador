@@ -17,7 +17,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $tabla = 'adm_usuario';
         $columnas = array($tabla=>false,'adm_grupo'=>$tabla);
 
-        $campos_obligatorios = array('user','password','email','adm_grupo_id','telefono');
+        $campos_obligatorios = array('user','password','email','adm_grupo_id','telefono','nombre','ap');
 
 
         $childrens['adm_bitacora'] = "gamboamartin\\administrador\\models";
@@ -28,8 +28,11 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $tipo_campos['telefono'] = 'telefono_mx';
         $tipo_campos['adm_grupo_id'] = 'id';
 
+        $columnas_extra['usuario_nombre_completo'] =
+            "(CONCAT( ( IFNULL(adm_usuario.nombre,'') ),( IFNULL(adm_usuario.ap,'') ),( IFNULL(adm_usuario.am,'') )) )";
+
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
-            columnas: $columnas, tipo_campos: $tipo_campos, childrens: $childrens);
+            columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
     }
 
