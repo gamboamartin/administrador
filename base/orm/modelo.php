@@ -1044,6 +1044,27 @@ class modelo extends modelo_base {
                                array $order = array(), string $sql_extra = '',
                                string $tipo_filtro='numeros'): array|stdClass{
 
+        $params_fn = new stdClass();
+        $params_fn->aplica_seguridad = $aplica_seguridad;
+        $params_fn->columnas = $columnas;
+        $params_fn->columnas_by_table = $columnas_by_table;
+        $params_fn->columnas_en_bruto = $columnas_en_bruto;
+        $params_fn->diferente_de = $diferente_de;
+        $params_fn->filtro = $filtro;
+        $params_fn->filtro_especial = $filtro_especial;
+        $params_fn->filtro_extra = $filtro_extra;
+        $params_fn->filtro_rango = $filtro_rango;
+        $params_fn->group_by = $group_by;
+        $params_fn->hijo = $hijo;
+        $params_fn->in = $in;
+        $params_fn->limit = $limit;
+        $params_fn->not_in = $not_in;
+        $params_fn->offset = $offset;
+        $params_fn->order = $order;
+        $params_fn->sql_extra = $sql_extra;
+        $params_fn->tipo_filtro = $tipo_filtro;
+        $params_fn->filtro_fecha = $filtro_fecha;
+
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
@@ -1055,7 +1076,7 @@ class modelo extends modelo_base {
 
         if($limit < 0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $limit);
+                data: $params_fn);
         }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table:$columnas_by_table,
@@ -1172,11 +1193,32 @@ class modelo extends modelo_base {
                                        int $offset, array $order, string $sql_extra, string $tipo_filtro,
                                        array $filtro_fecha = array()): array|string
     {
+
+        $params_fn = new stdClass();
+        $params_fn->columnas = $columnas;
+        $params_fn->columnas_by_table = $columnas_by_table;
+        $params_fn->columnas_en_bruto = $columnas_en_bruto;
+        $params_fn->diferente_de = $diferente_de;
+        $params_fn->filtro = $filtro;
+        $params_fn->filtro_especial = $filtro_especial;
+        $params_fn->filtro_extra = $filtro_extra;
+        $params_fn->filtro_fecha = $filtro_fecha;
+        $params_fn->filtro_rango = $filtro_rango;
+        $params_fn->group_by = $group_by;
+        $params_fn->in = $in;
+        $params_fn->limit = $limit;
+        $params_fn->not_in = $not_in;
+        $params_fn->offset = $offset;
+        $params_fn->order = $order;
+        $params_fn->sql_extra = $sql_extra;
+        $params_fn->tipo_filtro = $tipo_filtro;
+
+
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $params_fn);
         }
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $params_fn);
 
         }
 

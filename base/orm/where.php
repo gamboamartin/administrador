@@ -1516,6 +1516,7 @@ class where{
      * @version 1.0.0
      * @param string $tipo_filtro validos son numeros y textos
      * @return bool|array
+     * @error_params true
      */
     public function verifica_tipo_filtro(string $tipo_filtro): bool|array
     {
@@ -1525,9 +1526,13 @@ class where{
         }
         $tipos_permitidos = array('numeros','textos');
         if(!in_array($tipo_filtro,$tipos_permitidos)){
+
+            $params = new stdClass();
+            $params->tipo_filtro = $tipo_filtro;
+
             return $this->error->error(
                 mensaje: 'Error el tipo filtro no es correcto los filtros pueden ser o numeros o textos',
-                data: $tipo_filtro);
+                data: $params);
         }
         return true;
     }
