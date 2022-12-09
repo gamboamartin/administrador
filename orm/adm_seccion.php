@@ -256,13 +256,13 @@ class adm_seccion extends _modelo_children {
                 $adm_usuario = (new adm_usuario(link: $this->link))->registro(
                     registro_id: $adm_usuario_id, columnas_en_bruto: true, retorno_obj: true);
                 if (errores::$error) {
-                    return $this->error->error('Error al obtener usuario ', $adm_usuario);
+                    return $this->error->error(mensaje: 'Error al obtener usuario ',data:  $adm_usuario);
                 }
 
                 $adm_grupo = (new adm_grupo(link: $this->link))->registro(
                     registro_id: $adm_usuario->adm_grupo_id, columnas_en_bruto: true, retorno_obj: true);
                 if (errores::$error) {
-                    return $this->error->error('Error al obtener grupo ', $adm_grupo);
+                    return $this->error->error(mensaje: 'Error al obtener grupo ',data: $adm_grupo);
                 }
 
 

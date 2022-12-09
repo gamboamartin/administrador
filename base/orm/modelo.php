@@ -1841,7 +1841,6 @@ class modelo extends modelo_base {
      * @param int $registro_id $id Identificador del registro
      * @param array $columnas columnas a obtener del registro
      * @param bool $columnas_en_bruto
-     * @param bool $del_tmp
      * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas
      * a configuracion
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo

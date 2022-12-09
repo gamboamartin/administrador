@@ -534,15 +534,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
     public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
-            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla);
+            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla,
+                aplica_bitacora: true);
         }
         try {
-            $result = $this->link->query($consulta);
+            $result = $this->link->query(statement: $consulta);
         }
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
                 data: array($e->getCode().' '.$this->tabla.' '.$consulta.' '.$this->tabla,
-                    'registro'=>$this->registro));
+                    'registro'=>$this->registro),aplica_bitacora: true);
         }
         if($this->transaccion ==='INSERT'){
             $this->registro_id = $this->link->lastInsertId();
