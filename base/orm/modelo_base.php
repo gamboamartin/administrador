@@ -538,7 +538,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 aplica_bitacora: true);
         }
         try {
-            $result = $this->link->query(statement: $consulta);
+            $result = $this->link->query( $consulta);
         }
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
