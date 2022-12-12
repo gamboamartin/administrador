@@ -214,37 +214,14 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      */
     public function alta(bool $header, bool $ws = false):array|string{
 
-        /**
-         * REFACTOR
-         */
-        $this->seccion = str_replace('models\\','',$this->seccion);
-
-        if($this->seccion === ''){
-            return $this->retorno_error(mensaje: "Error la seccion esta vacia",data:  $this->seccion, header: $header,
-                ws: false);
-        }
-        if($this->accion === ''){
-            return $this->retorno_error(mensaje: "Error la accion esta vacia",data:  $this->accion,header:  $header,
-                ws:false);
-
-        }
-
         $this->valores['status'] = 'activo';
-
-
         $registro_en_proceso = $_SESSION['registro_en_proceso'][$this->seccion] ?? array();
 
         if(count($registro_en_proceso)>0){
             $this->valores = $registro_en_proceso;
         }
-
-
-
         $this->registro_en_proceso = $registro_en_proceso;
-
-
         $this->alta_html = '';
-
 
         return $this->alta_html;
     }
