@@ -251,6 +251,11 @@ class adm_seccion extends _modelo_children {
                 return $this->error->error('Error al obtener secciones ', $secciones_sistema);
             }
 
+            $secciones_sistema = $this->validar_acciones(secciones_sistema: $secciones_sistema);
+            if (errores::$error) {
+                return $this->error->error('Error al validar acciones', $secciones_sistema);
+            }
+
             if(count($secciones_sistema)>0) {
 
                 $adm_usuario = (new adm_usuario(link: $this->link))->registro(
@@ -297,6 +302,26 @@ class adm_seccion extends _modelo_children {
             return $this->error->error(mensaje: 'Error al obtener secciones ', data: $r_seccion_pertenece);
         }
         return $r_seccion_pertenece->registros;
+    }
+
+    public function validar_acciones(array $secciones_sistema): array
+    {
+        foreach ($secciones_sistema as $item => $value){
+            $adm_seccion_id = $value['adm_seccion_id'];
+
+            $filtro['adm_seccion_id'] = $adm_seccion_id;
+            $acciones = (new adm_accion($this->link))->filtro_and(columnas: array('adm_accion_descripcion'), filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener acciones ', data: $acciones);
+            }
+
+            $stream = array_map(fn($valor): string => $valor['adm_accion_descripcion'],$acciones->registros);
+
+            if (!in_array("lista",$stream)){
+                unset($secciones_sistema[$item]);
+            }
+        }
+        return $secciones_sistema;
     }
 
     protected function valida_alta_bd(array $registro): bool|array
