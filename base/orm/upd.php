@@ -56,16 +56,34 @@ class upd{
      * @param bool $reactiva Si reactiva  valida si un upd es valido en el modelo
      * @param array $registro Registro en proceso
      * @return array|stdClass
-
+     * @version 4.2.0
      */
-    public function aplica_ejecucion(stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
+    public function aplica_ejecucion(
+        stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
         if($modelo->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
         }
+
+        if(!isset($ejecuta_upd->resultado)){
+            return $this->error->error(mensaje: 'Error ejecuta_upd->resultado debe existir',data: $ejecuta_upd);
+        }
+        if(!isset($ejecuta_upd->ejecuta_upd)){
+            return $this->error->error(mensaje: 'Error ejecuta_upd->ejecuta_upd debe existir',data: $ejecuta_upd);
+        }
+        if(!is_object($ejecuta_upd->resultado)){
+            return $this->error->error(mensaje: 'Error ejecuta_upd->resultado debe ser un objeto',data: $ejecuta_upd);
+        }
+
         $resultado = $ejecuta_upd->resultado;
 
         if($ejecuta_upd->ejecuta_upd) {
+
+            $valida = $this->valida_upd(modelo: $modelo,id:  $id);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar modelo', data: $valida);
+            }
+
             $resultado = $this->ejecuta_upd_modelo(id:$id, modelo: $modelo,reactiva:  $reactiva,
                 registro:  $registro);
             if (errores::$error) {
@@ -146,15 +164,10 @@ class upd{
      */
     private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
     {
-        if(count($modelo->registro_upd) === 0){
-            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
-                data: $modelo->registro_upd);
-        }
-        if($id<=0){
-            return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
-        }
-        if($modelo->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+
+        $valida = $this->valida_upd(modelo: $modelo,id:  $id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar modelo', data: $valida);
         }
 
         $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
@@ -492,6 +505,21 @@ class upd{
 
         return $update_valido;
 
+    }
+
+    private function valida_upd(modelo $modelo, int $id): bool|array
+    {
+        if(count($modelo->registro_upd) === 0){
+            return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
+                data: $modelo->registro_upd);
+        }
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error $id debe ser mayor a 0', data: $id);
+        }
+        if($modelo->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
+        }
+        return true;
     }
 
     /**

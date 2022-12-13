@@ -40,6 +40,32 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_aplica_ejecucion(){
+
+
+        errores::$error = false;
+        $upd = new upd();
+
+        //$upd = new liberator($upd);
+
+        $modelo = new adm_accion($this->link);
+        $modelo->usuario_id = 2;
+        $modelo->registro_upd['status'] = 'activo';
+
+        $ejecuta_upd = new stdClass();
+        $ejecuta_upd->resultado = new stdClass();
+        $ejecuta_upd->ejecuta_upd = true;
+        $id = 1;
+        $reactiva = false;
+        $registro = array();
+
+        $resultado = $upd->aplica_ejecucion($ejecuta_upd, $id, $modelo, $reactiva, $registro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("UPDATE adm_accion SET status = 'activo',usuario_update_id=2  WHERE id = 1",$resultado->sql);
+        errores::$error = false;
+    }
+
     public function test_campos(): void
     {
         errores::$error = false;
