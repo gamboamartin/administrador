@@ -47,6 +47,7 @@ class modelo extends modelo_base {
      * @param bool $temp
      * @param array $childrens
      * @param array $defaults
+     * @param array $parents_data
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
@@ -159,15 +160,9 @@ class modelo extends modelo_base {
      */
     public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         if($registro_id>0){
@@ -194,15 +189,9 @@ class modelo extends modelo_base {
         $data->registro_id = $this->registro_id;
         $data->transaccion = $transaccion;
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return $data;
@@ -215,15 +204,9 @@ class modelo extends modelo_base {
      */
     public function activa_todo(): array
     {
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         $this->transaccion = 'UPDATE';
         $consulta = "UPDATE " . $this->tabla . " SET status = 'activo'  ";
@@ -233,15 +216,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al ejecutar sql',data: $resultado);
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return array('mensaje'=>'Registros activados con éxito','sql'=>$this->consulta);
@@ -264,15 +241,9 @@ class modelo extends modelo_base {
      */
     public function alta_bd(): array|stdClass{
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         if(!isset($_SESSION['usuario_id'])){
@@ -316,15 +287,9 @@ class modelo extends modelo_base {
         $data->registro_ins = $this->registro;
         $data->campos = $this->campos_tabla;
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return $data;
@@ -338,15 +303,9 @@ class modelo extends modelo_base {
      */
     public function alta_registro(array $registro):array|stdClass{
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         if(!isset($_SESSION['usuario_id'])){
             return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
@@ -363,15 +322,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return $r_alta;
@@ -465,15 +418,9 @@ class modelo extends modelo_base {
      * @throws JsonException
      */
     public function desactiva_bd(): array|stdClass{
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         if($this->registro_id<=0){
             return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id);
@@ -505,15 +452,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return array('mensaje'=>'Registro desactivado con éxito', 'registro_id'=>$this->registro_id);
@@ -526,15 +467,9 @@ class modelo extends modelo_base {
      */
     public function desactiva_todo(): array
     {
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         $consulta = /** @lang MYSQL */
@@ -545,15 +480,9 @@ class modelo extends modelo_base {
             return  $this->error->error($this->link->errorInfo()[0],'');
         }
         else{
-            $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+            $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-            }
-            if(file_exists($init_archivos_tmp_model)){
-                $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-                if (errores::$error) {
-                    return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-                }
             }
             return array('mensaje'=>'Registros desactivados con éxito');
         }
@@ -575,15 +504,9 @@ class modelo extends modelo_base {
      * @version 1.563.51
      */
     public function elimina_bd(int $id): array|stdClass{
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         if($id <= 0){
             return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
@@ -632,15 +555,9 @@ class modelo extends modelo_base {
         $data->sql = $this->consulta;
         $data->registro = $registro_bitacora;
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return $data;
@@ -653,15 +570,9 @@ class modelo extends modelo_base {
      * @version 1.564.51
      */
     public function elimina_con_filtro_and(array $filtro): array{
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         if(count($filtro) === 0){
             return $this->error->error('Error no existe filtro', $filtro);
@@ -681,15 +592,9 @@ class modelo extends modelo_base {
             $dels[] = $del;
 
         }
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return $dels;
@@ -720,15 +625,9 @@ class modelo extends modelo_base {
      */
     public function elimina_todo(): array
     {
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         $elimina_todo_children = $this->elimina_full_childrens();
@@ -748,15 +647,9 @@ class modelo extends modelo_base {
             return $this->error->error('Error al ejecutar sql',$resultado);
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return array('mensaje'=>'Registros eliminados con éxito');
@@ -1334,6 +1227,20 @@ class modelo extends modelo_base {
 
     }
 
+    private function init_archivos_tmp_model_exe(){
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+        }
+        if(file_exists($init_archivos_tmp_model)){
+            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
+            if (errores::$error) {
+                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
+            }
+        }
+        return $init_archivos_tmp_model;
+    }
+
 
 
     /**
@@ -1354,7 +1261,6 @@ class modelo extends modelo_base {
      * @param array $registro
      * @param int $id
      * @return array
-     * @throws JsonException
      */
     public function limpia_campos_registro(array $registro, int $id): array
     {
@@ -1396,15 +1302,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
@@ -1434,17 +1334,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
         }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
-        }
-
 
         return $resultado;
     }
@@ -1454,19 +1347,12 @@ class modelo extends modelo_base {
      * @param array $filtro
      * @param array $registro
      * @return string[]
-     * @throws JsonException
      */
     public function modifica_con_filtro_and(array $filtro, array $registro): array
     {
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         $this->registro_upd = $registro;
         if(count($this->registro_upd) === 0){
@@ -1490,15 +1376,9 @@ class modelo extends modelo_base {
             $data[] = $upd;
         }
 
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
 
         return array('mensaje'=>'Registros modificados con exito',$data);
@@ -1510,19 +1390,12 @@ class modelo extends modelo_base {
      * @param array $registro
      * @param int $id
      * @return array
-     * @throws JsonException
      */
     public function modifica_por_id(array $registro,int $id): array
     {
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
+        $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
         }
         $r_modifica = $this->modifica_bd($registro, $id);
         if(errores::$error){
