@@ -16,8 +16,28 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     public function __construct(PDO $link){
         $tabla = 'adm_session';
         $columnas = array($tabla=>false, 'adm_usuario'=>$tabla,'adm_grupo'=>'adm_usuario');
-        parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
+
+        $columnas_extra['adm_session_nombre_completo'] =
+            "(CONCAT( ( IFNULL(adm_usuario.nombre,'') ),' ',( IFNULL(adm_usuario.ap,'') ),' ',( IFNULL(adm_usuario.am,'') )) )";
+
+        parent::__construct(link: $link, tabla: $tabla, columnas: $columnas, columnas_extra: $columnas_extra);
         $this->NAMESPACE = __NAMESPACE__;
+    }
+
+    public function adm_session_nombre_completo(string $adm_session_name){
+        $session_en_ejecucion = $this->session(session: $adm_session_name);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al cargar session',data: $session_en_ejecucion);
+        }
+        if((int)$session_en_ejecucion->n_registros > 1){
+            return  $this->error->error(mensaje: 'Error existe mas de una session',data: $session_en_ejecucion);
+        }
+
+        $adm_session_nombre_completo = '';
+        if((int)$session_en_ejecucion->n_registros === 1){
+            $adm_session_nombre_completo = $session_en_ejecucion->registros[0]['adm_session_nombre_completo'];
+        }
+        return $adm_session_nombre_completo;
     }
 
     /**
@@ -85,11 +105,18 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
         }
+        $keys = array('adm_session_nombre_completo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,
+            registro:  $r_session->registros[0],valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
+        }
 
         $_SESSION['numero_empresa'] = 1;
         $_SESSION['activa'] = 1;
         $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
         $_SESSION['usuario_id'] = $r_session->registros[0]['adm_usuario_id'];
+        $_SESSION['nombre_usuario'] = $r_session->registros[0]['adm_session_nombre_completo'];
         return $_SESSION;
     }
 
@@ -332,12 +359,18 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         return $filtro;
     }
 
-    public function session(string $session): array
+    /**
+     * Obtiene los datos de una session
+     * @param string $session session_id por GET
+     * @return array|stdClass
+     * @version 3.7.1
+     */
+    private function session(string $session): array|stdClass
     {
-        $filtro['session.session_id'] = $session;
-        $r_session = $this->filtro_and($filtro);
+        $filtro['adm_session.name'] = $session;
+        $r_session = $this->filtro_and(filtro:$filtro);
         if(errores::$error){
-            return $this->error->error("Error al filtrar", $r_session);
+            return $this->error->error(mensaje: "Error al filtrar",data:  $r_session);
         }
         return $r_session;
     }

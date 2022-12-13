@@ -4,6 +4,7 @@ namespace base\controller;
 use base\orm\modelo;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 
 use PDO;
@@ -139,12 +140,13 @@ class controler{
 
         $this->subtitulos_menu = $views->subtitulos_menu;
 
-
-        if(isset($_SESSION['nombre_usuario'])){
-            $this->nombre_usuario = $_SESSION['nombre_usuario'];
+        $adm_session_nombre_completo = $this->nombre_usuario();
+        if(errores::$error){
+            $error =  $this->errores->error(
+                mensaje: 'Error al cargar adm_session_nombre_completo',data: $adm_session_nombre_completo);
+            print_r($error);
+            exit;
         }
-
-
     }
 
 
@@ -270,6 +272,21 @@ class controler{
             }
             exit;
         }
+    }
+
+    private function nombre_usuario(){
+        $adm_session_nombre_completo = '';
+        if(!isset($_SESSION['nombre_usuario']) || $_SESSION['nombre_usuario'] === ''){
+            $adm_session_nombre_completo = (new adm_session(link: $this->link))->adm_session_nombre_completo(
+                adm_session_name: $this->session_id);
+            if(errores::$error){
+                return  $this->errores->error(
+                    mensaje: 'Error al cargar adm_session_nombre_completo',data: $adm_session_nombre_completo);
+            }
+            $_SESSION['nombre_usuario'] = $adm_session_nombre_completo;
+        }
+        $this->nombre_usuario = $_SESSION['nombre_usuario'];
+        return $adm_session_nombre_completo;
     }
 
 

@@ -24,7 +24,9 @@ class adm_sessionTest extends test {
         $r_session = new stdClass();
         $r_session->registros[0]['adm_grupo_id'] = 1;
         $r_session->registros[0]['adm_usuario_id'] = 1;
+        $r_session->registros[0]['adm_session_nombre_completo'] = '';
         $resultado = $session->asigna_datos_session($r_session);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -78,6 +80,20 @@ class adm_sessionTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_session(){
+
+        errores::$error = false;
+        $modelo = new adm_session($this->link);
+        $modelo = new liberator($modelo);
+
+        $session = '';
+        $resultado = $modelo->session($session);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
     }
 
     public function test_session_activa(){
