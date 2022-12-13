@@ -33,6 +33,23 @@ class _baseTest extends test {
 
     }
 
+    public function test_status_alta()
+    {
+
+        errores::$error = false;
+        $tabla = 'adm_mes';
+        $base = new _base($this->link, $tabla);
+        $base = new liberator($base);
+
+        $registro = array();
+        $key = 'a';
+        $resultado = $base->status_alta($key, $registro);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals('activo',$resultado['a']);
+        errores::$error = false;
+    }
+
     public function test_valida_alta_bd()
     {
 

@@ -52,8 +52,19 @@ class _base extends modelo{
         return $registro;
     }
 
+    /**
+     * Inicializa los status en alta como inactivo
+     * @param string $key Key de registro a integrar
+     * @param array $registro Registro en proceso
+     * @return array
+     * @version 4.1.0
+     */
     private function status_alta(string $key, array $registro): array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data: $key);
+        }
         if(!isset($registro[$key])){
             $registro = $this->asigna_status(key: $key, registro: $registro);
             if(errores::$error){
