@@ -28,8 +28,8 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $tipo_campos['telefono'] = 'telefono_mx';
         $tipo_campos['adm_grupo_id'] = 'id';
 
-        $columnas_extra['usuario_nombre_completo'] =
-            "(CONCAT( ( IFNULL(adm_usuario.nombre,'') ),( IFNULL(adm_usuario.ap,'') ),( IFNULL(adm_usuario.am,'') )) )";
+        $columnas_extra['adm_usuario_nombre_completo'] =
+            "(CONCAT( ( IFNULL(adm_usuario.nombre,'') ),' ',( IFNULL(adm_usuario.ap,'') ),' ',( IFNULL(adm_usuario.am,'') )) )";
 
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens);

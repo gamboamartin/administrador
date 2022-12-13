@@ -30,29 +30,28 @@ class controlador_adm_session extends controlador_base{
     }
 
     /**
-     * PRUEBAS FINALIZADAS
-     * @param array $datos_usuario
+     * Integra un alta de session de usuario
+     * @param array $datos_usuario Datos del usuario logueado
      * @return array|stdClass
+     * 3.6.1
      */
-    public function alta_session(array $datos_usuario): array|stdClass
-    { //FIN PROT
+    private function alta_session(array $datos_usuario): array|stdClass
+    {
         if(count($datos_usuario) === 0){
             return $this->errores->error(mensaje: 'Error datos de usuario estan vacios',data: $datos_usuario);
         }
         if(!isset($datos_usuario['adm_usuario_id'])){
-            return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de adm_usuario_id no existe',data:$datos_usuario);
         }
         if((int)$datos_usuario['adm_usuario_id']<=0){
-            return $this->errores->error(mensaje:'Error datos de usuario_id debe ser mayor a 0',data:$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de adm_usuario_id debe ser mayor a 0',data:$datos_usuario);
         }
-        if(!isset($datos_usuario['adm_usuario_id'])){
-            return $this->errores->error(mensaje:'Error datos de usuario_id no existe',data:$datos_usuario);
-        }
+
         if(!isset($datos_usuario['adm_grupo_id'])){
-            return $this->errores->error(mensaje:'Error datos de grupo_id no existe',data:$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de adm_grupo_id no existe',data:$datos_usuario);
         }
         if((int)$datos_usuario['adm_grupo_id']<=0){
-            return $this->errores->error(mensaje:'Error datos de grupo_id debe ser mayor a 0',data:$datos_usuario);
+            return $this->errores->error(mensaje:'Error datos de adm_grupo_id debe ser mayor a 0',data:$datos_usuario);
         }
         $session_modelo = new adm_session($this->link);
         $session_insertar['name'] = (new generales())->session_id;
@@ -171,7 +170,7 @@ class controlador_adm_session extends controlador_base{
                 header("Location: ./index.php?seccion=$seccion_header&accion=$accion_header&mensaje=$mensaje&error=1");
                 exit;
             }
-            $this->retorno_error('Error al validar datos', $datos_validos, $header, $ws);
+            $this->retorno_error(mensaje: 'Error al validar datos', data: $datos_validos,header:  $header, ws: $ws);
 
         }
 
@@ -220,6 +219,7 @@ class controlador_adm_session extends controlador_base{
         $_SESSION['activa'] = 1;
         $_SESSION['grupo_id'] = $usuario['adm_grupo_id'];
         $_SESSION['usuario_id'] = $usuario['adm_usuario_id'];
+        $_SESSION['nombre_usuario'] = $usuario['adm_usuario_nombre_completo'];
 
 
         $data_get = (new init())->asigna_session_get();
@@ -233,7 +233,7 @@ class controlador_adm_session extends controlador_base{
                 ws: $ws);
         }
 
-        $r_alta  = $this->alta_session($usuario);
+        $r_alta  = $this->alta_session(datos_usuario: $usuario);
         if(errores::$error){
             if($seccion_header !== '' && $accion_header !== '' && $header) {
                 $mensaje = $r_alta['mensaje'];

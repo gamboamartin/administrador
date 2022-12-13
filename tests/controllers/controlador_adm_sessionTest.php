@@ -10,6 +10,7 @@ use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use stdClass;
 
@@ -25,6 +26,24 @@ class controlador_adm_sessionTest extends test {
         $this->paths_conf->generales = '/var/www/html/administrador/config/generales.php';
         $this->paths_conf->database = '/var/www/html/administrador/config/database.php';
         $this->paths_conf->views = '/var/www/html/administrador/config/views.php';
+    }
+
+    public function test_alta_session(): void
+    {
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
+        $ctl = new liberator($ctl);
+
+
+        $datos_usuario = array();
+        $datos_usuario['adm_usuario_id'] = '2';
+        $datos_usuario['adm_grupo_id'] = '2';
+        $resultado = $ctl->alta_session($datos_usuario);
+        $this->assertFalse(errores::$error);
+        $this->assertIsObject($resultado);
+
     }
 
     public function test_denegado(): void

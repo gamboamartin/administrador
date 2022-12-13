@@ -75,6 +75,8 @@ class controler{
 
     public array $secciones_permitidas = array();
 
+    public string $nombre_usuario = '';
+
     public function __construct(PDO $link){
         $this->link = $link;
 
@@ -136,6 +138,11 @@ class controler{
         }
 
         $this->subtitulos_menu = $views->subtitulos_menu;
+
+
+        if(isset($_SESSION['nombre_usuario'])){
+            $this->nombre_usuario = $_SESSION['nombre_usuario'];
+        }
 
 
     }
