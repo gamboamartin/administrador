@@ -22,6 +22,73 @@ class exito_html extends base_html {
         return '<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>';
     }
 
+    private function exito_html(bool $html): string
+    {
+        $exito_html = '';
+        if($html) {
+            $exito_html = '<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">';
+        }
+        return $exito_html;
+    }
+
+    private function exito_html_string(string $close_btn, string $exito_html): string
+    {
+        $exito_html .= $close_btn;
+        $exito_html .= '</div>';
+        return $exito_html;
+    }
+
+    private function exito_transaccion(string $close_btn, string $exito_html, string $exito_transaccion, bool $html, string $mensaje_html){
+
+        if($html) {
+            $exito_transaccion = $this->exito_html_string(close_btn: $close_btn,exito_html:  $exito_html);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar mensaje',data:  $exito_transaccion);
+            }
+        }
+        if (isset($_SESSION['exito'])) {
+            unset($_SESSION['exito']);
+        }
+        if(!$html){
+            $exito_transaccion.=$mensaje_html;
+        }
+
+        return $exito_transaccion;
+    }
+
+    private function genera_exito_html(bool $html){
+        $exito_html = $this->exito_html(html: $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar mensaje',data:  $exito_html);
+        }
+
+        $head_html = $this->head(titulo: 'Exito');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar head',data:  $head_html);
+        }
+        if($html) {
+            $exito_html .= $head_html;
+        }
+
+        $exito_html = $this->integra_boton(exito_html: $exito_html, html: $html);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar boton',data:  $exito_html);
+        }
+        return $exito_html;
+    }
+
+    private function integra_boton(string $exito_html, bool $html){
+        $boton = $this->boton_exito();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar boton',data:  $boton);
+        }
+
+        if($html) {
+            $exito_html .= $boton;
+        }
+        return $exito_html;
+    }
+
     /**
      * Asigna el mensaje de exito a un p
      * @param array $mensaje_exito Datos con mensaje
@@ -87,51 +154,31 @@ class exito_html extends base_html {
 
         $exito_transaccion = '';
         if(count($mensajes_exito)>0) {
-            $exito_html = '';
-            if($html) {
-                $exito_html = '<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">';
-            }
 
-            $head_html = (new exito_html())->head(titulo: 'Exito');
+            $exito_html = $this->genera_exito_html(html: $html);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar head',data:  $head_html);
-            }
-            if($html) {
-                $exito_html .= $head_html;
+                return $this->error->error(mensaje: 'Error al integrar mensaje',data:  $exito_html);
             }
 
-            $boton = (new exito_html())->boton_exito();
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar boton',data:  $boton);
-            }
 
-            if($html) {
-                $exito_html .= $boton;
-            }
-
-            $mensaje_html = (new exito_html())->mensajes_collapse(mensajes_exito: $mensajes_exito, html: $html);
+            $mensaje_html = $this->mensajes_collapse(mensajes_exito: $mensajes_exito, html: $html);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar mensaje',data:  $mensaje_html);
 
             }
 
-            $close_btn = (new base_html())->close_btn();
+            $close_btn = $this->close_btn();
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar boton', data: $close_btn);
 
             }
 
             $exito_html.= $mensaje_html;
-            if($html) {
-                $exito_html .= $close_btn;
-                $exito_html .= '</div>';
-                $exito_transaccion = $exito_html;
-            }
-            if (isset($_SESSION['exito'])) {
-                unset($_SESSION['exito']);
-            }
-            if(!$html){
-                $exito_transaccion.=$mensaje_html;
+
+            $exito_transaccion = $this->exito_transaccion(close_btn: $close_btn,exito_html:  $exito_html,
+                exito_transaccion:  $exito_transaccion,html:  $html,mensaje_html:  $mensaje_html);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar mensaje',data:  $exito_transaccion);
             }
 
 

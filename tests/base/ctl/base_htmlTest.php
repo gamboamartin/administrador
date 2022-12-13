@@ -3,6 +3,7 @@ namespace tests\base\ctl;
 
 use gamboamartin\administrador\ctl\base_html;
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 
@@ -20,7 +21,7 @@ class base_htmlTest extends test {
         errores::$error = false;
 
         $html = new base_html();
-        //$html = new liberator($html);
+        $html = new liberator($html);
 
 
         $resultado = $html->close_btn();
@@ -36,7 +37,7 @@ class base_htmlTest extends test {
         errores::$error = false;
 
         $html = new base_html();
-        //$html = new liberator($html);
+        $html = new liberator($html);
 
 
         $titulo = 'a';
