@@ -13,11 +13,17 @@ class adm_accion_basica extends _modelo_parent {
         $columnas = array($tabla=> false);
         $campos_obligatorios=array('descripcion','codigo','codigo_bis','visible','seguridad','inicio','lista',
             'status','es_view','descripcion_select','etiqueta_label','es_modal','titulo','css','es_status','alias',
-            'es_lista');
+            'es_lista','muestra_icono_btn','muestra_titulo_btn');
 
         $no_duplicados[] = 'descripcion';
+
+        $tipo_campos['visible'] = 'status';
+        $tipo_campos['inicio'] = 'status';
+        $tipo_campos['lista'] = 'status';
+        $tipo_campos['muestra_icono_btn'] = 'status';
+        $tipo_campos['muestra_titulo_btn'] = 'status';
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
-            no_duplicados: $no_duplicados);
+            no_duplicados: $no_duplicados, tipo_campos: $tipo_campos);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

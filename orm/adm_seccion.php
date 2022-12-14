@@ -42,6 +42,59 @@ class adm_seccion extends _modelo_children {
         $this->NAMESPACE = __NAMESPACE__;
     }
 
+    private function accion_base_alta(array $accion_basica){
+        $campos = array('descripcion','icono','visible','seguridad','inicio','lista','es_lista','status','es_status',
+            'es_view','muestra_icono_btn','muestra_titulo_btn','css');
+
+        $accion = $this->accion_maqueta_campos(accion_basica: $accion_basica,campos:  $campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar campo',data:  $accion);
+        }
+        return $accion;
+    }
+
+    private function accion_maqueta(array $accion_basica, int $registro_id): array
+    {
+
+        $accion = $this->accion_base_alta(accion_basica: $accion_basica);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar campo',data:  $accion);
+        }
+        $accion['adm_seccion_id'] = $registro_id;
+        $accion['titulo'] =ucwords($accion_basica['adm_accion_basica_titulo']);
+
+        return $accion;
+    }
+
+    private function accion_maqueta_campo(array $accion, array $accion_basica, string $key): array
+    {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+        }
+        $key_ab = "adm_accion_basica_$key";
+
+        $keys = array($key_ab);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $accion_basica,valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida $accion_basica',data:  $valida);
+        }
+
+        $accion[$key] = $accion_basica[$key_ab];
+        return $accion;
+    }
+
+    private function accion_maqueta_campos(array $accion_basica, array $campos){
+        $accion = array();
+        foreach ($campos as $campo){
+            $accion = $this->accion_maqueta_campo(accion: $accion,accion_basica:  $accion_basica, key: $campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al maquetar campo',data:  $accion);
+            }
+        }
+        return $accion;
+    }
+
     /**
      * Obtiene las acciones de una seccion
      * @param int $adm_seccion_id Seccion identificador
@@ -83,40 +136,11 @@ class adm_seccion extends _modelo_children {
         }
         $registro_id = $r_alta_bd->registro_id;
 
-        $r_accion_basica = (new adm_accion_basica($this->link))->obten_registros_activos();
+        $r_alta_acciones =$this->inserta_acciones_basicas(registro_id: $registro_id);
         if (errores::$error){
-
-            return  $this->error->error(mensaje: 'Error al obtener datos del registro',data: $r_accion_basica);
-
+            return  $this->error->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_acciones);
         }
 
-        $acciones_basicas = $r_accion_basica->registros;
-
-        /**
-         * REFACTORIZAR
-         */
-        $accion = array();
-        foreach ($acciones_basicas as $accion_basica) {
-            $accion['descripcion'] = $accion_basica['adm_accion_basica_descripcion'];
-            $accion['icono'] = $accion_basica['adm_accion_basica_icono'];
-            $accion['visible'] = $accion_basica['adm_accion_basica_visible'];
-            $accion['seguridad'] = $accion_basica['adm_accion_basica_seguridad'];
-            $accion['inicio'] = $accion_basica['adm_accion_basica_inicio'];
-            $accion['lista'] = $accion_basica['adm_accion_basica_lista'];
-            $accion['es_lista'] = $accion_basica['adm_accion_basica_es_lista'];
-            $accion['status'] = $accion_basica['adm_accion_basica_status'];
-            $accion['es_status'] = $accion_basica['adm_accion_basica_es_status'];
-            $accion['adm_seccion_id'] = $registro_id;
-            $accion['es_view'] = $accion_basica['adm_accion_basica_es_view'];
-            $accion['titulo'] =ucwords($accion_basica['adm_accion_basica_titulo']);
-            $accion['css'] =$accion_basica['adm_accion_basica_css'];
-            $adm_accion_modelo = new adm_accion($this->link);
-            $adm_accion_modelo->registro = $accion;
-            $r_alta_accion =$adm_accion_modelo->alta_bd();
-            if (errores::$error){
-               return  $this->error->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_accion);
-            }
-        }
         return $r_alta_bd;
 
     }
@@ -170,6 +194,48 @@ class adm_seccion extends _modelo_children {
             return $this->error->error('Error al eliminar adm_seccion', $r_elimina_bd);
         }
         return $r_elimina_bd;
+    }
+
+    private function inserta_accion(array $accion_basica, int $registro_id){
+        $accion = $this->accion_maqueta(accion_basica: $accion_basica, registro_id: $registro_id);
+        if (errores::$error){
+            return  $this->error->error(mensaje: 'Error al maquetar accion',data: $accion);
+        }
+
+        $adm_accion_modelo = new adm_accion($this->link);
+        $adm_accion_modelo->registro = $accion;
+        $r_alta_accion =$adm_accion_modelo->alta_bd();
+        if (errores::$error){
+            return  $this->error->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_accion);
+        }
+        return $r_alta_accion;
+    }
+
+    private function inserta_acciones(array $acciones_basicas, int $registro_id){
+        $insert = array();
+        foreach ($acciones_basicas as $accion_basica) {
+            $r_alta_accion =$this->inserta_accion(accion_basica: $accion_basica,registro_id:  $registro_id);
+            if (errores::$error){
+                return  $this->error->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_accion);
+            }
+            $insert[] = $r_alta_accion;
+        }
+        return $insert;
+    }
+
+    private function inserta_acciones_basicas(int $registro_id){
+        $r_accion_basica = (new adm_accion_basica($this->link))->obten_registros_activos();
+        if (errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener datos del registro',data: $r_accion_basica);
+        }
+
+        $acciones_basicas = $r_accion_basica->registros;
+
+        $r_alta_acciones =$this->inserta_acciones(acciones_basicas: $acciones_basicas, registro_id: $registro_id);
+        if (errores::$error){
+            return  $this->error->error(mensaje: 'Error al dar de alta acciones basicas',data: $r_alta_acciones);
+        }
+        return $r_alta_acciones;
     }
 
     public function modifica_bd(array $registro, int $id, bool $reactiva = false, array $keys = array('adm_menu_id','descripcion')): array|stdClass

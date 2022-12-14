@@ -93,6 +93,25 @@ class adm_seccionTest extends test {
             exit;
         }
 
+        $del = (new adm_accion_basica($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion_basica['id'] = 2;
+        $adm_accion_basica['descripcion'] = 'lista';
+        $adm_accion_basica['muestra_icono_btn'] = 'activo';
+        $adm_accion_basica['muestra_titulo_btn'] = 'activo';
+
+        $alta = (new adm_accion_basica($this->link))->alta_registro($adm_accion_basica);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = '1';

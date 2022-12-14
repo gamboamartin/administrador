@@ -23,8 +23,17 @@ class adm_basicaTest extends test {
         $modelo = new adm_accion_basica($this->link);
         //$modelo = new liberator($modelo);
 
+        $del = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar',data:  $del);
+            print_r($error);
+            exit;
+        }
+
         $modelo->registro['descripcion'] = 'a';
         $modelo->registro['codigo'] = 'b';
+        $modelo->registro['muestra_icono_btn'] = 'activo';
+        $modelo->registro['muestra_titulo_btn'] = 'activo';
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
