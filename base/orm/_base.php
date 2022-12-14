@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use stdClass;
 
 class _base extends modelo{
 
@@ -50,6 +51,34 @@ class _base extends modelo{
             }
         }
         return $registro;
+    }
+
+    private function alta_predeterminado(){
+        $pred_ins['predeterminado'] = 'activo';
+        $pred_ins['codigo'] = 'PRED';
+        $pred_ins['descripcion'] = 'PREDETERMINADO';
+        $r_alta = $this->alta_registro(registro: $pred_ins);
+        if(errores::$error){
+            return $this->error->error(
+                mensaje: 'Error al insertar prederminado',data:  $pred_ins);
+        }
+        return $r_alta;
+    }
+
+    protected function inserta_predeterminado(){
+        $r_pred = new stdClass();
+        $existe = $this->existe_predeterminado();
+        if(errores::$error){
+            return $this->error->error(
+                mensaje: 'Error al validar si existe predeterminado',data:  $existe);
+        }
+        if(!$existe){
+            $r_pred = $this->alta_predeterminado();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar prederminado',data:  $r_pred);
+            }
+        }
+        return $r_pred;
     }
 
     /**
