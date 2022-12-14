@@ -120,6 +120,7 @@ class controlador_adm_sessionTest extends test {
         $adm_accion['descripcion'] = 'denegado';
         $adm_accion['titulo'] = 'denegado';
         $adm_accion['adm_seccion_id'] = '1';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

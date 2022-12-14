@@ -122,7 +122,7 @@ class adm_seccionTest extends test {
 
         $adm_accion_basica['id'] = 2;
         $adm_accion_basica['descripcion'] = 'lista';
-        $adm_accion_basica['muestra_icono_btn'] = 'activo';
+        $adm_accion_basica['muestra_icono_btn'] = 'inactivo';
         $adm_accion_basica['muestra_titulo_btn'] = 'activo';
 
         $alta = (new adm_accion_basica($this->link))->alta_registro($adm_accion_basica);

@@ -306,6 +306,7 @@ class modelo_baseTest extends test {
         $adm_accion['descripcion'] = 'test';
         $adm_accion['titulo'] = 'test';
         $adm_accion['adm_seccion_id'] = '1';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -465,6 +466,7 @@ class modelo_baseTest extends test {
         $adm_accion['descripcion'] = 'test';
         $adm_accion['titulo'] = 'test';
         $adm_accion['adm_seccion_id'] = '1';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

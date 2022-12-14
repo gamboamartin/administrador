@@ -74,11 +74,13 @@ class adm_accionTest extends test {
 
         $accion_ins['descripcion'] = 'z';
         $accion_ins['adm_seccion_id'] = 2;
+        $accion_ins['muestra_icono_btn'] = 'inactivo';
 
 
         $modelo->registro = $accion_ins;
 
         $resultado = $modelo->alta_bd();
+
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('Z ADM_SESSION', $resultado->registro['adm_accion_descripcion_select']);
@@ -153,7 +155,7 @@ class adm_accionTest extends test {
 
         $adm_accion_basica['id'] = 1;
         $adm_accion_basica['descripcion'] = 'alta';
-        $adm_accion_basica['muestra_icono_btn'] = 'activo';
+        $adm_accion_basica['muestra_icono_btn'] = 'inactivo';
         $adm_accion_basica['muestra_titulo_btn'] = 'activo';
 
         $alta = (new adm_accion_basica($this->link))->alta_registro($adm_accion_basica);
@@ -485,6 +487,7 @@ class adm_accionTest extends test {
         $adm_accion['descripcion'] = 'test';
         $adm_accion['titulo'] = 'test';
         $adm_accion['adm_seccion_id'] = '1';
+        $adm_accion['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

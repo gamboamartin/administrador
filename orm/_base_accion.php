@@ -27,6 +27,8 @@ class _base_accion{
         return $registro;
     }
 
+
+
     /**
      * Inicializa el campo para css de accion
      * @param array $registro Registro en proceso
@@ -69,5 +71,47 @@ class _base_accion{
         }
 
         return $registro;
+    }
+
+    public function valida_alta(array $registro){
+        $keys = array('css');
+        $valida = $this->validacion->valida_estilos_css(keys: $keys,row: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+        $valida = $this->valida_icono(registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+        return true;
+    }
+
+    private function valida_icono(array $registro){
+        if(isset($registro['muestra_icono_btn'])){
+            if($registro['muestra_icono_btn'] === 'activo'){
+                $keys_val = array('icono');
+                $valida = $this->validacion->valida_existencia_keys(keys: $keys_val, registro: $registro);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+                }
+            }
+        }
+        return true;
+    }
+
+    public function valida_icono_upd(int $id, modelo $modelo){
+        $registro_actualizado = $modelo->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error('Error al obtener registro', $registro_actualizado);
+        }
+
+        if($registro_actualizado->muestra_icono_btn === 'activo'){
+            if(trim($registro_actualizado->icono) === ''){
+                return $this->error->error(
+                    mensaje: 'Error si muestra_icono_btn es activo entonces icono no puede venir vacio',
+                    data: $registro_actualizado);
+            }
+        }
+        return true;
     }
 }

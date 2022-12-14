@@ -109,6 +109,8 @@ class initTest extends test {
         $adm_accion_ins['descripcion'] = 'login';
         $adm_accion_ins['titulo'] = 'login';
         $adm_accion_ins['adm_seccion_id'] = 2;
+        $adm_accion_ins['icono'] = '';
+        $adm_accion_ins['muestra_icono_btn'] = 'inactivo';
         $alta = (new adm_accion($this->link))->alta_registro($adm_accion_ins);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

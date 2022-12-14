@@ -32,7 +32,7 @@ class adm_basicaTest extends test {
 
         $modelo->registro['descripcion'] = 'a';
         $modelo->registro['codigo'] = 'b';
-        $modelo->registro['muestra_icono_btn'] = 'activo';
+        $modelo->registro['muestra_icono_btn'] = 'inactivo';
         $modelo->registro['muestra_titulo_btn'] = 'activo';
         $resultado = $modelo->alta_bd();
         $this->assertIsObject($resultado);
