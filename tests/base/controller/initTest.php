@@ -592,6 +592,25 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_modela_input()
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $init = new init();
+        $init = new liberator($init);
+
+        $atributo = 'select';
+        $campos_view = array();
+        $keys = new stdClass();
+        $resultado = $init->modela_input($atributo, $campos_view, $keys);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+    }
+
 
     public function test_name_controler(){
 

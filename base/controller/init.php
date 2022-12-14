@@ -880,7 +880,22 @@ class init{
 
     }
 
-    private function modela_input(string $atributo, array $campos_view, stdClass $keys){
+    /**
+     * Modela los campos view para frontend
+     * @param string $atributo Atributo a ajustar
+     * @param array $campos_view Campos previos
+     * @param stdClass $keys Conjunto de campos a integrar
+     * @return array
+     * @version 4.9.0
+     *
+     */
+    private function modela_input(string $atributo, array $campos_view, stdClass $keys): array
+    {
+        $atributo = trim($atributo);
+        if($atributo === ''){
+            return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo);
+        }
+
         if(!isset($keys->$atributo)){
             $keys->$atributo = array();
         }
