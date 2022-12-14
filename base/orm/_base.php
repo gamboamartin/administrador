@@ -65,7 +65,7 @@ class _base extends modelo{
         return $r_alta;
     }
 
-    protected function inserta_predeterminado(){
+    public function inserta_predeterminado(){
         $r_pred = new stdClass();
         $existe = $this->existe_predeterminado();
         if(errores::$error){
