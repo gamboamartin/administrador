@@ -611,6 +611,27 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_modela_inputs_attr()
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $init = new init();
+        $init = new liberator($init);
+
+        $atributos = array();
+        $campos_view = array();
+        $keys = new stdClass();
+        $atributos[] = 'a';
+        $resultado = $init->modela_inputs_attr($atributos, $campos_view, $keys);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+        errores::$error = false;
+
+    }
+
 
     public function test_name_controler(){
 

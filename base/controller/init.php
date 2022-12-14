@@ -913,8 +913,22 @@ class init{
         return $campos_view;
     }
 
-    private function modela_inputs_attr(array $atributos, array $campos_view, stdClass $keys){
+    /**
+     * Modela los inputs por type para frontend
+     * @param array $atributos Atributos a inicializar
+     * @param array $campos_view Campos a integrar provenientes de modelo
+     * @param stdClass $keys Parametros
+     * @return array
+     * @version 4.10.1
+     */
+    private function modela_inputs_attr(array $atributos, array $campos_view, stdClass $keys): array
+    {
         foreach ($atributos as $atributo){
+            $atributo = trim($atributo);
+            if($atributo === ''){
+                return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo);
+            }
+
             $campos_view = $this->modela_input(atributo: $atributo,campos_view:  $campos_view,keys:  $keys);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
