@@ -865,78 +865,50 @@ class init{
 
     public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
-
-        if(!isset($keys->inputs)){
-            $keys->inputs = array();
-        }
-
-        if(!isset($keys->selects)){
-            $keys->selects = array();
-        }
-        if(!isset($keys->passwords)){
-            $keys->passwords = array();
-        }
-        if(!isset($keys->telefonos)){
-            $keys->telefonos = array();
-        }
-        if(!isset($keys->emails)){
-            $keys->emails = array();
-        }
-        if(!isset($keys->fechas)){
-            $keys->fechas = array();
-        }
-
-        $keys_inputs = $keys->inputs;
-
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_inputs, type: 'inputs');
-
+        $campos_view = $this->modela_inputs_campos(campos_view: $campos_view,keys:  $keys);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
-
-        $keys_passwords = $keys->passwords;
-
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_passwords, type: 'passwords');
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
-        }
-
-        $keys_telefonos = $keys->telefonos;
-
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_telefonos, type: 'telefonos');
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
-        }
-
-        $keys_emails = $keys->emails;
-
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_emails, type: 'emails');
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
-        }
-
-        $keys_fechas = $keys->fechas;
-
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys_fechas, type: 'fechas');
-
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
-        }
-
-
-        $keys_selects = $keys->selects;
 
         $campos_view = $this->model_init_campos_selects(
-            campos_view: $campos_view, keys: $keys_selects, link: $link);
+            campos_view: $campos_view, keys: $keys->selects, link: $link);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
         return $campos_view;
 
+    }
+
+    private function modela_input(string $atributo, array $campos_view, stdClass $keys){
+        if(!isset($keys->$atributo)){
+            $keys->$atributo = array();
+        }
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys->$atributo, type: $atributo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+        return $campos_view;
+    }
+
+    private function modela_inputs_attr(array $atributos, array $campos_view, stdClass $keys){
+        foreach ($atributos as $atributo){
+            $campos_view = $this->modela_input(atributo: $atributo,campos_view:  $campos_view,keys:  $keys);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            }
+        }
+        return $campos_view;
+    }
+
+    private function modela_inputs_campos(array $campos_view, stdClass $keys){
+        $atributos = array('inputs','selects','passwords','telefonos','emails','fechas');
+
+        $campos_view = $this->modela_inputs_attr(atributos: $atributos,campos_view:  $campos_view,keys:  $keys);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        }
+        return $campos_view;
     }
 
     /**
