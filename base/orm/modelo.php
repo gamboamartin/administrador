@@ -295,6 +295,18 @@ class modelo extends modelo_base {
         return $data;
     }
 
+    private function alta_predeterminado(){
+        $pred_ins['predeterminado'] = 'activo';
+        $pred_ins['codigo'] = 'PRED';
+        $pred_ins['descripcion'] = 'PREDETERMINADO';
+        $r_alta = $this->alta_registro(registro: $pred_ins);
+        if(errores::$error){
+            return $this->error->error(
+                mensaje: 'Error al insertar prederminado',data:  $pred_ins);
+        }
+        return $r_alta;
+    }
+
     /**
      * Inserta un registro
      * @param array $registro Registro con datos para la insersion
@@ -1241,6 +1253,21 @@ class modelo extends modelo_base {
         return $init_archivos_tmp_model;
     }
 
+    public function inserta_predeterminado(){
+        $r_pred = new stdClass();
+        $existe = $this->existe_predeterminado();
+        if(errores::$error){
+            return $this->error->error(
+                mensaje: 'Error al validar si existe predeterminado',data:  $existe);
+        }
+        if(!$existe){
+            $r_pred = $this->alta_predeterminado();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar prederminado',data:  $r_pred);
+            }
+        }
+        return $r_pred;
+    }
 
 
     /**
