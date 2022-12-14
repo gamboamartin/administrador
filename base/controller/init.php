@@ -769,6 +769,9 @@ class init{
 
         foreach ($keys as $key){
 
+            if(!is_string($key)){
+                return $this->error->error(mensaje: 'Error key debe ser string',data:  $key);
+            }
             $key = trim($key);
             if($key === ''){
                 return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
@@ -870,6 +873,10 @@ class init{
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
 
+        if(!isset($keys->selects)){
+            $keys->selects = array();
+        }
+
         $campos_view = $this->model_init_campos_selects(
             campos_view: $campos_view, keys: $keys->selects, link: $link);
 
@@ -917,7 +924,7 @@ class init{
     }
 
     private function modela_inputs_campos(array $campos_view, stdClass $keys){
-        $atributos = array('inputs','selects','passwords','telefonos','emails','fechas');
+        $atributos = array('inputs','passwords','telefonos','emails','fechas');
 
         $campos_view = $this->modela_inputs_attr(atributos: $atributos,campos_view:  $campos_view,keys:  $keys);
         if(errores::$error){
