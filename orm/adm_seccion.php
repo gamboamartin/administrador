@@ -66,6 +66,14 @@ class adm_seccion extends _modelo_children {
         return $accion;
     }
 
+    /**
+     * Maqueta un campo de accion para integrar en alta
+     * @param array $accion Accion precargada para insersion
+     * @param array $accion_basica Accion basica
+     * @param string $key Campo a integrar en accion
+     * @return array
+     * @version 4.7.0
+     */
     private function accion_maqueta_campo(array $accion, array $accion_basica, string $key): array
     {
         $key = trim($key);

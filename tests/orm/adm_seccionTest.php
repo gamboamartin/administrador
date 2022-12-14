@@ -11,6 +11,7 @@ use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 
@@ -20,6 +21,25 @@ class adm_seccionTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_accion_maqueta_campo(){
+
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $accion = array();
+        $accion_basica = array();
+        $accion_basica['adm_accion_basica_a'] = 'x';
+        $key = 'a';
+        $resultado = $modelo->accion_maqueta_campo($accion, $accion_basica, $key);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado['a']);
+        errores::$error = false;
     }
 
     public function test_acciones(){
