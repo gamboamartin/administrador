@@ -469,7 +469,7 @@ class inicializacion{
      * @param string $key Key a integrar
      * @param array $registro Registro en proceso
      * @return array
-     * 
+     *
      */
     private function init_key_status_inactivo(string $key, array $registro): array
     {

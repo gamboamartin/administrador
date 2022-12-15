@@ -1239,7 +1239,12 @@ class modelo extends modelo_base {
 
     }
 
-    private function init_archivos_tmp_model_exe(){
+    /**
+     * Inicializa elementos para cache
+     * @return array|string
+     */
+    private function init_archivos_tmp_model_exe(): array|string
+    {
         $init_archivos_tmp_model = $this->init_archivos_tmp_model();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
