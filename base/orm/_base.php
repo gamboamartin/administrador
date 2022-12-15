@@ -29,23 +29,24 @@ class _base extends modelo{
      * Asigna un valor de tipo status inicializado
      * @param string $key Key de tipo status
      * @param array $registro Registro en proceso
+     * @param string $status
      * @return array
      * @version 2.110.12
      */
-    private function asigna_status(string $key, array $registro): array
+    private function asigna_status(string $key, array $registro, string $status = 'activo'): array
     {
         $key = trim($key);
         if($key === ''){
             return $this->error->error(mensaje: 'Error key esta vacio',data: $key);
         }
-        $registro[$key] = 'activo';
+        $registro[$key] = $status;
         return $registro;
     }
 
-    protected function asigna_status_alta(array $keys, array $registro): array
+    protected function asigna_status_alta(array $keys, array $registro, string $status = 'activo'): array
     {
         foreach ($keys as $key){
-            $registro = $this->status_alta(key: $key,registro:  $registro);
+            $registro = $this->status_alta(key: $key,registro:  $registro, status: $status);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar status',data: $registro);
             }
@@ -54,22 +55,22 @@ class _base extends modelo{
     }
 
 
-
     /**
      * Inicializa los status en alta como inactivo
      * @param string $key Key de registro a integrar
      * @param array $registro Registro en proceso
+     * @param string $status
      * @return array
      * @version 4.1.0
      */
-    private function status_alta(string $key, array $registro): array
+    private function status_alta(string $key, array $registro, string $status = 'activo'): array
     {
         $key = trim($key);
         if($key === ''){
             return $this->error->error(mensaje: 'Error key esta vacio',data: $key);
         }
         if(!isset($registro[$key])){
-            $registro = $this->asigna_status(key: $key, registro: $registro);
+            $registro = $this->asigna_status(key: $key, registro: $registro, status: $status);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar status',data: $registro);
             }

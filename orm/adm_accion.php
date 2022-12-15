@@ -269,7 +269,7 @@ class adm_accion extends _modelo_children {
     {
         $keys = array('visible','inicio','lista','muestra_icono_btn','muestra_titulo_btn');
 
-        $registro = $this->asigna_status_alta(keys:$keys,registro:  $registro);
+        $registro = $this->asigna_status_alta(keys:$keys,registro:  $registro, status: 'inactivo');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar status',data: $registro);
         }
