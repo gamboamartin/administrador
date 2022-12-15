@@ -173,7 +173,8 @@ class adm_accion_basica extends _modelo_parent {
 
     private function init_statuses_alta(array $registro): array
     {
-        $keys_statuses = array('es_lista','es_modal','es_status','es_view','inicio','lista','seguridad','visible');
+        $keys_statuses = array('es_lista','es_modal','es_status','es_view','inicio','lista','seguridad','visible',
+            'muestra_titulo_btn','muestra_icono_btn');
 
         $registro = (new inicializacion())->inicializa_statuses(keys: $keys_statuses, registro: $registro);
         if(errores::$error){
