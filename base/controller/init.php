@@ -1061,7 +1061,9 @@ class init{
         if($sistema === 'academico'){
             $namespace = 'gamboamartin\\academico\\';
         }
-
+        if($sistema === 'cobranza'){
+            $namespace = 'gamboamartin\\cobranza\\';
+        }
 
 
         $name_ctl = 'controlador_'.$seccion;
