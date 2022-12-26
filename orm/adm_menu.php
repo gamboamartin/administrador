@@ -34,9 +34,11 @@ class adm_menu extends _modelo_parent_sin_codigo {
             $icono = 'SI';
             $this->registro['icono'] = $icono;
         }
-        if(!isset($this->registro['observaciones'])){
-            $observaciones = 'SO';
-            $this->registro['observaciones'] = $observaciones;
+        if(!isset($this->registro['titulo'])){
+            $titulo = $this->registro['descripcion'];
+            $titulo = str_replace('_', ' ', $titulo);
+            $titulo = ucwords('_', $titulo);
+            $this->registro['titulo'] = $titulo;
         }
 
 
