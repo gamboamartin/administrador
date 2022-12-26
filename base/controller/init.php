@@ -1016,6 +1016,9 @@ class init{
         if($sistema === 'tg_imss'){
             $namespace = 'tglobally\\tg_imss\\';
         }
+        if($sistema === 'tg_direccion_postal'){
+            $namespace = 'tglobally\\tg_direccion_postal\\';
+        }
         if($sistema === 'empleado'){
             $namespace = 'gamboamartin\\empleado\\';
         }
