@@ -1242,6 +1242,7 @@ class modelo extends modelo_base {
     /**
      * Inicializa elementos para cache
      * @return array|string
+     * @6.2.0
      */
     private function init_archivos_tmp_model_exe(): array|string
     {

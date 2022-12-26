@@ -567,6 +567,17 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_archivos_tmp_model_exe(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+        $resultado = $modelo->init_archivos_tmp_model_exe();
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_obten_data(): void
     {
         errores::$error = false;
