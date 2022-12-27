@@ -7,6 +7,7 @@ use config\views;
 use gamboamartin\administrador\ctl\activacion;
 use gamboamartin\administrador\ctl\altas;
 use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
@@ -42,6 +43,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public string $lista_html = '';
     public string $modifica_html = '';
     public string $btn = '';
+    public array $menu_permitido = array();
 
 
 
@@ -145,6 +147,16 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             exit;
         }
         $this->secciones_permitidas = $secciones_permitidas;
+
+        if(isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] > 0) {
+            $menu_permitido = (new adm_menu(link: $link))->menus_visibles_permitidos_full();
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al obtener menu permitido', data: $menu_permitido);
+                var_dump($error);
+                die('Error');
+            }
+            $this->menu_permitido = $menu_permitido;
+        }
 
     }
 
