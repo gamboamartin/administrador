@@ -695,10 +695,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $menu_header = '';
         foreach ($this->menu_permitido as $menu){
 
-            $keys = array('adm_menu_titulo');
-            $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+            $valida = $this->valida_menu(menu: $menu);
             if (errores::$error) {
-                return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+                return $this->errores->error(mensaje: 'Error al validar menu', data: $valida);
             }
 
             $li_menu = $this->li_menu(menu: $menu);
