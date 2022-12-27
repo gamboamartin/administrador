@@ -182,7 +182,32 @@ class _base_accion{
         return $registro;
     }
 
-    public function menus_visibles_permitidos(PDO $link, string $table, int $id = -1, string $table_filtro = ''){
+    /**
+     * Obtiene los menus permitidos del usuario en session
+     * @param PDO $link Conexion a la base de datos
+     * @param string $table Tabla o modelo de ejecucion
+     * @param int $id Identificador parent del menu o seccion
+     * @param string $table_filtro Tabla parent del modelo
+     * @return array
+     * @version 6.9.0
+     */
+    public function menus_visibles_permitidos(PDO $link, string $table, int $id = -1, string $table_filtro = ''): array
+    {
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no existe $_SECCION activa',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
+        }
+
+        if((int)$_SESSION['usuario_id'] < 0){
+            return  $this->error->error(mensaje: 'Error el usuario_id debe ser mayor a 0 ',
+                data: $_SESSION['usuario_id']);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacio',data: $table);
+        }
 
         $filtro = $this->filtro_menu_visible_permitido(link: $link,id: $id, table_filtro : $table_filtro);
         if(errores::$error){

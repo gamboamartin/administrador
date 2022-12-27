@@ -81,6 +81,22 @@ class _base_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_menus_visibles_permitidos(): void
+    {
+
+        errores::$error = false;
+        $modelo = new _base_accion();
+        //$modelo = new liberator($modelo);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 2;
+        $table = 'adm_menu';
+        $resultado = $modelo->menus_visibles_permitidos($this->link, $table);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 }
 
