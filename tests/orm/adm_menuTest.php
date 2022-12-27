@@ -77,6 +77,7 @@ class adm_menuTest extends test {
         }
 
         $resultado = $modelo->menus_visibles_permitidos();
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertCount(1,$resultado);

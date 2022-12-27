@@ -767,6 +767,7 @@ class init{
             return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
         }
 
+
         foreach ($keys as $key){
 
             if(!is_string($key)){
@@ -906,6 +907,11 @@ class init{
         if(!isset($keys->$atributo)){
             $keys->$atributo = array();
         }
+        if(!is_array($keys->$atributo)){
+            return $this->error->error(mensaje: 'Error $keys->'.$atributo.' debe ser un array',data:  $keys);
+        }
+
+
         $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys->$atributo, type: $atributo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
@@ -937,7 +943,15 @@ class init{
         return $campos_view;
     }
 
-    private function modela_inputs_campos(array $campos_view, stdClass $keys){
+    /**
+     * Modela los elementos de front base
+     * @param array $campos_view Campos de modelo
+     * @param stdClass $keys Keys con parametros especiales
+     * @return array
+     * @version 6.3.0
+     */
+    private function modela_inputs_campos(array $campos_view, stdClass $keys): array
+    {
         $atributos = array('inputs','passwords','telefonos','emails','fechas');
 
         $campos_view = $this->modela_inputs_attr(atributos: $atributos,campos_view:  $campos_view,keys:  $keys);

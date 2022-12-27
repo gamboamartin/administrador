@@ -634,6 +634,29 @@ class initTest extends test {
 
     }
 
+    public function test_modela_inputs_campos()
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $init = new init();
+        $init = new liberator($init);
+
+
+        $campos_view = array();
+        $keys = new stdClass();
+        $keys->inputs[] = 'z';
+        $keys->telefonos[] = 'a';
+        $resultado = $init->modela_inputs_campos($campos_view, $keys);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('inputs',$resultado['z']['type']);
+        $this->assertEquals('telefonos',$resultado['a']['type']);
+        errores::$error = false;
+
+    }
+
 
     public function test_name_controler(){
 
