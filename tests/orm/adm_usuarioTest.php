@@ -101,8 +101,8 @@ class adm_usuarioTest extends test {
         errores::$error = false;
         $_SESSION['usuario_id'] = 2;
 
-        $adm_accion = '';
-        $adm_seccion = '';
+        $adm_accion = 'a';
+        $adm_seccion = 'b';
         $resultado = $modelo->tengo_permiso($adm_accion, $adm_seccion);
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);

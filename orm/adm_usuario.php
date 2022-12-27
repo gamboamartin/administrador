@@ -150,11 +150,24 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             }
 
             if($adm_grupo_id > 0) {
+
                 if (isset($_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion])) {
                     if ((int)$_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] === 1) {
                         $existe = true;
                     }
-                } else {
+                }
+                else {
+                    $adm_seccion = trim($adm_seccion);
+                    if($adm_seccion === ''){
+                        return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
+                    }
+                    $adm_accion = trim($adm_accion);
+                    if($adm_accion === ''){
+                        return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion);
+                    }
+                    /**
+                     * REFACTORIZAR
+                     */
                     $filtro['adm_grupo.id'] = $adm_grupo_id;
                     $filtro['adm_accion.descripcion'] = $adm_accion;
                     $filtro['adm_grupo.status'] = 'activo';
