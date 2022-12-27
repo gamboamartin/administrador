@@ -159,12 +159,18 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     }
 
+    /**
+     * Genera un link de menu
+     * @param array $menu Menu a integrar
+     * @return array|string
+     * @version 6.15.0
+     */
     private function a_menu(array $menu): array|string
     {
-        $keys = array('adm_menu_titulo');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+
+        $valida = $this->valida_menu(menu: $menu);
         if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+            return $this->errores->error(mensaje: 'Error al validar menu', data: $valida);
         }
 
         $href = $this->href_menu(menu: $menu);
@@ -638,10 +644,9 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     private function li_menu(array $menu): array|string
     {
-        $keys = array('adm_menu_titulo');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+        $valida = $this->valida_menu(menu: $menu);
         if (errores::$error) {
-            return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+            return $this->errores->error(mensaje: 'Error al validar menu', data: $valida);
         }
         $a_menu = $this->a_menu(menu: $menu);
         if (errores::$error) {
@@ -958,6 +963,21 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $transaccion_previa = true;
         }
         return $transaccion_previa;
+    }
+
+    private function valida_menu(array $menu): bool|array
+    {
+        $keys = array('adm_menu_titulo','adm_menu_id');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+        }
+        $keys = array('adm_menu_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al validar menu', data: $valida);
+        }
+        return true;
     }
 
 
