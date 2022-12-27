@@ -18,6 +18,27 @@ class _base_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_accion_a_seccion(): void
+    {
+
+        errores::$error = false;
+        $modelo = new _base_accion();
+        $modelo = new liberator($modelo);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 2;
+        $adm_seccion['adm_seccion_id'] = '1';
+        $adm_secciones = array();
+        $key_seccion = '0';
+        $link = $this->link;
+        $resultado = $modelo->asigna_accion_a_seccion(adm_seccion: $adm_seccion,adm_secciones:  $adm_secciones, key_seccion: $key_seccion, link: $link);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+    }
+
     public function test_filtro_menu_visible(): void
     {
 

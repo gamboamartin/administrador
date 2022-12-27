@@ -28,7 +28,35 @@ class _base_accion{
         return $adm_secciones;
     }
 
-    private function asigna_accion_a_seccion(array $adm_seccion, array $adm_secciones, int $key_seccion, PDO $link){
+    /**
+     * Asigna un registro de accion a una seccion
+     * @param array $adm_seccion Registro de seccion precargada
+     * @param array $adm_secciones Conjunto de secciones a inicializar
+     * @param int $key_seccion Key de array de adm_secciones
+     * @param PDO $link Conexion a la base de datos
+     * @return array
+     * @version 6.10.0
+     */
+    private function asigna_accion_a_seccion(array $adm_seccion, array $adm_secciones, int $key_seccion, PDO $link): array
+    {
+        $keys = array('adm_seccion_id');
+        $valida = (new validacion())->valida_ids(keys: $keys,registro:  $adm_seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_seccion',data:  $valida);
+        }
+
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no existe $_SECCION activa',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
+        }
+
+        if((int)$_SESSION['usuario_id'] < 0){
+            return  $this->error->error(mensaje: 'Error el usuario_id debe ser mayor a 0 ',
+                data: $_SESSION['usuario_id']);
+        }
+
         $adm_acciones = $this->menus_visibles_permitidos(link:$link, table: 'adm_accion',
             id: $adm_seccion['adm_seccion_id'], table_filtro: 'adm_seccion');
         if(errores::$error){
