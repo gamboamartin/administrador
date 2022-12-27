@@ -638,6 +638,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     private function li_menu(array $menu): array|string
     {
+        $keys = array('adm_menu_titulo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+        }
         $a_menu = $this->a_menu(menu: $menu);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener a_menu', data: $a_menu);
@@ -684,6 +689,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     {
         $menu_header = '';
         foreach ($this->menu_permitido as $menu){
+
+            $keys = array('adm_menu_titulo');
+            $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+            }
 
             $li_menu = $this->li_menu(menu: $menu);
             if (errores::$error) {
