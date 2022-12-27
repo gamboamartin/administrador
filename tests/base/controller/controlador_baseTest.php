@@ -132,6 +132,37 @@ class controlador_baseTest extends test {
 
     }
 
+    public function test_href_menu(): void
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_year($this->link);
+
+
+        $_POST = array();
+        $_POST['id'] = 1;
+        $_POST['codigo'] = 1;
+        $_POST['descripcion'] = 1;
+        $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
+        $ctl = new liberator($ctl);
+        $ctl->seccion = 'a';
+        $ctl->registro_id = '1';
+
+        $menu = array();
+        $menu['adm_menu_id'] = 1;
+        $resultado = $ctl->href_menu($menu);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('index.php?seccion=adm_session&accion=inicio&session_id=&adm_menu_id=1',$resultado);
+
+        errores::$error = false;
+
+
+    }
+
     public function test_modifica(): void
     {
 

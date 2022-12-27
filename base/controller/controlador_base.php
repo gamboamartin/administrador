@@ -161,6 +161,12 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     private function a_menu(array $menu): array|string
     {
+        $keys = array('adm_menu_titulo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al al validar menu', data: $valida);
+        }
+
         $href = $this->href_menu(menu: $menu);
         if (errores::$error) {
             return $this->errores->error(mensaje: 'Error al obtener href menu', data: $href);
@@ -613,8 +619,20 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $r_modelo;
     }
 
-    private function href_menu(array $menu): string
+    /**
+     * Genera un a liga de menu base
+     * @param array $menu Datos del menu
+     * @return string|array
+     * @version 6.13.0
+     */
+    private function href_menu(array $menu): string|array
     {
+        $keys = array('adm_menu_id');
+        $valida = $this->validacion->valida_ids(keys: $keys, registro: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al validar menu', data: $valida);
+        }
+
         return "index.php?seccion=adm_session&accion=inicio&session_id=$this->session_id&adm_menu_id=$menu[adm_menu_id]";
     }
 
