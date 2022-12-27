@@ -39,6 +39,26 @@ class _base_accionTest extends test {
 
     }
 
+    public function test_filtro_menu_visible_permitido(): void
+    {
+
+        errores::$error = false;
+        $modelo = new _base_accion();
+        $modelo = new liberator($modelo);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 2;
+        $resultado = $modelo->filtro_menu_visible_permitido($this->link);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('inactivo',$resultado['adm_accion.es_lista']);
+        $this->assertEquals('inactivo',$resultado['adm_accion.es_status']);
+        $this->assertEquals('activo',$resultado['adm_accion.visible']);
+
+
+        errores::$error = false;
+    }
+
     public function test_init_css(): void
     {
 

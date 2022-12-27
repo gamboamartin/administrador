@@ -117,13 +117,35 @@ class _base_accion{
         return $filtro;
     }
 
-    private function filtro_menu_visible_permitido(PDO $link, int $id = -1, string $table_filtro = ''){
+    /**
+     * Genera un menu permitido
+     * @param PDO $link Conexion a la base de datos
+     * @param int $id Identificador del menu o seccion
+     * @param string $table_filtro Tabla para filtro
+     * @return array
+     * @version 6.7.0
+     */
+    private function filtro_menu_visible_permitido(PDO $link, int $id = -1, string $table_filtro = ''): array
+    {
+        if(!isset($_SESSION)){
+            return $this->error->error(mensaje: 'Error no existe $_SECCION activa',data: array());
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
+        }
+
+        if((int)$_SESSION['usuario_id'] < 0){
+            return  $this->error->error(mensaje: 'Error el usuario_id debe ser mayor a 0 ',
+                data: $_SESSION['usuario_id']);
+        }
+
         $usuario = (new adm_usuario(link: $link))->usuario_activo();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al obtener usuario activo',data:  $usuario);
         }
 
-        $filtro = $this->filtro_menu_visible(adm_grupo_id: $usuario['adm_grupo_id'], id: $id, table_filtro: $table_filtro);
+        $filtro = $this->filtro_menu_visible(adm_grupo_id: $usuario['adm_grupo_id'], id: $id,
+            table_filtro: $table_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener filtro',data:  $filtro);
         }
