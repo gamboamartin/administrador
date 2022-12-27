@@ -45,10 +45,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public string $btn = '';
     public array $menu_permitido = array();
 
-
-
     public array $registro_en_proceso = array();
-
+    public string $menu_header = '';
 
     /**
      * @param PDO $link Conexion a la base de datos
@@ -148,15 +146,22 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->secciones_permitidas = $secciones_permitidas;
 
-        if(isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] > 0) {
-            $menu_permitido = (new adm_menu(link: $link))->menus_visibles_permitidos_full();
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener menu permitido', data: $menu_permitido);
-                var_dump($error);
-                die('Error');
-            }
-            $this->menu_permitido = $menu_permitido;
+        $menu = $this->genera_menu();
+        if (errores::$error) {
+            $error = $this->errores->error(mensaje: 'Error al obtener menu', data: $menu);
+            print_r($error);
+            die('Error');
         }
+
+    }
+
+    private function a_menu(array $menu): array|string
+    {
+        $href = $this->href_menu(menu: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener href menu', data: $href);
+        }
+        return "<a href='$href'>$menu[adm_menu_titulo]</a>";
 
     }
 
@@ -569,6 +574,18 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $r_modelo['registros'];
     }
 
+    private function genera_menu(): array|stdClass
+    {
+        $menu = new stdClass();
+        if(isset($_SESSION['usuario_id']) && $_SESSION['usuario_id'] > 0) {
+            $menu = $this->menu();
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener menu', data: $menu);
+            }
+        }
+        return $menu;
+    }
+
     public function get(bool $header, bool $ws): array
     {
         $valida = $this->validacion->valida_filtros();
@@ -592,6 +609,21 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $r_modelo;
     }
 
+    private function href_menu(array $menu): string
+    {
+        return "index.php?seccion=adm_session&accion=inicio&session_id=$this->session_id&adm_menu_id=$menu[adm_menu_id]";
+    }
+
+    private function li_menu(array $menu): array|string
+    {
+        $a_menu = $this->a_menu(menu: $menu);
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener a_menu', data: $a_menu);
+        }
+
+        return "<li>$a_menu</li>";
+    }
+
 
     /**
      * Genera la view de lista
@@ -604,6 +636,41 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->registros = array();
         return $this->registros;
 
+    }
+
+    private function menu(): array|stdClass
+    {
+        $menu_permitido = (new adm_menu(link: $this->link))->menus_visibles_permitidos_full();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener menu permitido', data: $menu_permitido);
+        }
+        $this->menu_permitido = $menu_permitido;
+
+        $menu_header = $this->menu_header();
+        if (errores::$error) {
+            return $this->errores->error(mensaje: 'Error al obtener menu_header', data: $menu_header);
+        }
+        $this->menu_header = $menu_header;
+
+        $data = new stdClass();
+        $data->menu_permitido = $menu_permitido;
+        $data->menu_header = $menu_header;
+        return $data;
+    }
+
+    private function menu_header(): array|string
+    {
+        $menu_header = '';
+        foreach ($this->menu_permitido as $menu){
+
+            $li_menu = $this->li_menu(menu: $menu);
+            if (errores::$error) {
+                return $this->errores->error(mensaje: 'Error al obtener li_menu', data: $li_menu);
+            }
+
+            $menu_header .= $li_menu;
+        }
+        return $menu_header;
     }
 
 
