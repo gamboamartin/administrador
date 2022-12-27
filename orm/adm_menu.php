@@ -61,6 +61,22 @@ class adm_menu extends _modelo_parent_sin_codigo {
 
     }
 
+    public function menus_visibles_permitidos_full(){
+
+        $adm_menus = (new _base_accion())->menus_visibles_permitidos(link:$this->link, table: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
+        }
+
+        $adm_menus = (new _base_accion())->asigna_secciones_a_menu(adm_menus: $adm_menus,link:  $this->link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
+        }
+
+        return $adm_menus;
+
+    }
+
     /**
      * Obtiene las secciones de un menu
      * @param int $adm_menu_id Menu identificador

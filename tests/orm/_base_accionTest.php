@@ -18,6 +18,27 @@ class _base_accionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_filtro_menu_visible(): void
+    {
+
+        errores::$error = false;
+        $modelo = new _base_accion();
+        $modelo = new liberator($modelo);
+
+
+        $adm_grupo_id= 1;
+        $id= 1;
+        $table_filtro = 'a';
+        $resultado = $modelo->filtro_menu_visible($adm_grupo_id, $id, $table_filtro);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1',$resultado['a.id']);
+
+
+        errores::$error = false;
+
+    }
+
     public function test_init_css(): void
     {
 

@@ -14,6 +14,66 @@ class _base_accion{
         $this->validacion = new validacion();
     }
 
+    private function adm_secciones_permitidas(array $adm_menu, PDO $link){
+        $adm_secciones = $this->menus_visibles_permitidos(link:$link, table: 'adm_seccion',
+            id: $adm_menu['adm_menu_id'], table_filtro: 'adm_menu');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_secciones);
+        }
+
+        $adm_secciones = $this->asigna_acciones_a_seccion(adm_secciones: $adm_secciones,link:  $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar accion a seccion',data:  $adm_secciones);
+        }
+        return $adm_secciones;
+    }
+
+    private function asigna_accion_a_seccion(array $adm_seccion, array $adm_secciones, int $key_seccion, PDO $link){
+        $adm_acciones = $this->menus_visibles_permitidos(link:$link, table: 'adm_accion',
+            id: $adm_seccion['adm_seccion_id'], table_filtro: 'adm_seccion');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_acciones);
+        }
+
+        $adm_secciones[$key_seccion]['adm_acciones'] = $adm_acciones;
+        return $adm_secciones;
+    }
+
+    private function asigna_acciones_a_seccion(array $adm_secciones, PDO $link){
+        foreach ($adm_secciones as $key_seccion=>$adm_seccion){
+            $adm_secciones = $this->asigna_accion_a_seccion(adm_seccion: $adm_seccion,
+                adm_secciones:  $adm_secciones, key_seccion: $key_seccion, link: $link);
+
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar accion a seccion',data:  $adm_secciones);
+            }
+        }
+        return $adm_secciones;
+    }
+
+    private function asigna_seccion_a_menu(array $adm_menu, array $adm_menus, int $key_menu, PDO $link){
+        $adm_secciones = $this->adm_secciones_permitidas(adm_menu: $adm_menu,link:  $link);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar accion a seccion',data:  $adm_secciones);
+        }
+
+        $adm_menus[$key_menu]['adm_secciones'] = $adm_secciones;
+        return $adm_menus;
+    }
+
+    public function asigna_secciones_a_menu(array $adm_menus, PDO $link){
+        foreach ($adm_menus as $key_menu=>$adm_menu){
+
+            $adm_menus = $this->asigna_seccion_a_menu(adm_menu: $adm_menu,adm_menus:  $adm_menus,
+                key_menu:  $key_menu, link: $link);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
+            }
+        }
+        return $adm_menus;
+
+    }
+
     private function css_registro(int $id, modelo $modelo, array $registro): array
     {
         $registro_previo = $modelo->registro(registro_id: $id, retorno_obj: true);
@@ -28,22 +88,42 @@ class _base_accion{
         return $registro;
     }
 
-    private function filtro_menu_visible(int $adm_grupo_id): array
+    /**
+     * Genera un filtro para obtener los menus con permisos del usuario en ejecucion
+     * el puede ser utilizado para integrar funciones de get data
+     * @param int $adm_grupo_id El grupo del usuario ej ejecucion
+     * @param int $id Id del parent o modelo parent ejemplo para seccion debe ser el id del menu
+     * @param string $table_filtro Tabla del parent o modelo parent ejemplo para adm_seccion debe ser el adm_menu
+     * @return array
+     * @version 6.5.0
+     */
+    private function filtro_menu_visible(int $adm_grupo_id, int $id, string $table_filtro): array
     {
+        if($adm_grupo_id <= 0){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
+        }
         $filtro['adm_grupo.id'] = $adm_grupo_id;
         $filtro['adm_accion.es_lista'] = 'inactivo';
         $filtro['adm_accion.es_status'] = 'inactivo';
         $filtro['adm_accion.visible'] = 'activo';
+        if($id > 0){
+            $table_filtro = trim($table_filtro);
+            if($table_filtro === ''){
+                return $this->error->error(
+                    mensaje: 'Error si id es mayor a 0 entonces table_filtro no puede venir vacio',data:  $table_filtro);
+            }
+            $filtro[$table_filtro.'.id'] = $id;
+        }
         return $filtro;
     }
 
-    private function filtro_menu_visible_permitido(PDO $link){
+    private function filtro_menu_visible_permitido(PDO $link, int $id = -1, string $table_filtro = ''){
         $usuario = (new adm_usuario(link: $link))->usuario_activo();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al al obtener usuario activo',data:  $usuario);
         }
 
-        $filtro = $this->filtro_menu_visible(adm_grupo_id: $usuario['adm_grupo_id']);
+        $filtro = $this->filtro_menu_visible(adm_grupo_id: $usuario['adm_grupo_id'], id: $id, table_filtro: $table_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener filtro',data:  $filtro);
         }
@@ -80,9 +160,9 @@ class _base_accion{
         return $registro;
     }
 
-    public function menus_visibles_permitidos(PDO $link, string $table){
+    public function menus_visibles_permitidos(PDO $link, string $table, int $id = -1, string $table_filtro = ''){
 
-        $filtro = $this->filtro_menu_visible_permitido(link: $link);
+        $filtro = $this->filtro_menu_visible_permitido(link: $link,id: $id, table_filtro : $table_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener filtro',data:  $filtro);
         }

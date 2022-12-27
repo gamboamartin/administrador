@@ -84,6 +84,72 @@ class adm_menuTest extends test {
         errores::$error = false;
     }
 
+    public function test_menus_visibles_permitidos_full()
+    {
+
+        errores::$error = false;
+        $modelo = new adm_menu($this->link);
+        //$modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_seccion['id'] = 1;
+        $adm_seccion['descripcion'] = 'adm_seccion';
+        $adm_seccion['adm_menu_id'] = '1';
+        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 1;
+        $adm_accion['descripcion'] = 'test';
+        $adm_accion['adm_seccion_id'] = 1;
+        $adm_accion['es_lista'] = 'inactivo';
+        $adm_accion['es_status'] = 'inactivo';
+        $adm_accion['visible'] = 'activo';
+
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $adm_accion['id'] = 2;
+        $adm_accion['descripcion'] = 'test2';
+        $adm_accion['adm_seccion_id'] = 1;
+        $adm_accion['es_lista'] = 'inactivo';
+        $adm_accion['es_status'] = 'inactivo';
+        $adm_accion['visible'] = 'activo';
+
+        $alta = (new adm_accion($this->link))->alta_registro($adm_accion);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $resultado = $modelo->menus_visibles_permitidos_full();
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertCount(1,$resultado);
+        $this->assertCount(1,$resultado[0]['adm_secciones']);
+        $this->assertCount(2,$resultado[0]['adm_secciones'][0]['adm_acciones']);
+        $this->assertEquals('1',$resultado[0]['adm_secciones'][0]['adm_acciones'][0]['adm_accion_id']);
+        $this->assertEquals('2',$resultado[0]['adm_secciones'][0]['adm_acciones'][1]['adm_accion_id']);
+        errores::$error = false;
+    }
+
     public function test_registro(){
 
         errores::$error = false;
