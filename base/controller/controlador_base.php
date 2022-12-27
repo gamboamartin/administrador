@@ -46,6 +46,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public array $menu_permitido = array();
 
     public array $registro_en_proceso = array();
+    public int $adm_menu_id = -1;
     public string $menu_header = '';
 
     /**
@@ -138,7 +139,10 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $this->datos_session_usuario = $datos_session_usuario;
         }
 
-        $secciones_permitidas = (new adm_seccion($this->link))->secciones_permitidas();
+        if(isset($_GET['adm_menu_id'])){
+            $this->adm_menu_id = $_GET['adm_menu_id'];
+        }
+        $secciones_permitidas = (new adm_seccion($this->link))->secciones_permitidas(adm_menu_id: $this->adm_menu_id);
         if(errores::$error){
             $error =  $this->errores->error(mensaje: 'Error al obtener secciones permitidas',data: $secciones_permitidas);
             print_r($error);

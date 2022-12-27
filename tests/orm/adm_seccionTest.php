@@ -378,7 +378,7 @@ class adm_seccionTest extends test {
             exit;
         }
 
-        $resultado = $modelo->secciones_permitidas();
+        $resultado = $modelo->secciones_permitidas(1);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

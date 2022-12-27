@@ -309,7 +309,7 @@ class adm_seccion extends _modelo_children {
 	    return array('registros' => $new_array, 'n_registros' => $n_registros);
 	}
 
-    public function secciones_permitidas(): array
+    public function secciones_permitidas(int $adm_menu_id = -1): array
     {
 
         $r_adm_seccion = new stdClass();
@@ -332,7 +332,7 @@ class adm_seccion extends _modelo_children {
                 return $this->error->error('Error al validar acciones', $secciones_sistema);
             }
 
-            if(count($secciones_sistema)>0) {
+            if(count($secciones_sistema)>0 && $adm_menu_id > 0) {
 
                 $adm_usuario = (new adm_usuario(link: $this->link))->registro(
                     registro_id: $adm_usuario_id, columnas_en_bruto: true, retorno_obj: true);
@@ -353,6 +353,7 @@ class adm_seccion extends _modelo_children {
                 }
 
                 $filtro['adm_grupo.id'] = $adm_grupo->id;
+                $filtro['adm_menu.id'] = $adm_menu_id;
                 $group_by[] = 'adm_seccion.id';
                 $in['llave'] = 'adm_seccion.id';
                 $in['values'] = $seccion_sistema_in;
