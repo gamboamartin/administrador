@@ -51,26 +51,13 @@ class adm_menu extends _modelo_parent_sin_codigo {
 
     public function menus_visibles_permitidos(){
 
-        $usuario = (new adm_usuario(link: $this->link))->usuario_activo();
+        $menus = (new _base_accion())->menus_visibles_permitidos(link:$this->link, table: $this->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al obtener usuario activo',data:  $usuario);
+            return $this->error->error(mensaje: 'Error al obtener menus',data:  $menus);
         }
 
-        $filtro['adm_grupo.id'] = $usuario['adm_grupo_id'];
-        $filtro['adm_accion.es_lista'] = 'inactivo';
-        $filtro['adm_accion.es_status'] = 'inactivo';
-        $filtro['adm_accion.visible'] = 'activo';
 
-        $group_by = array('adm_menu.id');
-
-        $columnas_by_table = array('adm_menu');
-        $resultado = (new adm_accion_grupo($this->link))->filtro_and(
-            columnas_by_table: $columnas_by_table, filtro: $filtro, group_by: $group_by);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar menus visibles permitidos',data:  $resultado);
-        }
-
-        return $resultado->registros;
+        return $menus;
 
     }
 

@@ -528,6 +528,18 @@ class adm_accion extends _modelo_children {
         return $accion_grupo_modelo->registro;
     }
 
+    public function menus_visibles_permitidos(){
+
+        $menus = (new _base_accion())->menus_visibles_permitidos(link:$this->link, table: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener menus',data:  $menus);
+        }
+
+
+        return $menus;
+
+    }
+
     public function modifica_bd(array $registro, int $id, bool $reactiva = false, array $keys = array('adm_seccion_id','descripcion')): array|stdClass
     {
 
