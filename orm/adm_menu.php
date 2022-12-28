@@ -23,6 +23,29 @@ class adm_menu extends _modelo_parent_sin_codigo {
         $this->NAMESPACE = __NAMESPACE__;
     }
 
+    private function adm_menus_out(array $adm_menus){
+        $adm_menus_out = array();
+        foreach ($adm_menus as $adm_menu){
+            $adm_menus_out = $this->integra_secciones_existentes(adm_menu: $adm_menu,adm_menus_out:  $adm_menus_out);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+            }
+        }
+        return $adm_menus_out;
+    }
+
+    private function ajusta_menus(array $adm_menu, array $adm_menus_out, array $adm_seccion){
+        foreach ($adm_menus_out as $key=>$adm_menu_aut){
+            $adm_menus_out = $this->integra_menu_existente(adm_menu: $adm_menu,
+                adm_menu_aut:  $adm_menu_aut,adm_menus_out:  $adm_menus_out,adm_seccion:  $adm_seccion,
+                key: $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+            }
+        }
+        return $adm_menus_out;
+    }
+
     public function alta_bd(array $keys_integra_ds = array('descripcion')): array|stdClass
     {
         if(!isset($this->registro['etiqueta_label'])){
@@ -50,6 +73,120 @@ class adm_menu extends _modelo_parent_sin_codigo {
         return $r_alta_bd;
     }
 
+    private function existe_adm_menu_out(array $adm_menu, array $adm_menus_out): bool
+    {
+        $existe_adm_menu_out = false;
+        foreach ($adm_menus_out as $adm_menu_aut){
+            if((int)$adm_menu_aut['adm_menu_id'] === (int)$adm_menu['adm_menu_id']){
+                $existe_adm_menu_out = true;
+                break;
+            }
+        }
+        return $existe_adm_menu_out;
+    }
+
+    private function existe_en_sistema(array $adm_seccion){
+        $sistema_en_ejecucion = (new generales())->sistema;
+        $adm_seccion_id = $adm_seccion['adm_seccion_id'];
+        $filtro['adm_seccion.id'] = $adm_seccion_id;
+        $filtro['adm_sistema.descripcion'] = $sistema_en_ejecucion;
+        $existe = (new adm_seccion_pertenece(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  si existe',data:  $existe);
+        }
+        return $existe;
+    }
+
+    private function genera_adm_menu(array $adm_menu, array $adm_menus_out, array $adm_seccion){
+        $adm_menus_out = $this->init_adm_menu_out_existe(adm_menu: $adm_menu,adm_menus_out:  $adm_menus_out);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar menus',data:  $adm_menus_out);
+        }
+
+        $adm_menus_out = $this->ajusta_menus(adm_menu: $adm_menu,adm_menus_out:  $adm_menus_out,
+            adm_seccion:  $adm_seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+        }
+        return $adm_menus_out;
+    }
+
+    private function inicializa_adm_menu_out(array $adm_menu, array$adm_menus_out, bool $existe_adm_menu_out){
+        if(!$existe_adm_menu_out){
+            $adm_menus_out = $this->init_adm_menus_out(adm_menu: $adm_menu,adm_menus_out:  $adm_menus_out);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al inicializar menus',data:  $adm_menus_out);
+            }
+        }
+        return $adm_menus_out;
+    }
+
+    private function init_adm_menus_out(array $adm_menu, array $adm_menus_out): array
+    {
+        $adm_menu_puro = $adm_menu;
+        unset($adm_menu_puro['adm_secciones']);
+        $adm_menus_out[] = $adm_menu_puro;
+        return $adm_menus_out;
+    }
+
+    private function init_adm_menu_out_existe(array $adm_menu, array $adm_menus_out){
+        $existe_adm_menu_out = $this->existe_adm_menu_out(adm_menu: $adm_menu,adm_menus_out:  $adm_menus_out);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe_adm_menu_out);
+        }
+
+        $adm_menus_out = $this->inicializa_adm_menu_out(adm_menu: $adm_menu,adm_menus_out:  $adm_menus_out,
+            existe_adm_menu_out: $existe_adm_menu_out);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar menus',data:  $adm_menus_out);
+        }
+        return $adm_menus_out;
+    }
+
+    private function integra_adm_menu_out(array $adm_menus_out, array $adm_seccion, int $key): array
+    {
+        $adm_menus_out[$key]['adm_secciones'][] = $adm_seccion;
+        return $adm_menus_out;
+    }
+
+    private function integra_menu_existente(array $adm_menu, array $adm_menu_aut, array $adm_menus_out, array $adm_seccion, int $key){
+        if((int)$adm_menu_aut['adm_menu_id'] === (int)$adm_menu['adm_menu_id']){
+            $adm_menus_out = $this->integra_adm_menu_out(
+                adm_menus_out: $adm_menus_out, adm_seccion: $adm_seccion,key:  $key);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+            }
+        }
+        return $adm_menus_out;
+    }
+
+    private function integra_seccion_existente(array $adm_menu, array $adm_menus_out, array $adm_seccion){
+        $existe = $this->existe_en_sistema(adm_seccion: $adm_seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar  si existe',data:  $existe);
+        }
+        if($existe){
+            $adm_menus_out = $this->genera_adm_menu(adm_menu: $adm_menu, adm_menus_out: $adm_menus_out,adm_seccion:  $adm_seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+            }
+
+        }
+        return $adm_menus_out;
+    }
+
+    private function integra_secciones_existentes(array $adm_menu, array $adm_menus_out){
+        $secciones = $adm_menu['adm_secciones'];
+
+        foreach ($secciones as $adm_seccion){
+            $adm_menus_out = $this->integra_seccion_existente(adm_menu: $adm_menu, adm_menus_out: $adm_menus_out,adm_seccion:  $adm_seccion);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+            }
+        }
+        return $adm_menus_out;
+    }
+
     public function menus_visibles_permitidos(){
 
         $menus = (new _base_accion())->menus_visibles_permitidos(link:$this->link, table: $this->tabla);
@@ -73,47 +210,12 @@ class adm_menu extends _modelo_parent_sin_codigo {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
         }
-        $sistema_en_ejecucion = (new generales())->sistema;
 
-        $adm_menus_out = array();
-        foreach ($adm_menus as $adm_menu){
-            $secciones = $adm_menu['adm_secciones'];
-
-            foreach ($secciones as $adm_seccion){
-                $adm_seccion_id = $adm_seccion['adm_seccion_id'];
-                $filtro['adm_seccion.id'] = $adm_seccion_id;
-                $filtro['adm_sistema.descripcion'] = $sistema_en_ejecucion;
-                $existe = (new adm_seccion_pertenece(link: $this->link))->existe(filtro: $filtro);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al validar  si existe',data:  $existe);
-                }
-                if($existe){
-                    $existe_adm_menu_out = false;
-                    foreach ($adm_menus_out as $adm_menu_aut){
-                        if((int)$adm_menu_aut['adm_menu_id'] === (int)$adm_menu['adm_menu_id']){
-                            $existe_adm_menu_out = true;
-                        }
-                    }
-                    if(!$existe_adm_menu_out){
-                        $adm_menu_puro = $adm_menu;
-                        unset($adm_menu_puro['adm_secciones']);
-                        $adm_menus_out[] = $adm_menu_puro;
-                    }
-                    foreach ($adm_menus_out as $key=>$adm_menu_aut){
-                        if((int)$adm_menu_aut['adm_menu_id'] === (int)$adm_menu['adm_menu_id']){
-                            $adm_menus_out[$key]['adm_secciones'][] = $adm_seccion;
-                        }
-                    }
-
-
-
-                }
-
-            }
-
+        $adm_menus_out = $this->adm_menus_out(adm_menus: $adm_menus);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
         }
 
-        //print_r($adm_menus);exit;
 
         return $adm_menus_out;
 
