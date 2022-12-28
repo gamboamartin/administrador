@@ -14,7 +14,15 @@ class _base_accion{
         $this->validacion = new validacion();
     }
 
-    private function adm_secciones_permitidas(array $adm_menu, PDO $link){
+    /**
+     * Integra las secciones permitidas para menu
+     * @param array $adm_menu Menu en ejecucion
+     * @param PDO $link Conexion a la base de datos
+     * @return array
+     * @version 6.18.0
+     */
+    private function adm_secciones_permitidas(array $adm_menu, PDO $link): array
+    {
 
         $keys = array('adm_menu_id');
         $valida = $this->validacion->valida_ids(keys: $keys,registro:  $adm_menu);
@@ -74,7 +82,15 @@ class _base_accion{
         return $adm_secciones;
     }
 
-    private function asigna_acciones_a_seccion(array $adm_secciones, PDO $link){
+    /**
+     * Asigna las acciones a una seccion para menus
+     * @param array $adm_secciones Secciones en proceso
+     * @param PDO $link Conexion a la base de datos
+     * @return array
+     * @version 6.18.0
+     */
+    private function asigna_acciones_a_seccion(array $adm_secciones, PDO $link): array
+    {
         foreach ($adm_secciones as $key_seccion=>$adm_seccion){
             $adm_secciones = $this->asigna_accion_a_seccion(adm_seccion: $adm_seccion,
                 adm_secciones:  $adm_secciones, key_seccion: $key_seccion, link: $link);

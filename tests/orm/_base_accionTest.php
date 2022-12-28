@@ -39,6 +39,26 @@ class _base_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_adm_secciones_permitidas(): void
+    {
+
+        errores::$error = false;
+        $modelo = new _base_accion();
+        $modelo = new liberator($modelo);
+
+        $_SESSION = array();
+        $_SESSION['usuario_id'] = 2;
+        $adm_menu = array();
+        $adm_menu['adm_menu_id'] = 1;
+        $link = $this->link;
+        $resultado = $modelo->adm_secciones_permitidas($adm_menu, $link);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+    }
+
     public function test_filtro_menu_visible(): void
     {
 
