@@ -9,6 +9,8 @@ use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
 
@@ -138,7 +140,19 @@ class adm_menuTest extends test {
             exit;
         }
 
+        $adm_seccion_pertenece['id'] = 1;
+        $adm_seccion_pertenece['adm_seccion_id'] = 1;
+        $adm_seccion_pertenece['adm_sistema_id'] = 1;
+        $alta = (new adm_seccion_pertenece($this->link))->alta_registro($adm_seccion_pertenece);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $resultado = $modelo->menus_visibles_permitidos_full();
+
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

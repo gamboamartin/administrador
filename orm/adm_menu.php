@@ -3,6 +3,7 @@ namespace gamboamartin\administrador\models;
 
 use base\orm\_modelo_parent;
 use base\orm\_modelo_parent_sin_codigo;
+use config\generales;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -72,8 +73,49 @@ class adm_menu extends _modelo_parent_sin_codigo {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
         }
+        $sistema_en_ejecucion = (new generales())->sistema;
 
-        return $adm_menus;
+        $adm_menus_out = array();
+        foreach ($adm_menus as $adm_menu){
+            $secciones = $adm_menu['adm_secciones'];
+
+            foreach ($secciones as $adm_seccion){
+                $adm_seccion_id = $adm_seccion['adm_seccion_id'];
+                $filtro['adm_seccion.id'] = $adm_seccion_id;
+                $filtro['adm_sistema.descripcion'] = $sistema_en_ejecucion;
+                $existe = (new adm_seccion_pertenece(link: $this->link))->existe(filtro: $filtro);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al validar  si existe',data:  $existe);
+                }
+                if($existe){
+                    $existe_adm_menu_out = false;
+                    foreach ($adm_menus_out as $adm_menu_aut){
+                        if((int)$adm_menu_aut['adm_menu_id'] === (int)$adm_menu['adm_menu_id']){
+                            $existe_adm_menu_out = true;
+                        }
+                    }
+                    if(!$existe_adm_menu_out){
+                        $adm_menu_puro = $adm_menu;
+                        unset($adm_menu_puro['adm_secciones']);
+                        $adm_menus_out[] = $adm_menu_puro;
+                    }
+                    foreach ($adm_menus_out as $key=>$adm_menu_aut){
+                        if((int)$adm_menu_aut['adm_menu_id'] === (int)$adm_menu['adm_menu_id']){
+                            $adm_menus_out[$key]['adm_secciones'][] = $adm_seccion;
+                        }
+                    }
+
+
+
+                }
+
+            }
+
+        }
+
+        //print_r($adm_menus);exit;
+
+        return $adm_menus_out;
 
     }
 

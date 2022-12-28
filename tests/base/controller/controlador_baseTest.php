@@ -2,6 +2,7 @@
 namespace tests\base\controller;
 
 use base\controller\controlador_base;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_year;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
@@ -28,6 +29,14 @@ class controlador_baseTest extends test {
         errores::$error = false;
 
         $_SESSION['usuario_id'] = 2;
+
+        $del = (new adm_seccion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
         $modelo = new adm_year($this->link);
 
 

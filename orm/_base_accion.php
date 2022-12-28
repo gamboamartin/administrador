@@ -15,6 +15,13 @@ class _base_accion{
     }
 
     private function adm_secciones_permitidas(array $adm_menu, PDO $link){
+
+        $keys = array('adm_menu_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $adm_menu);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_menu',data:  $valida);
+        }
+
         $adm_secciones = $this->menus_visibles_permitidos(link:$link, table: 'adm_seccion',
             id: $adm_menu['adm_menu_id'], table_filtro: 'adm_menu');
         if(errores::$error){
@@ -80,6 +87,12 @@ class _base_accion{
     }
 
     private function asigna_seccion_a_menu(array $adm_menu, array $adm_menus, int $key_menu, PDO $link){
+        $keys = array('adm_menu_id');
+        $valida = $this->validacion->valida_ids(keys: $keys,registro:  $adm_menu);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar adm_menu',data:  $valida);
+        }
+
         $adm_secciones = $this->adm_secciones_permitidas(adm_menu: $adm_menu,link:  $link);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar accion a seccion',data:  $adm_secciones);
@@ -91,6 +104,12 @@ class _base_accion{
 
     public function asigna_secciones_a_menu(array $adm_menus, PDO $link){
         foreach ($adm_menus as $key_menu=>$adm_menu){
+
+            $keys = array('adm_menu_id');
+            $valida = $this->validacion->valida_ids(keys: $keys,registro:  $adm_menu);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar adm_menu',data:  $valida);
+            }
 
             $adm_menus = $this->asigna_seccion_a_menu(adm_menu: $adm_menu,adm_menus:  $adm_menus,
                 key_menu:  $key_menu, link: $link);
