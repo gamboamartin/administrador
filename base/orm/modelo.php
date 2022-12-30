@@ -298,15 +298,16 @@ class modelo extends modelo_base {
     /**
      * Inserta un registro predeterminado
      * @return array|stdClass
+     * @version 6.21.0
      */
-    private function alta_predeterminado(){
+    PUBLIC function alta_predeterminado(): array|stdClass
+    {
         $pred_ins['predeterminado'] = 'activo';
         $pred_ins['codigo'] = 'PRED';
         $pred_ins['descripcion'] = 'PREDETERMINADO';
         $r_alta = $this->alta_registro(registro: $pred_ins);
         if(errores::$error){
-            return $this->error->error(
-                mensaje: 'Error al insertar prederminado',data:  $r_alta);
+            return $this->error->error(mensaje: 'Error al insertar prederminado',data:  $r_alta);
         }
         return $r_alta;
     }

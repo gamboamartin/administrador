@@ -59,6 +59,34 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_alta_predeterminado(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $modelo = new adm_mes($this->link);
+        $del = $modelo->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+        $modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->alta_predeterminado();
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Registro insertado con éxito', $resultado->mensaje);
+        errores::$error = false;
+
+        $resultado = $modelo->alta_predeterminado();
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('Error al insertar prederminado', $resultado['mensaje']);
+        errores::$error = false;
+
+    }
+
     public function test_alta_registro(): void
     {
         errores::$error = false;
