@@ -302,7 +302,7 @@ class modelo extends modelo_base {
         $r_alta = $this->alta_registro(registro: $pred_ins);
         if(errores::$error){
             return $this->error->error(
-                mensaje: 'Error al insertar prederminado',data:  $pred_ins);
+                mensaje: 'Error al insertar prederminado',data:  $r_alta);
         }
         return $r_alta;
     }

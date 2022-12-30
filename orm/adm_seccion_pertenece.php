@@ -84,7 +84,7 @@ class adm_seccion_pertenece extends modelo{
         $adm_sistema = (new adm_sistema(link: $this->link))->registro(registro_id: $registro['adm_sistema_id'],
             columnas_en_bruto: true, retorno_obj: true);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener seccion', data: $adm_seccion);
+            return $this->error->error(mensaje: 'Error al obtener adm_sistema', data: $adm_sistema);
         }
         $data = new stdClass();
         $data->adm_seccion = $adm_seccion;

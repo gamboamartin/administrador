@@ -102,6 +102,22 @@ class adm_menuTest extends test {
             exit;
         }
 
+        $del = (new adm_sistema($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_sistema['id'] = 1;
+        $adm_sistema['descripcion'] = 'administrador';
+        $alta = (new adm_sistema($this->link))->alta_registro($adm_sistema);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_seccion';
         $adm_seccion['adm_menu_id'] = '1';
