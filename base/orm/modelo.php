@@ -295,6 +295,10 @@ class modelo extends modelo_base {
         return $data;
     }
 
+    /**
+     * Inserta un registro predeterminado
+     * @return array|stdClass
+     */
     private function alta_predeterminado(){
         $pred_ins['predeterminado'] = 'activo';
         $pred_ins['codigo'] = 'PRED';
