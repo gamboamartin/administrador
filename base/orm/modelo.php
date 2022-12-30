@@ -1273,7 +1273,8 @@ class modelo extends modelo_base {
      * @param string $descripcion Descripcion predeterminado
      * @return array|stdClass
      */
-    public function inserta_predeterminado(string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
+    public function inserta_predeterminado(
+        string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
     {
         $r_pred = new stdClass();
         $existe = $this->existe_predeterminado();

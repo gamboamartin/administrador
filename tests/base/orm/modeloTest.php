@@ -607,6 +607,21 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_inserta_predeterminado(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $modelo = new adm_mes($this->link);
+
+
+        $resultado = $modelo->inserta_predeterminado();
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_obten_data(): void
     {
         errores::$error = false;
