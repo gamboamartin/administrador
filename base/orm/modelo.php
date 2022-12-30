@@ -1267,7 +1267,14 @@ class modelo extends modelo_base {
         return $init_archivos_tmp_model;
     }
 
-    public function inserta_predeterminado(){
+    /**
+     * Inserta un registro predeterminado del modelo en ejecucion
+     * @param string|int $codigo Codigo predeterminado default
+     * @param string $descripcion Descripcion predeterminado
+     * @return array|stdClass
+     */
+    public function inserta_predeterminado(string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
+    {
         $r_pred = new stdClass();
         $existe = $this->existe_predeterminado();
         if(errores::$error){
@@ -1275,7 +1282,7 @@ class modelo extends modelo_base {
                 mensaje: 'Error al validar si existe predeterminado',data:  $existe);
         }
         if(!$existe){
-            $r_pred = $this->alta_predeterminado();
+            $r_pred = $this->alta_predeterminado(codigo: $codigo, descripcion: $descripcion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al insertar prederminado',data:  $r_pred);
             }
