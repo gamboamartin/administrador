@@ -1212,11 +1212,18 @@ class init{
         return $seguridad;
     }
 
+    /**
+     * Maqueta los inputs de tipo select
+     * @param array $init_data Datos inicializados
+     * @param array $selects Selectores de front
+     * @return array
+     */
     public function select_key_input(array $init_data, array $selects): array
     {
 
         foreach ($init_data as $name_model=>$namespace_paquete){
-            $selects = $this->maqueta_key_select_input(selects: $selects,name_model: $name_model, namespace_paquete: $namespace_paquete);
+            $selects = $this->maqueta_key_select_input(selects: $selects,name_model: $name_model,
+                namespace_paquete: $namespace_paquete);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al maquetar select',data:  $selects);
             }
