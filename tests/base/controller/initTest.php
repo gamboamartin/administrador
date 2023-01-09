@@ -689,6 +689,30 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_select_key_input()
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $init = new init();
+        //$init = new liberator($init);
+
+        $init_data = array();
+        $init_data['x'] = 'y';
+        $selects = array();
+
+        $resultado = $init->select_key_input($init_data, $selects);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x',$resultado['x_id']->name_model);
+        $this->assertEquals('y\models',$resultado['x_id']->namespace_model);
+
+        errores::$error = false;
+
+    }
+
     /**
      * @throws JsonException
      */

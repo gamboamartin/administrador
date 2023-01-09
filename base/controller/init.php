@@ -1220,11 +1220,21 @@ class init{
      * @param array $init_data Datos inicializados
      * @param array $selects Selectores de front
      * @return array
+     * @version 6.26.0
      */
     public function select_key_input(array $init_data, array $selects): array
     {
 
         foreach ($init_data as $name_model=>$namespace_paquete){
+            $name_model = trim($name_model);
+            if($name_model === ''){
+                return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model);
+            }
+            $namespace_paquete = trim($namespace_paquete);
+            if($namespace_paquete === ''){
+                return $this->error->error(mensaje: 'Error namespace_paquete esta vacio',data:  $namespace_paquete);
+            }
+
             $selects = $this->maqueta_key_select_input(selects: $selects,name_model: $name_model,
                 namespace_paquete: $namespace_paquete);
             if(errores::$error){
