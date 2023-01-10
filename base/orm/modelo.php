@@ -310,7 +310,7 @@ class modelo extends modelo_base {
         $pred_ins['descripcion'] = $descripcion;
         $r_alta = $this->alta_registro(registro: $pred_ins);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar prederminado',data:  $r_alta);
+            return $this->error->error(mensaje: 'Error al insertar prederminado en modelo '.$this->tabla,data:  $r_alta);
         }
         return $r_alta;
     }
@@ -1282,12 +1282,12 @@ class modelo extends modelo_base {
         $existe = $this->existe_predeterminado();
         if(errores::$error){
             return $this->error->error(
-                mensaje: 'Error al validar si existe predeterminado',data:  $existe);
+                mensaje: 'Error al validar si existe predeterminado en modelo '.$this->tabla,data:  $existe);
         }
         if(!$existe){
             $r_pred = $this->alta_predeterminado(codigo: $codigo, descripcion: $descripcion);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar prederminado',data:  $r_pred);
+                return $this->error->error(mensaje: 'Error al insertar prederminado en modelo '.$this->tabla,data:  $r_pred);
             }
         }
         return $r_pred;
