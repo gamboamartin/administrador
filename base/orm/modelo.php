@@ -325,26 +325,28 @@ class modelo extends modelo_base {
 
         $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+            return $this->error->error(mensaje: 'Error al obtener file '.$this->tabla,
+                data: $init_archivos_tmp_model);
         }
         if(!isset($_SESSION['usuario_id'])){
             return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
         }
 
         if($_SESSION['usuario_id'] <= 0){
-            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO en modelo '.$this->tabla,
+                data: $_SESSION['usuario_id']);
         }
 
         $this->registro = $registro;
 
         $r_alta  = $this->alta_bd();
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al dar de alta registro', data: $r_alta);
+            return $this->error->error(mensaje: 'Error al dar de alta registro en modelo '.$this->tabla, data: $r_alta);
         }
 
         $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
+            return $this->error->error(mensaje: 'Error al obtener file '.$this->tabla,data: $init_archivos_tmp_model);
         }
 
         return $r_alta;
