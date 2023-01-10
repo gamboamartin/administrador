@@ -86,7 +86,7 @@ class _modelo_children extends _base {
         $keys = array('key_id');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
+            return $this->error->error(mensaje: 'Error al al validar data en modelo '.$this->tabla,data: $valida);
         }
 
         $key_id = $data['key_id'];
@@ -94,22 +94,23 @@ class _modelo_children extends _base {
         $keys = array($key_id);
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar registro',data: $valida);
+            return $this->error->error(mensaje: 'Error al al validar registro en modelo '.$this->tabla,data: $valida);
         }
 
         $data['registro_id'] = $registro[$key_id];
         $valida = $this->valida_value_default(name_model: $name_model, data: $data);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al al validar data',data: $valida);
+            return $this->error->error(mensaje: 'Error al al validar data modelo en '.$this->tabla,data: $valida);
         }
 
         $modelo_parent = $this->genera_modelo(modelo: $name_model, namespace_model: $data['namespace']);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar modelo parent',data: $modelo_parent);
+            return $this->error->error(mensaje: 'Error al generar modelo parent en modelo '.$this->tabla,
+                data: $modelo_parent);
         }
         $row_parent = $modelo_parent->registro(registro_id: $data['registro_id'],retorno_obj: true);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener row parent',data: $row_parent);
+            return $this->error->error(mensaje: 'Error al obtener row parent en modelo '.$this->tabla,data: $row_parent);
         }
 
         $keys_parents = $data['keys_parents'];
@@ -159,12 +160,12 @@ class _modelo_children extends _base {
 
             $data_default = $this->data_default(data: $data,name_model:  $name_model, registro: $registro);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener datos',data: $data_default);
+                return $this->error->error(mensaje: 'Error al obtener datos en modelo '.$this->tabla,data: $data_default);
             }
 
             $valida = $this->validacion->valida_existencia_keys(keys: $data_default->keys_parents, registro: $data_default->row_parent);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al al validar row_parent',data: $valida);
+                return $this->error->error(mensaje: 'Error al al validar row_parent en modelo '.$this->tabla,data: $valida);
             }
 
             foreach ($data_default->keys_parents as $key_parent){
@@ -181,7 +182,7 @@ class _modelo_children extends _base {
         if(!isset($registro['descripcion_select'])){
             $descripcion_select = $this->descripcion_select_alta_default(parents_data: $parents_data,registro: $registro ,anexo_descripcion_select: $registro['descripcion']);
             if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar descripcion',data: $descripcion_select);
+                return $this->error->error(mensaje: 'Error al generar descripcion en modelo '.$this->tabla,data: $descripcion_select);
             }
 
             $registro['descripcion_select'] = $descripcion_select;
@@ -193,12 +194,12 @@ class _modelo_children extends _base {
     {
         $valida = $this->valida_alta_bd(registro:$registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+            return $this->error->error(mensaje: 'Error al validar registro en modelo '.$this->tabla,data: $valida);
         }
 
         $registro = $this->asigna_full_status_alta(registro:$registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar status',data: $registro);
+            return $this->error->error(mensaje: 'Error al asignar status en modelo '.$this->tabla,data: $registro);
         }
 
         foreach ($defaults as $campo=>$value){
@@ -209,27 +210,27 @@ class _modelo_children extends _base {
 
         $registro = $this->codigo_default(parents_data: $parents_data, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar codigo',data: $registro);
+            return $this->error->error(mensaje: 'Error al generar codigo en modelo '.$this->tabla,data: $registro);
         }
 
         $registro = $this->descripcion_default(parents_data: $parents_data, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar descripcion',data: $registro);
+            return $this->error->error(mensaje: 'Error al generar descripcion en modelo '.$this->tabla,data: $registro);
         }
 
         $registro = $this->codigo_bis_default( registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar codigo_bis',data: $registro);
+            return $this->error->error(mensaje: 'Error al generar codigo_bis en modelo '.$this->tabla,data: $registro);
         }
 
         $registro = $this->alias_default( registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar alias',data: $registro);
+            return $this->error->error(mensaje: 'Error al generar alias en modelo '.$this->tabla,data: $registro);
         }
 
         $registro = $this->descripcion_select(parents_data: $parents_data, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar descripcion_select',data: $registro);
+            return $this->error->error(mensaje: 'Error al generar descripcion_select en modelo '.$this->tabla,data: $registro);
         }
 
         return $registro;
