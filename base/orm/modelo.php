@@ -81,7 +81,6 @@ class modelo extends modelo_base {
         $this->no_duplicados = $no_duplicados;
         $this->campos_encriptados = $campos_encriptados;
         $this->campos_no_upd = $campos_no_upd;
-
         $this->childrens = $childrens;
 
         if(!in_array('id', $this->campos_no_upd, true)){
@@ -115,22 +114,15 @@ class modelo extends modelo_base {
 
         $this->sub_querys = $sub_querys;
         $this->sql_seguridad_por_ubicacion = array();
-        $this->campos_obligatorios = array_merge($this->campos_obligatorios,$campos_obligatorios);
 
-        if(isset($campos_obligatorios[0]) && trim($campos_obligatorios[0]) === '*'){
-            /**
-             * REFACTORIZAR
-             */
-            $this->campos_obligatorios = $this->campos_tabla;
 
-            $unsets = array('fecha_alta','fecha_update','id','usuario_alta_id','usuario_update_id');
-
-            foreach($this->campos_obligatorios as $key=>$campo_obligatorio){
-                if(in_array($campo_obligatorio, $unsets, true)) {
-                    unset($this->campos_obligatorios[$key]);
-                }
-            }
+        $limpia = $this->campos_obligatorios(campos_obligatorios: $campos_obligatorios);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al asignar campos obligatorios en '.$tabla, data: $limpia);
+            print_r($error);
+            die('Error');
         }
+
 
         $this->campos_view = array_merge($this->campos_view,$campos_view);
         $this->tipo_campos = $tipo_campos;
@@ -350,6 +342,19 @@ class modelo extends modelo_base {
         }
 
         return $r_alta;
+    }
+
+    private function campos_obligatorios(array $campos_obligatorios){
+        $this->campos_obligatorios = array_merge($this->campos_obligatorios,$campos_obligatorios);
+
+        if(isset($campos_obligatorios[0]) && trim($campos_obligatorios[0]) === '*'){
+
+            $limpia = $this->todos_campos_obligatorios();
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en '.$this->tabla, data: $limpia);
+            }
+        }
+        return $this->campos_obligatorios;
     }
 
     /**
@@ -1268,12 +1273,14 @@ class modelo extends modelo_base {
         }
         return $init_archivos_tmp_model;
     }
+    
 
     /**
      * Inserta un registro predeterminado del modelo en ejecucion
      * @param string|int $codigo Codigo predeterminado default
      * @param string $descripcion Descripcion predeterminado
      * @return array|stdClass
+     * @version 6.30.0
      */
     public function inserta_predeterminado(
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
@@ -1329,6 +1336,16 @@ class modelo extends modelo_base {
         }
         return $registro;
 
+    }
+
+    private function limpia_campos_obligatorios(array $unsets): array
+    {
+        foreach($this->campos_obligatorios as $key=>$campo_obligatorio){
+            if(in_array($campo_obligatorio, $unsets, true)) {
+                unset($this->campos_obligatorios[$key]);
+            }
+        }
+        return $this->campos_obligatorios;
     }
 
 
@@ -2021,6 +2038,16 @@ class modelo extends modelo_base {
         return $tiene_predeterminado;
     }
 
+    private function todos_campos_obligatorios(){
+        $this->campos_obligatorios = $this->campos_tabla;
+        $limpia = $this->unset_campos_obligatorios();
+        if (errores::$error) {
+            return  $this->error->error(mensaje: 'Error al limpiar campos obligatorios en '.$this->tabla, data: $limpia);
+
+        }
+        return $limpia;
+    }
+
     public function total_registros(): array|int
     {
         $n_rows = $this->cuenta();
@@ -2087,6 +2114,16 @@ class modelo extends modelo_base {
             $resultado['registros'] = array();
         }
         return $resultado['registros'];
+    }
+
+    private function unset_campos_obligatorios(){
+        $unsets = array('fecha_alta','fecha_update','id','usuario_alta_id','usuario_update_id');
+
+        $limpia = $this->limpia_campos_obligatorios(unsets: $unsets);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en '.$this->tabla, data: $limpia);
+        }
+        return $limpia;
     }
 
     /**
