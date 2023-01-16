@@ -1868,7 +1868,7 @@ class modelo extends modelo_base {
     {
         $registros = $this->registros(columnas: $columnas,aplica_seguridad:  $this->aplica_seguridad);
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registros', data: $registros);
+            return $this->error->error(mensaje: 'Error al obtener registros en '.$this->tabla, data: $registros);
         }
 
         return $registros;
