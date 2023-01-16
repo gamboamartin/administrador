@@ -1860,7 +1860,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     *
+     * Obtiene registros con permisos
      * @param array $columnas
      * @return array
      */
