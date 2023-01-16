@@ -1273,7 +1273,7 @@ class modelo extends modelo_base {
         }
         return $init_archivos_tmp_model;
     }
-    
+
 
     /**
      * Inserta un registro predeterminado del modelo en ejecucion
@@ -1636,19 +1636,19 @@ class modelo extends modelo_base {
             renombres: $this->renombres, sql_where_previo: $sql_extra);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar datos', data: $base);
+            return $this->error->error(mensaje: 'Error al inicializar datos en '.$this->tabla, data: $base);
         }
 
         $consulta = (new sql())->sql_select(consulta_base:$base->consulta_base,params_base:  $base->params,
             sql_extra: $sql_extra);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta);
+            return $this->error->error(mensaje: 'Error al generar consulta en '.$this->tabla, data: $consulta);
         }
 
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar consulta', data: $result);
+            return $this->error->error(mensaje: 'Error al ejecutar consulta en '.$this->tabla, data: $result);
         }
         $this->transaccion = '';
 
@@ -1828,7 +1828,7 @@ class modelo extends modelo_base {
         $resultado =$this->obten_registros(aplica_seguridad:$aplica_seguridad,  columnas:$columnas, limit: $limit);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros activos',data: $resultado);
+            return $this->error->error(mensaje: 'Error al obtener registros activos en '.$this->tabla,data: $resultado);
         }
         $this->registros = $resultado->registros;
         $registros = $resultado->registros;

@@ -744,20 +744,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
             columnas_sql: $columnas_seleccionables, extension_estructura: $extension_estructura, renombres: $renombradas);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener columnas',data: $columnas_sql);
+            return  $this->error->error(mensaje: 'Error al obtener columnas en '.$this->tabla,data: $columnas_sql);
         }
 
 
         $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
             modelo: $this, renombradas: $renombradas, tabla: $this->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar joins', data: $tablas);
+            return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }
 
         $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
             columnas_seleccionables: $columnas_seleccionables);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sub querys', data: $sub_querys_sql);
+            return $this->error->error(mensaje: 'Error al generar sub querys en '.$this->tabla, data: $sub_querys_sql);
         }
 
 

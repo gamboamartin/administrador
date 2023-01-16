@@ -143,24 +143,27 @@ class sql{
                                     string $sql_where_previo): array|stdClass
     {
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0 en '.$modelo->tabla,
+                data:  $limit);
         }
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0 en '.$modelo->tabla,
+                data: $offset);
 
         }
 
         $params_base = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by: $group_by,
             limit:  $limit,modelo: $modelo, offset: $offset, order: $order,sql_where_previo: $sql_where_previo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener parametros base', data: $params_base);
+            return $this->error->error(mensaje: 'Error al obtener parametros base en '.$modelo->tabla,
+                data: $params_base);
         }
 
         $consulta_base = $modelo->genera_consulta_base(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
             extension_estructura: $extension_estructura, renombradas: $renombres);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta_base);
+            return $this->error->error(mensaje: 'Error al generar consulta en '.$modelo->tabla, data: $consulta_base);
         }
 
         $data = new stdClass();

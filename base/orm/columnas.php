@@ -320,15 +320,16 @@ class columnas{
 
             if(count($columnas_by_table) > 0){
                 $fix = 'Si !$aplica_columnas_by_table $columnas_by_table debe ser vacio';
-                return $this->error->error(mensaje: 'Error columnas_by_table tiene datos', data: $columnas_by_table,
-                    fix: $fix);
+                return $this->error->error(mensaje: 'Error columnas_by_table tiene datos en modelo '.$modelo->tabla,
+                    data: $columnas_by_table, fix: $fix);
             }
 
             $columnas = $this->columnas_base(columnas_en_bruto: $columnas_en_bruto,columnas_sql: $columnas_sql,
                 extension_estructura: $extension_estructura,modelo: $modelo,renombres: $renombres,
                 tablas_select: $tablas_select);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar columnas base', data: $columnas);
+                return $this->error->error(mensaje: 'Error al integrar columnas base en '.$modelo->tabla,
+                    data: $columnas);
             }
 
         }
@@ -337,19 +338,21 @@ class columnas{
                 $fix = 'Si $aplica_columnas_by_table es true debe haber columnas_by_table con datos';
                 $fix .= ' columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = ';
                 $fix.= "nombre_tabla";
-                return $this->error->error(mensaje: 'Error columnas_by_table esta vacia', data: $columnas_by_table,
-                    fix: $fix);
+                return $this->error->error(mensaje: 'Error columnas_by_table esta vacia en '.$modelo->tabla,
+                    data: $columnas_by_table, fix: $fix);
             }
             $columnas = $this->columnas_by_table(columnas_by_table: $columnas_by_table,
                 columnas_en_bruto: $columnas_en_bruto,modelo: $modelo);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al integrar columnas by table', data: $columnas);
+                return $this->error->error(mensaje: 'Error al integrar columnas by table en '.$modelo->tabla,
+                    data: $columnas);
             }
         }
 
         $columnas = trim($columnas);
         if($columnas === ''){
-            return $this->error->error(mensaje: 'Error ninguna configuracion es aceptable', data: $columnas);
+            return $this->error->error(mensaje: 'Error ninguna configuracion es aceptable en '.$modelo->tabla,
+                data: $columnas);
         }
 
         return $columnas;
@@ -587,7 +590,7 @@ class columnas{
 
         $aplica_columnas_by_table = $this->aplica_columnas_by_table(columnas_by_table: $columnas_by_table);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al verificar aplicacion de columnas',
+            return $this->error->error(mensaje: 'Error al verificar aplicacion de columnas en modelo '.$modelo->tabla,
                 data: $aplica_columnas_by_table);
         }
 
@@ -596,7 +599,8 @@ class columnas{
             columnas_sql: $columnas_sql,extension_estructura: $extension_estructura,modelo: $modelo,
             renombres: $renombres,tablas_select: $tablas_select);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas en modelo '.$modelo->tabla,
+                data: $columnas);
         }
 
 
@@ -1171,14 +1175,15 @@ class columnas{
 
         $tablas_select = (new inicializacion())->tablas_select(modelo: $modelo);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar tablas select',data:  $tablas_select);
+            return $this->error->error(mensaje: 'Error al inicializar tablas select en '.$modelo->tabla,
+                data:  $tablas_select);
         }
 
         $columnas = $this->columnas_full(columnas_by_table : $columnas_by_table, columnas_en_bruto:$columnas_en_bruto,
             columnas_sql:  $columnas_sql, extension_estructura: $extension_estructura, modelo: $modelo,
             renombres:  $renombres, tablas_select: $tablas_select);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            return $this->error->error(mensaje: 'Error al integrar columnas en '.$modelo->tabla, data: $columnas);
         }
 
         return $columnas.' ';
