@@ -22,6 +22,11 @@ class exito_html extends base_html {
         return '<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>';
     }
 
+    /**
+     * Integra un mensaje de exito en html
+     * @param bool $html si aplica html
+     * @return string
+     */
     private function exito_html(bool $html): string
     {
         $exito_html = '';
