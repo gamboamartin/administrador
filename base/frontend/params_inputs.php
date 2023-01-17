@@ -24,7 +24,14 @@ class params_inputs{
         return $disabled_html;
     }
 
-
+    public function regex_html(string $regex): string
+    {
+        $regex_html = '';
+        if($regex){
+            $regex_html = "pattern='$regex'";
+        }
+        return $regex_html;
+    }
 
 
     /**
@@ -41,6 +48,20 @@ class params_inputs{
             $required_html = 'required';
         }
         return $required_html;
+    }
+
+    public function title_html(string $place_holder, string $title): string
+    {
+        $title = trim($title);
+        if($title === ''){
+            $title = $place_holder;
+        }
+
+        $title_html = '';
+        if($title !== ''){
+            $title_html = "title='$title'";
+        }
+        return $title_html;
     }
 
 }
