@@ -31,6 +31,21 @@ class exito_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_exito_html(): void
+    {
+
+        errores::$error = false;
+
+        $html = new exito_html();
+        $html = new liberator($html);
+        $html_ = true;
+        $resultado = $html->exito_html($html_);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert">',$resultado);
+        errores::$error = false;
+    }
+
     public function test_mensaje(): void
     {
 

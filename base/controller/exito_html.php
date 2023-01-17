@@ -26,6 +26,7 @@ class exito_html extends base_html {
      * Integra un mensaje de exito en html
      * @param bool $html si aplica html
      * @return string
+     * @version 6.39.0
      */
     private function exito_html(bool $html): string
     {
