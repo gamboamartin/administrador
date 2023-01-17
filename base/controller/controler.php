@@ -78,6 +78,8 @@ class controler{
 
     public string $nombre_usuario = '';
 
+    public string $path_vendor = '';
+
     public function __construct(PDO $link){
         $this->link = $link;
 
@@ -147,6 +149,8 @@ class controler{
             print_r($error);
             exit;
         }
+
+        $this->path_vendor = 'gamboa.martin/administrador/';
     }
 
 
