@@ -24,6 +24,11 @@ class params_inputs{
         return $disabled_html;
     }
 
+    /**
+     * Integra un regex a un pattern input
+     * @param string $regex
+     * @return string
+     */
     public function regex_html(string $regex): string
     {
         $regex_html = '';
