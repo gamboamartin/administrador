@@ -867,6 +867,13 @@ class init{
         return $campos_view;
     }
 
+    /**
+     * Integra los inputs en un template
+     * @param array $campos_view Campos desde modelo
+     * @param stdClass $keys Keys a integrar
+     * @param PDO $link Conexion a la base de datos
+     * @return array
+     */
     public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
         $campos_view = $this->modela_inputs_campos(campos_view: $campos_view,keys:  $keys);
