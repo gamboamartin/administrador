@@ -50,6 +50,11 @@ class params_inputs{
         return $required_html;
     }
 
+    /**
+     * @param string $place_holder
+     * @param string $title
+     * @return string
+     */
     public function title_html(string $place_holder, string $title): string
     {
         $title = trim($title);
