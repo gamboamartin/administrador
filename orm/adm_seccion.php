@@ -17,8 +17,8 @@ class adm_seccion extends _modelo_children {
      */
     public function __construct(PDO $link, array $childrens = array()){
         $tabla = 'adm_seccion';
-        $columnas = array($tabla=>false, 'adm_menu'=>$tabla);
-        $campos_obligatorios = array('status','descripcion','adm_menu_id');
+        $columnas = array($tabla=>false, 'adm_menu'=>$tabla,'adm_namespace'=>$tabla);
+        $campos_obligatorios = array('status','descripcion','adm_menu_id', 'adm_namespace_id');
 
         $parents_data['adm_menu'] = array();
         $parents_data['adm_menu']['namespace'] = 'gamboamartin\\administrador\\models';
@@ -134,6 +134,19 @@ class adm_seccion extends _modelo_children {
         $registro = $this->init_row_alta(defaults: $this->defaults, parents_data: $this->parents_data, registro: $this->registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar registro',data: $registro);
+        }
+
+        if(!isset($registro['adm_namespace_id'])){
+            $inserta_pred = (new adm_namespace(link: $this->link))->inserta_predeterminado();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al insertar namespace predeterminado',data: $inserta_pred);
+            }
+
+            $adm_namespace_id = (new adm_namespace(link: $this->link))->id_predeterminado();
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener namespace predeterminado',data: $adm_namespace_id);
+            }
+            $registro['adm_namespace_id'] = $adm_namespace_id;
         }
 
         $this->registro = $registro;
