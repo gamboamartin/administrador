@@ -1167,7 +1167,7 @@ class columnas{
      *@example
      *      $columnas = $this->obten_columnas_completas($columnas);
      */
-    public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
+    final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                              bool $columnas_en_bruto = false, array $columnas_sql = array(),
                                              array $extension_estructura = array(),
                                              array $renombres = array()):array|string{
@@ -1201,7 +1201,7 @@ class columnas{
      * @example
      *      $sub_querys_sql = $this->sub_querys($columnas);
      */
-    public function sub_querys(string $columnas, modelo_base $modelo,
+    final public function sub_querys(string $columnas, modelo_base $modelo,
                                array $columnas_seleccionables = array()):array|string{
         $sub_querys_sql = '';
         foreach($modelo->sub_querys as $alias => $sub_query){

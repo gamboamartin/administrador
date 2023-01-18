@@ -516,7 +516,7 @@ class joins{
      * @return array|string conjunto de joins en forma de SQL
      * @throws errores $tabla vacia
      */
-    public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
+    final public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
         $tabla = str_replace('models\\','',$tabla);
         if($tabla === ''){
             return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
@@ -643,7 +643,7 @@ class joins{
      * @param string $tabla Tabla con el nombre original
      * @return array|string
      */
-    public function tablas(array $columnas, array $extension_estructura, modelo_base $modelo, array $renombradas,
+    final public function tablas(array $columnas, array $extension_estructura, modelo_base $modelo, array $renombradas,
                            string $tabla): array|string
     {
         $tabla = trim($tabla);

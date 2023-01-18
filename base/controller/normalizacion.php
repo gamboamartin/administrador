@@ -74,7 +74,7 @@ class normalizacion{
      * @param array $filtros_brutos
      * @return array
      */
-    public function genera_filtros_envio(array $filtros_brutos): array
+    final public function genera_filtros_envio(array $filtros_brutos): array
     {
         $filtros = array();
         foreach($filtros_brutos as $campo =>$value){

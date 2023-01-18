@@ -77,7 +77,7 @@ class filtros{
      * @return array|stdClass
      * @version 1.575.51
      */
-    public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
+    final public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
                                     array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
                                     modelo $modelo, array $not_in, int $offset, array $order, string $sql_extra,
                                     string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
@@ -158,7 +158,7 @@ class filtros{
      * @author mgamboa
      * @version 1.562.51
      */
-    public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
+    final public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
     {
 
         $consulta = trim($consulta);

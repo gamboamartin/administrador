@@ -733,7 +733,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  modelos->accion_grupo->obten_accion_permitida
      */
 
-    public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
+    final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
                                             bool $columnas_en_bruto = false, array $extension_estructura = array(),
                                             array $renombradas = array()):array|string{
 

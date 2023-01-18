@@ -115,7 +115,7 @@ class params_sql{
      *          string stdClass->offset_sql OFFSET $offset o ''
      *          string stdClass->seguridad WHERE usuario_permitido_id = $_SESSION[usuario_id] o ''
      */
-    public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, modelo $modelo,  int $offset,
+    final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, modelo $modelo,  int $offset,
                                array $order, string $sql_where_previo): array|stdClass
     {
         if($limit<0){

@@ -737,7 +737,7 @@ class inicializacion{
      * @param modelo_base $modelo Modelo para obtencion de nombre de tabla
      * @return array
      */
-    public function tablas_select(modelo_base $modelo): array
+    final public function tablas_select(modelo_base $modelo): array
     {
         $modelo->tabla = str_replace($modelo->NAMESPACE,'',$modelo->tabla);
 

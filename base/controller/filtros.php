@@ -123,7 +123,7 @@ class filtros{
      * @param array $filtros
      * @return array
      */
-    public function filtra(controler $controler, array $filtros): array
+    final public function filtra(controler $controler, array $filtros): array
     {
         $r_modelo = $controler->modelo->filtro_and(filtro: $filtros,filtro_especial: array());
         if(errores::$error){

@@ -208,7 +208,7 @@ class where{
      * @return array|stdClass
      * @version 1.575.51
      */
-    public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
+    final public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
                                       array $filtro_especial, array $filtro_extra, array $filtro_fecha,
                                       array $filtro_rango, array $in, array $keys_data_filter, array $not_in,
                                       string $sql_extra, string $tipo_filtro): array|stdClass
