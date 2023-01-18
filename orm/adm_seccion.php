@@ -322,6 +322,22 @@ class adm_seccion extends _modelo_children {
 	    return array('registros' => $new_array, 'n_registros' => $n_registros);
 	}
 
+    final public function seccion_by_descripcion(string $descripcion){
+
+        $r_adm_seccion = $this->registro_by_descripcion(descripcion: $descripcion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener seccion', data: $r_adm_seccion);
+        }
+        if($r_adm_seccion->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe la seccion', data: $r_adm_seccion);
+        }
+        if($r_adm_seccion->n_registros > 1){
+            return $this->error->error(mensaje: 'Error existe mas de una seccion', data: $r_adm_seccion);
+        }
+        return (object)$r_adm_seccion->registros[0];
+
+    }
+
     public function secciones_permitidas(int $adm_menu_id = -1): array
     {
 

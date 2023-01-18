@@ -955,7 +955,7 @@ class modelo extends modelo_base {
      * @fecha 2022-08-02 16:49
      * @version 1.575.51
      */
-    public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
+    final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                array $columnas_by_table = array(), bool $columnas_en_bruto = false,
                                array $diferente_de = array(), array $filtro=array(), array $filtro_especial= array(),
                                array $filtro_extra = array(), array $filtro_fecha = array(),
@@ -1808,6 +1808,18 @@ class modelo extends modelo_base {
         }
 
         return $registro;
+    }
+
+    final public function registro_by_descripcion(string $descripcion){
+
+        $key_descripcion = $this->tabla.'.descripcion';
+        $filtro[$key_descripcion] = $descripcion;
+        $result = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener registros',data: $result);
+        }
+        return $result;
+
     }
 
     /**

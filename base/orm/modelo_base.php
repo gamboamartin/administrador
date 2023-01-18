@@ -486,7 +486,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion
      * @uses  accion_grupo
      */
-    public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
+    final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
                                      array $hijo = array(), bool $valida_tabla = true): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
