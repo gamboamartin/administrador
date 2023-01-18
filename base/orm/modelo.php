@@ -1033,7 +1033,7 @@ class modelo extends modelo_base {
      * @param array $order
      * @return array|stdClass
      */
-    public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
+    final public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
                               array $columnas_by_table = array(), bool $columnas_en_bruto = false,
                               array $filtro = array(), array $group_by = array(), array $hijo = array(),
                               int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{

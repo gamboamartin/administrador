@@ -80,7 +80,7 @@ class controlador_adm_accion_grupo extends controlador_base{
         $accion_id = $_POST['accion_id'];
         $grupo_id = $_POST['grupo_id'];
 
-        $accion_grupo_modelo = new accion_grupo($this->link);
+        $accion_grupo_modelo = new adm_accion_grupo($this->link);
 
         $accion_grupo_id = $accion_grupo_modelo->obten_permiso_id($accion_id,$grupo_id);
 

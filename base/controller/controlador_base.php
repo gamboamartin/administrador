@@ -187,6 +187,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * correspondiente al id del registro en cuestión.
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @return array almacena en un arreglo todos los datos del registro
+     * @final revisada
      */
     public function activa_bd(bool $header ): array{
         if($this->registro_id === -1){
@@ -244,6 +245,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @param bool $ws si ws retorna json
      * @return array|string
+     * @final revisada
      */
     public function alta(bool $header, bool $ws = false):array|string{
 

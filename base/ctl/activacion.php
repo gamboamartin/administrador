@@ -23,8 +23,9 @@ class activacion{
      * @param string $seccion Seccion en ejecucion
      * @return array|stdClass
      * @version 1.531.51
+     *
      */
-    public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array|stdClass{
+    final public function activa_bd_base(modelo $modelo, int $registro_id, string $seccion): array|stdClass{
         if($registro_id <= 0){
             return $this->error->error(mensaje: 'Error id debe ser mayor a 0',data: $registro_id);
 

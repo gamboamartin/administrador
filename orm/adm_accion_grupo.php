@@ -118,7 +118,7 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
      *@functions $adm_accion_grupo->registro_id = (int)$r_accion_grupo. Añade un valor a "r_accion_grupo", para
      * conservarlo en "registro_id". 
      */
-    public function obten_permiso_id(int $accion_id, int $grupo_id):array|int{ //FIN PROT
+    final public function obten_permiso_id(int $accion_id, int $grupo_id):array|int{ //FIN PROT
 
         if($accion_id <=0){
             return $this->error->error('Error accion_id debe ser mayor a 0',$accion_id);

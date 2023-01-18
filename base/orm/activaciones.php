@@ -148,7 +148,7 @@ class activaciones{
      * @param modelo $modelo Modelo a verificar validacion
      * @return bool|array Verdadero sila configuracion es valida
      */
-    public function valida_activacion(modelo $modelo): bool|array
+    final public function valida_activacion(modelo $modelo): bool|array
     {
         if($modelo->registro_id <=0){
             return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
