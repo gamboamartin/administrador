@@ -1518,7 +1518,7 @@ class where{
      * @return bool|array
      * @error_params true
      */
-    public function verifica_tipo_filtro(string $tipo_filtro): bool|array
+    final public function verifica_tipo_filtro(string $tipo_filtro): bool|array
     {
         $tipo_filtro = trim($tipo_filtro);
         if($tipo_filtro === ''){
