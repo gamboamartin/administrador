@@ -1877,7 +1877,7 @@ class modelo extends modelo_base {
     /**
      * Inicializa un elemento de salida para homolagar resultados
      * @return stdClass
-     *
+     * @version 7.2.2
      */
     private function result_ini(): stdClass
     {

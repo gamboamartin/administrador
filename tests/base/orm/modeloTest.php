@@ -801,6 +801,21 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_result_ini(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+        $resultado = $modelo->result_ini();
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(0,$resultado->n_registros);
+        $this->assertEmpty($resultado->registros);
+        $this->assertEquals('',$resultado->sql);
+        $this->assertEmpty($resultado->registros_obj);
+        errores::$error = false;
+    }
+
     public function test_seccion_menu_id(): void
     {
         errores::$error = false;
