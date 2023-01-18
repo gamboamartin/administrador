@@ -1218,10 +1218,10 @@ class modelo extends modelo_base {
         $filtro[$key] = 'activo';
         $r_modelo = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $r_modelo->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+            return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
         }
         if((int)$r_modelo->n_registros > 1){
-            return $r_modelo->error->error(mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+            return $this->error->error(mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
         }
         return $r_modelo;
     }
@@ -1888,19 +1888,19 @@ class modelo extends modelo_base {
 
         $r_modelo = $this->result_ini();
         if(errores::$error){
-            return $r_modelo->error->error(mensaje: 'Error al inicializar result',data:  $r_modelo);
+            return $this->error->error(mensaje: 'Error al inicializar result',data:  $r_modelo);
         }
 
 
         $tiene_predeterminado = $this->tiene_predeterminado();
         if(errores::$error){
-            return $r_modelo->error->error(mensaje: 'Error al obtener si predeterminado',data:  $tiene_predeterminado);
+            return $this->error->error(mensaje: 'Error al obtener si predeterminado',data:  $tiene_predeterminado);
         }
 
         if($tiene_predeterminado){
             $r_modelo = $this->get_predeterminado();
             if(errores::$error){
-                return $r_modelo->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+                return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
             }
 
         }
