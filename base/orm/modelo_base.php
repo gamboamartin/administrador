@@ -780,7 +780,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores $name_modelo no existe una clase con el nombre del modelo
 
      */
-    public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
+    final public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
 
         /**

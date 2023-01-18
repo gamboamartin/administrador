@@ -874,7 +874,7 @@ class init{
      * @param PDO $link Conexion a la base de datos
      * @return array
      */
-    public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
+    final public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
         $campos_view = $this->modela_inputs_campos(campos_view: $campos_view,keys:  $keys);
         if(errores::$error){

@@ -374,7 +374,7 @@ class modelo extends modelo_base {
      * @param array $not_in Genera NOT IN en SQL
      * @return array|int
      */
-    public function cuenta(array $diferente_de = array(), array $filtro = array(), string $tipo_filtro = 'numeros',
+    final public function cuenta(array $diferente_de = array(), array $filtro = array(), string $tipo_filtro = 'numeros',
                            array $filtro_especial = array(), array $filtro_rango = array(),
                            array $filtro_fecha = array(), array $in = array(), array $not_in = array()):array|int{
 
@@ -721,7 +721,7 @@ class modelo extends modelo_base {
      * @return array|bool
      * @version 1.324.41
      */
-    public function existe(array $filtro): array|bool
+    final public function existe(array $filtro): array|bool
     {
         $resultado = $this->cuenta(filtro: $filtro);
         if(errores::$error){
@@ -741,7 +741,7 @@ class modelo extends modelo_base {
      * @param int $registro_id registro a verificar
      * @return bool|array
      */
-    public function existe_by_id(int $registro_id): bool|array
+    final public function existe_by_id(int $registro_id): bool|array
     {
         $filtro[$this->tabla.'.id'] = $registro_id;
         $existe = $this->existe(filtro: $filtro);
