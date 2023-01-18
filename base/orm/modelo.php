@@ -1491,7 +1491,7 @@ class modelo extends modelo_base {
      * @throws errores no se encontro registro
      * @internal  $this->obten_por_id($hijo, $columnas);
      */
-    public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
+    final public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
                                array $extension_estructura = array(), array $hijo= array()): array{
         $this->row = new stdClass();
         if($this->registro_id < 0){
