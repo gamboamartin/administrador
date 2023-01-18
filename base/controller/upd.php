@@ -21,7 +21,7 @@ class upd{
      * @return array
      */
 
-    public function asigna_datos_modifica(controler $controler):array{
+    final public function asigna_datos_modifica(controler $controler):array{
         $namespace = 'models\\';
         $controler->seccion = str_replace($namespace,'', $controler->seccion);
 
