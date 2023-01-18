@@ -1874,7 +1874,13 @@ class modelo extends modelo_base {
         return $registros;
     }
 
-    private function result_ini(){
+    /**
+     * Inicializa un elemento de salida para homolagar resultados
+     * @return stdClass
+     *
+     */
+    private function result_ini(): stdClass
+    {
         $r_modelo = new stdClass();
         $r_modelo->n_registros = 0;
         $r_modelo->registros= array();
