@@ -80,15 +80,17 @@ class salida_data{
         }
 
 
-        $data_predeterminado = $controler->modelo->row_predeterminado();
-        if(errores::$error){
-            return $controler->retorno_error(mensaje: 'Error al obtener predeterminado',
-                data:  $data_predeterminado,header: $header,ws: $ws);
-        }
+        if(in_array('predeterminado', $controler->modelo->campos_tabla)) {
+            $data_predeterminado = $controler->modelo->row_predeterminado();
+            if (errores::$error) {
+                return $controler->retorno_error(mensaje: 'Error al obtener predeterminado',
+                    data: $data_predeterminado, header: $header, ws: $ws);
+            }
 
-        if($data_predeterminado->n_registros === 1){
-            $row_predeterminado = $data_predeterminado->registros[0];
-            $r_modelo->registros[] = $row_predeterminado;
+            if ($data_predeterminado->n_registros === 1) {
+                $row_predeterminado = $data_predeterminado->registros[0];
+                $r_modelo->registros[] = $row_predeterminado;
+            }
         }
 
 
