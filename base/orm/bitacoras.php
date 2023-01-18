@@ -238,7 +238,7 @@ class bitacoras{
      * @return array
      * @version 1.495.49
      */
-    public function ejecuta_transaccion(
+    final public function ejecuta_transaccion(
         string $tabla, string $funcion,  modelo $modelo, int $registro_id , string $sql = ''):array{
         $consulta =trim($sql);
         if($sql === '') {

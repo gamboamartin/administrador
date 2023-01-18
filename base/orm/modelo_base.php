@@ -532,7 +532,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses modelo_basico
      * @uses modelo
      */
-    public function ejecuta_sql(string $consulta):array|stdClass{
+    final public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
             return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla,
                 aplica_bitacora: true);

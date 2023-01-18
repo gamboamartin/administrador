@@ -149,6 +149,7 @@ class modelo extends modelo_base {
      * @param int $registro_id
      * @return array|stdClass
      * @version 1.495.49
+     * @final revisada
      */
     public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
 
@@ -1789,7 +1790,7 @@ class modelo extends modelo_base {
      * @return array|stdClass
      * @version 1.15.9
      */
-    public function registro(int $registro_id, array $columnas = array(), bool $columnas_en_bruto = false,
+    final public function registro(int $registro_id, array $columnas = array(), bool $columnas_en_bruto = false,
                              array $extension_estructura = array(), array $hijo = array(),
                              bool $retorno_obj = false):array|stdClass{
         if($registro_id <=0){

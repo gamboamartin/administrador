@@ -48,7 +48,7 @@ class activaciones{
      *          [transaccion] => ACTIVA
      *          [name_model] => adm_accion_grupo
      */
-    public function init_activa(modelo $modelo, bool $reactiva): array|stdClass
+    final public function init_activa(modelo $modelo, bool $reactiva): array|stdClass
     {
         if($modelo->registro_id <=0){
             return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
