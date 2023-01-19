@@ -58,13 +58,12 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      * @param stdClass $r_session
      * @return array
      */
-    public function asigna_data_session(stdClass $r_session): array
+    final public function asigna_data_session(stdClass $r_session): array
     {
 
         $session_activa = $this->session_activa();
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar session', data: $session_activa,
-                params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al validar session', data: $session_activa);
         }
 
         $carga = $this->init_data_session(r_session: $r_session,session_activa:  $session_activa);
@@ -222,7 +221,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      *
      * $session = $adm_seccion->asigna_data_session(r_session: $r_session);
      */
-    public function carga_data_session(): array
+    final public function carga_data_session(): array
     {
         $session_id = $_GET['session_id'] ?? '';
         $filtro['adm_session.name'] = $session_id;

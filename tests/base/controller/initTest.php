@@ -13,6 +13,8 @@ use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
+use gamboamartin\controllers\controlador_adm_seccion;
+use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -23,10 +25,16 @@ use stdClass;
 
 class initTest extends test {
     public errores $errores;
+    private stdClass $paths_conf;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+
+        $this->paths_conf = new stdClass();
+        $this->paths_conf->generales = '/var/www/html/administrador/config/generales.php';
+        $this->paths_conf->database = '/var/www/html/administrador/config/database.php';
+        $this->paths_conf->views = '/var/www/html/administrador/config/views.php';
     }
 
     public function test_aplica_view()
@@ -172,7 +180,9 @@ class initTest extends test {
 
         $accion = 'lista';
         $seccion = 'b';
-        $resultado = $init->data_include_base($accion, $seccion);
+        $ctl = (new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf));
+
+        $resultado = $init->data_include_base($accion, $ctl, $seccion);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado->existe);
@@ -218,8 +228,10 @@ class initTest extends test {
         $init = new init();
         $init = new liberator($init);
 
+        $ctl = (new controlador_adm_seccion(link: $this->link, paths_conf: $this->paths_conf));
+
         $include_action = 'a';
-        $resultado = $init->genera_salida($include_action);
+        $resultado = $init->genera_salida($ctl, $include_action);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -231,9 +243,10 @@ class initTest extends test {
         unset($_SESSION);
         $init = new init();
         $init = new liberator($init);
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
         $seguridad = (new seguridad());
         $seguridad->seccion = 'xxx';
-        $resultado = $init->include_action(true, $seguridad);
+        $resultado = $init->include_action(true, $ctl, $seguridad);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al obtener include local',$resultado['mensaje']);
@@ -278,8 +291,10 @@ class initTest extends test {
         $init = new init();
         $init = new liberator($init);
 
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
+
         $accion = '';
-        $resultado = $init->include_action_local_base_data($accion);
+        $resultado = $init->include_action_local_base_data($accion, $ctl);
 
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -289,7 +304,7 @@ class initTest extends test {
 
 
         $accion = 'a';
-        $resultado = $init->include_action_local_base_data($accion);
+        $resultado = $init->include_action_local_base_data($accion, $ctl);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -304,10 +319,11 @@ class initTest extends test {
         $_SESSION['usuario_id'] = 2;
         $init = new init();
         $init = new liberator($init);
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
 
         $accion = 'f';
         $seccion = 'a';
-        $resultado = $init->include_action_local_data($accion, $seccion);
+        $resultado = $init->include_action_local_data($accion, $ctl, $seccion);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('./views/a/f.php',$resultado->include_action);
@@ -354,7 +370,9 @@ class initTest extends test {
 
         $accion = 'a';
 
-        $resultado = $init->include_action_template_base_data($accion);
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
+
+        $resultado = $init->include_action_template_base_data($accion, $ctl);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -370,7 +388,8 @@ class initTest extends test {
 
         $accion = 's';
         $seccion = 'a';
-        $resultado = $init->include_action_template_data($accion, $seccion);
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
+        $resultado = $init->include_action_template_data($accion, $ctl, $seccion);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -416,8 +435,8 @@ class initTest extends test {
 
         $accion = 'alta';
         $seccion = 'a';
-
-        $resultado = $init->include_template($accion, $seccion);
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
+        $resultado = $init->include_template($accion, $ctl, $seccion);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -429,10 +448,10 @@ class initTest extends test {
 
         $init = new init();
         $init = new liberator($init);
-
+        $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
         $accion = 'a';
 
-        $resultado = $init->include_template_base($accion);
+        $resultado = $init->include_template_base($accion, $ctl);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertEquals('Error no existe la view',$resultado['mensaje_limpio']);
@@ -442,7 +461,7 @@ class initTest extends test {
 
         $accion = 'lista';
 
-        $resultado = $init->include_template_base($accion);
+        $resultado = $init->include_template_base($accion, $ctl);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('/var/www/html/administrador/views/vista_base/lista.php',$resultado->include_action);

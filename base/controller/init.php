@@ -120,6 +120,7 @@ class init{
     /**
      * Obtiene los datos de un template de una accion
      * @param string $accion Accion a verificar
+     * @param controler $controlador Controlador en ejecucion
      * @param string $seccion Seccion a verificar
      * @return array|stdClass
      * @functions $data_include = $init->include_action_local_base_data. Verifica si existe una view en base a
@@ -129,7 +130,7 @@ class init{
      * En caso de ocurrir un error, mostrará un mensaje
      * @version 2.75.6
      */
-    private function data_include_base(string $accion, string $seccion): array|stdClass
+    private function data_include_base(string $accion, controler $controlador, string $seccion): array|stdClass
     {
         $accion = trim($accion);
         if($accion === ''){
@@ -140,12 +141,12 @@ class init{
             return $this->error->error(mensaje: 'Error la seccion esta vacia', data: $seccion);
         }
 
-        $data_include = $this->include_action_local_base_data(accion: $accion);
+        $data_include = $this->include_action_local_base_data(accion: $accion, controlador: $controlador);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local base', data: $data_include);
         }
         if(!$data_include->existe){
-            $data_include = $this->include_template(accion: $accion,seccion: $seccion);
+            $data_include = $this->include_template(accion: $accion, controlador:$controlador,seccion: $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
             }
@@ -155,13 +156,16 @@ class init{
 
     /**
      * Genera la salida para controller
+     * @param controler $controlador Controlador en ejecucion
      * @param string $include_action Accion include a integrar para frontend
      * @return array|stdClass
-     * @version 2.29.3
      *
      */
-    private function genera_salida(string $include_action): array|stdClass
+    private function genera_salida(controler $controlador, string $include_action): array|stdClass
     {
+        /**
+         * REFACTORIZAR
+         */
         $include_action = trim($include_action);
         if($include_action === ''){
             return $this->error->error(mensaje: 'Error include_action esta vacio', data: $include_action);
@@ -170,6 +174,20 @@ class init{
         $existe = $this->existe_include(include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar include', data: $include_action);
+        }
+
+        if(!$existe){
+            $path_template = (new generales())->path_base."vendor/$controlador->path_vendor_views/views/$controlador->seccion/$controlador->accion.php";
+
+            $existe = $this->existe_include(include_action:$path_template);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al verificar include', data: $path_template);
+            }
+
+            if($existe){
+                $include_action = $path_template;
+            }
+
         }
 
         $data = $this->output_include(existe: $existe,include_action: $include_action);
@@ -184,17 +202,19 @@ class init{
      * v1.18.9
      * @param bool $aplica_view Si view es activo se buscara un archivo valido
      * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
+     * @param controler $controlador Controlador en ejecucion
      * @return string|array retorna el path para include
      *
      * @functions $data_include = $this->include_view(accion: $seguridad->accion,seccion: $seguridad->seccion);.
      * Se utiliza para asignar la accion y maquetarla. Si ocurre un error, lanzará un mensaje.
      */
-    private function include_action(bool $aplica_view, seguridad $seguridad): string|array
+    private function include_action(bool $aplica_view, controler $controlador, seguridad $seguridad): string|array
     {
         $data_include = new stdClass();
         $data_include->include_action = '';
         if($aplica_view) {
-            $data_include = $this->include_view(accion: $seguridad->accion,seccion: $seguridad->seccion);
+            $data_include = $this->include_view(accion: $seguridad->accion, controlador: $controlador,
+                seccion: $seguridad->seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener include local', data: $data_include);
             }
@@ -290,11 +310,12 @@ class init{
     /**
      * Obtiene los elementos de un include
      * @param string $accion Accion en ejecucion
+     * @param controler $controlador Controlador en ejecucion
      * @param string $seccion Seccion en ejecucion
      * @return array|stdClass
      * @version 2.77.6
      */
-    private function include_action_local_data(string $accion, string $seccion): array|stdClass
+    private function include_action_local_data(string $accion, controler $controlador, string $seccion): array|stdClass
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -310,7 +331,7 @@ class init{
             return $this->error->error(mensaje: 'Error al obtener include local', data: $include_action);
         }
 
-        $data = $this->genera_salida(include_action:$include_action);
+        $data = $this->genera_salida(controlador: $controlador, include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar salida', data: $data);
         }
@@ -321,10 +342,11 @@ class init{
     /**
      * Data para include de fronted
      * @param string $accion Accion en ejecucion
+     * @param controler $controlador Controlador en ejecucion
      * @return stdClass|array
      * @version 2.30.3
      */
-    private function include_action_local_base_data(string $accion): stdClass|array
+    private function include_action_local_base_data(string $accion, controler $controlador): stdClass|array
     {
         $accion = trim($accion);
         if($accion === ''){
@@ -335,7 +357,7 @@ class init{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local base', data: $include_action);
         }
-        $data = $this->genera_salida(include_action:$include_action);
+        $data = $this->genera_salida(controlador: $controlador, include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar salida', data: $data);
         }
@@ -345,11 +367,13 @@ class init{
     /**
      * Integra en include de un template
      * @param string $accion Accion en ejecucion
+     * @param controler $controlador Controlador en ejecucion
      * @param string $seccion Seccion en ejecucion
      * @return array|stdClass
      * @version 2.32.3
      */
-    private function include_action_template_data(string $accion, string $seccion): array|stdClass
+    private function include_action_template_data(
+        string $accion, controler $controlador, string $seccion): array|stdClass
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -364,7 +388,7 @@ class init{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $include_action);
         }
-        $data = $this->genera_salida(include_action:$include_action);
+        $data = $this->genera_salida(controlador: $controlador, include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar salida', data: $data);
         }
@@ -375,7 +399,7 @@ class init{
      * Obtiene el template de una vista.
      *
      * @param string $accion Accion a verificar
-     *
+     * @param controler $controlador Controlador en ejecucion
      * @return array|stdClass
      *
      * @functions $include_action = $init->include_action_template_base. Genera una ruta para obtener un
@@ -385,7 +409,7 @@ class init{
      * el objeto como la ruta del archivo. En caso de error lanzará un mensaje.
      * @version 2.33.3
      */
-    private function include_action_template_base_data(string $accion): array|stdClass
+    private function include_action_template_base_data(string $accion, controler $controlador): array|stdClass
     {
         $accion = trim($accion);
         if($accion === ''){
@@ -396,7 +420,7 @@ class init{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template base', data: $include_action);
         }
-        $data = $this->genera_salida(include_action:$include_action);
+        $data = $this->genera_salida(controlador: $controlador, include_action:$include_action);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar salida', data: $data);
         }
@@ -406,7 +430,7 @@ class init{
     /**
      * Obtiene la ruta de un template
      * @param string $accion Accion a verificar
-     *
+     * @param controler $controlador Controlador en ejecucion
      * @param string $seccion Seccion a verificar
      *
      * @return array|stdClass
@@ -418,7 +442,7 @@ class init{
      *  "$accion" si éste existe. En caso de error, lanzará un mensaje.
      * @version 2.35.3
      */
-    private function include_template(string $accion, string $seccion): array|stdClass
+    private function include_template(string $accion,controler $controlador, string $seccion): array|stdClass
     {
         $seccion = trim($seccion);
         if($seccion === ''){
@@ -429,12 +453,13 @@ class init{
             return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
         }
 
-        $data_include = $this->include_action_template_data(accion: $accion, seccion: $seccion);
+        $data_include = $this->include_action_template_data(
+            accion: $accion, controlador: $controlador, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
         }
         if(!$data_include->existe){
-            $data_include = $this->include_template_base(accion: $accion);
+            $data_include = $this->include_template_base(accion: $accion, controlador: $controlador);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
             }
@@ -446,22 +471,21 @@ class init{
      * Obtiene la ruta de un template basado en una accion. Si no existe, lanzará un mensaje de error.
      *
      * @param string $accion Accion a verificar
-     *
+     * @param controler $controlador Controlador en ejecucion
      * @return array|stdClass
      *
      * @functions $init->include_action_template_base_data. Genera una ruta contemplando "$accion"
      * para obtener un template. Si ocurre un error, lanzará un mensaje.
      * @version 2.34.3
-     *
      */
-    private function include_template_base(string $accion): array|stdClass
+    private function include_template_base(string $accion, controler $controlador): array|stdClass
     {
         $accion = trim($accion);
         if($accion === ''){
             return $this->error->error(mensaje: 'Error la $accion esta vacia', data: $accion);
         }
 
-        $data_include = $this->include_action_template_base_data(accion: $accion);
+        $data_include = $this->include_action_template_base_data(accion: $accion, controlador: $controlador);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include template', data: $data_include);
         }
@@ -474,7 +498,7 @@ class init{
     /**
      * Obtiene los datos de un template
      * @param string $accion Accion a verificar
-     *
+     * @param controler $controlador Controlador en ejecucion
      * @param string $seccion Seccion a verificar
      *
      * @return array|stdClass
@@ -485,15 +509,15 @@ class init{
      * @functions $init->data_include_base. Valida y maqueta el objeto requerido en base
      * a "$accion" y "$seccion" si éste existe. En caso de error, lanzará un mensaje.
      */
-    private function include_view(string $accion, string $seccion): array|stdClass
+    private function include_view(string $accion, controler $controlador, string $seccion): array|stdClass
     {
-        $data_include = $this->include_action_local_data(accion: $accion,seccion: $seccion);
+        $data_include = $this->include_action_local_data(accion: $accion, controlador: $controlador,seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener include local', data: $data_include);
         }
 
         if (!$data_include->existe) {
-            $data_include = $this->data_include_base(accion: $accion,seccion: $seccion);
+            $data_include = $this->data_include_base(accion: $accion, controlador: $controlador,seccion: $seccion);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener include local base', data: $data_include);
             }
@@ -543,7 +567,8 @@ class init{
 
         }
 
-        $include_action = $this->include_action(aplica_view:$aplica_view, seguridad: $seguridad);
+        $include_action = $this->include_action(aplica_view:$aplica_view, controlador: $controlador,
+            seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar include',data: $include_action);
 
@@ -1194,7 +1219,7 @@ class init{
      * @functions $n_acciones = $modelo_accion->cuenta_acciones. Cuenta la cantidad de funciones las cuales el grupo de
      * usuarios tiene permisos
      */
-    public function permiso(PDO $link, seguridad $seguridad): array|seguridad
+    final public function permiso(PDO $link, seguridad $seguridad): array|seguridad
     {
         $modelo_accion = new adm_accion($link);
         if (isset($_SESSION['grupo_id'])) {
