@@ -293,7 +293,7 @@ class val_sql extends validaciones {
      * @return bool|array
      * @version 1.444.48
      */
-    public function valida_base_alta(array $campos_obligatorios, modelo $modelo, array $no_duplicados, array $registro,
+    final public function valida_base_alta(array $campos_obligatorios, modelo $modelo, array $no_duplicados, array $registro,
                                      string $tabla, array $tipo_campos, array $parents): bool|array
     {
 
@@ -525,7 +525,7 @@ class val_sql extends validaciones {
         return true;
     }
 
-    public function verifica_parents(modelo $modelo, array $parents, array $registro): bool|array
+    final public function verifica_parents(modelo $modelo, array $parents, array $registro): bool|array
     {
         foreach($parents as $parent){
 

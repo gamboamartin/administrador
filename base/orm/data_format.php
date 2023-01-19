@@ -26,7 +26,7 @@ class data_format{
      * @fecha 2022-07-30 13:26
      * @return array
      */
-    public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
+    final public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
     {
         foreach($tipo_campos as $campo =>$tipo_dato){
             $campo = trim($campo);

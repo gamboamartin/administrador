@@ -38,6 +38,7 @@ class controlador_adm_seccion extends controlador_base{
      * @param bool $header Si header muestra resultado en front
      * @param bool $ws
      * @return array
+     * @final revisada
      */
     public function alta_bd(bool $header, bool $ws): array{
         $this->link->beginTransaction();

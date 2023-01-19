@@ -25,7 +25,7 @@ class normalizacion{
      * @fecha 2022-07-30 13:05
      * @return array
      */
-    public function asigna_registro_alta(controler $controler, array $registro): array
+    final public function asigna_registro_alta(controler $controler, array $registro): array
     {
 
         $controler->seccion = trim($controler->seccion);
@@ -57,7 +57,7 @@ class normalizacion{
      * @param controler $controler Controlador en ejecucion
      * @return string|array
      */
-    public function clase_model(controler $controler): string|array
+    final public function clase_model(controler $controler): string|array
     {
         if($controler->seccion === ''){
             return $this->error->error(mensaje: 'Error this->seccion esta vacio',data:  $controler->seccion);
@@ -247,7 +247,7 @@ class normalizacion{
      * @version 1.98.25
      * @return array
      */
-    public function limpia_post_alta(): array
+    final public function limpia_post_alta(): array
     {
         if(!isset($_POST)){
             $_POST = array();
@@ -272,7 +272,7 @@ class normalizacion{
      * @return array
      * @version 1.607.55
      */
-    public function limpia_registro_en_proceso(): array
+    final public function limpia_registro_en_proceso(): array
     {
         if(!isset($_SESSION)){
             $_SESSION = array();

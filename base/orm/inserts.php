@@ -392,7 +392,7 @@ class inserts{
      * Genera las transacciones para un alta
      * @version 1.604.54
      */
-    public function transacciones(modelo $modelo): array|stdClass
+    final public function transacciones(modelo $modelo): array|stdClass
     {
         if(count($modelo->registro) === 0){
             return $this->error->error(mensaje: 'Error registro vacio',data:  $modelo->registro);

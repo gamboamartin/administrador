@@ -7,7 +7,7 @@ use gamboamartin\errores\errores;
 class valida_controller extends base_modelos{
 
 
-    public function valida_alta_bd(controler $controler): bool|array
+    final public function valida_alta_bd(controler $controler): bool|array
     {
         $valida = $this->valida_clase(controler: $controler);
         if(errores::$error){
@@ -43,7 +43,7 @@ class valida_controller extends base_modelos{
      * @param controler $controler Controlador en ejecucion
      * @return bool|array
      */
-    public function valida_clase(controler $controler): bool|array
+    final public function valida_clase(controler $controler): bool|array
     {
         $clase = (new normalizacion())->clase_model(controler: $controler);
         if(errores::$error){
@@ -115,7 +115,7 @@ class valida_controller extends base_modelos{
      * @fecha 2022-07-29 12:20
      * @return bool|array
      */
-    public function valida_post_alta(): bool|array
+    final public function valida_post_alta(): bool|array
     {
         if(!isset($_POST)){
             return $this->error->error(mensaje: 'Error no existe POST', data: $_GET);

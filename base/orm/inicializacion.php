@@ -663,7 +663,7 @@ class inicializacion{
      * @author mgamboa
      * @fecha 2022-08-01 16:08
      */
-    public function registro_ins(array $campos_encriptados, array $registro, string $status_default,
+    final public function registro_ins(array $campos_encriptados, array $registro, string $status_default,
                                  array $tipo_campos): array
     {
         $status_default = trim($status_default);

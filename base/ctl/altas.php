@@ -21,7 +21,7 @@ class altas{
      * @return array|stdClass
      * @version 1.606.55
      */
-    public function alta_base(array $registro, controler $controler): array|stdClass{
+    final public function alta_base(array $registro, controler $controler): array|stdClass{
 
         $controler->seccion = trim($controler->seccion);
         if($controler->seccion === ''){

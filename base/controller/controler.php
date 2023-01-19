@@ -304,7 +304,7 @@ class controler{
      * @param array $params
      * @return array
      */
-    public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
+    final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
     {
         $error = $this->errores->error(mensaje: $mensaje,data:  $data, params: $params);
         if($ws){

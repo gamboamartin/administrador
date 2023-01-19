@@ -269,6 +269,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $ws si ws retorna json
      * @return array|stdClass con datos del registro insertado
      * @version 2.36.3
+     * @final revisada
+     *
      */
     public function alta_bd(bool $header, bool $ws): array|stdClass{
 
@@ -957,7 +959,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @return bool
      * @version 2.6.2
      */
-    protected function transaccion_previa(): bool
+    final protected function transaccion_previa(): bool
     {
         $transaccion_previa = false;
         if($this->link->inTransaction()){

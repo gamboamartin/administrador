@@ -55,7 +55,7 @@ class validaciones extends validacion{
      * @fecha 2022-08-01 16:39
      * @author mgamboa
      */
-    public function valida_alta_bd(array $registro, string $tabla): bool|array
+    final public function valida_alta_bd(array $registro, string $tabla): bool|array
     {
         if(count($registro) === 0){
             return $this->error->error(mensaje: 'Error registro no puede venir vacio', data: $registro);
