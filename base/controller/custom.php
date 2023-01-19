@@ -51,7 +51,7 @@ class custom{
         return $init;
     }
 
-    public function data(seguridad $seguridad): array|stdClass
+    public function data(controler $controlador, seguridad $seguridad): array|stdClass
     {
         $css_custom = (new custom())->css(seguridad: $seguridad);
         if(errores::$error){
@@ -67,7 +67,7 @@ class custom{
         if(errores::$error){
             return $this->error->error('Error al generar js', $js_accion);
         }
-        $js_view = (new custom())->js_view(seguridad: $seguridad);
+        $js_view = (new custom())->js_view(controlador: $controlador, seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error('Error al generar js', $js_view);
         }
@@ -75,7 +75,8 @@ class custom{
         $data->css = $css_custom;
         $data->js_seccion = $js_seccion;
         $data->js_accion = $js_accion;
-        $data->js_view = $js_view;
+        $data->js_view = $js_view->js;
+        $data->js_view_aplica_include = $js_view->aplica_include;
 
         return $data;
     }
@@ -98,17 +99,33 @@ class custom{
 
     /**
      * Obtiene el js si existe el doc dentro de js/seccion/accion.js
+     * @param controler $controlador Controlador en ejecucion
      * @param seguridad $seguridad Clase de seguridad donde se obtienen los datos de accion y seccion
-     * @return string
+     * @return string|stdClass
      */
-    public function js_view(seguridad $seguridad): string
+    public function js_view(controler $controlador, seguridad $seguridad): string|stdClass
     {
+        /**
+         * REFACTORIZAR
+         */
         $js = '';
+        $aplica_include = false;
         $ruta_js = './js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
         if(file_exists($ruta_js)){
             $js = "<script type='text/javascript' src='$ruta_js'></script>";
         }
-        return $js;
+        else{
+            $ruta_js = './js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js.php';
+            if(file_exists($ruta_js)){
+                $js = $ruta_js;
+                $aplica_include = true;
+            }
+        }
+
+        $data = new stdClass();
+        $data->js = $js;
+        $data->aplica_include = $aplica_include;
+        return $data;
     }
 
     /**

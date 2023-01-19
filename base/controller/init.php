@@ -586,7 +586,7 @@ class init{
             return $this->error->error(mensaje:'Error al generar mensajes',data: $mensajeria);
         }
 
-        $data_custom = (new custom())->data(seguridad: $seguridad);
+        $data_custom = (new custom())->data(controlador: $controlador, seguridad: $seguridad);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar datos custom',data: $data_custom);
         }
@@ -596,6 +596,7 @@ class init{
         $data->js_seccion = $data_custom->js_seccion;
         $data->js_accion = $data_custom->js_accion;
         $data->js_view = $data_custom->js_view;
+        $data->js_view_aplica_include = $data_custom->js_view_aplica_include;
 
         $data->menu = $seguridad->menu;
         $data->acceso_denegado = $seguridad->acceso_denegado;
