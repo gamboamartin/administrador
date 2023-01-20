@@ -110,24 +110,29 @@ class custom{
          */
         $js = '';
         $aplica_include = false;
-        $ruta_js = './js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+
+        $ruta_base = '/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+
+        $ruta_js = '.'.$ruta_base;
         if(file_exists($ruta_js)){
             $js = "<script type='text/javascript' src='$ruta_js'></script>";
         }
         else{
-            $ruta_js = './js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js.php';
+            $ruta_js = '.'.$ruta_base.'.php';
             if(file_exists($ruta_js)){
                 $js = $ruta_js;
                 $aplica_include = true;
             }
             else{
-                $ruta_js = $controlador->path_base.'vendor/'.$controlador->path_vendor_views.'/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+                $ruta_vendor = $controlador->path_base.'vendor/'.$controlador->path_vendor_views;
+
+                $ruta_js = $ruta_vendor.$ruta_base;
                 if(file_exists($ruta_js)){
-                    $js = $ruta_js;
+                    $js = "<script type='text/javascript' src='$ruta_js'></script>";
                     $aplica_include = false;
                 }
                 else{
-                    $ruta_js = $controlador->path_base.'vendor/'.$controlador->path_vendor_views.'/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js.php';
+                    $ruta_js = $ruta_vendor.$ruta_base.'.php';
                     if(file_exists($ruta_js)){
                         $js = $ruta_js;
                         $aplica_include = true;
