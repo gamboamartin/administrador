@@ -120,6 +120,21 @@ class custom{
                 $js = $ruta_js;
                 $aplica_include = true;
             }
+            else{
+                $ruta_js = $controlador->path_base.'vendor/'.$controlador->path_vendor_views.'/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+                if(file_exists($ruta_js)){
+                    $js = $ruta_js;
+                    $aplica_include = false;
+                }
+                else{
+                    $ruta_js = $controlador->path_base.'vendor/'.$controlador->path_vendor_views.'/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js.php';
+                    if(file_exists($ruta_js)){
+                        $js = $ruta_js;
+                        $aplica_include = true;
+                    }
+                }
+
+            }
         }
 
         $data = new stdClass();
