@@ -64,6 +64,22 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $r_grupo->registros[0];
     }
 
+    private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
+    {
+        $adm_seccion = trim($adm_seccion);
+        if($adm_seccion === ''){
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
+        }
+        $adm_accion = trim($adm_accion);
+        if($adm_accion === ''){
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion);
+        }
+        $data = new stdClass();
+        $data->adm_seccion = $adm_seccion;
+        $data->adm_accion = $adm_accion;
+        return $data;
+    }
+
     /**
      * Elimina un registro de adm_usuario y las sessiones ligadas a ese usuario
      * @param int $id Id de usuario
@@ -87,6 +103,17 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             return $this->error->error(mensaje: 'Error al eliminar usuario',data:  $r_elimina_bd);
         }
         return $r_elimina_bd;
+    }
+
+    private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
+    {
+        $filtro['adm_grupo.id'] = $adm_grupo_id;
+        $filtro['adm_accion.descripcion'] = $adm_accion;
+        $filtro['adm_grupo.status'] = 'activo';
+        $filtro['adm_accion.status'] = 'activo';
+        $filtro['adm_seccion.descripcion'] = $adm_seccion;
+        $filtro['adm_seccion.status'] = 'activo';
+        return $filtro;
     }
 
     /**
@@ -128,6 +155,53 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $filtro;
     }
 
+    private function genera_session_permite(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
+        $data_permiso = $this->get_data_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
+        }
+        $session_permite = $this->session_permite(adm_grupo_id: $adm_grupo_id,data_permiso:  $data_permiso);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar permite en session', data: $session_permite);
+        }
+        return $session_permite;
+    }
+
+    private function get_data_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
+        $data_permiso = $this->data_permiso(adm_accion: $adm_accion, adm_seccion: $adm_seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
+        }
+
+        $val_session = $this->get_val_session(adm_grupo_id: $adm_grupo_id,data_permiso:  $data_permiso);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
+        }
+        $data_permiso->val_session = $val_session;
+        return $data_permiso;
+    }
+
+    private function get_val_session(int $adm_grupo_id, stdClass $data_permiso){
+        $filtro = $this->filtro(adm_accion: $data_permiso->adm_accion,adm_grupo_id: $adm_grupo_id,
+            adm_seccion: $data_permiso->adm_seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
+        }
+
+        $val_session = $this->val_session_existe(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
+        }
+
+        return $val_session;
+    }
+
+    private function session_permite(int $adm_grupo_id, stdClass $data_permiso){
+        $_SESSION['permite'][$adm_grupo_id][$data_permiso->adm_seccion][$data_permiso->adm_accion] = $data_permiso->val_session;
+        return $_SESSION['permite'][$adm_grupo_id];
+    }
+
+
     /**
      * Verifica si el usuario en ejecucion tiene permiso
      * @param string $adm_accion Accion en ejecucion
@@ -135,7 +209,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @return array|bool
      * @version 2.103.9
      */
-    public function tengo_permiso(string $adm_accion, string $adm_seccion): array|bool
+    final public function tengo_permiso(string $adm_accion, string $adm_seccion): array|bool
     {
         $adm_usuario_id = -1;
         if(isset($_SESSION['usuario_id'])) {
@@ -157,33 +231,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
                     }
                 }
                 else {
-                    $adm_seccion = trim($adm_seccion);
-                    if($adm_seccion === ''){
-                        return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
-                    }
-                    $adm_accion = trim($adm_accion);
-                    if($adm_accion === ''){
-                        return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion);
-                    }
-                    /**
-                     * REFACTORIZAR
-                     */
-                    $filtro['adm_grupo.id'] = $adm_grupo_id;
-                    $filtro['adm_accion.descripcion'] = $adm_accion;
-                    $filtro['adm_grupo.status'] = 'activo';
-                    $filtro['adm_accion.status'] = 'activo';
-                    $filtro['adm_seccion.descripcion'] = $adm_seccion;
-                    $filtro['adm_seccion.status'] = 'activo';
-
-                    $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
+                    $session_permite = $this->genera_session_permite(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
                     if (errores::$error) {
-                        return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+                        return $this->error->error(mensaje: 'Error al asignar permite en session', data: $session_permite);
                     }
-                    $val_session = 0;
-                    if ($existe) {
-                        $val_session = 1;
-                    }
-                    $_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] = $val_session;
                 }
             }
         }
@@ -249,6 +300,28 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             return $this->error->error(mensaje: 'Error al obtener usuarios',data: $r_usuario);
         }
         return $r_usuario->registros;
+    }
+
+    private function val_session(bool $existe): int
+    {
+        $val_session = 0;
+        if ($existe) {
+            $val_session = 1;
+        }
+        return $val_session;
+    }
+
+    private function val_session_existe(array $filtro){
+        $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
+        }
+
+        $val_session = $this->val_session(existe: $existe);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
+        }
+        return $val_session;
     }
 
     /**
