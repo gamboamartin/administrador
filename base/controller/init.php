@@ -59,7 +59,7 @@ class init{
      * @fecha 2022-08-02 10:01
      * @author mgamboa
      */
-    public function controller(PDO $link, string $seccion, stdClass $paths_conf = new stdClass()):controler|array{
+    final public function controller(PDO $link, string $seccion, stdClass $paths_conf = new stdClass()):controler|array{
         $seccion = trim($seccion);
         if($seccion === ''){
             return $this->error->error(mensaje: 'Error la seccion esta vacia ',data: $seccion);
@@ -1255,7 +1255,7 @@ class init{
      * @return array
      * @version 6.26.0
      */
-    public function select_key_input(array $init_data, array $selects): array
+    final public function select_key_input(array $init_data, array $selects): array
     {
 
         foreach ($init_data as $name_model=>$namespace_paquete){
