@@ -11,7 +11,7 @@ class custom{
     public function __construct(){
         $this->error = new errores();
     }
-    public function css(seguridad $seguridad): stdClass
+    final public function css(seguridad $seguridad): stdClass
     {
 
         $init = $this->init_data_css(seguridad:$seguridad);
@@ -104,7 +104,7 @@ class custom{
      * @param seguridad $seguridad Clase de seguridad donde se obtienen los datos de accion y seccion
      * @return string|stdClass
      */
-    public function js_view(controler $controlador, seguridad $seguridad): string|stdClass
+    final public function js_view(controler $controlador, seguridad $seguridad): string|stdClass
     {
         /**
          * REFACTORIZAR
