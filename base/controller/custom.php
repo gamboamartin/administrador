@@ -1,6 +1,7 @@
 <?php
 namespace base\controller;
 use base\seguridad;
+use config\generales;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
@@ -128,7 +129,12 @@ class custom{
 
                 $ruta_js = $ruta_vendor.$ruta_base;
                 if(file_exists($ruta_js)){
-                    $js = "<script type='text/javascript' src='$ruta_js'></script>";
+                    $ruta_js_html = (new generales())->url_base;
+                    $ruta_js_html.='vendor/'.$controlador->path_vendor_views;
+                    $ruta_js_html.=$ruta_base;
+
+
+                    $js = "<script type='text/javascript' src='$ruta_js_html'></script>";
                     $aplica_include = false;
                 }
                 else{
