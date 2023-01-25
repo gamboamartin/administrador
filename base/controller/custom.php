@@ -112,9 +112,14 @@ class custom{
         $js = '';
         $aplica_include = false;
 
-        $ruta_base = '/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+
+        $ruta_base = $this->ruta_base(seguridad: $seguridad);
+        if(errores::$error){
+            return $this->error->error('Error al generar ruta_base', $ruta_base);
+        }
 
         $ruta_js = '.'.$ruta_base;
+
         if(file_exists($ruta_js)){
             $js = "<script type='text/javascript' src='$ruta_js'></script>";
         }
@@ -125,7 +130,11 @@ class custom{
                 $aplica_include = true;
             }
             else{
-                $ruta_vendor = $controlador->path_base.'vendor/'.$controlador->path_vendor_views;
+
+                $ruta_vendor = $this->ruta_vendor(controlador: $controlador);
+                if(errores::$error){
+                    return $this->error->error('Error al generar ruta_base', $ruta_base);
+                }
 
                 $ruta_js = $ruta_vendor.$ruta_base;
                 if(file_exists($ruta_js)){
@@ -218,5 +227,16 @@ class custom{
 
         return $init;
     }
+
+    private function ruta_base(seguridad $seguridad): string
+    {
+        return '/js/'.$seguridad->seccion.'/'.$seguridad->accion.'.js';
+    }
+
+    private function ruta_vendor(controler $controlador): string
+    {
+        return $controlador->path_base.'vendor/'.$controlador->path_vendor_views;
+    }
+
 
 }
