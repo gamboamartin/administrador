@@ -59,6 +59,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected array $defaults = array();
     protected array $parents_data = array();
     public stdClass $atributos;
+    public array $atributos_criticos = array();
 
 
     /**

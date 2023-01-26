@@ -36,9 +36,12 @@ class adm_seccion extends _modelo_children {
         $columnas_extra['adm_seccion_n_acciones'] = /** @lang sql */
             "(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id)";
 
+            $atributos_criticos = array('adm_namespace_id');
+
 
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas,
-            columnas_extra: $columnas_extra, childrens: $childrens, parents_data: $parents_data);
+            columnas_extra: $columnas_extra, childrens: $childrens, parents_data: $parents_data,
+            atributos_criticos: $atributos_criticos);
         $this->NAMESPACE = __NAMESPACE__;
     }
 

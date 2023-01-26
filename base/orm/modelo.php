@@ -57,7 +57,7 @@ class modelo extends modelo_base {
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
                                 bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
                                 bool $temp = false, array $childrens = array(), array $defaults = array(),
-                                array $parents_data = array()){
+                                array $parents_data = array(), array $atributos_criticos = array()){
 
 
 
@@ -82,6 +82,7 @@ class modelo extends modelo_base {
         $this->campos_encriptados = $campos_encriptados;
         $this->campos_no_upd = $campos_no_upd;
         $this->childrens = $childrens;
+        $this->atributos_criticos = $atributos_criticos;
 
 
         $attrs = (new inicializacion())->integra_attrs(modelo: $this);
@@ -89,6 +90,27 @@ class modelo extends modelo_base {
             $error = $this->error->error(mensaje: 'Error al obtener attr '.$tabla, data: $attrs);
             print_r($error);
             die('Error');
+        }
+
+        /**
+         * REFACTORIZAR
+         */
+        foreach ($atributos_criticos as $atributo_critico){
+            $existe_atributo_critico = false;
+            foreach ($this->atributos as $key_attr=>$atributo){
+
+                if($key_attr === $atributo_critico){
+                    $existe_atributo_critico = true;
+                    break;
+                }
+            }
+            if(!$existe_atributo_critico){
+                $error = $this->error->error(mensaje: 'Error no existe en db el  atributo '.$atributo_critico.
+                    ' del modelo '.$this->tabla, data: $this->atributos);
+                print_r($error);
+                die('Error');
+            }
+
         }
 
 
