@@ -362,6 +362,37 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_get_atributos_db(){
+        errores::$error = false;
+        $inicializacion = new inicializacion();
+        $inicializacion = new liberator($inicializacion);
+
+        $modelo = new adm_seccion($this->link);
+
+        $resultado = $inicializacion->get_atributos_db($modelo);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('id',$resultado->registros[0]['Field']);
+        $this->assertEquals('bigint',$resultado->registros[0]['Type']);
+        $this->assertEquals('NO',$resultado->registros[0]['Null']);
+        $this->assertEquals('PRI',$resultado->registros[0]['Key']);
+        $this->assertEquals('',$resultado->registros[0]['Default']);
+        $this->assertEquals('auto_increment',$resultado->registros[0]['Extra']);
+
+        $this->assertEquals('adm_namespace_id',$resultado->registros[14]['Field']);
+        $this->assertEquals('bigint',$resultado->registros[14]['Type']);
+        $this->assertEquals('NO',$resultado->registros[14]['Null']);
+        $this->assertEquals('MUL',$resultado->registros[14]['Key']);
+        $this->assertEquals('1',$resultado->registros[14]['Default']);
+        $this->assertEquals('',$resultado->registros[14]['Extra']);
+
+        $this->assertCount(15,$resultado->registros);
+
+
+
+       errores::$error = false;
+    }
+
     public function test_init_bools(){
         errores::$error = false;
         $inicializacion = new inicializacion();

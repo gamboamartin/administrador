@@ -403,6 +403,7 @@ class inicializacion{
      * Obtiene los atributos de un modelo
      * @param modelo $modelo Modelo a obtener atributos
      * @return array|stdClass
+     * @version 9.14.0
      *
      */
     private function get_atributos_db(modelo $modelo): array|stdClass
