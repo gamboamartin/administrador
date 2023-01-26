@@ -58,6 +58,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public array $childrens = array();
     protected array $defaults = array();
     protected array $parents_data = array();
+    public stdClass $atributos;
 
 
     /**
@@ -72,6 +73,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->link = $link;
         $this->validacion = new base_modelos();
         $this->temp = $temp;
+        $this->atributos = new stdClass();
 
 
         $this->patterns['double'] = "/^\\$?[1-9]+,?([0-9]*,?[0,9]*)*.?[0-9]{0,4}$/";
