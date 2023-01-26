@@ -15,7 +15,7 @@ class sql{
      * @return string|array Sql a ejecutar
      * @version 1.12.8
      */
-    public function describe_table(string $tabla): string|array
+    final public function describe_table(string $tabla): string|array
     {
         $valida = (new val_sql())->tabla(tabla: $tabla);
         if(errores::$error){

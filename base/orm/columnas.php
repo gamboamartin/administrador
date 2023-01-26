@@ -428,7 +428,7 @@ class columnas{
      * @return array
      * @version 1.26.14
      */
-    public function columnas_bd_native(modelo_base $modelo, string $tabla_bd, bool $valida_tabla = true): array
+    final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd, bool $valida_tabla = true): array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){

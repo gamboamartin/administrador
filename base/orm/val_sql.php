@@ -209,7 +209,7 @@ class val_sql extends validaciones {
         return true;
     }
 
-    public function tabla(string $tabla): bool|array
+    final public function tabla(string $tabla): bool|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
