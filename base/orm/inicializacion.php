@@ -399,7 +399,14 @@ class inicializacion{
         return $in;
     }
 
-    private function get_atributos_db(modelo $modelo){
+    /**
+     * Obtiene los atributos de un modelo
+     * @param modelo $modelo Modelo a obtener atributos
+     * @return array|stdClass
+     *
+     */
+    private function get_atributos_db(modelo $modelo): array|stdClass
+    {
         $sql = (new sql())->describe_table(tabla: $modelo->tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sql ', data: $sql);
@@ -604,7 +611,7 @@ class inicializacion{
         return $attr_r;
     }
 
-    public function integra_attrs(modelo $modelo){
+    final public function integra_attrs(modelo $modelo){
         if(!isset($_SESSION[$modelo->tabla]['atributos'])) {
             $attr = $this->get_atributos_db(modelo: $modelo);
             if (errores::$error) {
