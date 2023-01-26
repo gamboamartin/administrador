@@ -83,41 +83,14 @@ class modelo extends modelo_base {
         $this->campos_no_upd = $campos_no_upd;
         $this->childrens = $childrens;
 
-        /**
-         * REFACTROIZAR GET ATTR
-         */
-        $sql = (new sql())->describe_table(tabla: $tabla);
+
+        $attrs = (new inicializacion())->integra_attrs(modelo: $this);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al obtener sql '.$tabla, data: $sql);
+            $error = $this->error->error(mensaje: 'Error al obtener attr '.$tabla, data: $attrs);
             print_r($error);
             die('Error');
         }
 
-        $attr = $this->ejecuta_consulta(consulta: $sql);
-        if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al obtener attr '.$tabla, data: $attr);
-            print_r($error);
-            die('Error');
-        }
-
-
-        $keys = array('Null','Key','Default','Extra');
-
-        foreach ($attr->registros as $atributo){
-            $field = $atributo['Field'];
-            $this->atributos->$field = new stdClass();
-        }
-
-        foreach ($attr->registros as $atributo){
-            $field = $atributo['Field'];
-            foreach ($keys as $key){
-                $key_new = trim($key);
-                $key_new = str_replace(' ','',$key_new);
-                $key_new = strtolower($key_new);
-                $this->atributos->$field->$key_new = $atributo[$key];
-            }
-
-        }
 
         if(!in_array('id', $this->campos_no_upd, true)){
             $this->campos_no_upd[] = 'id';

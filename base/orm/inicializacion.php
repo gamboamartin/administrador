@@ -125,6 +125,11 @@ class inicializacion{
         return $registro;
     }
 
+    private function asigna_data_attr(array $atributo, string $field, string $key, string $key_new, modelo $modelo){
+        $modelo->atributos->$field->$key_new = $atributo[$key];
+        return $modelo->atributos->$field;
+    }
+
 
     /**
      * Funcion para asignar los parametros de una view
@@ -267,6 +272,16 @@ class inicializacion{
         return $registro;
     }
 
+    private function carga_atributos(stdClass $attr, array $keys, modelo $modelo){
+        foreach ($attr->registros as $atributo){
+            $attrs = $this->integra_atributos(atributo: $atributo,keys:  $keys,modelo:  $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al asignar atributos ', data: $attrs);
+            }
+        }
+        return $modelo->atributos;
+    }
+
     /**
      * Integra los datos para in in sql
      * @param string $llave LLave= tabla.campo
@@ -354,6 +369,22 @@ class inicializacion{
         return $registro;
     }
 
+    private function genera_atributos(stdClass $attr, modelo $modelo){
+        $keys = array('Null','Key','Default','Extra');
+
+        $attrs = $this->inicializa_atributos(attr: $attr,modelo:  $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar atributos ', data: $attrs);
+
+        }
+
+        $attrs = $this->carga_atributos(attr: $attr,keys:  $keys, modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar atributos ', data: $attrs);
+        }
+        return $attrs;
+    }
+
     public function genera_data_in(string $campo, string $tabla,array $registros): array
     {
         $values_in = $this->values_in(key_value: $tabla.'_'.$campo, rows: $registros);
@@ -368,6 +399,29 @@ class inicializacion{
         return $in;
     }
 
+    private function get_atributos_db(modelo $modelo){
+        $sql = (new sql())->describe_table(tabla: $modelo->tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener sql ', data: $sql);
+        }
+
+        $attr = $modelo->ejecuta_consulta(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener attr ', data: $attr);
+        }
+        return $attr;
+    }
+
+    private function inicializa_atributos(stdClass $attr, modelo $modelo){
+        foreach ($attr->registros as $atributo){
+            $attrs = $this->init_atributo(atributo: $atributo,modelo:  $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al inicializar atributos ', data: $attrs);
+            }
+        }
+        return $modelo->atributos;
+    }
+
     public function inicializa_statuses(array $keys, array $registro): array
     {
         foreach ($keys as $key) {
@@ -378,6 +432,13 @@ class inicializacion{
         }
         return $registro;
 
+    }
+
+    private function init_atributo(array $atributo, modelo $modelo): stdClass
+    {
+        $field = $atributo['Field'];
+        $modelo->atributos->$field = new stdClass();
+        return $modelo->atributos;
     }
 
     /**
@@ -530,6 +591,50 @@ class inicializacion{
         return $data;
     }
 
+    private function integra_attr(array $atributo, string $field, string $key, modelo $modelo){
+        $key_new = $this->normaliza_key_db(key: $key);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al normalizar $key', data: $key_new);
+        }
+
+        $attr_r = $this->asigna_data_attr(atributo: $atributo,field:  $field,key:  $key, key_new: $key_new,modelo:  $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al asignar atributo ', data: $attr_r);
+        }
+        return $attr_r;
+    }
+
+    public function integra_attrs(modelo $modelo){
+        if(!isset($_SESSION[$modelo->tabla]['atributos'])) {
+            $attr = $this->get_atributos_db(modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener attr ', data: $attr);
+            }
+
+            $attrs = $this->genera_atributos(attr: $attr, modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al inicializar atributos ', data: $attrs);
+            }
+            $_SESSION[$modelo->tabla]['atributos'] = $modelo->atributos;
+        }
+        else{
+            $attrs = $modelo->atributos = $_SESSION[$modelo->tabla]['atributos'];
+        }
+        return $attrs;
+    }
+
+    private function integra_atributos(array $atributo, array $keys, modelo $modelo){
+        $field = $atributo['Field'];
+
+        foreach ($keys as $key){
+            $attr_r =$this->integra_attr(atributo: $atributo,field:  $field, key: $key, modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al asignar atributo ', data: $attr_r);
+            }
+        }
+        return $modelo->atributos;
+    }
+
     /**
      * Integra un value para ser utilizado en un IN
      * @param string $value Valor a integrar
@@ -649,6 +754,13 @@ class inicializacion{
 
         return $datos;
 
+    }
+
+    private function normaliza_key_db(string $key): string
+    {
+        $key_new = trim($key);
+        $key_new = str_replace(' ','',$key_new);
+        return strtolower($key_new);
     }
 
     /**
