@@ -408,6 +408,10 @@ class inicializacion{
      */
     private function get_atributos_db(modelo $modelo): array|stdClass
     {
+        $tabla = trim($modelo->tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+        }
         $sql = (new sql())->describe_table(tabla: $modelo->tabla);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sql ', data: $sql);
