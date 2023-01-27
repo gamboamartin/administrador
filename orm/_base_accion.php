@@ -137,6 +137,14 @@ class _base_accion{
 
     }
 
+    /**
+     * Integra valores de css a row en proceso
+     * @param int $id Identificador de registro
+     * @param modelo $modelo Modelo en ejecucion
+     * @param array $registro Registro en proceso
+     * @return array
+     *
+     */
     private function css_registro(int $id, modelo $modelo, array $registro): array
     {
         $registro_previo = $modelo->registro(registro_id: $id, retorno_obj: true);

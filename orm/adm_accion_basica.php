@@ -11,9 +11,8 @@ class adm_accion_basica extends _modelo_parent {
     public function __construct(PDO $link){
         $tabla = 'adm_accion_basica';
         $columnas = array($tabla=> false);
-        $campos_obligatorios=array('descripcion','codigo','codigo_bis','visible','seguridad','inicio','lista',
-            'status','es_view','descripcion_select','etiqueta_label','es_modal','titulo','css','es_status','alias',
-            'es_lista','muestra_icono_btn','muestra_titulo_btn');
+        $campos_obligatorios=array('descripcion','codigo','codigo_bis','seguridad','inicio','lista',
+            'status','es_view','descripcion_select','etiqueta_label','es_modal','titulo','css','alias');
 
         $no_duplicados[] = 'descripcion';
 
