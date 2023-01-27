@@ -17,8 +17,7 @@ class adm_accion extends _modelo_children {
     public function __construct(PDO $link){
         $tabla = 'adm_accion';
         $columnas = array($tabla=>false, 'adm_seccion'=>$tabla, 'adm_menu'=>'adm_seccion');
-        $campos_obligatorios = array('adm_seccion_id','visible','inicio','lista','titulo','css',
-            'muestra_icono_btn','muestra_titulo_btn');
+        $campos_obligatorios = array('adm_seccion_id','inicio','lista','titulo','css');
         $tipo_campos['adm_seccion_id'] = 'id';
         $tipo_campos['visible'] = 'status';
         $tipo_campos['inicio'] = 'status';
@@ -267,7 +266,7 @@ class adm_accion extends _modelo_children {
 
     protected function asigna_full_status_alta(array $registro): array
     {
-        $keys = array('visible','inicio','lista','muestra_icono_btn','muestra_titulo_btn');
+        $keys = array('inicio','lista');
 
         $registro = $this->asigna_status_alta(keys:$keys,registro:  $registro, status: 'inactivo');
         if(errores::$error){
