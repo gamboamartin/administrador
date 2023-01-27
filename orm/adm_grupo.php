@@ -6,7 +6,7 @@ use PDO;
 use stdClass;
 
 class adm_grupo extends _modelo_parent {
-    public function __construct(PDO $link, array $childrens = array()){
+    public function __construct(PDO $link, array $childrens = array(), array $columnas_extra = array()){
         $tabla = 'adm_grupo';
         $columnas = array($tabla=>false);
         $campos_obligatorios = array('descripcion','descripcion_select','codigo','codigo_bis','alias');
