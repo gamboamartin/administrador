@@ -112,7 +112,7 @@ class adm_seccion_pertenece extends modelo{
      * @return array
      * @version 2.7.2
      */
-    public function secciones_paquete(): array
+    final public function secciones_paquete(): array
     {
         $filtro['adm_sistema.descripcion'] = (new generales())->sistema;
         $r_seccion_pertenece = $this->filtro_and(filtro: $filtro);
