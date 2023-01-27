@@ -144,7 +144,7 @@ class bitacoras{
      * $bitacora = $this->bitacora($registro_bitacora,__FUNCTION__,$consulta );
      * @version 1.495.49
      */
-    public function bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array
+    final public function bitacora(string $consulta, string $funcion, modelo $modelo, array $registro): array
     {
         $bitacora = array();
         if($modelo->aplica_bitacora){

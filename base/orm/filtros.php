@@ -182,7 +182,7 @@ class filtros{
     }
 
 
-    public function filtro_children(string $tabla, int $id): array
+    final public function filtro_children(string $tabla, int $id): array
     {
         $filtro_children = array();
         $filtro_children[$tabla.'.id'] = $id;

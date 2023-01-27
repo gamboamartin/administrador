@@ -475,7 +475,7 @@ class validaciones extends validacion{
         return true;
     }
 
-    public function verifica_eliminacion_children(int $id, modelo_base $modelo_base, string $modelo_children, string $namespace): bool|array
+    final public function verifica_eliminacion_children(int $id, modelo_base $modelo_base, string $modelo_children, string $namespace): bool|array
     {
         $modelo = $modelo_base->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
         if (errores::$error) {

@@ -2196,7 +2196,7 @@ class modelo extends modelo_base {
         return true;
     }
 
-    public function valida_eliminacion_children(int $id): bool|array
+    final public function valida_eliminacion_children(int $id): bool|array
     {
         foreach ($this->childrens as $modelo_children=>$namespace){
             $valida = (new validaciones())->verifica_eliminacion_children(

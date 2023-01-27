@@ -45,7 +45,7 @@ class dependencias{
      * @return array
      * @version 1.434.48
      */
-    public function aplica_eliminacion_dependencias(bool $desactiva_dependientes, PDO $link,array $models_dependientes,
+    final public function aplica_eliminacion_dependencias(bool $desactiva_dependientes, PDO $link,array $models_dependientes,
                                                     int $registro_id, string $tabla): array
     {
         $data = array();
