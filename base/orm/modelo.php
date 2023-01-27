@@ -1346,6 +1346,21 @@ class modelo extends modelo_base {
     }
 
 
+    /**
+     * Limpia campos extras de un registro de datos
+     * @param array $registro
+     * @param int $campos_limpiar
+     * @return array
+     */
+    private function limpia_campos_extras(array $registro, array $campos_limpiar): array
+    {
+        foreach ($campos_limpiar as $valor) {
+            if (isset($registro[$valor])) {
+                unset($registro[$valor]);
+            }
+        }
+        return $registro;
+    }
 
     /**
      * PRUEBAS FINALIZADAS
