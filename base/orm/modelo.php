@@ -1207,6 +1207,24 @@ class modelo extends modelo_base {
     }
 
     /**
+     * Genera un codigo aleatorio de longitud N
+     * @param int $longitud
+     * @return string
+     */
+    public function get_codigo_aleatorio(int $longitud = 6): string
+    {
+        $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $random_string = '';
+
+        for($i = 0; $i < $longitud; $i++) {
+            $random_character = $chars[mt_rand(0, strlen($chars) - 1)];
+            $random_string .= $random_character;
+        }
+
+        return $random_string;
+    }
+
+    /**
      * Obtiene los datos para datatable
      * @param array $filtro
      * @param array $filtro_especial Filtro para get data
@@ -1349,10 +1367,10 @@ class modelo extends modelo_base {
     /**
      * Limpia campos extras de un registro de datos
      * @param array $registro
-     * @param int $campos_limpiar
+     * @param array $campos_limpiar
      * @return array
      */
-    private function limpia_campos_extras(array $registro, array $campos_limpiar): array
+    public function limpia_campos_extras(array $registro, array $campos_limpiar): array
     {
         foreach ($campos_limpiar as $valor) {
             if (isset($registro[$valor])) {
