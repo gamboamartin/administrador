@@ -614,6 +614,26 @@ class initTest extends test {
         errores::$error = false;
     }
 
+    public function test_model_init_campos_template(){
+
+        errores::$error = false;
+
+        $init = new init();
+        //$init = new liberator($init);
+        $campos_view = array();
+        $keys = new stdClass();
+        $link = $this->link;
+        $campos_view[]['namespace_model'] = '';
+        $keys->selects['a'] = new stdClass();
+        $keys->selects['a']->namespace_model = 'gamboamartin\administrador\models';
+        $keys->selects['a']->name_model = 'adm_session';
+        $resultado = $init->model_init_campos_template($campos_view, $keys, $link);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_modela_input()
     {
 

@@ -899,6 +899,7 @@ class init{
      * @param stdClass $keys Keys a integrar
      * @param PDO $link Conexion a la base de datos
      * @return array
+     * @version 9.25.0
      */
     final public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
@@ -909,6 +910,10 @@ class init{
 
         if(!isset($keys->selects)){
             $keys->selects = array();
+        }
+
+        if(!is_array($keys->selects)){
+            return $this->error->error(mensaje: 'Error keys->selects debe ser un array',data:  $keys);
         }
 
         $campos_view = $this->model_init_campos_selects(
