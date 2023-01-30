@@ -1,8 +1,6 @@
 <?php
 namespace base\frontend;
-use gamboamartin\errores\errores;
-use JetBrains\PhpStorm\Pure;
-use stdClass;
+
 
 
 class params_inputs{
@@ -15,7 +13,7 @@ class params_inputs{
      * @return string
      *
      */
-    public function disabled_html(bool $disabled): string
+    final public function disabled_html(bool $disabled): string
     {
         $disabled_html = '';
         if($disabled){
@@ -46,7 +44,7 @@ class params_inputs{
      * @param bool $required indica si es requerido o no
      * @return string required en caso true o vacio en false
      */
-    public function required_html(bool $required): string
+    final public function required_html(bool $required): string
     {
         $required_html = '';
         if($required){
