@@ -17,7 +17,7 @@ class session extends valida_controller {
      * @version 1.0.0
      * @return array|bool
      */
-    public function valida_datos_recepcion():array|bool{
+    final public function valida_datos_recepcion():array|bool{
         if(!isset($_POST['user'])){
             return $this->error->error(mensaje: 'Error debe existir user',data: $_POST);
 

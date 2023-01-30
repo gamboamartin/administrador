@@ -87,7 +87,7 @@ class init{
      * @return array GET con session_id en un key
      * @version 2.25.3
      */
-    public function asigna_session_get(): array
+    final public function asigna_session_get(): array
     {
         $session_id = $this->session_id();
         if(errores::$error){
