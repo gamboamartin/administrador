@@ -105,9 +105,14 @@ class conexion{
      * @param string $sql_mode Mode seguridad
      * @param int $time_out tiempo ejecucion maximo de consultas
      * @return PDO|array
+     * @version 9.30.0
      */
     private function asigna_parametros_query(PDO $link, string $set_name, string $sql_mode, int $time_out): PDO|array
     {
+        $set_name = trim($set_name);
+        if($set_name === ''){
+            return $this->error->error(mensaje: 'Error $set_name no puede venir vacio',data:$link);
+        }
         $link = $this->asigna_set_names(link: $link, set_name: $set_name);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al asignar codificacion en bd",data:$link);
@@ -219,7 +224,7 @@ class conexion{
         return $link;
     }
 
-    public function genera_link_custom(stdClass $conf_database, string $motor): PDO|array
+    final public function genera_link_custom(stdClass $conf_database, string $motor): PDO|array
     {
         $keys = array('db_host','db_name','db_user','db_password');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);

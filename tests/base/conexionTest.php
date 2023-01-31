@@ -18,6 +18,29 @@ class conexionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_parametros_query(): void
+    {
+        errores::$error = false;
+
+        $paths = new stdClass();
+
+
+        $paths->generales = '/var/www/html/administrador/config/generales.php';
+        $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
+
+        $cnx = new conexion($paths);
+        $cnx = new liberator($cnx);
+
+        $set_name = 'utf8';
+        $sql_mode = '';
+        $time_out = '1';
+        $resultado = $cnx->asigna_parametros_query(link: conexion::$link, set_name: $set_name,sql_mode:  $sql_mode,time_out:  $time_out);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        errores::$error = false;
+    }
+
     /**
      * @throws JsonException
      */
