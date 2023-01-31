@@ -176,7 +176,7 @@ class conexion{
 
     /**
      * @param stdClass|database $conf_database Configuraciones de database
-     * @param string $motor
+     * @param string $motor Motor de DBMS
      * @return PDO|array
      */
     private function conexion(stdClass|database $conf_database, string $motor): PDO|array
@@ -252,6 +252,12 @@ class conexion{
         return $link;
     }
 
+    /**
+     * Ejecuta comando use database
+     * @param PDO $link Conexion de base de datos
+     * @param string $db_name Nombre de base de datos
+     * @return PDO
+     */
     private function usa_base_datos(PDO $link, string $db_name): PDO
     {
         $consulta = "USE ".$db_name;
