@@ -11,6 +11,7 @@ use validacion\confs\configuraciones;
 class conexion{
 	public static PDO $link;
     private errores $error;
+    private array $motores_validos = array('MYSQL','MARIADB','MSSQL');
 
 
     /**
@@ -146,6 +147,11 @@ class conexion{
         if(errores::$error){
             return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
         }
+
+        if(!in_array($motor, $this->motores_validos)){
+            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor);
+        }
+
         if($motor === 'MYSQL' || $motor === 'MARIADB') {
             try {
                 $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
@@ -179,6 +185,9 @@ class conexion{
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
         if(errores::$error){
             return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
+        }
+        if(!in_array($motor, $this->motores_validos)){
+            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor);
         }
 
         $link = $this->conecta(conf_database: $conf_database, motor: $motor);
@@ -230,6 +239,9 @@ class conexion{
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
         if(errores::$error){
             return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
+        }
+        if(!in_array($motor, $this->motores_validos)){
+            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor);
         }
 
         $link = $this->conexion(conf_database: $conf_database,motor:  $motor);
