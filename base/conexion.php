@@ -3,7 +3,6 @@ namespace base;
 use config\database;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use JsonException;
 use PDO;
 use stdClass;
 use Throwable;
@@ -171,6 +170,12 @@ class conexion{
      */
     private function conexion(stdClass|database $conf_database, string $motor): PDO|array
     {
+        $keys = array('db_host','db_name','db_user','db_password');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
+        if(errores::$error){
+            return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
+        }
+
         $link = $this->conecta(conf_database: $conf_database, motor: $motor);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al conectar",data:$link);
@@ -216,6 +221,11 @@ class conexion{
 
     public function genera_link_custom(stdClass $conf_database, string $motor): PDO|array
     {
+        $keys = array('db_host','db_name','db_user','db_password');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $conf_database);
+        if(errores::$error){
+            return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
+        }
 
         $link = $this->conexion(conf_database: $conf_database,motor:  $motor);
         if(errores::$error){
