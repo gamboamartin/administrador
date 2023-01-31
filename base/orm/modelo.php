@@ -1677,6 +1677,7 @@ class modelo extends modelo_base {
      * registros
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param bool $columnas_en_bruto Si columnas en bruto obtiene los campos tal cual estan en la bd
+     * @param bool $con_sq Integra las columnas extra si true
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Limit para integrar con sql
      * @param bool $return_objects Retorna el resultado en objetos
@@ -1688,17 +1689,18 @@ class modelo extends modelo_base {
      * @version 1.376.44
      */
     final public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
-                                    bool $columnas_en_bruto = false, array $group_by = array(), int $limit = 0,
-                                    bool $return_objects = false, string $sql_extra=''): array|stdClass{
+                                          bool $columnas_en_bruto = false, bool $con_sq = true, array $group_by = array(),
+                                          int $limit = 0, bool $return_objects = false,
+                                          string $sql_extra=''): array|stdClass{
 
         if($this->limit > 0){
             $limit = $this->limit;
         }
 
 
-        $base = (new sql())->sql_select_init(aplica_seguridad: $aplica_seguridad,columnas:  $columnas,
-            columnas_en_bruto:  $columnas_en_bruto,extension_estructura:  $this->extension_estructura,
-            group_by: $group_by, limit: $limit,modelo:  $this,offset:  $this->offset,order:  $this->order,
+        $base = (new sql())->sql_select_init(aplica_seguridad: $aplica_seguridad, columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, extension_estructura: $this->extension_estructura,
+            group_by: $group_by, limit: $limit, modelo: $this, offset: $this->offset, order: $this->order,
             renombres: $this->renombres, sql_where_previo: $sql_extra);
 
         if(errores::$error){
@@ -1893,6 +1895,7 @@ class modelo extends modelo_base {
      * Obtiene los registros de una tabla
      * @param array $columnas Columnas a mostrar en resultado SQL
      * @param bool $columnas_en_bruto Regresa las columnas en su estado puro de la base de datos
+     * @param bool $con_sq Integra las columnas extra si true
      * @param bool $aplica_seguridad Si aplica seguridad buscara usuario permitido
      * @param int $limit Limit de resultado
      * @param array $order Orden de resultado
@@ -1900,13 +1903,12 @@ class modelo extends modelo_base {
      * @return array|stdClass
      * @version 1.448.48
      */
-    public function registros(array $columnas = array(), bool $columnas_en_bruto = false,
-                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
+    public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true,                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
                               bool $return_obj = false):array|stdClass{
 
         $this->order = $order;
         $resultado =$this->obten_registros(aplica_seguridad: $aplica_seguridad, columnas: $columnas,
-            columnas_en_bruto: $columnas_en_bruto, limit: $limit);
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, limit: $limit);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros activos en '.$this->tabla,data: $resultado);

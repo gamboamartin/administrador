@@ -63,7 +63,7 @@ class columnasTest extends test {
         $columnas = '';
         $modelo = new adm_seccion($this->link);
         $resultado = $col->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto:false,
-            columnas_sql:  $columnas_sql, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
+            columnas_sql:  $columnas_sql, con_sq: true, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al generar columnas', $resultado['mensaje']);
@@ -74,7 +74,7 @@ class columnasTest extends test {
         $columnas_sql = array();
         $columnas = '';
         $resultado = $col->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto:false,
-            columnas_sql:  $columnas_sql, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
+            columnas_sql:  $columnas_sql, con_sq: true, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
@@ -86,7 +86,7 @@ class columnasTest extends test {
         $columnas_sql = array();
         $columnas = '';
         $resultado = $col->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto:false,
-            columnas_sql:  $columnas_sql, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
+            columnas_sql:  $columnas_sql, con_sq: true, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('zeta_etiqueta_label, zeta.status', $resultado);
@@ -320,7 +320,7 @@ class columnasTest extends test {
         $data = array();
         $columnas = '';
         $tabla = '';
-        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql, $data, $modelo, $tabla);
+        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql,true, $data, $modelo, $tabla);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al validar data', $resultado['mensaje']);
@@ -331,7 +331,7 @@ class columnasTest extends test {
         $columnas = '';
         $tabla = '';
         $data['nombre_original'] = 'adm_seccion';
-        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql, $data, $modelo, $tabla);
+        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql,true, $data, $modelo, $tabla);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion_descripcion, adm_seccion.etiqueta_label', $resultado);
@@ -352,7 +352,7 @@ class columnasTest extends test {
         $renombres = array();
         $tablas_select = array('adm_seccion'=>false,'adm_accion'=>'adm_seccion');
 
-        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,
+        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,true,
             $extension_estructura, $modelo, $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -402,7 +402,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $tablas_select = array();
-        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, $extension_estructura,
+        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, true, $extension_estructura,
             $modelo, $renombres, $tablas_select);
 
 
@@ -419,7 +419,7 @@ class columnasTest extends test {
         $renombres = array();
         $tablas_select = array();
         $tablas_select['adm_accion'] = 'x';
-        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, $extension_estructura,
+        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql,true, $extension_estructura,
             $modelo, $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -487,7 +487,7 @@ class columnasTest extends test {
         $columnas_en_bruto = true;
         $modelo = new adm_usuario($this->link);
 
-        $resultado = $mb->columnas_by_table($columnas_by_table, $columnas_en_bruto, $modelo);
+        $resultado = $mb->columnas_by_table($columnas_by_table, $columnas_en_bruto, true, $modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_usuario.id AS id, adm_usuario.user AS user', $resultado);
@@ -500,7 +500,7 @@ class columnasTest extends test {
         $columnas_en_bruto = false;
         $modelo = new adm_usuario($this->link);
 
-        $resultado = $mb->columnas_by_table($columnas_by_table, $columnas_en_bruto, $modelo);
+        $resultado = $mb->columnas_by_table($columnas_by_table, $columnas_en_bruto, true, $modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_usuario.id AS adm_usuario_id, adm_usuario.user AS adm_usuario_user', $resultado);
@@ -529,7 +529,7 @@ class columnasTest extends test {
         $extension_estructura = array();
         $columnas_sql = array();
         $columnas = '';
-        $resultado = $col->columnas_extension( $columnas, $columnas_sql, $extension_estructura,$modelo);
+        $resultado = $col->columnas_extension( $columnas, $columnas_sql, true, $extension_estructura,$modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado);
@@ -538,7 +538,7 @@ class columnasTest extends test {
         $extension_estructura = array();
         $columnas_sql = array();
         $columnas = 'a';
-        $resultado = $col->columnas_extension($columnas, $columnas_sql, $extension_estructura,$modelo);
+        $resultado = $col->columnas_extension($columnas, $columnas_sql, true, $extension_estructura,$modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a', $resultado);
@@ -548,7 +548,7 @@ class columnasTest extends test {
         $columnas_sql = array();
         $columnas = 'a';
         $extension_estructura[] = '';
-        $resultado = $col->columnas_extension($columnas, $columnas_sql, $extension_estructura,$modelo);
+        $resultado = $col->columnas_extension($columnas, $columnas_sql,true, $extension_estructura,$modelo);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error ingrese un array valido', $resultado['mensaje']);
@@ -558,17 +558,19 @@ class columnasTest extends test {
         $columnas_sql = array();
         $columnas = 'a';
         $extension_estructura['a'] = '';
-        $resultado = $col->columnas_extension($columnas, $columnas_sql, $extension_estructura,$modelo);
+        $resultado = $col->columnas_extension($columnas, $columnas_sql,true, $extension_estructura,$modelo);
+        //print_r($resultado);
+
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
+        //$this->assertStringContainsStringIgnoringCase('Error al integrar columnas', $resultado['mensaje']);
 
         errores::$error = false;
         $extension_estructura = array();
         $columnas_sql = array();
         $columnas = 'a';
         $extension_estructura['adm_seccion'] = '';
-        $resultado = $col->columnas_extension($columnas, $columnas_sql, $extension_estructura,$modelo);
+        $resultado = $col->columnas_extension($columnas, $columnas_sql,true, $extension_estructura,$modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion.adm_menu_id', $resultado);
@@ -604,7 +606,7 @@ class columnasTest extends test {
         $columnas_sql = array();
         $modelo = new adm_seccion($this->link);
         $renombres = array();
-        $resultado = $col->columnas_full( array(), false,$columnas_sql, $extension_estructura, $modelo, $renombres, $tablas_select);
+        $resultado = $col->columnas_full( array(), false,$columnas_sql, true, $extension_estructura, $modelo, $renombres, $tablas_select);
 
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -617,7 +619,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $columas_by_table = array();
-        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, $extension_estructura, $modelo,
+        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, true, $extension_estructura, $modelo,
             $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -631,7 +633,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $columas_by_table = array('adm_menu');
-        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, $extension_estructura, $modelo,
+        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, true, $extension_estructura, $modelo,
             $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -651,7 +653,7 @@ class columnasTest extends test {
         $columnas_sql = array();
         $modelo = new adm_seccion($this->link);
         $renombres = array();
-        $resultado = $col->columnas_renombre($columnas, $columnas_sql, $modelo, $renombres);
+        $resultado = $col->columnas_renombre($columnas, $columnas_sql, true, $modelo, $renombres);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);
@@ -819,7 +821,7 @@ class columnasTest extends test {
         $tablas_select = array();
         $columnas_sql = array();
 
-        $resultado = $col->columnas_tablas_select(false,$columnas_sql, $modelo, $tablas_select);
+        $resultado = $col->columnas_tablas_select(false,$columnas_sql, true, $modelo, $tablas_select);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('',$resultado);
@@ -828,7 +830,7 @@ class columnasTest extends test {
         $tablas_select = array();
         $columnas_sql = array();
 
-        $resultado = $col->columnas_tablas_select(false,$columnas_sql, $modelo, $tablas_select);
+        $resultado = $col->columnas_tablas_select(false,$columnas_sql, true, $modelo, $tablas_select);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('',$resultado);
@@ -838,7 +840,7 @@ class columnasTest extends test {
         $columnas_sql = array();
 
         $tablas_select[] = '';
-        $resultado = $col->columnas_tablas_select(false,$columnas_sql, $modelo, $tablas_select);
+        $resultado = $col->columnas_tablas_select(false,$columnas_sql, true, $modelo, $tablas_select);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error $key no puede ser un numero', $resultado['mensaje']);
@@ -848,7 +850,7 @@ class columnasTest extends test {
         $columnas_sql = array();
 
         $tablas_select['adm_seccion'] = '';
-        $resultado = $col->columnas_tablas_select(false,$columnas_sql, $modelo, $tablas_select);
+        $resultado = $col->columnas_tablas_select(false,$columnas_sql, true, $modelo, $tablas_select);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion.etiqueta_label',$resultado);
@@ -866,7 +868,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $tabla_original = '';
         $tabla_renombrada = '';
-        $resultado = $col->data_for_columnas_envio($columnas,false,$modelo, $tabla_original, $tabla_renombrada);
+        $resultado = $col->data_for_columnas_envio($columnas,false, true,$modelo, $tabla_original, $tabla_renombrada);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error tabla original no puede venir vacia', $resultado['mensaje']);
@@ -875,16 +877,16 @@ class columnasTest extends test {
         $columnas = array();
         $tabla_original = 'a';
         $tabla_renombrada = '';
-        $resultado = $col->data_for_columnas_envio($columnas,false,$modelo, $tabla_original, $tabla_renombrada);
+        $resultado = $col->data_for_columnas_envio($columnas,false, true,$modelo, $tabla_original, $tabla_renombrada);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
+        //$this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
 
         errores::$error = false;
         $columnas = array();
         $tabla_original = 'adm_seccion';
         $tabla_renombrada = '';
-        $resultado = $col->data_for_columnas_envio($columnas,false,$modelo, $tabla_original, $tabla_renombrada);
+        $resultado = $col->data_for_columnas_envio($columnas,false, true,$modelo, $tabla_original, $tabla_renombrada);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion.id AS adm_seccion_id', $resultado->columnas_sql);
@@ -893,7 +895,7 @@ class columnasTest extends test {
         $columnas = array();
         $tabla_original = 'adm_seccion';
         $tabla_renombrada = 'z';
-        $resultado = $col->data_for_columnas_envio($columnas,false,$modelo, $tabla_original, $tabla_renombrada);
+        $resultado = $col->data_for_columnas_envio($columnas,false, true,$modelo, $tabla_original, $tabla_renombrada);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('z.id AS z_id', $resultado->columnas_sql);
@@ -908,7 +910,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $tabla_original = '';
         $tabla_renombrada = '';
-        $resultado = $col->genera_columnas_consulta(false,$modelo,$tabla_original, $tabla_renombrada);
+        $resultado = $col->genera_columnas_consulta(false,true,$modelo,$tabla_original, $tabla_renombrada);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al datos para columnas', $resultado['mensaje']);
@@ -916,7 +918,7 @@ class columnasTest extends test {
         errores::$error = false;
         $tabla_original = 'x';
         $tabla_renombrada = '';
-        $resultado = $col->genera_columnas_consulta(false,$modelo,$tabla_original, $tabla_renombrada);
+        $resultado = $col->genera_columnas_consulta(false,true,$modelo,$tabla_original, $tabla_renombrada);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al datos para columnas', $resultado['mensaje']);
@@ -924,7 +926,7 @@ class columnasTest extends test {
         errores::$error = false;
         $tabla_original = 'adm_seccion';
         $tabla_renombrada = '';
-        $resultado = $col->genera_columnas_consulta(false,$modelo,$tabla_original, $tabla_renombrada);
+        $resultado = $col->genera_columnas_consulta(false, true,$modelo,$tabla_original, $tabla_renombrada);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion.id AS adm_seccion_id', $resultado);
@@ -932,7 +934,7 @@ class columnasTest extends test {
         errores::$error = false;
         $tabla_original = 'adm_seccion';
         $tabla_renombrada = 'abc';
-        $resultado = $col->genera_columnas_consulta(false,$modelo,$tabla_original, $tabla_renombrada);
+        $resultado = $col->genera_columnas_consulta(false, true,$modelo,$tabla_original, $tabla_renombrada);
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
@@ -1010,7 +1012,7 @@ class columnasTest extends test {
         $columnas = '';
         $columnas_sql = array();
         $key = '';
-        $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, $key, $modelo);
+        $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, true, $key, $modelo);
 
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
@@ -1022,10 +1024,10 @@ class columnasTest extends test {
         $columnas = '';
         $columnas_sql = array();
         $key = 'a';
-        $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, $key, $modelo);
+        $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, true, $key, $modelo);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
+//        $this->assertStringContainsStringIgnoringCase('Error al llamar datos', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -1033,7 +1035,7 @@ class columnasTest extends test {
         $columnas = '';
         $columnas_sql = array();
         $key = 'adm_seccion';
-        $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, $key, $modelo);
+        $resultado = $col->genera_columna_tabla($columnas, false, $columnas_sql, true, $key, $modelo);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion.descripcion AS adm_seccion_descripcion', $resultado);

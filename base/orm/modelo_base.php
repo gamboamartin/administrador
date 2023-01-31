@@ -722,6 +722,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd
+     * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param array $renombradas columnas estructura tabla ligadas renombradas
      * @return array|string string en forma de sql con los datos para la ejecucion de SELECT
@@ -737,15 +738,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      */
 
     final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
-                                            bool $columnas_en_bruto = false, array $extension_estructura = array(),
-                                            array $renombradas = array()):array|string{
+                                                bool $columnas_en_bruto = false, bool $con_sq = true,
+                                                array $extension_estructura = array(),
+                                                array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
         $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
             columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_seleccionables, extension_estructura: $extension_estructura, renombres: $renombradas);
+            columnas_sql: $columnas_seleccionables, con_sq: $con_sq, extension_estructura: $extension_estructura,
+            renombres: $renombradas);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener columnas en '.$this->tabla,data: $columnas_sql);
         }
@@ -757,10 +760,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }
 
-        $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
-            columnas_seleccionables: $columnas_seleccionables);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sub querys en '.$this->tabla, data: $sub_querys_sql);
+        $sub_querys_sql = '';
+        if($con_sq) {
+            $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
+                columnas_seleccionables: $columnas_seleccionables);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla, data: $sub_querys_sql);
+            }
         }
 
 

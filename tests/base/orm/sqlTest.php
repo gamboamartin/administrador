@@ -132,7 +132,7 @@ class sqlTest extends test {
         $order = array();
         $renombres = array();
         $sql_where_previo = '';
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
         $this->assertIsObject( $resultado);
@@ -159,7 +159,7 @@ class sqlTest extends test {
         $order = array();
         $renombres = array();
         $sql_where_previo = '';
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
         $this->assertIsArray( $resultado);
@@ -182,7 +182,7 @@ class sqlTest extends test {
         $sql_where_previo = '';
 
 
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
         $this->assertIsArray( $resultado);
@@ -204,7 +204,7 @@ class sqlTest extends test {
         $sql_where_previo = '';
 
 
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
         $this->assertIsObject( $resultado);
@@ -228,7 +228,7 @@ class sqlTest extends test {
         $sql_where_previo = '';
 
 
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
 
@@ -254,7 +254,7 @@ class sqlTest extends test {
         $sql_where_previo = '';
 
 
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
         $this->assertIsObject( $resultado);
@@ -285,7 +285,7 @@ class sqlTest extends test {
         $sql_where_previo = '';
 
 
-        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, $extension_estructura,
+        $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
         $this->assertIsObject( $resultado);

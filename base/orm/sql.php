@@ -126,21 +126,22 @@ class sql{
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $columnas Columnas de a obtener en select
      * @param bool $columnas_en_bruto Obtiene las columnas tal como estan en base de datos
+     * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Extension de estructura para joins
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Limit en sql
      * @param modelo $modelo Modelo en ejecucion
      * @param int $offset Sql de integracion tipo offset
-     * @param array  $order con parametros para generar sentencia
+     * @param array $order con parametros para generar sentencia
      * @param array $renombres Tablas renombradas
      * @param string $sql_where_previo Sql previo a incrustar
      * @return array|stdClass
      * @version 1.373.44
      */
     final public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
-                                    array $extension_estructura, array $group_by, int $limit, modelo $modelo,
-                                    int $offset, array $order, array $renombres,
-                                    string $sql_where_previo): array|stdClass
+                                          bool $con_sq, array $extension_estructura, array $group_by, int $limit,
+                                          modelo $modelo, int $offset, array $order, array $renombres,
+                                          string $sql_where_previo): array|stdClass
     {
         if($limit<0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0 en '.$modelo->tabla,
@@ -160,7 +161,7 @@ class sql{
         }
 
         $consulta_base = $modelo->genera_consulta_base(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $extension_estructura, renombradas: $renombres);
+            con_sq: $con_sq, extension_estructura: $extension_estructura, renombradas: $renombres);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar consulta en '.$modelo->tabla, data: $consulta_base);
