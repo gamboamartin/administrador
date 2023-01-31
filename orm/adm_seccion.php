@@ -14,6 +14,7 @@ class adm_seccion extends _modelo_children {
      * seccion_menu constructor.
      * @param PDO $link
      * @param array $childrens
+     * @param array $columnas_extra
      */
     public function __construct(PDO $link, array $childrens = array(), array $columnas_extra = array()){
         $tabla = 'adm_seccion';
@@ -95,7 +96,14 @@ class adm_seccion extends _modelo_children {
         return $accion;
     }
 
-    private function accion_maqueta_campos(array $accion_basica, array $campos){
+    /**
+     * Maqueta en un array los campos para insertar un accion
+     * @param array $accion_basica Accion base
+     * @param array $campos Campos a integrar
+     * @return array
+     */
+    private function accion_maqueta_campos(array $accion_basica, array $campos): array
+    {
         $accion = array();
         foreach ($campos as $campo){
             $accion = $this->accion_maqueta_campo(accion: $accion,accion_basica:  $accion_basica, key: $campo);
