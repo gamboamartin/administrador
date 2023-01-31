@@ -15,7 +15,7 @@ class adm_seccion extends _modelo_children {
      * @param PDO $link
      * @param array $childrens
      */
-    public function __construct(PDO $link, array $childrens = array()){
+    public function __construct(PDO $link, array $childrens = array(), array $columnas_extra = array()){
         $tabla = 'adm_seccion';
         $columnas = array($tabla=>false, 'adm_menu'=>$tabla,'adm_namespace'=>$tabla);
         $campos_obligatorios = array('status','descripcion','adm_menu_id', 'adm_namespace_id');
