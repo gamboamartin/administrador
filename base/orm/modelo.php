@@ -860,11 +860,30 @@ class modelo extends modelo_base {
      * @param array $columnas_by_table arreglo para obtener los campos especificos de una tabla, si esta seteada,
      * no aplicara las columnas tradicionales
      * @param bool $columnas_en_bruto si true se trae las columnas sion renombrar y solo de la tabla seleccionada
+     * @param bool $con_sq
+     * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
+     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
+     * @param array $filtro_rango
+     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
+     *                  Opcion2.-
+     *                      Debe ser un array con la siguiente forma
+     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
+     *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
+     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
+     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
+     * @param int $limit numero de registros a mostrar, 0 = sin limite
+     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
+     * @param int $offset numero de registros de comienzo de datos
+     * @param array $order array('tabla.campo'=>'ASC');
+     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
+     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
+     * @return array|stdClass
      * @example
      *      $filtro_extra[0][tabla.campo]['operador'] = '<';
      *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
@@ -875,24 +894,6 @@ class modelo extends modelo_base {
      *
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
-     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @param array $filtro_rango
-     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     *                  Opcion2.-
-     *                      Debe ser un array con la siguiente forma
-     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
-     *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param int $limit numero de registros a mostrar, 0 = sin limite
-     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @param int $offset numero de registros de comienzo de datos
-     * @param array $order array('tabla.campo'=>'ASC');
-     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
-     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
-     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
-     * @return array|stdClass
      * @example
      *      Ej 1
      *      $resultado = filtro_and();
@@ -990,7 +991,7 @@ class modelo extends modelo_base {
      * @version 1.575.51
      */
     final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
-                               array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                               array $columnas_by_table = array(), bool $columnas_en_bruto = false, bool $con_sq = true,
                                array $diferente_de = array(), array $filtro=array(), array $filtro_especial= array(),
                                array $filtro_extra = array(), array $filtro_fecha = array(),
                                array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
@@ -1033,11 +1034,11 @@ class modelo extends modelo_base {
                 data: $params_fn);
         }
 
-        $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table:$columnas_by_table,
-            columnas_en_bruto:$columnas_en_bruto, diferente_de: $diferente_de, filtro:  $filtro,
-            filtro_especial: $filtro_especial, filtro_extra:  $filtro_extra,filtro_rango:  $filtro_rango,
-            group_by:  $group_by, in: $in, limit:  $limit, not_in: $not_in, offset:  $offset, order: $order,
-            sql_extra:  $sql_extra,tipo_filtro:  $tipo_filtro, filtro_fecha:  $filtro_fecha);
+        $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de, filtro: $filtro,
+            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango,
+            group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset, order: $order,
+            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha: $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
@@ -1106,6 +1107,8 @@ class modelo extends modelo_base {
      * @param array $columnas Columnas para muestra si vacio muestra todas
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto if true obtiene solo los elementos nativos de la tabla o modelo
+     * @param bool $con_sq
+     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_extra arreglo que contiene las condiciones
@@ -1116,6 +1119,7 @@ class modelo extends modelo_base {
      *                      Debe ser un array con la siguiente forma
      *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
+     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
      * @param int $limit Numero de registros a mostrar
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @param int $offset Numero de inicio de registros
@@ -1123,8 +1127,6 @@ class modelo extends modelo_base {
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
      * @return array|string
      * @example
      *      $filtro_extra[0][tabla.campo]['operador'] = '<';
@@ -1141,7 +1143,7 @@ class modelo extends modelo_base {
      * @author mgamboa
      * @version 1.575.51
      */
-    private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto,
+    private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $filtro, array $filtro_especial, array $filtro_extra,
                                        array $filtro_rango, array $group_by, array $in, int $limit, array $not_in,
                                        int $offset, array $order, string $sql_extra, string $tipo_filtro,
@@ -1180,9 +1182,9 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table:$columnas_by_table,
-            columnas_en_bruto:$columnas_en_bruto, extension_estructura:  $this->extension_estructura,
-            renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, extension_estructura: $this->extension_estructura,
+            renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }

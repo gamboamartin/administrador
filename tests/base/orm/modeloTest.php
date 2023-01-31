@@ -302,9 +302,11 @@ class modeloTest extends test {
         $sql_extra = '';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, array(), $filtro,
-            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
-            $tipo_filtro);
+        $resultado = $modelo->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto, con_sq: true, diferente_de: array(),
+            filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset, order: $order,
+            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
 
         //print_r($resultado);exit;
 
@@ -330,9 +332,11 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, array(), $filtro,
-            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
-            $tipo_filtro);
+        $resultado = $modelo->genera_sql_filtro(columnas: $columnas,columnas_by_table:  $columnas_by_table,
+            columnas_en_bruto:  $columnas_en_bruto,con_sq:  true, diferente_de: array(),filtro:  $filtro,
+            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,filtro_rango:  $filtro_rango,
+            group_by: $group_by,in:  $in, limit: $limit, not_in: $not_in,offset:  $offset,order:  $order, sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro);
 
        // print_r($resultado);exit;
 
@@ -359,7 +363,7 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, array(), $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -388,7 +392,7 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, array(), $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -417,7 +421,7 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array('llave'=>'a','values'=>array('a','b'));
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, array(), $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -447,7 +451,7 @@ class modeloTest extends test {
         $in = array('llave'=>'a','values'=>array('a','b'));
         $diferente_de['a']= 'p';
         $diferente_de['g']= 'p';
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, $diferente_de, $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, $diferente_de, $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
