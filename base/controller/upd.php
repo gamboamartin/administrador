@@ -79,7 +79,7 @@ class upd{
      * @param controlador_base $controlador
      * @return array|string
      */
-    public function template_modifica(int $registro_id, controler $controlador):array|stdClass{
+    final public function template_modifica(int $registro_id, controler $controlador):array|stdClass{
 
         if($controlador->seccion === ''){
             return $this->error->error('Error seccion esta vacia',$_GET);

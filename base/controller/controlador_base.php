@@ -721,6 +721,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $ws retorna json
      * @return array|stdClass
      * @version 2.17.2.1
+     * @final rev
      */
     public function modifica(bool $header, bool $ws = false):array|stdClass{
 
