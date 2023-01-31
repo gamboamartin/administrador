@@ -1684,10 +1684,9 @@ class modelo extends modelo_base {
      * @example
      *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
      *
-     * @uses  TODO EL SISTEMA
      * @version 1.376.44
      */
-    public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
+    final public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
                                     bool $columnas_en_bruto = false, array $group_by = array(), int $limit = 0,
                                     bool $return_objects = false, string $sql_extra=''): array|stdClass{
 
@@ -1830,7 +1829,7 @@ class modelo extends modelo_base {
         $this->limit = 1;
         $resultado = $this->obten_registros();
         if(isset($resultado['error'])){
-            return $this->error->error('Error al obtener registros',$resultado);
+            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
 
         if((int)$resultado['n_registros'] === 0){
@@ -1892,6 +1891,7 @@ class modelo extends modelo_base {
      *
      * Obtiene los registros de una tabla
      * @param array $columnas Columnas a mostrar en resultado SQL
+     * @param bool $columnas_en_bruto Regresa las columnas en su estado puro de la base de datos
      * @param bool $aplica_seguridad Si aplica seguridad buscara usuario permitido
      * @param int $limit Limit de resultado
      * @param array $order Orden de resultado
@@ -1899,11 +1899,13 @@ class modelo extends modelo_base {
      * @return array|stdClass
      * @version 1.448.48
      */
-    public function registros(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0,
-                              array $order = array(), bool $return_obj = false):array|stdClass{
+    public function registros(array $columnas = array(), bool $columnas_en_bruto = false,
+                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
+                              bool $return_obj = false):array|stdClass{
 
         $this->order = $order;
-        $resultado =$this->obten_registros(aplica_seguridad:$aplica_seguridad,  columnas:$columnas, limit: $limit);
+        $resultado =$this->obten_registros(aplica_seguridad: $aplica_seguridad, columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto, limit: $limit);
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros activos en '.$this->tabla,data: $resultado);

@@ -104,7 +104,7 @@ class sql{
      * @return string|array
      * @version 1.374.41
      */
-    public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string|array
+    final public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string|array
     {
         $consulta_base = trim($consulta_base);
         if($consulta_base === ''){
@@ -137,7 +137,7 @@ class sql{
      * @return array|stdClass
      * @version 1.373.44
      */
-    public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
+    final public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
                                     array $extension_estructura, array $group_by, int $limit, modelo $modelo,
                                     int $offset, array $order, array $renombres,
                                     string $sql_where_previo): array|stdClass
