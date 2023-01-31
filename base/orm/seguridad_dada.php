@@ -15,7 +15,7 @@ class seguridad_dada{
      * @return array
      * @version 1.520.51
      */
-    public function aplica_filtro_seguridad(modelo $modelo): array
+    final  function aplica_filtro_seguridad(modelo $modelo): array
     {
         $filtro_seguridad = array();
         if($modelo->aplica_seguridad) {

@@ -48,6 +48,7 @@ class modelo extends modelo_base {
      * @param array $childrens
      * @param array $defaults
      * @param array $parents_data
+     * @param array $atributos_criticos
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
                                 bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),

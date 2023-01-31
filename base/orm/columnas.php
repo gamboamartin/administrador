@@ -250,7 +250,7 @@ class columnas{
      * @return array
      * @version 1.521.51
      */
-    public function campos_tabla(modelo $modelo, string $tabla): array
+    final public function campos_tabla(modelo $modelo, string $tabla): array
     {
         if($tabla !=='') {
 
@@ -1053,7 +1053,7 @@ class columnas{
         return $campos_obligatorios;
     }
 
-    public function integra_campos_obligatorios(array $campos_obligatorios, array $campos_tabla): array
+    final public function integra_campos_obligatorios(array $campos_obligatorios, array $campos_tabla): array
     {
         $campos_obligatorios_parciales = array('accion_id','codigo','descripcion','grupo_id','seccion_id');
 
