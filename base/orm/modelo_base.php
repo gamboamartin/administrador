@@ -808,6 +808,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces[]  = 'gamboamartin\\banco\\models\\';
         $namespaces[]  = 'gamboamartin\\gastos\\models\\';
         $namespaces[]  = 'gamboamartin\\nomina\\models\\';
+        $namespaces[]  = 'gamboamartin\\im_registro_patronal\\models\\';
         $namespaces[]  = 'tglobally\\tg_nomina\\models\\';
 
         $es_namespace_especial_como_mis_inges = false;
