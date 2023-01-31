@@ -146,7 +146,7 @@ class conexion{
         if(errores::$error){
             return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
         }
-        if($motor === 'MYSQL') {
+        if($motor === 'MYSQL' || $motor === 'MARIADB') {
             try {
                 $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
                     $conf_database->db_user, $conf_database->db_password);
