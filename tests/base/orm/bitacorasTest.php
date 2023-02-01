@@ -227,6 +227,7 @@ class bitacorasTest extends test {
         $adm_seccion['id'] = 3;
         $adm_seccion['descripcion'] = 'adm_accion_grupo';
         $adm_seccion['adm_menu_id'] = '1';
+        $adm_seccion['adm_namespace_id'] = '1';
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);

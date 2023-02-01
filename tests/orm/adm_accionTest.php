@@ -64,6 +64,7 @@ class adm_accionTest extends test {
         $adm_seccion_ins['id'] = 2;
         $adm_seccion_ins['descripcion'] = 'adm_session';
         $adm_seccion_ins['adm_menu_id'] = 1;
+        $adm_seccion_ins['adm_namespace_id'] = 1;
 
         $alta = (new adm_seccion($this->link))->alta_registro(registro: $adm_seccion_ins);
         if(errores::$error){
@@ -168,6 +169,7 @@ class adm_accionTest extends test {
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_seccion';
         $adm_seccion['adm_menu_id'] = '1';
+        $adm_seccion['adm_namespace_id'] = '1';
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -310,6 +312,7 @@ class adm_accionTest extends test {
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_accion';
         $adm_seccion['adm_menu_id'] = '1';
+        $adm_seccion['adm_namespace_id'] = '1';
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
@@ -476,6 +479,7 @@ class adm_accionTest extends test {
         $adm_seccion['id'] = 1;
         $adm_seccion['descripcion'] = 'adm_seccion';
         $adm_seccion['adm_menu_id'] = '1';
+        $adm_seccion['adm_namespace_id'] = '1';
         $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
