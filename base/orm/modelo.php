@@ -477,6 +477,7 @@ class modelo extends modelo_base {
      * PHPUNIT
      * @return array|stdClass
      * @throws JsonException
+     * @final rev
      */
     public function desactiva_bd(): array|stdClass{
         $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();

@@ -148,9 +148,9 @@ class valida_controller extends base_modelos{
     /**
      *
      * @param controler $controler
-     * @return array
+     * @return array|bool
      */
-    public function valida_transaccion_status(controler $controler):array|bool{
+    final public function valida_transaccion_status(controler $controler):array|bool{
         if($controler->registro_id<=0){
             return  $this->error->error('Error al registro_id debe ser mayor a 0',$controler->registro_id);
         }
@@ -164,7 +164,7 @@ class valida_controller extends base_modelos{
         $controler->modelo->registro_id = $controler->registro_id;
         $valida = $this->valida_transaccion_activa(
             aplica_transaccion_inactivo: $controler->modelo->aplica_transaccion_inactivo,
-            registro_id: $controler->modelo->registro_id, tabla: $controler->modelo->tabla,registro: $registro);
+            registro: $registro, registro_id: $controler->modelo->registro_id, tabla: $controler->modelo->tabla);
         if(errores::$error){
             return  $this->error->error('Error al validar transaccion activa',$valida);
         }

@@ -458,6 +458,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $ws
      * @return array
      * @throws JsonException
+     * @final rev
      */
     public function desactiva_bd(bool $header, bool $ws): array{//FINPROTEOCOMPLETA
         if($this->registro_id<=0){

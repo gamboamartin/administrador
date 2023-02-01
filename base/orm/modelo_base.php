@@ -57,7 +57,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     public array $childrens = array();
     protected array $defaults = array();
-    protected array $parents_data = array();
+    public array $parents_data = array();
     public stdClass $atributos;
     public array $atributos_criticos = array();
 
@@ -122,7 +122,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array
      * @throws JsonException
      */
-    protected function aplica_desactivacion_dependencias(): array
+    final protected function aplica_desactivacion_dependencias(): array
     {
 
         $data = array();

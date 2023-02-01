@@ -133,7 +133,7 @@ class dependencias{
      * @return array
      * @throws JsonException
      */
-    public function desactiva_data_modelos_dependientes(modelo_base $modelo): array
+    final public function desactiva_data_modelos_dependientes(modelo_base $modelo): array
     {
         $data = array();
         foreach ($modelo->models_dependientes as $data_dep) {

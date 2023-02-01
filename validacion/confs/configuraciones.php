@@ -2,7 +2,6 @@
 namespace validacion\confs;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use JsonException;
 use stdClass;
 use Throwable;
 
@@ -40,7 +39,7 @@ class configuraciones extends validacion {
      * @return bool|array
      * @version 1.522.51
      */
-    public function valida_confs(stdClass $paths_conf): bool|array
+    final public function valida_confs(stdClass $paths_conf): bool|array
     {
         $tipo_confs[] = 'generales';
         $tipo_confs[] = 'database';
