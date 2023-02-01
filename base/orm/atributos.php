@@ -95,7 +95,7 @@ class atributos{
      * @return array|string
      * @version 1.558.51
      */
-    public function ejecuta_insersion_attr(modelo $modelo, int $registro_id): array|string
+    final public function ejecuta_insersion_attr(modelo $modelo, int $registro_id): array|string
     {
         if($registro_id<=0){
             return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0', data: $registro_id);

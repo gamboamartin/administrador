@@ -227,6 +227,7 @@ class modelo extends modelo_base {
      * PARAMS ORDER P INT
      * Aplica status = a activo a todos los elementos o registros de una tabla
      * @return array
+     * @final rev
      */
     public function activa_todo(): array
     {
@@ -347,8 +348,9 @@ class modelo extends modelo_base {
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
      * @version 1.534.51
+     *
      */
-    public function alta_registro(array $registro):array|stdClass{
+    final public function alta_registro(array $registro):array|stdClass{
 
         $init_archivos_tmp_model = $this->init_archivos_tmp_model_exe();
         if(errores::$error){
