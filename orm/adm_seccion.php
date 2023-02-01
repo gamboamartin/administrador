@@ -126,7 +126,7 @@ class adm_seccion extends _modelo_children {
      * @return array
      * @version 2.47.4
      */
-    public function acciones(int $adm_seccion_id): array
+    final public function acciones(int $adm_seccion_id): array
     {
         if($adm_seccion_id <= 0){
             return $this->error->error(mensaje: 'Error adm_seccion_id debe ser mayor a 0',data:  $adm_seccion_id);

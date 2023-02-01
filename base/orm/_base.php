@@ -9,7 +9,7 @@ class _base extends modelo{
      * Se sobreescribe en el modelo en ejecucion
      * @param array $registro Registro en proceso
      * @return array
-     *
+     * @final rev
      */
     protected function asigna_full_status_alta(array $registro): array
     {
@@ -43,7 +43,7 @@ class _base extends modelo{
         return $registro;
     }
 
-    protected function asigna_status_alta(array $keys, array $registro, string $status = 'activo'): array
+    final protected function asigna_status_alta(array $keys, array $registro, string $status = 'activo'): array
     {
         foreach ($keys as $key){
             $registro = $this->status_alta(key: $key,registro:  $registro, status: $status);
@@ -83,6 +83,7 @@ class _base extends modelo{
      * @param array $registro Registro en proceso
      * @return bool|array
      * @version 2.108.12
+     * @final rev
      */
     protected function valida_alta_bd(array $registro): bool|array
     {
