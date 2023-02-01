@@ -17,6 +17,7 @@ class upd{
      * columna usuario_update_id
      *
      * @param modelo_base $modelo
+     * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|string
      * @example
      *      $this->campos_sql = $campos_sql;
@@ -27,7 +28,7 @@ class upd{
      * @internal $this->usuario_existente();
      * @version 1.287.41
      */
-    private function agrega_usuario_session(modelo_base $modelo): array|string
+    private function agrega_usuario_session(modelo_base $modelo, bool $valida_user): array|string
     {
         if($modelo->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
@@ -36,16 +37,22 @@ class upd{
         if($modelo->campos_sql === ''){
             return $this->error->error(mensaje: 'campos no puede venir vacio',data: $modelo->campos_sql);
         }
-        $existe_user = $this->usuario_existente(modelo: $modelo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error validar existencia de usuario',data: $existe_user);
-        }
-        if(!$existe_user){
-            return $this->error->error(mensaje: 'Error no existe usuario',
-                data: array($existe_user,$modelo->campos_sql, $modelo->usuario_id));
+
+        $usuario_id = 2;
+        if($valida_user) {
+
+            $existe_user = $this->usuario_existente(modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error validar existencia de usuario', data: $existe_user);
+            }
+            if (!$existe_user) {
+                return $this->error->error(mensaje: 'Error no existe usuario',
+                    data: array($existe_user, $modelo->campos_sql, $modelo->usuario_id));
+            }
+            $usuario_id = $modelo->usuario_id;
         }
 
-        return 'usuario_update_id=' . $modelo->usuario_id;
+        return 'usuario_update_id=' . $usuario_id;
     }
 
 
@@ -55,11 +62,12 @@ class upd{
      * @param modelo $modelo Modelo en ejecucion
      * @param bool $reactiva Si reactiva  valida si un upd es valido en el modelo
      * @param array $registro Registro en proceso
+     * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|stdClass
      * @version 4.2.0
      */
-    public function aplica_ejecucion(
-        stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
+    final public function aplica_ejecucion(
+        stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro, bool $valida_user): array|stdClass
     {
         if($modelo->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
@@ -85,7 +93,7 @@ class upd{
             }
 
             $resultado = $this->ejecuta_upd_modelo(id:$id, modelo: $modelo,reactiva:  $reactiva,
-                registro:  $registro);
+                registro:  $registro, valida_user: $valida_user);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al ejecutar sql',
                     data:  array($resultado, 'sql' => $modelo->consulta));
@@ -123,10 +131,11 @@ class upd{
     /**
      * Obtiene los campos para un upd del modelo
      * @param modelo $modelo Modelo en ejecucion
+     * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|string
      * @version 1.565.51
      */
-    private function campos_sql(modelo $modelo): array|string
+    private function campos_sql(modelo $modelo, bool $valida_user): array|string
     {
         if($modelo->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
@@ -142,7 +151,7 @@ class upd{
         }
 
         $modelo->campos_sql = $campos_sql_model;
-        $campos_sql_user = $this->agrega_usuario_session(modelo: $modelo);
+        $campos_sql_user = $this->agrega_usuario_session(modelo: $modelo, valida_user: $valida_user);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql_user);
         }
@@ -159,10 +168,12 @@ class upd{
      * @param modelo $modelo Modelo en ejecucion
      * @param bool $reactiva Si reactiva el elemento sera validado
      * @param array $registro Registro en ejecucion
+     * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|stdClass
      * @version 1.567.51
      */
-    private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro): array|stdClass
+    private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro,
+                                        bool $valida_user): array|stdClass
     {
 
         $valida = $this->valida_upd(modelo: $modelo,id:  $id);
@@ -170,7 +181,8 @@ class upd{
             return $this->error->error(mensaje: 'Error al validar modelo', data: $valida);
         }
 
-        $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro);
+        $sql = $this->sql_update(id:$id,modelo:  $modelo,reactiva:  $reactiva,registro:  $registro,
+            valida_user: $valida_user);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
@@ -204,7 +216,7 @@ class upd{
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
      */
-    public function ejecuta_upd(int $id, modelo $modelo): array|stdClass
+    final public function ejecuta_upd(int $id, modelo $modelo): array|stdClass
     {
         $resultado = new stdClass();
         $ejecuta_upd = true;
@@ -358,10 +370,11 @@ class upd{
      * @param modelo $modelo Modelo en ejecucion
      * @param bool $reactiva Si reactiva el registro sera previamente validado
      * @param array $registro Registro a actualizar
+     * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|string
      * @version 1.566.51
      */
-    private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro): array|string
+    private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro, bool $valida_user): array|string
     {
 
         if(count($modelo->registro_upd) === 0){
@@ -381,7 +394,7 @@ class upd{
         }
 
 
-        $campos_sql = $this->campos_sql(modelo: $modelo);
+        $campos_sql = $this->campos_sql(modelo: $modelo, valida_user: $valida_user);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al AGREGAR USER', data: $campos_sql);
         }

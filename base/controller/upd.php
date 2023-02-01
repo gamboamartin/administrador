@@ -46,7 +46,7 @@ class upd{
      * @param array $registro_upd Registro con datos a modificar
      * @return array|stdClass
      */
-    public function modifica_bd_base(controler $controler, array $registro_upd): array|stdClass
+    final public function modifica_bd_base(controler $controler, array $registro_upd): array|stdClass
     {
         $init = (new normalizacion())->init_upd_base(controler: $controler, registro: $registro_upd);
         if(errores::$error){

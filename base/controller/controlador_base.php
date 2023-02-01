@@ -766,6 +766,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $ws Si ws retorna un objeto en forma JSON PARA servicios REST
      * @return array|stdClass
      * @throws JsonException
+     * @final rev
      */
     public function modifica_bd(bool $header, bool $ws): array|stdClass{
         $namespace = $this->modelo->NAMESPACE;
@@ -939,9 +940,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         return $r_modifica;
     }
 
-    /**
-     * @throws JsonException
-     */
+
     public function status(bool $header, bool $ws): array|stdClass
     {
         $upd = $this->modelo->status(campo: 'status',registro_id:  $this->registro_id);

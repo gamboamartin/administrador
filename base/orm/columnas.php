@@ -225,7 +225,7 @@ class columnas{
      * @param array $registro Arreglo de tipo registro a modificar
      * @return array Registro ajustado
      */
-    public function campos_no_upd(array $campos_no_upd, array $registro): array
+    final public function campos_no_upd(array $campos_no_upd, array $registro): array
     {
         foreach ($campos_no_upd as $campo_no_upd){
             $campo_no_upd = trim($campo_no_upd);

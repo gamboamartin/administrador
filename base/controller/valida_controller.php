@@ -131,7 +131,7 @@ class valida_controller extends base_modelos{
      * @version 1.56.17
      * @return bool|array
      */
-    public function valida_post_modifica(): bool|array
+    final public function valida_post_modifica(): bool|array
     {
         if(!isset($_POST)){
             return $this->error->error(mensaje: 'POST Debe existir',data: $_GET);

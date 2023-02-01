@@ -22,6 +22,7 @@ class modelo extends modelo_base {
     protected array $campos_encriptados;
     public array $campos_no_upd = array();
     public array $parents = array();
+    public bool $valida_user = true;
 
 
     /**
@@ -1433,6 +1434,7 @@ class modelo extends modelo_base {
      * @internal  $this->agrega_usuario_session();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($this->registro_upd,__FUNCTION__, $consulta);
+     * @final rev
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
@@ -1467,7 +1469,7 @@ class modelo extends modelo_base {
         }
 
         $resultado = (new upd())->aplica_ejecucion(ejecuta_upd: $ejecuta_upd,id:  $id,modelo:  $this,
-            reactiva:  $reactiva,registro:  $registro);
+            reactiva:  $reactiva,registro:  $registro, valida_user: $this->valida_user);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
         }

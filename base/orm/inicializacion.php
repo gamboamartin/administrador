@@ -22,7 +22,7 @@ class inicializacion{
      * @param modelo $modelo Modelo en ejecucion
      * @return array Registro ajustado
      */
-    public function ajusta_campos_upd(int $id, modelo $modelo): array
+    final public function ajusta_campos_upd(int $id, modelo $modelo): array
     {
         if($id <=0){
             return  $this->error->error(mensaje: 'Error al obtener registro $id debe ser mayor a 0',
@@ -580,7 +580,7 @@ class inicializacion{
      * @author mgamboa
      * @fecha 2022-08-08 13:17
      */
-    public function init_upd(int $id, modelo $modelo, array $registro): array|stdClass
+    final public function init_upd(int $id, modelo $modelo, array $registro): array|stdClass
     {
         $registro = (new columnas())->campos_no_upd(campos_no_upd: $modelo->campos_no_upd, registro: $registro);
         if(errores::$error){
@@ -822,7 +822,7 @@ class inicializacion{
      * @param stdClass $resultado Resultado previamente inicializado
      * @return stdClass
      */
-    public function result_warning_upd(int $id, array $registro_upd, stdClass $resultado): stdClass
+    final public function result_warning_upd(int $id, array $registro_upd, stdClass $resultado): stdClass
     {
         $mensaje = 'Info no hay elementos a modificar';
         $resultado->mensaje = $mensaje;

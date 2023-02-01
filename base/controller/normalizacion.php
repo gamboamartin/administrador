@@ -197,7 +197,7 @@ class normalizacion{
      * @fecha 2022-08-04 14:00
      * @author mgamboa
      */
-    public function init_upd_base(controler $controler, array $registro): array
+    final public function init_upd_base(controler $controler, array $registro): array
     {
         $valida = $this->validacion->valida_post_modifica();
         if(errores::$error){

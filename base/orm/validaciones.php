@@ -459,7 +459,7 @@ class validaciones extends validacion{
      * @author mgamboa
      * @fecha 2022-08-08 12:27
      */
-    public function valida_upd_base(int $id, array $registro_upd, $tipo_campos = array()): bool|array
+    final public function valida_upd_base(int $id, array $registro_upd, array $tipo_campos = array()): bool|array
     {
         if($id <=0){
             return $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $id);

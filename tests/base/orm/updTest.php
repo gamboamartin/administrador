@@ -34,7 +34,7 @@ class updTest extends test {
 
 
 
-        $resultado = $upd->agrega_usuario_session($modelo);
+        $resultado = $upd->agrega_usuario_session($modelo, true);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -59,7 +59,7 @@ class updTest extends test {
         $reactiva = false;
         $registro = array();
 
-        $resultado = $upd->aplica_ejecucion($ejecuta_upd, $id, $modelo, $reactiva, $registro);
+        $resultado = $upd->aplica_ejecucion($ejecuta_upd, $id, $modelo, $reactiva, $registro, true);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("UPDATE adm_accion SET status = 'activo',usuario_update_id=2  WHERE id = 1",$resultado->sql);
@@ -92,7 +92,7 @@ class updTest extends test {
         $modelo->registro_upd['a'] = NULL;
         $modelo->registro_upd['bn'] = '';
 
-        $resultado = $upd->campos_sql($modelo);
+        $resultado = $upd->campos_sql($modelo, true);
 
 
         $this->assertIsString( $resultado);
@@ -165,7 +165,7 @@ class updTest extends test {
         $modelo->registro_upd['status'] = 'activo';
 
 
-        $resultado = $upd->ejecuta_upd_modelo($id, $modelo, $reactiva, $registro);
+        $resultado = $upd->ejecuta_upd_modelo($id, $modelo, $reactiva, $registro, true);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("UPDATE adm_accion SET status = 'activo',usuario_update_id=2  WHERE id = 1", $resultado->sql);
@@ -305,7 +305,7 @@ class updTest extends test {
         $registro['a'] = 'zxsss';
         $modelo->registro_upd['a'] = 'zxssss';
 
-        $resultado = $upd->sql_update($id, $modelo, $reactiva, $registro);
+        $resultado = $upd->sql_update($id, $modelo, $reactiva, $registro, true);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("UPDATE adm_accion SET a = 'zxssss',usuario_update_id=2  WHERE id = 1", $resultado);
