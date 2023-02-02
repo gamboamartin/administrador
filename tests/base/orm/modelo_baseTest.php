@@ -837,6 +837,23 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_registro_descripcion_select()
+    {
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $keys_integra_ds = array();
+        $keys_integra_ds['a'] = 'a';
+        $data['a'] = 'x';
+        $resultado = $mb->registro_descripcion_select($data, $keys_integra_ds);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('X', $resultado['descripcion_select']);
+        errores::$error = false;
+    }
+
     public function test_registro_por_id()
     {
 

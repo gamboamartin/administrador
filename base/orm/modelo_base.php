@@ -1234,6 +1234,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Datos enviados desde modelo
      * @param array $keys_integra_ds Keys a integrar
      * @return array
+     * @version 9.57.0
      */
     private function registro_descripcion_select(array $data, array $keys_integra_ds): array
     {
