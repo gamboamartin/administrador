@@ -1229,6 +1229,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return str_replace($buscar,'',$pattern);
     }
 
+    /**
+     * Integra descripcion select in row
+     * @param array $data Datos enviados desde modelo
+     * @param array $keys_integra_ds Keys a integrar
+     * @return array
+     */
     private function registro_descripcion_select(array $data, array $keys_integra_ds): array
     {
         if(!isset($data['descripcion_select'])){
