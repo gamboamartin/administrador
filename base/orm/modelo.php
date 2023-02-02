@@ -1240,7 +1240,8 @@ class modelo extends modelo_base {
      * @return array
      * @version 1.544.51
      */
-    public function get_data_lista(array $filtro = array(),array $filtro_especial = array(), int $n_rows_for_page = 10, int $pagina = 1): array
+    final public function get_data_lista(array $filtro = array(),array $filtro_especial = array(),
+                                         int $n_rows_for_page = 10, int $pagina = 1): array
     {
 
         $limit = $n_rows_for_page;
