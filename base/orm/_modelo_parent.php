@@ -19,6 +19,21 @@ class _modelo_parent extends _base {
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
         }
 
+        /**
+         * REFCATORIZAR
+         */
+        foreach ($this->registro as $campo=>$value){
+            $existe_attr = false;
+            $attrs = (array)$this->atributos;
+            if(array_key_exists($campo, $attrs)){
+                $existe_attr = true;
+            }
+            if(!$existe_attr){
+                unset($this->registro[$campo]);
+            }
+        }
+
+
         $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);

@@ -325,6 +325,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al integrar data base', data: $data);
         }
 
+
+
         return $data;
     }
 
