@@ -1421,6 +1421,17 @@ class modelo extends modelo_base {
         return $this->campos_obligatorios;
     }
 
+    private function limpia_campos_sin_bd(array $registro): array
+    {
+        foreach ($registro as $campo=>$value){
+            $attrs = (array)$this->atributos;
+            if(!array_key_exists($campo, $attrs)){
+                unset($registro[$campo]);
+            }
+        }
+        return $registro;
+    }
+
 
     /**
      *
@@ -1448,16 +1459,12 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
         }
-
-        /**
-         * REFACTORIZA
-         */
-        foreach ($registro as $campo=>$value){
-            $attrs = (array)$this->atributos;
-            if(!array_key_exists($campo, $attrs)){
-                unset($registro[$campo]);
-            }
+        
+        $registro = $this->limpia_campos_sin_bd(registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al limpiar campos',data: $registro);
         }
+
 
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
