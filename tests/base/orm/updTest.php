@@ -299,16 +299,18 @@ class updTest extends test {
         $upd = new liberator($upd);
 
         $modelo = new adm_accion($this->link);
+        $modelo->usuario_id = 2;
 
         $id = 1;
         $reactiva = false;
-        $registro['a'] = 'zxsss';
-        $modelo->registro_upd['a'] = 'zxssss';
+        $registro['descripcion'] = 'zxsss';
+        $modelo->registro_upd['descripcion'] = 'zxssss';
 
         $resultado = $upd->sql_update($id, $modelo, $reactiva, $registro, true);
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("UPDATE adm_accion SET a = 'zxssss',usuario_update_id=2  WHERE id = 1", $resultado);
+        $this->assertEquals("UPDATE adm_accion SET descripcion = 'zxssss',usuario_update_id=2  WHERE id = 1", $resultado);
         errores::$error = false;
     }
 

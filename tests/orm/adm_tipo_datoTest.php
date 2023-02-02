@@ -47,6 +47,38 @@ class adm_tipo_datoTest extends test {
         errores::$error = false;
     }
 
+    public function test_modifica_bd()
+    {
+
+        errores::$error = false;
+        $modelo = new adm_tipo_dato($this->link);
+        //$modelo = new liberator($modelo);
+        $modelo->usuario_id = 2;
+
+        $_SESSION['usuario_id'] = 2;
+
+        $del = (new base_test())->del_adm_tipo_dato(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar',data: $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test())->alta_adm_tipo_dato(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar',data: $alta);
+            print_r($error);
+            exit;
+        }
+
+        $registro = array();
+        $registro['descripcion'] = 'a';
+        $resultado = $modelo->modifica_bd(registro: $registro, id: 1);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
 

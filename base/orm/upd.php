@@ -150,6 +150,7 @@ class upd{
             return $this->error->error(mensaje: 'Error al obtener campos',data:  $campos_sql_model);
         }
 
+
         $modelo->campos_sql = $campos_sql_model;
         $campos_sql_user = $this->agrega_usuario_session(modelo: $modelo, valida_user: $valida_user);
         if (errores::$error) {
@@ -256,13 +257,6 @@ class upd{
                 data: $modelo->registro_upd);
         }
 
-        $elemento_lista = (new adm_elemento_lista($modelo->link));
-
-        $campos = $elemento_lista->obten_campos_el(estructura_bd:array(), modelo:$modelo,vista:'modifica');
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener campos',data: $campos);
-        }
-
         $campos = $this->obten_campos_update(modelo: $modelo);
 
         if(errores::$error){
@@ -327,6 +321,8 @@ class upd{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar campos',data:  $campos);
         }
+
+
 
         return $campos;
     }
@@ -393,6 +389,16 @@ class upd{
             return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $reactiva_row);
         }
 
+        /**
+         * REFACTORIZA
+         */
+        foreach ($modelo->registro_upd as $campo=>$value){
+            $attrs = (array)$modelo->atributos;
+            if(!array_key_exists($campo, $attrs)){
+                unset($modelo->registro_upd[$campo]);
+            }
+
+        }
 
         $campos_sql = $this->campos_sql(modelo: $modelo, valida_user: $valida_user);
         if (errores::$error) {
