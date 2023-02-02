@@ -76,7 +76,7 @@ class filtros{
      *      print_r($filtro);
      *      //filtro[tabla.id] = $_GET['tabla_id']
      */
-    public function asigna_filtro_get(array $keys, string $seccion): array
+    final public function asigna_filtro_get(array $keys, string $seccion): array
     {
 
         $filtro = array();

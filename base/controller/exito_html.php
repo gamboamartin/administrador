@@ -150,7 +150,7 @@ class exito_html extends base_html {
         return $html;
     }
 
-    public function mensajes_full(bool $html = true): array|string
+    final public function mensajes_full(bool $html = true): array|string
     {
         $mensajes_exito = $_SESSION['exito'] ?? array();
 

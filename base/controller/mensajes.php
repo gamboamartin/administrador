@@ -14,7 +14,7 @@ class mensajes{
      * @param bool $con_html
      * @return array|stdClass
      */
-    public function data(bool $con_html = true): array|stdClass
+    final public function data(bool $con_html = true): array|stdClass
     {
         $errores_transaccion = (new errores_html())->errores_transaccion();
         if(errores::$error){

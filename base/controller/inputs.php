@@ -15,7 +15,7 @@ class inputs{
         $this->validacion = new validacion();
     }
 
-    public function inputs_view(controler $controler, array $inputs, string $key, array $value): array|stdClass
+    final public function inputs_view(controler $controler, array $inputs, string $key, array $value): array|stdClass
     {
         $keys = array('type');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $value);

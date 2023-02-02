@@ -154,7 +154,7 @@ class controler{
     }
 
 
-    public function asigna_inputs(array|stdClass $inputs): array|stdClass
+    final public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
         if(!is_object($this->inputs)){
             return $this->errores->error(
@@ -182,7 +182,7 @@ class controler{
      * @return array|stdClass
      * @version 1.504.50
      */
-    protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
+    final protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {
         $filtro = (new filtros())->asigna_filtro_get(keys: $keys, seccion: $this->seccion);
         if(errores::$error){

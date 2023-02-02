@@ -65,7 +65,7 @@ class warning_html extends base_html {
      * @version 1.84.19
      * @return array|string
      */
-    public function mensajes(): array|string
+    final public function mensajes(): array|string
     {
         $mensajes_warning = $_SESSION['warning'] ?? array();
 

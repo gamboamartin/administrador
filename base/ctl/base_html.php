@@ -13,7 +13,7 @@ class base_html{
      * @version 1.71.17
      * @return string
      */
-    protected function close_btn(): string
+    final protected function close_btn(): string
     {
         return '<button type="button" class="close" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
@@ -26,7 +26,7 @@ class base_html{
      * @return string|array
      * @version 1.68.1
      */
-    protected function head(string $titulo): string|array
+    final protected function head(string $titulo): string|array
     {
         $titulo = trim($titulo);
         if($titulo === ''){

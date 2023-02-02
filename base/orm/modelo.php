@@ -1459,7 +1459,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
         }
-        
+
         $registro = $this->limpia_campos_sin_bd(registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al limpiar campos',data: $registro);
@@ -1996,7 +1996,7 @@ class modelo extends modelo_base {
         return $r_modelo;
     }
 
-    public function row_predeterminado(): array|stdClass
+    final public function row_predeterminado(): array|stdClass
     {
 
         $r_modelo = $this->result_ini();
@@ -2142,7 +2142,7 @@ class modelo extends modelo_base {
 
     }
 
-    public function tiene_predeterminado(): bool
+    final public function tiene_predeterminado(): bool
     {
         $tiene_predeterminado = false;
         if(in_array('predeterminado', $this->data_columnas->columnas_parseadas)){

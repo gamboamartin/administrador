@@ -161,7 +161,7 @@ class errores_html extends base_html {
      * @return array|string
      * @version 2.10.2.3
      */
-    public function errores_transaccion(): array|string
+    final public function errores_transaccion(): array|string
     {
         $errores_previos = $_SESSION['error_resultado'] ?? array();
 

@@ -71,7 +71,7 @@ class salida_data{
      * @return array|stdClass
      * @version 1.501.50
      */
-    public function salida_get(controler $controler, array $filtro, bool $header, array $not_in, bool $ws): array|stdClass
+    final public function salida_get(controler $controler, array $filtro, bool $header, array $not_in, bool $ws): array|stdClass
     {
         $r_modelo = $controler->modelo->filtro_and(filtro: $filtro, not_in: $not_in);
         if(errores::$error){

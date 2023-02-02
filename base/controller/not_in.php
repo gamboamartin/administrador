@@ -14,7 +14,7 @@ class not_in{
         $this->validacion = new validacion();
     }
 
-    public function integra_not_in_post(): array
+    final public function integra_not_in_post(): array
     {
         $not_in = array();
         if(isset($_POST['not_in'])){

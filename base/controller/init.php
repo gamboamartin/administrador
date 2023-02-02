@@ -629,7 +629,7 @@ class init{
      * @param controler $controler Controlador en ejecucion
      * @return controler
      */
-    public function init_data_controler(controler $controler): controler
+    final public function init_data_controler(controler $controler): controler
     {
 
         $controler->errores = new errores();
