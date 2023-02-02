@@ -214,7 +214,7 @@ class controler{
      * P ORDER P INT ERROREFV
      * @return string
      */
-    public function get_real_ip():string{
+    final public function get_real_ip():string{
         if (isset($_SERVER["HTTP_CLIENT_IP"])) {
             return $_SERVER["HTTP_CLIENT_IP"];
         }
@@ -240,7 +240,7 @@ class controler{
      * @param string $name
      * @return controlador_base|array
      */
-    public function genera_controlador(string $name):controlador_base|array{
+    final public function genera_controlador(string $name):controlador_base|array{
         $namespace = 'controllers\\';
         $name = str_replace($namespace,'',$name);
         $class = $namespace.$name;
@@ -253,7 +253,7 @@ class controler{
         return new $class($this->link);
     }
 
-    public function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig = ''): void
+    final public function header_out(mixed $result, bool $header, bool $ws, string $retorno_sig = ''): void
     {
         if($header){
             $retorno_sig = trim($retorno_sig);
