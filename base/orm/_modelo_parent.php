@@ -41,6 +41,14 @@ class _modelo_parent extends _base {
         return $r_alta_bd;
     }
 
+    /**
+     * @param array $registro
+     * @param int $id
+     * @param bool $reactiva
+     * @param array $keys_integra_ds
+     * @return array|stdClass
+     * @final rev
+     */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {

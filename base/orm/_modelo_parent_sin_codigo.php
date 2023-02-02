@@ -7,6 +7,11 @@ use stdClass;
 
 class _modelo_parent_sin_codigo extends _modelo_parent {
 
+    /**
+     * @param array $keys_integra_ds
+     * @return array|stdClass
+     * @final rev
+     */
     public function alta_bd(array $keys_integra_ds = array('descripcion')): array|stdClass
     {
 
@@ -17,6 +22,14 @@ class _modelo_parent_sin_codigo extends _modelo_parent {
         return $r_alta_bd;
     }
 
+    /**
+     * @param array $registro
+     * @param int $id
+     * @param bool $reactiva
+     * @param array $keys_integra_ds
+     * @return array|stdClass
+     * @final rev
+     */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('descripcion')): array|stdClass
     {
