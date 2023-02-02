@@ -1449,6 +1449,16 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
         }
 
+        /**
+         * REFACTORIZA
+         */
+        foreach ($registro as $campo=>$value){
+            $attrs = (array)$this->atributos;
+            if(!array_key_exists($campo, $attrs)){
+                unset($registro[$campo]);
+            }
+        }
+
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar',data: $init);
