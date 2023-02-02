@@ -118,7 +118,7 @@ class data_base{
      * @return array
      * @version 2.68.6
      */
-    public function init_data_base(array $data, int $id, modelo $modelo): array
+    final public function init_data_base(array $data, int $id, modelo $modelo): array
     {
 
         if((!isset($data['descripcion']) || !isset($data['codigo'])) && $id > 0){

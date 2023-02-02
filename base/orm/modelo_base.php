@@ -296,7 +296,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
+    final protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
     {
 
         if( !isset($data['codigo'])){
@@ -328,7 +328,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
+    final protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
     {
 
         $valida = $this->validacion->valida_existencia_keys(keys:$keys_integra_ds,registro:  $data);

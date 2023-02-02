@@ -7,6 +7,11 @@ use stdClass;
 
 class _modelo_parent extends _base {
 
+    /**
+     * @param array $keys_integra_ds
+     * @return array|stdClass
+     * @final rev
+     */
     public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {
         $this->registro = $this->campos_base(data:$this->registro,modelo: $this, keys_integra_ds: $keys_integra_ds);
