@@ -68,7 +68,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param bool $temp Si temp, crea cache de sql del modelo en ejecucion
      * @version 2.12.2.1
      */
-    #[Pure] public function __construct(
+    public function __construct(
         PDO $link, array $defaults = array(), array $parents_data = array(), bool $temp = false ){ //PRUEBAS EN PROCESO
         $this->error = new errores();
         $this->link = $link;

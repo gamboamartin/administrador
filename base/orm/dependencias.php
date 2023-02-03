@@ -353,16 +353,22 @@ class dependencias{
         return true;
     }
 
+    /**
+     * Valida el nombre de un modelo
+     * @param string $modelo_dependiente Modelo a validar
+     * @param string $tabla tabla
+     * @return bool|array
+     */
     private function valida_names_model(string $modelo_dependiente, string $tabla): bool|array
     {
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
         if(errores::$error){
-            return  $this->error->error("Error al validar modelo",$valida);
+            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
         }
 
         $valida = $this->validacion->valida_name_clase(tabla: $tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar tabla',$valida);
+            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
         }
 
         return true;
