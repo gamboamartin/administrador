@@ -465,6 +465,26 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_get_codigo_aleatorio(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $resultado = $modelo->get_codigo_aleatorio();
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $resultado = $modelo->get_codigo_aleatorio(-1);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+
+
+        errores::$error = false;
+    }
+
     public function test_get_data_lista(){
         errores::$error = false;
         $modelo = new adm_accion($this->link);
