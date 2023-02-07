@@ -340,8 +340,9 @@ class dependencias{
     }
 
     /**
-     * @param modelo_base $modelo
-     * @param string $modelo_dependiente
+     * Valida los datos de un modelo
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_dependiente Modelo que depende
      * @return bool|array
      */
     private function valida_data_desactiva(modelo_base $modelo, string $modelo_dependiente): bool|array
