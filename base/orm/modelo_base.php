@@ -343,6 +343,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Datos de campos a automatizar
      * @param array $keys_integra_ds Campos de parent a integrar en select
      * @return array
+     * @version 9.65.1
      */
     final protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
     {

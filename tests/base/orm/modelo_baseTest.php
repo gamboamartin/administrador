@@ -15,7 +15,7 @@ use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
+use stdClass;
 
 
 class modelo_baseTest extends test {
@@ -192,6 +192,25 @@ class modelo_baseTest extends test {
         errores::$error = false;
 
 
+    }
+
+    public function test_data_base(){
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $data = array();
+        $data['codigo'] = 'a';
+        $data['descripcion'] = 'b';
+        $resultado = $mb->data_base($data);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado['codigo']);
+        $this->assertEquals('b', $resultado['descripcion']);
+        $this->assertEquals('a B', $resultado['descripcion_select']);
+        $this->assertEquals('a', $resultado['alias']);
+        errores::$error = false;
     }
 
     public function test_ds_init()
