@@ -295,8 +295,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return $row;
     }
-
-    final protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
+    protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
     {
 
         if( !isset($data['codigo'])){
