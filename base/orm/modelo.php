@@ -816,7 +816,7 @@ class modelo extends modelo_base {
      * @return bool|array
      * @version 1.485.49
      */
-    public function existe_predeterminado(): bool|array
+    final public function existe_predeterminado(): bool|array
     {
         $key = $this->tabla.'.predeterminado';
         $filtro[$key] = 'activo';
@@ -1345,7 +1345,7 @@ class modelo extends modelo_base {
      * @return array|stdClass
      * @version 6.30.0
      */
-    public function inserta_predeterminado(
+    final public function inserta_predeterminado(
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
     {
         $r_pred = new stdClass();
