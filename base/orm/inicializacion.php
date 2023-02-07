@@ -2,7 +2,6 @@
 namespace base\orm;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
-use JetBrains\PhpStorm\Pure;
 use stdClass;
 
 class inicializacion{
@@ -10,7 +9,7 @@ class inicializacion{
     private errores $error;
     private validaciones $validacion;
 
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new validaciones();
     }
@@ -61,7 +60,7 @@ class inicializacion{
      * @fecha 2022-08-02 13:07
      * @author mgamboa
      */
-    public function ajusta_params(stdClass $complemento): array|stdClass
+    final public function ajusta_params(stdClass $complemento): array|stdClass
     {
         if(!isset($complemento->params)){
             $complemento = $this->init_params(complemento: $complemento);
@@ -552,6 +551,7 @@ class inicializacion{
      * @param string $key Key a integrar
      * @param array $registro Registro en proceso
      * @return array
+     * 
      *
      */
     private function init_key_status_inactivo(string $key, array $registro): array
