@@ -113,6 +113,21 @@ class dependenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_names_model(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+
+        $modelo_dependiente = 'a';
+        $tabla = 'gamboamartin\administrador\adm_seccion';
+        $resultado = $dep->valida_names_model($modelo_dependiente, $tabla);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        errores::$error = false;
+
+    }
+
 
 
 

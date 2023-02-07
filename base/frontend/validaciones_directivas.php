@@ -141,7 +141,7 @@ class validaciones_directivas extends validacion{
      * @param string $seccion Seccion en ejecucion
      * @return bool|array
      */
-    public function valida_footer_row(array $registro, string $seccion): bool|array
+    final public function valida_footer_row(array $registro, string $seccion): bool|array
     {
         if(count($registro)===0){
             return $this->error->error(mensaje: 'Error registro viene vacio',data: $registro);

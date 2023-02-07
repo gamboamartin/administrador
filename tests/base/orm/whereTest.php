@@ -1410,7 +1410,8 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         $this->isEmpty($resultado);
-        $this->assertObjectHasAttribute("where", $resultado , "No existe la key where");
+        $rs = (array)$resultado;
+        $this->assertArrayHasKey("where", $rs , "No existe la key where");
 
         $complemento = new stdClass();
         $complemento->where = 'a';

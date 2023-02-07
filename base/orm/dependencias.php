@@ -339,6 +339,11 @@ class dependencias{
         return $modelo_dependiente_ajustado;
     }
 
+    /**
+     * @param modelo_base $modelo
+     * @param string $modelo_dependiente
+     * @return bool|array
+     */
     private function valida_data_desactiva(modelo_base $modelo, string $modelo_dependiente): bool|array
     {
         $valida = $this->valida_names_model(modelo_dependiente: $modelo_dependiente,
@@ -358,12 +363,13 @@ class dependencias{
      * @param string $modelo_dependiente Modelo a validar
      * @param string $tabla tabla
      * @return bool|array
+     * @version 9.69.1
      */
     private function valida_names_model(string $modelo_dependiente, string $tabla): bool|array
     {
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo_dependiente);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
+            return  $this->error->error(mensaje: "Error al validar modelo_dependiente",data: $valida);
         }
 
         $valida = $this->validacion->valida_name_clase(tabla: $tabla);

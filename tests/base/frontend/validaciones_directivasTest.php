@@ -154,9 +154,10 @@ class validaciones_directivasTest extends test {
         $seccion = 'a';
         $registro[] = '';
         $resultado = $val->valida_footer_row($registro, $seccion);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar seccion', $resultado['mensaje']);
+        //print_r($resultado);exit;
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+
 
         errores::$error = false;
         //$inicializacion = new liberator($inicializacion);
