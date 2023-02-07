@@ -194,6 +194,25 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_campos_base(){
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+        $modelo = new adm_seccion(link: $this->link);
+        $data = array();
+        $data['descripcion'] = 'z';
+        $resultado = $mb->campos_base($data, $modelo);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z', $resultado['codigo']);
+        $this->assertEquals('z', $resultado['descripcion']);
+        $this->assertEquals('z', $resultado['codigo_bis']);
+        $this->assertEquals('z Z', $resultado['descripcion_select']);
+        $this->assertEquals('z', $resultado['alias']);
+        errores::$error = false;
+    }
+
     public function test_data_base(){
 
         errores::$error = false;

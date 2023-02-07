@@ -297,15 +297,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * INtegra los campos base de una entidad
+     * Integra los campos base de una entidad
      * @param array $data Datos de transaccion
      * @param modelo $modelo Modelo en ejecucion
      * @param int $id Identificador
      * @param array $keys_integra_ds Campos para generar la descripcion select
      * @return array
      * @final rev
+     * @version 9.68.1
      */
-    protected function campos_base(array $data, modelo $modelo, int $id = -1, array $keys_integra_ds = array('codigo','descripcion')): array
+    protected function campos_base(array $data, modelo $modelo, int $id = -1,
+                                   array $keys_integra_ds = array('codigo','descripcion')): array
     {
 
         if( !isset($data['codigo'])){
