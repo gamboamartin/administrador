@@ -297,10 +297,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * @param array $data
-     * @param modelo $modelo
-     * @param int $id
-     * @param array $keys_integra_ds
+     * INtegra los campos base de una entidad
+     * @param array $data Datos de transaccion
+     * @param modelo $modelo Modelo en ejecucion
+     * @param int $id Identificador
+     * @param array $keys_integra_ds Campos para generar la descripcion select
      * @return array
      * @final rev
      */
