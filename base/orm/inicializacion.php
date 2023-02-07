@@ -318,6 +318,11 @@ class inicializacion{
     private function encripta_valor_registro(string $campo, array $campos_encriptados, array $registro,
                                             mixed $valor): array
     {
+
+        if(is_iterable($valor)){
+            return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor);
+        }
+
         $campo = trim($campo);
         if(!is_null($valor)) {
             $valor = trim($valor);
@@ -360,6 +365,11 @@ class inicializacion{
             return $this->error->error(mensaje: 'Error el registro no puede venir vacio', data: $registro);
         }
         foreach($registro as $campo=>$valor){
+
+            if(is_iterable($valor)){
+                return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor);
+            }
+
             $registro = $this->encripta_valor_registro(campo:$campo
                 , campos_encriptados: $campos_encriptados,registro:  $registro,valor:  $valor);
             if(errores::$error){
