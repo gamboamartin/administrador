@@ -338,6 +338,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * Inicializa los elementos para una transaccion
+     * @param array $data Datos de campos a automatizar
+     * @param array $keys_integra_ds Campos de parent a integrar en select
+     * @return array
+     */
     final protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
     {
 
