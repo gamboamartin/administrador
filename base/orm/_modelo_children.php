@@ -6,6 +6,11 @@ use stdClass;
 
 class _modelo_children extends _base {
 
+    /**
+     * Maqueta el alias por default
+     * @param string $descripcion Descripcion del registro en proceso
+     * @return array|string
+     */
     private function alias_alta_default(string $descripcion): array|string
     {
         return strtoupper($descripcion);
