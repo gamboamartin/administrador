@@ -94,25 +94,12 @@ class modelo extends modelo_base {
             die('Error');
         }
 
-        /**
-         * REFACTORIZAR
-         */
-        foreach ($atributos_criticos as $atributo_critico){
-            $existe_atributo_critico = false;
-            foreach ($this->atributos as $key_attr=>$atributo){
 
-                if($key_attr === $atributo_critico){
-                    $existe_atributo_critico = true;
-                    break;
-                }
-            }
-            if(!$existe_atributo_critico){
-                $error = $this->error->error(mensaje: 'Error no existe en db el  atributo '.$atributo_critico.
-                    ' del modelo '.$this->tabla, data: $this->atributos);
-                print_r($error);
-                die('Error');
-            }
-
+        $valida = $this->valida_atributos_criticos(atributos_criticos: $atributos_criticos);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al verificar atributo critico '.$tabla, data: $valida);
+            print_r($error);
+            die('Error');
         }
 
 
@@ -771,6 +758,15 @@ class modelo extends modelo_base {
 
         return $existe;
 
+    }
+
+    private function existe_atributo_critico(string $atributo_critico, string $key_attr): bool
+    {
+        $existe_atributo_critico = false;
+        if($key_attr === $atributo_critico){
+            $existe_atributo_critico = true;
+        }
+        return $existe_atributo_critico;
     }
 
     /**
@@ -2244,6 +2240,23 @@ class modelo extends modelo_base {
         return $limpia;
     }
 
+    private function valida_atributos_criticos(array $atributos_criticos){
+        foreach ($atributos_criticos as $atributo_critico){
+
+            $existe_atributo_critico = $this->verifica_atributo_critico(atributo_critico: $atributo_critico);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al verificar atributo critico ', data: $existe_atributo_critico);
+
+            }
+
+            if(!$existe_atributo_critico){
+                return $this->error->error(mensaje: 'Error no existe en db el  atributo '.$atributo_critico.
+                    ' del modelo '.$this->tabla, data: $this->atributos);
+            }
+        }
+        return true;
+    }
+
     /**
      * Valida si existe un elemento predeterminado previo a su alta
      * @return bool|array
@@ -2273,6 +2286,21 @@ class modelo extends modelo_base {
             }
         }
         return true;
+    }
+
+    private function verifica_atributo_critico(string $atributo_critico){
+        $existe_atributo_critico = false;
+
+        foreach ($this->atributos as $key_attr=>$atributo){
+            $existe_atributo_critico = $this->existe_atributo_critico(atributo_critico: $atributo_critico,key_attr:  $key_attr);
+            if (errores::$error) {
+               return $this->error->error(mensaje: 'Error al obtener atributo critico ', data: $existe_atributo_critico);
+            }
+            if($existe_atributo_critico){
+                break;
+            }
+        }
+        return $existe_atributo_critico;
     }
 
 }
