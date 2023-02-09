@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use config\database;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\administrador\models\adm_seccion;
@@ -87,6 +88,20 @@ class modelo extends modelo_base {
         $this->campos_no_upd = $campos_no_upd;
         $this->childrens = $childrens;
         $this->atributos_criticos = $atributos_criticos;
+
+        $entidades = new estructuras(link: $link);
+        $data = $entidades->entidades((new database())->db_name);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al obtener entidades '.$tabla, data: $data);
+            print_r($error);
+            die('Error');
+        }
+
+        if(!in_array($this->tabla, $data)){
+            $error = $this->error->error(mensaje: 'Error no existe la entidad eb db'.$this->tabla, data: $data);
+            print_r($error);
+            die('Error');
+        }
 
 
         $attrs = (new inicializacion())->integra_attrs(modelo: $this);

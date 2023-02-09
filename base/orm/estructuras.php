@@ -148,55 +148,23 @@ class estructuras{
         return $estructura_bd_r;
     }
 
-    private function genera_foranea(stdClass $data_campos, stdClass $estructura_bd, stdClass $foraneas,
-                                    string $modelo): array|stdClass
-    {
-        foreach ($data_campos as $data){
-            if($data->es_foranea){
-                $estructura_bd = $this->asigna_dato_foranea(data: $data,estructura_bd: $estructura_bd,
-                    foraneas: $foraneas,modelo: $modelo);
-                if(errores::$error){
-                    return $this->error->error(mensaje: 'Error al maquetar foraneas', data: $estructura_bd);
-                }
+    public function entidades(string $name_db){
+
+
+        if(!isset($_SESSION['entidades_bd'])){
+            $data = $this->asigna_datos_estructura(name_db: $name_db);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener estructura', data: $data);
             }
+            $entidades = array();
+            foreach ($data as $entidad=>$data_ent){
+                $entidades[] = $entidad;
+            }
+            $_SESSION['entidades_bd'] = $entidades;
         }
-        return $estructura_bd;
+
+        return $_SESSION['entidades_bd'];
     }
-
-    private function inicializa_campo(array $campo, array $keys_no_foraneas): array|stdClass
-    {
-        $permite_null = $this->permite_null(campo: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar permite null', data: $permite_null);
-        }
-        $es_primaria = $this->es_primaria(campo: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar $es_primaria', data: $es_primaria);
-        }
-        $es_auto_increment = $this->es_auto_increment(campo: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar $es_auto_increment', data: $es_auto_increment);
-        }
-        $es_foranea = $this->es_foranea(campo: $campo, keys_no_foraneas: $keys_no_foraneas);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar $es_foranea', data: $es_foranea);
-        }
-        $tabla_foranea = $this->tabla_foranea(campo: $campo, keys_no_foraneas: $keys_no_foraneas);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar $tabla_foranea', data: $tabla_foranea);
-        }
-
-        $data = new stdClass();
-        $data->permite_null = $permite_null;
-        $data->es_primaria = $es_primaria;
-        $data->es_auto_increment = $es_auto_increment;
-        $data->es_foranea = $es_foranea;
-        $data->tabla_foranea = $tabla_foranea;
-
-        return $data;
-    }
-
-
 
 
     private function es_auto_increment(array $campo): bool
@@ -253,6 +221,21 @@ class estructuras{
         return $estructura_bd;
     }
 
+    private function genera_foranea(stdClass $data_campos, stdClass $estructura_bd, stdClass $foraneas,
+                                    string $modelo): array|stdClass
+    {
+        foreach ($data_campos as $data){
+            if($data->es_foranea){
+                $estructura_bd = $this->asigna_dato_foranea(data: $data,estructura_bd: $estructura_bd,
+                    foraneas: $foraneas,modelo: $modelo);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al maquetar foraneas', data: $estructura_bd);
+                }
+            }
+        }
+        return $estructura_bd;
+    }
+
     /**
      * Obtiene las tablas de una base de datos completa
      * @version 1.162.31
@@ -271,6 +254,39 @@ class estructuras{
         }
 
         return $result->registros;
+    }
+
+    private function inicializa_campo(array $campo, array $keys_no_foraneas): array|stdClass
+    {
+        $permite_null = $this->permite_null(campo: $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar permite null', data: $permite_null);
+        }
+        $es_primaria = $this->es_primaria(campo: $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar $es_primaria', data: $es_primaria);
+        }
+        $es_auto_increment = $this->es_auto_increment(campo: $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar $es_auto_increment', data: $es_auto_increment);
+        }
+        $es_foranea = $this->es_foranea(campo: $campo, keys_no_foraneas: $keys_no_foraneas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar $es_foranea', data: $es_foranea);
+        }
+        $tabla_foranea = $this->tabla_foranea(campo: $campo, keys_no_foraneas: $keys_no_foraneas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar $tabla_foranea', data: $tabla_foranea);
+        }
+
+        $data = new stdClass();
+        $data->permite_null = $permite_null;
+        $data->es_primaria = $es_primaria;
+        $data->es_auto_increment = $es_auto_increment;
+        $data->es_foranea = $es_foranea;
+        $data->tabla_foranea = $tabla_foranea;
+
+        return $data;
     }
 
     private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo, bool $valida_tabla = true): array
