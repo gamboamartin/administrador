@@ -307,6 +307,7 @@ class columnas{
      * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
+     * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
@@ -318,8 +319,8 @@ class columnas{
      * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
      */
     private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
-                              array $columnas_sql, bool $con_sq, array $extension_estructura, modelo_base $modelo, array $renombres,
-                              array $tablas_select): array|string
+                              array $columnas_sql, bool $con_sq, array $extension_estructura, array $extra_join,
+                              modelo_base $modelo, array $renombres, array $tablas_select): array|string
     {
         if(!$aplica_columnas_by_table) {
 
@@ -330,8 +331,8 @@ class columnas{
             }
 
             $columnas = $this->columnas_base(columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql,
-                con_sq: $con_sq, extension_estructura: $extension_estructura, modelo: $modelo,
-                renombres: $renombres, tablas_select: $tablas_select);
+                con_sq: $con_sq, extension_estructura: $extension_estructura, extra_join: $extra_join,
+                modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar columnas base en '.$modelo->tabla,
                     data: $columnas);
@@ -396,14 +397,16 @@ class columnas{
      * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
+     * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      * @version 1.56.16
      */
-    private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, bool $con_sq, array $extension_estructura,
-                                   modelo_base $modelo, array $renombres, array $tablas_select): array|string
+    private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
+                                   array $extension_estructura, array $extra_join, modelo_base $modelo,
+                                   array $renombres, array $tablas_select): array|string
     {
         $columnas = $this->columnas_tablas_select(columnas_en_bruto: $columnas_en_bruto,
             columnas_sql: $columnas_sql, con_sq: $con_sq, modelo: $modelo, tablas_select: $tablas_select);
@@ -413,6 +416,12 @@ class columnas{
 
         $columnas = $this->columnas_extension(columnas: $columnas, columnas_sql: $columnas_sql,
             con_sq: $con_sq, extension_estructura: $extension_estructura, modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+        }
+
+        $columnas = $this->columnas_extra(columnas: $columnas, columnas_sql: $columnas_sql,
+            con_sq: $con_sq, extra_join: $extra_join, modelo: $modelo);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
@@ -545,6 +554,40 @@ class columnas{
         return $columnas_env;
     }
 
+    private function columnas_extra(string $columnas, array $columnas_sql, bool $con_sq, array $extra_join,
+                                        modelo_base $modelo): array|string
+    {
+        $columnas_env = $columnas;
+        foreach($extra_join as $tabla=>$data){
+            $tabla = str_replace('models\\','',$tabla);
+            if(is_numeric($tabla)){
+                return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
+                    data: $extra_join);
+            }
+            if(!is_array($data)){
+                return $this->error->error(mensaje: 'Error data debe ser un array ',
+                    data: $data);
+            }
+            $tabla_renombrada = $tabla;
+            if(isset($data['renombre'])){
+                $data['renombre'] = trim($data['renombre']);
+                if($data['renombre'] !== ''){
+                    $tabla_renombrada = $data['renombre'];
+                }
+
+            }
+            $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: false,
+                columnas_sql: $columnas_sql, con_sq: $con_sq, modelo: $modelo, tabla: $tabla,
+                tabla_renombrada: $tabla_renombrada);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al integrar columnas', data:$columnas_env);
+            }
+
+        }
+        return $columnas_env;
+    }
+
+
     /**
      * Asigna las columnas para ser utilizadas en la transacciones de SELECT
      * @version 1.27.14
@@ -588,6 +631,7 @@ class columnas{
      * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
+     * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
@@ -595,8 +639,8 @@ class columnas{
      * @version 1.55.16
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
-                                   array $extension_estructura, modelo_base $modelo, array $renombres,
-                                   array $tablas_select): array|string
+                                   array $extension_estructura, array $extra_join, modelo_base $modelo,
+                                   array $renombres, array $tablas_select): array|string
     {
 
         $aplica_columnas_by_table = $this->aplica_columnas_by_table(columnas_by_table: $columnas_by_table);
@@ -608,7 +652,7 @@ class columnas{
         $columnas = $this->columnas(aplica_columnas_by_table: $aplica_columnas_by_table,
             columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
             columnas_sql: $columnas_sql, con_sq: $con_sq, extension_estructura: $extension_estructura,
-            modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
+            extra_join: $extra_join, modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas en modelo '.$modelo->tabla,
                 data: $columnas);
@@ -1190,6 +1234,7 @@ class columnas{
     final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                                    bool $columnas_en_bruto = false, array $columnas_sql = array(),
                                                    bool $con_sq = true, array $extension_estructura = array(),
+                                                   array $extra_join = array(),
                                                    array $renombres = array()):array|string{
 
 
@@ -1201,7 +1246,7 @@ class columnas{
 
         $columnas = $this->columnas_full(columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
             columnas_sql: $columnas_sql, con_sq: $con_sq, extension_estructura: $extension_estructura,
-            modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
+            extra_join: $extra_join, modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar columnas en '.$modelo->tabla, data: $columnas);
         }

@@ -488,17 +488,19 @@ class modeloTest extends test {
         $diferente_de['a']= 'p';
         $diferente_de['g']= 'p';
         $extra_join = array();
-        $extra_join['tabla_integrar']['key'] = 'tabla_integrar_id';
-        $extra_join['tabla_integrar']['enlace'] = 'tabla_enlace';
-        $extra_join['tabla_integrar']['key_enlace'] = 'tabla_enlace_id';
-        $extra_join['tabla_integrar']['renombre'] = 'tabla_renombre';
+        $extra_join['adm_seccion']['key'] = 'id';
+        $extra_join['adm_seccion']['enlace'] = 'adm_seccion';
+        $extra_join['adm_seccion']['key_enlace'] = 'id';
+        $extra_join['adm_seccion']['renombre'] = 'adm_seccion_bis';
         $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, $diferente_de, $extra_join, $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
+
+
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("SELECT adm_seccion.id AS adm_seccion_id FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN tabla_integrar AS tabla_renombre ON tabla_renombre.tabla_integrar_id = tabla_enlace.tabla_enlace_id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
+        $this->assertEquals("SELECT adm_seccion.id AS adm_seccion_id FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN adm_seccion AS adm_seccion_bis ON adm_seccion_bis.id = adm_seccion.id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
         errores::$error = false;
 
 
