@@ -1,7 +1,7 @@
 <?php
-namespace tests\base\orm;
+namespace tests\modelado;
 
-use base\orm\joins;
+use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
@@ -292,38 +292,13 @@ class joinsTest extends test {
         $modelo = new adm_accion($this->link);
         $extension_estructura = array();
         $tablas = '';
-        $resultado = $joins->extensiones_join($extension_estructura, $modelo, $tablas);
+        $resultado = $joins->extensiones_join($extension_estructura, $modelo->tabla, $tablas);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals('',$resultado);
         errores::$error = false;
     }
 
-    public function test_extra_join(){
-        errores::$error = false;
-        $joins = new joins();
-        $joins = new liberator($joins);
-
-
-        $modelo = new adm_accion($this->link);
-        $extra_join = array();
-        $tablas = '';
-
-        $extra_join['adm_seccion'] = array();
-        $extra_join['adm_seccion']['key'] = 'adm_menu_id';
-        $extra_join['adm_seccion']['enlace'] = 'adm_menu';
-        $extra_join['adm_seccion']['key_enlace'] = 'id';
-        $extra_join['adm_seccion']['renombre'] = 'adm_seccion_bis';
-
-        $tablas = 'acb';
-
-        $resultado = $joins->extra_join($extra_join, $modelo, $tablas);
-
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsString($resultado);
-        $this->assertEquals('acb LEFT JOIN  adm_seccion AS adm_seccion_bis  ON adm_seccion_bis.adm_menu_id = adm_menu.id',$resultado);
-        errores::$error = false;
-    }
 
     public function test_genera_join(){
         errores::$error = false;
@@ -442,68 +417,7 @@ class joinsTest extends test {
         errores::$error = false;
     }
 
-    public function test_join_extension(){
-        errores::$error = false;
-        $joins = new joins();
-        $joins = new liberator($joins);
 
-
-        $data = array();
-        $modelo = new adm_accion($this->link);
-        $tabla = '';
-        $tablas = '';
-        $resultado = $joins->join_extension($data, $modelo, $tabla, $tablas);
-        $this->assertTrue(errores::$error);
-        $this->assertIsArray($resultado);
-        $this->assertStringContainsStringIgnoringCase('Error al validar data',$resultado['mensaje']);
-
-        errores::$error = false;
-
-        $data = array();
-        $modelo = new adm_accion($this->link);
-        $tabla = '';
-        $tablas = '';
-        $data['key'] = 'a';
-        $data['enlace'] = 'b';
-        $data['key_enlace'] = 'c';
-        $resultado = $joins->join_extension($data, $modelo, $tabla, $tablas);
-
-        $this->assertTrue(errores::$error);
-        $this->assertIsArray($resultado);
-        $this->assertStringContainsStringIgnoringCase('Error $tabla no puede venir vacia',$resultado['mensaje']);
-
-        errores::$error = false;
-
-        $data = array();
-        $modelo = new adm_accion($this->link);
-        $tabla = 'd';
-        $tablas = '';
-        $data['key'] = 'a';
-        $data['enlace'] = 'b';
-        $data['key_enlace'] = 'c';
-        $resultado = $joins->join_extension($data, $modelo, $tabla, $tablas);
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsString($resultado);
-        $this->assertEquals(' d AS d  ON d.a = b.c',$resultado);
-        errores::$error = false;
-    }
-
-    public function test_join_extra(){
-        errores::$error = false;
-        $joins = new joins();
-        $joins = new liberator($joins);
-        $data['key'] = 'key';
-        $data['enlace'] = 'enlace';
-        $data['key_enlace'] = 'key_enlace';
-        $modelo = new adm_accion($this->link);
-        $tabla = 'tabla';
-        $tablas = '';
-        $resultado = $joins->join_extra($data, $modelo, $tabla, $tablas);
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsString($resultado);
-        $this->assertEquals(' tabla AS tabla  ON tabla.key = enlace.key_enlace',$resultado);
-        errores::$error = false;
-    }
 
     public function test_join_renombres(){
         errores::$error = false;
@@ -515,7 +429,7 @@ class joinsTest extends test {
         $data = array();
         $tabla_renombrada = '';
         $tablas = '';
-        $resultado = $joins->join_renombres($data, $modelo, $tabla_renombrada, $tablas);
+        $resultado = $joins->join_renombres($data, $modelo->tabla, $tabla_renombrada, $tablas);
         $this->assertTrue(errores::$error);
         $this->assertIsArray($resultado);
         $this->assertStringContainsStringIgnoringCase('Error al validar datos',$resultado['mensaje']);
@@ -529,7 +443,7 @@ class joinsTest extends test {
         $data['nombre_original'] = 'a';
         $data['key'] = 'a';
         $data['key_enlace'] = 'a';
-        $resultado = $joins->join_renombres($data, $modelo, $tabla_renombrada, $tablas);
+        $resultado = $joins->join_renombres($data, $modelo->tabla, $tabla_renombrada, $tablas);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals(' a AS a  ON a.a = a.a',$resultado);
@@ -591,7 +505,7 @@ class joinsTest extends test {
         $modelo = new adm_accion($this->link);
         $renombradas = array();
         $tablas = '';
-        $resultado = $joins->renombres_join($modelo, $renombradas, $tablas);
+        $resultado = $joins->renombres_join($modelo->tabla, $renombradas, $tablas);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals('',$resultado);
@@ -690,7 +604,7 @@ class joinsTest extends test {
         $data['key'] = 'a';
         $data['enlace'] = 'b';
         $data['key_enlace'] = 'c';
-        $resultado = $joins->string_sql_join($data, $modelo, $tabla, $tabla_renombrada);
+        $resultado = $joins->string_sql_join($data, $modelo->tabla, $tabla, $tabla_renombrada);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals('d AS d  ON d.a = b.c',$resultado);
@@ -709,7 +623,7 @@ class joinsTest extends test {
         $columnas = array();
         $extension_estructura = array();
         $tabla = '';
-        $resultado = $joins->tablas($columnas, $extension_estructura, array(), $modelo, $renombradas, $tabla);
+        $resultado = $joins->tablas($columnas, $extension_estructura, array(), $modelo->tabla, $renombradas, $tabla);
         $this->assertTrue(errores::$error);
         $this->assertIsArray($resultado);
         $this->assertStringContainsStringIgnoringCase('La tabla no puede ir vacia',$resultado['mensaje']);
@@ -721,7 +635,7 @@ class joinsTest extends test {
         $columnas = array();
         $extension_estructura = array();
         $tabla = 'adm_seccion';
-        $resultado = $joins->tablas($columnas, $extension_estructura, array(), $modelo, $renombradas, $tabla);
+        $resultado = $joins->tablas($columnas, $extension_estructura, array(), $modelo->tabla, $renombradas, $tabla);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals('adm_seccion AS adm_seccion',$resultado);
@@ -738,7 +652,7 @@ class joinsTest extends test {
         $extra_join['tabla']['key'] = 'id_tabla';
         $extra_join['tabla']['enlace'] = 'tabla_de_enlace';
         $extra_join['tabla']['key_enlace'] = 'id_tabla_de_enlace';
-        $resultado = $joins->tablas($columnas, $extension_estructura, $extra_join, $modelo, $renombradas, $tabla);
+        $resultado = $joins->tablas($columnas, $extension_estructura, $extra_join, $modelo->tabla, $renombradas, $tabla);
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals('adm_seccion AS adm_seccion LEFT JOIN  tabla AS tabla  ON tabla.id_tabla = tabla_de_enlace.id_tabla_de_enlace',$resultado);

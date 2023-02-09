@@ -2,6 +2,7 @@
 namespace base\orm;
 
 use config\generales;
+use gamboamartin\administrador\modelado\joins;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
@@ -775,7 +776,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
         $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
-            extra_join: $extra_join, modelo: $this, renombradas: $renombradas, tabla: $this->tabla);
+            extra_join: $extra_join, modelo_tabla: $this->tabla, renombradas: $renombradas, tabla: $this->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }

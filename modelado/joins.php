@@ -1,9 +1,9 @@
 <?php
-namespace base\orm;
+namespace gamboamartin\administrador\modelado;
 
+use base\orm\validaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use JetBrains\PhpStorm\Pure;
 use stdClass;
 
 
@@ -12,7 +12,7 @@ class joins{
     public errores $error;
     public validacion $validacion;
 
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new validacion();
     }
@@ -132,7 +132,7 @@ class joins{
      *
      * @param string $id_renombrada LLave de tabla a nivel sql
      * @param stdClass $init obj->tabla obj->class obj->tabla_enlace obj->class_enlace
-     * @param string $join Elemento de union SQL LEFT RIGTH O INNER
+     * @param string $join Elemento de union SQL LEFT RIGHT O INNER
      * @param string $renombrada Nombre a asignar en AS
      * @version 1.58.17
      * @return stdClass|array obj->join_tabla obj->on_join obj->asignacion_tabla
@@ -237,20 +237,20 @@ class joins{
 
     /**
      * Genera los JOINS de extensiones de tablas 1 a 1
-     * @version 1.63.17
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
-     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_tabla
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
+     * @version 1.63.17
      */
-    private function extensiones_join(array $extension_estructura, modelo_base $modelo, string $tablas): array|string
+    private function extensiones_join(array $extension_estructura, string $modelo_tabla, string $tablas): array|string
     {
         $tablas_env = $tablas;
         foreach($extension_estructura as $tabla=>$data){
             if(!is_array($data)){
                 return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
             }
-            $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
+            $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo_tabla);
             if(errores::$error){
                 return $this->error->error(mensaje:'Error al validar data', data:$valida);
             }
@@ -258,7 +258,7 @@ class joins{
                 return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
             }
 
-            $tablas_env = $this->join_base(data: $data, modelo: $modelo,tabla:  $tabla, tablas: $tablas);
+            $tablas_env = $this->join_base(data: $data, modelo_tabla: $modelo_tabla,tabla:  $tabla, tablas: $tablas);
             if(errores::$error){
                 return $this->error->error(mensaje:'Error al generar join',data: $tablas);
             }
@@ -295,7 +295,8 @@ class joins{
      * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
      * @example
-     *      $tablas = $tablas . $this->genera_join($tabla_base, $tabla_enlace,$tabla_renombre,$campo_renombrado, $campo_tabla_base_id);
+     *      $tablas = $tablas . $this->genera_join($tabla_base, $tabla_enlace,$tabla_renombre,$campo_renombrado,
+     *          $campo_tabla_base_id);
      *
      * @return array|string conjunto de joins en forma de SQL
      * @throws errores $tabla vacia
@@ -335,9 +336,11 @@ class joins{
      * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
      * @example
-     *      $sql = $this->genera_join_renombrado($campo_tabla_base_id,$join,$tabla,$renombrada,$tabla_enlace,$campo_renombrado)
+     *      $sql = $this->genera_join_renombrado($campo_tabla_base_id,$join,$tabla,$renombrada,$tabla_enlace,
+     *      $campo_renombrado)
      *
-     * @return array|string ' '.$join.' JOIN '.$tabla.' AS '.$renombrada.' ON '.$renombrada.$id_renombrada.' = '.$tabla_enlace.'.'.$campo_renombrado
+     * @return array|string ' '.$join.' JOIN '.$tabla.' AS '.$renombrada.' ON '.$renombrada.$id_renombrada.' = '.
+     *      $tabla_enlace.'.'.$campo_renombrado
      * @throws errores $tabla vacia
      * @throws errores $join vacio
      * @throws errores $renombrada vacio
@@ -380,14 +383,14 @@ class joins{
     /**
      * Genera los JOINS de una extension 1 a 1
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
-     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_tabla
      * @param string $tabla Tabla en LEFT
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string tabla as tabla ON tabla.data[key] = data[enlace].data[key_enlace]
      */
-    private function join_base(array $data, modelo_base $modelo, string $tabla, string $tablas): array|string
+    private function join_base(array $data, string $modelo_tabla, string $tabla, string $tablas): array|string
     {
-        $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
+        $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo_tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
         }
@@ -412,7 +415,7 @@ class joins{
 
         }
 
-        $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $tabla,
+        $str_join = $this->string_sql_join(data:  $data, modelo_tabla: $modelo_tabla, tabla: $tabla,
             tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data:$str_join);
@@ -425,14 +428,14 @@ class joins{
 
     /**
      * Genera joins renombrados
-     * @version 1.66.17
      * @param array $data $data[enlace,nombre_original,key_enlace] Datos para JOIN
-     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_tabla
      * @param string $tabla_renombrada nombre nuevo de la tabla
      * @param string $tablas Conjunto de tablas cargadas en SQL
      * @return array|string
+     * @version 1.66.17
      */
-    private function join_renombres(array $data, modelo_base $modelo, string $tabla_renombrada,
+    private function join_renombres(array $data, string $modelo_tabla, string $tabla_renombrada,
                                     string $tablas): array|string
     {
         $namespace = 'models\\';
@@ -449,7 +452,7 @@ class joins{
         $data['enlace'] = str_replace($namespace,'',$data['enlace'] );
 
 
-        $valida = (new validaciones())->valida_keys_sql(data: $data,tabla:  $modelo->tabla);
+        $valida = (new validaciones())->valida_keys_sql(data: $data,tabla:  $modelo_tabla);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al validar data',data: $valida);
         }
@@ -462,7 +465,7 @@ class joins{
 
         $tablas.=$left_join;
 
-        $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $data['nombre_original'],
+        $str_join = $this->string_sql_join(data:  $data, modelo_tabla: $modelo_tabla, tabla: $data['nombre_original'],
             tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sql',data: $str_join);
@@ -548,21 +551,21 @@ class joins{
 
     /**
      * Genera renombres de tablas en sql
-     * @version 1.66.17
-     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_tabla
      * @param array $renombradas conjunto de tablas renombradas
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
+     * @version 1.66.17
      */
-    private function renombres_join(modelo_base $modelo, array $renombradas, string $tablas): array|string
+    private function renombres_join(string $modelo_tabla, array $renombradas, string $tablas): array|string
     {
         $tablas_env = $tablas;
         foreach($renombradas as $tabla_renombrada=>$data){
             if(!is_array($data)){
                 return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
             }
-            $tablas_env = $this->join_renombres(data: $data,modelo: $modelo, tabla_renombrada: $tabla_renombrada,
-                tablas:  $tablas);
+            $tablas_env = $this->join_renombres(data: $data,modelo_tabla: $modelo_tabla,
+                tabla_renombrada: $tabla_renombrada, tablas:  $tablas);
             if(errores::$error){
                 return $this->error->error(mensaje:'Error al generar join', data:$tablas_env);
             }
@@ -614,16 +617,17 @@ class joins{
 
     /**
      * Genera el SQL PARA joins
-     * @version 1.63.17
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
-     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_tabla
      * @param string $tabla Tabla en LEFT
-     * @param string $tabla_renombrada  Tabla con nuevo nombre se aplica en AS
+     * @param string $tabla_renombrada Tabla con nuevo nombre se aplica en AS
      * @return string|array
+     * @version 1.63.17
      */
-    private function string_sql_join( array $data, modelo_base $modelo, string $tabla, string $tabla_renombrada): string|array
+    private function string_sql_join( array $data, string $modelo_tabla, string $tabla,
+                                      string $tabla_renombrada): string|array
     {
-        $valida = (new validaciones())->valida_keys_sql(data:$data, tabla: $modelo->tabla);
+        $valida = (new validaciones())->valida_keys_sql(data:$data, tabla: $modelo_tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
@@ -652,13 +656,13 @@ class joins{
      * @param array $columnas conjunto de tablas para realizar los joins
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
      * @param array $extra_join Join extra a peticion en funciones
-     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_tabla
      * @param array $renombradas conjunto de tablas renombradas
      * @param string $tabla Tabla con el nombre original
      * @return array|string
      * @version 1.66.17
      */
-    final public function tablas(array $columnas, array $extension_estructura, array $extra_join, modelo_base $modelo,
+    final public function tablas(array $columnas, array $extension_estructura, array $extra_join, string $modelo_tabla,
                                  array $renombradas, string $tabla): array|string
     {
         $tabla = trim($tabla);
@@ -670,18 +674,18 @@ class joins{
             return $this->error->error(mensaje: 'Error al obtener tablas',data:  $tablas);
         }
 
-        $tablas = $this->extensiones_join(extension_estructura: $extension_estructura, modelo: $modelo,
+        $tablas = $this->extensiones_join(extension_estructura: $extension_estructura, modelo_tabla: $modelo_tabla,
             tablas:  $tablas);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
         }
 
-        $tablas = $this->extensiones_join(extension_estructura: $extra_join, modelo: $modelo, tablas:  $tablas);
+        $tablas = $this->extensiones_join(extension_estructura: $extra_join, modelo_tabla: $modelo_tabla, tablas:  $tablas);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
         }
 
-        $tablas = $this->renombres_join(modelo:$modelo,renombradas: $renombradas, tablas: $tablas);
+        $tablas = $this->renombres_join(modelo_tabla:$modelo_tabla,renombradas: $renombradas, tablas: $tablas);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar join', data: $tablas);
         }

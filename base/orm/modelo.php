@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;

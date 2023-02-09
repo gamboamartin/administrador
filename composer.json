@@ -17,6 +17,7 @@
             "base\\": "base/",
             "orm\\": "orm/base",
             "gamboamartin\\administrador\\models\\": "orm",
+            "gamboamartin\\administrador\\modelado\\": "modelado",
             "validacion\\": "validacion/",
             "tests\\": "tests/"
 
