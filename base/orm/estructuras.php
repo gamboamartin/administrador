@@ -38,7 +38,7 @@ class estructuras{
      * @param string $name_db Nombre de la base de datos
      * @return array|stdClass
      */
-    public function asigna_datos_estructura(string $name_db): array|stdClass
+    final public function asigna_datos_estructura(string $name_db): array|stdClass
     {
         $modelos = $this->modelos(name_db: $name_db);
         if(errores::$error){
@@ -148,7 +148,7 @@ class estructuras{
         return $estructura_bd_r;
     }
 
-    public function entidades(string $name_db){
+    final public function entidades(string $name_db){
 
 
         if(!isset($_SESSION['entidades_bd'])){
@@ -306,6 +306,12 @@ class estructuras{
     }
 
 
+    /**
+     * Inicializa una estructura
+     * @param array $campo Campo a inicializar
+     * @param string $name_modelo Nombre del modelo entidad
+     * @return stdClass
+     */
     private function init_estructura_campo(array $campo, string $name_modelo): stdClass
     {
         $campo_name = $campo['Field'];
@@ -348,7 +354,7 @@ class estructuras{
      * @param string $name_db Nombre de la base de datos
      * @return array|stdClass
      */
-    public function modelos(string $name_db): array|stdClass
+    final public function modelos(string $name_db): array|stdClass
     {
         $name_db = trim($name_db);
         if($name_db === ''){
