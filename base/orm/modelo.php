@@ -862,6 +862,7 @@ class modelo extends modelo_base {
      * @param bool $columnas_en_bruto si true se trae las columnas sion renombrar y solo de la tabla seleccionada
      * @param bool $con_sq
      * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
+     * @param array $extra_join
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
@@ -991,34 +992,16 @@ class modelo extends modelo_base {
      * @version 1.575.51
      */
     final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
-                               array $columnas_by_table = array(), bool $columnas_en_bruto = false, bool $con_sq = true,
-                               array $diferente_de = array(), array $filtro=array(), array $filtro_especial= array(),
-                               array $filtro_extra = array(), array $filtro_fecha = array(),
-                               array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
-                               array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
-                               array $order = array(), string $sql_extra = '',
-                               string $tipo_filtro='numeros'): array|stdClass{
+                                     array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                                     bool $con_sq = true, array $diferente_de = array(), array $extra_join = array(),
+                                     array $filtro=array(), array $filtro_especial= array(),
+                                     array $filtro_extra = array(), array $filtro_fecha = array(),
+                                     array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
+                                     array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
+                                     array $order = array(), string $sql_extra = '',
+                                     string $tipo_filtro='numeros'): array|stdClass{
 
-        $params_fn = new stdClass();
-        $params_fn->aplica_seguridad = $aplica_seguridad;
-        $params_fn->columnas = $columnas;
-        $params_fn->columnas_by_table = $columnas_by_table;
-        $params_fn->columnas_en_bruto = $columnas_en_bruto;
-        $params_fn->diferente_de = $diferente_de;
-        $params_fn->filtro = $filtro;
-        $params_fn->filtro_especial = $filtro_especial;
-        $params_fn->filtro_extra = $filtro_extra;
-        $params_fn->filtro_rango = $filtro_rango;
-        $params_fn->group_by = $group_by;
-        $params_fn->hijo = $hijo;
-        $params_fn->in = $in;
-        $params_fn->limit = $limit;
-        $params_fn->not_in = $not_in;
-        $params_fn->offset = $offset;
-        $params_fn->order = $order;
-        $params_fn->sql_extra = $sql_extra;
-        $params_fn->tipo_filtro = $tipo_filtro;
-        $params_fn->filtro_fecha = $filtro_fecha;
+
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
@@ -1031,14 +1014,14 @@ class modelo extends modelo_base {
 
         if($limit < 0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $params_fn);
+                data: $limit);
         }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de, filtro: $filtro,
-            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango,
-            group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset, order: $order,
-            sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha: $filtro_fecha);
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de,
+            extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset,
+            order: $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha: $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
@@ -1059,6 +1042,7 @@ class modelo extends modelo_base {
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Genera las columnas tal y como vienen en la base de datos
+     * @param array $extra_join Genera un extra join a peticion
      * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
      * @param array $group_by
      * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
@@ -1068,13 +1052,13 @@ class modelo extends modelo_base {
      * @return array|stdClass
      */
     final public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
-                              array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                              array $columnas_by_table = array(), bool $columnas_en_bruto = false, array $extra_join = array(),
                               array $filtro = array(), array $group_by = array(), array $hijo = array(),
                               int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas,
-            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $this->extension_estructura, renombradas: $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto, extension_estructura: $this->extension_estructura,
+            extra_join: $extra_join, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
@@ -1109,6 +1093,7 @@ class modelo extends modelo_base {
      * @param bool $columnas_en_bruto if true obtiene solo los elementos nativos de la tabla o modelo
      * @param bool $con_sq
      * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
+     * @param array $extra_join
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      * @param array $filtro_extra arreglo que contiene las condiciones
@@ -1144,37 +1129,18 @@ class modelo extends modelo_base {
      * @version 1.575.51
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
-                                       array $diferente_de, array $filtro, array $filtro_especial, array $filtro_extra,
-                                       array $filtro_rango, array $group_by, array $in, int $limit, array $not_in,
-                                       int $offset, array $order, string $sql_extra, string $tipo_filtro,
+                                       array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
+                                       array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
+                                       array $not_in, int $offset, array $order, string $sql_extra, string $tipo_filtro,
                                        array $filtro_fecha = array()): array|string
     {
 
-        $params_fn = new stdClass();
-        $params_fn->columnas = $columnas;
-        $params_fn->columnas_by_table = $columnas_by_table;
-        $params_fn->columnas_en_bruto = $columnas_en_bruto;
-        $params_fn->diferente_de = $diferente_de;
-        $params_fn->filtro = $filtro;
-        $params_fn->filtro_especial = $filtro_especial;
-        $params_fn->filtro_extra = $filtro_extra;
-        $params_fn->filtro_fecha = $filtro_fecha;
-        $params_fn->filtro_rango = $filtro_rango;
-        $params_fn->group_by = $group_by;
-        $params_fn->in = $in;
-        $params_fn->limit = $limit;
-        $params_fn->not_in = $not_in;
-        $params_fn->offset = $offset;
-        $params_fn->order = $order;
-        $params_fn->sql_extra = $sql_extra;
-        $params_fn->tipo_filtro = $tipo_filtro;
-
 
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $params_fn);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
         }
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $params_fn);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
 
         }
 
@@ -1184,7 +1150,7 @@ class modelo extends modelo_base {
         }
         $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
             columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, extension_estructura: $this->extension_estructura,
-            renombradas: $this->renombres);
+            extra_join: $extra_join, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
@@ -1666,8 +1632,8 @@ class modelo extends modelo_base {
      * @uses  modelo
      */
     private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(),
-                                  bool $columnas_en_bruto = false,
-                                  array $extension_estructura= array(), array $hijo = array()):array|stdClass{
+                                  bool $columnas_en_bruto = false, array $extension_estructura= array(),
+                                  array $extra_join = array (), array $hijo = array()):array|stdClass{
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id);
         }
@@ -1676,9 +1642,9 @@ class modelo extends modelo_base {
         }
         $tabla = $this->tabla;
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas,
-            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $extension_estructura, renombradas: $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto, extension_estructura: $extension_estructura,
+            extra_join: $extra_join, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
         }
@@ -1798,6 +1764,7 @@ class modelo extends modelo_base {
      * Devuelve un conjunto de registros ordenados con filtro
      * @param string $campo campo de orden
      * @param bool $columnas_en_bruto
+     * @param array $extra_join
      * @param array $filtros filtros para generar AND en el resultado
      * @param string $orden metodo ordenamiento ASC DESC
      * @return array|stdClass conjunto de registros
@@ -1805,15 +1772,13 @@ class modelo extends modelo_base {
      *  $filtro = array('elemento_lista.status'=>'activo','seccion_menu.descripcion'=>$seccion,'elemento_lista.encabezado'=>'activo');
      * $resultado = $elemento_lista_modelo->obten_registros_filtro_and_ordenado($filtro,'elemento_lista.orden','ASC');
      *
-     * @uses directivas
-     * @uses templates
-     * @uses consultas_base
+
      * @internal  $this->genera_and();
      * @internal this->genera_consulta_base();
      * @internal $this->ejecuta_consulta();
      * @version 1.72.17
      */
-    public function obten_registros_filtro_and_ordenado(string $campo, bool $columnas_en_bruto,
+    public function obten_registros_filtro_and_ordenado(string $campo, bool $columnas_en_bruto, array $extra_join,
                                                         array $filtros, string $orden):array|stdClass{
         $this->filtro = $filtros;
         if(count($this->filtro) === 0){
@@ -1827,9 +1792,8 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar and',data:$sentencia);
         }
-        $consulta = $this->genera_consulta_base(columnas: array(), columnas_by_table: array(),
-            columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $this->extension_estructura, renombradas:  $this->renombres);
+        $consulta = $this->genera_consulta_base(columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $this->extension_estructura, extra_join: $extra_join, renombradas: $this->renombres);
 
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar consulta',data:$consulta);

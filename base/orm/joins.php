@@ -268,6 +268,36 @@ class joins{
     }
 
     /**
+     * @param array $extra_join
+     * @param modelo_base $modelo
+     * @param string $tablas
+     * @return array|string
+     */
+    private function extra_join(array $extra_join, modelo_base $modelo, string $tablas): array|string
+    {
+        $tablas_env = $tablas;
+        foreach($extra_join as $tabla=>$data){
+            if(!is_array($data)){
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
+            }
+            $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al validar data', data:$valida);
+            }
+            if(is_numeric($tabla)){
+                return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
+            }
+
+            $tablas_env = $this->join_extra(data: $data, modelo: $modelo,tabla:  $tabla, tablas: $tablas);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al generar join',data: $tablas);
+            }
+            $tablas = (string)$tablas_env;
+        }
+        return $tablas_env;
+    }
+
+    /**
      * Asigna el id de sql para generar join
      * @version 1.58.17
      * @param string $campo_tabla_base_id Campo id de la tabla a enlazar
@@ -377,19 +407,21 @@ class joins{
 
     /**
      * Genera los JOINS de una extension 1 a 1
-     * @version 1.63.17
      * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $tabla Tabla en LEFT
      * @param string $tablas Tablas en JOIN SQL
-     * @return array|string
+     * @return array|string tabla as tabla ON tabla.data[key] = data[enlace].data[key_enlace]
      */
-    private function join_extension(array $data, modelo_base $modelo, string $tabla, string $tablas): array|string
+    private function join_base(array $data, modelo_base $modelo, string $tabla, string $tablas): array|string
     {
-
         $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
+        }
+
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla);
         }
 
         $left_join = $this->left_join_str(tablas: $tablas);
@@ -399,12 +431,73 @@ class joins{
 
         $tablas.=$left_join;
 
-        $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla);
+        $tabla_renombrada = $tabla;
+        if(isset($data['renombre'])){
+            $data['renombre'] = trim($data['renombre']);
+            if($data['renombre'] !== ''){
+                $tabla_renombrada = $data['renombre'];
+            }
+
+        }
+
+        $str_join = $this->string_sql_join(data:  $data, modelo: $modelo, tabla: $tabla,
+            tabla_renombrada:  $tabla_renombrada);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data:$str_join);
         }
 
         $tablas .= ' '.$str_join;
+        return $tablas;
+    }
+
+    /**
+     * Genera los JOINS de una extension 1 a 1
+     * @version 1.63.17
+     * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $tabla Tabla en LEFT
+     * @param string $tablas Tablas en JOIN SQL
+     * @return array|string
+     */
+    private function join_extension(array $data, modelo_base $modelo, string $tabla, string $tablas): array|string
+    {
+        $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
+        }
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla);
+        }
+
+        $tablas = $this->join_base(data: $data,modelo:  $modelo,tabla:  $tabla,tablas:  $tablas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar join', data:$tablas);
+        }
+
+        return $tablas;
+    }
+
+    /**
+     * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
+     * @param modelo_base $modelo
+     * @param string $tabla
+     * @param string $tablas
+     * @return array|string tabla as tabla ON tabla.data[key] = data[enlace].data[key_enlace]
+     */
+    private function join_extra(array $data, modelo_base $modelo, string $tabla, string $tablas): array|string
+    {
+        $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
+        }
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla);
+        }
+        $tablas = $this->join_base(data: $data,modelo:  $modelo,tabla:  $tabla,tablas:  $tablas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar join', data:$tablas);
+        }
+
         return $tablas;
     }
 
@@ -635,16 +728,17 @@ class joins{
 
     /**
      * Obtiene los joins de todas las tablas de un modelo
-     * @version 1.66.17
      * @param array $columnas conjunto de tablas para realizar los joins
      * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
+     * @param array $extra_join Join extra a peticion en funciones
      * @param modelo_base $modelo Modelo en ejecucion
      * @param array $renombradas conjunto de tablas renombradas
      * @param string $tabla Tabla con el nombre original
      * @return array|string
+     * @version 1.66.17
      */
-    final public function tablas(array $columnas, array $extension_estructura, modelo_base $modelo, array $renombradas,
-                           string $tabla): array|string
+    final public function tablas(array $columnas, array $extension_estructura, array $extra_join, modelo_base $modelo,
+                                 array $renombradas, string $tabla): array|string
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -657,6 +751,11 @@ class joins{
 
         $tablas = $this->extensiones_join(extension_estructura: $extension_estructura, modelo: $modelo,
             tablas:  $tablas);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
+        }
+
+        $tablas = $this->extra_join(extra_join: $extra_join, modelo: $modelo, tablas:  $tablas);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
         }

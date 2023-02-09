@@ -302,13 +302,14 @@ class modeloTest extends test {
         $sql_extra = '';
         $tipo_filtro = '';
         $in = array();
+        $extra_join = array();
         $resultado = $modelo->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, con_sq: true, diferente_de: array(),
+            columnas_en_bruto: $columnas_en_bruto, con_sq: true, diferente_de: array(), extra_join: $extra_join,
             filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
             filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset, order: $order,
             sql_extra: $sql_extra, tipo_filtro: $tipo_filtro);
 
-        //print_r($resultado);exit;
+
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -332,8 +333,9 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
+        $extra_join = array();
         $resultado = $modelo->genera_sql_filtro(columnas: $columnas,columnas_by_table:  $columnas_by_table,
-            columnas_en_bruto:  $columnas_en_bruto,con_sq:  true, diferente_de: array(),filtro:  $filtro,
+            columnas_en_bruto:  $columnas_en_bruto,con_sq:  true, diferente_de: array(), extra_join: $extra_join,filtro:  $filtro,
             filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,filtro_rango:  $filtro_rango,
             group_by: $group_by,in:  $in, limit: $limit, not_in: $not_in,offset:  $offset,order:  $order, sql_extra: $sql_extra,
             tipo_filtro: $tipo_filtro);
@@ -363,7 +365,8 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), $filtro,
+         $extra_join = array();
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -392,7 +395,7 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array();
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -421,7 +424,7 @@ class modeloTest extends test {
         $sql_extra = 'x';
         $tipo_filtro = '';
         $in = array('llave'=>'a','values'=>array('a','b'));
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, array(), array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -451,7 +454,7 @@ class modeloTest extends test {
         $in = array('llave'=>'a','values'=>array('a','b'));
         $diferente_de['a']= 'p';
         $diferente_de['g']= 'p';
-        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, $diferente_de, $filtro,
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, $diferente_de, array(), $filtro,
             $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
             $tipo_filtro);
 
@@ -463,6 +466,42 @@ class modeloTest extends test {
 
 
         errores::$error = false;
+
+        errores::$error = false;
+
+
+        $columnas = array('adm_seccion_id');
+        $columnas_by_table = array();
+        $columnas_en_bruto = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array('llave'=>'a','values'=>array('c','d'));
+        $offset = 0;
+        $order = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','b'));
+        $diferente_de['a']= 'p';
+        $diferente_de['g']= 'p';
+        $extra_join = array();
+        $extra_join['tabla_integrar']['key'] = 'tabla_integrar_id';
+        $extra_join['tabla_integrar']['enlace'] = 'tabla_enlace';
+        $extra_join['tabla_integrar']['key_enlace'] = 'tabla_enlace_id';
+        $extra_join['tabla_integrar']['renombre'] = 'tabla_renombre';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, $diferente_de, $extra_join, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("SELECT adm_seccion.id AS adm_seccion_id FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN tabla_integrar AS tabla_renombre ON tabla_renombre.tabla_integrar_id = tabla_enlace.tabla_enlace_id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
+        errores::$error = false;
+
+
     }
 
     public function test_get_codigo_aleatorio(): void
@@ -763,7 +802,7 @@ class modeloTest extends test {
         $campo = '';
         $filtros = array();
         $orden = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo,false, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo,false, array(), $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error los filtros no pueden venir vacios', $resultado['mensaje']);
@@ -774,7 +813,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros[] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, array(), $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error campo no pueden venir vacios', $resultado['mensaje']);
@@ -785,7 +824,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros['a'] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, array(), $filtros, $orden);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al ejecutar sql', $resultado['mensaje']);
@@ -796,7 +835,7 @@ class modeloTest extends test {
         $filtros = array();
         $orden = '';
         $filtros['adm_seccion.id'] = '';
-        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, $filtros, $orden);
+        $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, array(), $filtros, $orden);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

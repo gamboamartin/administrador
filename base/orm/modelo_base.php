@@ -759,7 +759,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
                                                 bool $columnas_en_bruto = false, bool $con_sq = true,
-                                                array $extension_estructura = array(),
+                                                array $extension_estructura = array(), array $extra_join = array(),
                                                 array $renombradas = array()):array|string{
 
         $this->tabla = str_replace('models\\','',$this->tabla);
@@ -775,7 +775,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
         $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
-            modelo: $this, renombradas: $renombradas, tabla: $this->tabla);
+            extra_join: $extra_join, modelo: $this, renombradas: $renombradas, tabla: $this->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }

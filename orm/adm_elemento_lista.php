@@ -234,7 +234,7 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         $filtro['adm_elemento_lista.'.$vista] = 'activo';
 
         $resultado = $this->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
-            columnas_en_bruto: false, filtros: $filtro, orden: 'ASC');
+            columnas_en_bruto: false, extra_join: array(), filtros: $filtro, orden: 'ASC');
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros filtrados', data: $resultado);

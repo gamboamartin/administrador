@@ -423,6 +423,7 @@ class columnas{
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
+
         return $columnas;
     }
 
