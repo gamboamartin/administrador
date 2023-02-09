@@ -455,6 +455,12 @@ class inicializacion{
 
     }
 
+    /**
+     * Inicializa un field en attr
+     * @param array $atributo Atributo
+     * @param modelo $modelo Modelo en ejecucion
+     * @return stdClass
+     */
     private function init_atributo(array $atributo, modelo $modelo): stdClass
     {
         $field = $atributo['Field'];
