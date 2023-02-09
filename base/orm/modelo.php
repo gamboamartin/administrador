@@ -1343,8 +1343,8 @@ class modelo extends modelo_base {
 
     /**
      * Limpia campos extras de un registro de datos
-     * @param array $registro
-     * @param array $campos_limpiar
+     * @param array $registro Registro en proceso
+     * @param array $campos_limpiar Campos a limpiar
      * @return array
      */
     public function limpia_campos_extras(array $registro, array $campos_limpiar): array
