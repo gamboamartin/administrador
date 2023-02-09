@@ -1411,6 +1411,11 @@ class modelo extends modelo_base {
         return $this->campos_obligatorios;
     }
 
+    /**
+     * Limpia los campos no integrados en la entidad de base de datos
+     * @param array $registro Registro en proceso
+     * @return array
+     */
     private function limpia_campos_sin_bd(array $registro): array
     {
         foreach ($registro as $campo=>$value){
