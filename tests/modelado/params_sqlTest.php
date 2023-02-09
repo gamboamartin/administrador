@@ -1,7 +1,7 @@
 <?php
-namespace tests\base\orm;
+namespace tests\modelado;
 
-use base\orm\params_sql;
+use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
@@ -119,7 +119,7 @@ class params_sqlTest extends test {
         $aplica_seguridad = false;
         $modelo = new adm_accion($this->link);
         $sql_where_previo = '';
-        $resultado = $ps->params_sql($aplica_seguridad, $group_by, $limit, $modelo, $offset, $order, $sql_where_previo);
+        $resultado = $ps->params_sql($aplica_seguridad, $group_by, $limit, $modelo->columnas_extra, $offset, $order, $sql_where_previo);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -134,7 +134,7 @@ class params_sqlTest extends test {
         $aplica_seguridad = false;
         $modelo = new adm_accion($this->link);
         $sql_where_previo = '';
-        $resultado = $ps->params_sql($aplica_seguridad, $group_by, $limit, $modelo, $offset, $order, $sql_where_previo);
+        $resultado = $ps->params_sql($aplica_seguridad, $group_by, $limit, $modelo->columnas_extra, $offset, $order, $sql_where_previo);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(' ORDER BY x a',$resultado->order);
@@ -151,7 +151,7 @@ class params_sqlTest extends test {
         $aplica_seguridad = false;
         $modelo = new adm_accion($this->link);
         $sql_where_previo = '';
-        $resultado = $ps->seguridad($aplica_seguridad, $modelo, $sql_where_previo);
+        $resultado = $ps->seguridad($aplica_seguridad, $modelo->columnas_extra, $sql_where_previo);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty(trim($resultado));
@@ -163,7 +163,7 @@ class params_sqlTest extends test {
         $modelo->columnas_extra['usuario_permitido_id'] = 1;
         $_SESSION['usuario_id'] = 1;
         $sql_where_previo = '';
-        $resultado = $ps->seguridad($aplica_seguridad, $modelo, $sql_where_previo);
+        $resultado = $ps->seguridad($aplica_seguridad, $modelo->columnas_extra, $sql_where_previo);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('  WHERE  (1) = 1 ',$resultado);
@@ -175,7 +175,7 @@ class params_sqlTest extends test {
         $modelo->columnas_extra['usuario_permitido_id'] = 1;
         $_SESSION['usuario_id'] = 1;
         $sql_where_previo = 'x';
-        $resultado = $ps->seguridad($aplica_seguridad, $modelo, $sql_where_previo);
+        $resultado = $ps->seguridad($aplica_seguridad, $modelo->columnas_extra, $sql_where_previo);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('  (1) = 1 ',$resultado);

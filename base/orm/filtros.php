@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use stdClass;
@@ -114,7 +115,8 @@ class filtros{
         }
 
         $params = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad, group_by: $group_by,
-            limit:  $limit,modelo: $modelo,offset:  $offset, order:  $order,sql_where_previo: $sql_extra);
+            limit:  $limit,modelo_columnas_extra: $modelo->columnas_extra,offset:  $offset,
+            order:  $order,sql_where_previo: $sql_extra);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar parametros sql',data:$params);
         }

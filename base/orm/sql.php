@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\errores\errores;
 use stdClass;
 
@@ -154,7 +155,8 @@ class sql{
         }
 
         $params_base = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by: $group_by,
-            limit:  $limit,modelo: $modelo, offset: $offset, order: $order,sql_where_previo: $sql_where_previo);
+            limit:  $limit,modelo_columnas_extra: $modelo->columnas_extra, offset: $offset, order: $order,
+            sql_where_previo: $sql_where_previo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener parametros base en '.$modelo->tabla,
                 data: $params_base);

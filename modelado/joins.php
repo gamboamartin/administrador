@@ -6,7 +6,9 @@ use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
 
-
+/**
+ * PRUEBAS FINALIZADAS FUNCIONES REVISADAS FINAL
+ */
 class joins{
 
     public errores $error;

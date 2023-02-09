@@ -1,6 +1,5 @@
 <?php
 namespace base\orm;
-use config\generales;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;

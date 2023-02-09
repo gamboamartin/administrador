@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\administrador\modelado\joins;
+use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
@@ -1075,7 +1076,8 @@ class modelo extends modelo_base {
         }
 
         $params_sql = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by:  $group_by,
-            limit:  $limit, modelo: $this, offset: $offset, order: $order, sql_where_previo: $sentencia);
+            limit:  $limit, modelo_columnas_extra: $this->columnas_extra, offset: $offset, order: $order,
+            sql_where_previo: $sentencia);
 
         $consulta .= $where . $sentencia.$params_sql->limit;
 

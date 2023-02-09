@@ -1,5 +1,5 @@
 <?php
-namespace base\orm;
+namespace gamboamartin\administrador\modelado;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;
@@ -13,14 +13,14 @@ class params_sql{
 
     /**
      * Asigna un where con seguridad por datos a sql
-     * @version 1.109.27
-     * @param modelo $modelo Modelo a validar
+     * @param array $modelo_columnas_extra
      * @param string $sql_where_previo Sql previo
      * @return array|string
+     * @version 1.109.27
      */
-    private function asigna_seguridad_data(modelo $modelo, string $sql_where_previo): array|string
+    private function asigna_seguridad_data(array $modelo_columnas_extra, string $sql_where_previo): array|string
     {
-        $valida = $this->valida_seguridad(modelo: $modelo);
+        $valida = $this->valida_seguridad(modelo_columnas_extra: $modelo_columnas_extra);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
         }
@@ -30,7 +30,7 @@ class params_sql{
             return $this->error->error(mensaje: 'Error al generar where', data: $where);
         }
 
-        $sq_seg = $modelo->columnas_extra['usuario_permitido_id'];
+        $sq_seg = $modelo_columnas_extra['usuario_permitido_id'];
         return " $where ($sq_seg) = $_SESSION[usuario_id] ";
     }
 
@@ -100,13 +100,12 @@ class params_sql{
 
     /**
      * Obtiene los parametros necesarios para la ejecucion de un SELECT
-     * @version 1.120.29
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
      * @param int $limit Numero de registros a mostrar
-     * @param modelo $modelo Modelo a validar
+     * @param array $modelo_columnas_extra
      * @param int $offset Numero de inicio de registros
-     * @param array  $order con parametros para generar sentencia
+     * @param array $order con parametros para generar sentencia
      * @param string $sql_where_previo Sql previo
      * @return array|stdClass
      *          string stdClass->group_by_sql GROUP BY $group_by[tabla.campo] o ''
@@ -114,8 +113,9 @@ class params_sql{
      *          string stdClass->limit_sql LIMIT $limit o ''
      *          string stdClass->offset_sql OFFSET $offset o ''
      *          string stdClass->seguridad WHERE usuario_permitido_id = $_SESSION[usuario_id] o ''
+     * @version 1.120.29
      */
-    final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, modelo $modelo,  int $offset,
+    final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,  int $offset,
                                array $order, string $sql_where_previo): array|stdClass
     {
         if($limit<0){
@@ -146,7 +146,7 @@ class params_sql{
             return $this->error->error(mensaje:'Error al generar offset',data:$offset_sql);
         }
 
-        $seguridad = $this->seguridad(aplica_seguridad:$aplica_seguridad, modelo: $modelo,
+        $seguridad = $this->seguridad(aplica_seguridad:$aplica_seguridad, modelo_columnas_extra: $modelo_columnas_extra,
             sql_where_previo:  $sql_where_previo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
@@ -192,23 +192,24 @@ class params_sql{
 
     /**
      * Genera la seguridad de datos por usuario
-     * @version 1.110.27
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param modelo $modelo Modelo a validar
+     * @param array $modelo_columnas_extra
      * @param string $sql_where_previo Sql previo
      * @return array|string
+     * @version 1.110.27
      */
-    private function seguridad(bool $aplica_seguridad, modelo $modelo, string $sql_where_previo): array|string
+    private function seguridad(bool $aplica_seguridad, array $modelo_columnas_extra, string $sql_where_previo): array|string
     {
         $seguridad = '';
         if($aplica_seguridad){
 
-            $valida = $this->valida_seguridad(modelo: $modelo);
+            $valida = $this->valida_seguridad(modelo_columnas_extra: $modelo_columnas_extra);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
             }
 
-            $seguridad = $this->asigna_seguridad_data(modelo:$modelo, sql_where_previo: $sql_where_previo);
+            $seguridad = $this->asigna_seguridad_data(modelo_columnas_extra:$modelo_columnas_extra,
+                sql_where_previo: $sql_where_previo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
             }
@@ -216,11 +217,11 @@ class params_sql{
         return $seguridad;
     }
 
-    private function valida_seguridad(modelo $modelo): bool|array
+    private function valida_seguridad(array $modelo_columnas_extra): bool|array
     {
         $keys = array('usuario_permitido_id');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,
-            registro: $modelo->columnas_extra,valida_vacio: false);
+            registro: $modelo_columnas_extra,valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
         }
