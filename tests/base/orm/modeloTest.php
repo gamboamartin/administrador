@@ -690,6 +690,21 @@ class modeloTest extends test {
 
     }
 
+    public function test_limpia_campos_extras(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $registro = array();
+        $campos_limpiar = array();
+        $campos_limpiar[] = 'a';
+        $resultado = $modelo->limpia_campos_extras($registro, $campos_limpiar);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_obten_data(): void
     {
         errores::$error = false;

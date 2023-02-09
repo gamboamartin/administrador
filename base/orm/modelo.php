@@ -1346,10 +1346,15 @@ class modelo extends modelo_base {
      * @param array $registro Registro en proceso
      * @param array $campos_limpiar Campos a limpiar
      * @return array
+     * @version 9.82.2
      */
-    public function limpia_campos_extras(array $registro, array $campos_limpiar): array
+    final public function limpia_campos_extras(array $registro, array $campos_limpiar): array
     {
         foreach ($campos_limpiar as $valor) {
+            $valor = trim($valor);
+            if($valor === ''){
+                return $this->error->error(mensaje: 'Error el valor no puede venir vacio'.$this->tabla,data:  $valor);
+            }
             if (isset($registro[$valor])) {
                 unset($registro[$valor]);
             }
