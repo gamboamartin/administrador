@@ -1125,6 +1125,9 @@ class init{
         if($sistema === 'importador'){
             $namespace = 'gamboamartin\\importador\\';
         }
+        if($sistema === 'dveducacion'){
+            $namespace = 'gamboamartin\\dveducacion\\';
+        }
 
 
         $name_ctl = 'controlador_'.$seccion;
