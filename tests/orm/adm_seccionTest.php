@@ -10,6 +10,7 @@ use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_sistema;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -58,91 +59,19 @@ class adm_seccionTest extends test {
             exit;
         }
 
-        $del = (new adm_campo($this->link))->elimina_todo();
+        $del = (new base_test())->del_adm_seccion(link: $this->link);
         if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
+            $error = (new errores())->error('Error al del', $del);
             print_r($error);
             exit;
         }
 
-        $del = (new adm_elemento_lista($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_accion_grupo($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_accion($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_bitacora($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_seccion($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_sistema($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_accion_basica($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $adm_accion_basica['id'] = 2;
-        $adm_accion_basica['descripcion'] = 'lista';
-        $adm_accion_basica['muestra_icono_btn'] = 'inactivo';
-        $adm_accion_basica['muestra_titulo_btn'] = 'activo';
-
-        $alta = (new adm_accion_basica($this->link))->alta_registro($adm_accion_basica);
+        $alta = (new base_test())->alta_adm_accion(link: $this->link, descripcion: 'lista');
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
             exit;
         }
-
-        $adm_seccion['id'] = 1;
-        $adm_seccion['descripcion'] = 'adm_accion';
-        $adm_seccion['adm_menu_id'] = '1';
-        $adm_seccion['adm_namespace_id'] = '1';
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
-        if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
-            print_r($error);
-            exit;
-        }
-
 
         $resultado = $modelo->acciones(1);
         $this->assertIsArray($resultado);
@@ -294,88 +223,22 @@ class adm_seccionTest extends test {
             exit;
         }
 
-        $del = (new adm_campo($this->link))->elimina_todo();
+        $del = (new base_test())->del_adm_namespace(link: $this->link);
         if(errores::$error){
             $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);
             exit;
         }
 
-        $del = (new adm_elemento_lista($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
 
-        $del = (new adm_accion_grupo($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_accion($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_bitacora($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-        $del = (new adm_seccion_pertenece($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_seccion($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $del = (new adm_sistema($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
-
-        $adm_seccion['id'] = 1;
-        $adm_seccion['descripcion'] = 'adm_accion';
-        $adm_seccion['adm_menu_id'] = '1';
-        $adm_seccion['adm_namespace_id'] = '1';
-        $alta = (new adm_seccion($this->link))->alta_registro($adm_seccion);
+        $alta = (new base_test())->alta_adm_seccion_pertenece(link: $this->link, adm_seccion_descripcion: 'adm_accion');
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
             exit;
         }
 
-
-        $sistema_ins['id'] = 1;
-        $sistema_ins['descripcion'] = 'administrador';
-        $sistema_ins['codigo'] = 'administrador';
-        $alta = (new adm_sistema($this->link))->alta_registro($sistema_ins);
-        if(errores::$error){
-            $error = (new errores())->error('Error al insertar', $alta);
-            print_r($error);
-            exit;
-        }
-
-
-        $seccion_pertenece_ins['id'] = 1;
-        $seccion_pertenece_ins['adm_seccion_id'] = 1;
-        $seccion_pertenece_ins['adm_sistema_id'] = 1;
-        $alta = (new adm_seccion_pertenece($this->link))->alta_registro($seccion_pertenece_ins);
+        $alta = (new base_test())->alta_adm_accion(link: $this->link, descripcion: 'lista', visible: 'activo');
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
             print_r($error);
@@ -383,6 +246,7 @@ class adm_seccionTest extends test {
         }
 
         $resultado = $modelo->secciones_permitidas(1);
+
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);

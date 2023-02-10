@@ -438,6 +438,7 @@ class adm_seccion extends _modelo_children {
                 return $this->error->error(mensaje: 'Error al obtener acciones ', data: $acciones);
             }
 
+
             $stream = array_map(fn($valor): string => $valor['adm_accion_descripcion'],$acciones->registros);
 
             if (!in_array("lista",$stream)){
