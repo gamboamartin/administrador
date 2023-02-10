@@ -1,5 +1,5 @@
 <?php
-namespace tests\base\orm;
+namespace tests\modelado;
 
 use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;

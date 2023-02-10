@@ -50,16 +50,20 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      */
     public function data_grupo(array $filtro): array
     {
+        if(count($filtro) === 0){
+            return $this->error->error(mensaje: 'Error filtro vacio',data: $filtro);
+        }
         $grupo_modelo = new adm_grupo($this->link);
         $r_grupo = $grupo_modelo->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error('Error al obtener grupo',$r_grupo);
+            return $this->error->error(mensaje: 'Error al obtener grupo',data: $r_grupo);
         }
         if((int)$r_grupo->n_registros === 0){
-            return $this->error->error('Error al obtener grupo no existe',$r_grupo);
+            return $this->error->error(mensaje: 'Error al obtener grupo no existe',data: $r_grupo);
         }
         if((int)$r_grupo->n_registros > 1){
-            return $this->error->error('Error al obtener grupo inconsistencia existe mas de uno',$r_grupo);
+            return $this->error->error(mensaje: 'Error al obtener grupo inconsistencia existe mas de uno',
+                data: $r_grupo);
         }
         return $r_grupo->registros[0];
     }
@@ -289,7 +293,11 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $usuario;
     }
 
-    public function usuarios_por_grupo(int $adm_grupo_id): array
+    /**
+     * @param int $adm_grupo_id
+     * @return array
+     */
+    final public function usuarios_por_grupo(int $adm_grupo_id): array
     {
         if($adm_grupo_id <=0 ){
             return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data: $adm_grupo_id);

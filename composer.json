@@ -19,7 +19,7 @@
             "gamboamartin\\administrador\\models\\": "orm",
             "gamboamartin\\administrador\\modelado\\": "modelado",
             "validacion\\": "validacion/",
-            "tests\\": "tests/"
+          "gamboamartin\\administrador\\tests\\": "tests/"
 
         }
     },

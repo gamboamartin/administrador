@@ -1,9 +1,10 @@
 <?php
-namespace tests\orm;
+namespace gamboamartin\administrador\tests\orm;
 
 use gamboamartin\administrador\models\adm_bitacora;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\administrador\models\adm_usuario;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\test\test;
 
@@ -26,7 +27,9 @@ class adm_usuarioTest extends test {
         $_SESSION['usuario_id'] = 2;
 
         $filtro = array();
+        $filtro['adm_grupo.id'] = 2;
         $resultado = $modelo->data_grupo($filtro);
+
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(2, $resultado['adm_grupo_id']);
@@ -111,6 +114,47 @@ class adm_usuarioTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+    }
+
+    public function test_registro(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $del = (new base_test())->del_adm_usuario(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
+
+        $resultado = $modelo->registro(registro_id: 2, columnas_en_bruto: true, retorno_obj: true);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error al obtener registro', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $alta = (new base_test())->alta_adm_usuario(link: $this->link, id: 2);
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $resultado = $modelo->registro(registro_id: 2, columnas_en_bruto: true, retorno_obj: true);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(2, $resultado->id);
+        $this->assertEquals('password', $resultado->password);
+        $this->assertEquals('admin@test.com', $resultado->email);
+        errores::$error = false;
+
+
     }
 
     public function test_tengo_permiso(): void
