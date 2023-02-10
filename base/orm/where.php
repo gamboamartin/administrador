@@ -1,10 +1,10 @@
 <?php
 namespace base\orm;
 
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use JetBrains\PhpStorm\Pure;
-use ReflectionFunction;
 use stdClass;
 
 

@@ -1,7 +1,6 @@
 <?php
 namespace gamboamartin\administrador\modelado;
 
-use base\orm\validaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use stdClass;

@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\administrador\models\adm_bitacora;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;

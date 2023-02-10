@@ -3,6 +3,7 @@ namespace base\orm;
 use config\database;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\modelado\params_sql;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
@@ -2249,6 +2250,19 @@ class modelo extends modelo_base {
         return true;
     }
 
+    private function valida_elimina_children(array $filtro_children, modelo $modelo): bool|array
+    {
+        $existe = $modelo->existe(filtro: $filtro_children);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al validar si existe', data:$existe);
+        }
+        if($existe){
+            return $this->error->error(
+                mensaje:'Error el registro tiene dependencias asignadas en '.$modelo->tabla, data:$existe);
+        }
+        return true;
+    }
+
     /**
      * Valida si existe un elemento predeterminado previo a su alta
      * @return bool|array
@@ -2271,8 +2285,8 @@ class modelo extends modelo_base {
     final public function valida_eliminacion_children(int $id): bool|array
     {
         foreach ($this->childrens as $modelo_children=>$namespace){
-            $valida = (new validaciones())->verifica_eliminacion_children(
-                id:$id,modelo_base:  $this,modelo_children:  $modelo_children,namespace:  $namespace);
+            $valida = $this->verifica_eliminacion_children(id:$id,modelo_children:  $modelo_children,
+                namespace:  $namespace);
             if (errores::$error) {
                 return $this->error->error(mensaje:'Error al validar children', data:$valida);
             }
@@ -2293,6 +2307,26 @@ class modelo extends modelo_base {
             }
         }
         return $existe_atributo_critico;
+    }
+
+    private function verifica_eliminacion_children(int $id, string $modelo_children, string $namespace): bool|array
+    {
+        $modelo = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al generar modelo', data:$modelo);
+        }
+
+        $filtro_children = (new filtros())->filtro_children(tabla:$this->tabla,id: $id);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al generar filtro', data:$filtro_children);
+        }
+
+        $valida = $this->valida_elimina_children(filtro_children:$filtro_children, modelo: $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje:'Error al validar children', data:$valida);
+        }
+
+        return $valida;
     }
 
 }

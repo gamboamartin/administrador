@@ -1,9 +1,9 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-
 use PDO;
 
 class atributos{

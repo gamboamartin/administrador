@@ -1,12 +1,11 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-use JsonException;
 use models\atributo;
 use models\bitacora;
 use models\seccion;
-use PDO;
 use stdClass;
 
 class sumas{

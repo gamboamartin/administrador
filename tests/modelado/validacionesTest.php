@@ -1,7 +1,7 @@
 <?php
 namespace tests\base\orm;
 
-use base\orm\validaciones;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;

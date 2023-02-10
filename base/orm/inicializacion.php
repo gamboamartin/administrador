@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use stdClass;

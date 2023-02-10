@@ -234,7 +234,7 @@ class params_sql{
     }
 
     /**
-     * Asigna where a un sql
+     * Asigna where  un sql
      * @version 1.106.26
      * @param string $sql_where_previo Sql previo
      * @return string
