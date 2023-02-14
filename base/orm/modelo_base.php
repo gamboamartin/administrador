@@ -74,7 +74,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
-        $this->temp = $temp;
+        $this->temp = false;
         $this->atributos = new stdClass();
 
 

@@ -75,7 +75,7 @@ class modelo extends modelo_base {
         $tabla = str_replace('models\\','',$tabla);
         parent::__construct(link:$link, defaults: $defaults, parents_data: $parents_data, temp: $temp);
 
-        $this->temp = $temp;
+        $this->temp = false;
         $this->tabla = $tabla;
         $this->columnas_extra = $columnas_extra;
         $this->columnas = $columnas;
