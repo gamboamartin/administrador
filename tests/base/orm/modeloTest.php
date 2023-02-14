@@ -705,6 +705,20 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpia_campos_sin_bd(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro = array();
+
+        $resultado = $modelo->limpia_campos_sin_bd($registro);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_obten_data(): void
     {
         errores::$error = false;

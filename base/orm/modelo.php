@@ -1301,7 +1301,7 @@ class modelo extends modelo_base {
     /**
      * Inicializa elementos para cache
      * @return array|string
-     * @6.2.0
+     * @version 6.2.0
      */
     private function init_archivos_tmp_model_exe(): array|string
     {
@@ -1416,10 +1416,15 @@ class modelo extends modelo_base {
      * Limpia los campos no integrados en la entidad de base de datos
      * @param array $registro Registro en proceso
      * @return array
+     * @version 9.92.1
      */
     private function limpia_campos_sin_bd(array $registro): array
     {
         foreach ($registro as $campo=>$value){
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: "Error campo esta vacio", data: $registro);
+            }
             $attrs = (array)$this->atributos;
             if(!array_key_exists($campo, $attrs)){
                 unset($registro[$campo]);
