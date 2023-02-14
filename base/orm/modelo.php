@@ -1176,7 +1176,7 @@ class modelo extends modelo_base {
 
         $limit = $n_rows_for_page;
 
-        $n_rows = $this->cuenta(filtro_especial: $filtro_especial);
+        $n_rows = $this->cuenta(filtro_especial: $filtro_especial, in: $in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
         }
@@ -1187,8 +1187,8 @@ class modelo extends modelo_base {
             $offset = 0;
         }
 
-        $result = $this->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial, limit: $limit, offset: $offset,
-            in: $in);
+        $result = $this->filtro_and(filtro: $filtro, filtro_especial: $filtro_especial, in: $in, limit: $limit,
+            offset: $offset);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
         }
