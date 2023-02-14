@@ -1316,7 +1316,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         else{
 
-            $init_archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
+            /*$init_archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
             }
@@ -1325,7 +1325,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                 if (errores::$error) {
                     return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
                 }
-            }
+            }*/
 
             $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
             if (errores::$error) {
