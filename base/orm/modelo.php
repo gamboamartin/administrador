@@ -415,7 +415,7 @@ class modelo extends modelo_base {
 
         $sql = /** @lang MYSQL */
             " SELECT COUNT(*) AS total_registros FROM $tablas $filtros->where $filtros->sentencia 
-            $filtros->filtro_especial $filtros->filtro_rango";
+            $filtros->filtro_especial $filtros->filtro_rango $filtros->in";
 
         $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
