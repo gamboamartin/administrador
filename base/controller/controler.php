@@ -80,10 +80,13 @@ class controler{
 
     public string $path_vendor_views = '';
 
+    public generales $conf_generales;
+
     public function __construct(PDO $link){
         $this->link = $link;
 
         $generals = (new generales());
+        $this->conf_generales = $generals;
         if(!isset($_SESSION['grupo_id']) && $generals->aplica_seguridad){
             if(isset($_GET['seccion'], $_GET['accion']) && $_GET['seccion'] !== 'adm_session' && $_GET['accion'] !== 'login') {
                 $url = 'index.php?seccion=adm_session&accion=login';
