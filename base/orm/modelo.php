@@ -389,6 +389,7 @@ class modelo extends modelo_base {
      * @param array $in Genera IN en sql
      * @param array $not_in Genera NOT IN en SQL
      * @return array|int
+     * @version 9.97.4
      */
     final public function cuenta(array $diferente_de = array(), array $filtro = array(), string $tipo_filtro = 'numeros',
                            array $filtro_especial = array(), array $filtro_rango = array(),

@@ -319,6 +319,11 @@ class estructuras{
         return $this->estructura_bd;
     }
 
+    /**
+     * Inicializa la estructura de un modelo
+     * @param string $name_modelo Nombre de la entidad
+     * @return stdClass
+     */
     private function init_estructura_modelo(string $name_modelo): stdClass
     {
         $this->estructura_bd->$name_modelo = new stdClass();
