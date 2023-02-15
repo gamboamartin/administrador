@@ -2080,6 +2080,18 @@ class modelo extends modelo_base {
         return $tiene_predeterminado;
     }
 
+    final public function tiene_registros(){
+        $total_registros = $this->total_registros();
+        if (errores::$error) {
+            return  $this->error->error(mensaje: 'Error al obtener total registros '.$this->tabla, data: $total_registros);
+        }
+        $tiene_registros = false;
+        if($total_registros > 0){
+            $tiene_registros = true;
+        }
+        return $tiene_registros;
+    }
+
     private function todos_campos_obligatorios(){
         $this->campos_obligatorios = $this->campos_tabla;
         $limpia = $this->unset_campos_obligatorios();
@@ -2096,7 +2108,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al contar registros',data: $n_rows);
         }
-        return $n_rows;
+        return (int)$n_rows;
     }
 
 
