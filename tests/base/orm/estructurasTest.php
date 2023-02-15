@@ -82,6 +82,21 @@ class estructurasTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_estructura_modelo(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+
+        $name_modelo = 'a';
+        $resultado = $st->init_estructura_modelo($name_modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_maqueta_modelos(): void
     {
         errores::$error = false;

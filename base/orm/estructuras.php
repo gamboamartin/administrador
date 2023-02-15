@@ -289,6 +289,12 @@ class estructuras{
         return $data;
     }
 
+    /**
+     * @param modelo_base $modelo_base
+     * @param string $name_modelo
+     * @param bool $valida_tabla
+     * @return array
+     */
     private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo, bool $valida_tabla = true): array
     {
         $data_table = (new columnas())->columnas_bd_native(modelo: $modelo_base, tabla_bd: $name_modelo,
@@ -322,10 +328,15 @@ class estructuras{
     /**
      * Inicializa la estructura de un modelo
      * @param string $name_modelo Nombre de la entidad
-     * @return stdClass
+     * @return stdClass|array
+     * @version 9.98.4
      */
-    private function init_estructura_modelo(string $name_modelo): stdClass
+    private function init_estructura_modelo(string $name_modelo): stdClass|array
     {
+        $name_modelo = trim($name_modelo);
+        if($name_modelo === ''){
+            return $this->error->error(mensaje: 'Error $name_modelo esta vacio', data: $name_modelo);
+        }
         $this->estructura_bd->$name_modelo = new stdClass();
         $this->estructura_bd->$name_modelo->campos = array();
         $this->estructura_bd->$name_modelo->data_campos = new stdClass();
