@@ -290,9 +290,10 @@ class estructuras{
     }
 
     /**
-     * @param modelo_base $modelo_base
-     * @param string $name_modelo
-     * @param bool $valida_tabla
+     * Inicializa los datos de una estructura de un modelo
+     * @param modelo_base $modelo_base Modelo en ejecucion
+     * @param string $name_modelo Nombre del modelo a obtener info
+     * @param bool $valida_tabla verifica si existe o no la entidad
      * @return array
      */
     private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo, bool $valida_tabla = true): array
