@@ -3,18 +3,25 @@ namespace base\controller;
 
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use JetBrains\PhpStorm\Pure;
 use stdClass;
 
 
 class inputs{
     private errores $error;
     private validacion $validacion;
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new validacion();
     }
 
+    /**
+     * Integra los inputs para una view
+     * @param controler $controler Controlador en ejecucion
+     * @param array $inputs Inputs a integrar
+     * @param string $key Key de input
+     * @param array $value Valor de input
+     * @return array|stdClass
+     */
     final public function inputs_view(controler $controler, array $inputs, string $key, array $value): array|stdClass
     {
         $keys = array('type');
