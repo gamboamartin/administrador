@@ -83,7 +83,14 @@ class exito_html extends base_html {
         return $exito_html;
     }
 
-    private function integra_boton(string $exito_html, bool $html){
+    /**
+     * Integra un boton de tipo success
+     * @param string $exito_html Mensaje
+     * @param bool $html si aplica
+     * @return array|string
+     */
+    private function integra_boton(string $exito_html, bool $html): array|string
+    {
         $boton = $this->boton_exito();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar boton',data:  $boton);
