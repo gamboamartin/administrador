@@ -2103,7 +2103,11 @@ class modelo extends modelo_base {
         return $limpia;
     }
 
-    public function total_registros(): array|int
+    /**
+     * Obtiene el total de registros de una entidad
+     * @return array|int
+     */
+    final public function total_registros(): array|int
     {
         $n_rows = $this->cuenta();
         if(errores::$error){
