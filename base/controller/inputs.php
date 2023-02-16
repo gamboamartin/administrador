@@ -21,13 +21,14 @@ class inputs{
      * @param string $key Key de input
      * @param array $value Valor de input
      * @return array|stdClass
+     * @version
      */
     final public function inputs_view(controler $controler, array $inputs, string $key, array $value): array|stdClass
     {
         $keys = array('type');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $value);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar value filtro',data: $valida);
+            return $this->error->error(mensaje: 'Error al validar value',data: $valida);
         }
         $key = trim($key);
         if($key === ''){
@@ -41,6 +42,11 @@ class inputs{
         if(!is_object($controler->inputs)){
             return $this->error->error(
                 mensaje: 'Error controlador->inputs debe se run objeto',data: $controler->inputs);
+        }
+
+        if(!isset($inputs[$type]->$key)){
+            $inputs[$type] = new stdClass();
+            $inputs[$type]->$key = new stdClass();
         }
 
         $controler->inputs->$key = $inputs[$type]->$key;
@@ -86,7 +92,7 @@ class inputs{
         $keys = array($type);
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $inputs);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar value',data: $valida);
+            return $this->error->error(mensaje: 'Error al validar inputs',data: $valida);
         }
         return $type;
     }
