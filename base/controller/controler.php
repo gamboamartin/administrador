@@ -82,6 +82,9 @@ class controler{
 
     public generales $conf_generales;
 
+    public bool $verifica_parents_alta = false;
+    public array $parents_verifica = array();
+
     public function __construct(PDO $link){
         $this->link = $link;
 
