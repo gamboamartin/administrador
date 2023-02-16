@@ -1051,6 +1051,20 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_total_registros(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $modelo = new adm_mes($this->link);
+
+
+        $resultado = $modelo->total_registros();
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_predetermiando(): void
     {
         errores::$error = false;

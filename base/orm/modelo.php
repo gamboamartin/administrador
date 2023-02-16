@@ -2106,6 +2106,7 @@ class modelo extends modelo_base {
     /**
      * Obtiene el total de registros de una entidad
      * @return array|int
+     * @version 9.104.4
      */
     final public function total_registros(): array|int
     {
