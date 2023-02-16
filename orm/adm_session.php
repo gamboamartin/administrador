@@ -24,7 +24,13 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $this->NAMESPACE = __NAMESPACE__;
     }
 
-    public function adm_session_nombre_completo(string $adm_session_name){
+    /**
+     * Obtiene del nombre del usuario en session
+     * @param string $adm_session_name Session name
+     * @return array|string
+     */
+    final public function adm_session_nombre_completo(string $adm_session_name): array|string
+    {
         $session_en_ejecucion = $this->session(session: $adm_session_name);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al cargar session',data: $session_en_ejecucion);
