@@ -46,6 +46,22 @@ class exito_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_exito_html(): void
+    {
+
+        errores::$error = false;
+
+        $html = new exito_html();
+        $html = new liberator($html);
+        $html_ = true;
+        $resultado = $html->genera_exito_html($html_);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('<div class="alert alert-success no-margin-bottom alert-dismissible fade show no-print" role="alert"><h4 class="alert-heading">Exito</h4><button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>',$resultado);
+        errores::$error = false;
+
+    }
+
     public function test_integra_boton(): void
     {
 

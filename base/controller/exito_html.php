@@ -37,6 +37,11 @@ class exito_html extends base_html {
         return $exito_html;
     }
 
+    /**
+     * @param string $close_btn
+     * @param string $exito_html
+     * @return string
+     */
     private function exito_html_string(string $close_btn, string $exito_html): string
     {
         $exito_html .= $close_btn;
@@ -66,6 +71,7 @@ class exito_html extends base_html {
      * Genera un boton de exito
      * @param bool $html si aplica html
      * @return array|string
+     * @version 9.113.4
      */
     private function genera_exito_html(bool $html): array|string
     {

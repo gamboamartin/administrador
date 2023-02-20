@@ -90,6 +90,8 @@ class controler{
 
     public stdClass $buttons_parents_alta;
 
+    public array $params_upd_get = array();
+
     public function __construct(PDO $link){
         $this->link = $link;
         $this->buttons_parents_alta = new stdClass();
