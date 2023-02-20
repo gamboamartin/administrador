@@ -88,6 +88,8 @@ class exito_html extends base_html {
      * @param string $exito_html Mensaje
      * @param bool $html si aplica
      * @return array|string
+     * @version 9.110.4
+     *
      */
     private function integra_boton(string $exito_html, bool $html): array|string
     {

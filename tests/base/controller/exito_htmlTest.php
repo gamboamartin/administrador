@@ -46,6 +46,24 @@ class exito_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_boton(): void
+    {
+
+        errores::$error = false;
+
+        $html = new exito_html();
+        $html = new liberator($html);
+        $exito_html = '';
+        $html_ = true;
+        $resultado = $html->integra_boton($exito_html, $html_);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('<button type="button" class="btn btn-success" data-toggle="collapse" data-target="#msj_exito">Detalle</button>',$resultado);
+        errores::$error = false;
+
+
+    }
+
     public function test_mensaje(): void
     {
 

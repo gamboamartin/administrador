@@ -85,6 +85,8 @@ class controler{
     public bool $verifica_parents_alta = false;
     public array $parents_verifica = array();
 
+    public array $childrens_data = array();
+
     public stdClass $buttons_parents_alta;
 
     public function __construct(PDO $link){
