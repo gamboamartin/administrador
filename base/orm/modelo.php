@@ -1832,7 +1832,13 @@ class modelo extends modelo_base {
         return $registro;
     }
 
-    final public function registro_by_descripcion(string $descripcion){
+    /**
+     * Obtiene un conjunto de rows basados en la descripcion
+     * @param string $descripcion Descripcion
+     * @return array|stdClass
+     */
+    final public function registro_by_descripcion(string $descripcion): array|stdClass
+    {
 
         $key_descripcion = $this->tabla.'.descripcion';
         $filtro[$key_descripcion] = $descripcion;
