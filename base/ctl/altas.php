@@ -1,7 +1,6 @@
 <?php
 namespace gamboamartin\administrador\ctl;
 use base\controller\controler;
-use base\controller\normalizacion;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
 use stdClass;
@@ -29,7 +28,7 @@ class altas{
                 mensaje: 'Error $controler->seccion no puede venir vacia',data:  $controler->seccion);
         }
 
-        $registro_r = (new normalizacion())->asigna_registro_alta(controler: $controler,registro:  $registro);
+        $registro_r = (new normalizacion_ctl())->asigna_registro_alta(controler: $controler,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar registro',data:  $registro_r);
         }

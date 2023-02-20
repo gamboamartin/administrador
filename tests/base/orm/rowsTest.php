@@ -1,14 +1,10 @@
 <?php
 namespace tests\base;
 
-use base\controller\normalizacion;
-use base\orm\activaciones;
-use base\orm\atributos;
 use base\orm\rows;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use JsonException;
 use models\adm_accion_grupo;
 use models\adm_campo;
 use models\adm_dia;

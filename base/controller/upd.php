@@ -1,9 +1,9 @@
 <?php
 namespace base\controller;
+use gamboamartin\administrador\ctl\normalizacion_ctl;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 use JetBrains\PhpStorm\Pure;
-
 use stdClass;
 
 class upd{
@@ -48,7 +48,7 @@ class upd{
      */
     final public function modifica_bd_base(controler $controler, array $registro_upd): array|stdClass
     {
-        $init = (new normalizacion())->init_upd_base(controler: $controler, registro: $registro_upd);
+        $init = (new normalizacion_ctl())->init_upd_base(controler: $controler, registro: $registro_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar',data: $init);
         }

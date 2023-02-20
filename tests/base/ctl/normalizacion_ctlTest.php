@@ -1,18 +1,18 @@
 <?php
-namespace tests\base\controller;
+namespace gamboamartin\administrador\tests\base\ctl;
 
 use base\controller\controlador_base;
 use base\controller\controler;
-use base\controller\normalizacion;
+use gamboamartin\administrador\ctl\normalizacion_ctl;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
 use stdClass;
 
 
-class normalizacionTest extends test {
+class
+normalizacion_ctlTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
@@ -26,7 +26,7 @@ class normalizacionTest extends test {
 
     public function test_asigna_registro_alta(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
 
         $controler = new controler($this->link);
@@ -68,7 +68,7 @@ class normalizacionTest extends test {
 
     public function test_clase_model(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
 
         $controler = new controler($this->link, '', '');
@@ -78,7 +78,7 @@ class normalizacionTest extends test {
         $this->assertStringContainsStringIgnoringCase("Error this->seccion esta vacio", $resultado['mensaje']);
 
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
 
         $controler = new controler($this->link, '', '');
@@ -98,7 +98,7 @@ class normalizacionTest extends test {
     public function test_init_upd_base(): void
     {
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
         $controler = new controler($this->link, '', '');
 
@@ -161,7 +161,7 @@ class normalizacionTest extends test {
     public function test_genera_registros_envio(): void
     {
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
         $controler = new controler($this->link, '', '');
 
@@ -187,7 +187,8 @@ class normalizacionTest extends test {
 
     public function test_init_controler(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $_SESSION['usuario_id'] = 2;
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
 
         $mod = new adm_seccion($this->link);
@@ -206,7 +207,7 @@ class normalizacionTest extends test {
 
     public function test_init_registro(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
 
         $controler = new controler($this->link, '', '');
@@ -223,7 +224,7 @@ class normalizacionTest extends test {
 
     public function test_limpia_btn_post(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
 
         $registro = array();
@@ -242,7 +243,7 @@ class normalizacionTest extends test {
 
     public function test_limpia_post_alta(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
         unset($_POST);
 
@@ -256,7 +257,7 @@ class normalizacionTest extends test {
 
     public function test_limpia_registro_en_proceso(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
 
         $resultado = $nm->limpia_registro_en_proceso();
@@ -277,7 +278,7 @@ class normalizacionTest extends test {
 
     public function test_maqueta_data_galeria(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         //$nm = new liberator($nm);
 
         $controler = new controler($this->link, '', '');
@@ -325,7 +326,7 @@ class normalizacionTest extends test {
 
     public function test_name_class(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
 
         $seccion = '';
@@ -348,7 +349,7 @@ class normalizacionTest extends test {
 
     public function test_obten_key_envio(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
 
         $controler = new controler($this->link);
@@ -384,7 +385,7 @@ class normalizacionTest extends test {
 
     public function test_procesa_registros_alta(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
 
         $controler = new controler($this->link);
@@ -402,7 +403,7 @@ class normalizacionTest extends test {
 
     public function test_trim_arreglo(){
         errores::$error = false;
-        $nm = new normalizacion();
+        $nm = new normalizacion_ctl();
         $nm = new liberator($nm);
 
         $arreglo = array();

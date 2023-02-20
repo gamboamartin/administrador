@@ -1,14 +1,15 @@
 <?php
-namespace base\controller;
+namespace gamboamartin\administrador\ctl;
 
+use base\controller\controler;
+use base\controller\valida_controller;
 use gamboamartin\errores\errores;
-use JetBrains\PhpStorm\Pure;
 
 
-class normalizacion{
+class normalizacion_ctl{
     private errores $error;
     private valida_controller $validacion;
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new valida_controller();
     }
@@ -119,7 +120,7 @@ class normalizacion{
      * @return controler
      * @version 2.10.2
      */
-    public function init_controler(controler $controler): controler
+    final public function init_controler(controler $controler): controler
     {
 
         if(isset($_GET['seccion'])){
@@ -290,7 +291,7 @@ class normalizacion{
      * @param controler $controler
      * @return array
      */
-    public function maqueta_data_galeria(controler $controler, array $r_fotos, string $tabla):array{
+    final public function maqueta_data_galeria(controler $controler, array $r_fotos, string $tabla):array{
         if(!isset($r_fotos['registros'])){
             return $this->error->error('Error no existe registros en r_fotos',$r_fotos);
         }

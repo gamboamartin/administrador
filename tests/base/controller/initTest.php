@@ -3,7 +3,6 @@ namespace tests\base\controller;
 
 use base\controller\controler;
 use base\controller\init;
-use base\controller\normalizacion;
 use base\seguridad;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;

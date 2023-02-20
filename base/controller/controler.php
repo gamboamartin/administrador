@@ -4,9 +4,9 @@ namespace base\controller;
 use base\orm\modelo;
 use config\generales;
 use config\views;
+use gamboamartin\administrador\ctl\normalizacion_ctl;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
-
 use PDO;
 use stdClass;
 use Throwable;
@@ -369,7 +369,7 @@ class controler{
         if(!is_array($_POST['filtros'])){
             return $this->errores->error('Error al generar filtros en POST debe ser un array',$_POST);
         }
-        $filtros = (new normalizacion())->genera_filtros_envio($_POST['filtros']);
+        $filtros = (new normalizacion_ctl())->genera_filtros_envio($_POST['filtros']);
         if(errores::$error){
             return $this->errores->error('Error al generar filtros',$filtros);
         }

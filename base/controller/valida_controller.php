@@ -1,5 +1,6 @@
 <?php
 namespace base\controller;
+use gamboamartin\administrador\ctl\normalizacion_ctl;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
 
@@ -19,7 +20,7 @@ class valida_controller extends base_modelos{
             return $this->error->error(mensaje: 'Error seccion por get debe existir',data:  $_GET);
         }
 
-        $limpia = (new normalizacion())->limpia_post_alta();
+        $limpia = (new normalizacion_ctl())->limpia_post_alta();
         if(errores::$error){
 
             return $this->error->error(mensaje: 'Error al limpiar POST', data: $limpia);
@@ -45,7 +46,7 @@ class valida_controller extends base_modelos{
      */
     final public function valida_clase(controler $controler): bool|array
     {
-        $clase = (new normalizacion())->clase_model(controler: $controler);
+        $clase = (new normalizacion_ctl())->clase_model(controler: $controler);
         if(errores::$error){
 
             return $this->error->error(mensaje: 'Error al obtener clase', data: $clase);

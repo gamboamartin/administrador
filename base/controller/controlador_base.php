@@ -6,6 +6,7 @@ use config\generales;
 use config\views;
 use gamboamartin\administrador\ctl\activacion;
 use gamboamartin\administrador\ctl\altas;
+use gamboamartin\administrador\ctl\normalizacion_ctl;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;
@@ -81,7 +82,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         $this->modelo = $modelo;
 
 
-        $init = (new normalizacion())->init_controler(controler: $this);
+        $init = (new normalizacion_ctl())->init_controler(controler: $this);
         if(errores::$error){
             $error = $this->errores->error(mensaje:'Error al incializar entradas',data: $init);
             print_r($error);
@@ -310,7 +311,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             $this->link->commit();
         }
 
-        $limpia = (new normalizacion())->limpia_registro_en_proceso();
+        $limpia = (new normalizacion_ctl())->limpia_registro_en_proceso();
         if(errores::$error){
             if(!$transaccion_previa) {
                 $this->link->rollBack();

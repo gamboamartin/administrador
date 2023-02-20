@@ -1,7 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
-use stdClass;
+
 
 class _base extends modelo{
 
