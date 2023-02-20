@@ -2090,6 +2090,7 @@ class modelo extends modelo_base {
     /**
      * Verifica una entidad tiene registros
      * @return array|bool
+     * @version 9.115.4
      */
     final public function tiene_registros(): bool|array
     {

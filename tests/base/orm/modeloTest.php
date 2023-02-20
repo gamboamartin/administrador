@@ -1051,12 +1051,47 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_tiene_registros(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_mes($this->link);
+        //$modelo = new liberator($modelo);
+
+        $del = (new adm_mes(link: $this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $resultado = $modelo->tiene_registros();
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_total_registros(): void
     {
         $_SESSION['usuario_id'] = 2;
         errores::$error = false;
         $modelo = new adm_mes($this->link);
 
+        $del = (new adm_mes(link: $this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al del', $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_mes['id'] = 1;
+        $adm_mes['descripcion'] = 1;
+        $alta = (new adm_mes(link: $this->link))->alta_registro(registro: $adm_mes);
+        if(errores::$error){
+            $error = (new errores())->error('Error al alta', $alta);
+            print_r($error);
+            exit;
+        }
 
         $resultado = $modelo->total_registros();
         $this->assertIsInt( $resultado);
