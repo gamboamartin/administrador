@@ -86,6 +86,7 @@ class controler{
     public array $parents_verifica = array();
 
     public array $childrens_data = array();
+    public array $buttons_childrens_alta = array();
 
     public stdClass $buttons_parents_alta;
 

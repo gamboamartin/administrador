@@ -62,7 +62,13 @@ class exito_html extends base_html {
         return $exito_transaccion;
     }
 
-    private function genera_exito_html(bool $html){
+    /**
+     * Genera un boton de exito
+     * @param bool $html si aplica html
+     * @return array|string
+     */
+    private function genera_exito_html(bool $html): array|string
+    {
         $exito_html = $this->exito_html(html: $html);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar mensaje',data:  $exito_html);
