@@ -2087,7 +2087,12 @@ class modelo extends modelo_base {
         return $tiene_predeterminado;
     }
 
-    final public function tiene_registros(){
+    /**
+     * Verifica una entidad tiene registros
+     * @return array|bool
+     */
+    final public function tiene_registros(): bool|array
+    {
         $total_registros = $this->total_registros();
         if (errores::$error) {
             return  $this->error->error(mensaje: 'Error al obtener total registros '.$this->tabla, data: $total_registros);
