@@ -28,6 +28,8 @@ class modelo extends modelo_base {
     public array $parents = array();
     public bool $valida_user = true;
 
+    public string $etiqueta = '';
+
 
     /**
      *
@@ -178,6 +180,8 @@ class modelo extends modelo_base {
 
         $this->key_id = $this->tabla.'_id';
         $this->key_filtro_id = $this->tabla.'.id';
+
+        $this->etiqueta = $this->tabla;
     }
 
 

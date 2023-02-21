@@ -2,6 +2,7 @@
 namespace tests\base\orm;
 
 use base\orm\estructuras;
+use base\orm\modelo_base;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -79,6 +80,27 @@ class estructurasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertEquals('Tables_in_a',$resultado);
+        errores::$error = false;
+    }
+
+    public function test_init_dato_estructura(){
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+
+        $modelo_base = new modelo_base(link: $this->link);
+        $modelo_base->tabla = 'adm_seccion';
+        $name_modelo = 'adm_seccion';
+
+        $resultado = $st->init_dato_estructura($modelo_base, $name_modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        $this->assertEquals('id',$resultado[0]['Field']);
+        $this->assertEquals('varchar(200)',$resultado[1]['Type']);
+        $this->assertEquals('NO',$resultado[2]['Null']);
+        $this->assertEquals('',$resultado[3]['Key']);
+        $this->assertEquals('',$resultado[4]['Default']);
+        $this->assertEquals('',$resultado[5]['Extra']);
         errores::$error = false;
     }
 

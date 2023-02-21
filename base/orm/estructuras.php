@@ -295,9 +295,19 @@ class estructuras{
      * @param string $name_modelo Nombre del modelo a obtener info
      * @param bool $valida_tabla verifica si existe o no la entidad
      * @return array
+     * @version 9.117.4
      */
-    private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo, bool $valida_tabla = true): array
+    private function init_dato_estructura(modelo_base $modelo_base, string $name_modelo,
+                                          bool $valida_tabla = true): array
     {
+        $name_modelo = trim($name_modelo);
+        if($name_modelo === ''){
+            return $this->error->error(mensaje: 'Error name_modelo esta vacio',data:  $name_modelo);
+        }
+        if(is_numeric($name_modelo)){
+            return $this->error->error(mensaje: 'Error name_modelo no puede ser un numero',data:  $name_modelo);
+        }
+
         $data_table = (new columnas())->columnas_bd_native(modelo: $modelo_base, tabla_bd: $name_modelo,
             valida_tabla: $valida_tabla);
         if(errores::$error){
@@ -436,6 +446,10 @@ class estructuras{
         return $modelos;
     }
 
+    /**
+     * @param array $campo
+     * @return bool
+     */
     private function permite_null(array $campo): bool
     {
         $permite_null = true;

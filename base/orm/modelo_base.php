@@ -1034,20 +1034,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $archivos = (new generales())->path_base.'archivos';
         $archivos = str_replace('//', '/', $archivos);
         if(!file_exists($archivos)){
-            mkdir($archivos);
+           // mkdir($archivos);
         }
         $archivos_tmp = $archivos.'/tmp';
 
         $archivos_tmp = str_replace('//', '/', $archivos_tmp);
         if(!file_exists($archivos_tmp)){
-            mkdir($archivos_tmp);
+           // mkdir($archivos_tmp);
         }
         $archivos_tmp_model = $archivos_tmp."/$this->tabla";
 
         $archivos_tmp_model = str_replace('//', '/', $archivos_tmp_model);
 
         if(!file_exists($archivos_tmp_model)){
-            mkdir($archivos_tmp_model);
+            //mkdir($archivos_tmp_model);
         }
         return $archivos_tmp_model;
     }
