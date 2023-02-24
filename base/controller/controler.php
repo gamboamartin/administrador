@@ -168,6 +168,11 @@ class controler{
     }
 
 
+    /**
+     * Asigna los inputs para views
+     * @param array|stdClass $inputs Conjunto de inputs a asignar
+     * @return array|stdClass
+     */
     final public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
         if(!is_object($this->inputs)){

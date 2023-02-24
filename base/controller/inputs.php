@@ -21,7 +21,7 @@ class inputs{
      * @param string $key Key de input
      * @param array $value Valor de input
      * @return array|stdClass
-     * @version
+     * @version 9.118.4
      */
     final public function inputs_view(controler $controler, array $inputs, string $key, array $value): array|stdClass
     {
