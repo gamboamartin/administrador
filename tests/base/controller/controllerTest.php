@@ -6,7 +6,7 @@ use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
+use stdClass;
 
 
 class controllerTest extends test {
@@ -15,6 +15,26 @@ class controllerTest extends test {
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+    }
+
+    public function test_asigna_inputs(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler($this->link);
+        //$ctl = new liberator($ctl);
+
+
+        $ctl->modelo = new adm_atributo($this->link);
+        $inputs = new stdClass();
+        $ctl->inputs = new stdClass();
+        $resultado = $ctl->asigna_inputs($inputs);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
     }
 
 

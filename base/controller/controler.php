@@ -172,6 +172,7 @@ class controler{
      * Asigna los inputs para views
      * @param array|stdClass $inputs Conjunto de inputs a asignar
      * @return array|stdClass
+     * @version 9.119.4
      */
     final public function asigna_inputs(array|stdClass $inputs): array|stdClass
     {
@@ -183,7 +184,8 @@ class controler{
             if(!is_array($value)){
                 return $this->errores->error(mensaje: 'Error value debe ser un array',data: $value);
             }
-            $inputs_controller = (new inputs())->inputs_view(controler: $this, inputs: $inputs,key:  $key,value:  $value);
+            $inputs_controller = (new inputs())->inputs_view(controler: $this, inputs: $inputs,key:  $key,
+                value:  $value);
             if(errores::$error){
                 return $this->errores->error(mensaje: 'Error al obtener inputs',data: $inputs_controller);
             }
