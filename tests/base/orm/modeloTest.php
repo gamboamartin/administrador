@@ -16,9 +16,6 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
-
-
-
 class modeloTest extends test {
     public errores $errores;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
@@ -716,6 +713,33 @@ class modeloTest extends test {
         $resultado = $modelo->limpia_campos_sin_bd($registro);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_modifica_bd(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $modelo = new adm_menu($this->link);
+        //$modelo = new liberator($modelo);
+
+        $registro = array();
+        $registro['status'] = 'inactivo';
+
+        $resultado = $modelo->modifica_bd(registro:  $registro,id: 1);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+        $registro = array();
+        $registro['status'] = 'activo';
+
+        $resultado = $modelo->modifica_bd(registro:  $registro,id: 1);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('Exito al ejecutar sql del modelo adm_menu transaccion UPDATE', $resultado->mensaje);
+
+
         errores::$error = false;
     }
 

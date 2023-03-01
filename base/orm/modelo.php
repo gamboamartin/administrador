@@ -1400,14 +1400,13 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($this->registro_upd,__FUNCTION__, $consulta);
      * @final rev
+     * @version 9.120.4
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
         if($this->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
         }
-
-
 
         $registro = $this->limpia_campos_sin_bd(registro: $registro);
         if(errores::$error){
