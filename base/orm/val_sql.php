@@ -374,6 +374,8 @@ class val_sql extends validaciones {
         return true;
     }
 
+
+
     /**
      * Valida los elementos de un checked
      * @param string $campo Nombre del campo
@@ -404,9 +406,16 @@ class val_sql extends validaciones {
         return true;
     }
 
-    private function verifica_cod_3_mayusc(string $campo, array $keys_cod_3_mayus, array $registro): bool|array
+    /**
+     * Verifica la existencia de un campo
+     * @param string $campo
+     * @param array $keys
+     * @param array $registro
+     * @return array|true
+     */
+    private function verifica_base(string $campo, array $keys, array $registro): bool|array
     {
-        $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys_cod_3_mayus,registro: $registro);
+        $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys,registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar campo ids', data: $campo_r);
         }
@@ -419,6 +428,18 @@ class val_sql extends validaciones {
                 data: array($registro[$campo_r],$this->patterns['id']));
         }
         return true;
+    }
+
+    private function verifica_cod_3_mayusc(string $campo, array $keys_cod_3_mayus, array $registro): bool|array
+    {
+
+        $verifica = $this->verifica_base(campo: $campo,keys:  $keys_cod_3_mayus, registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar campo', data: $verifica);
+        }
+        return $verifica;
+
+
     }
 
     /**
@@ -457,19 +478,11 @@ class val_sql extends validaciones {
      */
     private function verifica_id(string $campo, array $keys_ids, array $registro): bool|array
     {
-        $campo_r = $this->campo_existe(campo: $campo,keys_ids: $keys_ids,registro: $registro);
+        $verifica = $this->verifica_base(campo: $campo,keys:  $keys_ids, registro: $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar campo ids', data: $campo_r);
+            return $this->error->error(mensaje: 'Error al verificar campo', data: $verifica);
         }
-        if(!isset($registro[$campo_r])){
-            return $this->error->error(mensaje: 'Error no existe '.$campo_r.' en registro', data: $registro);
-        }
-
-        if(!preg_match($this->patterns['id'], $registro[$campo_r])){
-            return $this->error->error(mensaje: 'Error $registro['.$campo_r.'] es invalido',
-                data: array($registro[$campo_r],$this->patterns['id']));
-        }
-        return true;
+        return $verifica;
     }
 
     /**

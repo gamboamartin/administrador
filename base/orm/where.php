@@ -637,10 +637,6 @@ class where{
      * __FILE__,$sentencia);
      * }
      * $consulta = "DELETE FROM $tabla WHERE $sentencia";
-     * @uses $this->genera_sentencia_base
-     * @uses $this->elimina_con_filtro_and
-     * @uses $this->modifica_con_filtro_and
-     * @uses $this->suma
      */
     public function genera_and(array $columnas_extra, array $filtro):array|string{
         $sentencia = '';

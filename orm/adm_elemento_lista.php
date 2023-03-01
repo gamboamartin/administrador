@@ -75,13 +75,13 @@ class adm_elemento_lista extends modelo{ //PRUEBAS FINALIZADAS
         $filtro['seccion_menu.descripcion'] = $seccion;
         $filtro['elemento_lista.encabezado'] = 'activo';
 
-        $resultado = $this->obten_registros_filtro_and_ordenado($filtro,
-            'adm_elemento_lista.orden','ASC');
+        $resultado = $this->obten_registros_filtro_and_ordenado(campo: 'adm_elemento_lista.orden',
+            columnas_en_bruto: false, extra_join: array(), filtros: $filtro, orden: 'ASC');
         if(errores::$error){
             return $this->error->error('Error al obtener registros',$resultado);
         }
 
-        return $resultado['registros'];
+        return $resultado->registros;
     }
 
     /**
