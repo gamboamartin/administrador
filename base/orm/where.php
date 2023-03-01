@@ -13,7 +13,7 @@ class where{
     public errores $error;
     public validacion $validacion;
 
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new validacion();
     }
@@ -1553,6 +1553,9 @@ class where{
         }
         if(is_array($data) && !isset($data['value'])){
             return $this->error->error(mensaje:"Error no existe valor",data: $data);
+        }
+        if(is_null($value)){
+            $value = '';
         }
         return addslashes($value);
     }
