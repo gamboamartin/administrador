@@ -322,6 +322,12 @@ class _modelo_children extends _base {
         return $r_modifica_bd;
     }
 
+    /**
+     * Valida la entrada de datos de alta
+     * @param mixed $name_model Nombre del modelo a validar
+     * @param mixed $data Datos s validar
+     * @return bool|array
+     */
     private function valida_value_default(mixed $name_model, mixed $data): bool|array
     {
         if(!is_string($name_model)){

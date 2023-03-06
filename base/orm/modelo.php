@@ -1226,7 +1226,7 @@ class modelo extends modelo_base {
      * @return array|int
      * @version 1.486.49
      */
-    public function id_predeterminado(): array|int
+    final public function id_predeterminado(): array|int
     {
         $key = $this->tabla.'.predeterminado';
 
