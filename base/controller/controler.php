@@ -87,6 +87,7 @@ class controler{
 
     public array $childrens_data = array();
     public array $buttons_childrens_alta = array();
+    public array $buttons_parents_ir = array();
 
     public stdClass $buttons_parents_alta;
 
