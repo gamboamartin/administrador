@@ -43,6 +43,13 @@ class _base extends modelo{
         return $registro;
     }
 
+    /**
+     * Asigna el value para status init
+     * @param array $keys Keys  integrar activo
+     * @param array $registro Datos de registro en proceso
+     * @param string $status Status
+     * @return array
+     */
     final protected function asigna_status_alta(array $keys, array $registro, string $status = 'activo'): array
     {
         foreach ($keys as $key){
