@@ -24,6 +24,8 @@ class adm_grupo extends _modelo_parent {
         parent::__construct(link: $link, tabla: $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             columnas_extra: $columnas_extra, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Grupo';
     }
 
     public function elimina_bd(int $id): array|stdClass

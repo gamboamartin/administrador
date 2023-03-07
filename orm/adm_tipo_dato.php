@@ -15,6 +15,8 @@ class adm_tipo_dato extends _modelo_parent_sin_codigo {
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas,
             columnas_extra: $columnas_extra, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Tipo Dato';
     }
 
 }

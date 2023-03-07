@@ -19,6 +19,8 @@ class adm_seccion_pertenece extends modelo{
         $campos_obligatorios = array('adm_seccion_id','adm_sistema_id');
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,columnas:  $columnas);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Seccion Sistema';
     }
 
     public function alta_bd(): array|stdClass

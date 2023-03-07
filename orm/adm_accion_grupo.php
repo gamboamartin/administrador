@@ -19,6 +19,8 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             tipo_campos:  $tipo_campos);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'ACL';
     }
 
     public function acciones_por_grupo(int $adm_grupo_id): array

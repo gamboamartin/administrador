@@ -22,6 +22,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
 
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas, columnas_extra: $columnas_extra);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Session';
     }
 
     /**

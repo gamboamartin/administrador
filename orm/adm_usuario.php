@@ -34,6 +34,8 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         parent::__construct(link: $link, tabla: $tabla, campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Usuario';
     }
 
 

@@ -20,6 +20,8 @@ class adm_namespace extends _modelo_parent_sin_codigo {
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: array(),
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'NAMESPACE';
     }
 
 

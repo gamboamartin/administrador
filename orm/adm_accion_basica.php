@@ -24,6 +24,8 @@ class adm_accion_basica extends _modelo_parent {
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios, columnas: $columnas,
             no_duplicados: $no_duplicados, tipo_campos: $tipo_campos);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Accion Basica';
     }
 
     private function alias(array $registro): string

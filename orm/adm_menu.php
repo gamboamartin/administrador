@@ -21,6 +21,8 @@ class adm_menu extends _modelo_parent_sin_codigo {
         parent::__construct(link: $link,tabla:  $tabla,campos_obligatorios: $campos_obligatorios,
             columnas: $columnas, columnas_extra: $columnas_extra, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Menu';
     }
 
     private function adm_menus_out(array $adm_menus){

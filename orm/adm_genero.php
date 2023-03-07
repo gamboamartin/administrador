@@ -9,5 +9,6 @@ class adm_genero extends _modelo_parent {
         $columnas = array($tabla=>false);
         parent::__construct(link: $link, tabla: $tabla, columnas: $columnas);
         $this->NAMESPACE = __NAMESPACE__;
+        $this->etiqueta = 'Genero';
     }
 }

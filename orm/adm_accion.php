@@ -44,6 +44,8 @@ class adm_accion extends _modelo_children {
             parents_data: $parents_data);
         $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new \validacion\accion();
+
+        $this->etiqueta = 'Accion';
     }
 
     /**

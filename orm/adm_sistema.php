@@ -16,6 +16,8 @@ class adm_sistema extends _modelo_parent_sin_codigo {
         $childrens['adm_seccion_pertenece'] = "gamboamartin\\administrador\\models";
         parent::__construct(link: $link,tabla:  $tabla,columnas: $columnas, childrens: $childrens);
         $this->NAMESPACE = __NAMESPACE__;
+
+        $this->etiqueta = 'Sistema';
     }
 
 
