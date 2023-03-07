@@ -30,6 +30,7 @@ class controlador_baseTest extends test {
         errores::$error = false;
 
         $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = 1;
 
         $del = (new adm_usuario(link: $this->link))->elimina_todo();
         if (errores::$error) {
@@ -78,7 +79,7 @@ class controlador_baseTest extends test {
         $resultado = $ctl->a_menu($menu);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("<a href='index.php?seccion=adm_session&accion=inicio&session_id=&adm_menu_id=1'>a</a>",$resultado);
+        $this->assertEquals("<a href='index.php?seccion=adm_session&accion=inicio&session_id=1&adm_menu_id=1'>a</a>",$resultado);
         errores::$error = false;
 
     }
@@ -199,6 +200,7 @@ class controlador_baseTest extends test {
         errores::$error = false;
 
         $_SESSION['usuario_id'] = 2;
+        $_GET['session_id'] = 1;
         $modelo = new adm_year($this->link);
 
 
@@ -217,7 +219,7 @@ class controlador_baseTest extends test {
 
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('index.php?seccion=adm_session&accion=inicio&session_id=&adm_menu_id=1',$resultado);
+        $this->assertEquals('index.php?seccion=adm_session&accion=inicio&session_id=1&adm_menu_id=1',$resultado);
 
         errores::$error = false;
 

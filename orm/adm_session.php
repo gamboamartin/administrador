@@ -28,9 +28,16 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      * Obtiene del nombre del usuario en session
      * @param string $adm_session_name Session name
      * @return array|string
+     * @version 9.125.5
      */
     final public function adm_session_nombre_completo(string $adm_session_name): array|string
     {
+
+        $adm_session_name = trim($adm_session_name);
+        if($adm_session_name === ''){
+            return $this->error->error(mensaje: "Error adm_session_name esta vacia",data:  $adm_session_name);
+        }
+
         $session_en_ejecucion = $this->session(session: $adm_session_name);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al cargar session',data: $session_en_ejecucion);
@@ -372,6 +379,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      */
     private function session(string $session): array|stdClass
     {
+        $session = trim($session);
+
         $filtro['adm_session.name'] = $session;
         $r_session = $this->filtro_and(filtro:$filtro);
         if(errores::$error){

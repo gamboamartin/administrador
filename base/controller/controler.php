@@ -87,7 +87,7 @@ class controler{
 
     public array $childrens_data = array();
     public array $buttons_childrens_alta = array();
-    public array $buttons_parents_ir = array();
+    public stdClass $buttons_parents_ir ;
 
     public stdClass $buttons_parents_alta;
 
@@ -96,6 +96,7 @@ class controler{
     public function __construct(PDO $link){
         $this->link = $link;
         $this->buttons_parents_alta = new stdClass();
+        $this->buttons_parents_ir = new stdClass();
 
         $generals = (new generales());
         $this->conf_generales = $generals;
@@ -157,12 +158,14 @@ class controler{
 
         $this->subtitulos_menu = $views->subtitulos_menu;
 
-        $adm_session_nombre_completo = $this->nombre_usuario();
-        if(errores::$error){
-            $error =  $this->errores->error(
-                mensaje: 'Error al cargar adm_session_nombre_completo',data: $adm_session_nombre_completo);
-            print_r($error);
-            exit;
+        if(trim($this->session_id)!=='') {
+            $adm_session_nombre_completo = $this->nombre_usuario();
+            if (errores::$error) {
+                $error = $this->errores->error(
+                    mensaje: 'Error al cargar adm_session_nombre_completo', data: $adm_session_nombre_completo);
+                print_r($error);
+                exit;
+            }
         }
 
         $this->path_vendor_views = '';

@@ -16,6 +16,19 @@ class adm_sessionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_adm_session_nombre_completo(){
+
+        errores::$error = false;
+        $session = new adm_session($this->link);
+        //$session = new liberator($session);
+
+        $adm_session_name = 'a';
+        $resultado = $session->adm_session_nombre_completo($adm_session_name);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_asigna_datos_session(){
 
         errores::$error = false;
