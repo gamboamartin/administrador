@@ -1836,8 +1836,18 @@ class modelo extends modelo_base {
         return $registro;
     }
 
+    /**
+     * Obtiene el registro basado en el codigo
+     * @param string $codigo codigo a obtener
+     * @param array $columnas Columnas custom
+     * @param bool $columnas_en_bruto true retorna las columnas tal cual la bd
+     * @param array $extra_join joins extra
+     * @param array $hijo Hijos de row
+     * @return array
+     */
     final public function registro_by_codigo(string $codigo, array $columnas = array(), bool $columnas_en_bruto = false,
-                                             array $extra_join = array(), array $hijo = array()){
+                                             array $extra_join = array(), array $hijo = array()): array
+    {
 
         $filtro[$this->tabla.'.codigo'] = $codigo;
 
@@ -1846,8 +1856,14 @@ class modelo extends modelo_base {
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener registros',data: $registros);
         }
+        if($registros->n_registros === 0){
+            return  $this->error->error(mensaje: 'Error no existe registro',data: $registros);
+        }
+        if($registros->n_registros > 1){
+            return  $this->error->error(mensaje: 'Error existe mas de un registro',data: $registros);
+        }
 
-        return $registros;
+        return $registros->registros[0];
 
     }
 
