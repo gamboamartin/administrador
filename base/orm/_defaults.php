@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 
 class _defaults{
 
@@ -39,11 +40,23 @@ class _defaults{
      * @param array $row Registro a insertar
      * @param array $filtro filtro custom
      * @return array
+     * @version 9.129.5
      */
     private function filtro_default(modelo $entidad, array $row, array $filtro = array()): array
     {
-        if(count($filtro) >0) {
-            $filtro[$entidad->tabla . '.codigo'] = $row['codigo'];
+        $tabla = trim($entidad->tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+        }
+
+        if(count($filtro) === 0) {
+            $keys = array('codigo');
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $row);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar row', data: $valida);
+            }
+
+            $filtro[$tabla . '.codigo'] = $row['codigo'];
         }
         return $filtro;
     }
