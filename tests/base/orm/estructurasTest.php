@@ -72,6 +72,22 @@ class estructurasTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_estructura_campo(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $name_modelo = 'a';
+        $campo['Field'] = 'z';
+        $resultado = $st->init_estructura_campo($campo, $name_modelo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_key_table(){
         errores::$error = false;
         $st = new estructuras($this->link);

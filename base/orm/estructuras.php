@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
@@ -327,10 +328,27 @@ class estructuras{
      * Inicializa una estructura
      * @param array $campo Campo a inicializar
      * @param string $name_modelo Nombre del modelo entidad
-     * @return stdClass
+     * @return stdClass|array
+     * @version 9.127.5
      */
-    private function init_estructura_campo(array $campo, string $name_modelo): stdClass
+    private function init_estructura_campo(array $campo, string $name_modelo): stdClass|array
     {
+        $name_modelo = trim($name_modelo);
+        if($name_modelo === ''){
+            return $this->error->error(mensaje: 'Error $name_modelo esta vacio', data: $name_modelo);
+        }
+        $keys = array('Field');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar valida', data: $valida);
+        }
+        if(!isset($this->estructura_bd->$name_modelo)){
+            $this->estructura_bd->$name_modelo = new stdClass();
+        }
+        if(!isset($this->estructura_bd->$name_modelo->data_campos)){
+            $this->estructura_bd->$name_modelo->data_campos = new stdClass();
+        }
+
         $campo_name = $campo['Field'];
         $this->estructura_bd->$name_modelo->data_campos->$campo_name = new stdClass();
         return $this->estructura_bd;
@@ -447,7 +465,8 @@ class estructuras{
     }
 
     /**
-     * @param array $campo
+     * Integra permite null
+     * @param array $campo Datos del campo
      * @return bool
      */
     private function permite_null(array $campo): bool

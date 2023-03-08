@@ -1836,6 +1836,21 @@ class modelo extends modelo_base {
         return $registro;
     }
 
+    final public function registro_by_codigo(string $codigo, array $columnas = array(), bool $columnas_en_bruto = false,
+                                             array $extra_join = array(), array $hijo = array()){
+
+        $filtro[$this->tabla.'.codigo'] = $codigo;
+
+        $registros = $this->filtro_and(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
+            extra_join: $extra_join, filtro: $filtro, hijo: $hijo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener registros',data: $registros);
+        }
+
+        return $registros;
+
+    }
+
     /**
      * Obtiene un conjunto de rows basados en la descripcion
      * @param string $descripcion Descripcion
