@@ -65,15 +65,26 @@ class _defaults{
         return $catalogo;
     }
 
-    private function existe_cod_default(modelo $entidad, array $row, array $filtro = array()){
-        $filtro = $this->filtro_default(entidad: $entidad, row: $row, filtro: $filtro);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro);
-        }
+    /**
+     * Verifica si existe un codigo
+     * @param modelo $entidad Entidad en proceso
+     * @param array $row Registro a validar
+     * @param array $filtro Filtro a validar
+     * @return array|bool
+     */
+    private function existe_cod_default(modelo $entidad, array $row, array $filtro = array()): bool|array
+    {
+        $existe = false;
+        if(isset($row[$entidad->tabla.'.codigo'])) {
+            $filtro = $this->filtro_default(entidad: $entidad, row: $row, filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro);
+            }
 
-        $existe = $entidad->existe(filtro: $filtro);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar si existe cat_sat_tipo_de_comprobante', data: $existe);
+            $existe = $entidad->existe(filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar si existe cat_sat_tipo_de_comprobante', data: $existe);
+            }
         }
         return $existe;
     }
@@ -122,7 +133,7 @@ class _defaults{
     private function inserta_default(modelo $entidad, array $row, array $filtro = array()){
         $existe = $this->existe_cod_default(entidad: $entidad,row:  $row, filtro: $filtro);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar si existe cat_sat_tipo_de_comprobante', data: $existe);
+            return $this->error->error(mensaje: 'Error al validar si existe entidad'.$entidad->tabla, data: $existe);
         }
 
         if (!$existe) {
