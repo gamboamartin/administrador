@@ -10,32 +10,37 @@ class _defaults{
     public function __construct(){
         $this->error = new errores();
     }
+    final public function ajusta_data_catalogo(array $catalogo, modelo $modelo){
 
-    final public function ajusta_catalogo_by_code(array $catalogo, modelo $modelo){
-        foreach ($catalogo as $key=>$row){
-            $filtro = array();
-            $filtro[$modelo->tabla.'.codigo'] = $row['codigo'];
-
-            $existe = $modelo->existe(filtro: $filtro);
+        $campos = array('id','descripcion','codigo');
+        foreach ($campos as $campo) {
+            $catalogo = $this->ajusta_datas_catalogo(catalogo: $catalogo,campo:  $campo,modelo:  $modelo);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
-            }
-            if($existe){
-                unset($catalogo[$key]);
+                return $this->error->error(mensaje: 'Error al limpiar catalogo', data: $catalogo);
             }
         }
         return $catalogo;
     }
 
-    final public function ajusta_catalago_by_id(array $catalogo, modelo $modelo){
-        foreach ($catalogo as $key=>$row){
-            $existe = $modelo->existe_by_id(registro_id: $row['id']);
+    private function ajusta_datas_catalogo(array $catalogo, string $campo, modelo $modelo){
+        foreach ($catalogo as $indice => $row) {
+            $catalogo = $this->ajusta_row(campo: $campo, catalogo: $catalogo, indice: $indice, modelo: $modelo, row: $row);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
+                return $this->error->error(mensaje: 'Error al limpiar catalogo', data: $catalogo);
             }
-            if($existe){
-                unset($catalogo[$key]);
-            }
+        }
+        return $catalogo;
+    }
+
+    private function ajusta_row(string $campo, array $catalogo, int $indice, modelo $modelo, array $row){
+        $filtro = $this->filtro(campo: $campo,modelo:  $modelo, row: $row);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro);
+        }
+
+        $catalogo = $this->limpia_si_existe(catalogo: $catalogo,filtro:  $filtro, indice: $indice,modelo:  $modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al limpiar catalogo', data: $catalogo);
         }
         return $catalogo;
     }
@@ -61,6 +66,13 @@ class _defaults{
             return $this->error->error(mensaje: 'Error al validar si existe cat_sat_tipo_de_comprobante', data: $existe);
         }
         return $existe;
+    }
+
+    private function filtro(string $campo, modelo $modelo, array $row): array
+    {
+        $filtro = array();
+        $filtro[$modelo->tabla.'.'.$campo] = $row[$campo];
+        return $filtro;
     }
 
     /**
@@ -103,5 +115,16 @@ class _defaults{
             }
         }
         return $row;
+    }
+
+    private function limpia_si_existe(array $catalogo, array $filtro, int $indice, modelo $modelo){
+        $existe = $modelo->existe(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
+        }
+        if($existe){
+            unset($catalogo[$indice]);
+        }
+        return $catalogo;
     }
 }
