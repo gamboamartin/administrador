@@ -33,14 +33,16 @@ class _defaults{
     }
 
     private function ajusta_row(string $campo, array $catalogo, int $indice, modelo $modelo, array $row){
-        $filtro = $this->filtro(campo: $campo,modelo:  $modelo, row: $row);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro);
-        }
+        if(isset($row[$campo])) {
+            $filtro = $this->filtro(campo: $campo, modelo: $modelo, row: $row);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro);
+            }
 
-        $catalogo = $this->limpia_si_existe(catalogo: $catalogo,filtro:  $filtro, indice: $indice,modelo:  $modelo);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar catalogo', data: $catalogo);
+            $catalogo = $this->limpia_si_existe(catalogo: $catalogo, filtro: $filtro, indice: $indice, modelo: $modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al limpiar catalogo', data: $catalogo);
+            }
         }
         return $catalogo;
     }
