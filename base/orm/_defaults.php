@@ -11,6 +11,19 @@ class _defaults{
         $this->error = new errores();
     }
 
+    final public function ajusta_catalago_by_id(array $catalogo, modelo $modelo){
+        foreach ($catalogo as $key=>$row){
+            $existe = $modelo->existe_by_id(registro_id: $row['id']);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
+            }
+            if($existe){
+                unset($catalogo[$key]);
+            }
+        }
+        return $catalogo;
+    }
+
     final public function alta_defaults(array $catalago, modelo $entidad, array $filtro = array()){
         foreach ($catalago as $row) {
             $r_alta_bd = $this->inserta_default(entidad: $entidad,row:  $row, filtro: $filtro);
