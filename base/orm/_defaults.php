@@ -45,14 +45,22 @@ class _defaults{
         return $catalogo;
     }
 
-    final public function alta_defaults(array $catalago, modelo $entidad, array $filtro = array()){
-        foreach ($catalago as $row) {
+    final public function alta_defaults(array $catalogo, modelo $entidad, array $filtro = array()){
+
+        $catalogo = $this->ajusta_data_catalogo(catalogo: $catalogo,modelo:  $entidad);
+        if (errores::$error) {
+            $error = $this->error->error(mensaje: 'Error al ajustar catalogo', data: $catalogo);
+            print_r($error);
+            exit;
+        }
+
+        foreach ($catalogo as $row) {
             $r_alta_bd = $this->inserta_default(entidad: $entidad,row:  $row, filtro: $filtro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
             }
         }
-        return $catalago;
+        return $catalogo;
     }
 
     private function existe_cod_default(modelo $entidad, array $row, array $filtro = array()){
