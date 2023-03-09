@@ -11,6 +11,22 @@ class _defaults{
         $this->error = new errores();
     }
 
+    final public function ajusta_catalogo_by_code(array $catalogo, modelo $modelo){
+        foreach ($catalogo as $key=>$row){
+            $filtro = array();
+            $filtro[$modelo->tabla.'.codigo'] = $row['codigo'];
+
+            $existe = $modelo->existe(filtro: $filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
+            }
+            if($existe){
+                unset($catalogo[$key]);
+            }
+        }
+        return $catalogo;
+    }
+
     final public function ajusta_catalago_by_id(array $catalogo, modelo $modelo){
         foreach ($catalogo as $key=>$row){
             $existe = $modelo->existe_by_id(registro_id: $row['id']);
