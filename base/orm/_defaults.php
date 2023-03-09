@@ -78,6 +78,13 @@ class _defaults{
         return $existe;
     }
 
+    /**
+     * Genera un filtro para default
+     * @param string $campo Campo a verificar
+     * @param modelo $modelo Modelo a integrar
+     * @param array $row Registro a integrar
+     * @return array
+     */
     private function filtro(string $campo, modelo $modelo, array $row): array
     {
         $filtro = array();
