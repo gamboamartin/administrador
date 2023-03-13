@@ -70,6 +70,12 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $r_grupo->registros[0];
     }
 
+    /**
+     * Maqueta en un objeto los elementos para validar un permiso
+     * @param string $adm_accion Accion a validar
+     * @param string $adm_seccion Seccion a validar
+     * @return array|stdClass
+     */
     private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
     {
         $adm_seccion = trim($adm_seccion);
@@ -214,7 +220,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param string $adm_accion Accion en ejecucion
      * @param string $adm_seccion Seccion en ejecucion
      * @return array|bool
-     * @version 2.103.9
      */
     final public function tengo_permiso(string $adm_accion, string $adm_seccion): array|bool
     {
