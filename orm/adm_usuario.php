@@ -170,7 +170,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar permite en session', data: $session_permite);
         }
-        return $session_permite;
+        return $data_permiso;
     }
 
     private function get_data_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
@@ -179,11 +179,12 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
         }
 
-        $val_session = $this->get_val_session(adm_grupo_id: $adm_grupo_id,data_permiso:  $data_permiso);
+        $data = $this->get_val_session(adm_grupo_id: $adm_grupo_id,data_permiso:  $data_permiso);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
+            return $this->error->error(mensaje: 'Error al obtener val_session', data: $data);
         }
-        $data_permiso->val_session = $val_session;
+        $data_permiso->val_session = $data->val_session;
+        $data_permiso->existe = $data->existe;
         return $data_permiso;
     }
 
@@ -194,12 +195,12 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
         }
 
-        $val_session = $this->val_session_existe(filtro: $filtro);
+        $data = $this->val_session_existe(filtro: $filtro);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
+            return $this->error->error(mensaje: 'Error al obtener val_session', data: $data);
         }
 
-        return $val_session;
+        return $data;
     }
 
     private function session_permite(int $adm_grupo_id, stdClass $data_permiso){
@@ -221,7 +222,9 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         if(isset($_SESSION['usuario_id'])) {
             $adm_usuario_id = $_SESSION['usuario_id'];
         }
-        $existe = false;
+        $data_permiso = new stdClass();
+        $data_permiso->existe = false;
+        //$existe = false;
         if((int)$adm_usuario_id > 0) {
 
             $adm_grupo_id = -1;
@@ -233,18 +236,18 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
                 if (isset($_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion])) {
                     if ((int)$_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] === 1) {
-                        $existe = true;
+                        $data_permiso->existe = true;
                     }
                 }
                 else {
-                    $session_permite = $this->genera_session_permite(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
+                    $data_permiso = $this->genera_session_permite(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
                     if (errores::$error) {
-                        return $this->error->error(mensaje: 'Error al asignar permite en session', data: $session_permite);
+                        return $this->error->error(mensaje: 'Error al asignar permite en session', data: $data_permiso);
                     }
                 }
             }
         }
-        return $existe;
+        return $data_permiso->existe;
 
     }
 
@@ -331,7 +334,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
         }
-        return $val_session;
+        $data = new stdClass();
+        $data->existe = $existe;
+        $data->val_session = $val_session;
+        return $data;
     }
 
     /**

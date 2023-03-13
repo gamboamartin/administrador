@@ -52,6 +52,8 @@ class adm_seccion extends _modelo_children {
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Seccion';
+
+
     }
 
     private function accion_base_alta(array $accion_basica){

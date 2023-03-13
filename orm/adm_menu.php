@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\models;
 
+use base\orm\_defaults;
 use base\orm\_modelo_parent;
 use base\orm\_modelo_parent_sin_codigo;
 use config\generales;
@@ -23,6 +24,8 @@ class adm_menu extends _modelo_parent_sin_codigo {
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Menu';
+
+
     }
 
     private function adm_menus_out(array $adm_menus){

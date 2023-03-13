@@ -24,6 +24,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Session';
+
     }
 
     /**
