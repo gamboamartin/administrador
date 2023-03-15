@@ -112,6 +112,16 @@ class adm_accion extends _modelo_children {
         return $r_accion;
     }
 
+    final public function acciones_by_seccion_id(int $adm_seccion_id){
+        $filtro['adm_seccion.id'] = $adm_seccion_id;
+        $r_accion = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener acciones',data: $r_accion);
+        }
+        return $r_accion->registros;
+
+    }
+
     /**
      * Maqueta un array con un conjunto de acciones id
      * @param array $adm_acciones_grupos Permisos
