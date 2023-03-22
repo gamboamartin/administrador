@@ -62,6 +62,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public stdClass $atributos;
     public array $atributos_criticos = array();
 
+    protected bool $id_code = false;
+
 
     /**
      * Modelado

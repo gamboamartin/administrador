@@ -290,6 +290,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
 
+        if($this->id_code){
+            $this->registro['id'] = $this->registro['codigo'];
+        }
+
         $transacciones = (new inserts())->transacciones(modelo: $this);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones);
