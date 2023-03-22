@@ -290,7 +290,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
 
-        if($this->id_code){
+        if($this->id_code && !isset($this->registro['id'])){
             $this->registro['id'] = $this->registro['codigo'];
         }
 
