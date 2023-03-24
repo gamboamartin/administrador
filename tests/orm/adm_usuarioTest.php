@@ -6,6 +6,7 @@ use gamboamartin\administrador\models\adm_session;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 
@@ -35,6 +36,25 @@ class adm_usuarioTest extends test {
         $this->assertEquals(2, $resultado['adm_grupo_id']);
         errores::$error = false;
 
+    }
+
+    public function test_data_permiso(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = -1;
+
+        $adm_accion = 'a';
+        $adm_seccion = 'v';
+        $resultado = $modelo->data_permiso($adm_accion, $adm_seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('v',$resultado->adm_seccion);
+        $this->assertEquals('a',$resultado->adm_accion);
+        errores::$error = false;
     }
 
     public function test_elimina_bd(): void

@@ -75,6 +75,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param string $adm_accion Accion a validar
      * @param string $adm_seccion Seccion a validar
      * @return array|stdClass
+     * @version 10.7.2
      */
     private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
     {
