@@ -368,7 +368,7 @@ class adm_accionTest extends test {
         $resultado = $modelo->filtro_permiso($accion, $grupo_id, $seccion);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error accion esta vacia', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar permiso', $resultado['mensaje']);
 
         errores::$error = false;
         $accion = 'a';
@@ -377,7 +377,7 @@ class adm_accionTest extends test {
         $resultado = $modelo->filtro_permiso($accion, $grupo_id, $seccion);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $grupo_id debe ser mayor a 0', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar permiso', $resultado['mensaje']);
 
         errores::$error = false;
         $accion = 'a';
@@ -386,7 +386,7 @@ class adm_accionTest extends test {
         $resultado = $modelo->filtro_permiso($accion, $grupo_id, $seccion);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $seccion esta vacia', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar permiso', $resultado['mensaje']);
 
         errores::$error = false;
         $accion = 'a';
@@ -509,6 +509,7 @@ class adm_accionTest extends test {
 
         errores::$error = false;
     }
+
 
     public function test_valida_alta_bd(){
         errores::$error = false;

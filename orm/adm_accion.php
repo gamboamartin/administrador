@@ -361,7 +361,6 @@ class adm_accion extends _modelo_children {
 
     /**
      * Obtiene el filtro para determinar permisos de ejecucion
-     * @version 1.12.8
      * @param string $accion Accion a ejecutar
      * @param int $grupo_id Grupo a verificar si tiene permiso
      * @param string $seccion Seccion a verificar
@@ -369,17 +368,11 @@ class adm_accion extends _modelo_children {
      */
     private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
     {
-        $accion = trim($accion);
-        if($accion === ''){
-            return $this->error->error(mensaje:'Error accion esta vacia', data: $accion);
+        $valida = $this->valida_data_permiso(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permiso',data: $valida);
         }
-        if($grupo_id<=0){
-            return $this->error->error(mensaje:'Error $grupo_id debe ser mayor a 0', data: $grupo_id);
-        }
-        $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje:'Error $seccion esta vacia', data: $seccion);
-        }
+
         $filtro['adm_accion.status'] = 'activo';
         $filtro['adm_grupo.status'] = 'activo';
         $filtro['adm_seccion.status'] = 'activo';
@@ -672,8 +665,13 @@ class adm_accion extends _modelo_children {
      * @param string $seccion Seccion a validar
      * @return int|array
      */
-    private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
+    PUBLIC function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
     {
+        $valida = $this->valida_data_permiso(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permiso',data: $valida);
+        }
+
         $filtro = $this->filtro_permiso(accion: $accion,grupo_id:  $grupo_id, seccion: $seccion);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro);
@@ -777,6 +775,22 @@ class adm_accion extends _modelo_children {
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
         }
 
+        return true;
+    }
+
+    private function valida_data_permiso(string $accion, int $grupo_id, string $seccion): bool|array
+    {
+        $accion = trim($accion);
+        if($accion === ''){
+            return $this->error->error(mensaje:'Error accion esta vacia', data: $accion);
+        }
+        if($grupo_id<=0){
+            return $this->error->error(mensaje:'Error $grupo_id debe ser mayor a 0', data: $grupo_id);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje:'Error $seccion esta vacia', data: $seccion);
+        }
         return true;
     }
 
