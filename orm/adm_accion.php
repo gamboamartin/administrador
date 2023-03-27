@@ -667,9 +667,9 @@ class adm_accion extends _modelo_children {
 
     /**
      * Obtiene el numero de permisos de un grupo de usuarios
-     * @param string $accion
-     * @param int $grupo_id
-     * @param string $seccion
+     * @param string $accion Accion a validar
+     * @param int $grupo_id Grupo a validar
+     * @param string $seccion Seccion a validar
      * @return int|array
      */
     private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
