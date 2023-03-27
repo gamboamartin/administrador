@@ -665,7 +665,7 @@ class adm_accion extends _modelo_children {
      * @param string $seccion Seccion a validar
      * @return int|array
      */
-    PUBLIC function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
+    private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
     {
         $valida = $this->valida_data_permiso(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
         if(errores::$error){
@@ -778,6 +778,13 @@ class adm_accion extends _modelo_children {
         return true;
     }
 
+    /**
+     * Valida los elementos de entrada de un permiso
+     * @param string $accion Accion a validar
+     * @param int $grupo_id Grupo a validar
+     * @param string $seccion Seccion a validar
+     * @return bool|array
+     */
     private function valida_data_permiso(string $accion, int $grupo_id, string $seccion): bool|array
     {
         $accion = trim($accion);
