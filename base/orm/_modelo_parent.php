@@ -23,10 +23,10 @@ class _modelo_parent extends _base {
          * REFCATORIZAR
          */
         foreach ($this->registro as $campo=>$value){
-            $existe_attr = false;
-            $attrs = (array)$this->atributos;
-            if(array_key_exists($campo, $attrs)){
-                $existe_attr = true;
+
+            $existe_attr = $this->existe_attr(campo: $campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar si existe atributo',data: $existe_attr);
             }
             if(!$existe_attr){
                 unset($this->registro[$campo]);
@@ -39,6 +39,16 @@ class _modelo_parent extends _base {
             return $this->error->error(mensaje: 'Error al insertar', data: $r_alta_bd);
         }
         return $r_alta_bd;
+    }
+
+    private function existe_attr(string $campo): bool
+    {
+        $existe_attr = false;
+        $attrs = (array)$this->atributos;
+        if(array_key_exists($campo, $attrs)){
+            $existe_attr = true;
+        }
+        return $existe_attr;
     }
 
     /**
