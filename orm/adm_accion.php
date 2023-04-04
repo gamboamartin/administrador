@@ -784,6 +784,7 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo a validar
      * @param string $seccion Seccion a validar
      * @return bool|array
+     * @version 10.14.2
      */
     private function valida_data_permiso(string $accion, int $grupo_id, string $seccion): bool|array
     {

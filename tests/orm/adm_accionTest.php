@@ -548,6 +548,23 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_data_permiso(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $accion = 'a';
+        $grupo_id= 1;
+        $seccion= 'a';
+        $resultado = $modelo->valida_data_permiso($accion, $grupo_id, $seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+    }
+
 
 
 
