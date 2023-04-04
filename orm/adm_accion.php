@@ -365,6 +365,7 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo a verificar si tiene permiso
      * @param string $seccion Seccion a verificar
      * @return array
+     * @version 10.15.2
      */
     private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
     {
@@ -664,6 +665,7 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo a validar
      * @param string $seccion Seccion a validar
      * @return int|array
+     * @version 10.15.2
      */
     private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
     {

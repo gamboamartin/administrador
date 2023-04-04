@@ -510,6 +510,22 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_n_permisos(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $accion = 'a';
+        $grupo_id= 1;
+        $seccion= 'a';
+        $resultado = $modelo->n_permisos($accion, $grupo_id, $seccion);
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(0, $resultado);
+
+        errores::$error = false;
+    }
+
 
     public function test_valida_alta_bd(){
         errores::$error = false;
