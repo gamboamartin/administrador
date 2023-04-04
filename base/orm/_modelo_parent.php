@@ -19,20 +19,10 @@ class _modelo_parent extends _base {
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
         }
 
-        /**
-         * REFCATORIZAR
-         */
-        foreach ($this->registro as $campo=>$value){
-
-            $existe_attr = $this->existe_attr(campo: $campo);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar si existe atributo',data: $existe_attr);
-            }
-            if(!$existe_attr){
-                unset($this->registro[$campo]);
-            }
+        $registro = $this->limpiar_attrs();
+        if(errores::$error) {
+            return $this->error->error(mensaje: 'Error al al limpiar', data: $registro);
         }
-
 
         $r_alta_bd =  parent::alta_bd();
         if(errores::$error){
@@ -49,6 +39,27 @@ class _modelo_parent extends _base {
             $existe_attr = true;
         }
         return $existe_attr;
+    }
+
+    private function limpiar_attr(string $campo){
+        $existe_attr = $this->existe_attr(campo: $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe atributo',data: $existe_attr);
+        }
+        if(!$existe_attr){
+            unset($this->registro[$campo]);
+        }
+        return $this->registro;
+    }
+
+    private function limpiar_attrs(){
+        foreach ($this->registro as $campo=>$value){
+            $registro = $this->limpiar_attr(campo: $campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al al limpiar',data: $registro);
+            }
+        }
+        return $this->registro;
     }
 
     /**
