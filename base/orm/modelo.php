@@ -961,7 +961,6 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @author mgamboa
      * @fecha 2022-08-02 16:49
-     * @version 1.575.51
      */
     final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                      array $columnas_by_table = array(), bool $columnas_en_bruto = false,
@@ -1099,7 +1098,6 @@ class modelo extends modelo_base {
      *
      * @fecha 2022-08-02 16:38
      * @author mgamboa
-     * @version 1.575.51
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
@@ -1126,6 +1124,17 @@ class modelo extends modelo_base {
             extra_join: $extra_join, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
+        }
+
+        /**
+         * REFACTORIZAR
+         */
+        if(count($in)>0) {
+            if(isset($in['llave'])){
+                if(array_key_exists($in['llave'], $this->columnas_extra)){
+                    $in['llave'] = $this->columnas_extra[$in['llave']];
+                }
+            }
         }
 
         $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false, diferente_de: $diferente_de,
