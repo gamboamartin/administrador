@@ -1131,6 +1131,9 @@ class init{
         if($sistema === 'pbx'){
             $namespace = 'gamboamartin\\pbx\\';
         }
+        if($sistema === 'notificaciones'){
+            $namespace = 'gamboamartin\\notificaciones\\';
+        }
 
 
         $name_ctl = 'controlador_'.$seccion;
