@@ -409,9 +409,10 @@ class adm_accion extends _modelo_children {
     }
 
     /**
-     * @param string $accion
-     * @param int $grupo_id
-     * @param string $seccion
+     * Integra un permiso en una session si es valido
+     * @param string $accion Accion a verificar
+     * @param int $grupo_id Grupo de usuario
+     * @param string $seccion Seccion
      * @return bool|array
      */
     private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
