@@ -731,9 +731,9 @@ class adm_accion extends _modelo_children {
     }
 
     /**
-     *
-     * @param string $accion
-     * @param string $seccion
+     * Valida si existe o no permiso para la ejecucion de una accion exepto login y loguea
+     * @param string $accion Accion a verificar
+     * @param string $seccion Seccion a verificar
      * @return array|bool
      */
     final public function permiso(string $accion, string $seccion): bool|array
