@@ -414,9 +414,15 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo de usuario
      * @param string $seccion Seccion
      * @return bool|array
+     * @version 10.20.2
      */
     private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
     {
+        $valida = $this->valida_data_permiso(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar permiso',data: $valida);
+        }
+
         $n_permisos = $this->n_permisos(accion: $accion, grupo_id: $grupo_id, seccion: $seccion);
         if (errores::$error) {
             return $this->error->error('Error al contar acciones', $n_permisos);

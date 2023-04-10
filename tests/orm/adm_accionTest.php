@@ -418,6 +418,23 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_permiso_valido(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $accion = 'a';
+        $grupo_id= 2;
+        $seccion= 'accion';
+        $resultado = $modelo->genera_permiso_valido($accion, $grupo_id, $seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue( $resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_grupos_id_por_accion(){
 
         errores::$error = false;
