@@ -525,6 +525,34 @@ class adm_accionTest extends test {
 
         errores::$error = false;
     }
+    public function test_permiso_valido(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $accion = '';
+        $grupo_id= -1;
+        $seccion= '';
+        $n_permisos = -1;
+
+        $resultado = $modelo->permiso_valido($accion, $grupo_id, $n_permisos, $seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+        $accion = '';
+        $grupo_id= -1;
+        $seccion= '';
+        $n_permisos = 1;
+
+        $resultado = $modelo->permiso_valido($accion, $grupo_id, $n_permisos, $seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
 
 
     public function test_valida_alta_bd(){
