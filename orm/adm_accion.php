@@ -290,14 +290,13 @@ class adm_accion extends _modelo_children {
     /**
      * Funcion usada para registrar la cantidad de acciones realizadas por un grupo.
      *
-     * P INT P ORDER
      * @return array|int
      *
      * @functions $n_permisos = (new adm_accion_grupo($adm_accion->link))->cuenta(filtro: $filtro); Valida y maqueta la
      * cantidad de acciones realizadas
      */
     final public function cuenta_acciones(): int|array
-    { //FIN PROT
+    {
         if(!isset($_SESSION['grupo_id'])){
             return $this->error->error('Error debe existir grupo_id',array($_SESSION));
         }
@@ -735,9 +734,11 @@ class adm_accion extends _modelo_children {
      * @param string $accion Accion a verificar
      * @param string $seccion Seccion a verificar
      * @return array|bool
+     * @version 10.22.2
      */
     final public function permiso(string $accion, string $seccion): bool|array
     {
+
         $permiso = $this->valida_permiso(accion: $accion, seccion: $seccion);
         if(errores::$error){
             return $this->error->error('Error al validar permisos',$permiso);
@@ -850,6 +851,7 @@ class adm_accion extends _modelo_children {
 
         }
         else {
+
             $permiso_valido = $this->genera_permiso_valido(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
             if (errores::$error) {
                 return $this->error->error('Error al verificar permiso', $permiso_valido);

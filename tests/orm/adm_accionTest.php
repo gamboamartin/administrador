@@ -542,6 +542,22 @@ class adm_accionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_permiso(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+        $accion = 'login';
+        $seccion= 'session';
+        $_SESSION['grupo_id'] = 1;
+        $resultado = $modelo->permiso($accion, $seccion);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
     public function test_permiso_valido(){
 
         errores::$error = false;
@@ -551,6 +567,7 @@ class adm_accionTest extends test {
         $grupo_id= -1;
         $seccion= '';
         $n_permisos = -1;
+
 
         $resultado = $modelo->permiso_valido($accion, $grupo_id, $n_permisos, $seccion);
         $this->assertIsBool($resultado);
