@@ -294,6 +294,7 @@ class adm_accion extends _modelo_children {
      *
      * @functions $n_permisos = (new adm_accion_grupo($adm_accion->link))->cuenta(filtro: $filtro); Valida y maqueta la
      * cantidad de acciones realizadas
+     * @version 10.24.2
      */
     final public function cuenta_acciones(): int|array
     {

@@ -333,6 +333,19 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_cuenta_acciones(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+        $_SESSION['grupo_id'] = 2;
+        $resultado = $modelo->cuenta_acciones();
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_filtro_accion_seccion(){
 
         errores::$error = false;

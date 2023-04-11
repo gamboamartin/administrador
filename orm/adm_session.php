@@ -136,8 +136,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     }
 
     /**
-     * P ORDER P INT ERRORREV
-     * @param stdClass $r_session
+     * Carga los datos de una session
+     * @param stdClass $r_session Resultado de session
      * @return array
      */
     private function carga_session(stdClass $r_session): array

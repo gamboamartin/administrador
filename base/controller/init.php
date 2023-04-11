@@ -1220,15 +1220,11 @@ class init{
     }
 
     /**
-     * P INT
+     *
      * Funcion utilizada para verificar las solicitudes de un permiso.
-     *
      * @param PDO $link Representa la conexion entre PHP y la base de datos
-     *
      * @param seguridad $seguridad llamada a la clase "seguridad"
-     *
      * @return array|seguridad
-     *
      * @functions $modelo_accion = new adm_accion.  Genera un objeto de tipo adm_accion.
      *
      * @functions $permiso = $modelo_accion->permiso.  Valida que el grupo de usuarios cuente con los
@@ -1239,12 +1235,12 @@ class init{
      */
     final public function permiso(PDO $link, seguridad $seguridad): array|seguridad
     {
-        $modelo_accion = new adm_accion($link);
+        $modelo_accion = new adm_accion(link: $link);
         if (isset($_SESSION['grupo_id'])) {
             $permiso = $modelo_accion->permiso(accion: $seguridad->accion, seccion: $seguridad->seccion);
             if(errores::$error){
                 session_destroy();
-                return $this->error->error('Error al validar permisos',$permiso);
+                return $this->error->error(mensaje: 'Error al validar permisos',data: $permiso);
             }
 
             if (!$permiso) {
