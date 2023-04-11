@@ -197,6 +197,20 @@ class init{
         return $data;
     }
 
+    private function get_acciones_permitidas(adm_accion $modelo_accion, seguridad $seguridad){
+        $seguridad = $this->permiso_denegado(modelo_accion: $modelo_accion,seguridad:  $seguridad);
+        if(errores::$error){
+            session_destroy();
+            return $this->error->error(mensaje: 'Error al inicializar seguridad',data: $seguridad);
+        }
+        $n_acciones = $this->verifica_n_acciones(modelo_accion: $modelo_accion);
+        if(errores::$error){
+            session_destroy();
+            return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $n_acciones);
+        }
+        return $seguridad;
+    }
+
     /**
      * Aqui se determina que view se va a utilizar para el frontend
      * v1.18.9
@@ -1237,27 +1251,37 @@ class init{
     {
         $modelo_accion = new adm_accion(link: $link);
         if (isset($_SESSION['grupo_id'])) {
-            $permiso = $modelo_accion->permiso(accion: $seguridad->accion, seccion: $seguridad->seccion);
-            if(errores::$error){
-                session_destroy();
-                return $this->error->error(mensaje: 'Error al validar permisos',data: $permiso);
-            }
-
-            if (!$permiso) {
-                $seguridad->seccion = 'adm_session';
-                $seguridad->accion = 'denegado';
-                $seguridad->acceso_denegado = true;
-            }
-
-            $n_acciones = $modelo_accion->cuenta_acciones();
+            $seguridad = $this->get_acciones_permitidas(modelo_accion: $modelo_accion,seguridad:  $seguridad);
             if(errores::$error){
                 session_destroy();
                 return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $n_acciones);
             }
-            if ((int)$n_acciones === 0) {
+        }
+        return $seguridad;
+    }
+
+    private function permiso_denegado(adm_accion $modelo_accion, seguridad $seguridad){
+        $permiso = $modelo_accion->permiso(accion: $seguridad->accion, seccion: $seguridad->seccion);
+        if(errores::$error){
+            session_destroy();
+            return $this->error->error(mensaje: 'Error al validar permisos',data: $permiso);
+        }
+
+        if (!$permiso) {
+            $seguridad = $this->seguridad_denegado(seguridad: $seguridad);
+            if(errores::$error){
                 session_destroy();
+                return $this->error->error(mensaje: 'Error al inicializar seguridad',data: $seguridad);
             }
         }
+        return $seguridad;
+    }
+
+    private function seguridad_denegado(seguridad $seguridad): seguridad
+    {
+        $seguridad->seccion = 'adm_session';
+        $seguridad->accion = 'denegado';
+        $seguridad->acceso_denegado = true;
         return $seguridad;
     }
 
@@ -1312,5 +1336,17 @@ class init{
             return $this->error->error(mensaje: 'Error al generar session', data: $e);
         }
         return $session_id;
+    }
+
+    private function verifica_n_acciones(adm_accion $modelo_accion){
+        $n_acciones = $modelo_accion->cuenta_acciones();
+        if(errores::$error){
+            session_destroy();
+            return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $n_acciones);
+        }
+        if ((int)$n_acciones === 0) {
+            session_destroy();
+        }
+        return $n_acciones;
     }
 }
