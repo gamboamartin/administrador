@@ -31,6 +31,11 @@ class _modelo_parent extends _base {
         return $r_alta_bd;
     }
 
+    /**
+     * Valida si existe un atributo
+     * @param string $campo Campo a validar
+     * @return bool
+     */
     private function existe_attr(string $campo): bool
     {
         $existe_attr = false;
