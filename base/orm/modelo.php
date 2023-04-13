@@ -1185,13 +1185,18 @@ class modelo extends modelo_base {
      * @param array $filtro_especial Filtro para get data
      * @param int $n_rows_for_page N rows
      * @param int $pagina Num pag
+     * @param array $in
+     * @param array $extra_join
+     * @param array $order
      * @return array
-     * @version 1.544.51
      */
     final public function get_data_lista(array $filtro = array(),array $filtro_especial = array(),
                                          int $n_rows_for_page = 10, int $pagina = 1, array $in = array(),
-                                         array $extra_join = array()): array
+                                         array $extra_join = array(), array $order = array()): array
     {
+        if(count($order) === 0){
+            $order[$this->tabla.'.id'] = 'DESC';
+        }
 
         $limit = $n_rows_for_page;
 
@@ -1207,7 +1212,7 @@ class modelo extends modelo_base {
         }
 
         $result = $this->filtro_and(extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, in: $in,
-            limit: $limit, offset: $offset);
+            limit: $limit, offset: $offset, order: $order);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
         }
