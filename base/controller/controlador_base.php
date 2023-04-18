@@ -62,7 +62,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
                                 string   $campo_busca = 'registro_id', string $valor_busca_fault = '',
                                 stdClass $paths_conf = new stdClass()){
 
-
+        $this->paths_conf = $paths_conf;
         $this->campo_busca = $campo_busca;
         $this->errores = new errores();
         $this->filtros_lista = array();
