@@ -246,7 +246,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $header si header retorna error en navegador y corta la operacion
      * @param bool $ws si ws retorna json
      * @return array|string
-     * @final revisada
+     * @esfinal revisada
      */
     public function alta(bool $header, bool $ws = false):array|string{
 
