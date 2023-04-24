@@ -10,7 +10,7 @@ class _modelo_parent extends _base {
     /**
      * @param array $keys_integra_ds
      * @return array|stdClass
-     * @final rev
+     * @finalrev
      */
     public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {

@@ -262,7 +262,7 @@ class modelo extends modelo_base {
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
      * @version 1.603.54
-     * @final revisada
+     * @finalrevisada
      */
     public function alta_bd(): array|stdClass{
 
