@@ -100,7 +100,7 @@ class modelo extends modelo_base {
             die('Error');
         }
 
-        if(!in_array($this->tabla, $data)){
+        if(!in_array($this->tabla, $data)  && $this->valida_existe_entidad){
             $error = $this->error->error(mensaje: 'Error no existe la entidad eb db'.$this->tabla, data: $data);
             print_r($error);
             die('Error');

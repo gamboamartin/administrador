@@ -64,6 +64,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     protected bool $id_code = false;
 
+    public bool $valida_existe_entidad = true;
+
 
     /**
      * Modelado
