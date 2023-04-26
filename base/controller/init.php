@@ -1148,7 +1148,9 @@ class init{
         if($sistema === 'notificaciones'){
             $namespace = 'gamboamartin\\notificaciones\\';
         }
-
+        if($sistema === 'tg_notificacion'){
+            $namespace = 'tglobally\\tg_notificacion\\';
+        }
 
         $name_ctl = 'controlador_'.$seccion;
         $name_ctl = str_replace($namespace.'controllers\\','',$name_ctl);
