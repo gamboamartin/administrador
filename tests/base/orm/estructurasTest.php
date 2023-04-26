@@ -60,6 +60,28 @@ class estructurasTest extends test {
 
     }
 
+    public function test_existe_entidad(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        //$st = new liberator($st);
+        $entidad = 'adm_accion';
+        $resultado = $st->existe_entidad($entidad);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+        $entidad = 'adm_accionxxxx';
+        $resultado = $st->existe_entidad($entidad);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue($resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_get_tables_sql(): void
     {
         errores::$error = false;

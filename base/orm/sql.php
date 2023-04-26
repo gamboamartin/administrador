@@ -89,12 +89,19 @@ class sql{
 
     /**
      * Genera el sql para show tables
-     * @version 1.160.31
+     * @param string $entidad Entidad a obtener data
      * @return string
+     * @version 1.160.31
      */
-    public function show_tables(): string
+    final public function show_tables(string $entidad = ''): string
     {
-        return "SHOW TABLES";
+        $entidad = trim($entidad);
+        $where = '';
+        if($entidad !==''){
+            $where = "LIKE '$entidad'";
+        }
+        $sql = "SHOW TABLES $where";
+        return trim($sql);
     }
 
     /**

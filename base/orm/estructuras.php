@@ -202,6 +202,28 @@ class estructuras{
         return $es_primaria;
     }
 
+    final public function existe_entidad(string $entidad){
+        $entidad = trim($entidad);
+        if($entidad === ''){
+            return $this->error->error(mensaje: 'Error entidad vacia', data: $entidad);
+        }
+        $sql = (new sql())->show_tables(entidad: $entidad);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
+        }
+
+        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql, valida_tabla: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
+        }
+        $existe_entidad = false;
+        if($result->n_registros > 0){
+            $existe_entidad = true;
+        }
+
+        return $existe_entidad;
+    }
+
     private function genera_estructura(array $keys_no_foraneas, array $modelos, bool $valida_tabla = true): array|stdClass
     {
         $estructura_bd = array();
