@@ -5,7 +5,6 @@ use config\generales;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\base_modelos\base_modelos;
 use gamboamartin\errores\errores;
-use gamboamartin\plugins\files;
 use JetBrains\PhpStorm\Pure;
 use JsonException;
 use PDO;
@@ -14,32 +13,47 @@ use stdClass;
 use Throwable;
 
 
+/**
+ * @var bool $aplica_bitacora Si es true insertara en una bitacora de control en la base de datos en adm_bitacora
+ * @var bool $aplica_bitacora Si es true insertara solicitara y validara login y token por get session_id
+ * @var string $campos_sql Campos de la entidad en forma de SQL
+ * @var array $campos_view Campos de la entidad ajustados en un array
+ * @var string $consulta Es el query en forma de sql para ser ejecutado en el sistema
+ * @var errores $error Objeto para manejo de errores
+ * @var bool $es_sincronizable Variable que determina si modelo es sincronizable con una base de datos
+ */
 class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
+
+
+    public bool $aplica_bitacora = false;
+    public bool $aplica_seguridad = false;
+    public string $campos_sql = '';
+    public array $campos_view = array();
     public string $consulta = '';
     public errores $error ;
+    public array $filtro = array();
+    public array $hijo = array();
     public PDO $link ;
-    public string $transaccion = '' ;
+    public array $patterns = array();
+    public array $registro = array();
     public int $registro_id = -1 ;
     public string  $tabla = '' ;
-    public array $registro = array();
-    public array $patterns = array();
-    public array $hijo = array();
-    public array $filtro = array();
+    public string $transaccion = '' ;
     public int $usuario_id = -1;
-    public string $campos_sql = '';
+
     public array $registro_upd = array();
     public array $columnas_extra = array();
     public array $columnas = array();
     public array $sub_querys = array();
     public array $campos_obligatorios=array('status');
-    public array $campos_view = array();
+
     public array $tipo_campos = array();
 
     public base_modelos     $validacion;
     public string $status_default = 'activo';
-    public bool $aplica_bitacora = false;
+
     public array $filtro_seguridad = array();
-    public bool $aplica_seguridad = false;
+
     public array $registros = array();
     public stdClass $row;
     public int $n_registros;
@@ -65,6 +79,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     protected bool $id_code = false;
 
     public bool $valida_existe_entidad = true;
+    public bool $es_sincronizable = false;
 
 
     /**
