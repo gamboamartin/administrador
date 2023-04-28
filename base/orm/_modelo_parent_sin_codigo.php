@@ -28,7 +28,7 @@ class _modelo_parent_sin_codigo extends _modelo_parent {
      * @param bool $reactiva
      * @param array $keys_integra_ds
      * @return array|stdClass
-     * @final rev
+     * @finalrev
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('descripcion')): array|stdClass

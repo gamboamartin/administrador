@@ -1417,7 +1417,7 @@ class modelo extends modelo_base {
      * @internal  $this->agrega_usuario_session();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($this->registro_upd,__FUNCTION__, $consulta);
-     * @final rev
+     * @finalrev
      * @version 9.120.4
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass

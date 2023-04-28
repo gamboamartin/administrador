@@ -34,10 +34,16 @@ class _modelo_parent extends _base {
     /**
      * Valida si existe un atributo
      * @param string $campo Campo a validar
-     * @return bool
+     * @return bool|array
+     * @version 10.35.2
      */
-    private function existe_attr(string $campo): bool
+    private function existe_attr(string $campo): bool|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
+
         $existe_attr = false;
         $attrs = (array)$this->atributos;
         if(array_key_exists($campo, $attrs)){
@@ -47,6 +53,10 @@ class _modelo_parent extends _base {
     }
 
     private function limpiar_attr(string $campo){
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
         $existe_attr = $this->existe_attr(campo: $campo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe atributo',data: $existe_attr);
@@ -59,6 +69,10 @@ class _modelo_parent extends _base {
 
     private function limpiar_attrs(){
         foreach ($this->registro as $campo=>$value){
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            }
             $registro = $this->limpiar_attr(campo: $campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al al limpiar',data: $registro);
@@ -73,7 +87,7 @@ class _modelo_parent extends _base {
      * @param bool $reactiva
      * @param array $keys_integra_ds
      * @return array|stdClass
-     * @final rev
+     * @finalrev
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo','descripcion')): array|stdClass
