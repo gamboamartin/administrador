@@ -124,9 +124,23 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo para integrar en filtro
      * @param string $adm_seccion Seccion para integrar en filtro
      * @return array
+     * @version 10.37.2
      */
     private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
     {
+        $adm_accion = trim($adm_accion);
+        if($adm_accion === ''){
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia',data:  $adm_accion);
+        }
+        $adm_seccion = trim($adm_seccion);
+        if($adm_seccion === ''){
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia',data:  $adm_seccion);
+        }
+
+        if($adm_grupo_id <= 0){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_seccion);
+        }
+
         $filtro['adm_grupo.id'] = $adm_grupo_id;
         $filtro['adm_accion.descripcion'] = $adm_accion;
         $filtro['adm_grupo.status'] = 'activo';
@@ -364,7 +378,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     /**
      * Verifica si una session existe en base de datos asi como su permiso
-     * @param array $filtro Filtro a integrar par avalidacion
+     * @param array $filtro Filtro a integrar para validacion
      * @return array|stdClass
      */
     private function val_session_existe(array $filtro): array|stdClass

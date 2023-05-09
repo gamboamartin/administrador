@@ -97,6 +97,25 @@ class adm_usuarioTest extends test {
 
     }
 
+    public function test_filtro(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = -1;
+
+        $adm_accion = 'a';
+        $adm_seccion = 'b';
+        $adm_grupo_id = 1;
+        $resultado = $modelo->filtro($adm_accion, $adm_grupo_id, $adm_seccion);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado['adm_grupo.id']);
+        errores::$error = false;
+    }
+
     public function test_filtro_seguridad(): void
     {
 
