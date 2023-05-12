@@ -611,7 +611,7 @@ class inicializacionTest extends test {
 
         $status_default = '';
         $registro = array();
-        $resultado = $modelo->registro_ins(array(),$registro, $status_default, array());
+        $resultado = $modelo->registro_ins(campos_encriptados: array(),integra_datos_base: false,registro: $registro, status_default: $status_default, tipo_campos: array());
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error status_default no puede venir vacio', $resultado['mensaje']);
@@ -620,7 +620,8 @@ class inicializacionTest extends test {
 
         $status_default = 'a';
         $registro = array();
-        $resultado = $modelo->registro_ins(array(),$registro, $status_default, array());
+        $resultado = $modelo->registro_ins(campos_encriptados: array(),integra_datos_base: true,registro: $registro,status_default:  $status_default,tipo_campos:  array());
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a', $resultado['status']);
@@ -629,7 +630,7 @@ class inicializacionTest extends test {
         $campos_encriptados = array('status');
         $status_default = 'a';
         $registro = array();
-        $resultado = $modelo->registro_ins($campos_encriptados,$registro, $status_default, array());
+        $resultado = $modelo->registro_ins(campos_encriptados: $campos_encriptados,registro: $registro,status_default:  $status_default, tipo_campos: array(),integra_datos_base: true);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SE7WlTQsa7AceVeNzanVCg==', $resultado['status']);
@@ -638,7 +639,7 @@ class inicializacionTest extends test {
         $campos_encriptados = array('status');
         $status_default = 'p';
         $registro = array();
-        $resultado = $modelo->registro_ins($campos_encriptados,$registro, $status_default, array());
+        $resultado = $modelo->registro_ins(campos_encriptados: $campos_encriptados,registro: $registro,status_default:  $status_default, tipo_campos: array(),integra_datos_base: true);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('OM+frc65i8dAfMJhbnMd9A==', $resultado['status']);
@@ -673,7 +674,7 @@ class inicializacionTest extends test {
 
         $registro = array();
         $status_default = '';
-        $resultado = $inicializacion->status($registro, $status_default);
+        $resultado = $inicializacion->status(registro: $registro,status_default:  $status_default, integra_datos_base: true);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error status_default no puede venir vacio', $resultado['mensaje']);
@@ -683,7 +684,7 @@ class inicializacionTest extends test {
 
         $registro = array();
         $status_default = 'a';
-        $resultado = $inicializacion->status($registro, $status_default);
+        $resultado = $inicializacion->status(registro: $registro,status_default:  $status_default, integra_datos_base: true);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('a', $resultado['status']);
@@ -694,7 +695,7 @@ class inicializacionTest extends test {
         $registro = array();
         $status_default = 'a';
         $registro['status'] = 'cv';
-        $resultado = $inicializacion->status($registro, $status_default);
+        $resultado = $inicializacion->status(registro: $registro,status_default:  $status_default, integra_datos_base: true);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('cv', $resultado['status']);

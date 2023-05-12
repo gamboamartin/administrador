@@ -80,7 +80,7 @@ class insertsTest extends test {
         $tabla = 'adm_accion';
 
 
-        $resultado = $ins->data_para_log($this->link, $tabla);
+        $resultado = $ins->data_para_log(link: $this->link,tabla:  $tabla,integra_datos_base: true);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SELECT count(usuario_alta_id) FROM adm_accion',$resultado->alta_valido->queryString);
@@ -112,7 +112,7 @@ class insertsTest extends test {
         $registro = array();
         $registro['a'] = '';
         $_SESSION['usuario_id'] = 1;
-        $resultado = $ins->genera_data_log($this->link, $registro, $tabla);
+        $resultado = $ins->genera_data_log(link: $this->link,registro:  $registro, tabla: $tabla,integra_datos_base: true);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("'',1,1",$resultado->valores);

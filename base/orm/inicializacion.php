@@ -854,10 +854,11 @@ class inicializacion{
 
     /**
      * Asigna a un registro status default
-     * @version 1.0.0
+     * @param bool $integra_datos_base si true integra campos base
      * @param array $registro registro a insertar
      * @param string $status_default status = activo o inactivo
      * @return array
+     * @version 1.0.0
      */
     private function status(bool $integra_datos_base, array $registro, string $status_default): array
     {

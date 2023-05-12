@@ -52,6 +52,12 @@ class _modelo_parent extends _base {
         return $existe_attr;
     }
 
+    /**
+     * Limpia un atributo no existente
+     * @param string $campo Campos a limpiar
+     * @return array
+     * 
+     */
     private function limpiar_attr(string $campo){
         $campo = trim($campo);
         if($campo === ''){
