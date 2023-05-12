@@ -281,6 +281,11 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro);
         }
+
+        if(!$this->integra_datos_base){
+            unset($registro['status']);
+        }
+
         $this->registro = $registro;
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
@@ -1636,7 +1641,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
         }
 
-        $where = " WHERE $tabla".".id = $this->registro_id ";
+        $this->campo_llave === "" ? $where = " WHERE $tabla".".id = $this->registro_id " :
+            $where = " WHERE $tabla".".$this->campo_llave = $this->registro_id ";
+
         $consulta .= $where;
 
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados,
