@@ -265,9 +265,6 @@ class modelo extends modelo_base {
      * @finalrevisada
      */
     public function alta_bd(): array|stdClass{
-
-
-
         if(!isset($_SESSION['usuario_id'])){
             return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
         }
@@ -277,13 +274,10 @@ class modelo extends modelo_base {
         }
         $this->status_default = 'activo';
         $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
-            registro: $this->registro,status_default: $this->status_default, tipo_campos: $this->tipo_campos);
+            integra_datos_base: $this->integra_datos_base,registro: $this->registro,
+            status_default: $this->status_default, tipo_campos: $this->tipo_campos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro);
-        }
-
-        if(!$this->integra_datos_base){
-            unset($registro['status']);
         }
 
         $this->registro = $registro;

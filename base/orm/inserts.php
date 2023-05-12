@@ -119,7 +119,7 @@ class inserts{
      * @return stdClass|array
      * @version 1.475.49
      */
-    private function data_para_log(PDO $link, string $tabla, bool $integra_datos_base): stdClass|array
+    private function data_para_log(bool $integra_datos_base, PDO $link, string $tabla): stdClass|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
@@ -169,7 +169,8 @@ class inserts{
      * @return array|stdClass
      * @version 1.487.49
      */
-    private function genera_data_log(PDO $link, array $registro, string $tabla, bool $integra_datos_base): array|stdClass
+    private function genera_data_log(bool $integra_datos_base, PDO $link, array $registro,
+                                     string $tabla): array|stdClass
     {
         if(count($registro) === 0){
             return $this->error->error(mensaje: 'Error registro vacio',data:  $registro);
@@ -193,7 +194,7 @@ class inserts{
             return $this->error->error(mensaje: 'Error al generar sql ', data: $sql_data_alta);
         }
 
-        $datas = $this->data_para_log(link:$link,tabla: $tabla, integra_datos_base: $integra_datos_base);
+        $datas = $this->data_para_log(integra_datos_base: $integra_datos_base,link:$link,tabla: $tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener data log', data: $datas);
         }
@@ -414,8 +415,8 @@ class inserts{
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
         }
-        $data_log = $this->genera_data_log(link: $modelo->link,registro: $modelo->registro,tabla: $modelo->tabla,
-            integra_datos_base: $modelo->integra_datos_base);
+        $data_log = $this->genera_data_log(integra_datos_base: $modelo->integra_datos_base,link: $modelo->link,
+            registro: $modelo->registro,tabla: $modelo->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar data log', data: $data_log);
         }
