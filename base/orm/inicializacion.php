@@ -804,15 +804,15 @@ class inicializacion{
      * @author mgamboa
      * @fecha 2022-08-01 16:08
      */
-    final public function registro_ins(array $campos_encriptados, array $registro, string $status_default,
-                                 array $tipo_campos): array
+    final public function registro_ins(array $campos_encriptados, bool $integra_datos_base, array $registro,
+                                       string $status_default, array $tipo_campos): array
     {
         $status_default = trim($status_default);
         if($status_default === ''){
             return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
         }
 
-        $registro = $this->status(registro: $registro,status_default:  $status_default);
+        $registro = $this->status(integra_datos_base: $integra_datos_base, registro: $registro,status_default:  $status_default);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
         }
@@ -859,7 +859,7 @@ class inicializacion{
      * @param string $status_default status = activo o inactivo
      * @return array
      */
-    private function status(array $registro, string $status_default): array
+    private function status(bool $integra_datos_base, array $registro, string $status_default): array
     {
         $status_default = trim($status_default);
         if($status_default === ''){
@@ -867,7 +867,9 @@ class inicializacion{
         }
 
         if(!isset($registro['status'])){
-            $registro['status'] = $status_default;
+            if($integra_datos_base){
+                $registro['status'] = $status_default;
+            }
         }
         return $registro;
     }

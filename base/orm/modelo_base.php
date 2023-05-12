@@ -81,6 +81,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public bool $valida_existe_entidad = true;
     public bool $es_sincronizable = false;
 
+    public bool $integra_datos_base = true;
+    public string $campo_llave = "";
+
 
     /**
      * Modelado
@@ -589,7 +592,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                     'registro'=>$this->registro),aplica_bitacora: true);
         }
         if($this->transaccion ==='INSERT'){
-            $this->registro_id = $this->link->lastInsertId();
+            $this->campo_llave === "" ? $this->registro_id = $this->link->lastInsertId() :
+                $this->registro_id = $this->registro[$this->campo_llave];
         }
 
         $mensaje = 'Exito al ejecutar sql del modelo '.$this->tabla. ' transaccion '.$this->transaccion;
