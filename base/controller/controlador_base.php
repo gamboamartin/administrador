@@ -52,11 +52,11 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
 
     /**
      * @param PDO $link Conexion a la base de datos
-     * @param modelo $modelo
-     * @param array $filtro_boton_lista
-     * @param string $campo_busca
-     * @param string $valor_busca_fault
-     * @param stdClass $paths_conf
+     * @param modelo $modelo Modelo de datos a ejecutar
+     * @param array $filtro_boton_lista Filtros para botones de lista
+     * @param string $campo_busca Campos para integracion de filtros
+     * @param string $valor_busca_fault  Valor default view
+     * @param stdClass $paths_conf Rutas de configuracion
      */
     public function __construct(PDO $link, modelo $modelo, array $filtro_boton_lista = array(),
                                 string   $campo_busca = 'registro_id', string $valor_busca_fault = '',
@@ -723,7 +723,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
      * @param bool $ws retorna json
      * @return array|stdClass
      * @version 2.17.2.1
-     * @final rev
+     * @finalrev
      */
     public function modifica(bool $header, bool $ws = false):array|stdClass{
 

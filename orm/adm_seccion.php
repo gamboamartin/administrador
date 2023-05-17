@@ -421,7 +421,11 @@ class adm_seccion extends _modelo_children {
 
     }
 
-    public function secciones_sistema(): array
+    /**
+     * Obtiene las secciones integradas en un paquete o sistema
+     * @return array
+     */
+    final public function secciones_sistema(): array
     {
         $filtro['adm_sistema.descripcion'] = (new generales())->sistema;
         $r_seccion_pertenece = (new adm_seccion_pertenece(link: $this->link))->filtro_and(filtro: $filtro);
