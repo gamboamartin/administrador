@@ -1118,6 +1118,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
+
         $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
             columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, extension_estructura: $this->extension_estructura,
             extra_join: $extra_join, renombradas: $this->renombres);
@@ -1125,15 +1126,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }
 
-        /**
-         * REFACTORIZAR
-         */
-        if(count($in)>0) {
-            if(isset($in['llave'])){
-                if(array_key_exists($in['llave'], $this->columnas_extra)){
-                    $in['llave'] = $this->columnas_extra[$in['llave']];
-                }
-            }
+
+        $in = $this->in_llave(in: $in);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al integrar in',data: $in);
         }
 
         $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false, diferente_de: $diferente_de,
@@ -1264,6 +1260,18 @@ class modelo extends modelo_base {
 
         return (int) $r_modelo->registros[0][$this->key_id];
 
+    }
+
+    private function in_llave(array $in): array
+    {
+        if(count($in)>0) {
+            if(isset($in['llave'])){
+                if(array_key_exists($in['llave'], $this->columnas_extra)){
+                    $in['llave'] = $this->columnas_extra[$in['llave']];
+                }
+            }
+        }
+        return $in;
     }
 
     /**
