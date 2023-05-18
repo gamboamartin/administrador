@@ -387,6 +387,22 @@ class adm_usuarioTest extends test {
 
     }
 
+    public function test_val_session_existe(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $filtro = array('adm_grupo.id'=>1);
+        $resultado = $modelo->val_session_existe($filtro);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_valida_usuario_password(): void
     {
 

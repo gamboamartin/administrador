@@ -381,9 +381,13 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * Verifica si una session existe en base de datos asi como su permiso
      * @param array $filtro Filtro a integrar para validacion
      * @return array|stdClass
+     * @version 10.42.2
      */
     private function val_session_existe(array $filtro): array|stdClass
     {
+        if(count($filtro) === 0){
+            return $this->error->error(mensaje: 'Error filtro esta vacio', data: $filtro);
+        }
         $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
