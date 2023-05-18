@@ -358,6 +358,35 @@ class adm_usuarioTest extends test {
         errores::$error = false;
     }
 
+    public function test_val_session(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $existe = false;
+        $resultado = $modelo->val_session($existe);
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(0,$resultado);
+
+        errores::$error = false;
+
+
+
+        $existe = true;
+        $resultado = $modelo->val_session($existe);
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_valida_usuario_password(): void
     {
 

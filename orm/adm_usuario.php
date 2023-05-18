@@ -366,6 +366,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * Valida e integra una validacion de existe para session
      * @param bool $existe Si true val session existe
      * @return int
+     * @version 10.41.2
      */
     private function val_session(bool $existe): int
     {
