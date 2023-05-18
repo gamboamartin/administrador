@@ -44,6 +44,25 @@ class _modelo_parentTest extends test {
         errores::$error = false;
     }
 
+    public function test_limpiar_attr(): void
+    {
+        errores::$error = false;
+
+        $link = $this->link;
+        $tabla = 'adm_menu';
+        $modelo = new _modelo_parent($link, $tabla);
+        $modelo = new liberator($modelo);
+
+
+        $campo = 'a';
+        $resultado = $modelo->limpiar_attr($campo);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty( $resultado);
+
+        errores::$error = false;
+    }
+
 
 
 }

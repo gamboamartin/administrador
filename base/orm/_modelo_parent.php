@@ -8,7 +8,8 @@ use stdClass;
 class _modelo_parent extends _base {
 
     /**
-     * @param array $keys_integra_ds
+     * Da de alta un registro integrando campos base del modelo como descripcion_select basada en el codigo y descripcion
+     * @param array $keys_integra_ds Key a integrar para descripcion select
      * @return array|stdClass
      * @finalrev
      */
@@ -56,9 +57,10 @@ class _modelo_parent extends _base {
      * Limpia un atributo no existente
      * @param string $campo Campos a limpiar
      * @return array
-     * 
+     * @version 10.16.2
      */
-    private function limpiar_attr(string $campo){
+    private function limpiar_attr(string $campo): array
+    {
         $campo = trim($campo);
         if($campo === ''){
             return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
@@ -73,7 +75,12 @@ class _modelo_parent extends _base {
         return $this->registro;
     }
 
-    private function limpiar_attrs(){
+    /**
+     * Limpia los atributos de un registro al insertar
+     * @return array
+     */
+    private function limpiar_attrs(): array
+    {
         foreach ($this->registro as $campo=>$value){
             $campo = trim($campo);
             if($campo === ''){
