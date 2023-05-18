@@ -224,8 +224,9 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * @param int $adm_grupo_id
-     * @param stdClass $data_permiso
+     * Obtiene los elementos de una session
+     * @param int $adm_grupo_id Grupo de usuario
+     * @param stdClass $data_permiso datos previos de permiso a validar
      * @return array|stdClass
      */
     private function get_val_session(int $adm_grupo_id, stdClass $data_permiso): array|stdClass
