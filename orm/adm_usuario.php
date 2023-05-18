@@ -202,10 +202,12 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * @param string $adm_accion
-     * @param int $adm_grupo_id
-     * @param string $adm_seccion
+     * Obtiene los permisos de una interaccion el el sistema
+     * @param string $adm_accion Accion a validar
+     * @param int $adm_grupo_id Grupo de usuario a validar
+     * @param string $adm_seccion Seccion a validar
      * @return array|stdClass
+     * 
      */
     private function get_data_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array|stdClass
     {
