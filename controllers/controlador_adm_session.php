@@ -12,8 +12,10 @@ use base\controller\init;
 use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
+use gamboamartin\administrador\models\adm_categoria;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\administrador\models\adm_usuario;
+use gamboamartin\administrador\models\adm_categoria_usuario;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
@@ -247,6 +249,28 @@ class controlador_adm_session extends controlador_base{
         exit;
     }
 
+    public function obten_categoria(){
+        $session_id = $_GET['session_id'] ?? '';
+        $filtro['adm_session.name'] = $session_id;
+        $adm_session = (new adm_session(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener registro adm_session', data: $adm_session);
+        }
+
+        $filtro_categoria_usuario['adm_usuario_id'] = $adm_session->registros[0]['adm_usuario_id'];
+        $adm_categoria_usuario = (new adm_categoria_usuario(link: $this->link))->filtro_and(filtro: $filtro_categoria_usuario);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener $adm_categoria_usuario',data: $adm_categoria_usuario);
+        }
+
+        $filtro_categoria['id'] = $adm_categoria_usuario->registros[0]['adm_categoria_usuario_adm_categoria_id'];
+        $adm_categoria = (new adm_categoria(link: $this->link))->filtro_and(filtro: $filtro_categoria);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener $adm_categoria',data: $adm_categoria);
+        }
+
+        return $adm_categoria->registros[0]['adm_categoria_categoria'];
+    }
 
 
     public function srv_login(){
