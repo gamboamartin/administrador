@@ -12,9 +12,20 @@ class _modelo_parent extends _base {
      * @param array $keys_integra_ds Key a integrar para descripcion select
      * @return array|stdClass
      * @finalrev
+     * @version 10.48.2
      */
     public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
+        }
+
+        $keys = array('descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,registro:  $this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar data', data: $valida);
+        }
+
         $this->registro = $this->campos_base(data:$this->registro,modelo: $this, keys_integra_ds: $keys_integra_ds);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $this->registro);
