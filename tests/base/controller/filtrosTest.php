@@ -4,18 +4,24 @@ namespace tests\base\controller;
 use base\controller\controler;
 use base\controller\filtros;
 use gamboamartin\administrador\models\adm_atributo;
+use gamboamartin\controllers\controlador_adm_sistema;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-
+use stdClass;
 
 
 class filtrosTest extends test {
     public errores $errores;
+    private stdClass $paths_conf;
     public function __construct(?string $name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
         $this->errores = new errores();
+        $this->paths_conf = new stdClass();
+        $this->paths_conf->generales = '/var/www/html/administrador/config/generales.php';
+        $this->paths_conf->database = '/var/www/html/administrador/config/database.php';
+        $this->paths_conf->views = '/var/www/html/administrador/config/views.php';
     }
 
     public function test_asigna_filtro_get(): void
@@ -91,6 +97,21 @@ class filtrosTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_filtra(){
+        errores::$error = false;
+        $filtros = new filtros();
+        //$filtros = new liberator($filtros);
+
+        $controler = new controlador_adm_sistema(link: $this->link, paths_conf: $this->paths_conf);
+        $filtros_ = array();
+
+        $resultado = $filtros->filtra($controler, $filtros_);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
     }
 
     public function test_key_filter(): void

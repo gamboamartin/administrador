@@ -960,6 +960,7 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @author mgamboa
      * @fecha 2022-08-02 16:49
+     * @version 10.53.2
      */
     final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                      array $columnas_by_table = array(), bool $columnas_en_bruto = false,
@@ -1097,7 +1098,7 @@ class modelo extends modelo_base {
      *
      * @fecha 2022-08-02 16:38
      * @author mgamboa
-    
+     * @version 10.52.2
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,

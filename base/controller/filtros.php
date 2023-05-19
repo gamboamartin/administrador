@@ -4,6 +4,7 @@ namespace base\controller;
 use gamboamartin\errores\errores;
 
 use JetBrains\PhpStorm\Pure;
+use stdClass;
 
 
 class filtros{
@@ -118,14 +119,15 @@ class filtros{
     }
 
     /**
-     *
-     * @param controler $controler
-     * @param array $filtros
-     * @return array
+     * Filtra los elementos llamados desde un controler
+     * @param controler $controler Controlador en ejecucion
+     * @param array $filtros Filtros precargados
+     * @return array|stdClass
+     * @version 10.54.2
      */
-    final public function filtra(controler $controler, array $filtros): array
+    final public function filtra(controler $controler, array $filtros): array|stdClass
     {
-        $r_modelo = $controler->modelo->filtro_and(filtro: $filtros,filtro_especial: array());
+        $r_modelo = $controler->modelo->filtro_and(filtro: $filtros);
         if(errores::$error){
             return $controler->errores->error(mensaje: 'Error al obtener datos',data: $r_modelo);
         }

@@ -71,8 +71,8 @@ class normalizacion_ctl{
 
 
     /**
-     *
-     * @param array $filtros_brutos
+     * Genera los filtros para envio de datos
+     * @param array $filtros_brutos Filtro directos de POST
      * @return array
      */
     final public function genera_filtros_envio(array $filtros_brutos): array
