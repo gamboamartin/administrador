@@ -78,6 +78,7 @@ class _modelo_parent extends _base {
     /**
      * Limpia los atributos de un registro al insertar
      * @return array
+     * @version 10.47.2
      */
     private function limpiar_attrs(): array
     {
