@@ -8,9 +8,11 @@ use stdClass;
 class _modelo_parent_sin_codigo extends _modelo_parent {
 
     /**
-     * @param array $keys_integra_ds
+     * INserta un registro solo con la descripcion
+     * @param array $keys_integra_ds Key para integrar la descripcipn select
      * @return array|stdClass
      * @finalrev rev
+     * @version 10.49.2
      */
     public function alta_bd(array $keys_integra_ds = array('descripcion')): array|stdClass
     {
