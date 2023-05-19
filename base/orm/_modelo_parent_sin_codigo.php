@@ -9,7 +9,7 @@ class _modelo_parent_sin_codigo extends _modelo_parent {
 
     /**
      * INserta un registro solo con la descripcion
-     * @param array $keys_integra_ds Key para integrar la descripcipn select
+     * @param array $keys_integra_ds Key para integrar la descripcion select
      * @return array|stdClass
      * @finalrev rev
      * @version 10.49.2
