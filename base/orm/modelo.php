@@ -1097,6 +1097,7 @@ class modelo extends modelo_base {
      *
      * @fecha 2022-08-02 16:38
      * @author mgamboa
+    
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
@@ -1262,6 +1263,12 @@ class modelo extends modelo_base {
 
     }
 
+    /**
+     * Genera una llave de tipo in para SQL
+     * @param array $in IN precargada
+     * @return array
+     * @version 10.51.0
+     */
     private function in_llave(array $in): array
     {
         if(count($in)>0) {

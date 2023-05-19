@@ -661,6 +661,19 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_in_llave(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+        $in = array();
+        $in[] = '';
+        $resultado = $modelo->in_llave($in);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_init_archivos_tmp_model_exe(): void
     {
         errores::$error = false;
