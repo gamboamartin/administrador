@@ -50,6 +50,8 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public int $adm_menu_id = -1;
     public string $menu_header = '';
 
+    public string $titulo_pagina = "";
+
     /**
      * @param PDO $link Conexion a la base de datos
      * @param modelo $modelo Modelo de datos a ejecutar
