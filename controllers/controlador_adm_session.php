@@ -13,6 +13,7 @@ use base\seguridad;
 use config\generales;
 use base\controller\controlador_base;
 use gamboamartin\administrador\models\adm_categoria;
+use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\administrador\models\adm_categoria_usuario;
@@ -269,7 +270,20 @@ class controlador_adm_session extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener $adm_categoria',data: $adm_categoria);
         }
 
-        return $adm_categoria->registros[0]['adm_categoria_categoria'];
+        $filtro_menu['adm_categoria_id'] = $adm_categoria->registros[0]['adm_categoria_id'];
+        $adm_menu = (new adm_menu(link: $this->link))->filtro_and(filtro: $filtro_menu);
+        if(errores::$error){
+            return $this->errores->error(mensaje: 'Error al obtener $adm_menu',data: $adm_menu);
+        }
+
+        $menus_categoria = array();
+        for ($i=0;$i<count($adm_menu->registros);$i++){
+            $menus_categoria[] = $adm_menu->registros[$i]['adm_menu_descripcion'];
+        }
+
+        $categorias = $adm_categoria->registros[0]['adm_categoria_categoria'];
+
+        exit;
     }
 
 
