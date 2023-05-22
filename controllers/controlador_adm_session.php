@@ -270,20 +270,18 @@ class controlador_adm_session extends controlador_base{
             return $this->errores->error(mensaje: 'Error al obtener $adm_categoria',data: $adm_categoria);
         }
 
-        $filtro_menu['adm_categoria_id'] = $adm_categoria->registros[0]['adm_categoria_id'];
+        return $adm_categoria;
+    }
+
+    public function obten_menus_categoria(stdClass $categorias){
+
+        $filtro_menu['adm_categoria_id'] = $categorias->registros[0]['adm_categoria_id'];
         $adm_menu = (new adm_menu(link: $this->link))->filtro_and(filtro: $filtro_menu);
         if(errores::$error){
             return $this->errores->error(mensaje: 'Error al obtener $adm_menu',data: $adm_menu);
         }
 
-        $menus_categoria = array();
-        for ($i=0;$i<count($adm_menu->registros);$i++){
-            $menus_categoria[] = $adm_menu->registros[$i]['adm_menu_descripcion'];
-        }
-
-        $categorias = $adm_categoria->registros[0]['adm_categoria_categoria'];
-
-        exit;
+        return $adm_menu;
     }
 
 
