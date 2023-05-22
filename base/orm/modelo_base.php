@@ -854,6 +854,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces[]  = 'gamboamartin\\nomina\\models\\';
         $namespaces[]  = 'gamboamartin\\im_registro_patronal\\models\\';
         $namespaces[]  = 'gamboamartin\\importador\\models\\';
+        $namespaces[]  = 'gamboamartin\\proceso\\models\\';
         $namespaces[]  = 'tglobally\\tg_nomina\\models\\';
         $namespaces[]  = 'tglobally\\tg_empleado\\models\\';
         $namespaces[]  = 'tglobally\\tg_notificacion\\models\\';
