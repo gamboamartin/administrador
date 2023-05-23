@@ -16,8 +16,9 @@ use stdClass;
 
 class base_test{
 
-    public function alta_adm_accion(PDO $link, int $adm_seccion_id = 1, string $descripcion = 'alta',
-                                    int $id = 1, string $lista = 'inactivo', string $visible = 'inactivo'): array|stdClass
+    public function alta_adm_accion(PDO $link, string $adm_seccion_descripcion = 'adm_seccion', int $adm_seccion_id = 1,
+                                    string $descripcion = 'alta', int $id = 1, string $lista = 'inactivo',
+                                    string $visible = 'inactivo'): array|stdClass
     {
 
         $existe = (new adm_seccion($link))->existe_by_id(registro_id: $adm_seccion_id);
@@ -25,7 +26,7 @@ class base_test{
             return (new errores())->error('Error al validar', $existe);
         }
         if(!$existe){
-            $alta = $this->alta_adm_seccion(link: $link,id: $adm_seccion_id);
+            $alta = $this->alta_adm_seccion(link: $link, descripcion: $adm_seccion_descripcion, id: $adm_seccion_id);
             if(errores::$error){
                 return (new errores())->error('Error al insertar', $alta);
             }
