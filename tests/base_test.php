@@ -32,6 +32,19 @@ class base_test{
             }
         }
 
+        $filtro['adm_seccion.descripcion'] = $adm_seccion_descripcion;
+        $filtro['adm_accion.descripcion'] = $descripcion;
+        $existe = (new \gamboamartin\administrador\models\adm_accion($link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error('Error al validar si existe', $existe);
+        }
+
+        if($existe) {
+            $del = (new adm_accion($link))->elimina_con_filtro_and(filtro: $filtro);
+            if (errores::$error) {
+                return (new errores())->error('Error al eliminar', $del);
+            }
+        }
         $registro['id'] = $id;
         $registro['descripcion'] = $descripcion;
         $registro['adm_seccion_id'] = $adm_seccion_id;
@@ -39,7 +52,7 @@ class base_test{
         $registro['visible'] = $visible;
 
         $alta = (new adm_accion($link))->alta_registro(registro: $registro);
-        if(errores::$error){
+        if (errores::$error) {
             return (new errores())->error('Error al insertar', $alta);
         }
 
