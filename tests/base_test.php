@@ -32,6 +32,19 @@ class base_test{
             }
         }
 
+        $existe = (new \gamboamartin\administrador\models\adm_accion($link))->existe_by_id(registro_id: $id);
+        if(errores::$error){
+            return (new errores())->error('Error al validar si existe', $existe);
+        }
+
+        if($existe) {
+
+            $del = (new adm_accion($link))->elimina_bd(id: $id);
+            if (errores::$error) {
+                return (new errores())->error('Error al eliminar', $del);
+            }
+        }
+
         $filtro['adm_seccion.descripcion'] = $adm_seccion_descripcion;
         $filtro['adm_accion.descripcion'] = $descripcion;
         $existe = (new \gamboamartin\administrador\models\adm_accion($link))->existe(filtro: $filtro);
