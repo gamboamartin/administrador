@@ -171,8 +171,6 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
         }
         $this->categorias = $categorias;
 
-
-
     }
 
     /**
