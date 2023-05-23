@@ -162,14 +162,16 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             die('Error');
         }
 
-        $categorias = (new adm_categoria_usuario($this->link))->get_categorias_usuario(sistema: (new generales())->sistema,
-            usuario:  $this->datos_session_usuario['adm_usuario_user']);
-        if(errores::$error){
-            $error =  $this->errores->error(mensaje: 'Error al obtener menu categorias del usuario',data: $categorias);
-            print_r($error);
-            exit;
+        if (isset($this->datos_session_usuario['adm_usuario_user'])) {
+            $categorias = (new adm_categoria_usuario($this->link))->get_categorias_usuario(sistema: (new generales())->sistema,
+                usuario:  $this->datos_session_usuario['adm_usuario_user']);
+            if(errores::$error){
+                $error =  $this->errores->error(mensaje: 'Error al obtener menu categorias del usuario',data: $categorias);
+                print_r($error);
+                exit;
+            }
+            $this->categorias = $categorias;
         }
-        $this->categorias = $categorias;
 
     }
 
