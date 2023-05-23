@@ -7,6 +7,7 @@ use config\views;
 use gamboamartin\administrador\ctl\activacion;
 use gamboamartin\administrador\ctl\altas;
 use gamboamartin\administrador\ctl\normalizacion_ctl;
+use gamboamartin\administrador\models\adm_categoria_usuario;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;
@@ -51,6 +52,7 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
     public string $menu_header = '';
 
     public string $titulo_pagina = "";
+    public array $categorias = array();
 
     /**
      * @param PDO $link Conexion a la base de datos
@@ -159,6 +161,17 @@ class controlador_base extends controler{ //PRUEBAS FINALIZADAS DEBUG
             print_r($error);
             die('Error');
         }
+
+        $categorias = (new adm_categoria_usuario($this->link))->get_categorias_usuario(sistema: (new generales())->sistema,
+            usuario:  $this->datos_session_usuario['adm_usuario_user']);
+        if(errores::$error){
+            $error =  $this->errores->error(mensaje: 'Error al obtener menu categorias del usuario',data: $categorias);
+            print_r($error);
+            exit;
+        }
+        $this->categorias = $categorias;
+
+
 
     }
 
