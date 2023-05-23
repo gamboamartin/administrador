@@ -236,6 +236,15 @@ class base_test{
         return $del;
     }
 
+    public function del_adm_accion(PDO $link): array
+    {
+        $del = $this->del($link, 'gamboamartin\\administrador\\models\\adm_accion');
+        if(errores::$error){
+            return (new errores())->error('Error al eliminar', $del);
+        }
+        return $del;
+    }
+
     public function del_adm_menu(PDO $link): array
     {
         $del = $this->del($link, 'gamboamartin\\administrador\\models\\adm_menu');
