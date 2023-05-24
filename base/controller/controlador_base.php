@@ -8,6 +8,7 @@ use config\views;
 use gamboamartin\administrador\ctl\activacion;
 use gamboamartin\administrador\ctl\altas;
 use gamboamartin\administrador\ctl\normalizacion_ctl;
+use gamboamartin\administrador\models\adm_categoria_secciones;
 use gamboamartin\administrador\models\adm_categoria_usuario;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_menu;
@@ -169,17 +170,17 @@ class controlador_base extends controler
         }
 
         if (isset($this->datos_session_usuario['adm_usuario_user'])) {
-            $categorias = (new adm_categoria_usuario($this->link))->get_categorias_usuario(sistema: (new generales())->sistema,
+            $menu_secciones = (new adm_categoria_secciones($this->link))->get_categorias_usuario(sistema: (new generales())->sistema,
                 usuario: $this->datos_session_usuario['adm_usuario_user']);
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener menu categorias del usuario', data: $categorias);
+                $error = $this->errores->error(mensaje: 'Error al obtener seccion de menu del usuario', data: $menu_secciones);
                 print_r($error);
                 exit;
             }
-            $this->categorias = $categorias;
+            $this->categorias = $menu_secciones;
 
             $html_categorias = (new sidebar())->print_categorias(registros: $this->categorias,
-                titulo_categoria: 'adm_categoria_categoria');
+                titulo_categoria: 'adm_categoria_categoria', session_id: $this->session_id);
             if (errores::$error) {
                 $error = $this->errores->error(mensaje: 'Error al generar html para menu categorias', data: $html_categorias);
                 print_r($error);
