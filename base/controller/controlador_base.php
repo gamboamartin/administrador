@@ -55,6 +55,7 @@ class controlador_base extends controler
     public string $menu_header = '';
 
     public string $titulo_pagina = "";
+    public string $titulo_accion = "";
     public string $titulo_modulo = "MODULO";
     public array $categorias = array();
 
