@@ -58,7 +58,7 @@ class controlador_base extends controler
     public string $titulo_accion = "";
     public string $titulo_modulo = "MODULO";
     public array $categorias = array();
-
+    public string $html_acciones_menu = "";
     public string $html_categorias = "";
 
     /**
@@ -492,6 +492,28 @@ class controlador_base extends controler
         return $_SESSION;
     }
 
+    /**
+     * P INT
+     * Función permite inicializar las acciones de una seccion
+     * Ejemplo: array("lista" => $controlador->link_lista)
+     * @param array $acciones
+     * @return array|string
+     */
+    public function define_acciones_menu(array $acciones): array|string{
+        $claves = array_keys($acciones);
+        foreach ($claves as $clave) {
+            if (!is_string($clave)) {
+                return $this->errores->error(mensaje: "No existe una clave-valor para el menu: $clave", data: $clave);
+            }
+        }
+
+        foreach ($acciones as $key => $accion){
+            $titulo = ucwords(str_replace("_"," ",$key));
+            $this->html_acciones_menu .= "<li><a class='dropdown-item' href='$accion'>$titulo</a></li>";
+        }
+
+        return $this->html_acciones_menu;
+    }
 
     /**
      *
