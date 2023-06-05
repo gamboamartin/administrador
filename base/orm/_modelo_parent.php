@@ -114,6 +114,7 @@ class _modelo_parent extends _base {
      * @param array $keys_integra_ds Campos pra integrar la descripcion select
      * @return array|stdClass
      * @finalrev
+     * @version 10.73.3
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false,
                                 array $keys_integra_ds = array('codigo','descripcion')): array|stdClass

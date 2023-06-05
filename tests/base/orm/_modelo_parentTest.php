@@ -102,6 +102,28 @@ class _modelo_parentTest extends test {
 
     }
 
+    public function test_modifica_bd(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 1;
+        errores::$error = false;
+
+        $link = $this->link;
+        $tabla = 'adm_menu';
+        $modelo = new adm_menu($link);
+        //$modelo = new liberator($modelo);
+
+        $registro['descripcion'] = 'a';
+
+        $resultado = $modelo->modifica_bd(registro: $registro,id: 1);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+    }
+
 
 
 }
