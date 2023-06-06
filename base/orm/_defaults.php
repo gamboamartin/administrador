@@ -71,6 +71,7 @@ class _defaults{
      * @param array $row Registro a validar
      * @param array $filtro Filtro a validar
      * @return array|bool
+     *
      */
     private function existe_cod_default(modelo $entidad, array $row, array $filtro = array()): bool|array
     {

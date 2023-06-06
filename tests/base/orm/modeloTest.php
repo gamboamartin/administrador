@@ -130,6 +130,18 @@ class modeloTest extends test {
         $this->assertIsInt( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(0, $resultado);
+
+        errores::$error = false;
+
+        $extra_join = array();
+        $extra_join['adm_accion']['key'] = 'adm_seccion_id';
+        $extra_join['adm_accion']['enlace'] = 'adm_seccion';
+        $extra_join['adm_accion']['key_enlace'] = 'id';
+        $resultado = $modelo->cuenta(extra_join: $extra_join);
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsNumeric( $resultado);
+
         errores::$error = false;
     }
 

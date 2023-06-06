@@ -681,7 +681,8 @@ class joins{
             return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
         }
 
-        $tablas = $this->extensiones_join(extension_estructura: $extra_join, modelo_tabla: $modelo_tabla, tablas:  $tablas);
+        $tablas = $this->extensiones_join(extension_estructura: $extra_join, modelo_tabla: $modelo_tabla,
+            tablas:  $tablas);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar join',data:  $tablas);
         }

@@ -384,6 +384,13 @@ class modelo extends modelo_base {
     /**
      * Cuenta los registros de un modelo conforme al filtro en aplicacion
      * @param array $diferente_de Integra el sql para diferente de
+     * @param array $extra_join Arreglo para integrar tabla integra en la consulta
+                $extra_join[tabla] = array(); donde tabla se inicial LEFT JOIN tabla
+                $extra_join['tabla']['key'] = 'key'; donde key es el key de enlace de la tabla
+                    LEFT JOIN  tabla AS tabla  ON tabla.key
+                $extra_join['tabla']['enlace'] = 'tabla_enlace'; Es la tabla del join
+                    LEFT JOIN  tabla AS tabla  ON tabla.key = tabla_enlace.key_enlace
+                $extra_join['tabla']['key_enlace'] = 'key_enlace';
      * @param array $filtro Filtro de ejecucion basico
      * @param string $tipo_filtro validos son numeros y textos
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -398,24 +405,35 @@ class modelo extends modelo_base {
      * @return array|int
      * @version 9.97.4
      */
-    final public function cuenta(array $diferente_de = array(), array $filtro = array(), string $tipo_filtro = 'numeros',
-                           array $filtro_especial = array(), array $filtro_rango = array(),
-                           array $filtro_fecha = array(), array $in = array(), array $not_in = array()):array|int{
+    final public function cuenta(array $diferente_de = array(), array $extra_join = array(), array $filtro = array(),
+                                 string $tipo_filtro = 'numeros', array $filtro_especial = array(),
+                                 array $filtro_rango = array(), array $filtro_fecha = array(),
+                                 array $in = array(), array $not_in = array()):array|int{
 
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
 
-        $tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $this->tabla);
+        /*$tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $this->tabla);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
+        }*/
+
+        $extension_estructura = array();
+        $renombradas = array();
+
+        $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
+            extra_join: $extra_join, modelo_tabla: $this->tabla, renombradas: $renombradas, tabla: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }
 
         $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra,diferente_de: $diferente_de,
             filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: array(), filtro_fecha: $filtro_fecha,
             filtro_rango: $filtro_rango, in:$in, keys_data_filter: $this->keys_data_filter, not_in: $not_in,
             sql_extra: '', tipo_filtro: $tipo_filtro);
+
 
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtros',data: $filtros);
@@ -833,7 +851,7 @@ class modelo extends modelo_base {
      * @param bool $columnas_en_bruto si true se trae las columnas sion renombrar y solo de la tabla seleccionada
      * @param bool $con_sq
      * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
-     * @param array $extra_join
+     * @param array $extra_join Arreglo para integrar tabla integra en la consulta
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
      * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
