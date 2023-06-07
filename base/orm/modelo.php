@@ -1215,7 +1215,7 @@ class modelo extends modelo_base {
 
         $limit = $n_rows_for_page;
 
-        $n_rows = $this->cuenta(filtro_especial: $filtro_especial, in: $in);
+        $n_rows = $this->cuenta(extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, in: $in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
         }
