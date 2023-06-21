@@ -138,7 +138,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         }
 
         if($adm_grupo_id <= 0){
-            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_seccion);
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
         }
 
         $filtro['adm_grupo.id'] = $adm_grupo_id;
@@ -230,9 +230,20 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo de usuario
      * @param stdClass $data_permiso datos previos de permiso a validar
      * @return array|stdClass
+     * @version 10.77.3
      */
     private function get_val_session(int $adm_grupo_id, stdClass $data_permiso): array|stdClass
     {
+
+        $keys = array('adm_accion','adm_seccion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data_permiso);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar $data_permiso', data: $valida);
+        }
+
+        if($adm_grupo_id <= 0){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
+        }
 
         $filtro = $this->filtro(adm_accion: $data_permiso->adm_accion,adm_grupo_id: $adm_grupo_id,
             adm_seccion: $data_permiso->adm_seccion);

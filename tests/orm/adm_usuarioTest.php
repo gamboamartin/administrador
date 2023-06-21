@@ -8,6 +8,7 @@ use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 
 class adm_usuarioTest extends test {
@@ -152,6 +153,39 @@ class adm_usuarioTest extends test {
         $resultado = $modelo->filtro_seguridad('');
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_get_val_session(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $adm_grupo_id = 1;
+        $data_permiso = new stdClass();
+        $data_permiso->adm_accion = 'a';
+        $data_permiso->adm_seccion = 'b';
+        $resultado = $modelo->get_val_session($adm_grupo_id, $data_permiso);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado->existe);
+        $this->assertEquals(0,$resultado->val_session);
+
+        errores::$error = false;
+
+        $adm_grupo_id = 2;
+        $data_permiso = new stdClass();
+        $data_permiso->adm_accion = 'lista';
+        $data_permiso->adm_seccion = 'adm_accion';
+        $resultado = $modelo->get_val_session($adm_grupo_id, $data_permiso);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado->existe);
+        $this->assertEquals(1,$resultado->val_session);
         errores::$error = false;
     }
 
