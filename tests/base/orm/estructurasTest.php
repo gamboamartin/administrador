@@ -110,16 +110,7 @@ class estructurasTest extends test {
 
     }
 
-    public function test_key_table(){
-        errores::$error = false;
-        $st = new estructuras($this->link);
-        $st = new liberator($st);
-        $resultado = $st->key_table('a');
-        $this->assertNotTrue(errores::$error);
-        $this->assertIsString($resultado);
-        $this->assertEquals('Tables_in_a',$resultado);
-        errores::$error = false;
-    }
+
 
     public function test_init_dato_estructura(){
         errores::$error = false;
@@ -157,6 +148,17 @@ class estructurasTest extends test {
 
     }
 
+    public function test_key_table(){
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $resultado = $st->key_table('a');
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('Tables_in_a',$resultado);
+        errores::$error = false;
+    }
+
     public function test_maqueta_modelos(): void
     {
         errores::$error = false;
@@ -186,6 +188,28 @@ class estructurasTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_permite_null(){
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $campo['Null'] = 'NO';
+        $resultado = $st->permite_null($campo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+
+        $campo = array();
+        $campo['Null'] = '';
+        $resultado = $st->permite_null($campo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertTrue($resultado);
+        errores::$error = false;
     }
 
 

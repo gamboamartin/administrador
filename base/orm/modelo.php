@@ -344,7 +344,7 @@ class modelo extends modelo_base {
      * @version 1.534.51
      *
      */
-    final public function alta_registro(array $registro):array|stdClass{
+     public function alta_registro(array $registro):array|stdClass{
 
 
         if(!isset($_SESSION['usuario_id'])){
@@ -362,8 +362,6 @@ class modelo extends modelo_base {
         if(errores::$error) {
             return $this->error->error(mensaje: 'Error al dar de alta registro en modelo '.$this->tabla, data: $r_alta);
         }
-
-
 
         return $r_alta;
     }

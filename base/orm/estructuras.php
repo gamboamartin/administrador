@@ -9,10 +9,13 @@ class estructuras{
     private errores  $error;
     public stdClass $estructura_bd;
     private PDO $link;
+
+    private validacion $validacion;
     public function __construct(PDO $link){
         $this->error = new errores();
         $this->estructura_bd = new stdClass();
         $this->link = $link;
+        $this->validacion = new validacion();
     }
 
     private function asigna_dato_estructura(array $campo, array $keys_no_foraneas, string $name_modelo): array|stdClass
@@ -193,8 +196,11 @@ class estructuras{
         return $es_foranea;
     }
 
-    private function es_primaria(array $campo): bool
+    private function es_primaria(array $campo): bool|array
     {
+        if(!isset($campo['Key'])){
+            return $this->error->error(mensaje: 'Error campo[Key] debe existir', data: $campo);
+        }
         $es_primaria = false;
         if($campo['Key'] === 'PRI'){
             $es_primaria = true;
@@ -489,10 +495,15 @@ class estructuras{
     /**
      * Integra permite null
      * @param array $campo Datos del campo
-     * @return bool
+     * @return bool|array
+     * @version 10.78.3
      */
-    private function permite_null(array $campo): bool
+    private function permite_null(array $campo): bool|array
     {
+        if(!isset($campo['Null'])){
+            return $this->error->error(mensaje: 'Error campo[Null] debe existir', data: $campo);
+        }
+
         $permite_null = true;
         if($campo['Null'] === 'NO'){
             $permite_null = false;
