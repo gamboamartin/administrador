@@ -49,10 +49,16 @@ class _base extends modelo{
      * @param array $registro Datos de registro en proceso
      * @param string $status Status
      * @return array
+     * @version 10.813
      */
     final protected function asigna_status_alta(array $keys, array $registro, string $status = 'activo'): array
     {
         foreach ($keys as $key){
+            $key = trim($key);
+            if($key === ''){
+                return $this->error->error(mensaje: 'Error key esta vacio',data: $key);
+            }
+
             $registro = $this->status_alta(key: $key,registro:  $registro, status: $status);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar status',data: $registro);
