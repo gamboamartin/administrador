@@ -19,7 +19,7 @@ class adm_seccion extends _modelo_children {
     public function __construct(PDO $link, array $childrens = array(), array $columnas_extra = array()){
         $tabla = 'adm_seccion';
         $columnas = array($tabla=>false, 'adm_menu'=>$tabla,'adm_namespace'=>$tabla);
-        $campos_obligatorios = array('status','descripcion','adm_menu_id', 'adm_namespace_id');
+        $campos_obligatorios = array('status','descripcion','adm_menu_id', 'adm_namespace_id','etiqueta_label');
 
         $parents_data['adm_menu'] = array();
         $parents_data['adm_menu']['namespace'] = 'gamboamartin\\administrador\\models';
@@ -168,6 +168,10 @@ class adm_seccion extends _modelo_children {
                 return $this->error->error(mensaje: 'Error al obtener namespace predeterminado',data: $adm_namespace_id);
             }
             $registro['adm_namespace_id'] = $adm_namespace_id;
+        }
+
+        if(!isset($registro['etiqueta_label']) || trim($registro['etiqueta_label'] === '')){
+            $registro['etiqueta_label'] = $registro['descripcion'];
         }
 
         $this->registro = $registro;

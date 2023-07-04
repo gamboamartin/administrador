@@ -300,7 +300,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         }
         $data_permiso = new stdClass();
         $data_permiso->existe = false;
-        
+
         if((int)$adm_usuario_id > 0) {
 
             $adm_grupo_id = -1;
