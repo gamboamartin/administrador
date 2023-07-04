@@ -156,6 +156,26 @@ class adm_usuarioTest extends test {
         errores::$error = false;
     }
 
+    public function test_get_data_permiso(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $adm_accion = 'b';
+        $adm_grupo_id = 1;
+        $adm_seccion = 'a';
+
+        $resultado = $modelo->get_data_permiso($adm_accion, $adm_grupo_id, $adm_seccion);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_get_val_session(): void
     {
 

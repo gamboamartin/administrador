@@ -190,6 +190,13 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     private function genera_session_permite(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
+
+        $valida = $this->valida_datos_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
+            adm_seccion:  $adm_seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
         $data_permiso = $this->get_data_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
@@ -207,10 +214,18 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo de usuario a validar
      * @param string $adm_seccion Seccion a validar
      * @return array|stdClass
-     *
+     * @version 10.79.3
      */
     private function get_data_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array|stdClass
     {
+
+
+        $valida = $this->valida_datos_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
+            adm_seccion:  $adm_seccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
         $data_permiso = $this->data_permiso(adm_accion: $adm_accion, adm_seccion: $adm_seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
@@ -285,7 +300,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         }
         $data_permiso = new stdClass();
         $data_permiso->existe = false;
-        //$existe = false;
+        
         if((int)$adm_usuario_id > 0) {
 
             $adm_grupo_id = -1;
@@ -301,7 +316,13 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
                     }
                 }
                 else {
-                    $data_permiso = $this->genera_session_permite(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
+                    $valida = $this->valida_datos_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
+                        adm_seccion:  $adm_seccion);
+                    if (errores::$error) {
+                        return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+                    }
+                    $data_permiso = $this->genera_session_permite(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
+                        adm_seccion:  $adm_seccion);
                     if (errores::$error) {
                         return $this->error->error(mensaje: 'Error al asignar permite en session', data: $data_permiso);
                     }
@@ -415,6 +436,21 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $data->existe = $existe;
         $data->val_session = $val_session;
         return $data;
+    }
+
+    private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
+        $adm_seccion = trim($adm_seccion);
+        if($adm_seccion === ''){
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
+        }
+        $adm_accion = trim($adm_accion);
+        if($adm_accion === ''){
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion);
+        }
+        if($adm_grupo_id <= 0){
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
+        }
+        return true;
     }
 
     /**
