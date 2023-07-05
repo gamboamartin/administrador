@@ -5,6 +5,7 @@ use base\orm\modelo;
 use config\generales;
 use config\views;
 use gamboamartin\administrador\ctl\normalizacion_ctl;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 use PDO;
@@ -146,8 +147,40 @@ class controler{
         $this->mensaje_warning = $mensajes->warning_msj;
 
         $this->accion_titulo = str_replace('_',' ',$this->accion);
-        $this->accion_titulo = ucwords($this->accion_titulo);
         $this->seccion_titulo = str_replace('_', ' ', $this->seccion);
+
+
+        if($this->seccion !== '') {
+            $adm_accion = (new adm_accion(link: $this->link))->accion_registro(accion: $this->accion,
+                seccion: $this->seccion);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al obtener accion', data: $adm_accion);
+                print_r($error);
+                exit;
+            }
+
+            if (isset($adm_accion['adm_accion_titulo'])) {
+                $adm_accion_titulo = trim($adm_accion['adm_accion_titulo']);
+                if ($adm_accion_titulo !== '') {
+                    if ($adm_accion_titulo !== 'ST') {
+                        $this->accion_titulo = $adm_accion_titulo;
+                    }
+                }
+            }
+
+            if (isset($adm_accion['adm_seccion_etiqueta_label'])) {
+                $adm_seccion_titulo = trim($adm_accion['adm_seccion_etiqueta_label']);
+                if ($adm_seccion_titulo !== '') {
+                    if ($adm_seccion_titulo !== 'ST') {
+                        $this->seccion_titulo = $adm_seccion_titulo;
+                    }
+                }
+            }
+        }
+
+
+
+        $this->accion_titulo = ucwords($this->accion_titulo);
         $this->seccion_titulo = ucwords($this->seccion_titulo);
 
 

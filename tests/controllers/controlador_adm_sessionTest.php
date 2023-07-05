@@ -8,6 +8,7 @@ use gamboamartin\administrador\models\adm_bitacora;
 use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
@@ -33,6 +34,20 @@ class controlador_adm_sessionTest extends test {
 
         errores::$error = false;
         $_SESSION['usuario_id'] = 2;
+
+        $del = (new base_test())->del_adm_seccion(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);exit;
+        }
+
+        $alta = (new base_test())->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_session',
+            descripcion: 'login');
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);exit;
+        }
+
         $ctl = new controlador_adm_session(link:$this->link, paths_conf: $this->paths_conf);
         $ctl = new liberator($ctl);
 

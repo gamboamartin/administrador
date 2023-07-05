@@ -5,6 +5,7 @@ use base\controller\controlador_base;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\administrador\models\adm_year;
+use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -91,6 +92,13 @@ class controlador_baseTest extends test {
 
         $_SESSION['usuario_id'] = 2;
         $modelo = new adm_year($this->link);
+
+        $alta = (new base_test())->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_session',
+            descripcion: 'login');
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);exit;
+        }
 
         $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
         //$ctl = new liberator($ctl);
