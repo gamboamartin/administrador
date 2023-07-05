@@ -38,8 +38,9 @@ class exito_html extends base_html {
     }
 
     /**
-     * @param string $close_btn
-     * @param string $exito_html
+     * Integra el mensaje de exito para front
+     * @param string $close_btn Boton de cierre en html
+     * @param string $exito_html Mensaje
      * @return string
      */
     private function exito_html_string(string $close_btn, string $exito_html): string
