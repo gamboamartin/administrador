@@ -99,6 +99,13 @@ class upd{
                     data:  array($resultado, 'sql' => $modelo->consulta));
             }
         }
+
+        $registro_actualizado = $modelo->registro(registro_id: $id,retorno_obj: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro', data:  $registro_actualizado);
+        }
+        $resultado->registro_actualizado = $registro_actualizado;
+
         return $resultado;
     }
 
@@ -206,6 +213,7 @@ class upd{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al insertar bitacora',data:  $bitacora);
         }
+        $resultado->bitacora = $bitacora;
 
         return $resultado;
     }
