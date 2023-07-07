@@ -261,7 +261,6 @@ class modelo extends modelo_base {
      *      $entrada_modelo->registro = array('tipo_entrada_id'=>1,'almacen_id'=>1,'fecha'=>'2020-01-01',
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
-     * @version 1.603.54
      * @finalrevisada
      */
     public function alta_bd(): array|stdClass{
@@ -303,16 +302,11 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
 
-        $data = new stdClass();
-        $data->mensaje = "Registro insertado con éxito";
-        $data->registro_id = $this->registro_id;
-        $data->sql = $transacciones->sql;
-        $data->registro = $registro;
-        $data->registro_obj = (object)$registro;
-        $data->registro_ins = $this->registro;
-        $data->campos = $this->campos_tabla;
-
-
+        $data = $this->data_result_transaccion(mensaje: 'Registro insertado con éxito',registro:  $registro,
+            registro_ejecutado:  $this->registro,registro_id:  $this->registro_id, sql: $transacciones->sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar respuesta registro', data: $registro);
+        }
 
         return $data;
     }
@@ -477,6 +471,29 @@ class modelo extends modelo_base {
         $data = new stdClass();
         $data->where = $where;
         $data->sentencia = $sentencia_env;
+        return $data;
+    }
+
+    /**
+     * Maqueta la salida de los resultados
+     * @param string $mensaje Mensaje a integrar
+     * @param array $registro Registro resultante
+     * @param array $registro_ejecutado Registro en ejecucion
+     * @param int $registro_id Identificador resultante o en ejecucion
+     * @param string $sql Sql ejecutado
+     * @return stdClass
+     */
+    final protected function data_result_transaccion(string $mensaje, array $registro, array $registro_ejecutado,
+                                                  int $registro_id, string $sql): stdClass
+    {
+        $data = new stdClass();
+        $data->mensaje = $mensaje;
+        $data->registro_id = $registro_id;
+        $data->sql = $sql;
+        $data->registro = $registro;
+        $data->registro_obj = (object)$registro;
+        $data->registro_ins = $registro_ejecutado;
+        $data->campos = $this->campos_tabla;
         return $data;
     }
 
