@@ -145,6 +145,25 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_result_transaccion(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $mensaje = '';
+        $registro = array();
+        $registro_ejecutado = array();
+        $registro_id = -1;
+        $sql = '';
+        $resultado = $modelo->data_result_transaccion($mensaje, $registro, $registro_ejecutado, $registro_id, $sql);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+    }
+
     public function test_data_sentencia(): void
     {
         errores::$error = false;

@@ -262,6 +262,7 @@ class modelo extends modelo_base {
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
      * @finalrevisada
+     * @version 10.88.3
      */
     public function alta_bd(): array|stdClass{
         if(!isset($_SESSION['usuario_id'])){
@@ -482,6 +483,7 @@ class modelo extends modelo_base {
      * @param int $registro_id Identificador resultante o en ejecucion
      * @param string $sql Sql ejecutado
      * @return stdClass
+     * @version 10.88.3
      */
     final protected function data_result_transaccion(string $mensaje, array $registro, array $registro_ejecutado,
                                                   int $registro_id, string $sql): stdClass
