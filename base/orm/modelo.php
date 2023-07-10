@@ -313,6 +313,29 @@ class modelo extends modelo_base {
     }
 
     /**
+     * Obtiene un registro existente y da salida homolagada
+     * @param array $filtro Filtro de registro
+     * @return array|stdClass
+     */
+    final protected function alta_existente(array $filtro): array|stdClass
+    {
+        $result = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe',data: $result);
+        }
+        $registro = $result->registros[0];
+
+        $r_alta_bd = $this->data_result_transaccion(mensaje: "Registro existente",registro:  $registro,
+            registro_ejecutado:  $this->registro, registro_id: $registro[$this->key_id],
+            sql: 'Sin ejecucion');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar salida',data: $r_alta_bd);
+        }
+        return $r_alta_bd;
+    }
+
+
+    /**
      * Inserta un registro predeterminado
      * @param string|int $codigo Codigo predeterminado default
      * @param string $descripcion Descripcion predeterminado
