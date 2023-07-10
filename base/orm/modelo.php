@@ -378,7 +378,9 @@ class modelo extends modelo_base {
 
         $r_alta  = $this->alta_bd();
         if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al dar de alta registro en modelo '.$this->tabla, data: $r_alta);
+            $database = (new database())->db_name;
+            return $this->error->error(mensaje: 'Error al dar de alta registro en database '.$database.'  en modelo '
+                .$this->tabla, data: $r_alta);
         }
 
         return $r_alta;

@@ -196,6 +196,11 @@ class estructuras{
         return $es_foranea;
     }
 
+    /**
+     * Asigna verdadero si el campo es una llave primaria
+     * @param array $campo Campo a validar
+     * @return bool|array
+     */
     private function es_primaria(array $campo): bool|array
     {
         if(!isset($campo['Key'])){
