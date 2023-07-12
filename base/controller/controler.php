@@ -409,10 +409,9 @@ class controler{
     }
 
     /**
-     * PHPUNIT
-     * @return array
+     * @return array|stdClass
      */
-    final protected function resultado_filtrado(): array
+    final protected function resultado_filtrado(): array|stdClass
     {
         if(!isset($_POST['filtros'])){
             return $this->errores->error('Error no existe filtros en POST',$_POST);

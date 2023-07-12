@@ -690,9 +690,7 @@ class controlador_base extends controler
             echo json_encode($registros);
             exit;
         }
-        if (!$header) {
-            return $r_modelo;
-        }
+        
         return $r_modelo;
     }
 
