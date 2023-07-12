@@ -121,12 +121,12 @@ class controler{
         $this->pestanas->targets = array();
 
         if(!isset($generals->path_base)){
-            $error =  $this->errores->error('path base en generales debe existir','');
+            $error =  $this->errores->error(mensaje: 'path base en generales debe existir',data: '');
             print_r($error);
             exit;
         }
         if(!isset($generals->session_id)){
-            $error =  $this->errores->error('session_id en generales debe existir','');
+            $error =  $this->errores->error(mensaje: 'session_id en generales debe existir',data: '');
             print_r($error);
             exit;
         }
@@ -155,6 +155,20 @@ class controler{
                 seccion: $this->seccion);
             if (errores::$error) {
                 $error = $this->errores->error(mensaje: 'Error al obtener accion', data: $adm_accion);
+                if(isset($_GET['ws'])){
+                    if((int)$_GET['ws'] === 1){
+                        ob_clean();
+                        header('Content-Type: application/json');
+                        try {
+                            echo json_encode($error, JSON_THROW_ON_ERROR);
+                        }
+                        catch (Throwable $e){
+                            print_r($e);
+                            exit;
+                        }
+                        exit;
+                    }
+                }
                 print_r($error);
                 exit;
             }

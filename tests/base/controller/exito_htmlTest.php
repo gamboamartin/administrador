@@ -46,6 +46,24 @@ class exito_htmlTest extends test {
         errores::$error = false;
     }
 
+    public function test_exito_html_string(): void
+    {
+
+        errores::$error = false;
+
+        $html = new exito_html();
+        $html = new liberator($html);
+
+        $close_btn = 'a';
+        $exito_html = 'b';
+        $resultado = $html->exito_html_string($close_btn, $exito_html);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ba</div>',$resultado);
+        errores::$error = false;
+
+    }
+
     public function test_genera_exito_html(): void
     {
 

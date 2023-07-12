@@ -41,10 +41,21 @@ class exito_html extends base_html {
      * Integra el mensaje de exito para front
      * @param string $close_btn Boton de cierre en html
      * @param string $exito_html Mensaje
-     * @return string
+     * @return string|array
+     * @version 10.92.3
      */
-    private function exito_html_string(string $close_btn, string $exito_html): string
+    private function exito_html_string(string $close_btn, string $exito_html): string|array
     {
+        $close_btn = trim($close_btn);
+        if($close_btn === ''){
+            return $this->error->error(mensaje: 'Error close_btn esta vacio',data:  $close_btn);
+        }
+
+        $exito_html = trim($exito_html);
+        if($exito_html === ''){
+            return $this->error->error(mensaje: 'Error exito_html esta vacio',data:  $exito_html);
+        }
+
         $exito_html .= $close_btn;
         $exito_html .= '</div>';
         return $exito_html;
@@ -53,6 +64,16 @@ class exito_html extends base_html {
     private function exito_transaccion(string $close_btn, string $exito_html, string $exito_transaccion, bool $html, string $mensaje_html){
 
         if($html) {
+            $close_btn = trim($close_btn);
+            if($close_btn === ''){
+                return $this->error->error(mensaje: 'Error close_btn esta vacio',data:  $close_btn);
+            }
+
+            $exito_html = trim($exito_html);
+            if($exito_html === ''){
+                return $this->error->error(mensaje: 'Error exito_html esta vacio',data:  $exito_html);
+            }
+
             $exito_transaccion = $this->exito_html_string(close_btn: $close_btn,exito_html:  $exito_html);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar mensaje',data:  $exito_transaccion);
