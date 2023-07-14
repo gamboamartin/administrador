@@ -29,20 +29,25 @@ class seguridad{
 
     }
 
-    /**
-     * Elimina los datos de una session
-     * @param PDO $link
-     * @return array|bool
-     */
-    public function elimina_session(PDO $link): bool|array
-    {
-        $filtro = array('adm_session.name'=>(new generales())->session_id);
-        $session_modelo = new adm_session($link);
-
-        $r_session = $session_modelo->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje:"Error al obtener registro",data:  $r_session);
+    private function elimina_session_activa(array $filtro, adm_session $session_modelo){
+        $result = $session_modelo->elimina_con_filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje:"Error al eliminar registro",data:  $result);
         }
+        if(session_status() === PHP_SESSION_ACTIVE) {
+            unset ($_SESSION['username']);
+            session_destroy();
+        }
+        return true;
+    }
+
+    /**
+     * Verifica si se permite o no la eliminacion de una session
+     * @param stdClass $r_session Resultado previo de session en database
+     * @return bool
+     */
+    private function elimina_session_verifica(stdClass $r_session): bool
+    {
         $elimina = true;
         if((int)$r_session->n_registros === 1){
             $session = $r_session->registros[0];
@@ -50,13 +55,45 @@ class seguridad{
                 $elimina = false;
             }
         }
+        return $elimina;
+    }
+
+    /**
+     * Elimina los datos de una session
+     * @param PDO $link
+     * @return array|bool
+     */
+    final public function elimina_session(PDO $link): bool|array
+    {
+        $filtro = array('adm_session.name'=>(new generales())->session_id);
+        $session_modelo = new adm_session(link: $link);
+
+        $r_session = $session_modelo->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:"Error al obtener registro",data:  $r_session);
+        }
+
+        $elimina = $this->elimina_session_completa(filtro: $filtro,r_session:  $r_session,
+            session_modelo:  $session_modelo);
+        if(errores::$error){
+            return $this->error->error(mensaje:"Error al obtener si permite del",data:  $elimina);
+        }
+
+
+        return $elimina;
+    }
+
+    private function elimina_session_completa(array $filtro, stdClass $r_session, adm_session $session_modelo){
+        $elimina = $this->elimina_session_verifica(r_session: $r_session);
+        if(errores::$error){
+            return $this->error->error(mensaje:"Error al obtener si permite del",data:  $elimina);
+        }
+
         if($elimina) {
-            $result = $session_modelo->elimina_con_filtro_and($filtro);
+            $result = $this->elimina_session_activa(filtro: $filtro,session_modelo:  $session_modelo);
             if (errores::$error) {
-                return $this->error->error(mensaje:"Error al eliminar registro",data:  $result);
+                return $this->error->error(mensaje:"Error al eliminar registro y finalizar session",data:  $result);
             }
-            unset ($_SESSION['username']);
-            session_destroy();
         }
         return $elimina;
     }
