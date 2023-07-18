@@ -197,7 +197,8 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $data_permiso = $this->get_data_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,adm_seccion:  $adm_seccion);
+        $data_permiso = $this->get_data_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
+            adm_seccion:  $adm_seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
         }
@@ -275,13 +276,16 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * @param int $adm_grupo_id
-     * @param stdClass $data_permiso
+     * Integra en un a variable de SESSION un bool de validacion de permiso
+     * @param int $adm_grupo_id Grupo a integrar
+     * @param stdClass $data_permiso Permiso obtenido
      * @return array
      */
     private function session_permite(int $adm_grupo_id, stdClass $data_permiso): array
     {
-        $_SESSION['permite'][$adm_grupo_id][$data_permiso->adm_seccion][$data_permiso->adm_accion] = (int)$data_permiso->val_session;
+        $_SESSION['permite'][$adm_grupo_id][$data_permiso->adm_seccion][$data_permiso->adm_accion]
+            = (int)$data_permiso->val_session;
+
         return $_SESSION['permite'][$adm_grupo_id];
     }
 
@@ -438,6 +442,14 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $data;
     }
 
+    /**
+     * Valida la entrada de los parametros de u permiso
+     * @param string $adm_accion Accion a validar
+     * @param int $adm_grupo_id Grupo a validar permiso
+     * @param string $adm_seccion Seccion a validar
+     * @return array|true
+     *
+     */
     private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
