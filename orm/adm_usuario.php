@@ -448,9 +448,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo a validar permiso
      * @param string $adm_seccion Seccion a validar
      * @return array|true
-     *
+     * @version 10.95.3
      */
-    private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
+    private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): bool|array
+    {
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
             return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
