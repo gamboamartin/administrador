@@ -652,7 +652,7 @@ class modelo extends modelo_base {
         $data->registro_id = $id;
         $data->sql = $this->consulta;
         $data->registro = $registro_bitacora;
-
+        $data->mensaje = 'Se elimino el registro con el id '.$id;
 
 
         return $data;

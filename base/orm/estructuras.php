@@ -171,6 +171,10 @@ class estructuras{
     }
 
 
+    /**
+     * @param array $campo
+     * @return bool
+     */
     private function es_auto_increment(array $campo): bool
     {
         $es_auto_increment = false;
@@ -180,6 +184,11 @@ class estructuras{
         return $es_auto_increment;
     }
 
+    /**
+     * @param array $campo
+     * @param array $keys_no_foraneas
+     * @return bool
+     */
     private function es_foranea(array $campo, array $keys_no_foraneas): bool
     {
         $es_foranea = false;
@@ -200,6 +209,7 @@ class estructuras{
      * Asigna verdadero si el campo es una llave primaria
      * @param array $campo Campo a validar
      * @return bool|array
+     * @version 10.97.4
      */
     private function es_primaria(array $campo): bool|array
     {

@@ -60,6 +60,19 @@ class estructurasTest extends test {
 
     }
 
+    public function test_es_primaria(){
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $campo['Key'] = '';
+        $resultado = $st->es_primaria($campo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue($resultado);
+
+    }
+
     public function test_existe_entidad(): void
     {
         errores::$error = false;
