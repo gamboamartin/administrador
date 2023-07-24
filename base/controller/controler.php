@@ -367,6 +367,23 @@ class controler{
         return $adm_session_nombre_completo;
     }
 
+    private function out_ws_error(stdClass|array $error){
+        ob_clean();
+        header('Content-Type: application/json');
+        try {
+            echo json_encode($error, JSON_THROW_ON_ERROR);
+        }
+        catch (Throwable $e){
+            $error = $this->errores->error('Error al maquetar json', $e);
+            if($header){
+                print_r($error);
+                exit;
+            }
+            return $error;
+        }
+        exit;
+    }
+
 
 
     /**
@@ -382,20 +399,7 @@ class controler{
     {
         $error = $this->errores->error(mensaje: $mensaje,data:  $data, params: $params);
         if($ws){
-            ob_clean();
-            header('Content-Type: application/json');
-            try {
-                echo json_encode($error, JSON_THROW_ON_ERROR);
-            }
-            catch (Throwable $e){
-                $error = $this->errores->error('Error al maquetar json', $e);
-                if($header){
-                    print_r($error);
-                    exit;
-                }
-                return $error;
-            }
-
+            $this->out_ws_error(error: $error);
         }
         if(!$header){
             return $error;
