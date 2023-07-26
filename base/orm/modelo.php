@@ -302,9 +302,14 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
+        $registro_puro = $this->registro(registro_id: $this->registro_id,columnas_en_bruto: true,retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
+        }
 
-        $data = $this->data_result_transaccion(mensaje: 'Registro insertado con éxito',registro:  $registro,
-            registro_ejecutado:  $this->registro,registro_id:  $this->registro_id, sql: $transacciones->sql);
+        $data = $this->data_result_transaccion(mensaje: 'Registro insertado con éxito', registro: $registro,
+            registro_ejecutado: $this->registro, registro_id: $this->registro_id, registro_puro: $registro_puro,
+            sql: $transacciones->sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar respuesta registro', data: $registro);
         }
@@ -316,18 +321,37 @@ class modelo extends modelo_base {
      * Obtiene un registro existente y da salida homolagada
      * @param array $filtro Filtro de registro
      * @return array|stdClass
+     * @version 10.98.3
      */
     final protected function alta_existente(array $filtro): array|stdClass
     {
+        if(count($filtro) === 0){
+            return $this->error->error(mensaje: 'Error filtro esta vacio',data: $filtro);
+        }
         $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar si existe',data: $result);
         }
+
+        if($result->n_registros > 1){
+            return $this->error->error(mensaje: 'Error de integridad existe mas de un registro',data: $result);
+        }
+        if($result->n_registros === 0){
+            return $this->error->error(mensaje: 'Error de integridad no existe registro',data: $result);
+        }
+
         $registro = $result->registros[0];
 
-        $r_alta_bd = $this->data_result_transaccion(mensaje: "Registro existente",registro:  $registro,
-            registro_ejecutado:  $this->registro, registro_id: $registro[$this->key_id],
-            sql: 'Sin ejecucion');
+        $registro_puro = $this->registro(registro_id: $registro[$this->key_id],columnas_en_bruto: true,
+            retorno_obj: true);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
+        }
+
+        $r_alta_bd = $this->data_result_transaccion(mensaje: "Registro existente", registro: $registro,
+            registro_ejecutado: $this->registro, registro_id: $registro[$this->key_id],
+            registro_puro: $registro_puro, sql: 'Sin ejecucion');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar salida',data: $r_alta_bd);
         }
@@ -506,12 +530,13 @@ class modelo extends modelo_base {
      * @param array $registro Registro resultante
      * @param array $registro_ejecutado Registro en ejecucion
      * @param int $registro_id Identificador resultante o en ejecucion
+     * @param stdClass $registro_puro Registro en bruto insertado completo
      * @param string $sql Sql ejecutado
      * @return stdClass
      * @version 10.88.3
      */
     final protected function data_result_transaccion(string $mensaje, array $registro, array $registro_ejecutado,
-                                                  int $registro_id, string $sql): stdClass
+                                                  int $registro_id, stdClass $registro_puro, string $sql): stdClass
     {
         $data = new stdClass();
         $data->mensaje = $mensaje;
@@ -520,6 +545,7 @@ class modelo extends modelo_base {
         $data->registro = $registro;
         $data->registro_obj = (object)$registro;
         $data->registro_ins = $registro_ejecutado;
+        $data->registro_puro = $registro_puro;
         $data->campos = $this->campos_tabla;
         return $data;
     }

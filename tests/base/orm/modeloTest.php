@@ -56,6 +56,21 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_alta_existente(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $filtro = array();
+        $filtro['adm_seccion.id'] = '1';
+        $resultado = $modelo->alta_existente($filtro);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado->registro_id);
+        errores::$error = false;
+    }
+
     public function test_alta_predeterminado(): void
     {
         $_SESSION['usuario_id'] = 2;
@@ -156,7 +171,8 @@ class modeloTest extends test {
         $registro_ejecutado = array();
         $registro_id = -1;
         $sql = '';
-        $resultado = $modelo->data_result_transaccion($mensaje, $registro, $registro_ejecutado, $registro_id, $sql);
+        $resultado = $modelo->data_result_transaccion($mensaje, $registro, $registro_ejecutado, $registro_id,
+            new \stdClass(), $sql);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
 
