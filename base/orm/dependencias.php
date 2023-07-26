@@ -312,7 +312,8 @@ class dependencias{
 
     private function model_dependiente(modelo_base $modelo, string $modelo_dependiente): modelo_base|array
     {
-        $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo, modelo_dependiente: $modelo_dependiente);
+        $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo,
+            modelo_dependiente: $modelo_dependiente);
         if(errores::$error){
             return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
         }
@@ -326,7 +327,7 @@ class dependencias{
 
     private function modelo_dependiente_val(modelo_base $modelo, string $modelo_dependiente): array|string
     {
-        $modelo_dependiente_ajustado = $this->ajusta_modelo_comp($modelo_dependiente);
+        $modelo_dependiente_ajustado = $this->ajusta_modelo_comp(name_modelo: $modelo_dependiente);
         if(errores::$error ){
             return  $this->error->error(mensaje: 'Error al ajustar modelo',data: $modelo_dependiente);
         }
@@ -344,17 +345,19 @@ class dependencias{
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $modelo_dependiente Modelo que depende
      * @return bool|array
+     * @version 10.99.3
      */
     private function valida_data_desactiva(modelo_base $modelo, string $modelo_dependiente): bool|array
     {
         $valida = $this->valida_names_model(modelo_dependiente: $modelo_dependiente,
             tabla: $modelo->tabla);
         if(errores::$error){
-            return $this->error->error('Error al validar modelos',$valida);
+            return $this->error->error(mensaje: 'Error al validar modelos',data: $valida);
         }
 
         if($modelo->registro_id<=0){
-            return $this->error->error('Error $this->registro_id debe ser mayor a 0',$modelo->registro_id);
+            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id);
         }
         return true;
     }

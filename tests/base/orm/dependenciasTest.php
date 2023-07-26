@@ -113,6 +113,23 @@ class dependenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_data_desactiva(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+
+        $modelo = new adm_mes(link: $this->link);
+        $modelo_dependiente = 'a';
+        $modelo->registro_id = 1;
+
+        $resultado = $dep->valida_data_desactiva($modelo, $modelo_dependiente);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_names_model(): void
     {
         errores::$error = false;
