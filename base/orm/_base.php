@@ -18,6 +18,7 @@ class _base extends modelo{
          */
         $keys = array(); //SE
 
+
         $registro = $this->asigna_status_alta(keys:$keys,registro:  $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar status',data: $registro);
