@@ -28,6 +28,25 @@ class adm_grupo extends _modelo_parent {
         $this->etiqueta = 'Grupo';
     }
 
+    /**
+     * Obtiene las acciones de un grupo y una seccion
+     * @param int $grupo_id Grupo a obtener acciones
+     * @param string $seccion Seccion en ejecucion
+     * @return array
+     */
+    final public function acciones_permitidas(int $grupo_id, string $seccion): array
+    {
+        $filtro['adm_grupo.id'] = $grupo_id;
+        $filtro['adm_seccion.descripcion'] = $seccion;
+
+        $r_accion_grupo = (new adm_accion_grupo(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion',data:  $r_accion_grupo);
+        }
+        return $r_accion_grupo->registros;
+
+    }
+
     public function elimina_bd(int $id): array|stdClass
     {
         if($id <=0){

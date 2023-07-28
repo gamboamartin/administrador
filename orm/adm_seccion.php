@@ -143,6 +143,19 @@ class adm_seccion extends _modelo_children {
         return $r_adm_accion->registros;
     }
 
+    final public function acciones_permitidas(int $grupo_id, string $seccion): array
+    {
+        $filtro['adm_grupo.id'] = $grupo_id;
+        $filtro['adm_seccion.descripcion'] = $seccion;
+
+        $r_accion_grupo = (new adm_accion_grupo(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion',data:  $r_accion_grupo);
+        }
+        return $r_accion_grupo->registros;
+
+    }
+
     public function alta_bd(): array|stdClass
     {
 

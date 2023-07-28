@@ -9,7 +9,7 @@ class _base extends modelo{
      * Se sobreescribe en el modelo en ejecucion
      * @param array $registro Registro en proceso
      * @return array
-     * @final rev
+     * @finalrev
      */
     protected function asigna_full_status_alta(array $registro): array
     {
