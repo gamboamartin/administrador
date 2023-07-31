@@ -4,6 +4,23 @@ namespace base\frontend;
 
 
 class params_inputs{
+
+    /**
+     * Integra clases css de manera dinamica
+     * @param array $class_css
+     * @return string
+     */
+    final public function class_html(array $class_css): string
+    {
+        $class_html = '';
+        foreach ($class_css as $class){
+            $class_html.=" $class ";
+        }
+        if($class_html!==''){
+            $class_html = "class='$class_html'";
+        }
+        return $class_html;
+    }
     
     /**
      * Si disabled retorna attr disabled  en string
