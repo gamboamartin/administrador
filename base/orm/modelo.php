@@ -1964,11 +1964,19 @@ class modelo extends modelo_base {
      * @param bool $columnas_en_bruto true retorna las columnas tal cual la bd
      * @param array $extra_join joins extra
      * @param array $hijo Hijos de row
-     * @return array
+     * @param bool $retorno_obj Retorna el resultado como un objeto
+     * @return array|stdClass
+     * @version 8.86.1
      */
     final public function registro_by_codigo(string $codigo, array $columnas = array(), bool $columnas_en_bruto = false,
-                                             array $extra_join = array(), array $hijo = array()): array
+                                             array $extra_join = array(), array $hijo = array(),
+                                             bool $retorno_obj = false): array|stdClass
     {
+
+        $codigo = trim($codigo);
+        if($codigo === ''){
+            return  $this->error->error(mensaje: 'Error el codigo esta vacio',data: $codigo);
+        }
 
         $filtro[$this->tabla.'.codigo'] = $codigo;
 
@@ -1984,7 +1992,11 @@ class modelo extends modelo_base {
             return  $this->error->error(mensaje: 'Error existe mas de un registro',data: $registros);
         }
 
-        return $registros->registros[0];
+        $registro = $registros->registros[0];
+        if($retorno_obj){
+            $registro = (object)$registro;
+        }
+        return $registro;
 
     }
 
