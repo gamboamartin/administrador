@@ -646,6 +646,11 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener registro en '.$this->tabla, data:$registro_bitacora);
         }
+        $registro_puro = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al obtener registro en '.$this->tabla, data:$registro_puro);
+        }
+
         $tabla = $this->tabla;
         $this->consulta = /** @lang MYSQL */
             'DELETE FROM '.$tabla. ' WHERE id = '.$id;
@@ -678,6 +683,7 @@ class modelo extends modelo_base {
         $data->registro_id = $id;
         $data->sql = $this->consulta;
         $data->registro = $registro_bitacora;
+        $data->registro_puro = $registro_puro;
         $data->mensaje = 'Se elimino el registro con el id '.$id;
 
 

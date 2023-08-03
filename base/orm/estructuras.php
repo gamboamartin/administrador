@@ -172,7 +172,8 @@ class estructuras{
 
 
     /**
-     * @param array $campo
+     * Integra si el campo es autoincrement o no
+     * @param array $campo Campo a validar
      * @return bool
      */
     private function es_auto_increment(array $campo): bool
