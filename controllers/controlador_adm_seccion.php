@@ -38,11 +38,11 @@ class controlador_adm_seccion extends controlador_base{
      * @param bool $header Si header muestra resultado en front
      * @param bool $ws
      * @return array
-     * @final revisada
+     * @finalrev
      */
     public function alta_bd(bool $header, bool $ws): array{
         $this->link->beginTransaction();
-        $r_alta_bd = parent::alta_bd(false, false);
+        $r_alta_bd = parent::alta_bd(header: false, ws: false);
         if(errores::$error){
             $this->link->rollBack();
             $error =   $this->errores->error(mensaje: 'Error al dar de alta registro',data: $r_alta_bd);
