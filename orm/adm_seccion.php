@@ -438,9 +438,11 @@ class adm_seccion extends _modelo_children {
 
     }
 
+
     /**
      * Obtiene las secciones integradas en un paquete o sistema
      * @return array
+     * @version 10.106.3
      */
     final public function secciones_sistema(): array
     {

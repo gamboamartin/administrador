@@ -62,6 +62,13 @@ class controlador_base extends controler
     public string $html_categorias = "";
 
     /**
+     * Debe ser utilizado para inputs de tipo hidden
+     * @var stdClass
+     */
+    public stdClass $hiddens;
+
+
+    /**
      * @param PDO $link Conexion a la base de datos
      * @param modelo $modelo Modelo de datos a ejecutar
      * @param array $filtro_boton_lista Filtros para botones de lista
@@ -78,6 +85,7 @@ class controlador_base extends controler
         $this->campo_busca = $campo_busca;
         $this->errores = new errores();
         $this->filtros_lista = array();
+        $this->hiddens = new stdClass();
 
         $valida = (new configuraciones())->valida_confs(paths_conf: $paths_conf);
         if (errores::$error) {
