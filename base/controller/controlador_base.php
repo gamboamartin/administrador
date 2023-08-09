@@ -188,8 +188,16 @@ class controlador_base extends controler
             }
             $this->categorias = $menu_secciones;
 
-            $html_categorias = (new sidebar())->print_categorias(registros: $this->categorias,
+            /*$html_categorias = (new sidebar())->print_categorias(registros: $this->categorias,
                 titulo_categoria: 'adm_categoria_categoria', session_id: $this->session_id);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al generar html para menu categorias', data: $html_categorias);
+                print_r($error);
+                exit;
+            }*/
+
+            $html_categorias = (new sidebar())->print_categorias2(registros: $this->menu_permitido,
+                titulo_categoria: 'adm_menu_titulo', session_id: $this->session_id);
             if (errores::$error) {
                 $error = $this->errores->error(mensaje: 'Error al generar html para menu categorias', data: $html_categorias);
                 print_r($error);
