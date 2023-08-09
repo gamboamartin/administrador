@@ -35,9 +35,58 @@ class sidebar
         return $categorias_secciones;
     }
 
+    private function transformar_datos2(array $registros, string $titulo_categoria): array
+    {
+        $categorias_secciones = array();
+
+        foreach ($registros as $index => $registro) {
+            if (!array_key_exists(key: $titulo_categoria, array: $registro)) {
+                return (new errores())->error("No existe la key: $titulo_categoria", $registro);
+            }
+
+            if (!array_key_exists(key: $registro[$titulo_categoria], array: $categorias_secciones)) {
+                $categorias_secciones[$registro[$titulo_categoria]] = array();
+            }
+
+            $categorias_secciones[$registro[$titulo_categoria]]['icono'] = "bi-envelope";
+
+            foreach ($registro['adm_secciones'] as $seccion){
+                $secciones = array();
+                $secciones['seccion'] = $seccion['adm_seccion_descripcion'];
+                $secciones['titulo'] = $seccion['adm_seccion_etiqueta_label'];
+                $secciones['accion'] = 'lista';
+
+                $categorias_secciones[$registro[$titulo_categoria]]['secciones'][] = $secciones;
+            }
+        }
+
+        return $categorias_secciones;
+    }
+
     public function print_categorias(array $registros, string $titulo_categoria, string $session_id): string|array
     {
         $data_object = $this->transformar_datos(registros: $registros, titulo_categoria: $titulo_categoria);
+        if (errores::$error) {
+            return (new errores())->error("No se pudo transformar los datos", $data_object);
+        }
+
+        $html = '';
+
+        foreach ($data_object as $key => $registro) {
+
+            $html_li = $this->html_li_item(categoria: $key, items: $registro['secciones'], session_id: $session_id,
+                icono: $registro['icono']);
+            if (errores::$error) {
+                return (new errores())->error("No se pudo maquetar html li item", $html_li);
+            }
+            $html .= $html_li;
+        }
+        return $html;
+    }
+
+    public function print_categorias2(array $registros, string $titulo_categoria, string $session_id): string|array
+    {
+        $data_object = $this->transformar_datos2(registros: $registros, titulo_categoria: $titulo_categoria);
         if (errores::$error) {
             return (new errores())->error("No se pudo transformar los datos", $data_object);
         }
