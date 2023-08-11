@@ -60,6 +60,20 @@ class estructurasTest extends test {
 
     }
 
+    public function test_es_auto_increment(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $campo['Extra'] = 'auto_increment';
+        $resultado = $st->es_auto_increment($campo);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_es_primaria(){
         errores::$error = false;
         $st = new estructuras($this->link);

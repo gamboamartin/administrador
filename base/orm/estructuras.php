@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use config\database;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use PDO;
@@ -174,10 +175,14 @@ class estructuras{
     /**
      * Integra si el campo es autoincrement o no
      * @param array $campo Campo a validar
-     * @return bool
+     * @return bool|array
+     * @version 11.1.0
      */
-    private function es_auto_increment(array $campo): bool
+    private function es_auto_increment(array $campo): bool|array
     {
+        if(!isset($campo['Extra'])){
+            $campo['Extra'] = '';
+        }
         $es_auto_increment = false;
         if($campo['Extra'] === 'auto_increment'){
             $es_auto_increment = true;
@@ -296,6 +301,10 @@ class estructuras{
         $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql, valida_tabla: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
+        }
+        if($result->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existen entidades en la bd '.(new database())->db_name,
+                data: $sql);
         }
 
         return $result->registros;
