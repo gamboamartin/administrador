@@ -99,30 +99,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      */
     private function asigna_datos_session(stdClass $r_session): array
     {
-        if(!isset($r_session->registros)){
-            return $this->error->error(mensaje: 'Error r_session no tiene key registros',data:  $r_session);
-        }
-        if(!is_array($r_session->registros)){
-            return $this->error->error(mensaje: 'Error $r_session->registros debe ser un array',data:  $r_session);
-        }
-        if(count($r_session->registros) === 0){
-            return $this->error->error(mensaje: 'Error $r_session->registros esta vacio',data:  $r_session);
-        }
-        if(count($r_session->registros) > 1){
-            return $this->error->error(mensaje: 'Error $r_session->registros es incoherente',data:  $r_session);
-        }
-        if(!is_array($r_session->registros[0])){
-            return $this->error->error(mensaje: 'Error $r_session->registros[0] debe ser un array',data:  $r_session);
-        }
 
-        $keys = array('adm_grupo_id','adm_usuario_id');
-        $valida = $this->validacion->valida_ids(keys:$keys,registro:  $r_session->registros[0]);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
-        }
-        $keys = array('adm_session_nombre_completo');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys,
-            registro:  $r_session->registros[0],valida_vacio: false);
+        $valida = $this->valida_session_db(r_session: $r_session);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
         }
@@ -139,10 +117,22 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
      * Carga los datos de una session
      * @param stdClass $r_session Resultado de session
      * @return array
+
      */
     private function carga_session(stdClass $r_session): array
     {
-        $init = $this->init_session(session_id:(new generales())->session_id);
+        $generales = new generales();
+        $generales->session_id = trim($generales->session_id);
+        if($generales->session_id === ''){
+            return $this->error->error(mensaje: 'Error session_id esta vacia',data:  $generales->session_id);
+        }
+
+        $valida = $this->valida_session_db(r_session: $r_session);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
+        }
+
+        $init = $this->init_session(session_id: $generales->session_id);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al iniciar session',data:  $init);
         }
@@ -299,7 +289,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $filtro['session.session_id']['campo'] = 'session.session_id';
         $filtro['session.session_id']['value'] = $session_id;
 
-        $registros = $this->filtro_and($filtro,'numeros', array(),array(),0, 0,array());
+        $registros = $this->filtro_and(filtro: $filtro);
 
         if(isset($registros['error'])){
             return $this->error->error('Error al filtrar sessiones',$registros);
@@ -419,5 +409,36 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $data_session['status'] = 'activo';
         $data_session['permanente'] = 'activo';
         return $data_session;
+    }
+
+    private function valida_session_db(stdClass $r_session){
+        if(!isset($r_session->registros)){
+            return $this->error->error(mensaje: 'Error r_session no tiene key registros',data:  $r_session);
+        }
+        if(!is_array($r_session->registros)){
+            return $this->error->error(mensaje: 'Error $r_session->registros debe ser un array',data:  $r_session);
+        }
+        if(count($r_session->registros) === 0){
+            return $this->error->error(mensaje: 'Error $r_session->registros esta vacio',data:  $r_session);
+        }
+        if(count($r_session->registros) > 1){
+            return $this->error->error(mensaje: 'Error $r_session->registros es incoherente',data:  $r_session);
+        }
+        if(!is_array($r_session->registros[0])){
+            return $this->error->error(mensaje: 'Error $r_session->registros[0] debe ser un array',data:  $r_session);
+        }
+
+        $keys = array('adm_grupo_id','adm_usuario_id');
+        $valida = $this->validacion->valida_ids(keys:$keys,registro:  $r_session->registros[0]);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
+        }
+        $keys = array('adm_session_nombre_completo');
+        $valida = $this->validacion->valida_existencia_keys(keys:$keys,
+            registro:  $r_session->registros[0],valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
+        }
+        return true;
     }
 }

@@ -45,6 +45,25 @@ class adm_sessionTest extends test {
         errores::$error = false;
     }
 
+    public function test_carga_session(){
+        $_GET['session_id'] = 9;
+
+        errores::$error = false;
+        $session = new adm_session($this->link);
+        $session = new liberator($session);
+
+        $r_session = new stdClass();
+        $r_session->registros = array();
+        $r_session->registros[0]['adm_grupo_id'] = 1;
+        $r_session->registros[0]['adm_usuario_id'] = 1;
+        $r_session->registros[0]['adm_session_nombre_completo'] = 1;
+
+        $resultado = $session->carga_session($r_session);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+    }
+
     public function test_init_session(){
 
         errores::$error = false;
