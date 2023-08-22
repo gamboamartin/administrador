@@ -84,10 +84,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public bool $integra_datos_base = true;
     public string $campo_llave = "";
 
-    protected array $mes;
-    protected array $dia;
+    public array $mes;
+    public array $dia;
 
-    protected array $year;
+    public array $year;
 
 
     /**

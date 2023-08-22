@@ -691,7 +691,7 @@ class init{
      * @version 2.115.12
      */
     public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder,
-                                   bool $required = true): array
+                                   bool $required = true, mixed $value = ''): array
     {
         $key = trim($key);
         if($key === ''){
@@ -710,6 +710,7 @@ class init{
         if(!isset($keys_selects[$key]->required)) {
             $keys_selects[$key]->required = $required;
         }
+
         return $keys_selects;
     }
 
