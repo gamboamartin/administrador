@@ -1366,6 +1366,13 @@ class modelo extends modelo_base {
     {
         if(count($in)>0) {
             if(isset($in['llave'])){
+                if(!is_string($in['llave'])){
+                    return $this->error->error(mensaje: 'Error in[llave] debe ser un string',data:  $in);
+                }
+                $in['llave'] = trim($in['llave']);
+                if($in['llave'] === ''){
+                    return $this->error->error(mensaje: 'Error in[llave] esta vacia',data:  $in);
+                }
                 if(array_key_exists($in['llave'], $this->columnas_extra)){
                     $in['llave'] = $this->columnas_extra[$in['llave']];
                 }

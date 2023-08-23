@@ -454,13 +454,19 @@ class adm_seccion extends _modelo_children {
         return $r_seccion_pertenece->registros;
     }
 
-    public function validar_acciones(array $secciones_sistema): array
+    /**
+     * Valida las acciones de un sistema
+     * @param array $secciones_sistema Secciones de un sistema
+     * @return array
+     */
+    final public function validar_acciones(array $secciones_sistema): array
     {
         foreach ($secciones_sistema as $item => $value){
             $adm_seccion_id = $value['adm_seccion_id'];
 
             $filtro['adm_seccion_id'] = $adm_seccion_id;
-            $acciones = (new adm_accion($this->link))->filtro_and(columnas: array('adm_accion_descripcion'), filtro: $filtro);
+            $acciones = (new adm_accion($this->link))->filtro_and(columnas: array('adm_accion_descripcion'),
+                filtro: $filtro);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener acciones ', data: $acciones);
             }
