@@ -273,6 +273,21 @@ class adm_seccionTest extends test {
         errores::$error = false;
     }
 
+    public function test_validar_acciones(){
+
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        //$_SESSION['usuario_id'] = 2;
+
+        $secciones_sistema = array();
+        $resultado = $modelo->validar_acciones($secciones_sistema);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
 
 
 }

@@ -458,6 +458,7 @@ class adm_seccion extends _modelo_children {
      * Valida las acciones de un sistema
      * @param array $secciones_sistema Secciones de un sistema
      * @return array
+     * @version 11.6.0
      */
     final public function validar_acciones(array $secciones_sistema): array
     {
