@@ -3,6 +3,8 @@ namespace base\frontend;
 
 
 
+use stdClass;
+
 class params_inputs{
 
     /**
@@ -38,6 +40,34 @@ class params_inputs{
         }
         return $disabled_html;
     }
+
+    final public function params_base_chk(string $campo, string $tag): stdClass{
+        $class_label[] = 'form-check-label';
+        $class_label[] = 'chk';
+
+        $class_radio[] = 'form-check-input';
+        $class_radio[] = $campo;
+
+        $for = $tag;
+        
+        $ids_css[] = $campo;
+
+        $label_html = $tag;
+        $title = $tag;
+
+        $data = new stdClass();
+
+        $data->class_label = $class_label;
+        $data->class_radio = $class_radio;
+        $data->for = $for;
+        $data->ids_css = $ids_css;
+        $data->label_html = $label_html;
+        $data->title = $title;
+        $data->name = $campo;
+
+        return $data;
+    }
+
 
     /**
      * Integra un regex a un pattern input
