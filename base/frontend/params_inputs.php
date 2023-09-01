@@ -41,6 +41,12 @@ class params_inputs{
         return $disabled_html;
     }
 
+    /**
+     * Obtiene los parametros base para un input de tipo radio
+     * @param string $campo Campo a integrar
+     * @param string $tag Tag de input
+     * @return stdClass
+     */
     final public function params_base_chk(string $campo, string $tag): stdClass{
         $class_label[] = 'form-check-label';
         $class_label[] = 'chk';
