@@ -16,7 +16,27 @@ class params_inputsTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_class_html()
+    {
+        errores::$error = false;
+        $params = new params_inputs();
+        //$params = new liberator($params);
 
+        $class_css = array();
+        $resultado = $params->class_html($class_css);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+        $class_css = array();
+        $class_css[] = ' a';
+        $resultado = $params->class_html($class_css);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("class='a'",$resultado);
+        errores::$error = false;
+    }
 
 
     public function test_disabled_html()

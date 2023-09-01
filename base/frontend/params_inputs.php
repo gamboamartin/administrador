@@ -17,14 +17,20 @@ class params_inputs{
     /**
      * Integra clases css de manera dinamica
      * @param array $class_css
-     * @return string
+     * @return string|array
+     * @version 11.10.0
      */
-    final public function class_html(array $class_css): string
+    final public function class_html(array $class_css): string|array
     {
         $class_html = '';
         foreach ($class_css as $class){
+            $class = trim($class);
+            if($class === ''){
+                return $this->error->error(mensaje: 'Error class vacio',data:  $class);
+            }
             $class_html.=" $class ";
         }
+        $class_html = trim($class_html);
         if($class_html!==''){
             $class_html = "class='$class_html'";
         }
