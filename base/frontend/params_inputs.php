@@ -3,9 +3,16 @@ namespace base\frontend;
 
 
 
+use gamboamartin\errores\errores;
 use stdClass;
 
 class params_inputs{
+    private errores $error;
+
+    public function __construct()
+    {
+        $this->error = new errores();
+    }
 
     /**
      * Integra clases css de manera dinamica
@@ -45,9 +52,28 @@ class params_inputs{
      * Obtiene los parametros base para un input de tipo radio
      * @param string $campo Campo a integrar
      * @param string $tag Tag de input
-     * @return stdClass
+     * @return stdClass|array
+     * @version 11.9.0
      */
-    final public function params_base_chk(string $campo, string $tag): stdClass{
+    final public function params_base_chk(string $campo, string $tag): stdClass|array{
+
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo vacio',data:  $campo);
+        }
+
+        $tag = trim($tag);
+        if($tag === ''){
+            $tag = $campo;
+            $tag = str_replace('_', ' ', $tag);
+            $tag = ucwords($tag);
+        }
+        $tag = trim($tag);
+
+        if($tag === '' ){
+            return $this->error->error(mensaje: 'Error tag vacio',data:  $tag);
+        }
+
         $class_label[] = 'form-check-label';
         $class_label[] = 'chk';
 
