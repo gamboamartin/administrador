@@ -55,6 +55,28 @@ class params_inputs{
     }
 
     /**
+     * Integra los id para elementos de frontend
+     * @param array $ids_css Identificadores css
+     * @return string|array
+     */
+    final public function ids_html(array $ids_css): string|array
+    {
+        $id_html = '';
+        foreach ($ids_css as $id_css){
+            $id_css = trim($id_css);
+            if($id_css === ''){
+                return $this->error->error(mensaje: 'Error id_css vacio',data:  $id_css);
+            }
+            $id_html.=" $id_css ";
+        }
+        $id_html = trim($id_html);
+        if($id_html!==''){
+            $id_html = "id='$id_html'";
+        }
+        return $id_html;
+    }
+
+    /**
      * Obtiene los parametros base para un input de tipo radio
      * @param string $campo Campo a integrar
      * @param string $tag Tag de input
