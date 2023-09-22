@@ -1365,7 +1365,7 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener id preferido',data:  $result);
         }
-        return (int)$result->registros[0][$key_id];
+        return (int)$result->registros[0][$key_id];  
 
     }
 
