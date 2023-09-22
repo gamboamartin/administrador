@@ -540,6 +540,22 @@ class adm_accionTest extends test {
         errores::$error = false;
     }
 
+    public function test_id_preferido(){
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $entidad_relacion = 'adm_seccion';
+
+        $resultado = $modelo->id_preferido($entidad_relacion);
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_n_permisos(){
 
         errores::$error = false;
