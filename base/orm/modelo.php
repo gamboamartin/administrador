@@ -1369,6 +1369,19 @@ class modelo extends modelo_base {
 
     }
 
+    final public function id_preferido_detalle(string $entidad_contenedora, string $entidad_preferida){
+
+        $key_id = $entidad_preferida.'_id';
+        $sql = "SELECT COUNT(*), $key_id FROM $entidad_contenedora GROUP BY $key_id ORDER BY COUNT(*) DESC LIMIT 1;";
+
+        $result = $this->ejecuta_consulta(consulta: $sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener id preferido',data:  $result);
+        }
+        return (int)$result->registros[0][$key_id];
+
+    }
+
     /**
      * Genera una llave de tipo in para SQL
      * @param array $in IN precargada
