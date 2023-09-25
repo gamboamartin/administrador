@@ -1365,11 +1365,21 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener id preferido',data:  $result);
         }
-        return (int)$result->registros[0][$key_id];  
+        return (int)$result->registros[0][$key_id];
 
     }
 
     final public function id_preferido_detalle(string $entidad_contenedora, string $entidad_preferida){
+
+        $entidad_contenedora = trim($entidad_contenedora);
+        if($entidad_contenedora === ''){
+            return $this->error->error(mensaje: 'Error entidad_contenedora esta vacia',data:  $entidad_contenedora);
+        }
+
+        $entidad_preferida = trim($entidad_preferida);
+        if($entidad_preferida === ''){
+            return $this->error->error(mensaje: 'Error entidad_preferida esta vacia',data:  $entidad_preferida);
+        }
 
         $key_id = $entidad_preferida.'_id';
         $sql = "SELECT COUNT(*), $key_id FROM $entidad_contenedora GROUP BY $key_id ORDER BY COUNT(*) DESC LIMIT 1;";
