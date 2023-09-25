@@ -38,6 +38,22 @@ class adm_accion_grupoTest extends test {
         errores::$error = false;
     }
 
+    public function test_id_preferido_detalle(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_accion_grupo($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $entidad_preferida= 'adm_grupo';
+        $resultado = $modelo->id_preferido_detalle($entidad_preferida);
+        $this->assertIsInt($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(2,$resultado);
+        errores::$error = false;
+    }
+
     public function test_obten_accion_permitida(): void
     {
 

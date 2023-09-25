@@ -1369,26 +1369,35 @@ class modelo extends modelo_base {
 
     }
 
-    final public function id_preferido_detalle(string $entidad_contenedora, string $entidad_preferida){
+    final public function id_preferido_detalle(string $entidad_preferida, array $extension_estructura = array(),
+                                               array $extra_join = array(), array $renombradas = array()){
 
-        $entidad_contenedora = trim($entidad_contenedora);
-        if($entidad_contenedora === ''){
-            return $this->error->error(mensaje: 'Error entidad_contenedora esta vacia',data:  $entidad_contenedora);
-        }
+
 
         $entidad_preferida = trim($entidad_preferida);
         if($entidad_preferida === ''){
             return $this->error->error(mensaje: 'Error entidad_preferida esta vacia',data:  $entidad_preferida);
         }
+        $key_id_preferido = "$entidad_preferida.id";
+        $key_id_preferido_out = $entidad_preferida."_id";
 
-        $key_id = $entidad_preferida.'_id';
-        $sql = "SELECT COUNT(*), $key_id FROM $entidad_contenedora GROUP BY $key_id ORDER BY COUNT(*) DESC LIMIT 1;";
+
+        $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
+            extra_join: $extra_join, modelo_tabla: $this->tabla, renombradas: $renombradas, tabla: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
+        }
+
+
+        $sql = "SELECT COUNT(*), $key_id_preferido AS $key_id_preferido_out FROM $tablas GROUP BY $key_id_preferido 
+                                  ORDER BY COUNT(*) DESC LIMIT 1;";
+
 
         $result = $this->ejecuta_consulta(consulta: $sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener id preferido',data:  $result);
         }
-        return (int)$result->registros[0][$key_id];
+        return (int)$result->registros[0][$key_id_preferido_out];
 
     }
 
