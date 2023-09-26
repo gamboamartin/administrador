@@ -191,8 +191,9 @@ class estructuras{
     }
 
     /**
-     * @param array $campo
-     * @param array $keys_no_foraneas
+     * Verifica si el campo es una llave foranea o no
+     * @param array $campo Campo a validar
+     * @param array $keys_no_foraneas Keys previos con foraneas
      * @return bool
      */
     private function es_foranea(array $campo, array $keys_no_foraneas): bool

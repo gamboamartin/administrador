@@ -1400,7 +1400,11 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener id preferido',data:  $result);
         }
-        return (int)$result->registros[0][$key_id_preferido_out];
+        $id_pref = -1;
+        if(isset($result->registros[0][$key_id_preferido_out])){
+            $id_pref = (int)$result->registros[0][$key_id_preferido_out];
+        }
+        return $id_pref;
 
     }
 
