@@ -709,6 +709,19 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_id_preferido_detalle(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $entidad_preferida = 'adm_menu';
+        $resultado = $modelo->id_preferido_detalle($entidad_preferida);
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_in_llave(): void
     {
         errores::$error = false;

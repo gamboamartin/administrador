@@ -457,10 +457,6 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
 
-        /*$tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: "Error al obtener tablas", data: $tablas);
-        }*/
 
         $extension_estructura = array();
         $renombradas = array();
@@ -1369,10 +1365,18 @@ class modelo extends modelo_base {
 
     }
 
+    /**
+     * Obtiene el identificador mas usado de una entidad, ej la seccion mas integrada en accion
+     * @param string $entidad_preferida Nombre de la entidad a buscar esta debe ser un externo de this
+     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
+     * @param array $extra_join Join extra a peticion en funciones
+     * @param array $renombradas conjunto de tablas renombradas
+     * @return array|int
+     * @version 11.17.0
+     */
     final public function id_preferido_detalle(string $entidad_preferida, array $extension_estructura = array(),
-                                               array $extra_join = array(), array $renombradas = array()){
-
-
+                                               array $extra_join = array(), array $renombradas = array()): int|array
+    {
 
         $entidad_preferida = trim($entidad_preferida);
         if($entidad_preferida === ''){
@@ -1388,10 +1392,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }
 
-
-        $sql = "SELECT COUNT(*), $key_id_preferido AS $key_id_preferido_out FROM $tablas GROUP BY $key_id_preferido 
-                                  ORDER BY COUNT(*) DESC LIMIT 1;";
-
+        $sql = sprintf("SELECT COUNT(*), %s AS %s FROM %s GROUP BY %s 
+                                  ORDER BY COUNT(*) DESC LIMIT 1;",
+            $key_id_preferido, $key_id_preferido_out, $tablas, $key_id_preferido);
 
         $result = $this->ejecuta_consulta(consulta: $sql);
         if(errores::$error){
