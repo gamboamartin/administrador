@@ -120,6 +120,9 @@ class _modelo_parent extends _base {
                                 array $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {
 
+        if($id<=0){
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0',data: $registro);
+        }
         $registro = $this->campos_base(data: $registro, modelo: $this, id: $id,keys_integra_ds:$keys_integra_ds );
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo base',data: $registro);
