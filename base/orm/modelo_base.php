@@ -389,6 +389,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             }
         }
 
+        if(!isset($data['descripcion'])){
+            $registro_previo = $modelo->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error obtener registro previo', data: $registro_previo);
+            }
+            $data['descripcion'] = $registro_previo->descripcion;
+        }
+
         $data = (new data_base())->init_data_base(data: $data,id: $id, modelo: $modelo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro previo',data: $data);

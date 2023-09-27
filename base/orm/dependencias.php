@@ -325,6 +325,12 @@ class dependencias{
     }
 
 
+    /**
+     * Ajusta los valores de un modelo dependiente
+     * @param modelo_base $modelo Modelo en ejecucion
+     * @param string $modelo_dependiente Modelo a validar
+     * @return array|string
+     */
     private function modelo_dependiente_val(modelo_base $modelo, string $modelo_dependiente): array|string
     {
         $modelo_dependiente_ajustado = $this->ajusta_modelo_comp(name_modelo: $modelo_dependiente);
