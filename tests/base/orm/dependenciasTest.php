@@ -113,6 +113,21 @@ class dependenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_modelo_dependiente_val(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+        $modelo_dependiente = 'a';
+
+        $modelo = new adm_mes($this->link);
+        $modelo->registro_id = 1;
+        $resultado = $dep->modelo_dependiente_val($modelo, $modelo_dependiente);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("models\a",$resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_data_desactiva(): void
     {
         errores::$error = false;

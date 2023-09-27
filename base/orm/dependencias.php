@@ -317,7 +317,7 @@ class dependencias{
         if(errores::$error){
             return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
         }
-        $modelo_ = $modelo->genera_modelo($modelo_dependiente_ajustado);
+        $modelo_ = $modelo->genera_modelo(modelo: $modelo_dependiente_ajustado);
         if (errores::$error) {
             return $this->error->error('Error al generar modelo', $modelo_);
         }
@@ -330,9 +330,21 @@ class dependencias{
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $modelo_dependiente Modelo a validar
      * @return array|string
+     * @version 11.20.0
      */
     private function modelo_dependiente_val(modelo_base $modelo, string $modelo_dependiente): array|string
     {
+
+        $modelo_dependiente = trim($modelo_dependiente);
+        if($modelo_dependiente === ''){
+            return $this->error->error(mensaje:'Error modelo_dependiente no puede venir vacio',
+                data:  $modelo_dependiente);
+        }
+        if($modelo->registro_id<=0){
+            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id);
+        }
+
         $modelo_dependiente_ajustado = $this->ajusta_modelo_comp(name_modelo: $modelo_dependiente);
         if(errores::$error ){
             return  $this->error->error(mensaje: 'Error al ajustar modelo',data: $modelo_dependiente);

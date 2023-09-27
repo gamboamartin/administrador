@@ -389,7 +389,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             }
         }
 
-        if(!isset($data['descripcion'])){
+        if(!isset($data['descripcion']) && $id > 0){
             $registro_previo = $modelo->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error obtener registro previo', data: $registro_previo);
