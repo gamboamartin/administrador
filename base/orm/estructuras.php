@@ -541,8 +541,9 @@ class estructuras{
     }
 
     /**
-     * @param array $campo
-     * @param array $keys_no_foraneas
+     * Integra el nombre de la tabla foranea ligada a la entidad
+     * @param array $campo Datos del campo
+     * @param array $keys_no_foraneas Key de foraneas
      * @return string
      */
     private function tabla_foranea(array $campo, array $keys_no_foraneas): string
