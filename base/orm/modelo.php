@@ -2117,12 +2117,14 @@ class modelo extends modelo_base {
 
     /**
      * Obtiene los registros activos de un modelo de datos
-     * @param array $columnas
-     * @param bool $aplica_seguridad
-     * @param int $limit
+     * @param array $columnas Columnas a integrar
+     * @param bool $aplica_seguridad Si aplica seguridad obtiene datos permitidos
+     * @param int $limit Limit de registros
      * @return array
+     * @version 11.22.0
      */
-    public function registros_activos(array $columnas = array(), bool $aplica_seguridad = false, int $limit = 0): array
+    final public function registros_activos(array $columnas = array(), bool $aplica_seguridad = false,
+                                            int $limit = 0): array
     {
         $filtro[$this->tabla.'.status'] = 'activo';
         $resultado =$this->filtro_and(aplica_seguridad: $aplica_seguridad, columnas: $columnas, filtro: $filtro,

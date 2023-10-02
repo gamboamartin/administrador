@@ -1048,6 +1048,17 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_registros_activos(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+        $resultado = $modelo->registros_activos();
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_result_ini(): void
     {
         errores::$error = false;
