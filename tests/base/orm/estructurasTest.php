@@ -74,6 +74,22 @@ class estructurasTest extends test {
         errores::$error = false;
     }
 
+    public function test_es_foranea(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+
+        $campo = array();
+        $keys_no_foraneas = array();
+        $campo['Field'] = '';
+        $resultado = $st->es_foranea($campo, $keys_no_foraneas);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_es_primaria(){
         errores::$error = false;
         $st = new estructuras($this->link);

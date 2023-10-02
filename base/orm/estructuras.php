@@ -194,10 +194,14 @@ class estructuras{
      * Verifica si el campo es una llave foranea o no
      * @param array $campo Campo a validar
      * @param array $keys_no_foraneas Keys previos con foraneas
-     * @return bool
+     * @return bool|array
+     * @version 11.23.0
      */
-    private function es_foranea(array $campo, array $keys_no_foraneas): bool
+    private function es_foranea(array $campo, array $keys_no_foraneas): bool|array
     {
+        if(!isset($campo['Field'])){
+            return $this->error->error(mensaje: 'Error al campo[Field] no existe', data: $campo);
+        }
         $es_foranea = false;
         $explode_campo = explode('_id', $campo['Field']);
 
@@ -206,7 +210,6 @@ class estructuras{
             if(!$es_no_foranea){
                 $es_foranea = true;
             }
-
 
         }
         return $es_foranea;
@@ -537,6 +540,11 @@ class estructuras{
         return $permite_null;
     }
 
+    /**
+     * @param array $campo
+     * @param array $keys_no_foraneas
+     * @return string
+     */
     private function tabla_foranea(array $campo, array $keys_no_foraneas): string
     {
         $tabla_foranea = '';
