@@ -255,6 +255,22 @@ class estructurasTest extends test {
         errores::$error = false;
     }
 
+    public function test_tabla_foranea(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $keys_no_foraneas = array();
+        $campo['Field'] = 'a_id';
+
+        $resultado = $st->tabla_foranea($campo, $keys_no_foraneas);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('a',$resultado);
+        errores::$error = false;
+    }
+
 
 
 }

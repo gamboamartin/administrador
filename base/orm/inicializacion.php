@@ -434,7 +434,13 @@ class inicializacion{
         return $attr;
     }
 
-    private function inicializa_atributos(stdClass $attr, modelo $modelo){
+    /**
+     * @param stdClass $attr
+     * @param modelo $modelo
+     * @return array|stdClass
+     */
+    private function inicializa_atributos(stdClass $attr, modelo $modelo): array|stdClass
+    {
         foreach ($attr->registros as $atributo){
             $attrs = $this->init_atributo(atributo: $atributo,modelo:  $modelo);
             if (errores::$error) {
@@ -785,6 +791,10 @@ class inicializacion{
 
     }
 
+    /**
+     * @param string $key
+     * @return string
+     */
     private function normaliza_key_db(string $key): string
     {
         $key_new = trim($key);
@@ -795,6 +805,7 @@ class inicializacion{
     /**
      * Maqueta eñ registro a insertar
      * @param array $campos_encriptados Conjunto de campos a encriptar en el guardado
+     * @param bool $integra_datos_base
      * @param array $registro Registro que se insertara
      * @param string $status_default status activo o inactivo
      * @param array $tipo_campos Tipificacion de campos del modelo
@@ -812,7 +823,8 @@ class inicializacion{
             return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
         }
 
-        $registro = $this->status(integra_datos_base: $integra_datos_base, registro: $registro,status_default:  $status_default);
+        $registro = $this->status(integra_datos_base: $integra_datos_base, registro: $registro,
+            status_default:  $status_default);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
         }

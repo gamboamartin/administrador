@@ -19,6 +19,12 @@ class estructuras{
         $this->validacion = new validacion();
     }
 
+    /**
+     * @param array $campo
+     * @param array $keys_no_foraneas
+     * @param string $name_modelo
+     * @return array|stdClass
+     */
     private function asigna_dato_estructura(array $campo, array $keys_no_foraneas, string $name_modelo): array|stdClass
     {
         $init = $this->init_estructura_campo(campo: $campo,name_modelo: $name_modelo);
@@ -99,6 +105,13 @@ class estructuras{
         return $modelos;
     }
 
+    /**
+     * @param stdClass $data
+     * @param stdClass $estructura_bd
+     * @param stdClass $foraneas
+     * @param string $modelo
+     * @return stdClass
+     */
     private function asigna_dato_foranea(stdClass $data, stdClass $estructura_bd, stdClass $foraneas,
                                          string $modelo): stdClass
     {
@@ -108,6 +121,12 @@ class estructuras{
         return $estructura_bd;
     }
 
+    /**
+     * @param array $data_table
+     * @param array $keys_no_foraneas
+     * @param string $name_modelo
+     * @return array|stdClass
+     */
     private function asigna_datos_modelo(array $data_table, array $keys_no_foraneas, string $name_modelo): array|stdClass
     {
         $estructura_bd = array();
@@ -123,6 +142,10 @@ class estructuras{
         return $estructura_bd;
     }
 
+    /**
+     * @param stdClass $estructura_bd
+     * @return array|stdClass
+     */
     private function asigna_foraneas(stdClass $estructura_bd): array|stdClass
     {
         $estructura_bd_r = $estructura_bd;
@@ -135,6 +158,12 @@ class estructuras{
         return $estructura_bd_r;
     }
 
+    /**
+     * @param stdClass $estructura
+     * @param stdClass $estructura_bd
+     * @param string $modelo
+     * @return array|stdClass
+     */
     private function calcula_foranea(stdClass $estructura, stdClass $estructura_bd, string $modelo): array|stdClass
     {
         $estructura_bd_r = $estructura_bd;
@@ -153,8 +182,12 @@ class estructuras{
         return $estructura_bd_r;
     }
 
-    final public function entidades(string $name_db){
-
+    /**
+     * @param string $name_db
+     * @return array
+     */
+    final public function entidades(string $name_db): array
+    {
 
         if(!isset($_SESSION['entidades_bd'])){
             $data = $this->asigna_datos_estructura(name_db: $name_db);
@@ -255,6 +288,12 @@ class estructuras{
         return $existe_entidad;
     }
 
+    /**
+     * @param array $keys_no_foraneas
+     * @param array $modelos
+     * @param bool $valida_tabla
+     * @return array|stdClass
+     */
     private function genera_estructura(array $keys_no_foraneas, array $modelos, bool $valida_tabla = true): array|stdClass
     {
         $estructura_bd = array();
@@ -275,6 +314,13 @@ class estructuras{
         return $estructura_bd;
     }
 
+    /**
+     * @param stdClass $data_campos
+     * @param stdClass $estructura_bd
+     * @param stdClass $foraneas
+     * @param string $modelo
+     * @return array|stdClass
+     */
     private function genera_foranea(stdClass $data_campos, stdClass $estructura_bd, stdClass $foraneas,
                                     string $modelo): array|stdClass
     {
@@ -314,6 +360,12 @@ class estructuras{
         return $result->registros;
     }
 
+    /**
+     * Inicializa un campo con loa datos de estructura de bd
+     * @param array $campo campo a inicializar
+     * @param array $keys_no_foraneas Keys integrados como no foraneas
+     * @return array|stdClass
+     */
     private function inicializa_campo(array $campo, array $keys_no_foraneas): array|stdClass
     {
         $permite_null = $this->permite_null(campo: $campo);
@@ -429,6 +481,12 @@ class estructuras{
         return $this->estructura_bd;
     }
 
+    /**
+     * @param array $campo
+     * @param stdClass $campo_init
+     * @param string $name_modelo
+     * @return stdClass
+     */
     private function maqueta_estructura(array $campo, stdClass $campo_init, string $name_modelo): stdClass
     {
         $campo_name = $campo['Field'];
@@ -544,10 +602,15 @@ class estructuras{
      * Integra el nombre de la tabla foranea ligada a la entidad
      * @param array $campo Datos del campo
      * @param array $keys_no_foraneas Key de foraneas
-     * @return string
+     * @return string|array
+     * @version 11.25.0
      */
-    private function tabla_foranea(array $campo, array $keys_no_foraneas): string
+    private function tabla_foranea(array $campo, array $keys_no_foraneas): string|array
     {
+        if(!isset($campo['Field'])){
+            return $this->error->error(mensaje: 'Error al campo[Field] no existe', data: $campo);
+        }
+
         $tabla_foranea = '';
         $explode_campo = explode('_id', $campo['Field']);
         if((count($explode_campo) > 1) && $explode_campo[1] === '') {
@@ -555,7 +618,6 @@ class estructuras{
             if(!$es_no_foranea){
                 $tabla_foranea = $explode_campo[0];
             }
-
 
         }
         return $tabla_foranea;
