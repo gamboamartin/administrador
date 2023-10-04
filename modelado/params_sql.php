@@ -198,7 +198,8 @@ class params_sql{
      * @return array|string
      * @version 1.110.27
      */
-    private function seguridad(bool $aplica_seguridad, array $modelo_columnas_extra, string $sql_where_previo): array|string
+    final public function seguridad(bool $aplica_seguridad, array $modelo_columnas_extra,
+                                    string $sql_where_previo): array|string
     {
         $seguridad = '';
         if($aplica_seguridad){

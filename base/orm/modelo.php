@@ -1805,7 +1805,27 @@ class modelo extends modelo_base {
         $this->campo_llave === "" ? $where = " WHERE $tabla".".id = $this->registro_id " :
             $where = " WHERE $tabla".".$this->campo_llave = $this->registro_id ";
 
+
+        $seguridad = (new params_sql())->seguridad(aplica_seguridad:$this->aplica_seguridad,
+            modelo_columnas_extra: $this->columnas_extra,
+            sql_where_previo:  $where);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
+        }
+
+        if($this->aplica_seguridad){
+            $where = trim($where);
+            if($where === ''){
+                $where .= " WHERE $seguridad ";
+            }
+            else{
+                $where .= " AND $seguridad ";
+            }
+            $where = " $where ";
+        }
+
         $consulta .= $where;
+
 
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados,
             hijo: $hijo);
