@@ -57,6 +57,7 @@ class upd{
 
 
     /**
+     * REFACTORIZAR
      * @param stdClass $ejecuta_upd Ejecuta la actualizacion de un row
      * @param int $id Identificador en proceso
      * @param modelo $modelo Modelo en ejecucion
@@ -69,6 +70,7 @@ class upd{
     final public function aplica_ejecucion(
         stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro, bool $valida_user): array|stdClass
     {
+
         if($modelo->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $modelo->usuario_id);
         }
@@ -105,6 +107,12 @@ class upd{
             return $this->error->error(mensaje: 'Error al obtener registro', data:  $registro_actualizado);
         }
         $resultado->registro_actualizado = $registro_actualizado;
+
+        $registro_puro = $modelo->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro', data:  $registro_actualizado);
+        }
+        $resultado->registro_puro = $registro_puro;
 
         return $resultado;
     }
