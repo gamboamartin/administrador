@@ -63,6 +63,7 @@ class controler{
     public string $link_alta_bd = '';
     public string $link_elimina_bd = '';
     public string $link_lista = '';
+    public string $link_descarga_excel= '';
     public string $link_modifica = '';
     public string $link_modifica_bd = '';
     public string $include_inputs_alta = '';
