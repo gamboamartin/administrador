@@ -222,7 +222,7 @@ class controlador_adm_session extends controlador_base{
         $_SESSION['grupo_id'] = $usuario['adm_grupo_id'];
         $_SESSION['usuario_id'] = $usuario['adm_usuario_id'];
         $_SESSION['nombre_usuario'] = $usuario['adm_usuario_nombre_completo'];
-        $_SESSION['root'] = $usuario['adm_grupo_root'];
+        $_SESSION['adm_grupo_root'] = $usuario['adm_grupo_root'];
 
 
         $data_get = (new init())->asigna_session_get();
