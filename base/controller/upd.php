@@ -45,9 +45,18 @@ class upd{
      * @param controler $controler Controlador en ejecucion
      * @param array $registro_upd Registro con datos a modificar
      * @return array|stdClass
+     * @version 11.31.0
      */
     final public function modifica_bd_base(controler $controler, array $registro_upd): array|stdClass
     {
+
+        if(count($registro_upd) === 0){
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio',data: $registro_upd);
+        }
+        if($controler->seccion === ''){
+            return $this->error->error(mensaje: 'Error la seccion no puede venir vacia', data: $controler->seccion);
+        }
+
         $init = (new normalizacion_ctl())->init_upd_base(controler: $controler, registro: $registro_upd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar',data: $init);

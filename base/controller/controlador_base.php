@@ -848,7 +848,7 @@ class controlador_base extends controler
      * @param bool $ws Si ws retorna un objeto en forma JSON PARA servicios REST
      * @return array|stdClass
      * @throws JsonException
-     * @final rev
+     * @finalrev validado
      */
     public function modifica_bd(bool $header, bool $ws): array|stdClass
     {

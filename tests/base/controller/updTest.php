@@ -60,6 +60,45 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_modifica_bd_base(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $upd = new upd();
+
+        $del = (new adm_mes($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error', data: $del);
+            print_r($error);
+            exit;
+        }
+
+        $adm_mes_ins = array();
+        $adm_mes_ins['id'] = 1;
+        $adm_mes_ins['codigo'] = 1;
+        $adm_mes_ins['descripcion'] = 1;
+        $alta = (new adm_mes($this->link))->alta_registro($adm_mes_ins);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error', data: $alta);
+            print_r($error);
+            exit;
+        }
+
+        $registro_upd = array();
+        $registro_upd['a'] = 'a';
+
+        $_POST[] = '';
+
+        $controler = new controlador_adm_mes(link: $this->link, paths_conf: $this->paths_conf);
+        $controler->seccion = 'a';
+        $controler->registro_id = 1;
+        $resultado = $upd->modifica_bd_base($controler, $registro_upd);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 
