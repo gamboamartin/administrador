@@ -1140,6 +1140,9 @@ class init{
         if($sistema === 'importador'){
             $namespace = 'gamboamartin\\importador\\';
         }
+        if($sistema === 'importador_cva'){
+            $namespace = 'gamboamartin\\importador_cva\\';
+        }
         if($sistema === 'dveducacion'){
             $namespace = 'gamboamartin\\dveducacion\\';
         }
