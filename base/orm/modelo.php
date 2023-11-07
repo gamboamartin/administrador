@@ -2417,10 +2417,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
 
-        if((int)$resultado['n_registros'] === 0){
+        if((int)$resultado->n_registros === 0){
             return 0;
         }
-        return (int)$resultado['registros'][0][$this->tabla.'_id'];
+        return (int)$resultado->registros[0][$this->tabla.'_id'];
     }
 
     /**
