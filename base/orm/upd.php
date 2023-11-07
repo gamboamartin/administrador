@@ -500,7 +500,6 @@ class upd{
      * @param modelo $modelo
      * @param array $campos_encriptados Campos a validar desencripctacion encriptacion
      * @return bool|array
-     * @version 1.145.31
      * @example
      *      $existe_user = $this->usuario_existente();
      *

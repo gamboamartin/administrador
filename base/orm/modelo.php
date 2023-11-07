@@ -31,6 +31,8 @@ class modelo extends modelo_base {
     public string $etiqueta = '';
 
 
+
+
     /**
      *
      * @param PDO $link Conexion a la BD
@@ -105,6 +107,13 @@ class modelo extends modelo_base {
             print_r($error);
             die('Error');
         }
+
+        $campos_entidad = array();
+        if(isset($entidades->estructura_bd->$tabla->campos)) {
+            $campos_entidad = $entidades->estructura_bd->$tabla->campos;
+        }
+
+        $this->campos_entidad = $campos_entidad;
 
 
         $attrs = (new inicializacion())->integra_attrs(modelo: $this);
@@ -445,7 +454,6 @@ class modelo extends modelo_base {
      * @param array $in Genera IN en sql
      * @param array $not_in Genera NOT IN en SQL
      * @return array|int
-     * @version 9.97.4
      */
     final public function cuenta(array $diferente_de = array(), array $extra_join = array(), array $filtro = array(),
                                  string $tipo_filtro = 'numeros', array $filtro_especial = array(),
@@ -802,7 +810,6 @@ class modelo extends modelo_base {
      * Verifica si existe o no un registro basado en un filtro
      * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
      * @return array|bool
-     * @version 1.324.41
      */
     final public function existe(array $filtro): array|bool
     {
@@ -869,7 +876,6 @@ class modelo extends modelo_base {
     /**
      * Verifica un elemento predetermindao de la entidad
      * @return bool|array
-     * @version 1.485.49
      */
     final public function existe_predeterminado(): bool|array
     {
@@ -1048,7 +1054,6 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_consulta($hijo);
      * @author mgamboa
      * @fecha 2022-08-02 16:49
-     * @version 10.53.2
      */
     final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                      array $columnas_by_table = array(), bool $columnas_en_bruto = false,
@@ -1372,7 +1377,6 @@ class modelo extends modelo_base {
      * @param array $extra_join Join extra a peticion en funciones
      * @param array $renombradas conjunto de tablas renombradas
      * @return array|int
-     * @version 11.17.0
      */
     final public function id_preferido_detalle(string $entidad_preferida, array $extension_estructura = array(),
                                                array $extra_join = array(), array $renombradas = array()): int|array
@@ -1459,7 +1463,6 @@ class modelo extends modelo_base {
      * @param string|int $codigo Codigo predeterminado default
      * @param string $descripcion Descripcion predeterminado
      * @return array|stdClass
-     * @version 6.30.0
      */
     final public function inserta_predeterminado(
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
@@ -1767,7 +1770,6 @@ class modelo extends modelo_base {
     }
 
     /**
-     * FULL
      * Devuelve un array con un elemento declarado por $this->>registro_id
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
@@ -1951,7 +1953,6 @@ class modelo extends modelo_base {
      * @internal  $this->genera_and();
      * @internal this->genera_consulta_base();
      * @internal $this->ejecuta_consulta();
-     * @version 1.72.17
      */
     public function obten_registros_filtro_and_ordenado(string $campo, bool $columnas_en_bruto, array $extra_join,
                                                         array $filtros, string $orden):array|stdClass{
@@ -2265,7 +2266,6 @@ class modelo extends modelo_base {
      * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
      * @param array $filtro Filtro para suma
      * @return array con la suma de los elementos seleccionados y filtrados
-     * @version 1.535.51
      */
     public function suma(array $campos, array $filtro = array()): array
     {

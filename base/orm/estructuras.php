@@ -338,7 +338,6 @@ class estructuras{
 
     /**
      * Obtiene las tablas de una base de datos completa
-     * @version 1.162.31
      * @return array
      */
     private function get_tables_sql(): array

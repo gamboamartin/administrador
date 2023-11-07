@@ -89,6 +89,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     public array $year;
 
+    public array $campos_entidad = array();
+
 
     /**
      * Modelado
@@ -576,7 +578,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que ejecuta un query de tipo select
-     * @version 1.24.12
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param string $consulta Consulta en forma de SQL para su ejecucion directa
      * @param array $campos_encriptados Campos encriptados de un modelo
@@ -1169,6 +1170,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
     {
+
         $this->registros = $new_array;
         $this->n_registros = (int)$n_registros;
         $this->sql = $consulta;
@@ -1176,6 +1178,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->registros = $new_array;
         $data->n_registros = $n_registros;
         $data->sql = $consulta;
+
         return $data;
     }
 
@@ -1376,10 +1379,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     private function result(string $consulta, int $n_registros, array $new_array): stdClass
     {
+
+        $campos_entidad = $this->campos_entidad;
+
         $data = new stdClass();
         $data->registros = $new_array;
         $data->n_registros = (int)$n_registros;
         $data->sql = $consulta;
+        $data->campos_entidad = $campos_entidad;
+
 
         $data->registros_obj = array();
         foreach ($data->registros as $row) {
@@ -1400,17 +1408,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         }
         else{
-
-            /*$init_archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-            }
-            if(file_exists($init_archivos_tmp_model)){
-                $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-                if (errores::$error) {
-                    return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-                }
-            }*/
 
             $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
             if (errores::$error) {

@@ -443,7 +443,6 @@ class columnas{
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @param bool $valida_tabla
      * @return array
-     * @version 1.26.14
      */
     final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd, bool $valida_tabla = true): array
     {
