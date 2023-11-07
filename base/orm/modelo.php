@@ -2406,16 +2406,15 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
      * @return array|int
      */
-    public function ultimo_registro_id(): int|array
+    final public function ultimo_registro_id(): int|array
     {
         $this->order = array($this->tabla.'.id'=>'DESC');
         $this->limit = 1;
         $resultado = $this->obten_registros();
-        if(isset($resultado['error'])){
-            return $this->error->error('Error al obtener registros',$resultado);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
 
         if((int)$resultado['n_registros'] === 0){
