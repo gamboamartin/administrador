@@ -1892,7 +1892,6 @@ class modelo extends modelo_base {
     }
 
     /**
-     * ERROREV
      * Devuelve un conjunto de registros con status igual a activo
      * @param array $order array para ordenar el resultado
      * @param array $filtro filtro para generar AND en el resultado
@@ -1905,17 +1904,6 @@ class modelo extends modelo_base {
      * @example
      *      $r_producto = $this->obten_registros_activos();
      *
-     * @uses clientes->obten_registros_vista_base
-     * @uses directivas->obten_registros_select
-     * @uses $directivas->obten_registros_select
-     * @uses controlador_grupo->obten_registros_select
-     * @uses controlador_grupo->asigna_accion
-     * @uses controlador_seccion_menu->alta_bd
-     * @uses controlador_session->login
-     * @uses controlador_session->login
-     * @uses controlador_ubicacion->ve_imagenes
-     * @uses producto->obten_productos
-     * @uses prospecto->obten_siguiente_cerrador_id
      * @internal $this->genera_consulta_base()
      * @internal $this->genera_and()
      * @internal $this->ejecuta_consulta()
@@ -1924,7 +1912,7 @@ class modelo extends modelo_base {
      * @fecha 2022-08-02 17:03
      * @author mgamboa
      */
-    public function obten_registros_activos(array $filtro= array(), array $hijo = array(),
+    final public function obten_registros_activos(array $filtro= array(), array $hijo = array(),
                                             array $order = array()):array|stdClass{
 
         $filtro[$this->tabla.'.status'] = 'activo';
@@ -2141,11 +2129,12 @@ class modelo extends modelo_base {
      * @param array $columnas Columnas a integrar
      * @param bool $aplica_seguridad Si aplica seguridad obtiene datos permitidos
      * @param int $limit Limit de registros
+     * @param bool $retorno_obj Retorna los rows encontrados en forma de objetos
      * @return array
      * @version 11.22.0
      */
     final public function registros_activos(array $columnas = array(), bool $aplica_seguridad = false,
-                                            int $limit = 0): array
+                                            int $limit = 0, bool $retorno_obj = false): array
     {
         $filtro[$this->tabla.'.status'] = 'activo';
         $resultado =$this->filtro_and(aplica_seguridad: $aplica_seguridad, columnas: $columnas, filtro: $filtro,
@@ -2155,7 +2144,13 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
         $this->registros = $resultado->registros;
-        return $this->registros;
+
+        $result = $resultado->registros;
+        if($retorno_obj){
+            $result = $resultado->registros_obj;
+        }
+
+        return $result;
     }
 
     /**

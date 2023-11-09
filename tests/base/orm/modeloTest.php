@@ -1071,8 +1071,14 @@ class modeloTest extends test {
         $modelo = new adm_seccion($this->link);
         //$modelo = new liberator($modelo);
         $resultado = $modelo->registros_activos();
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+        $resultado = $modelo->registros_activos(retorno_obj: true);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado[0]->adm_seccion_id);
         errores::$error = false;
     }
 
