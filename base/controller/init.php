@@ -1146,6 +1146,9 @@ class init{
         if($sistema === 'dveducacion'){
             $namespace = 'gamboamartin\\dveducacion\\';
         }
+        if($sistema === 'comisiones'){
+            $namespace = 'gamboamartin\\comisiones\\';
+        }
         if($sistema === 'pbx'){
             $namespace = 'gamboamartin\\pbx\\';
         }
