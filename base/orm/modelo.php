@@ -1191,7 +1191,6 @@ class modelo extends modelo_base {
      *
      * @fecha 2022-08-02 16:38
      * @author mgamboa
-     * @version 10.52.2
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
@@ -1854,7 +1853,6 @@ class modelo extends modelo_base {
      * @example
      *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
      *
-     * @version 1.376.44
      */
     final public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
                                           bool $columnas_en_bruto = false, bool $con_sq = true, array $group_by = array(),
@@ -2103,7 +2101,6 @@ class modelo extends modelo_base {
      * @param array $order Orden de resultado
      * @param bool $return_obj Si retorna obj el resultado se envia en un stdclass
      * @return array|stdClass
-     * @version 1.448.48
      */
     public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true,                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
                               bool $return_obj = false):array|stdClass{
@@ -2419,7 +2416,6 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
      * @param int $n_registros
      * @return array
      */

@@ -821,7 +821,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      * Funcion que genera el SQL para un SELECT
-     * @version 1.66.17
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd

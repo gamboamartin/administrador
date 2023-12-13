@@ -144,7 +144,6 @@ class sql{
      * @param array $renombres Tablas renombradas
      * @param string $sql_where_previo Sql previo a incrustar
      * @return array|stdClass
-     * @version 1.373.44
      */
     final public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
                                           bool $con_sq, array $extension_estructura, array $group_by, int $limit,

@@ -299,6 +299,7 @@ class columnas{
     }
 
     /**
+     * REFACTORIZAR
      * Obtiene las columnas para un select dependiendo de si aplica o no una tabla o todas
      * @param bool $aplica_columnas_by_table Si aplica columnas by table solo se tra la info de las columnas
      * cargadas en el array
@@ -313,8 +314,6 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
-     * @version 1.97.21
-     * @version 1.55.16
      * @example Si $aplica_columnas_by_table es true debe haber columnas_by_table con
      * datos columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] =nombre_tabla
      * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
@@ -356,10 +355,14 @@ class columnas{
             }
         }
 
-        $columnas = trim($columnas);
+        /*$columnas = trim($columnas);
         if($columnas === ''){
             return $this->error->error(mensaje: 'Error ninguna configuracion es aceptable en '.$modelo->tabla,
                 data: $columnas);
+        }*/
+        $columnas = trim($columnas);
+        if($columnas === ''){
+            $columnas = "$modelo->key_filtro_id as $modelo->key_id";
         }
 
         return $columnas;
@@ -636,7 +639,6 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
-     * @version 1.55.16
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
@@ -668,6 +670,7 @@ class columnas{
      * Genera las columnas con renombre para integrarlas en un SELECT
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param bool $con_sq
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
      * @return array|string
@@ -1229,7 +1232,6 @@ class columnas{
      * @return array|string sql con las columnas para un SELECT
      * @throws errores definidos en la maquetacion de las columnas
      * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe
-     * @version 1.55.16
      *@example
      *      $columnas = $this->obten_columnas_completas($columnas);
      */

@@ -185,9 +185,9 @@ class sqlTest extends test {
         $resultado = $sql->sql_select_init($aplica_seguridad, $columnas, $columnas_en_bruto, true, $extension_estructura,
             $group_by, $limit, $modelo, $offset, $order, $renombres, $sql_where_previo);
 
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar consulta',$resultado['mensaje']);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('SELECT adm_session.id as adm_session_id FROM adm_session AS adm_session LEFT JOIN adm_usuario AS adm_usuario ON adm_usuario.id = adm_session.adm_usuario_id LEFT JOIN adm_grupo AS adm_grupo ON adm_grupo.id = adm_usuario.adm_grupo_id',$resultado->consulta_base);
 
         errores::$error = false;
 
