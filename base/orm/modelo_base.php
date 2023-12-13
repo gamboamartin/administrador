@@ -864,16 +864,51 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         $sub_querys_sql = '';
+        $columnas_extra_sql = '';
         if($con_sq) {
             $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
                 columnas_seleccionables: $columnas_seleccionables);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla, data: $sub_querys_sql);
             }
+
+            $columnas_extra_sql = (new columnas())->genera_columnas_extra(columnas: $columnas, modelo: $this);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql);
+            }
+
         }
 
+        $sub_querys_sql = trim($sub_querys_sql);
+        $columnas_extra_sql = trim($columnas_extra_sql);
+        $columnas_sql = trim($columnas_sql);
 
-        return /** @lang MYSQL */ "SELECT $columnas_sql $sub_querys_sql FROM $tablas";
+        $columns_data = new stdClass();
+        $columns_data->columnas_sql = $columnas_sql;
+        $columns_data->sub_querys_sql = $sub_querys_sql;
+        $columns_data->columnas_extra_sql = $columnas_extra_sql;
+
+
+        $columns_final = '';
+        foreach ($columns_data as $column_data){
+            $column_data = trim($column_data);
+            $columns_final = trim($columns_final);
+
+            if($columns_final === ''){
+                $columns_final.=$column_data;
+            }
+            else{
+                if($column_data !==''){
+                    $columns_final = $columns_final.','.$column_data;
+                }
+            }
+
+        }
+
+        //print_r($columns_final);exit;
+
+
+        return /** @lang MYSQL */ "SELECT $columns_final FROM $tablas";
     }
 
 

@@ -871,12 +871,14 @@ class columnas{
 
         $columnas_extra_sql = '';
 
+        /*
         if($con_sq) {
             $columnas_extra_sql = $this->genera_columnas_extra(columnas: $columnas, modelo: $modelo);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql);
             }
         }
+        */
 
         $data = new stdClass();
         $data->columnas_sql = $columnas_sql;
@@ -962,7 +964,7 @@ class columnas{
      *@example
      * $columnas_extra_sql = $this->genera_columnas_extra();
      */
-    private function genera_columnas_extra(array $columnas, modelo_base $modelo):array|string{//FIN
+    final public function genera_columnas_extra(array $columnas, modelo_base $modelo):array|string{//FIN
         $columnas_sql = '';
         $columnas_extra = $modelo->columnas_extra;
         foreach ($columnas_extra as $sub_query => $sql) {
