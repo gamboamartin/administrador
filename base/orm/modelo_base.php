@@ -1136,7 +1136,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * Inicializa las carpetas para models temps
      * @param bool $valida_tabla
      * @return string|array
-     * @version 2.10.2.4
      */
     protected function init_archivos_tmp_model(bool $valida_tabla = true): string|array
     {
@@ -1217,7 +1216,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * Genera el key para temporal en sql
      * @param string $consulta Consulta a ejecutar
      * @return array|string
-     * @version 1.624.56
      */
     private function key_tmp(string $consulta): array|string
     {

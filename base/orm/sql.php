@@ -14,7 +14,6 @@ class sql{
      * Genera sql DESCRIBE nombre_table
      * @param string $tabla Nombre de la tabla a verificar
      * @return string|array Sql a ejecutar
-     * @version 1.12.8
      */
     final public function describe_table(string $tabla): string|array
     {

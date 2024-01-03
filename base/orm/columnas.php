@@ -245,7 +245,6 @@ class columnas{
      * @param modelo $modelo Modelo en ejecucion
      * @param string $tabla Tabla de modelo
      * @return array
-     * @version 1.521.51
      */
     final public function campos_tabla(modelo $modelo, string $tabla): array
     {
@@ -498,7 +497,6 @@ class columnas{
 
     /**
      * Funcion que genera el sql de columnas en forma de texto para campos SELECT
-     * @version 1.47.14
      * @param string $columnas_extra_sql Columnas que vienen de modelo->columnas_extra
      * @param string $columnas_sql Columnas que vienen de modelo->columnas de cada tabla
      * @return string
@@ -1126,7 +1124,6 @@ class columnas{
 
     /**
      * Integra las columnas en forma de SQL de forma recursiva
-     * @version 1.0.0
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return stdClass
@@ -1155,7 +1152,6 @@ class columnas{
 
     /**
      * Integra las columnas de un objeto para su sos en un select
-     * @version 1.0.0
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @return array|string String con todas las columnas de una tabla
