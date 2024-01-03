@@ -370,7 +370,16 @@ class controler{
         return $adm_session_nombre_completo;
     }
 
-    private function out_ws_error(stdClass|array $error){
+    /**
+     * This function is used to handle and output errors in a web
+     * service context. It accepts a parameter which can be an instance
+     * of stdClass or an array representing the error details.
+     * @param stdClass|array $error Error de resultado
+     * @return void
+     * @version 13.2.0
+     */
+    private function out_ws_error(stdClass|array $error): void
+    {
         ob_clean();
         header('Content-Type: application/json');
         try {
@@ -382,23 +391,21 @@ class controler{
                 print_r($error);
                 exit;
             }
-            return $error;
+            return;
         }
         exit;
     }
 
-
-
     /**
-     * Genera salida para eventos controller
-     * @param string $mensaje Mensaje a mostrar
-     * @param errores|array|string|stdClass $data Complemento y/o detalle de error
-     * @param bool $header si header retorna error en navegador y corta la operacion
-     * @param bool $ws si ws retorna error en navegador via json
+     * @param string $mensaje
+     * @param mixed $data
+     * @param bool $header
+     * @param bool $ws
      * @param array $params
      * @return array
      */
-    final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, array $params = array()): array
+    final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws,
+                                        array $params = array()): array
     {
         $error = $this->errores->error(mensaje: $mensaje,data:  $data, params: $params);
         if($ws){
@@ -421,7 +428,8 @@ class controler{
         }
 
         if($aplica_header){
-            $liga = './index.php?seccion='.$seccion_header.'&accion='.$accion_header.'&registro_id='.$_GET['registro_id'].'&session_id='.$this->session_id;
+            $liga = './index.php?seccion='.$seccion_header.'&accion='.$accion_header.'&registro_id='
+                .$_GET['registro_id'].'&session_id='.$this->session_id;
             header("Location: $liga");
             exit;
         }

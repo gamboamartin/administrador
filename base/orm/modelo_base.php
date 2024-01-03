@@ -833,10 +833,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @functions $sub_querys_sql = $this->sub_querys($columnas);
      * @example
      * $consulta = $this->genera_consulta_base($columnas);
-     * @uses  $this->filtro_and
-     * @uses  $this->obten_por_id
-     * @uses  $this->obten_registros_activos
-     * @uses  modelos->accion_grupo->obten_accion_permitida
+     * @pordoc false
      */
 
     final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),

@@ -43,7 +43,6 @@ class columnas{
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @return array|string
-     * @version 1.47.14
      */
     private function ajusta_columnas_completas(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
                                                bool $con_sq, modelo_base $modelo, string $tabla,
@@ -70,9 +69,9 @@ class columnas{
 
     /**
      * Valida si aplica columnas de una sola tabla o de un join inicial al modelo
-     * @version 1.56.16
      * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
      * @return bool
+     * @pordoc false
      */
     private function aplica_columnas_by_table(array $columnas_by_table): bool
     {
@@ -86,7 +85,6 @@ class columnas{
 
     /**
      * Asigna los valor de una columna obtenida de un DESCRIBE para su uso en la maquetacion de SELECT
-     * @version 1.27.14
      * @param string $atributo
      * @param array $columna
      * @param array $columnas_completas
@@ -116,7 +114,6 @@ class columnas{
 
     /**
      * Asigna las columnas en forma de SQL en una variable de SESSION en caso de que no exista
-     * @version 1.0.0
      * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
      * @param modelo_base $modelo modelo o estructura de la base de datos
      * @return bool|array
@@ -141,7 +138,6 @@ class columnas{
 
     /**
      * Asigna los atributos de una tabla en un array para su uso en la maquetacion de un select
-     * @version 1.27.14
      * @param array $columnas_parseadas Columnas ajustadas paar uso en SELECT
      * @param string $atributo Columna a asignar en columnas parseadas
      * @return array
@@ -161,7 +157,6 @@ class columnas{
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
-     * @version 1.44.14
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -187,7 +182,6 @@ class columnas{
     /**
      * Obtiene las columnas de una tabla y los asigna a la variable de SESSION[campos_tabla] y
      * SESSION[columnas_completas] Para ser utilizadas en las consultas SELECT
-     * @version 1.0.0
      * @param stdClass $data Objeto recursivo con los atributos  columnas_parseadas y columnas_completas
      * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
      * @return stdClass|array stdClass si es exito con atributos columnas_parseadas y columnas_completas
@@ -370,7 +364,6 @@ class columnas{
 
     /**
      * Genera las columnas de un atributo de la base de datos
-     * @version 1.41.14
      * @param array $columna Columna con datos detallados de un DESCRIBE
      * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT
      * @param array $columnas_completas Todas las columnas ajustadas
@@ -406,7 +399,6 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
-     * @version 1.56.16
      */
     private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
@@ -593,7 +585,6 @@ class columnas{
 
     /**
      * Asigna las columnas para ser utilizadas en la transacciones de SELECT
-     * @version 1.27.14
      * @param string $campo Nombre del campo del modelo
      * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT
      * @param string|null $atributo Atributo de la base de datos
@@ -639,6 +630,7 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
+     * @pordoc false
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
@@ -741,7 +733,6 @@ class columnas{
 
     /**
      * Integra las columnas para un select
-     * @version 1.43.14
      * @param array $columnas Conjunto de columnas a parsear
      * @return array|stdClass
      */
@@ -813,7 +804,6 @@ class columnas{
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
-     * @version 1.49.14
      */
     private function columnas_tablas_select(bool $columnas_en_bruto, array $columnas_sql, bool $con_sq, modelo_base $modelo,
                                             array $tablas_select): array|string
@@ -850,7 +840,6 @@ class columnas{
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @param bool $con_sq Integra las columnas extra si true
      * @return array|stdClass
-     * @version 1.46.14
      */
     private function data_for_columnas_envio(array $columnas, bool $columnas_en_bruto, bool $con_sq,
                                              modelo_base $modelo, string $tabla_original,
@@ -898,7 +887,6 @@ class columnas{
      * @param string $key Tabla a verificar obtencion de sql
      * @param modelo_base $modelo Modelo o tabla de aplicacion
      * @return array|string
-     * @version 1.48.14
      */
     private function genera_columna_tabla(string $columnas, bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
                                           string $key, modelo_base $modelo): array|string
@@ -926,7 +914,6 @@ class columnas{
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
      * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
      * @return array|string
-     * @version 1.47.14
      * @example
      *      $resultado_columnas = $this->genera_columnas_consulta($key,'',$columnas_sql);
      */
@@ -994,7 +981,6 @@ class columnas{
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
      * @return array|stdClass
-     * @version 1.44.14
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -1021,7 +1007,6 @@ class columnas{
     /**
      *
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
-     * @version 1.45.14
      * @param array $columnas columnas inicializadas a mostrar a peticion
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada nombre para renombre de la tabla
@@ -1188,7 +1173,6 @@ class columnas{
      *
      * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
      *  variable de session para su reutilizacion futura
-     * @version 1.44.14
      * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
      * @example
@@ -1234,6 +1218,7 @@ class columnas{
      * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe
      *@example
      *      $columnas = $this->obten_columnas_completas($columnas);
+     * @pordoc false
      */
     final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                                    bool $columnas_en_bruto = false, array $columnas_sql = array(),

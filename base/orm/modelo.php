@@ -1689,7 +1689,6 @@ class modelo extends modelo_base {
     /**
      *
      * Devuelve un array con el registro buscado por this->registro_id del modelo
-     * @version 1.11.8
      * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas a configuracion
@@ -1700,9 +1699,7 @@ class modelo extends modelo_base {
     $salida_producto = $salida_producto_modelo->obten_data();
      *
      * @return array con datos del registro encontrado
-     * @throws errores $this->registro_id < 0
-     * @throws errores no se encontro registro
-     * @internal  $this->obten_por_id($hijo, $columnas);
+     * @pordoc
      */
     final public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
                                array $extension_estructura = array(), array $hijo= array()): array{
@@ -1780,10 +1777,7 @@ class modelo extends modelo_base {
      * __LINE__,__FILE__,$this->registro_id);
      * }
      * $resultado = $this->obten_por_id($hijo, $columnas);
-     *
-     * @internal  $this->genera_consulta_base($columnas);
-     * @internal  $this->ejecuta_consulta($hijo);
-     * @uses  modelo
+     * @pordoc
      */
     private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(),
                                   bool $columnas_en_bruto = false, array $extension_estructura= array(),
@@ -2006,7 +2000,7 @@ class modelo extends modelo_base {
      * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
      * @param bool $retorno_obj
      * @return array|stdClass
-     * @version 1.15.9
+     * @pordoc
      */
     final public function registro(int $registro_id, array $columnas = array(), bool $columnas_en_bruto = false,
                              array $extension_estructura = array(), array $hijo = array(),
@@ -2300,6 +2294,25 @@ class modelo extends modelo_base {
     }
 
 
+    /**
+     * 1.- Esta función recupera un registro de la base de datos usando el ID proporcionado. Si hay un error durante
+     * este proceso, la función lo capturará y devolverá un mensaje de error.
+     *
+     * 2.- Luego, recupera el estado actual del campo proporcionado del registro recuperado.
+     * Si este estado es 'activo', lo cambia a 'inactivo' y viceversa.
+     *
+     * 3.- Finalmente, actualiza el registro en la base de datos con el nuevo estado y retorna el resultado de la
+     * actualización. Si hay algún error durante la actualización, la función captura el error y
+     * devuelve un mensaje de error.
+     *
+     *
+     *
+     * @param string $campo Se refiere al nombre de la columna en la base de datos que tiene el estado actual
+     *  del registro.
+     * @param int $registro_id Se refiere al ID del registro en la base de datos.
+     * @return array|stdClass Esta función devuelve un error o el resultado de la actualización del registro
+     * en la base de datos, que podría ser array si es error o stdClass si es exito.
+     */
     public function status(string $campo, int $registro_id): array|stdClass
     {
         $registro = $this->registro(registro_id: $registro_id,columnas_en_bruto: true,retorno_obj: true);

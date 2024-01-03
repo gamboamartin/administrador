@@ -888,20 +888,43 @@ class inicializacion{
     }
 
     /**
-     * Obtiene las tablas base para ejecutar una consulta en select
-     * @version 1.0.0
-     * @param modelo_base $modelo Modelo para obtencion de nombre de tabla
-     * @return array
+     * Recupera las columnas de la tabla especificada en el modelo dado.
+     *
+     * Esta función está diseñada para tomar un objeto modelo_base, obtener el nombre de la tabla del modelo y
+     * luego obtener la estructura de columnas de esa tabla especificada en la consulta SQL base. Si no se
+     * encuentran columnas para la tabla, la función devuelve un error. En caso contrario, devuelve las columnas
+     *
+     * @final
+     *
+     * @param modelo_base $modelo Un objeto de la clase modelo_base. Se esperaría que el objeto tenga una propiedad
+     *  'tabla', que contenga el nombre de la tabla.
+     *
+     * @return array - Devuelve un array con las columnas de la tabla.
+     *                Si la tabla no tiene columnas, devuelve un error.
+     *
+     * @pordoc true
      */
     final public function tablas_select(modelo_base $modelo): array
     {
-        $modelo->tabla = str_replace($modelo->NAMESPACE,'',$modelo->tabla);
+        // Quita el NAMESPACE del nombre de la tabla
+        $tabla_sin_namespace = str_replace($modelo->NAMESPACE, '', $modelo->tabla);
+        $modelo->tabla = $tabla_sin_namespace;
 
+        // Crea una nueva instancia de consulta SQL
         $consulta_base = new sql_bass();
+
+        // Asigna las columnas del modelo a la estructura de la consulta SQL
         $consulta_base->estructura_bd[$modelo->tabla]['columnas'] = $modelo->columnas;
 
-        return $consulta_base->estructura_bd[$modelo->tabla]['columnas'] ??
-            $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla, data: $modelo->tabla);
+        $columnas_tabla = $consulta_base->estructura_bd[$modelo->tabla]['columnas'];
+
+        // Si no hay columnas para la tabla, devuelve un error
+        if (!isset($columnas_tabla)) {
+            return $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla,
+                data: $modelo->tabla);
+        }
+        // Si las columnas están presentes, las devuelve
+        return $columnas_tabla;
     }
 
     /**
