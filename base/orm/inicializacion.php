@@ -903,6 +903,7 @@ class inicializacion{
      *                Si la tabla no tiene columnas, devuelve un error.
      *
      * @pordoc true
+     * @version 13.5.0
      */
     final public function tablas_select(modelo_base $modelo): array
     {

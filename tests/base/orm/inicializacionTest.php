@@ -1,6 +1,7 @@
 <?php
 namespace tests\base\orm;
 
+use base\orm\modelo_base;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\encripta\encriptador;
 use gamboamartin\errores\errores;
@@ -702,11 +703,40 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
-    public function test_tablas_select(){
-        errores::$error = false;
-        $inicializacion = new inicializacion();
-        //$inicializacion = new liberator($inicializacion);
 
+    /**
+     * Prueba la funcionalidad del método tablas_select de la clase inicializacion.
+     *
+     * El propósito de este método es comprobar si la función tablas_select de
+     * la clase inicializacion retorna las columnas correctas para el modelo
+     * proporcionado.
+     *
+     * Para probar esto, se crea una nueva instancia de la clase inicializacion y
+     * por otro lado se utiliza un objeto simulado (mock) del modelo_base que
+     * contenga propiedades de tabla y columnas.
+     *
+     * Al final se comparan los resultados esperados con los obtenidos.
+     *
+     * @test
+     * @return void
+     */
+    public function test_tablas_select()
+    {
+
+        $inicializacion = new inicializacion();
+        $modelo = $this->createMock(modelo_base::class);
+        $modelo->tabla = 'someTable';
+        $modelo->NAMESPACE = 'NAMESPACE\\';
+        $modelo->columnas = ['column1','column2'];
+
+        errores::$error = false;
+
+        $result = $inicializacion->tablas_select($modelo);
+
+        $this->assertIsArray($result);
+        $this->assertEquals(['column1','column2'], $result);
+
+        errores::$error = false;
         $modelo = new adm_seccion($this->link);
         $resultado = $inicializacion->tablas_select($modelo);
 
@@ -714,6 +744,7 @@ class inicializacionTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('', $resultado['adm_seccion']);
         errores::$error = false;
+
     }
 
     public function test_value_desencriptado(){
