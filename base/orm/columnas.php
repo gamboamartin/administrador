@@ -67,11 +67,17 @@ class columnas{
         return $columnas_env;
     }
 
+
     /**
-     * Valida si aplica columnas de una sola tabla o de un join inicial al modelo
+     * Esta función verifica si el arreglo de entrada $columnas_by_table contiene algún elemento. Si el conteo
+     * del arreglo es más de cero, la función devolverá true, de lo contrario, devolverá false.
+     * En otras palabras, verifica si hay alguna columna en el arreglo dado que necesite ser aplicada a la tabla.
+     * Si la hay, devolverá true, indicando que la operación de aplicar columnas a la tabla puede realizarse.
+     * De lo contrario, devuelve false.
+     *
      * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
      * @return bool
-     * @pordoc false
+     * @pordoc true
      */
     private function aplica_columnas_by_table(array $columnas_by_table): bool
     {
