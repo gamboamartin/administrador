@@ -1,11 +1,10 @@
 <?php
-namespace base\orm;
+namespace gamboamartin\administrador\models;
 
-use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
 use PDO;
 
-class __init
+class _init_sistema
 {
     private adm_sistema $adm_sistema_modelo;
     private array  $adm_sistemas;

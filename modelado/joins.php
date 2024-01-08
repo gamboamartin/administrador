@@ -76,7 +76,6 @@ class joins{
 
     /**
      * Ajusta las tablas para JOIN
-     * @version 1.60.17
      * @param string $tablas Tablas en forma de SQL
      * @param array $tablas_join Datos para hacer join con tablas
      * @return array|string
@@ -213,7 +212,6 @@ class joins{
     /**
      * Obtiene las tablas para hacer un join
      * @param string $key Tabla LEFT
-     * @version 1.60.17
      * @param array|string $tabla_join Datos para hacer join con tablas
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
@@ -525,7 +523,6 @@ class joins{
     /**
      *
      * Funcion para determinar un JOINs entre dos p mas tablas para SQL
-     * @version 1.60.17
      * @param string $tabla  tabla para la ejecucion del JOIN
      * @param array $columnas_join  array con conjunto de tablas para join
      * @example
@@ -661,7 +658,6 @@ class joins{
      * @param array $renombradas conjunto de tablas renombradas
      * @param string $tabla Tabla con el nombre original
      * @return array|string
-     * @version 1.66.17
      */
     final public function tablas(array $columnas, array $extension_estructura, array $extra_join, string $modelo_tabla,
                                  array $renombradas, string $tabla): array|string
@@ -697,7 +693,6 @@ class joins{
 
     /**
      * Genera la configuracion base de JOINS
-     * @version 1.59.17
      * @param array $tabla_join Datos para hacer join con tablas
      * @param string $tablas Tablas en forma de SQL
      * @return array|string
