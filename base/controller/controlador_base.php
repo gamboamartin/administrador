@@ -646,7 +646,6 @@ class controlador_base extends controler
     }
 
     /**
-     * PHPUNIT
      * @param bool $header
      * @param bool $ws
      * @return array

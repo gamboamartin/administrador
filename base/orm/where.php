@@ -1509,12 +1509,10 @@ class where{
 
     /**
      * Verifica que un tipo filtro sea valido
-     * @version 1.0.0
      * @param string $tipo_filtro validos son numeros y textos
      * @return bool|array
-     * @error_params true
      */
-    final public function verifica_tipo_filtro(string $tipo_filtro): bool|array
+    final public function verifica_tipo_filtro(string $tipo_filtro): true|array
     {
         $tipo_filtro = trim($tipo_filtro);
         if($tipo_filtro === ''){

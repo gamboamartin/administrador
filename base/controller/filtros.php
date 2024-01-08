@@ -123,7 +123,6 @@ class filtros{
      * @param controler $controler Controlador en ejecucion
      * @param array $filtros Filtros precargados
      * @return array|stdClass
-     * @version 10.54.2
      */
     final public function filtra(controler $controler, array $filtros): array|stdClass
     {

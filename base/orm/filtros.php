@@ -77,7 +77,6 @@ class filtros{
      * @author mgamboa
      * @fecha 2022-07-27 11:07
      * @return array|stdClass
-     * @version 1.575.51
      */
     final public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
                                     array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
