@@ -75,7 +75,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param string $adm_accion Accion a validar
      * @param string $adm_seccion Seccion a validar
      * @return array|stdClass
-     * @version 10.7.2
      */
     private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
     {
@@ -119,12 +118,21 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * Genera el filtro para obtencion de permiso
-     * @param string $adm_accion Accion para integrar en filtro
-     * @param int $adm_grupo_id Grupo para integrar en filtro
-     * @param string $adm_seccion Seccion para integrar en filtro
+     * Método para filtrar la acción y la sección del grupo.
+     *
+     * Este método acepta una acción, un grupo y una sección.
+     * Realiza la validación y prepara un conjunto de parámetros.
+     * Los parámetros se utilizan para realizar operaciones en otras partes del sistema:
+     *
+     * @param string $adm_accion Representa la acción que se validará.
+     * @param int $adm_grupo_id Representa el ID del grupo de usuario que se validará.
+     * @param string $adm_seccion Representa la sección que se validará.
+     *
      * @return array
-     * @version 10.37.2
+     * El método devuelve un array con los parámetros validados y preconfigurados.
+     * Si algún parámetro no es válido, se devuelve un mensaje de error correspondiente.
+     * @version 13.6.0
+     * @por_documnetar_en_wiki
      */
     private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
     {
@@ -215,7 +223,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo de usuario a validar
      * @param string $adm_seccion Seccion a validar
      * @return array|stdClass
-     * @version 10.79.3
      */
     private function get_data_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array|stdClass
     {
@@ -246,7 +253,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo de usuario
      * @param stdClass $data_permiso datos previos de permiso a validar
      * @return array|stdClass
-     * @version 10.77.3
      */
     private function get_val_session(int $adm_grupo_id, stdClass $data_permiso): array|stdClass
     {
@@ -448,7 +454,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @param int $adm_grupo_id Grupo a validar permiso
      * @param string $adm_seccion Seccion a validar
      * @return array|true
-     * @version 10.95.3
      */
     private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): bool|array
     {

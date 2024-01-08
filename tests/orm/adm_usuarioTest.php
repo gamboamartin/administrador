@@ -115,6 +115,30 @@ class adm_usuarioTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals(1,$resultado['adm_grupo.id']);
         errores::$error = false;
+
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $adm_accion = "accionValida";
+        $adm_grupo_id = 1;
+        $adm_seccion = "seccionValida";
+
+        $expectedFilter = [
+            'adm_grupo.id' => $adm_grupo_id,
+            'adm_accion.descripcion' => $adm_accion,
+            'adm_grupo.status' => 'activo',
+            'adm_accion.status' => 'activo',
+            'adm_seccion.descripcion' => $adm_seccion,
+            'adm_seccion.status' => 'activo'
+        ];
+
+        $resultFilter = $modelo->filtro($adm_accion, $adm_grupo_id, $adm_seccion);
+
+        $this->assertEquals($expectedFilter, $resultFilter);
+
+        errores::$error = false;
+
+
     }
 
     public function test_filtro_seguridad(): void
