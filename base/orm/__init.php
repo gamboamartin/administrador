@@ -1,5 +1,5 @@
 <?php
-namespace base;
+namespace base\orm;
 
 use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
@@ -8,7 +8,7 @@ use PDO;
 class __init
 {
     private adm_sistema $adm_sistema_modelo;
-    private array  $adm_sistemas = array();
+    private array  $adm_sistemas;
     public function __contruct(array $adm_sistemas, PDO $link): void
     {
         $link->beginTransaction();

@@ -1508,9 +1508,21 @@ class where{
 
 
     /**
-     * Verifica que un tipo filtro sea valido
-     * @param string $tipo_filtro validos son numeros y textos
-     * @return bool|array
+     * Verifica el tipo de filtro proporcionado.
+     *
+     * @param string $tipo_filtro El tipo de filtro a verificar.
+     * @return true|array Devuelve true si el tipo de filtro es correcto,
+     *         si no, devuelve un array con un error.
+     *
+     * La función realiza las siguientes acciones:
+     * 1. Limpia el tipo de filtro ingresado.
+     * 2. Si el tipo de filtro es una cadena vacía, se establece como 'numeros'.
+     * 3. Define los tipos permitidos de filtro como 'numeros' y 'textos'.
+     * 4. Verifica si el tipo de filtro ingresado pertenece a los tipos permitidos.
+     *    Si no es así, crea un nuevo objeto stdClass y establece la propiedad
+     *    tipo_filtro con el valor ingresado y retorna un error con el mensaje y los datos correspondientes.
+     * @version 13.8.0
+     * @por_documnetar_en_wiki
      */
     final public function verifica_tipo_filtro(string $tipo_filtro): true|array
     {
