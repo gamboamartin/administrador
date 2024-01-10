@@ -65,10 +65,15 @@ class params_sql{
     }
 
     /**
-     * Genera un limit para sql
-     * @version 1.91.19
-     * @param int $limit Numero de registros a mostrar
-     * @return string|array
+     * Esta función se utiliza para limitar las consultas SQL.
+     *
+     * @param int $limit El límite de la consulta SQL.
+     *
+     * @return string|array Devuelve la consulta SQL limitada como cadena si $limit es positivo.
+     * Devuelve una matriz con un error si $limit es negativo.
+     * @version 13.12.0
+     * @por_documentar_wiki 
+     *
      */
     private function limit_sql(int $limit): string|array
     {
