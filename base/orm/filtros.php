@@ -74,8 +74,6 @@ class filtros{
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
      * @param array $diferente_de Arreglo con los elementos para integrar un diferente de en SQL
-     * @author mgamboa
-     * @fecha 2022-07-27 11:07
      * @return array|stdClass
      */
     final public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,

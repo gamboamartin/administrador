@@ -35,10 +35,13 @@ class params_sql{
     }
 
     /**
-     * Genera Group By para sql
-     * @version 1.42.14
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @return string|array GROUP BY $group_by[campo]
+     * Genera la cadena SQL para la instrucción GROUP BY.
+     *
+     * @param array $group_by El arreglo que contiene los campos por los cuales agrupar.
+     *
+     * @return string|array La cadena SQL para la instrucción GROUP BY.
+     * @version 13.10.0
+     * @por_documentar_wiki
      */
     private function group_by_sql(array $group_by): string|array
     {
@@ -113,7 +116,6 @@ class params_sql{
      *          string stdClass->limit_sql LIMIT $limit o ''
      *          string stdClass->offset_sql OFFSET $offset o ''
      *          string stdClass->seguridad WHERE usuario_permitido_id = $_SESSION[usuario_id] o ''
-     * @version 1.120.29
      */
     final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,  int $offset,
                                array $order, string $sql_where_previo): array|stdClass
