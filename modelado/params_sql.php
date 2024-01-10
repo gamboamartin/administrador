@@ -166,15 +166,13 @@ class params_sql{
     }
 
     /**
+     * Genera una consulta SQL para ordenar los resultados.
      *
-     * Funcion genera order en forma de sql
-     * @param array  $order con parametros para generar sentencia
-     * @version 1.0.0
-     * @return array|string cadena con order en forma de SQL
-     * @throws errores if order[campo] es un numero
-     * @example
-     * $order_sql = $this->order_sql($order);
-     * @uses modelo
+     * @param array $order Un array asociativo donde las claves son los nombres de las columnas a ordenar y
+     * los valores son los tipos de orden ('ASC' para ascendente, 'DESC' para descendente).
+     * @return array|string Devuelve una consulta SQL que puede ser usada en una cláusula ORDER BY.
+     * @version 13.11.0
+     * @por_documentar_wiki
      */
     private function order_sql(array $order):array|string{
         $order_sql = '';
