@@ -78,6 +78,7 @@ class columnas{
      *
      * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
      * @return bool
+     * @version 13.16.0
      */
     private function aplica_columnas_by_table(array $columnas_by_table): bool
     {
@@ -119,10 +120,19 @@ class columnas{
     }
 
     /**
-     * Asigna las columnas en forma de SQL en una variable de SESSION en caso de que no exista
-     * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
-     * @param modelo_base $modelo modelo o estructura de la base de datos
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Asigna las columnas correspondientes a una tabla específica a un modelo y las almacena en la sesión.
+     *
+     * Esta función se encuentra en el archivo 'base/orm/columnas.php'.
+     * Su objetivo es asignar las columnas detalladas en la sesión ($_SESSION) para una tabla específica a un modelo,
+     * y si las columnas ya están definidas en la sesión, asigna los datos de columna al modelo.
+     *
+     * @param modelo_base $modelo El modelo al que se le asignarán las columnas de la tabla.
+     * @param string $tabla_bd El nombre de la tabla en la base de datos.
+     *
+     * @return bool|array Devuelve true en caso de éxito. Si ocurre un error, devuelve un array con la información del error.
+     * Si las columnas para la tabla especificada no están definidas en la sesión, devuelve false.
+     * @version 13.16.0
      */
     private function asigna_columnas_en_session(modelo_base $modelo, string $tabla_bd): bool|array
     {

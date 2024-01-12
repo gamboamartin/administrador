@@ -515,7 +515,6 @@ class modeloTest extends test {
 
         errores::$error = false;
 
-        errores::$error = false;
 
 
         $columnas = array('adm_seccion_id');
@@ -549,6 +548,37 @@ class modeloTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("SELECT adm_seccion.id AS adm_seccion_id FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN adm_seccion AS adm_seccion_bis ON adm_seccion_bis.id = adm_seccion.id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
+        errores::$error = false;
+
+        $columnas = array('adm_seccion_id');
+        $columnas_by_table = array();
+        $columnas_en_bruto = false;
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $group_by = array();
+        $limit = 0;
+        $not_in = array('llave'=>'a','values'=>array('c','d'));
+        $offset = 0;
+        $order = array();
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','b'));
+        $diferente_de['a']= 'p';
+        $diferente_de['g']= 'p';
+        $extra_join = array();
+        $extra_join['adm_seccion']['key'] = 'id';
+        $extra_join['adm_seccion']['enlace'] = 'adm_seccion';
+        $extra_join['adm_seccion']['key_enlace'] = 'id';
+        $extra_join['adm_seccion']['renombre'] = 'adm_seccion_bis';
+        $resultado = $modelo->genera_sql_filtro($columnas, $columnas_by_table, $columnas_en_bruto, true, $diferente_de, $extra_join, $filtro,
+            $filtro_especial, $filtro_extra, $filtro_rango, $group_by, $in, $limit, $not_in, $offset, $order, $sql_extra,
+            $tipo_filtro, true);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("SELECT COUNT(*) FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN adm_seccion AS adm_seccion_bis ON adm_seccion_bis.id = adm_seccion.id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
         errores::$error = false;
 
 
