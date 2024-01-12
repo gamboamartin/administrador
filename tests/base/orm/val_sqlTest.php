@@ -381,6 +381,20 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_tabla(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $resultado = $val->tabla('a');
+        $this->assertTrue( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+
     public function test_tipo_campos(): void
     {
         errores::$error = false;

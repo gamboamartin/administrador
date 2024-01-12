@@ -505,7 +505,7 @@ class modelo extends modelo_base {
                                      array $filtro_extra = array(), array $filtro_fecha = array(),
                                      array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
                                      array $in = array(),  array $not_in = array(), string $sql_extra = '',
-                                     string $tipo_filtro='numeros'): array|stdClass{
+                                     string $tipo_filtro='numeros'): array|int{
 
 
 
@@ -534,7 +534,7 @@ class modelo extends modelo_base {
             return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
         }
 
-        return $result;
+        return (int)$result->registros[0]['total_registros'];
     }
 
     /**

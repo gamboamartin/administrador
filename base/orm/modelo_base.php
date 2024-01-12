@@ -907,7 +907,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         if($count){
-            $columns_final = "COUNT(*)";
+            $columns_final = "COUNT(*) AS total_registros";
         }
 
 

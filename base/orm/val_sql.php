@@ -211,6 +211,7 @@ class val_sql extends validaciones {
     }
 
     /**
+     * POR DOCUMENTAR WN WIKI
      * Valida el nombre de una tabla.
      *
      * Esta función se asegura de que el nombre de la tabla proporcionada no esté vacío.
@@ -218,6 +219,8 @@ class val_sql extends validaciones {
      * @param string $tabla El nombre de la tabla que se va a validar.
      *
      * @return true|array Devuelve true si la validación pasa o un array con los detalles del error si la validación falla.
+     * @version 13.18.0
+     *
      */
     final public function tabla(string $tabla): true|array
     {

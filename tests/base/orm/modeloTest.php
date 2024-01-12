@@ -578,7 +578,7 @@ class modeloTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("SELECT COUNT(*) FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN adm_seccion AS adm_seccion_bis ON adm_seccion_bis.id = adm_seccion.id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
+        $this->assertEquals("SELECT COUNT(*) AS total_registros FROM adm_seccion AS adm_seccion LEFT JOIN adm_menu AS adm_menu ON adm_menu.id = adm_seccion.adm_menu_id LEFT JOIN adm_namespace AS adm_namespace ON adm_namespace.id = adm_seccion.adm_namespace_id LEFT JOIN adm_seccion AS adm_seccion_bis ON adm_seccion_bis.id = adm_seccion.id WHERE ((a IN ('a' ,'b'))) AND ((a NOT IN ('c' ,'d'))) AND ((a <> 'p' AND g <> 'p')) AND ((x))",$resultado);
         errores::$error = false;
 
 
