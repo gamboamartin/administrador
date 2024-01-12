@@ -72,7 +72,7 @@ class params_sql{
      * @return string|array Devuelve la consulta SQL limitada como cadena si $limit es positivo.
      * Devuelve una matriz con un error si $limit es negativo.
      * @version 13.12.0
-     * @por_documentar_wiki 
+     * @por_documentar_wiki
      *
      */
     private function limit_sql(int $limit): string|array
@@ -88,10 +88,17 @@ class params_sql{
     }
 
     /**
-     * Obtiene un offset para sql
-     * @version 1.92.19
-     * @param int $offset Numero de inicio de registros
-     * @return string|array
+     * Esta función genera una cadena SQL para un desplazamiento (OFFSET) dado
+     * un parámetro específico. Esto se usa para definir el número de registros
+     * que se van a omitir antes de empezar a devolver los registros en una consulta SQL.
+     *
+     * @param int $offset Es el número de registros que se van a omitir.
+     *
+     * @return string|array Si el valor de $offset es mayor a 0,
+     * devuelve una cadena con la sentencia SQL 'OFFSET' concatenada con el valor de $offset.
+     * Si $offset es menor que 0, se devuelve un array con un mensaje de error.
+     * @version 13.13.0
+     * @por_documentar_wiki
      */
     private function offset_sql(int $offset): string|array
     {
