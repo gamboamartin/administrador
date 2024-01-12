@@ -504,8 +504,7 @@ class modelo extends modelo_base {
                                      array $filtro=array(), array $filtro_especial= array(),
                                      array $filtro_extra = array(), array $filtro_fecha = array(),
                                      array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
-                                     array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
-                                     array $order = array(), string $sql_extra = '',
+                                     array $in = array(),  array $not_in = array(), string $sql_extra = '',
                                      string $tipo_filtro='numeros'): array|stdClass{
 
 
@@ -519,16 +518,12 @@ class modelo extends modelo_base {
             $filtro = array_merge($filtro, $this->filtro_seguridad);
         }
 
-        if($limit < 0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $limit);
-        }
 
         $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
             columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de,
             extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
-            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset,
-            order: $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, count: true, filtro_fecha: $filtro_fecha);
+            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: 0, not_in: $not_in, offset: 0,
+            order: array(), sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, count: true, filtro_fecha: $filtro_fecha);
 
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);

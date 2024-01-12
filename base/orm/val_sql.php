@@ -210,7 +210,16 @@ class val_sql extends validaciones {
         return true;
     }
 
-    final public function tabla(string $tabla): bool|array
+    /**
+     * Valida el nombre de una tabla.
+     *
+     * Esta función se asegura de que el nombre de la tabla proporcionada no esté vacío.
+     *
+     * @param string $tabla El nombre de la tabla que se va a validar.
+     *
+     * @return true|array Devuelve true si la validación pasa o un array con los detalles del error si la validación falla.
+     */
+    final public function tabla(string $tabla): true|array
     {
         $tabla = trim($tabla);
         if($tabla === ''){
