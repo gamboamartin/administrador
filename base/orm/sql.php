@@ -11,9 +11,15 @@ class sql{
     }
 
     /**
-     * Genera sql DESCRIBE nombre_table
-     * @param string $tabla Nombre de la tabla a verificar
-     * @return string|array Sql a ejecutar
+     * POR DOCUMENTAR WIKI
+     * Descripción: Este método genera la consulta SQL para obtener la descripción (estructura) de una tabla en específico.
+     *
+     * @param string $tabla Nombre de la tabla cuya descripción (estructura) se desea obtener.
+     * @return string|array Retorna una cadena con la consulta SQL en caso de éxito.
+     *                      Si ocurre un error durante la validación del nombre de la tabla,
+     *                      se retorna un array con detalles del error.
+     * @version 13.19.0
+     *
      */
     final public function describe_table(string $tabla): string|array
     {
