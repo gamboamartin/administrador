@@ -498,6 +498,50 @@ class modelo extends modelo_base {
 
     }
 
+    final public function cuenta_bis(bool $aplica_seguridad = true, array $columnas =array(),
+                                     array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                                     bool $con_sq = true, array $diferente_de = array(), array $extra_join = array(),
+                                     array $filtro=array(), array $filtro_especial= array(),
+                                     array $filtro_extra = array(), array $filtro_fecha = array(),
+                                     array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
+                                     array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
+                                     array $order = array(), string $sql_extra = '',
+                                     string $tipo_filtro='numeros'): array|stdClass{
+
+
+
+        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
+        }
+
+        if($this->aplica_seguridad && $aplica_seguridad) {
+            $filtro = array_merge($filtro, $this->filtro_seguridad);
+        }
+
+        if($limit < 0){
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
+                data: $limit);
+        }
+
+        $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de,
+            extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset,
+            order: $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, count: true, filtro_fecha: $filtro_fecha);
+
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
+        }
+
+        $result = $this->ejecuta_consulta(consulta:$sql,campos_encriptados: $this->campos_encriptados, hijo: $hijo);
+        if(errores::$error){
+            return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
+        }
+
+        return $result;
+    }
+
     /**
      * Genera los datos de una sentencia para WHERE EN SQL
      * @version 1.147.31
@@ -1174,6 +1218,7 @@ class modelo extends modelo_base {
      * @param array $order con parametros para generar sentencia
      * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
      * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
+     * @param bool $count Si count deja solo el campo count y no integra columnas
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|string
      * @example
@@ -1186,13 +1231,12 @@ class modelo extends modelo_base {
      *
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
-     *
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
                                        array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
                                        array $not_in, int $offset, array $order, string $sql_extra, string $tipo_filtro,
-                                       array $filtro_fecha = array()): array|string
+                                       bool $count = false, array $filtro_fecha = array()): array|string
     {
 
 
@@ -1210,8 +1254,8 @@ class modelo extends modelo_base {
         }
 
         $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, extension_estructura: $this->extension_estructura,
-            extra_join: $extra_join, renombradas: $this->renombres);
+            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, count: $count,
+            extension_estructura: $this->extension_estructura, extra_join: $extra_join, renombradas: $this->renombres);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
         }

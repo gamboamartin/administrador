@@ -1508,6 +1508,7 @@ class where{
 
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Verifica el tipo de filtro proporcionado.
      *
      * @param string $tipo_filtro El tipo de filtro a verificar.
@@ -1522,7 +1523,6 @@ class where{
      *    Si no es así, crea un nuevo objeto stdClass y establece la propiedad
      *    tipo_filtro con el valor ingresado y retorna un error con el mensaje y los datos correspondientes.
      * @version 13.8.0
-     * @por_documnetar_en_wiki
      */
     final public function verifica_tipo_filtro(string $tipo_filtro): true|array
     {

@@ -35,13 +35,13 @@ class params_sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera la cadena SQL para la instrucción GROUP BY.
      *
      * @param array $group_by El arreglo que contiene los campos por los cuales agrupar.
      *
      * @return string|array La cadena SQL para la instrucción GROUP BY.
      * @version 13.10.0
-     * @por_documentar_wiki
      */
     private function group_by_sql(array $group_by): string|array
     {
@@ -65,6 +65,7 @@ class params_sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Esta función se utiliza para limitar las consultas SQL.
      *
      * @param int $limit El límite de la consulta SQL.
@@ -72,7 +73,6 @@ class params_sql{
      * @return string|array Devuelve la consulta SQL limitada como cadena si $limit es positivo.
      * Devuelve una matriz con un error si $limit es negativo.
      * @version 13.12.0
-     * @por_documentar_wiki
      *
      */
     private function limit_sql(int $limit): string|array
@@ -88,6 +88,7 @@ class params_sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Esta función genera una cadena SQL para un desplazamiento (OFFSET) dado
      * un parámetro específico. Esto se usa para definir el número de registros
      * que se van a omitir antes de empezar a devolver los registros en una consulta SQL.
@@ -98,7 +99,6 @@ class params_sql{
      * devuelve una cadena con la sentencia SQL 'OFFSET' concatenada con el valor de $offset.
      * Si $offset es menor que 0, se devuelve un array con un mensaje de error.
      * @version 13.13.0
-     * @por_documentar_wiki
      */
     private function offset_sql(int $offset): string|array
     {
@@ -178,13 +178,13 @@ class params_sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera una consulta SQL para ordenar los resultados.
      *
      * @param array $order Un array asociativo donde las claves son los nombres de las columnas a ordenar y
      * los valores son los tipos de orden ('ASC' para ascendente, 'DESC' para descendente).
      * @return array|string Devuelve una consulta SQL que puede ser usada en una cláusula ORDER BY.
      * @version 13.11.0
-     * @por_documentar_wiki
      */
     private function order_sql(array $order):array|string{
         $order_sql = '';
@@ -208,7 +208,6 @@ class params_sql{
      * @param array $modelo_columnas_extra
      * @param string $sql_where_previo Sql previo
      * @return array|string
-     * @version 1.110.27
      */
     final public function seguridad(bool $aplica_seguridad, array $modelo_columnas_extra,
                                     string $sql_where_previo): array|string
@@ -230,6 +229,18 @@ class params_sql{
         return $seguridad;
     }
 
+    /**
+     * Valida la seguridad de los datos de entrada comprobando la existencia de ciertas claves en el arreglo
+     * proporcionado y en la variable de sesión.
+     *
+     * Esta función se encuentra en el archivo 'modelado/params_sql.php'.
+     * Su propósito es verificar la existencia de las claves 'usuario_permitido_id' en el arreglo proporcionado
+     * y 'usuario_id' en la variable de sesión $_SESSION. Si alguna de estas claves no existe, se genera un error.
+     *
+     * @param array $modelo_columnas_extra La matriz que se comprobará para la existencia de la clave 'usuario_permitido_id'.
+     *
+     * @return bool|array Devuelve true en caso de éxito, de lo contrario, devuelve un arreglo con información del error.
+     */
     private function valida_seguridad(array $modelo_columnas_extra): bool|array
     {
         $keys = array('usuario_permitido_id');
