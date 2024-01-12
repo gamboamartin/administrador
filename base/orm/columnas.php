@@ -69,6 +69,7 @@ class columnas{
 
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Esta función verifica si el arreglo de entrada $columnas_by_table contiene algún elemento. Si el conteo
      * del arreglo es más de cero, la función devolverá true, de lo contrario, devolverá false.
      * En otras palabras, verifica si hay alguna columna en el arreglo dado que necesite ser aplicada a la tabla.
@@ -77,7 +78,6 @@ class columnas{
      *
      * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
      * @return bool
-     * @pordoc true
      */
     private function aplica_columnas_by_table(array $columnas_by_table): bool
     {
@@ -186,11 +186,19 @@ class columnas{
     }
 
     /**
-     * Obtiene las columnas de una tabla y los asigna a la variable de SESSION[campos_tabla] y
-     * SESSION[columnas_completas] Para ser utilizadas en las consultas SELECT
-     * @param stdClass $data Objeto recursivo con los atributos  columnas_parseadas y columnas_completas
-     * @param string $tabla_bd Tabla de la base de datos de donde se obtendran y asignaran las columnas
-     * @return stdClass|array stdClass si es exito con atributos columnas_parseadas y columnas_completas
+     * POR DOCUMENTAR EN WIKI
+     * Asigna los datos de las columnas de una tabla especificada a la variable de sesión correspondiente y las devuelve.
+     *
+     * La función se encuentra en el archivo 'base/orm/columnas.php'. El objetivo de esta función es asignar la data
+     * de las columnas para una tabla específica almacenada en la variable de sesión a la variable de data pasada como
+     * parámetro y retornarla.
+     *
+     * @param stdClass $data El objeto al que se le asignarán las columnas parseadas y completas.
+     * @param string $tabla_bd Nombre de la tabla en la base de datos.
+     *
+     * @return stdClass|array Devuelve el objeto $data modificado en caso de éxito, de otro modo,
+     * devuelve un arreglo con información de error.
+     * @version 13.14.0
      */
     private function asigna_data_columnas(stdClass $data, string $tabla_bd): stdClass|array
     {
@@ -634,7 +642,6 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
-     * @pordoc false
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
@@ -867,14 +874,6 @@ class columnas{
 
         $columnas_extra_sql = '';
 
-        /*
-        if($con_sq) {
-            $columnas_extra_sql = $this->genera_columnas_extra(columnas: $columnas, modelo: $modelo);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql);
-            }
-        }
-        */
 
         $data = new stdClass();
         $data->columnas_sql = $columnas_sql;

@@ -833,17 +833,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @functions $sub_querys_sql = $this->sub_querys($columnas);
      * @example
      * $consulta = $this->genera_consulta_base($columnas);
-     * @pordoc false
      */
 
     final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
                                                 bool $columnas_en_bruto = false, bool $con_sq = true,
-                                                array $extension_estructura = array(), array $extra_join = array(),
+                                                bool $count = false, array $extension_estructura = array(),
+                                                array $extra_join = array(),
                                                 array $renombradas = array()):array|string{
+
+        /**
+         * REFACTORIZAR
+         */
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
+
         $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
             columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
             columnas_sql: $columnas_seleccionables, con_sq: $con_sq, extension_estructura: $extension_estructura,
@@ -901,7 +906,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         }
 
-        //print_r($columns_final);exit;
+        if($count){
+            $columns_final = "COUNT(*)";
+        }
 
 
         return /** @lang MYSQL */ "SELECT $columns_final FROM $tablas";

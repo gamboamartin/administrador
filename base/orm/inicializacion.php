@@ -888,6 +888,7 @@ class inicializacion{
     }
 
     /**
+     * POR DOCUMENTAR WIKI
      * Recupera las columnas de la tabla especificada en el modelo dado.
      *
      * Esta función está diseñada para tomar un objeto modelo_base, obtener el nombre de la tabla del modelo y
@@ -902,7 +903,6 @@ class inicializacion{
      * @return array - Devuelve un array con las columnas de la tabla.
      *                Si la tabla no tiene columnas, devuelve un error.
      *
-     * @pordoc true
      * @version 13.5.0
      */
     final public function tablas_select(modelo_base $modelo): array
