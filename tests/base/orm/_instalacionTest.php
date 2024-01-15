@@ -18,7 +18,7 @@ class _instalacionTest extends test
     public function test_create_table(): void
     {
         errores::$error = false;
-        $ins = new _instalacion();
+        $ins = new _instalacion(link: $this->link);
 
 
         $table = 'test';
@@ -31,7 +31,7 @@ class _instalacionTest extends test
         }
 
         if($existe_table) {
-            $drop = $ins->drop_table(link: $this->link, table: $table);
+            $drop = $ins->drop_table(table: $table);
             if (errores::$error) {
                 $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
                 print_r($error);
@@ -41,7 +41,7 @@ class _instalacionTest extends test
 
         $campos = new stdClass();
         $campos->a = new stdClass();
-        $resultado = $ins->create_table(campos: $campos, link: $this->link, table: $table);
+        $resultado = $ins->create_table(campos: $campos,  table: $table);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE test (
@@ -55,7 +55,7 @@ class _instalacionTest extends test
 
         $table = 'b';
 
-        $drop = $ins->drop_table(link: $this->link, table: $table);
+        $drop = $ins->drop_table( table: $table);
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
             print_r($error);
@@ -64,7 +64,7 @@ class _instalacionTest extends test
 
         $table = 'a';
 
-        $drop = $ins->drop_table(link: $this->link, table: $table);
+        $drop = $ins->drop_table(table: $table);
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
             print_r($error);
@@ -73,7 +73,7 @@ class _instalacionTest extends test
         $table = 'a';
         $campos = new stdClass();
         $campos->a = new stdClass();
-        $resultado = $ins->create_table(campos: $campos, link: $this->link, table: $table);
+        $resultado = $ins->create_table(campos: $campos, table: $table);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE a (
@@ -90,7 +90,7 @@ class _instalacionTest extends test
         $campos->a_id = new stdClass();
         $campos->a_id->foreign_key = true;
         $campos->a_id->tipo_dato = 'bigint';
-        $resultado = $ins->create_table(campos: $campos, link: $this->link, table: $table);
+        $resultado = $ins->create_table(campos: $campos, table: $table);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE b (

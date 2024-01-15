@@ -19,8 +19,8 @@ class sql{
      * @param string $longitud Opcional. La longitud del nuevo campo, si aplicable. Por defecto es una cadena vacía.
      * @return string|array Devuelve la sentencia SQL para agregar la nueva columna a la tabla. O array si existe error
      */
-    final public function add_column(
-        string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
+    final public function add_column(string $campo, string $table, string $tipo_dato, string $default = '',
+                                     string $longitud = ''): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -40,7 +40,12 @@ class sql{
             $longitud_sql = "($longitud)";
         }
 
-        return "ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql;";
+        $default = $this->default(value: $default);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener default',data: $default);
+        }
+
+        return "ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql $default;";
 
     }
 
@@ -122,6 +127,22 @@ class sql{
     }
 
     /**
+     * Genera una declaración SQL para establecer un valor predeterminado en una columna.
+     *
+     * @param string $value El valor predeterminado a establecer.
+     * @return string Devuelve la declaración SQL para establecer un valor predeterminado.
+     */
+    private function default(string $value): string
+    {
+        $value = trim($value);
+        $sql = '';
+        if($value !== ''){
+            $sql = 'DEFAULT $value';
+        }
+        return $sql;
+    }
+
+    /**
      * POR DOCUMENTAR WIKI
      * Descripción: Este método genera la consulta SQL para obtener la descripción (estructura) de una tabla en específico.
      *
@@ -164,6 +185,33 @@ class sql{
     final public function drop_table(string $table): string
     {
         return "DROP TABLE $table";
+
+    }
+
+    /**
+     * Genera una sentencia SQL para agregar una clave foránea a una tabla.
+     *
+     * @param string $table El nombre de la tabla a la que se agregará la clave foránea.
+     * @param string $relacion_table El nombre de la tabla referenciada por la clave foránea.
+     * @return string|array Devuelve la sentencia SQL que crea la clave foránea en la tabla.
+     */
+    final public function foreign_key(string $table, string $relacion_table): string|array
+    {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        $relacion_table = trim($relacion_table);
+        if($relacion_table === ''){
+            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
+        }
+
+        $fk = $relacion_table.'_id';
+
+        $name_indice = $table.'.'.$fk;
+
+        return "ALTER TABLE $table ADD CONSTRAINT $name_indice FOREIGN KEY ($fk) REFERENCES $relacion_table(id);";
+
 
     }
 
