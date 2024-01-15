@@ -968,7 +968,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus
      * dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]
-     * @version 1.0.0
      *
 
      *
@@ -990,7 +989,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores $this->hijo[$key][filtros] debe ser un array
      * @throws errores $this->hijo[$key][filtros_con_valor] debe ser un array
      * @throws errores $this->hijo[$key][nombre_estructura] debe existir
-     * @url http://doc.ciproteo.com:3443/en/home/Sistemas/Manuales/Tecnicos/modelo_basico/genera_modelos_hijos
      */
     private function genera_modelos_hijos(): array{//FIN DEBUG
         $modelos_hijos = array() ;
@@ -1264,7 +1262,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que asigna y genera los registros encontrados en un query
-     * @version 1.23.12
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @param array $campos_encriptados Campos encriptados de un modelo
      * @example
@@ -1392,7 +1389,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $campos_encriptados conjunto de campos encriptados del modelo
      * @param string $consulta Sql
      * @return array|stdClass
-     * @version 2.117.12
      */
     private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
     {
