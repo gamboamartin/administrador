@@ -11,6 +11,40 @@ class sql{
     }
 
     /**
+     * Crea una sentencia SQL para agregar una nueva columna a una tabla.
+     *
+     * @param string $campo El nombre de la nueva columna a agregar.
+     * @param string $table El nombre de la tabla a la que se agregará la nueva columna.
+     * @param string $tipo_dato El tipo de dato de la nueva columna.
+     * @param string $longitud Opcional. La longitud del nuevo campo, si aplicable. Por defecto es una cadena vacía.
+     * @return string|array Devuelve la sentencia SQL para agregar la nueva columna a la tabla. O array si existe error
+     */
+    final public function add_column(
+        string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacia',data: $campo);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+        }
+        $tipo_dato = trim($tipo_dato);
+        if($tipo_dato === ''){
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacia',data: $tipo_dato);
+        }
+
+        $longitud_sql = '';
+        if($longitud === ''){
+            $longitud_sql = "($longitud)";
+        }
+
+        return "ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql;";
+
+    }
+
+    /**
      * Genera una sentencia SQL para alterar una tabla con base en los parámetros proporcionados.
      *
      * @param string $campo El nombre del campo en la tabla que se va a modificar.
@@ -26,22 +60,30 @@ class sql{
     {
         $sql = '';
 
-        $longitud_sql = '';
-        if($longitud === ''){
-            $longitud_sql = "($longitud)";
-        }
-
         if($statement === 'ADD'){
-            $sql = "ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql;";
+            $sql = $this->add_column(campo: $campo,table:  $table,tipo_dato:  $tipo_dato,longitud: $longitud);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar sql',data: $sql);
+            }
+
         }
         if($statement === 'DROP'){
-            $sql = "ALTER TABLE $table DROP COLUMN $campo;";
+            $sql = $this->drop_column(campo: $campo,table:  $table);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar sql',data: $sql);
+            }
         }
         if($statement === 'RENAME'){
-            $sql = "ALTER TABLE $table RENAME COLUMN $campo to $new_name;";
+            $sql = $this->rename_column(campo: $campo, new_name: $new_name, table: $table);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar sql',data: $sql);
+            }
         }
         if($statement === 'MODIFY'){
-            $sql = "ALTER TABLE $table MODIFY COLUMN $campo $tipo_dato $longitud_sql;";
+            $sql = $this->modify_column(campo: $campo, table: $table,tipo_dato: $tipo_dato,longitud: $longitud);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar sql',data: $sql);
+            }
         }
 
         return $sql;
@@ -98,6 +140,19 @@ class sql{
         }
 
         return "DESCRIBE $tabla";
+    }
+
+    /**
+     * Genera una sentencia SQL para eliminar una columna de una tabla.
+     *
+     * @param string $campo El nombre de la columna a eliminar.
+     * @param string $table El nombre de la tabla de la que se eliminará la columna.
+     * @return string Retorna la sentencia SQL para eliminar la columna de la tabla.
+     */
+    final public function drop_column(string $campo, string $table): string
+    {
+        return "ALTER TABLE $table DROP COLUMN $campo;";
+
     }
 
     /**
@@ -171,6 +226,38 @@ class sql{
         }
 
         return $params_base_;
+    }
+
+    /**
+     * Genera una consulta SQL para modificar una columna en una tabla.
+     *
+     * @param string $campo El nombre de la columna a modificar.
+     * @param string $table El nombre de la tabla que contiene la columna a modificar.
+     * @param string $tipo_dato El nuevo tipo de datos para la columna.
+     * @param string $longitud Opcional. La nueva longitud para el campo, si aplica. Por defecto es una cadena vacía.
+     * @return string Devuelve la consulta SQL para modificar la columna en la tabla.
+     */
+    final public function modify_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): string
+    {
+        $longitud_sql = '';
+        if($longitud === ''){
+            $longitud_sql = "($longitud)";
+        }
+        return "ALTER TABLE $table MODIFY COLUMN $campo $tipo_dato $longitud_sql;";
+
+    }
+
+    /**
+     * Genera una sentencia SQL para renombrar una columna en una tabla.
+     *
+     * @param string $campo El nombre actual de la columna a renombrar.
+     * @param string $new_name El nuevo nombre para la columna.
+     * @param string $table El nombre de la tabla que contiene la columna a renombrar.
+     * @return string Retorna la sentencia SQL para renombrar la columna en la tabla.
+     */
+    final public function rename_column(string $campo, string $new_name, string $table): string
+    {
+        return "ALTER TABLE $table RENAME COLUMN $campo to $new_name;";
     }
 
     /**
