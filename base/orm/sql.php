@@ -11,6 +11,7 @@ class sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Crea una sentencia SQL para agregar una nueva columna a una tabla.
      *
      * @param string $campo El nombre de la nueva columna a agregar.
@@ -18,13 +19,14 @@ class sql{
      * @param string $tipo_dato El tipo de dato de la nueva columna.
      * @param string $longitud Opcional. La longitud del nuevo campo, si aplicable. Por defecto es una cadena vacía.
      * @return string|array Devuelve la sentencia SQL para agregar la nueva columna a la tabla. O array si existe error
+     * @version 13.26.0
      */
     final public function add_column(string $campo, string $table, string $tipo_dato, string $default = '',
                                      string $longitud = ''): string|array
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacia',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
         }
         $table = trim($table);
         if($table === ''){
@@ -32,11 +34,12 @@ class sql{
         }
         $tipo_dato = trim($tipo_dato);
         if($tipo_dato === ''){
-            return $this->error->error(mensaje: 'Error tipo_dato esta vacia',data: $tipo_dato);
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato);
         }
+        $longitud = trim($longitud);
 
         $longitud_sql = '';
-        if($longitud === ''){
+        if($longitud !== ''){
             $longitud_sql = "($longitud)";
         }
 
@@ -45,7 +48,7 @@ class sql{
             return $this->error->error(mensaje: 'Error al obtener default',data: $default);
         }
 
-        return "ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql $default;";
+        return trim("ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql $default;");
 
     }
 
@@ -141,7 +144,7 @@ class sql{
         if($value !== ''){
             $sql = "DEFAULT $value";
         }
-        return $sql;
+        return trim($sql);
     }
 
     /**

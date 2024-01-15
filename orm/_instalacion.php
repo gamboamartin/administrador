@@ -19,9 +19,10 @@ class _instalacion
 
     }
 
-    final public function add_colum(string $campo, string $table, string $tipo_dato, string $longitud = '')
+    final public function add_colum(string $campo, string $table, string $tipo_dato, string $default = '', string $longitud = '')
     {
-        $sql = (new sql())->add_column(campo: $campo,table:  $table,tipo_dato:  $tipo_dato, longitud: $longitud);
+        $sql = (new sql())->add_column(campo: $campo, table: $table, tipo_dato: $tipo_dato,
+            default: $default, longitud: $longitud);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }

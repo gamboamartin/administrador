@@ -18,6 +18,51 @@ class sqlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_add_column(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $campo = 'campo';
+        $table = 'table';
+        $tipo_dato = 'tipo_dato';
+        $default = '';
+        $longitud = '';
+        $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE table ADD campo tipo_dato  ;',$resultado);
+
+        errores::$error = false;
+
+        $campo = 'campo';
+        $table = 'table';
+        $tipo_dato = 'tipo_dato';
+        $default = 'a';
+        $longitud = '';
+        $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE table ADD campo tipo_dato  DEFAULT a;',$resultado);
+
+        errores::$error = false;
+
+        errores::$error = false;
+
+        $campo = 'campo';
+        $table = 'table';
+        $tipo_dato = 'tipo_dato';
+        $default = 'a';
+        $longitud = '1';
+        $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE table ADD campo tipo_dato (1) DEFAULT a;',$resultado);
+        errores::$error = false;
+    }
+
     public function test_default(): void
     {
         errores::$error = false;
