@@ -63,7 +63,16 @@ class _instalacion
 
     }
 
-    final public function foreign_key_completo(string $campo, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Agrega una columna a una tabla y luego establece una clave foránea en la misma.
+     *
+     * @param string $campo El nombre de la columna a agregar, que luego se convertirá en la clave foránea.
+     * @param string $table El nombre de la tabla a la que se agregará la columna y se establecerá la clave foránea.
+     * @return array|stdClass Devuelve el resultado del proceso de generar la clave foránea o, en caso de error, devuelve un mensaje de error.
+     * @version 13.30.0
+     */
+    final public function foreign_key_completo(string $campo, string $table):array|stdClass
     {
 
         $exe = $this->add_colum(campo: $campo, table: $table,tipo_dato:  'bigint',longitud: 100);
