@@ -127,17 +127,19 @@ class sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera una declaración SQL para establecer un valor predeterminado en una columna.
      *
      * @param string $value El valor predeterminado a establecer.
      * @return string Devuelve la declaración SQL para establecer un valor predeterminado.
+     * @version 13.25.0
      */
     private function default(string $value): string
     {
         $value = trim($value);
         $sql = '';
         if($value !== ''){
-            $sql = 'DEFAULT $value';
+            $sql = "DEFAULT $value";
         }
         return $sql;
     }

@@ -18,6 +18,27 @@ class sqlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_default(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $resultado = $sql->default('');
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+        $resultado = $sql->default('a');
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('DEFAULT a',$resultado);
+        errores::$error = false;
+
+
+    }
     public function test_describe_table(): void
     {
         errores::$error = false;
