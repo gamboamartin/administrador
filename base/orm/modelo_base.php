@@ -668,7 +668,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * PHPUNIT
      * Devuelve un array que contiene un rango de fechas con fecha inicial y final
      *
      * @example
@@ -1220,9 +1219,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * Genera el key para temporal en sql
-     * @param string $consulta Consulta a ejecutar
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera una clave temporal basada en la consulta proporcionada.
+     *
+     * @param string $consulta Consulta utilizada para generar la clave.
+     * @return array|string Devuelve un string MD5 basado en la consulta proporcionada o un error si la consulta está vacía.
+     * @version 13.20.0
      */
     private function key_tmp(string $consulta): array|string
     {
