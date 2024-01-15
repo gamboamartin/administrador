@@ -117,7 +117,7 @@ class sqlTest extends test {
         $resultado = $sql->foreign_key(table: $table,relacion_table:  $relacion_table);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD CONSTRAINT table.relacion_table_id FOREIGN KEY (relacion_table_id) REFERENCES relacion_table(id);',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD CONSTRAINT table__relacion_table_id FOREIGN KEY (relacion_table_id) REFERENCES relacion_table(id);',$resultado);
         errores::$error = false;
     }
 

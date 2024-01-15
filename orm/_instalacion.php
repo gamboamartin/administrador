@@ -82,9 +82,26 @@ class _instalacion
         return $exe;
 
     }
-
-    final public function foreign_key_existente(string $relacion_table, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una sentencia SQL para crear una clave foránea y luego la ejecuta.
+     *
+     * @param string $relacion_table El nombre de la tabla que la clave foránea está referenciando.
+     * @param string $table El nombre de la tabla donde se creará la clave foránea.
+     * @return array|stdClass Devuelve el resultado de la ejecución de la consulta SQL, o un error si ocurre uno.
+     * @version 13.29.0
+     */
+    final public function foreign_key_existente(string $relacion_table, string $table):array|stdClass
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        $relacion_table = trim($relacion_table);
+        if($relacion_table === ''){
+            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
+        }
+
         $sql = (new sql())->foreign_key(table: $table,relacion_table:  $relacion_table);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);

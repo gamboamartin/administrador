@@ -219,7 +219,7 @@ class sql{
 
         $fk = $relacion_table.'_id';
 
-        $name_indice = $table.'.'.$fk;
+        $name_indice = $table.'__'.$fk;
 
         return "ALTER TABLE $table ADD CONSTRAINT $name_indice FOREIGN KEY ($fk) REFERENCES $relacion_table(id);";
 
