@@ -32,7 +32,7 @@ class sqlTest extends test {
         $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo tipo_dato  ;',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO  ;',$resultado);
 
         errores::$error = false;
 
@@ -44,7 +44,7 @@ class sqlTest extends test {
         $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo tipo_dato  DEFAULT a;',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO  DEFAULT a;',$resultado);
 
         errores::$error = false;
 
@@ -59,7 +59,7 @@ class sqlTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo tipo_dato (1) DEFAULT a;',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO (1) DEFAULT a;',$resultado);
         errores::$error = false;
     }
 
@@ -393,6 +393,23 @@ class sqlTest extends test {
         $this->assertEquals('UPDATE a SET a  WHERE id = 1',$resultado);
         errores::$error = false;
     }
+    public function test_valida_column(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'table';
+        $tipo_dato = 'relacion_table';
+        $campo = 'campo';
+        $resultado = $sql->valida_column(campo: $campo, table: $table, tipo_dato: $tipo_dato);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
 
     public function test_valida_in(): void
     {

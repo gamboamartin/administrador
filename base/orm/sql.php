@@ -25,23 +25,27 @@ class sql{
                                      string $longitud = ''): string|array
     {
         $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
-        }
         $table = trim($table);
-        if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
-        }
         $tipo_dato = trim($tipo_dato);
-        if($tipo_dato === ''){
-            return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato);
-        }
+        $tipo_dato = strtoupper($tipo_dato);
+
         $longitud = trim($longitud);
+        if($tipo_dato === 'VARCHAR'){
+            $longitud = '255';
+        }
+
 
         $longitud_sql = '';
         if($longitud !== ''){
             $longitud_sql = "($longitud)";
         }
+
+        $valida = $this->valida_column(campo:$campo,table:  $table, tipo_dato: $tipo_dato, longitud: $longitud);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
+        }
+
+
 
         $default = $this->default(value: $default);
         if(errores::$error){
@@ -433,6 +437,45 @@ class sql{
 
 
         return 'UPDATE ' . $tabla . ' SET ' . $campos_sql . "  WHERE id = $id";
+    }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Valida los valores de los argumentos campo, tabla y tipo de dato. Si alguno de ellos es una cadena vacía, devuelve un error.
+     *
+     * @param string $campo El nombre de la columna a validar.
+     * @param string $table El nombre de la tabla a validar.
+     * @param string $tipo_dato El tipo de dato a validar.
+     * @return true|array Retorna verdadero si los argumentos son válidos, o un array con un mensaje de error si no lo son.
+     * @version 13.28.0
+     */
+    final function valida_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): true|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+        }
+        $tipo_dato = trim($tipo_dato);
+        if($tipo_dato === ''){
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato);
+        }
+        $longitud = trim($longitud);
+
+        $tipo_dato = strtoupper($tipo_dato);
+        if($tipo_dato === 'VARCHAR'){
+            if($longitud === ''){
+                return $this->error->error(
+                    mensaje: 'Error tipo_dato esta VARCHAR entonces longitud debe ser u numero entero',data: $tipo_dato);
+            }
+
+        }
+
+        return true;
+
     }
 
     /**

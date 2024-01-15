@@ -19,8 +19,37 @@ class _instalacion
 
     }
 
-    final public function add_colum(string $campo, string $table, string $tipo_dato, string $default = '', string $longitud = '')
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Agrega una columna a una tabla dada.
+     *
+     * @param string $campo El nombre de la columna a agregar.
+     * @param string $table El nombre de la tabla a la que se agregará la columna.
+     * @param string $tipo_dato El tipo de dato de la nueva columna.
+     * @param string $default Valor default en caso de vacio no lo integra
+     * @param string $longitud Opcional. La longitud del nuevo campo. Por defecto es una cadena vacía.
+     * @return stdClass|array Retorna la ejecución de la sentencia SQL para agregar la columna, o en caso de error,
+     * devuelve el mensaje de error.
+     * @version 13.28.0
+     */
+    final public function add_colum(string $campo, string $table, string $tipo_dato,
+                                    string $default = '', string $longitud = ''): stdClass|array
     {
+        $campo = trim($campo);
+        $table = trim($table);
+        $tipo_dato = trim($tipo_dato);
+        $tipo_dato = strtoupper($tipo_dato);
+
+        $longitud = trim($longitud);
+        if($tipo_dato === 'VARCHAR'){
+            $longitud = '255';
+        }
+
+        $valida = (new sql())->valida_column(campo:$campo,table:  $table, tipo_dato: $tipo_dato, longitud: $longitud);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
+        }
+
         $sql = (new sql())->add_column(campo: $campo, table: $table, tipo_dato: $tipo_dato,
             default: $default, longitud: $longitud);
         if(errores::$error){
