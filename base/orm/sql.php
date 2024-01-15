@@ -11,6 +11,37 @@ class sql{
     }
 
     /**
+     * Genera una sentencia SQL para crear una tabla con los campos proporcionados.
+     * Si los campos están vacíos o si hay errores al obtener los datos de la tabla o al crear la tabla,
+     * retorna un mensaje de error.
+     *
+     * @param stdClass $campos El objeto que contiene los campos y sus atributos.
+     * @param string $table El nombre de la tabla que se creará.
+     * @return string|array Devuelve la sentencia SQL para crear la tabla,
+     *                      o en caso de error, devuelve un array con el mensaje y los datos del error.
+     */
+    final public function create_table(stdClass $campos, string $table): array|string
+    {
+        if(count((array)$campos) === 0){
+            return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos);
+
+        }
+
+        $datos_tabla = (new _create())->datos_tabla(campos: $campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener datos_tabla',data: $datos_tabla);
+        }
+
+        $sql = (new _create())->table(datos_tabla: $datos_tabla,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener create',data: $sql);
+        }
+
+        return $sql;
+
+    }
+
+    /**
      * POR DOCUMENTAR WIKI
      * Descripción: Este método genera la consulta SQL para obtener la descripción (estructura) de una tabla en específico.
      *
@@ -29,6 +60,18 @@ class sql{
         }
 
         return "DESCRIBE $tabla";
+    }
+
+    /**
+     * Genera una sentencia SQL para eliminar una tabla.
+     *
+     * @param string $table El nombre de la tabla a eliminar.
+     * @return string Retorna la sentencia SQL para eliminar la tabla.
+     */
+    final public function drop_table(string $table): string
+    {
+        return "DROP TABLE $table";
+
     }
 
     /**

@@ -16,6 +16,7 @@ use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 class modeloTest extends test {
     public errores $errores;
@@ -125,6 +126,85 @@ class modeloTest extends test {
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('INSERT INTO adm_dia (codigo,descripcion,codigo_bis,descripcion_select,alias,status,usuario_alta_id,usuario_update_id) VALUES ', $resultado->sql);
+
+        errores::$error = false;
+    }
+
+    public function test_create_table(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $table = 'test';
+
+        $drop = $modelo->drop_table(table: $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $resultado = $modelo->create_table(campos: $campos, table: $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('CREATE TABLE test (
+                    id bigint NOT NULL AUTO_INCREMENT,
+                    a VARCHAR (255) NOT NULL, 
+                    PRIMARY KEY (id) 
+                   
+                    );', $resultado->sql);
+
+        errores::$error = false;
+
+        $table = 'b';
+
+        $drop = $modelo->drop_table(table: $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $table = 'a';
+
+        $drop = $modelo->drop_table(table: $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $table = 'a';
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $resultado = $modelo->create_table(campos: $campos, table: $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('CREATE TABLE a (
+                    id bigint NOT NULL AUTO_INCREMENT,
+                    a VARCHAR (255) NOT NULL, 
+                    PRIMARY KEY (id) 
+                   
+                    );', $resultado->sql);
+
+
+        $table = 'b';
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $campos->a_id = new stdClass();
+        $campos->a_id->foreign_key = true;
+        $campos->a_id->tipo_dato = 'bigint';
+        $resultado = $modelo->create_table(campos: $campos, table: $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('CREATE TABLE b (
+                    id bigint NOT NULL AUTO_INCREMENT,
+                    a VARCHAR (255) NOT NULL, a_id bigint (255) NOT NULL, 
+                    PRIMARY KEY (id) , 
+                   FOREIGN KEY (a_id) REFERENCES a(id) ON UPDATE RESTRICT ON DELETE RESTRICT
+                    );', $resultado->sql);
 
         errores::$error = false;
     }

@@ -218,6 +218,7 @@ class estructurasTest extends test {
     }
 
     public function test_modelos(){
+        //$_GET['seccion'] = 'adm_campo';
         errores::$error = false;
         $st = new estructuras($this->link);
         $st = new liberator($st);
@@ -227,7 +228,7 @@ class estructurasTest extends test {
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('adm_campo',$resultado[5]);
+        $this->assertEquals('adm_bitacora',$resultado[5]);
 
         errores::$error = false;
 

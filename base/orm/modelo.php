@@ -433,6 +433,32 @@ class modelo extends modelo_base {
     }
 
     /**
+     * Crea una tabla a través de una sentencia SQL generada a partir de los campos y atributos proporcionados.
+     * Si hay errores durante la generación de la sentencia SQL o su ejecución, este método retornará un mensaje de error.
+     *
+     * @param stdClass $campos Objeto que contiene los campos y sus atributos.
+     * @param string $table Nombre de la tabla que se creará.
+     * @return stdClass|array Devuelve un objeto con los detalles acerca
+     *                        de la sentencia SQL generada y su ejecución si la operación es exitosa.
+     *                        Si ocurre un error, retorna un array con el mensaje y los datos del error.
+     */
+    final public function create_table(stdClass $campos, string $table):array|stdClass
+    {
+        $sql = (new sql())->create_table(campos: $campos,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+        $exe = $this->ejecuta_sql(consulta: $sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+
+    }
+
+
+
+    /**
      * Cuenta los registros de un modelo conforme al filtro en aplicacion
      * @param array $diferente_de Integra el sql para diferente de
      * @param array $extra_join Arreglo para integrar tabla integra en la consulta
@@ -656,6 +682,28 @@ class modelo extends modelo_base {
 
             return array('mensaje'=>'Registros desactivados con éxito');
         }
+    }
+
+    /**
+     * Elimina una tabla utilizando una sentencia SQL generada.
+     * Devuelve un error si la generación de la sentencia SQL o su ejecución fallan.
+     *
+     * @param string $table El nombre de la tabla a eliminar.
+     * @return array|stdClass Devuelve un objeto con los detalles de la operación realizada si es exitosa,
+     *                      o, en caso de error, devuelve un array con el mensaje y los datos del error.
+     */
+    final public function drop_table(string $table):array|stdClass
+    {
+        $sql = (new sql())->drop_table(table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+        $exe = $this->ejecuta_sql(consulta: $sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+
     }
 
     /**

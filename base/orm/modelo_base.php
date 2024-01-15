@@ -619,23 +619,16 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Ejecuta una consulta SQL y devuelve un objeto con los resultados de la consulta,
+     * el ID del registro recién insertado, y otros detalles sobre la operación realizada.
      *
-     * Devuelve un objeto que contiene un texto que indica el exito de la sentencia, tambien la consulta inicial de
-     * sql y por ultimo un objeto PDOStatement de la consulta sql ingresada
-     * @version 1.0.0
+     * @param string $consulta La consulta SQL que se va a ejecutar.
+     * @return array|stdClass Devuelve un objeto con datos como el mensaje, la consulta, el resultado,
+     *                        el registro, el ID del registro y la salida.
+     *                        En caso de error, devuelve un array con el mensaje y los datos del error.
      *
-     * @param string $consulta Consulta en forma de SQL para su ejecucion directa
-     * @return array|stdClass
-     * @example
-     *      $tabla = 'cliente';
-     *      $registro_id = '100';
-     *      $this->consulta = "UPDATE . $tabla . SET status = 'inactivo' WHERE id = . $registro_id";
-     *      $consulta = $this->consulta;
-     *      $resultado = $this->ejecuta_sql();
-     *      return array('mensaje'=>'Exito','sql'=>'UPDATE cliente SET status='inactivo' WHERE id='100','result'=>$result);
-     *
-     * @uses modelo_basico
-     * @uses modelo
+     * @version 13.21.0
      */
     final public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
