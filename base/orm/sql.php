@@ -194,11 +194,13 @@ class sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera una sentencia SQL para agregar una clave foránea a una tabla.
      *
      * @param string $table El nombre de la tabla a la que se agregará la clave foránea.
      * @param string $relacion_table El nombre de la tabla referenciada por la clave foránea.
      * @return string|array Devuelve la sentencia SQL que crea la clave foránea en la tabla.
+     * @version 13.27.0
      */
     final public function foreign_key(string $table, string $relacion_table): string|array
     {
