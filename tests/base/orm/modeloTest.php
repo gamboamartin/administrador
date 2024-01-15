@@ -1,6 +1,7 @@
 <?php
 namespace tests\src;
 
+use base\orm\estructuras;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_accion_grupo;
@@ -138,11 +139,20 @@ class modeloTest extends test {
 
         $table = 'test';
 
-        $drop = $modelo->drop_table(table: $table);
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
         if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
+            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
             print_r($error);
             exit;
+        }
+
+        if($existe_table) {
+            $drop = $modelo->drop_table(table: $table);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+                print_r($error);
+                exit;
+            }
         }
 
         $campos = new stdClass();

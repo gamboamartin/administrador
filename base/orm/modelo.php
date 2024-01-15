@@ -419,6 +419,35 @@ class modelo extends modelo_base {
         return $r_alta;
     }
 
+    /**
+     * Realiza una operación de alteración de tabla utilizando una declaración SQL generada.
+     * Devuelve un error si hay fallas al generar la declaración SQL o durante su ejecución.
+     *
+     * @param string $campo Nombre del campo de la tabla a ser alterado.
+     * @param string $statement Operación para realizar sobre el campo. Puede tomar valores 'ADD', 'DROP', 'RENAME', 'MODIFY'.
+     * @param string $table Nombre de la tabla en la que se realizará la operación.
+     * @param string $longitud Opcional. Longitud del campo. Predeterminado es ''.
+     * @param string $new_name Opcional. Nuevo nombre para el campo en caso de una operación 'RENAME'. Predeterminado es ''.
+     * @param string $tipo_dato Opcional. Tipo de dato del campo en caso de una operación 'ADD' o 'MODIFY'. Predeterminado es ''.
+     * @return array|stdClass Si el proceso es exitoso, retorna un objeto con los detalles de la operación.
+     *                        Si ocurre un error, retorna un array con el mensaje y los datos del error.
+     */
+    final public function alter_table(string $campo, string $statement, string $table, string $longitud = '',
+                                      string $new_name = '', string $tipo_dato = ''):array|stdClass
+    {
+        $sql = (new sql())->alter_table(campo: $campo,statement:  $statement,table:  $table,
+            longitud: $longitud,new_name: $new_name,tipo_dato: $tipo_dato);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+        $exe = $this->ejecuta_sql(consulta: $sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+
+    }
+
     private function campos_obligatorios(array $campos_obligatorios){
         $this->campos_obligatorios = array_merge($this->campos_obligatorios,$campos_obligatorios);
 

@@ -11,6 +11,44 @@ class sql{
     }
 
     /**
+     * Genera una sentencia SQL para alterar una tabla con base en los parámetros proporcionados.
+     *
+     * @param string $campo El nombre del campo en la tabla que se va a modificar.
+     * @param string $statement La declaración SQL a aplicar, puede ser 'ADD', 'DROP', 'RENAME' o 'MODIFY'.
+     * @param string $table El nombre de la tabla a la que se va a aplicar la declaración.
+     * @param string $longitud Opcional. La longitud del campo en caso de que se agregue o modifique un campo.
+     * @param string $new_name Opcional. El nuevo nombre del campo en caso de que se esté renombrando.
+     * @param string $tipo_dato Opcional. El tipo de dato del campo en caso de que se agregue o modifique un campo.
+     * @return array|string Devuelve una cadena con la sentencia SQL generada.
+     */
+    final public function alter_table(string $campo, string $statement, string $table, string $longitud = '',
+                                      string $new_name = '', string $tipo_dato = ''): array|string
+    {
+        $sql = '';
+
+        $longitud_sql = '';
+        if($longitud === ''){
+            $longitud_sql = "($longitud)";
+        }
+
+        if($statement === 'ADD'){
+            $sql = "ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql;";
+        }
+        if($statement === 'DROP'){
+            $sql = "ALTER TABLE $table DROP COLUMN $campo;";
+        }
+        if($statement === 'RENAME'){
+            $sql = "ALTER TABLE $table RENAME COLUMN $campo to $new_name;";
+        }
+        if($statement === 'MODIFY'){
+            $sql = "ALTER TABLE $table MODIFY COLUMN $campo $tipo_dato $longitud_sql;";
+        }
+
+        return $sql;
+
+    }
+
+    /**
      * Genera una sentencia SQL para crear una tabla con los campos proporcionados.
      * Si los campos están vacíos o si hay errores al obtener los datos de la tabla o al crear la tabla,
      * retorna un mensaje de error.

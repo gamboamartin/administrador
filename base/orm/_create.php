@@ -1,15 +1,18 @@
 <?php
 namespace base\orm;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class _create
 {
     private errores  $error;
+    private validacion  $valida;
 
-    public function _construct(): void
+    public function __construct()
     {
         $this->error = new errores();
+        $this->valida = new validacion();
     }
 
     /**
@@ -38,18 +41,20 @@ class _create
     }
 
     /**
-     * Establece los atributos base del objeto proporcionado, si están presentes en otro objeto de entrada.
-     * Este método toma dos objetos stdClass como parámetros: $atributos, que puede contener los valores a establecer,
-     * y $atributos_base, que es el objeto en el que se configuran los atributos.
-     * Si los atributos tipo_dato, longitud y not_null están presentes en el objeto $atributos,
-     * entonces se configuran sus valores correspondientes en el objeto $atributos_base y se retorna este último.
+     * Configura los atributos base del objeto proporcionado, si están presentes en el objeto atributos.
      *
-     * @param stdClass $atributos El objeto que puede contener los atributos a establecer.
-     * @param stdClass $atributos_base El objeto cuyos atributos se van a configurar.
-     * @return stdClass Retorna el objeto con los atributos base configurados si están presentes en el objeto de entrada.
+     * @param stdClass $atributos Contiene los atributos a establecer, puede tener las propiedades tipo_dato, longitud y not_null.
+     * @param stdClass $atributos_base El objeto objetivo en el que se establecerán los atributos. Sus valores se sobrescriben si existen en $atributos.
+     * @return stdClass|array Retorna el objeto atributos_base con los atributos actualizados error al validar.
      */
-    private function atributos_base(stdClass $atributos, stdClass $atributos_base): stdClass
+    private function atributos_base(stdClass $atributos, stdClass $atributos_base): stdClass|array
     {
+        $keys = array('tipo_dato','longitud','not_null');
+        $valida = $this->valida->valida_existencia_keys(keys: $keys,registro:  $atributos_base);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al valida atributos_base',data: $valida);
+        }
+
         if(isset($atributos->tipo_dato)){
             $atributos_base->tipo_dato = trim($atributos->tipo_dato);
         }
