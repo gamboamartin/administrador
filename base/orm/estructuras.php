@@ -276,7 +276,7 @@ class estructuras{
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
-        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql, valida_tabla: false);
+        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
@@ -347,7 +347,7 @@ class estructuras{
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
-        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql, valida_tabla: false);
+        $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }

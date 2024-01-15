@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\models;
 
+use base\orm\estructuras;
 use base\orm\modelo_base;
 use base\orm\sql;
 use gamboamartin\errores\errores;
@@ -11,11 +12,13 @@ class _instalacion
 {
     private errores $error;
     private modelo_base $modelo;
+    private PDO $link;
 
     public function __construct(PDO $link)
     {
         $this->error = new errores();
         $this->modelo = new modelo_base(link: $link);
+        $this->link = $link;
 
     }
 
@@ -41,22 +44,22 @@ class _instalacion
         $tipo_dato = strtoupper($tipo_dato);
 
         $longitud = trim($longitud);
-        if($tipo_dato === 'VARCHAR'){
+        if ($tipo_dato === 'VARCHAR') {
             $longitud = '255';
         }
 
-        $valida = (new sql())->valida_column(campo:$campo,table:  $table, tipo_dato: $tipo_dato, longitud: $longitud);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
+        $valida = (new sql())->valida_column(campo: $campo, table: $table, tipo_dato: $tipo_dato, longitud: $longitud);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
         $sql = (new sql())->add_column(campo: $campo, table: $table, tipo_dato: $tipo_dato,
             default: $default, longitud: $longitud);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
         $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
         return $exe;
@@ -72,25 +75,26 @@ class _instalacion
      * @return array|stdClass Devuelve el resultado del proceso de generar la clave foránea o, en caso de error, devuelve un mensaje de error.
      * @version 13.30.0
      */
-    final public function foreign_key_completo(string $campo, string $table):array|stdClass
+    final public function foreign_key_completo(string $campo, string $table): array|stdClass
     {
 
-        $exe = $this->add_colum(campo: $campo, table: $table,tipo_dato:  'bigint',longitud: 100);
-        if(errores::$error){
+        $exe = $this->add_colum(campo: $campo, table: $table, tipo_dato: 'bigint', longitud: 100);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
         }
 
         $explode_campo = explode('_id', $campo);
         $relacion_table = $explode_campo[0];
 
-        $exe = $this->foreign_key_existente(relacion_table: $relacion_table,table:  $table);
-        if(errores::$error){
+        $exe = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $exe);
         }
 
         return $exe;
 
     }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Genera una sentencia SQL para crear una clave foránea y luego la ejecuta.
@@ -100,23 +104,23 @@ class _instalacion
      * @return array|stdClass Devuelve el resultado de la ejecución de la consulta SQL, o un error si ocurre uno.
      * @version 13.29.0
      */
-    final public function foreign_key_existente(string $relacion_table, string $table):array|stdClass
+    final public function foreign_key_existente(string $relacion_table, string $table): array|stdClass
     {
         $table = trim($table);
-        if($table === ''){
+        if ($table === '') {
             return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
         }
         $relacion_table = trim($relacion_table);
-        if($relacion_table === ''){
+        if ($relacion_table === '') {
             return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
         }
 
-        $sql = (new sql())->foreign_key(table: $table,relacion_table:  $relacion_table);
-        if(errores::$error){
+        $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
         $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
         return $exe;
@@ -124,34 +128,133 @@ class _instalacion
     }
 
 
-
-    final public function create_table(stdClass $campos, string $table):array|stdClass
+    final public function create_table(stdClass $campos, string $table): array|stdClass
     {
-        $sql = (new sql())->create_table(campos: $campos,table:  $table);
-        if(errores::$error){
+        $sql = (new sql())->create_table(campos: $campos, table: $table);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
 
 
         $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
         return $exe;
 
     }
 
-    final public function drop_table(string $table):array|stdClass
+    /**
+     * Realiza una consulta para describir la estructura de una tabla.
+     *
+     * @param string $table El nombre de la tabla a describir.
+     * @return stdClass|array Retorna el resultado de la consulta de descripción de la tabla o, en caso de error, devuelve un mensaje de error.
+     */
+    final public function describe_table(string $table): array|stdClass
     {
-        $sql = (new sql())->drop_table(table:  $table);
+        $sql = (new sql())->describe_table(tabla: $table);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+            return $this->error->error(mensaje: "Error al generar sql", data: $sql);
         }
-        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-        if(errores::$error){
+        $exe = $this->modelo->ejecuta_consulta(consulta: $sql);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
         return $exe;
+    }
+
+    final public function drop_table(string $table): array|stdClass
+    {
+        $sql = (new sql())->drop_table(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+
+    }
+
+    /**
+     * Verifica si un campo específico existe en un conjunto de campos dado.
+     *
+     * @param string $campo_integrar El nombre del campo a buscar.
+     * @param array $campos_origen Un array de campos en los que buscar el campo.
+     * @return bool Retorna true si el campo existe en el conjunto, false en caso contrario.
+     */
+    private function existe_campo_origen(string $campo_integrar, array $campos_origen): bool
+    {
+        $existe_campo = false;
+        foreach ($campos_origen as $datos_campos){
+            $campo_original = trim($datos_campos['Field']);
+            if($campo_original === $campo_integrar){
+                $existe_campo = true;
+                break;
+            }
+        }
+        return $existe_campo;
+    }
+
+    /**
+     * Integra una clave foránea en una tabla si el campo correspondiente no existe ya en la tabla.
+     *
+     * @param string $campo_integrar El nombre del campo a integrar como clave foránea.
+     * @param array $campos_origen Un array con los campos originales de la tabla.
+     * @param array $integraciones Un array con las integraciones ya realizadas.
+     * @param string $table El nombre de la tabla donde se integrará la clave foránea.
+     * @return array Retorna un array con las integraciones actualizadas después de la integración del nuevo campo.
+     */
+    private function integra_fk(string $campo_integrar, array $campos_origen, array $integraciones, string $table): array
+    {
+        $existe_campo = $this->existe_campo_origen(campo_integrar: $campo_integrar,campos_origen:  $campos_origen);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
+        }
+
+        if(!$existe_campo){
+            $integra_fk = $this->foreign_key_completo(campo: $campo_integrar,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $integra_fk);
+            }
+            $integraciones[] = $integra_fk;
+        }
+
+        return $integraciones;
+    }
+
+    private function integra_fks(stdClass $campos, array $campos_origen, string $table)
+    {
+        $integraciones = array();
+        foreach ($campos as $campo_integrar=>$estructura){
+
+            if(isset($estructura->foreign_key) && $estructura->foreign_key){
+                $integraciones = $this->integra_fk(campo_integrar: $campo_integrar,campos_origen:  $campos_origen,
+                    integraciones:  $integraciones,table:  $table);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al integrar campo', data: $integraciones);
+                }
+            }
+
+        }
+        return $integraciones;
+    }
+
+    final public function integra_foraneas(stdClass $campos, string $table)
+    {
+        $datos = $this->describe_table(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);
+        }
+        $campos_origen = $datos->registros;
+
+        $integraciones = $this->integra_fks(campos: $campos,campos_origen:  $campos_origen,table:  $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar campo', data: $integraciones);
+        }
+
+        return $integraciones;
 
     }
 

@@ -462,9 +462,6 @@ class modelo extends modelo_base {
     }
 
 
-
-
-
     /**
      * Cuenta los registros de un modelo conforme al filtro en aplicacion
      * @param array $diferente_de Integra el sql para diferente de
@@ -690,7 +687,6 @@ class modelo extends modelo_base {
             return array('mensaje'=>'Registros desactivados con éxito');
         }
     }
-
 
 
     /**
@@ -1508,24 +1504,7 @@ class modelo extends modelo_base {
         return $in;
     }
 
-    /**
-     * Inicializa elementos para cache
-     * @return array|string
-     */
-    private function init_archivos_tmp_model_exe(): array|string
-    {
-        $init_archivos_tmp_model = $this->init_archivos_tmp_model();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener file'.$this->tabla,data: $init_archivos_tmp_model);
-        }
-        if(file_exists($init_archivos_tmp_model)){
-            $rmdir = (new files())->rmdir_recursive(dir: $init_archivos_tmp_model);
-            if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar '.$this->tabla, data:$rmdir);
-            }
-        }
-        return $init_archivos_tmp_model;
-    }
+
 
 
     /**

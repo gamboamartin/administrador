@@ -282,4 +282,82 @@ class _instalacionTest extends test
 
 
     }
+
+    public function test_integra_foraneas(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+
+        $table = 'test';
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+            print_r($error);
+            exit;
+        }
+
+        if($existe_table) {
+            $drop = $ins->drop_table(table: $table);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+                print_r($error);
+                exit;
+            }
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->b_id = new stdClass();
+        $campos->b_id->foreign_key = true;
+        $resultado = $ins->integra_foraneas(campos: $campos,table: 'test');
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado[0]->sql);
+
+        errores::$error = false;
+
+        $table = 'c';
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+            print_r($error);
+            exit;
+        }
+
+        if($existe_table) {
+            $drop = $ins->drop_table(table: $table);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+                print_r($error);
+                exit;
+            }
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'c');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->c_id = new stdClass();
+        $campos->c_id->foreign_key = true;
+        $resultado = $ins->integra_foraneas(campos: $campos,table: 'test');
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__c_id FOREIGN KEY (c_id) REFERENCES c(id);', $resultado[0]->sql);
+
+        errores::$error = false;
+    }
 }

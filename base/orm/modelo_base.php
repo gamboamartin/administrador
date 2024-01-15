@@ -466,6 +466,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+
+
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
      * @param array $registro Registro en ejecucion
@@ -592,7 +594,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @uses  accion_grupo
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                     array $hijo = array(), bool $valida_tabla = true): array|stdClass{
+                                     array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
         if($consulta === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
@@ -600,15 +602,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $this->transaccion = 'SELECT';
 
-
-        $archivos_sql_tmp = $this->file_tmp_sql(consulta: $consulta, valida_tabla: $valida_tabla);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
-        }
-
         $data = $this->result_out(
-            archivos_sql_tmp: $archivos_sql_tmp, campos_encriptados: $campos_encriptados, consulta: $consulta,
-            valida_tabla: $valida_tabla);
+            campos_encriptados: $campos_encriptados, consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
@@ -692,19 +687,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
-    private function file_tmp_sql(string $consulta, bool $valida_tabla = true): array|string
-    {
-        $key_tmp = $this->key_tmp(consulta: $consulta);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener key tmp", data: $key_tmp);
-        }
 
-        $archivos_sql_tmp = $this->ruta_file_tmp_sql(key_tmp: $key_tmp, valida_tabla: $valida_tabla);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener archivos_sql_tmp", data: $archivos_sql_tmp);
-        }
-        return $archivos_sql_tmp;
-    }
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -1131,41 +1114,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $row;
     }
 
-    /**
-     * Inicializa las carpetas para models temps
-     * @param bool $valida_tabla
-     * @return string|array
-     */
-    protected function init_archivos_tmp_model(bool $valida_tabla = true): string|array
-    {
-        $tabla = $this->tabla;
-        $tabla = trim($tabla);
-        if($valida_tabla) {
-            if ($tabla === '') {
-                return $this->error->error(mensaje: 'Error tabla vacia', data: $tabla);
-            }
-        }
 
-        $archivos = (new generales())->path_base.'archivos';
-        $archivos = str_replace('//', '/', $archivos);
-        if(!file_exists($archivos)){
-           // mkdir($archivos);
-        }
-        $archivos_tmp = $archivos.'/tmp';
-
-        $archivos_tmp = str_replace('//', '/', $archivos_tmp);
-        if(!file_exists($archivos_tmp)){
-           // mkdir($archivos_tmp);
-        }
-        $archivos_tmp_model = $archivos_tmp."/$this->tabla";
-
-        $archivos_tmp_model = str_replace('//', '/', $archivos_tmp_model);
-
-        if(!file_exists($archivos_tmp_model)){
-            //mkdir($archivos_tmp_model);
-        }
-        return $archivos_tmp_model;
-    }
 
 
     /**
@@ -1428,30 +1377,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function result_out(string $archivos_sql_tmp, array $campos_encriptados, string $consulta,
-                                bool $valida_tabla = true): array|stdClass
+    private function result_out(array $campos_encriptados, string $consulta): array|stdClass
     {
-
-        if(file_exists($archivos_sql_tmp) && $this->temp ) {
-            $data_out = file_get_contents($archivos_sql_tmp);
-            $data_out = base64_decode($data_out);
-            $data = unserialize($data_out);
-
+        $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
-        else{
 
-            $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
-            if (errores::$error) {
-                return $this->error->error(mensaje: "Error al parsear registros", data: $data);
-            }
-
-            if($this->temp) {
-                $data_out = serialize($data);
-                $data_out = base64_encode($data_out);
-                file_put_contents($archivos_sql_tmp, $data_out);
-            }
-
-        }
         return $data;
     }
 
@@ -1492,16 +1424,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function ruta_file_tmp_sql(string $key_tmp, bool $valida_tabla = true): array|string
-    {
-        $archivos_tmp_model = $this->init_archivos_tmp_model(valida_tabla: $valida_tabla);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al obtener archivos_tmp_model", data: $archivos_tmp_model);
-        }
 
-
-        return $archivos_tmp_model."/$key_tmp";
-    }
 
 
     /**

@@ -477,7 +477,7 @@ class columnas{
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
-        $result = $modelo->ejecuta_consulta(consulta: $sql, valida_tabla: $valida_tabla);
+        $result = $modelo->ejecuta_consulta(consulta: $sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }

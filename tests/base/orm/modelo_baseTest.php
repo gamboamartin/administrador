@@ -706,7 +706,7 @@ class modelo_baseTest extends test {
 
     }
 
-    public function test_init_archivos_tmp_model(){
+    /*public function test_init_archivos_tmp_model(){
 
 
         errores::$error = false;
@@ -719,7 +719,7 @@ class modelo_baseTest extends test {
         $this->assertNotTrue(errores::$error);
         //$this->assertFileExists($resultado);
         errores::$error = false;
-    }
+    }*/
 
     public function test_integra_ds()
     {

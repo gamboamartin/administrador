@@ -773,7 +773,7 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
-    public function test_init_archivos_tmp_model_exe(): void
+    /*public function test_init_archivos_tmp_model_exe(): void
     {
         errores::$error = false;
         $modelo = new adm_seccion($this->link);
@@ -782,7 +782,7 @@ class modeloTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
-    }
+    }*/
 
     public function test_inserta_predeterminado(): void
     {
