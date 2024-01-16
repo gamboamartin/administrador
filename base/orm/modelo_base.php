@@ -892,7 +892,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que genera un modelo a partir del nombre
-     * @version 1.15.9
      *
      * @param string $modelo txt con el nombre del modelo a crear
      * @param string $namespace_model paquete de origen modelo

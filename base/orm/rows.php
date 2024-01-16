@@ -71,23 +71,18 @@ class rows{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene el filtro para un hijo a partir de los datos del modelo y de una fila específica.
      *
-     * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
-     * @param array $data_modelo datos de la configuracion del modelo a procesar los filtros
-     * @param array $row registro formado en forma modelo->registro
-     * @example
-     *     $filtro = $this->obten_filtro_para_hijo($data_modelo,$row);
+     * @param array $data_modelo Los datos del modelo, que deben incluir las claves 'filtros' y 'filtros_con_valor'.
+     *                           Ambos deben ser arrays. Si no es así, se devuelve un mensaje de error con sugerencias de corrección.
+     * @param array $row Una fila específica que se pasa a la función `filtro_para_hijo`.
      *
-     * @return array con filtro maquetado para su procesamiento filtro[$campo_filtro] = $value;
-     * @throws errores $data_modelo['filtros'] no existe
-     * @throws errores $data_modelo['filtros_con_valor'] no existe
-     * @throws errores $data_modelo['filtros'] no es un array
-     * @throws errores $data_modelo['filtros_con_valor'] no es un array
-     * @throws errores $data_modelo['filtros'][$campo] =  ''
-     * @throws errores $data_modelo['filtros'][$campo] no existe
+     * @return array Retorna el array de filtros. Si ocurre un error, se retorna un mensaje de error.
      *
+     * @version 14.8.0
      */
-    public function obten_filtro_para_hijo(array $data_modelo, array $row):array{
+    final public function obten_filtro_para_hijo(array $data_modelo, array $row):array{
         if(!isset($data_modelo['filtros'])){
             $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
             return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
