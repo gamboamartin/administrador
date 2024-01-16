@@ -18,7 +18,6 @@ class rows{
 
     /**
      * Asigna el filtro necesario para traer elementos dependiendes de una consulta
-     * @version 1.0.0
      * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros
      * ligados
      * @param string $campo_filtro Nombre del campo del registro el cual se utiliza como valor del filtro
@@ -46,7 +45,6 @@ class rows{
      * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
      * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
      * Genera arreglo
-     * @version 1.0.0
      * @param array $filtros arreglo de filtros para la obtencion de registros de hijos
      * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
      * @return array
@@ -69,7 +67,6 @@ class rows{
     /**
      *
      * Funcion que genera un filtro para ser enviado en forma de array para consultas posteriores
-     * @version 1.0.0
      * @param array $data_modelo datos de la configuracion del modelo a procesar los filtros
      * @param array $row registro formado en forma modelo->registro
      * @example

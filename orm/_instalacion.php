@@ -232,7 +232,7 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
         }
 
-        $fk = 'Campo existente ';
+        $fk = 'Campo existente '.$campo;
         if(!$existe_campo){
             $fk = $this->foreign_key_completo(campo: $campo,table:  $table);
             if (errores::$error) {

@@ -928,11 +928,23 @@ class inicializacion{
     }
 
     /**
-     * Desencripta un valor de un campo seleccionado dentro de un conjunto de registros
-     * @param string $campo Campo a desencriptar de array
-     * @param array $campos_encriptados Campos definidos como encriptables de un registro
-     * @param mixed $value Valor a desencriptar en caso de que aplique el camp dentro de los campos encriptados
-     * @return array|string|null
+     * POR DOCUMENTAR EN WIKI
+     * Desencripta el valor del campo proporcionado si está en la lista de campos encriptados.
+     *
+     * El método verifica si el nombre del campo está dentro de la lista de campos encriptados.
+     * Si el campo está en la lista, el valor se desencripta utilizando el método desencripta de la clase encriptador.
+     *
+     * @param string $campo El nombre del campo a verificar y desencriptar si corresponde.
+     * @param array $campos_encriptados Lista de nombres de campos que están encriptados.
+     * @param mixed $value El valor a desencriptar.
+     *
+     * @return string|null|array El valor desencriptado si el campo está dentro de la lista de campos encriptados,
+     * o el propio valor si no lo está. En caso de error, devuelve un array con la información del error.
+     *
+     * @throws errores Si el valor no se puede desencriptar.
+     *
+     * @author Martin Gamboa
+     * @version 14.4.0
      */
     private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
     {

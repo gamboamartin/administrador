@@ -1024,7 +1024,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que asigna los registros encontrados de hijos en un registro
-     * @version 1.16.9
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
      * @param array $data_modelo datos de parametrizacion de datos para la ejecucion de obtencion de los registros
@@ -1066,7 +1065,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
-     * @version 1.16.9
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
      * @example
