@@ -210,12 +210,24 @@ class inicializacion{
     }
 
     /**
-     * Desencripta un conjunto de valores de un registro
-     * @param array $campos_encriptados Campos a desencriptar del registro
-     * @param array $row Registro para la desencriptacion
-     * @return array Registro con los campos aplicables desencriptados
+     * POR DOCUMENTAR EN WIKI
+     * Esta función toma dos parámetros; una matriz de campos cifrados y una matriz de filas (row). Para cada valor
+     * en la matriz fila, verifica si el campo es numérico. Si es así, retorna un mensaje de error.
+     * En caso contrario, desencripta el valor usando la función `value_desencriptado`.
+     * Si hay un error durante el proceso de desencriptación, retorna un mensaje de error.
+     * Si el proceso es exitoso, asigna el valor desencriptado de vuelta a la matriz de fila (row) y procede con el siguiente valor.
+     * La función finalmente retorna la matriz de fila (row) con todos los valores desencriptados.
+     *
+     * @param array $campos_encriptados Una matriz de campos que necesitan ser desencriptados.
+     * @param array $row Una matriz de filas que contienen los campos cifrados.
+     *
+     * @return array Retorna la matriz de filas con los campos desencriptados.
+     *
+     * @throws errores Si el campo es numérico o si hay un error al desencriptar.
+     *
+     * @version 14.5.0
      */
-    public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
+    final public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
     {
         foreach ($row as $campo=>$value){
             if(is_numeric($campo)){
