@@ -46,13 +46,14 @@ class rows{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * La función filtro_para_hijo genera un array de filtros basándose en los filtros y la fila de datos proporcionados.
      *
-     * Devuelve un arreglo con los datos necesarios para obtener un filtro y ser utilizado en las sentencias de consulta
-     * para la obtención de los registros esto de todos las columnas que se mandan por el filtro.
-     * Genera arreglo
-     * @param array $filtros arreglo de filtros para la obtencion de registros de hijos
-     * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
-     * @return array
+     * @param array $filtros Los filtros a aplicar.
+     * @param array $row Los datos sobre los que se aplicarán los filtros.
+     * @return array Los filtros generados.
+     * @throws errores En caso de error al generar el filtro.
+     * @version 14.7.0
      */
     private function filtro_para_hijo(array $filtros, array $row):array{
         $filtro = array();
