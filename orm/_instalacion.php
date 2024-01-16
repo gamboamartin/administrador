@@ -138,6 +138,20 @@ class _instalacion
         return $existe_campo;
     }
 
+    final public function foraneas(array $foraneas, string $table)
+    {
+        $results = array();
+        foreach ($foraneas as $campo){
+            $result = $this->foreign_key_seguro(campo: $campo,table: $table);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al ajustar foranea', data:  $result);
+            }
+            $results[] = $result;
+        }
+        return $results;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Agrega una columna a una tabla y luego establece una clave foránea en la misma.
