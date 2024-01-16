@@ -16,9 +16,10 @@ class _instalacion
 
     public function __construct(PDO $link)
     {
-        $this->error = new errores();
-        $this->modelo = new modelo_base(link: $link);
         $this->link = $link;
+        $this->error = new errores();
+        $this->modelo = new modelo_base(link: $this->link);
+
 
     }
 
@@ -65,68 +66,6 @@ class _instalacion
         return $exe;
 
     }
-
-    /**
-     * POR DOCUMENTAR EN WIKI
-     * Agrega una columna a una tabla y luego establece una clave foránea en la misma.
-     *
-     * @param string $campo El nombre de la columna a agregar, que luego se convertirá en la clave foránea.
-     * @param string $table El nombre de la tabla a la que se agregará la columna y se establecerá la clave foránea.
-     * @return array|stdClass Devuelve el resultado del proceso de generar la clave foránea o, en caso de error, devuelve un mensaje de error.
-     * @version 13.30.0
-     */
-    final public function foreign_key_completo(string $campo, string $table): array|stdClass
-    {
-
-        $exe = $this->add_colum(campo: $campo, table: $table, tipo_dato: 'bigint', longitud: 100);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
-        }
-
-        $explode_campo = explode('_id', $campo);
-        $relacion_table = $explode_campo[0];
-
-        $exe = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar sql', data: $exe);
-        }
-
-        return $exe;
-
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI
-     * Genera una sentencia SQL para crear una clave foránea y luego la ejecuta.
-     *
-     * @param string $relacion_table El nombre de la tabla que la clave foránea está referenciando.
-     * @param string $table El nombre de la tabla donde se creará la clave foránea.
-     * @return array|stdClass Devuelve el resultado de la ejecución de la consulta SQL, o un error si ocurre uno.
-     * @version 13.29.0
-     */
-    final public function foreign_key_existente(string $relacion_table, string $table): array|stdClass
-    {
-        $table = trim($table);
-        if ($table === '') {
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
-        }
-        $relacion_table = trim($relacion_table);
-        if ($relacion_table === '') {
-            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
-        }
-
-        $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
-        }
-        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
-        }
-        return $exe;
-
-    }
-
 
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
@@ -196,6 +135,114 @@ class _instalacion
         }
         return $existe_campo;
     }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Agrega una columna a una tabla y luego establece una clave foránea en la misma.
+     *
+     * @param string $campo El nombre de la columna a agregar, que luego se convertirá en la clave foránea.
+     * @param string $table El nombre de la tabla a la que se agregará la columna y se establecerá la clave foránea.
+     * @return array|stdClass Devuelve el resultado del proceso de generar la clave foránea o, en caso de error, devuelve un mensaje de error.
+     * @version 13.30.0
+     */
+    final public function foreign_key_completo(string $campo, string $table): array|stdClass
+    {
+
+        $exe = $this->add_colum(campo: $campo, table: $table, tipo_dato: 'bigint', longitud: 100);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
+        }
+
+        $explode_campo = explode('_id', $campo);
+        $relacion_table = $explode_campo[0];
+
+        $exe = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $exe);
+        }
+
+        return $exe;
+
+    }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una sentencia SQL para crear una clave foránea y luego la ejecuta.
+     *
+     * @param string $relacion_table El nombre de la tabla que la clave foránea está referenciando.
+     * @param string $table El nombre de la tabla donde se creará la clave foránea.
+     * @return array|stdClass Devuelve el resultado de la ejecución de la consulta SQL, o un error si ocurre uno.
+     * @version 13.29.0
+     */
+    final public function foreign_key_existente(string $relacion_table, string $table): array|stdClass
+    {
+        $table = trim($table);
+        if ($table === '') {
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        $relacion_table = trim($relacion_table);
+        if ($relacion_table === '') {
+            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
+        }
+
+        $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+
+    }
+
+
+    final public function foreign_key_seguro(string $campo, string $table)
+    {
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+        }
+        if(!$existe_table){
+            return $this->error->error(mensaje: 'Error no existe la entidad',data:  $table);
+        }
+
+
+        $datos = $this->describe_table(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);
+        }
+        $campos_origen = $datos->registros;
+
+        $existe_campo = $this->existe_campo_origen(campo_integrar: $campo,campos_origen:  $campos_origen);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
+        }
+
+        if(!$existe_campo){
+            $fk = $this->foreign_key_completo(campo: $campo,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
+            }
+        }
+        else{
+            $explode_campo = explode('_id', $campo);
+            $relacion_table = $explode_campo[0];
+
+            $fk = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
+            }
+        }
+
+        return $fk;
+
+
+
+    }
+
+
 
     /**
      * Integra una clave foránea en una tabla si el campo correspondiente no existe ya en la tabla.

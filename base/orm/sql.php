@@ -323,7 +323,6 @@ class sql{
      * Genera el sql para show tables
      * @param string $entidad Entidad a obtener data
      * @return string
-     * @version 1.160.31
      */
     final public function show_tables(string $entidad = ''): string
     {
