@@ -17,13 +17,18 @@ class rows{
 
 
     /**
-     * Asigna el filtro necesario para traer elementos dependiendes de una consulta
-     * @param string $campo_row Nombre del campo del registro el cual se utiliza para la obtencion de los registros
-     * ligados
-     * @param string $campo_filtro Nombre del campo del registro el cual se utiliza como valor del filtro
-     * @param array $filtro Filtro precargado, es recursivo hace push con el nuevo resultado
-     * @param array $row Registro donde se obtendra el valor y el campo para retornar el filtro nuevo
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Filtro aplicado a los campos de las filas en una operación
+     *
+     * @param string $campo_filtro El campo específico para el filtrado
+     * @param string $campo_row El campo específico de la fila
+     * @param array $filtro El arreglo que contiene los filtros
+     * @param array $row La fila especificada para el funcionamiento de la operación
+     *
+     * @return array Devuelve el resultado del filtro aplicado. Si se produce un error, devuelve un arreglo con información sobre el error
+     *
+     * @throws errores Si el contenido de $campo_filtro o $campo_row no es válido o está vacío, se genera un error
+     * @version 14.6.0
      */
     private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{
         if($campo_row===''){

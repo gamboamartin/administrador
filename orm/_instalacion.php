@@ -232,15 +232,52 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
         }
 
-        $fk = 'Campo existente '.$campo;
         if(!$existe_campo){
             $fk = $this->foreign_key_completo(campo: $campo,table:  $table);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
         }
+        else{
+            $fk = $this->foreign_no_conf_integra(campo: $campo, campos_origen: $campos_origen, table: $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar foreign no conf', data: $fk);
+            }
+        }
 
 
+        return $fk;
+
+    }
+
+    private function foreign_no_conf(string $campo, array $campo_origen, string $table)
+    {
+        $fk = 'Campo asignado '.$campo;
+        if($campo_origen['Key'] !== 'MUL'){
+            $fk = $this->foreign_por_campo(campo: $campo,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
+            }
+        }
+        return $fk;
+
+    }
+
+    private function foreign_no_conf_integra(string $campo, array $campos_origen, string $table)
+    {
+        $fk = 'No existe campo '.$campo;
+        foreach ($campos_origen as $campo_origen){
+
+            $campo_origen_name = $campo_origen['Field'];
+
+            if($campo_origen_name === $campo) {
+                $fk = $this->foreign_no_conf(campo: $campo, campo_origen: $campo_origen, table: $table);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
+                }
+                break;
+            }
+        }
         return $fk;
 
     }
