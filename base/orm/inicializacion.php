@@ -211,7 +211,6 @@ class inicializacion{
 
     /**
      * Desencripta un conjunto de valores de un registro
-     * @version 1.18.9
      * @param array $campos_encriptados Campos a desencriptar del registro
      * @param array $row Registro para la desencriptacion
      * @return array Registro con los campos aplicables desencriptados
@@ -930,7 +929,6 @@ class inicializacion{
 
     /**
      * Desencripta un valor de un campo seleccionado dentro de un conjunto de registros
-     * @version 1.15.9
      * @param string $campo Campo a desencriptar de array
      * @param array $campos_encriptados Campos definidos como encriptables de un registro
      * @param mixed $value Valor a desencriptar en caso de que aplique el camp dentro de los campos encriptados

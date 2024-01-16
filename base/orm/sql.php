@@ -320,9 +320,21 @@ class sql{
     }
 
     /**
-     * Genera el sql para show tables
-     * @param string $entidad Entidad a obtener data
-     * @return string
+     * POR DOCUMENTAR EN WIKI
+     * Muestra las tablas de la base de datos de acuerdo con el criterio proporcionado.
+     *
+     * @param string $entidad Nombre de la tabla que queremos consultar en la base de datos.
+     * @return string Consulta SQL construida para mostrar la(o las) tabla(s)
+     * que corresponden al criterio proporcionado en `$entidad`.
+     * Si $entidad está vacío, el resultado será una consulta SQL para mostrar todas las tablas.
+     *
+     * Uso:
+     * $resultado = show_tables("miTabla");
+     * Este ejemplo retornará: "SHOW TABLES LIKE 'miTabla'"
+     *
+     * $resultado = show_tables("");
+     * Este ejemplo retornará: "SHOW TABLES"
+     * @version 14.2.0
      */
     final public function show_tables(string $entidad = ''): string
     {

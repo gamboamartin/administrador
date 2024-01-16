@@ -4,7 +4,9 @@ namespace gamboamartin\administrador\models;
 use base\orm\estructuras;
 use base\orm\modelo_base;
 use base\orm\sql;
+use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use PDO;
 use stdClass;
 
@@ -153,15 +155,12 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
         }
 
-        $explode_campo = explode('_id', $campo);
-        $relacion_table = $explode_campo[0];
-
-        $exe = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
+        $fk = $this->foreign_por_campo(campo: $campo, table: $table);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar sql', data: $exe);
+            return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
         }
 
-        return $exe;
+        return $fk;
 
     }
 
@@ -208,7 +207,6 @@ class _instalacion
             return $this->error->error(mensaje: 'Error no existe la entidad',data:  $table);
         }
 
-
         $datos = $this->describe_table(table: $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);
@@ -220,25 +218,39 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
         }
 
+        $fk = 'Campo existente ';
         if(!$existe_campo){
             $fk = $this->foreign_key_completo(campo: $campo,table:  $table);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
         }
-        else{
-            $explode_campo = explode('_id', $campo);
-            $relacion_table = $explode_campo[0];
 
-            $fk = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
-            }
-        }
 
         return $fk;
 
+    }
 
+    private function foreign_por_campo(string $campo, string $table)
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $valida = (new validacion())->key_id(txt: $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campo', data: $valida);
+        }
+
+        $explode_campo = explode('_id', $campo);
+        $relacion_table = $explode_campo[0];
+
+        $fk = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
+        }
+
+        return $fk;
 
     }
 

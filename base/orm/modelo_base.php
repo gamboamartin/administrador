@@ -168,7 +168,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
      * hijos
-     * @version 1.22.10
      * @param array $campos_encriptados Conjunto de campos a encriptar desencriptar declarados en el modelo en ejecucion
      * @param array $modelos_hijos Conjunto de modelos que dependen del modelo en ejecucion
      * @param array $row Registro a integrar elementos encriptados o con dependientes
@@ -965,6 +964,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus
      * dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]
@@ -989,8 +989,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores $this->hijo[$key][filtros] debe ser un array
      * @throws errores $this->hijo[$key][filtros_con_valor] debe ser un array
      * @throws errores $this->hijo[$key][nombre_estructura] debe existir
+     * @version 14.2.0
      */
-    private function genera_modelos_hijos(): array{//FIN DEBUG
+    private function genera_modelos_hijos(): array{
         $modelos_hijos = array() ;
         foreach($this->hijo as $key=>$modelo){
             if(is_numeric($key)){
@@ -1182,7 +1183,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
-     * @version 1.24.10
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
      * @param array $campos_encriptados Conjunto de campos para desencriptar
