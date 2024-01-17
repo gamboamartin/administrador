@@ -1011,20 +1011,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera un registro hijo.
      *
-     * Funcion que asigna los registros encontrados de hijos en un registro
+     * Este método se encarga de generar un registro hijo a partir de los datos proporcionados en
+     * $data_modelo y $row. De verificarse errores durante este proceso se retorna una anomalía
+     * con detalles del error.
      *
-     * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
-     * @param array $data_modelo datos de parametrizacion de datos para la ejecucion de obtencion de los registros
-     * @param array $row registro padre al que se le asignaran los hijos
-     * @example
-     *     $row = $this->genera_registro_hijo($data_modelo,$row,$name_modelo);
-     * @return array registro del modelo con registros hijos asignados
-     * @throws errores $name_modelo = vacio
-     * @throws errores $name_modelo = numero
-     * @throws errores $name_modelo no existe una clase con el nombre del modelo
-     * @throws errores $data_modelo['nombre_estructura'] no existe
-
+     * @param array $data_modelo Datos del modelo.
+     * @param string $name_modelo Nombre del modelo.
+     * @param array $row Registro actual.
+     * @return array Resultado de proceso.
+     * @version 14.13.0
      */
     private function genera_registro_hijo(array $data_modelo, string $name_modelo, array $row):array{
 
