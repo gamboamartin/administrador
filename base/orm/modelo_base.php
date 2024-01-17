@@ -166,12 +166,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
      * hijos
      * @param array $campos_encriptados Conjunto de campos a encriptar desencriptar declarados en el modelo en ejecucion
      * @param array $modelos_hijos Conjunto de modelos que dependen del modelo en ejecucion
      * @param array $row Registro a integrar elementos encriptados o con dependientes
      * @return array Registro con los datos ajustados tanto en la encriptacion como de sus dependientes
+     * @version 14.15.0
      */
     private function ajusta_row_select(array $campos_encriptados, array $modelos_hijos, array $row): array
     {
