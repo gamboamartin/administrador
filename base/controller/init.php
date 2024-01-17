@@ -834,7 +834,6 @@ class init{
      * @param array $keys Keys a integrar
      * @param PDO $link Conexion a la base de datos
      * @return array
-     * @version 2.105.10
      */
     private function model_init_campos_selects(array $campos_view, array $keys, PDO $link): array
     {
@@ -875,7 +874,6 @@ class init{
      * @param string $name_model Nombre del modelo entidad
      * @param string $namespace_model Paquete
      * @return array
-     * @version 2.103.10
      */
     private function model_init_campos_select(
         array $campos_view, string $key, PDO $link, string $name_model, string $namespace_model): array
@@ -914,7 +912,6 @@ class init{
      * @param stdClass $keys Keys a integrar
      * @param PDO $link Conexion a la base de datos
      * @return array
-     * @version 9.25.0
      */
     final public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {

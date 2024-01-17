@@ -69,6 +69,49 @@ class _instalacion
 
     }
 
+    final public function add_columns(stdClass $campos, string $table)
+    {
+
+        $datos = $this->describe_table(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);
+        }
+        $campos_origen = $datos->registros;
+
+        $adds = array();
+        foreach ($campos as $campo=>$atributos){
+
+            $existe_campo = $this->existe_campo_origen(campo_integrar: $campo,campos_origen:  $campos_origen);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
+            }
+
+            if(!$existe_campo){
+                $tipo_dato = 'VARCHAR';
+                if(isset($atributos->tipo_dato)){
+                    $tipo_dato = $atributos->tipo_dato;
+                }
+                $default = '';
+                if(isset($atributos->default)){
+                    $default = $atributos->default;
+                }
+                $longitud = '255';
+                if(isset($atributos->longitud)){
+                    $longitud = $atributos->longitud;
+                }
+                $add = $this->add_colum(campo: $campo, table: $table, tipo_dato: $tipo_dato, default: $default,
+                    longitud: $longitud);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
+                }
+                $adds[] = $add;
+            }
+
+        }
+
+        return $adds;
+    }
+
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
         $sql = (new sql())->create_table(campos: $campos, table: $table);

@@ -335,7 +335,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     /**
      *
      * Funcion que asigna un registro encontrado para hijos en las diferentes consultas
-     * @version 1.16.9
      *
      * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
      * @param array $filtro datos para la obtencion de los registros a filtrar
@@ -890,18 +889,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
+     * POD DOCUMENTAR EN WIKI
+     * Genera un nuevo modelo a partir de las cadenas de nombre del modelo proporcionadas.
      *
-     * Funcion que genera un modelo a partir del nombre
-     *
-     * @param string $modelo txt con el nombre del modelo a crear
-     * @param string $namespace_model paquete de origen modelo
-     * @example
-     *     $modelo = $modelo_base->genera_modelo($name_modelo);
-     *
-     * @throws errores $name_modelo = vacio
-     * @throws errores $name_modelo = numero
-     * @throws errores $name_modelo no existe una clase con el nombre del modelo
-
+     * @param string $modelo Nombre del modelo.
+     * @param string $namespace_model Namespace del modelo, opcional.
+     * @return array|modelo Retorna una nueva instancia de la clase del modelo o error si algo sale mal.
+     * @version 14.9.0
      */
     final public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
