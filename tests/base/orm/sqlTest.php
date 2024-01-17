@@ -32,7 +32,7 @@ class sqlTest extends test {
         $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO  ;',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO   NOT NULL;',$resultado);
 
         errores::$error = false;
 
@@ -44,7 +44,7 @@ class sqlTest extends test {
         $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO  DEFAULT a;',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO  DEFAULT a NOT NULL;',$resultado);
 
         errores::$error = false;
 
@@ -59,7 +59,7 @@ class sqlTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO (1) DEFAULT a;',$resultado);
+        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO (1) DEFAULT a NOT NULL;',$resultado);
         errores::$error = false;
     }
 

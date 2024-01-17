@@ -59,7 +59,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD campo VARCHAR (255) ;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD campo VARCHAR (255)  NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
@@ -73,7 +73,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD campo2 BIGINT  ;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD campo2 BIGINT   NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
@@ -87,7 +87,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD campo3 BIGINT (100) ;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD campo3 BIGINT (100)  NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
@@ -101,7 +101,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD campo4 BIGINT (100) DEFAULT 11;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD campo4 BIGINT (100) DEFAULT 11 NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
@@ -115,7 +115,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD total_descuento DOUBLE (100,4) ;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD total_descuento DOUBLE (100,4)  NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
@@ -129,7 +129,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD total_descuento2 DOUBLE (10,2) ;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD total_descuento2 DOUBLE (10,2)  NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
@@ -143,10 +143,172 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD total_descuento3 DOUBLE (10,2) DEFAULT 15;', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD total_descuento3 DOUBLE (10,2) DEFAULT 15 NOT NULL;', $resultado->sql);
 
         errores::$error = false;
 
+    }
+
+    public function test_add_columns(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+
+
+        $table = 'test';
+
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+            print_r($error);
+            exit;
+        }
+
+        if($existe_table) {
+            $drop = $ins->drop_table(table: $table);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+                print_r($error);
+                exit;
+            }
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->b = new stdClass();
+        $resultado = $ins->add_columns(campos: $campos,table:  $table);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD b VARCHAR (255)  NOT NULL;', $resultado[0]->sql);
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->b = new stdClass();
+        $campos->b->tipo_dato = 'double';
+        $resultado = $ins->add_columns(campos: $campos,table:  $table);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD b DOUBLE (100,4)  NOT NULL;', $resultado[0]->sql);
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->b = new stdClass();
+        $campos->b->tipo_dato = 'double';
+        $campos->b->longitud = '100,2';
+        $resultado = $ins->add_columns(campos: $campos,table:  $table);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD b DOUBLE (100,2)  NOT NULL;', $resultado[0]->sql);
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->b = new stdClass();
+        $campos->b->tipo_dato = 'double';
+        $campos->b->longitud = '100,2';
+        $campos->b->not_null = false;
+
+        $resultado = $ins->add_columns(campos: $campos,table:  $table);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD b DOUBLE (100,2)  ;', $resultado[0]->sql);
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table_create = $ins->create_table($campos, 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->b = new stdClass();
+        $campos->b->tipo_dato = 'double';
+        $campos->b->longitud = '100,2';
+        $campos->b->not_null = false;
+        $campos->c = new stdClass();
+        $campos->d = new stdClass();
+        $campos->d->tipo_dato = 'bigint';
+
+
+        $resultado = $ins->add_columns(campos: $campos,table:  $table);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD b DOUBLE (100,2)  ;', $resultado[0]->sql);
+        $this->assertEquals('ALTER TABLE test ADD c VARCHAR (255)  NOT NULL;', $resultado[1]->sql);
+        $this->assertEquals('ALTER TABLE test ADD d BIGINT (255)  NOT NULL;', $resultado[2]->sql);
+
+        errores::$error = false;
     }
 
     public function test_create_table(): void

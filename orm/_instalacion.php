@@ -34,12 +34,13 @@ class _instalacion
      * @param string $tipo_dato El tipo de dato de la nueva columna.
      * @param string $default Valor default en caso de vacio no lo integra
      * @param string $longitud Opcional. La longitud del nuevo campo. Por defecto es una cadena vacía.
+     * @param bool $not_null Opcional. Si es true integra el NOT NULL si no lo deja libre.
      * @return stdClass|array Retorna la ejecución de la sentencia SQL para agregar la columna, o en caso de error,
      * devuelve el mensaje de error.
      * @version 13.28.0
      */
-    final public function add_colum(string $campo, string $table, string $tipo_dato,
-                                    string $default = '', string $longitud = ''): stdClass|array
+    final public function add_colum(string $campo, string $table, string $tipo_dato, string $default = '',
+                                    string $longitud = '', bool $not_null = true): stdClass|array
     {
         $campo = trim($campo);
         $table = trim($table);
@@ -63,7 +64,7 @@ class _instalacion
         }
 
         $sql = (new sql())->add_column(campo: $campo, table: $table, tipo_dato: $tipo_dato,
-            default: $default, longitud: $longitud);
+            default: $default, longitud: $longitud, not_null: $not_null);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
@@ -95,6 +96,7 @@ class _instalacion
             if(!$existe_campo){
                 $tipo_dato = 'VARCHAR';
                 if(isset($atributos->tipo_dato)){
+                    $atributos->tipo_dato = strtoupper($atributos->tipo_dato);
                     $tipo_dato = $atributos->tipo_dato;
                 }
                 $default = '';
@@ -102,11 +104,21 @@ class _instalacion
                     $default = $atributos->default;
                 }
                 $longitud = '255';
+
+                if($tipo_dato === 'DOUBLE'){
+                    $longitud = '100,4';
+                }
+
                 if(isset($atributos->longitud)){
                     $longitud = $atributos->longitud;
                 }
+
+                $not_null = true;
+                if(isset($atributos->not_null)){
+                    $not_null = $atributos->not_null;
+                }
                 $add = $this->add_colum(campo: $campo, table: $table, tipo_dato: $tipo_dato, default: $default,
-                    longitud: $longitud);
+                    longitud: $longitud, not_null: $not_null);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
                 }

@@ -18,11 +18,12 @@ class sql{
      * @param string $table El nombre de la tabla a la que se agregará la nueva columna.
      * @param string $tipo_dato El tipo de dato de la nueva columna.
      * @param string $longitud Opcional. La longitud del nuevo campo, si aplicable. Por defecto es una cadena vacía.
+     * @param bool $not_null Opcional. Si es true integra el NOT NULL si no lo deja libre.
      * @return string|array Devuelve la sentencia SQL para agregar la nueva columna a la tabla. O array si existe error
      * @version 13.26.0
      */
     final public function add_column(string $campo, string $table, string $tipo_dato, string $default = '',
-                                     string $longitud = ''): string|array
+                                     string $longitud = '', bool $not_null = true): string|array
     {
         $campo = trim($campo);
         $table = trim($table);
@@ -34,10 +35,14 @@ class sql{
             $longitud = '255';
         }
 
-
         $longitud_sql = '';
         if($longitud !== ''){
             $longitud_sql = "($longitud)";
+        }
+
+        $not_null_sql = '';
+        if($not_null){
+            $not_null_sql = 'NOT NULL';
         }
 
         $valida = $this->valida_column(campo:$campo,table:  $table, tipo_dato: $tipo_dato, longitud: $longitud);
@@ -45,14 +50,12 @@ class sql{
             return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
         }
 
-
-
         $default = $this->default(value: $default);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener default',data: $default);
         }
 
-        return trim("ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql $default;");
+        return trim("ALTER TABLE $table ADD $campo $tipo_dato $longitud_sql $default $not_null_sql;");
 
     }
 

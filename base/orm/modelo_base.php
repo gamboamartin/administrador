@@ -333,16 +333,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Asigna registros hijos al modelo dado según el filtro proporcionado.
      *
-     * Funcion que asigna un registro encontrado para hijos en las diferentes consultas
+     * @param array  $filtro El filtro a aplicar al conjunto de registros.
+     * @param string $name_modelo Nombre del modelo.
+     * @param string $namespace_model Namespace del modelo.
+     * @param string $nombre_estructura Nombre de la estructura en la que se asignarán los registros.
+     * @param array  $row El array al cual se asignarán los registros del modelo.
      *
-     * @param string $name_modelo txt con el nombre del modelo para la asignacion del registro
-     * @param array $filtro datos para la obtencion de los registros a filtrar
-     * @param array $row registro padre al que se le asignaran los hijos
-     * @param string  $nombre_estructura nombre del modelo hijo
-     * @example
-     *     $row = $this->asigna_registros_hijo($name_modelo,$filtro,$row, $data_modelo['nombre_estructura']);
-     * @return array conjunto de registros encontrados al registro row
+     * @return array Retorna un array con los registros asignados, o un error si algo sale mal.
+     * @version 14.11.0
      */
     private function asigna_registros_hijo(array $filtro, string $name_modelo, string $namespace_model,
                                            string $nombre_estructura, array $row):array{
