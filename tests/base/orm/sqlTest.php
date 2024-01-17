@@ -44,7 +44,7 @@ class sqlTest extends test {
         $resultado = $sql->add_column(campo:$campo,table:  $table,tipo_dato:  $tipo_dato,default: $default,longitud: $longitud);
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO  DEFAULT a NOT NULL;',$resultado);
+        $this->assertEquals("ALTER TABLE table ADD campo TIPO_DATO  DEFAULT 'a' NOT NULL;",$resultado);
 
         errores::$error = false;
 
@@ -59,7 +59,7 @@ class sqlTest extends test {
 
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE table ADD campo TIPO_DATO (1) DEFAULT a NOT NULL;',$resultado);
+        $this->assertEquals("ALTER TABLE table ADD campo TIPO_DATO (1) DEFAULT 'a' NOT NULL;",$resultado);
         errores::$error = false;
     }
 
@@ -79,7 +79,7 @@ class sqlTest extends test {
         $resultado = $sql->default('a');
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('DEFAULT a',$resultado);
+        $this->assertEquals("DEFAULT 'a'",$resultado);
         errores::$error = false;
 
 
@@ -103,6 +103,21 @@ class sqlTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('DESCRIBE a',$resultado);
+        errores::$error = false;
+    }
+
+    public function test_drop_column(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $campo = 'a';
+        $table = 'v';
+        $resultado = $sql->drop_column($campo, $table);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE v DROP COLUMN a;',$resultado);
         errores::$error = false;
     }
 

@@ -149,7 +149,7 @@ class sql{
         $value = trim($value);
         $sql = '';
         if($value !== ''){
-            $sql = "DEFAULT $value";
+            $sql = "DEFAULT '$value'";
         }
         return trim($sql);
     }
@@ -175,16 +175,30 @@ class sql{
         return "DESCRIBE $tabla";
     }
 
+
     /**
-     * Genera una sentencia SQL para eliminar una columna de una tabla.
+     * POR DOCUMENTAR EN WIKI
+     * Elimina una columna de una tabla específica en la base de datos.
      *
-     * @param string $campo El nombre de la columna a eliminar.
-     * @param string $table El nombre de la tabla de la que se eliminará la columna.
-     * @return string Retorna la sentencia SQL para eliminar la columna de la tabla.
+     * @param string $campo La columna que se va a eliminar.
+     * @param string $table La tabla de la cual se va a eliminar la columna.
+     * @return string|array Devuelve una sentencia SQL generada para ejecutar la acción.
+     *
+     * @throws errores Si la columna o la tabla estan vacias o si hay un problema al generar la consulta SQL.
+     *
+     * @version 14.12.0
      */
-    final public function drop_column(string $campo, string $table): string
+    final public function drop_column(string $campo, string $table): string|array
     {
-        return "ALTER TABLE $table DROP COLUMN $campo;";
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        return trim("ALTER TABLE $table DROP COLUMN $campo;");
 
     }
 

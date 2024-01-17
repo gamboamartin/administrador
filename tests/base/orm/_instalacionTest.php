@@ -101,7 +101,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD campo4 BIGINT (100) DEFAULT 11 NOT NULL;', $resultado->sql);
+        $this->assertEquals("ALTER TABLE test ADD campo4 BIGINT (100) DEFAULT '11' NOT NULL;", $resultado->sql);
 
         errores::$error = false;
 
@@ -143,7 +143,7 @@ class _instalacionTest extends test
 
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD total_descuento3 DOUBLE (10,2) DEFAULT 15 NOT NULL;', $resultado->sql);
+        $this->assertEquals("ALTER TABLE test ADD total_descuento3 DOUBLE (10,2) DEFAULT '15' NOT NULL;", $resultado->sql);
 
         errores::$error = false;
 
