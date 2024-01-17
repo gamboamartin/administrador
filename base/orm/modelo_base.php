@@ -1050,7 +1050,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     *
+     * POR DOCUMENTAR EN WIKI
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
@@ -1059,6 +1059,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *      $row = $this->genera_registros_hijos($modelos_hijos,$row);
      * @return array registro del modelo con registros hijos asignados
      * @throws errores $data_modelo['nombre_estructura'] no existe
+     * @version 14.14.0
 
      */
     private function genera_registros_hijos(array $modelos_hijos, array $row):array{
