@@ -47,8 +47,14 @@ class _instalacion
         $tipo_dato = strtoupper($tipo_dato);
 
         $longitud = trim($longitud);
-        if ($tipo_dato === 'VARCHAR') {
-            $longitud = '255';
+
+        if($longitud === '') {
+            if ($tipo_dato === 'VARCHAR') {
+                $longitud = '255';
+            }
+            if ($tipo_dato === 'DOUBLE') {
+                $longitud = '100,4';
+            }
         }
 
         $valida = (new sql())->valida_column(campo: $campo, table: $table, tipo_dato: $tipo_dato, longitud: $longitud);

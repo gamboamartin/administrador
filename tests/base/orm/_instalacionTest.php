@@ -104,6 +104,49 @@ class _instalacionTest extends test
         $this->assertEquals('ALTER TABLE test ADD campo4 BIGINT (100) DEFAULT 11;', $resultado->sql);
 
         errores::$error = false;
+
+        $campo = 'total_descuento';
+        $table = 'test';
+        $tipo_dato = 'double';
+        $longitud = '';
+        $default = '';
+        $resultado = $ins->add_colum(campo: $campo, table: $table, tipo_dato: $tipo_dato, default: $default,
+            longitud: $longitud);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD total_descuento DOUBLE (100,4) ;', $resultado->sql);
+
+        errores::$error = false;
+
+        $campo = 'total_descuento2';
+        $table = 'test';
+        $tipo_dato = 'double';
+        $longitud = '10,2';
+        $default = '';
+        $resultado = $ins->add_colum(campo: $campo, table: $table, tipo_dato: $tipo_dato, default: $default,
+            longitud: $longitud);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD total_descuento2 DOUBLE (10,2) ;', $resultado->sql);
+
+        errores::$error = false;
+
+        $campo = 'total_descuento3';
+        $table = 'test';
+        $tipo_dato = 'double';
+        $longitud = '10,2';
+        $default = '15';
+        $resultado = $ins->add_colum(campo: $campo, table: $table, tipo_dato: $tipo_dato, default: $default,
+            longitud: $longitud);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE test ADD total_descuento3 DOUBLE (10,2) DEFAULT 15;', $resultado->sql);
+
+        errores::$error = false;
+
     }
 
     public function test_create_table(): void

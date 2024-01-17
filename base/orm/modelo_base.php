@@ -577,19 +577,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      *
-     * Funcion que ejecuta un query de tipo select
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param string $consulta Consulta en forma de SQL para su ejecucion directa
-     * @param array $campos_encriptados Campos encriptados de un modelo
-     * @return array|stdClass registros obtenidos de la consulta del modelo con datos o vacio
-     * @example
-     * $this->consulta = "DESCRIBE $tabla_original";
-     * $result = $this->ejecuta_consulta();
-     * @uses  modelo_basico
-     * @uses  modelo
-     * @uses  controlador_reporte
-     * @uses  accion
-     * @uses  accion_grupo
+     * Ejecuta una consulta en la base de datos y devuelve los resultados.
+     *
+     * @param string $consulta La consulta a ejecutar.
+     * @param array  $campos_encriptados Una lista de campos a encriptar en la consulta.
+     * @param array  $hijo Una lista de consultas hijo para la consulta principal.
+     *
+     * @return array|stdClass Retorna un array o un objeto stdClass si la consulta se ejecutó correctamente, o
+     * un error si algo salió mal.
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
                                      array $hijo = array()): array|stdClass{

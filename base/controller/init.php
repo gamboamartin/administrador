@@ -747,7 +747,6 @@ class init{
      * @param string $key Key a integrar
      * @param string $type Tipo de input
      * @return array
-     * @version 2.37.3.1
      */
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
@@ -772,7 +771,6 @@ class init{
      * @param string $key Key a integrar
      * @param string $type Tipo de input
      * @return array
-     * @version 2.81.6
      */
     private function model_init_campos_input(array $campos_view, string $key, string $type): array
     {
@@ -799,7 +797,6 @@ class init{
      * @param array $keys Keys a inicializar con nombre de los campos
      * @param string $type Typo de campo inputs o password
      * @return array
-     * @version 2.100.9
      */
     private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
@@ -944,7 +941,6 @@ class init{
      * @param array $campos_view Campos previos
      * @param stdClass $keys Conjunto de campos a integrar
      * @return array
-     * @version 4.9.0
      *
      */
     private function modela_input(string $atributo, array $campos_view, stdClass $keys): array
@@ -975,7 +971,6 @@ class init{
      * @param array $campos_view Campos a integrar provenientes de modelo
      * @param stdClass $keys Parametros
      * @return array
-     * @version 4.10.1
      */
     private function modela_inputs_attr(array $atributos, array $campos_view, stdClass $keys): array
     {
@@ -998,7 +993,6 @@ class init{
      * @param array $campos_view Campos de modelo
      * @param stdClass $keys Keys con parametros especiales
      * @return array
-     * @version 6.3.0
      */
     private function modela_inputs_campos(array $campos_view, stdClass $keys): array
     {
