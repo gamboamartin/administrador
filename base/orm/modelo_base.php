@@ -1248,29 +1248,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
+     * POR DOCUMENTAR WIKI
+     * Procesa los registros devueltos por una declaración SQL de PDO
      *
-     * Funcion que asigna y genera los registros encontrados en un query
-     * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
-     * @param array $campos_encriptados Campos encriptados de un modelo
-     * @example
-    $this->hijo = $hijo;
-    if($this->consulta === ''){
-    return $this->error->error('La consulta no puede venir vacia',__LINE__, __FILE__,array($this->link->errorInfo(),$this->consulta));
-    }
-    $this->transaccion = 'SELECT';
-    $result = $this->ejecuta_sql();
-    if(isset($result['error'])){
-    return $this->error->error('Error al ejecutar sql',$result);
-    }
-    $r_sql = $result['result'];
-
-    $new_array = $this->parsea_registros_envio( $r_sql);
-     * @return array registros del modelo con datos o vacio
-     * @throws errores Errores definidos en las creaciones de hijos
-     * @throws errores Errores definidos en la maquetacion de informacion
-     * @uses modelo_basico->ejecuta_consulta
-     * @internal  $this->genera_modelos_hijos()
-     * @internal  $this->maqueta_arreglo_registros($r_sql,$modelos_hijos);
+     * Esta función toma una declaración SQL de PDO y un arreglo de campos encriptados.
+     * Genera modelos hijos y reformatea el arreglo de registros.
+     *
+     * @param PDOStatement $r_sql Declaración SQL de PDO.
+     * @param array $campos_encriptados Un arreglo de campos para encriptar.
+     * @return array Un arreglo con los registros procesados.
+     * @throws errores Si hay un error al generar modelos hijos o al generar el arreglo de registros.
+     * @version 14.17.0
      */
     private function parsea_registros_envio(PDOStatement $r_sql, array $campos_encriptados = array()):array{
 
