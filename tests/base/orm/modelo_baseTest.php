@@ -726,20 +726,7 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-    /*public function test_init_archivos_tmp_model(){
 
-
-        errores::$error = false;
-        $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
-
-        $mb->tabla = 'a';
-        $resultado = $mb->init_archivos_tmp_model();
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        //$this->assertFileExists($resultado);
-        errores::$error = false;
-    }*/
     public function test_integra_ds()
     {
 
@@ -933,6 +920,27 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_result()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+
+        $consulta = '';
+        $n_registros = -1;
+        $new_array = array();
+        $resultado = $mb->result($consulta, $n_registros, $new_array);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('-1', $resultado->n_registros);
+        errores::$error = false;
+
+    }
+
     public function test_result_sql()
     {
 
@@ -953,8 +961,6 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
     }
-
-
 
     public function test_str_replace_first(){
         errores::$error = false;

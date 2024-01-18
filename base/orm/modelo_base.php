@@ -1342,6 +1342,26 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * La función "result" ajusta el resultado de una consulta y lo devuelve en un formato específico.
+     *
+     * @param string $consulta La consulta SQL que se ejecutó.
+     * @param int $n_registros El número de registros devueltos por la consulta.
+     * @param array $new_array Un array que contiene los registros devueltos por la consulta.
+     *
+     * @return object $data Un objeto que contiene los resultados de la consulta.
+     * $data tiene las siguientes propiedades:
+     * registros: array de registros devueltos por la consulta en formato de array asociativo.
+     * n_registros: número de registros devueltos por la consulta.
+     * sql: la consulta SQL que se ejecutó.
+     * campos_entidad: una lista de los campos de la entidad con la que se está trabajando.
+     * registros_obj: array de registros devueltos por la consulta en formato de objeto.
+     *
+     * La función convierte cada fila de $new_array de un array asociativo a un objeto y lo almacena en $data->registros_obj.
+     *
+     * @version 14.22.0
+     */
     private function result(string $consulta, int $n_registros, array $new_array): stdClass
     {
 
