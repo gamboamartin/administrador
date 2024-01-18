@@ -451,8 +451,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método data_result
+     *
+     * Este método se utiliza para la ejecucion del sql y el retorno del resultado en forma de objeto
+     *
+     * @param array $campos_encriptados Array de campos encriptados
+     * @param string $consulta Consulta SQL
+     *
+     * @return array|stdClass Devuelve un array o un objeto stdClass dependiendo del resultado de la consulta
+     *
+     * @version 14.26.0
+     */
     private function data_result(array $campos_encriptados, string $consulta): array|stdClass
     {
+        $consulta = trim($consulta);
+        if($consulta === ''){
+            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla);
+        }
         $result_sql = $this->result_sql(campos_encriptados: $campos_encriptados,consulta:  $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al ejecutar sql", data: $result_sql);

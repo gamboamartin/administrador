@@ -232,6 +232,26 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_result()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $campos_encriptados = array();
+        $consulta = 'SELECT 1 as a FROM adm_seccion';
+
+        $resultado = $mb->data_result($campos_encriptados, $consulta);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado->n_registros);
+        errores::$error = false;
+
+    }
+
     public function test_ds_init()
     {
 
