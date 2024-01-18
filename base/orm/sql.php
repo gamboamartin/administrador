@@ -323,16 +323,32 @@ class sql{
 
     }
 
-    /**
-     * Genera una sentencia SQL para renombrar una columna en una tabla.
-     *
-     * @param string $campo El nombre actual de la columna a renombrar.
-     * @param string $new_name El nuevo nombre para la columna.
-     * @param string $table El nombre de la tabla que contiene la columna a renombrar.
-     * @return string Retorna la sentencia SQL para renombrar la columna en la tabla.
-     */
-    final public function rename_column(string $campo, string $new_name, string $table): string
+
+    final public function rename_column(string $campo, string $new_name, string $table): string|array
     {
+        $campo = trim($campo);
+        $new_name = trim($new_name);
+        $table = trim($table);
+
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        if($new_name === ''){
+            return $this->error->error(mensaje: 'Error new_name esta vacio', data: $new_name);
+        }
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
+        }
+        if(is_numeric($campo)){
+            return $this->error->error(mensaje: 'Error campo es numerico', data: $campo);
+        }
+        if(is_numeric($new_name)){
+            return $this->error->error(mensaje: 'Error new_name es numerico', data: $new_name);
+        }
+        if(is_numeric($table)){
+            return $this->error->error(mensaje: 'Error table es numerico', data: $table);
+        }
+
         return "ALTER TABLE $table RENAME COLUMN $campo to $new_name;";
     }
 
@@ -483,14 +499,25 @@ class sql{
         if($campo === ''){
             return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
         }
+        if(is_numeric($campo)){
+            return $this->error->error(mensaje: 'Error campo debe ser un texto',data: $campo);
+        }
+
         $table = trim($table);
         if($table === ''){
             return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+        }
+        if(is_numeric($table)){
+            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
         }
         $tipo_dato = trim($tipo_dato);
         if($tipo_dato === ''){
             return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato);
         }
+        if(is_numeric($tipo_dato)){
+            return $this->error->error(mensaje: 'Error tipo_dato debe ser un texto',data: $tipo_dato);
+        }
+
         $longitud = trim($longitud);
 
         $tipo_dato = strtoupper($tipo_dato);

@@ -830,7 +830,7 @@ class modelo_baseTest extends test {
 
     public function test_maqueta_result()
     {
-        
+
 
         errores::$error = false;
         $mb = new adm_seccion($this->link);
