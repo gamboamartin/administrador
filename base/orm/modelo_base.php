@@ -1361,6 +1361,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Ejecuta una consulta SQL y devuelve los registros obtenidos
      *
      * Esta función toma una consulta SQL y un arreglo de campos encriptados.
@@ -1370,6 +1371,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param string $consulta La consulta SQL a ejecutar.
      * @return array|stdClass Un objeto con los datos y registros procesados, o un mensaje de error en caso de falla.
      * @throws errores Si la consulta está vacía, hay un error al ejecutar la consulta SQL, o hay un error al procesar los registros.
+     * @version 14.19.0
      */
     private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
     {

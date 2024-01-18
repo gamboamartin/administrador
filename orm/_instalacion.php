@@ -145,6 +145,19 @@ class _instalacion
 
     }
 
+    final public function campo_status(stdClass $campos, string $name_campo, string $default = 'inactivo'): array|stdClass
+    {
+        $name_campo = trim($name_campo);
+        if($name_campo === ''){
+            return $this->error->error(mensaje: 'Error name_campo esta vacio', data: $name_campo);
+        }
+        $campos->$name_campo = new stdClass();
+        $campos->$name_campo->default = $default;
+
+        return $campos;
+
+    }
+
     final public function campos_double_default(stdClass $campos, array $name_campos)
     {
         foreach ($name_campos as $name_campo){
