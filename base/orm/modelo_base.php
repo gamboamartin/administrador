@@ -598,7 +598,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         $this->transaccion = 'SELECT';
 
-        $data = $this->result_out(
+        $data = $this->data_result(
             campos_encriptados: $campos_encriptados, consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear registros", data: $data);
@@ -1213,13 +1213,23 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $new_array;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función que se encarga de maquetar el resultado de una consulta.
+     *
+     * @param string $consulta La consulta a realizar.
+     * @param int $n_registros El número de registros a devolver.
+     * @param array $new_array El array que contiene los nuevos datos.
+     * @return array|stdClass Devuelve un array con los resultados o un objeto stdClass en caso de error.
+     * @throws errores Lanza una excepción de tipo errores en caso de error al parsear el resultado o los registros.
+     * @version 14.23.0
+     */
     private function maqueta_result(string $consulta, int $n_registros, array $new_array ): array|stdClass
     {
         $init = $this->init_result_base(consulta: $consulta,n_registros:  $n_registros,new_array:  $new_array);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear resultado", data: $init);
         }
-
 
         $data = $this->result(consulta: $consulta,n_registros:  $n_registros, new_array: $new_array);
         if (errores::$error) {
@@ -1382,15 +1392,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function result_out(array $campos_encriptados, string $consulta): array|stdClass
-    {
-        $data = $this->data_result(campos_encriptados: $campos_encriptados,consulta:  $consulta);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
-        }
-
-        return $data;
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI

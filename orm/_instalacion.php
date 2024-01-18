@@ -266,8 +266,14 @@ class _instalacion
     final public function foraneas(array $foraneas, string $table)
     {
         $results = array();
-        foreach ($foraneas as $campo){
-            $result = $this->foreign_key_seguro(campo: $campo,table: $table);
+        foreach ($foraneas as $campo=>$atributos){
+
+            $default = '';
+            if(isset($atributos->default)){
+                $default = trim($atributos->default);
+            }
+
+            $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al ajustar foranea', data:  $result);
             }
@@ -278,18 +284,16 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Agrega una columna a una tabla y luego establece una clave foránea en la misma.
      *
      * @param string $campo El nombre de la columna a agregar, que luego se convertirá en la clave foránea.
      * @param string $table El nombre de la tabla a la que se agregará la columna y se establecerá la clave foránea.
      * @return array|stdClass Devuelve el resultado del proceso de generar la clave foránea o, en caso de error, devuelve un mensaje de error.
-     * @version 13.30.0
      */
-    final public function foreign_key_completo(string $campo, string $table): array|stdClass
+    final public function foreign_key_completo(string $campo, string $table, string $default = ''): array|stdClass
     {
 
-        $exe = $this->add_colum(campo: $campo, table: $table, tipo_dato: 'bigint', longitud: 100);
+        $exe = $this->add_colum(campo: $campo, table: $table, tipo_dato: 'bigint', default: $default, longitud: 100);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
         }
@@ -336,7 +340,7 @@ class _instalacion
     }
 
 
-    final public function foreign_key_seguro(string $campo, string $table)
+    final public function foreign_key_seguro(string $campo, string $table, string $default = '')
     {
         $existe_table = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
         if(errores::$error){
@@ -358,7 +362,7 @@ class _instalacion
         }
 
         if(!$existe_campo){
-            $fk = $this->foreign_key_completo(campo: $campo,table:  $table);
+            $fk = $this->foreign_key_completo(campo: $campo,table:  $table, default: $default);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
@@ -441,7 +445,8 @@ class _instalacion
      * @param string $table El nombre de la tabla donde se integrará la clave foránea.
      * @return array Retorna un array con las integraciones actualizadas después de la integración del nuevo campo.
      */
-    private function integra_fk(string $campo_integrar, array $campos_origen, array $integraciones, string $table): array
+    private function integra_fk(
+        string $campo_integrar, array $campos_origen, array $integraciones, string $table, string $default = ''): array
     {
         $existe_campo = $this->existe_campo_origen(campo_integrar: $campo_integrar,campos_origen:  $campos_origen);
         if (errores::$error) {
@@ -449,7 +454,7 @@ class _instalacion
         }
 
         if(!$existe_campo){
-            $integra_fk = $this->foreign_key_completo(campo: $campo_integrar,table:  $table);
+            $integra_fk = $this->foreign_key_completo(campo: $campo_integrar,table:  $table, default: $default);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al ejecutar sql', data: $integra_fk);
             }
@@ -465,8 +470,13 @@ class _instalacion
         foreach ($campos as $campo_integrar=>$estructura){
 
             if(isset($estructura->foreign_key) && $estructura->foreign_key){
+
+                $default = '';
+                if(isset($estructura->default)){
+                    $default = trim($estructura->default);
+                }
                 $integraciones = $this->integra_fk(campo_integrar: $campo_integrar,campos_origen:  $campos_origen,
-                    integraciones:  $integraciones,table:  $table);
+                    integraciones:  $integraciones,table:  $table,default: $default);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al integrar campo', data: $integraciones);
                 }

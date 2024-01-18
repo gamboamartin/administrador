@@ -726,7 +726,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
-
     public function test_integra_ds()
     {
 
@@ -827,6 +826,27 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_maqueta_result()
+    {
+        
+
+        errores::$error = false;
+        $mb = new adm_seccion($this->link);
+        $mb = new liberator($mb);
+
+        $consulta = '';
+        $n_registros = '-1';
+        $new_array = array();
+
+        $resultado = $mb->maqueta_result($consulta, $n_registros, $new_array);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->sql);
+
+        errores::$error = false;
     }
 
     public function test_obten_nombre_tabla(){
