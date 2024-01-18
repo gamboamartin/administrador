@@ -272,6 +272,10 @@ class _instalacion
             if(isset($atributos->default)){
                 $default = trim($atributos->default);
             }
+            $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+            }
 
             $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default);
             if(errores::$error){
@@ -292,6 +296,10 @@ class _instalacion
      */
     final public function foreign_key_completo(string $campo, string $table, string $default = ''): array|stdClass
     {
+        $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+        }
 
         $exe = $this->add_colum(campo: $campo, table: $table, tipo_dato: 'bigint', default: $default, longitud: 100);
         if (errores::$error) {
@@ -342,6 +350,12 @@ class _instalacion
 
     final public function foreign_key_seguro(string $campo, string $table, string $default = '')
     {
+
+        $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+        }
+
         $existe_table = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);

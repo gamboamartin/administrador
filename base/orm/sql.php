@@ -20,7 +20,6 @@ class sql{
      * @param string $longitud Opcional. La longitud del nuevo campo, si aplicable. Por defecto es una cadena vacía.
      * @param bool $not_null Opcional. Si es true integra el NOT NULL si no lo deja libre.
      * @return string|array Devuelve la sentencia SQL para agregar la nueva columna a la tabla. O array si existe error
-     * @version 13.26.0
      */
     final public function add_column(string $campo, string $table, string $tipo_dato, string $default = '',
                                      string $longitud = '', bool $not_null = true): string|array
@@ -491,25 +490,15 @@ class sql{
      * @param string $table El nombre de la tabla a validar.
      * @param string $tipo_dato El tipo de dato a validar.
      * @return true|array Retorna verdadero si los argumentos son válidos, o un array con un mensaje de error si no lo son.
-     * @version 13.28.0
      */
     final function valida_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): true|array
     {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
-        }
-        if(is_numeric($campo)){
-            return $this->error->error(mensaje: 'Error campo debe ser un texto',data: $campo);
+
+        $valida = $this->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
         }
 
-        $table = trim($table);
-        if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
-        }
-        if(is_numeric($table)){
-            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
-        }
         $tipo_dato = trim($tipo_dato);
         if($tipo_dato === ''){
             return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato);
@@ -529,6 +518,40 @@ class sql{
 
         }
 
+        return true;
+
+    }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función valida si el nombre del campo y la tabla proporcionados son válidos.
+     *
+     * @param string $campo El nombre del campo que se desea validar.
+     * @param string $table El nombre de la tabla que contiene el campo.
+     *
+     * @return true|array Devuelve verdadero si el campo y la tabla son válidos. Si no, devuelve un arreglo con información de error.
+     *
+     * @final
+     * @public
+     * @version 14.25.0
+     */
+    final public function valida_column_base(string $campo, string $table): true|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
+        if(is_numeric($campo)){
+            return $this->error->error(mensaje: 'Error campo debe ser un texto',data: $campo);
+        }
+
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+        }
+        if(is_numeric($table)){
+            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
+        }
         return true;
 
     }

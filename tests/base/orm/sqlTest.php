@@ -425,7 +425,59 @@ class sqlTest extends test {
 
     }
 
+    public function test_valida_column_base(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
 
+        $campo = '';
+        $table = '';
+        $resultado = $sql->valida_column_base(campo: $campo, table: $table);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error campo esta vacio',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = '-1';
+        $table = '';
+        $resultado = $sql->valida_column_base(campo: $campo, table: $table);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error campo debe ser un texto',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'x';
+        $table = '';
+        $resultado = $sql->valida_column_base(campo: $campo, table: $table);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error table esta vacia',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'x';
+        $table = '4';
+        $resultado = $sql->valida_column_base(campo: $campo, table: $table);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error table debe ser un texto',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'x';
+        $table = 's';
+        $resultado = $sql->valida_column_base(campo: $campo, table: $table);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+
+    }
     public function test_valida_in(): void
     {
         errores::$error = false;
