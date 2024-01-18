@@ -1361,10 +1361,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * Genera el resultado de un sql de tipo select
-     * @param array $campos_encriptados conjunto de campos encriptados del modelo
-     * @param string $consulta Sql
-     * @return array|stdClass
+     * Ejecuta una consulta SQL y devuelve los registros obtenidos
+     *
+     * Esta función toma una consulta SQL y un arreglo de campos encriptados.
+     * Luego, ejecuta la consulta, procesa los resultados y regresa un objeto con los datos y los registros procesados.
+     *
+     * @param array $campos_encriptados Un arreglo de campos para encriptar.
+     * @param string $consulta La consulta SQL a ejecutar.
+     * @return array|stdClass Un objeto con los datos y registros procesados, o un mensaje de error en caso de falla.
+     * @throws errores Si la consulta está vacía, hay un error al ejecutar la consulta SQL, o hay un error al procesar los registros.
      */
     private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
     {

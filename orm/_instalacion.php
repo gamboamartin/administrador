@@ -145,6 +145,19 @@ class _instalacion
 
     }
 
+    final public function campos_double_default(stdClass $campos, array $name_campos)
+    {
+        foreach ($name_campos as $name_campo){
+            $campos = $this->campo_double(campos: $campos,name_campo:  $name_campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar campo double', data: $campos);
+            }
+        }
+        return $campos;
+
+
+    }
+
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
         $sql = (new sql())->create_table(campos: $campos, table: $table);
