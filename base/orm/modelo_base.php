@@ -1169,19 +1169,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Maqueta el arreglo de registros de un modelo de base de datos
      *
-     * Funcion que asigna y genera los registros encontrados de hijos en un registro
-     * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
-     * @param PDOStatement $r_sql registro en forma de retorno de mysql nativo
-     * @param array $campos_encriptados Conjunto de campos para desencriptar
-     * @example
-     *      $modelos_hijos = $this->genera_modelos_hijos();
-    if(isset($modelos_hijos['error'])){
-    return $this->error->error('Error al generar $modelos_hijos',$modelos_hijos);
-    }
-    $new_array = $this->maqueta_arreglo_registros($r_sql,$modelos_hijos);
-     * @return array registro del modelo con registros hijos asignados
-     * @throws errores Errores definidos en las creaciones de hijos
+     * Este método recorre una lista de registros devueltos de una consulta SQL
+     * y los ajusta según los campos específicos de cada modelo. Después,
+     * retorna un nuevo arreglo ajustado.
+     *
+     * @param array $modelos_hijos Los modelos dependientes del modelo principal
+     * @param PDOStatement $r_sql Un objeto de consulta SQL que contiene los datos
+     * @param array $campos_encriptados Lista de campos a encriptar
+     * @return array Retorna un arreglo de registros ajustado
+     * @throws errores Si hay un error, produce una excepción con los detalles del error
+     * @version 14.16.0
      */
     private function maqueta_arreglo_registros(array $modelos_hijos, PDOStatement $r_sql,
                                               array $campos_encriptados = array()):array{

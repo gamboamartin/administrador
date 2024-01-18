@@ -4,7 +4,6 @@ namespace gamboamartin\administrador\models;
 use base\orm\estructuras;
 use base\orm\modelo_base;
 use base\orm\sql;
-use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use PDO;
@@ -128,6 +127,22 @@ class _instalacion
         }
 
         return $adds;
+    }
+
+    final public function campo_double(stdClass $campos, string $name_campo, string $default = '0',
+                                       string $longitud = '100,2'): array|stdClass
+    {
+        $name_campo = trim($name_campo);
+        if($name_campo === ''){
+            return $this->error->error(mensaje: 'Error name_campo esta vacio', data: $name_campo);
+        }
+        $campos->$name_campo = new stdClass();
+        $campos->$name_campo->tipo_dato = 'double';
+        $campos->$name_campo->default = $default;
+        $campos->$name_campo->longitud = $longitud;
+
+        return $campos;
+
     }
 
     final public function create_table(stdClass $campos, string $table): array|stdClass
