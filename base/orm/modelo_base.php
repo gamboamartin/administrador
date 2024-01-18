@@ -1133,6 +1133,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    /**
+     * Inicializa la base del resultado a partir de la consulta, el número de registros y los registros obtenidos.
+     *
+     * @param string $consulta       La consulta SQL que se ejecutó para obtener los registros
+     * @param int $n_registros       El número total de registros devueltos por la consulta
+     * @param array $new_array       Los registros obtenidos por la consulta
+     *
+     * @return stdClass              Retorna un objeto que contiene los registros, el número de registros y la consulta SQL
+     */
     private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
     {
 

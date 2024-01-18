@@ -158,6 +158,29 @@ class _instalacion
 
     }
 
+    final public function campos_status_activo(stdClass $campos, array $name_campos)
+    {
+        foreach ($name_campos as $name_campo){
+            $campos = $this->campo_status(campos: $campos,name_campo:  $name_campo,default: 'activo');
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar campo double', data: $campos);
+            }
+        }
+        return $campos;
+
+    }
+    final public function campos_status_inactivo(stdClass $campos, array $name_campos)
+    {
+        foreach ($name_campos as $name_campo){
+            $campos = $this->campo_status(campos: $campos,name_campo:  $name_campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar campo double', data: $campos);
+            }
+        }
+        return $campos;
+
+    }
+
     final public function campos_double_default(stdClass $campos, array $name_campos)
     {
         foreach ($name_campos as $name_campo){
