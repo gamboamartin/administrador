@@ -1134,6 +1134,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Inicializa la base del resultado a partir de la consulta, el número de registros y los registros obtenidos.
      *
      * @param string $consulta       La consulta SQL que se ejecutó para obtener los registros
@@ -1141,12 +1142,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $new_array       Los registros obtenidos por la consulta
      *
      * @return stdClass              Retorna un objeto que contiene los registros, el número de registros y la consulta SQL
+     *
+     * @version 14.21.0
      */
     private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
     {
 
         $this->registros = $new_array;
-        $this->n_registros = (int)$n_registros;
+        $this->n_registros = $n_registros;
         $this->sql = $consulta;
         $data = new stdClass();
         $data->registros = $new_array;
