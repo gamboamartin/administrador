@@ -459,10 +459,9 @@ class columnas{
      * Funcion para obtener las columnas de manera nativa
      * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
      * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
-     * @param bool $valida_tabla
      * @return array
      */
-    final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd, bool $valida_tabla = true): array
+    final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
