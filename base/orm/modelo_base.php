@@ -597,6 +597,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      *
+     * POR DOCUMENTAR EN WIKI
      * Ejecuta una consulta en la base de datos y devuelve los resultados.
      *
      * @param string $consulta La consulta a ejecutar.
@@ -605,11 +606,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return array|stdClass Retorna un array o un objeto stdClass si la consulta se ejecutó correctamente, o
      * un error si algo salió mal.
+     * @version 14.27.0
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
                                      array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
-        if($consulta === ''){
+        if(trim($consulta) === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
                 $this->link->errorInfo(),$consulta));
         }

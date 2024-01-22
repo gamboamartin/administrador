@@ -272,6 +272,25 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_ejecuta_consulta()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        //$mb = new liberator($mb);
+
+
+        $consulta = 'SELECT 1 AS a FROM adm_seccion';
+
+        $resultado = $mb->ejecuta_consulta($consulta);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('1', $resultado->registros_obj[0]->a);
+        errores::$error = false;
+    }
+
     public function test_ds_init_no_codigo()
     {
 
