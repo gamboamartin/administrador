@@ -47,7 +47,7 @@ class joins{
      * // $resultado->name_model es 'models\\\\Usuario'
      *
      * @throws errores Si la tabla está vacía luego de ser eliminados los espacios en blanco, lanza una excepción con un mensaje de error.
-     * @version 
+     * @version 15.12.0
      */
     private function ajusta_name_model(string $tabla): stdClass|array
     {
@@ -66,10 +66,22 @@ class joins{
     }
 
     /**
-     * Ajusta el nombre de un modelo para generarlo modo namespace
-     * @param string $tabla Tabla o modelo o seccion a ajustar
-     * @param string $tabla_enlace Tabla de enlace de un join
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Esta función ajusta los nombres de los modelos de dos tablas dadas.
+     *
+     * @param string $tabla El nombre de la primera tabla.
+     * @param string $tabla_enlace El nombre de la segunda tabla.
+     * @return array|stdClass Devuelve un objeto con los nombres de los modelos ajustados de ambas tablas o un error si ocurre alguna excepción.
+     *
+     * @throws errores Si alguna de las tablas proporcionadas viene vacía, o si hay un error al ajustar los nombres de los modelos.
+     *
+     * @example
+     * // Ejemplo de uso:
+     * $ajuste = $instance->ajusta_name_models('usuarios', 'roles');
+     * echo $ajuste->tabla; // Muestra el nombre del modelo ajustado para la tabla 'usuarios'
+     * echo $ajuste->tabla_enlace; // Muestra el nombre del modelo ajustado para la tabla 'roles'
+     * @version 15.12.0
+     *
      */
     private function ajusta_name_models(string $tabla, string $tabla_enlace): array|stdClass
     {
@@ -349,7 +361,6 @@ class joins{
     /**
      *
      * Funcion para determinar un JOIN entre dos tablas para SQL
-     * @version 1.59.17
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
      * @param string $tabla  tabla para la ejecucion del JOIN
      * @param string $renombrada renombre de tabla para su salida en sql
@@ -389,7 +400,6 @@ class joins{
     /**
      *
      * Funcion para determinar un JOIN entre dos tablas para SQL
-     * @version 1.58.17
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
      * @param string $join string tipo de join INNER O LEFT O ETC
      * @param string $tabla  tabla para la ejecucion del JOIN
@@ -540,7 +550,6 @@ class joins{
      * Inicializa los datos para un rename de sql
      * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace Tabla de enlace de un join
-     * @version 1.56.16
      * @return stdClass|array obj->tabla obj->class obj->tabla_enlace obj->class_enlace
      */
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
@@ -637,7 +646,6 @@ class joins{
 
     /**
      * Genera los JOINS necesarios de una tabla
-     * @version 1.59.17
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
      * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
      * @param string $renombrada renombre de tabla para su salida en sql
