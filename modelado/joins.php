@@ -19,9 +19,35 @@ class joins{
     }
 
     /**
-     * Ajusta el nombre de un modelo con el namespace models
-     * @param string $tabla Tabla o modelo o seccion a ajustar
-     * @return stdClass|array obj->tabla y obj->name_model
+     * POR DOCUMENTAR EN WIKI
+     * Ajusta el nombre del modelo.
+     *
+     * Este método recibe el nombre de una tabla y realiza dos operaciones:
+     * primero, elimina el prefijo 'models\\\\' del nombre de la tabla si existe,
+     * y segundo, genera el nombre completo de la clase para esa tabla, agregándole el prefijo 'models\\\\'.
+     *
+     * Retorna un objeto de la clase stdClass con dos propiedades: 'tabla', que contiene el nombre de la tabla ya ajustado,
+     * y 'name_model', que contiene el nombre completo de la clase para esa tabla.
+     *
+     * @param string $tabla El nombre original de la tabla. Debe venir con el prefijo 'models\\\\' para ser ajustado.
+     *
+     * @return stdClass|array Retorna un objeto de la clase stdClass con las propiedades 'tabla' y 'name_model'.
+     * Si la tabla está vacía luego de ser eliminados los espacios en blanco, retorna un array con un mensaje de error.
+     *
+     * @example
+     * // Crear una instancia de la clase en la que se encuentra el método
+     * $joins = new Joins();
+     *
+     * // Llamar al método con un nombre de tabla válido
+     * $nombreTabla = "models\\\\Usuario";
+     * $resultado = $joins->ajusta_name_model($nombreTabla);
+     *
+     * // $resultado es ahora un objeto con las propiedades 'tabla' y 'name_model'
+     * // $resultado->tabla es 'Usuario'
+     * // $resultado->name_model es 'models\\\\Usuario'
+     *
+     * @throws errores Si la tabla está vacía luego de ser eliminados los espacios en blanco, lanza una excepción con un mensaje de error.
+     * @version 
      */
     private function ajusta_name_model(string $tabla): stdClass|array
     {
