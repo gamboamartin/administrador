@@ -296,11 +296,20 @@ class controlador_base extends controler
     }
 
     /**
-     * Vista para un alta
-     * @param bool $header si header retorna error en navegador y corta la operacion
-     * @param bool $ws si ws retorna json
-     * @return array|string
-     * @esfinal revisada
+     * POR DOCUMENTAR EN WIKI
+     * Este método se encarga de procesar el formulario de alta.
+     *
+     * Define inicialmente el status del registro como 'activo'. Si existe un registro en proceso
+     * en la sesión asociado a la sección actual, este registro será asignado a los valores de la clase.
+     * Por último, devuelve el formulario de alta en formato HTML.
+     *
+     * @param bool $header Indica si el header debe ser incluido en el HTML.
+     * @param bool $ws (Opcional) Lo utiliza el Web Service, es falso por defecto.
+     *
+     * @return array|string Devuelve una cadena HTML con el formulario de alta, si el proceso es correcto.
+     *
+     * @throws errores Si ocurre algún error durante el proceso.
+     * @version 15.3.0
      */
     public function alta(bool $header, bool $ws = false): array|string
     {

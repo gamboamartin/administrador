@@ -121,9 +121,7 @@ class controlador_adm_session extends controlador_base{
         return false;
     }
 
-    /**
-     * DEBUG INI
-     */
+
     public function inicio(bool $aplica_template = true, bool $header = true, bool $ws = false): string|array
     {
         $template = '';
