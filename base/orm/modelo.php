@@ -1827,7 +1827,6 @@ class modelo extends modelo_base {
      * __LINE__,__FILE__,$this->registro_id);
      * }
      * $resultado = $this->obten_por_id($hijo, $columnas);
-     * @pordoc
      */
     private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(),
                                   bool $columnas_en_bruto = false, array $extension_estructura= array(),

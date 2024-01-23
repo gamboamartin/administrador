@@ -182,6 +182,23 @@ class params_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_seguridad(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 1;
+        $ps = new params_sql();
+        $ps = new liberator($ps);
+
+        //$modelo = new adm_accion($this->link);
+
+        $modelo_columnas_extra['usuario_permitido_id'] = -1;
+        $resultado = $ps->valida_seguridad($modelo_columnas_extra);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
     public function test_where(): void
     {
         errores::$error = false;

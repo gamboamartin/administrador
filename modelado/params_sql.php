@@ -16,7 +16,6 @@ class params_sql{
      * @param array $modelo_columnas_extra
      * @param string $sql_where_previo Sql previo
      * @return array|string
-     * @version 1.109.27
      */
     private function asigna_seguridad_data(array $modelo_columnas_extra, string $sql_where_previo): array|string
     {
@@ -230,6 +229,7 @@ class params_sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Valida la seguridad de los datos de entrada comprobando la existencia de ciertas claves en el arreglo
      * proporcionado y en la variable de sesión.
      *
@@ -239,9 +239,10 @@ class params_sql{
      *
      * @param array $modelo_columnas_extra La matriz que se comprobará para la existencia de la clave 'usuario_permitido_id'.
      *
-     * @return bool|array Devuelve true en caso de éxito, de lo contrario, devuelve un arreglo con información del error.
+     * @return true|array Devuelve true en caso de éxito, de lo contrario, devuelve un arreglo con información del error.
+     * @version 15.1.0
      */
-    private function valida_seguridad(array $modelo_columnas_extra): bool|array
+    private function valida_seguridad(array $modelo_columnas_extra): true|array
     {
         $keys = array('usuario_permitido_id');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,
@@ -252,7 +253,7 @@ class params_sql{
         $keys = array('usuario_id');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $_SESSION);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
+            return $this->error->error(mensaje: 'Error al validar $_SESSION', data:$valida);
         }
         return true;
     }
