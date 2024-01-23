@@ -63,7 +63,7 @@ class data_format{
      *
      * @return array Retorna el registro con el campo de moneda formateado.
      * @throws errores Se lanza si el campo está vacío o si el campo no existe en el registro.
-     * @version 
+     * @version 15.9.0
      */
     private function asigna_campo_moneda(string $campo, array $registro): array
     {
