@@ -874,6 +874,7 @@ class inicializacion{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Establece el estado de un registro.
      *
      * Este método ajusta el estado de un registro en base a diversas condiciones:

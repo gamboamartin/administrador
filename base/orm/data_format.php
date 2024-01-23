@@ -53,10 +53,17 @@ class data_format{
     }
 
     /**
-     * Asigna un valor double para guardado en BD cuando se envia un numero con formato de pais
-     * @param string $campo Campo a ajustar valor
-     * @param array $registro Registro donde de ajustara el valor
-     * @return array registro con valores ajustados
+     * POR DOCUMENTAR EN WIKI
+     * Esta función asigna un formato a un campo de moneda en un registro.
+     * Remueve el caracter de moneda($) y las comas que son comúnmente usadas
+     * en formatos de moneda.
+     *
+     * @param string $campo El nombre del campo que se va a formatear.
+     * @param array $registro El registro que contiene el campo a formatear.
+     *
+     * @return array Retorna el registro con el campo de moneda formateado.
+     * @throws errores Se lanza si el campo está vacío o si el campo no existe en el registro.
+     * @version 
      */
     private function asigna_campo_moneda(string $campo, array $registro): array
     {

@@ -390,7 +390,6 @@ class modelo extends modelo_base {
      * Inserta un registro
      * @param array $registro Registro con datos para la insersion
      * @return array|stdClass
-     * @version 1.534.51
      *
      */
      public function alta_registro(array $registro):array|stdClass{
@@ -1527,6 +1526,21 @@ class modelo extends modelo_base {
             }
         }
         return $r_pred;
+    }
+
+    final public function inserta_registros(array $registros)
+    {
+        $out = array();
+        foreach ($registros as $registro){
+            $alta_bd = $this->alta_registro(registro: $registro);
+            if(errores::$error){
+               return $this->error->error(mensaje: 'Error al insertar registro del modelo '.$this->tabla,
+                   data: $alta_bd);
+            }
+            $out[] = $alta_bd;
+        }
+        return $out;
+
     }
 
 
