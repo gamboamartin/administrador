@@ -681,17 +681,25 @@ class init{
     }
 
     /**
-     * Integra los keys para parametros base de un input
-     * @param int $cols Cols css
-     * @param string $key Campo de input
-     * @param array $keys_selects Conjunto de keys precargados
-     * @param string $place_holder Tag de input
-     * @param bool $required Atributo required
-     * @return array
-     * @version 2.115.12
+     * POR DOCUMENTAR EN WIKI
+     * Configura un select txt basado en las claves proporcionadas.
+     *
+     * @param int $cols Número de columnas a mostrar css.
+     * @param string $key Clave utilizada para seleccionar la cadena de texto.
+     * @param array $keys_selects Array de claves de selección.
+     * @param string $place_holder Texto a mostrar cuando no hay ninguna opción seleccionada.
+     * @param bool $required Indica si el campo es obligatorio o no. Por defecto es verdadero.
+     *
+     * @return array Devuelve el array de claves de selección actualizado.
+     *
+     * @throws errores Si la clave proporcionada está vacía.
+     *
+     * @version 15.2.0
+     * @fecha 2023-03-22
+     * @author Martin Gamboa
      */
-    public function key_select_txt(int $cols, string $key, array $keys_selects, string $place_holder,
-                                   bool $required = true, mixed $value = ''): array
+    public function key_select_txt(
+        int $cols, string $key, array $keys_selects, string $place_holder, bool $required = true): array
     {
         $key = trim($key);
         if($key === ''){
