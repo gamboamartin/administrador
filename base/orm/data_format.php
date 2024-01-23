@@ -21,8 +21,6 @@ class data_format{
      * Funcion ajusta los campos en formato moneda previo a la insersion, los limpia y los integra como double
      * @param array $registro Registro donde se ajustaran los valores
      * @param array $tipo_campos Son los tipos de campos declarados en el modelo
-     * @version 1.224.37
-     * @verfuncion 1.1.0
      * @fecha 2022-07-30 13:26
      * @return array
      */
@@ -56,7 +54,6 @@ class data_format{
 
     /**
      * Asigna un valor double para guardado en BD cuando se envia un numero con formato de pais
-     * @version 1.0.0
      * @param string $campo Campo a ajustar valor
      * @param array $registro Registro donde de ajustara el valor
      * @return array registro con valores ajustados
@@ -77,7 +74,6 @@ class data_format{
 
     /**
      * Regenera los valores de moneda a double cuando estos vienen en formato de moneda local
-     * @version 1.0.0
      * @param string $campo Campo a ajustar valor
      * @param array $registro Registro al que se le ajustaran los valores antes de insertar
      * @param string $tipo_dato Ajustara el dato si viene como double o moneda el tipo de dato

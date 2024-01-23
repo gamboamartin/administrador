@@ -18,7 +18,6 @@ class altas{
      * @param array $registro Registro que se insertara
      * @param controler $controler Controlador de ejecucion
      * @return array|stdClass
-     * @version 1.606.55
      */
     final public function alta_base(array $registro, controler $controler): array|stdClass{
 

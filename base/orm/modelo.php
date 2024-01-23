@@ -270,8 +270,6 @@ class modelo extends modelo_base {
      *      $entrada_modelo->registro = array('tipo_entrada_id'=>1,'almacen_id'=>1,'fecha'=>'2020-01-01',
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
-     * @finalrevisada
-     * @version 10.88.3
      */
     public function alta_bd(): array|stdClass{
         if(!isset($_SESSION['usuario_id'])){

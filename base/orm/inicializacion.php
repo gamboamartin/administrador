@@ -821,8 +821,6 @@ class inicializacion{
      * @param string $status_default status activo o inactivo
      * @param array $tipo_campos Tipificacion de campos del modelo
      * @return array
-     * @version 1.241.39
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-01 16:08
      */
@@ -876,12 +874,24 @@ class inicializacion{
     }
 
     /**
-     * Asigna a un registro status default
-     * @param bool $integra_datos_base si true integra campos base
-     * @param array $registro registro a insertar
-     * @param string $status_default status = activo o inactivo
-     * @return array
-     * @version 1.0.0
+     * Establece el estado de un registro.
+     *
+     * Este método ajusta el estado de un registro en base a diversas condiciones:
+     * - Si el valor de 'status' no se encuentra dentro del registro, y se desea integrar datos de la base,
+     *   se establecerá el estado del registro a 'status_default'.
+     * - De lo contrario, se conservará el estado existente en el registro.
+     *
+     * @param bool $integra_datos_base Define si se integrarán datos de la base en el registro actual.
+     * @param array $registro Registro en proceso.
+     * @param string $status_default Estado predeterminado en caso que no exista 'status' en el registro.
+     *
+     * @return array Registro con el estado ajustado.
+     *
+     * @throws errores Si el parámetro 'status_default' contiene una cadena vacía.
+     *
+     * @version 15.6.0
+     * @fecha 2022-11-02 10:20
+     * @author Martin Gamboa
      */
     private function status(bool $integra_datos_base, array $registro, string $status_default): array
     {
