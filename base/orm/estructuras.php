@@ -265,7 +265,30 @@ class estructuras{
         return $es_primaria;
     }
 
-    final public function existe_entidad(string $entidad){
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Comprueba si existe una entidad en la base de datos
+     *
+     * Este método realiza una consulta SQL para verificar si existe una entidad con el nombre proporcionado
+     * en la base de datos. Si la entidad existe, el método devuelve `true`, de lo contrario, devuelve `false`.
+     *
+     * @param string $entidad El nombre de la entidad que se va a comprobar.
+     * @return bool|array Devuelve `true` si la entidad existe, `false` si no existe.
+     *
+     * @example
+     * $estructuras = new estructuras();
+     * $existe = $estructuras->existe_entidad('nombre_entidad');
+     * if ($existe) {
+     *     echo 'La entidad existe.';
+     * } else {
+     *     echo 'La entidad no existe.';
+     * }
+     *
+     * @version 15.4.0
+     *
+     */
+    final public function existe_entidad(string $entidad): bool|array
+    {
         $entidad = trim($entidad);
         if($entidad === ''){
             return $this->error->error(mensaje: 'Error entidad vacia', data: $entidad);
