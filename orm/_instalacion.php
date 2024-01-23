@@ -4,6 +4,7 @@ namespace gamboamartin\administrador\models;
 use base\orm\estructuras;
 use base\orm\modelo_base;
 use base\orm\sql;
+use base\orm\val_sql;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
 use PDO;
@@ -211,13 +212,21 @@ class _instalacion
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Realiza una consulta para describir la estructura de una tabla.
      *
      * @param string $table El nombre de la tabla a describir.
-     * @return stdClass|array Retorna el resultado de la consulta de descripción de la tabla o, en caso de error, devuelve un mensaje de error.
+     * @return stdClass|array Retorna el resultado de la consulta de descripción de la tabla o, en caso de error,
+     * devuelve un mensaje de error.
+     * @version 15.13.0
      */
-    final public function describe_table(string $table): array|stdClass
+    private function describe_table(string $table): array|stdClass
     {
+        $valida = (new val_sql())->tabla(tabla: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar table', data: $valida);
+        }
+
         $sql = (new sql())->describe_table(tabla: $table);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al generar sql", data: $sql);
