@@ -259,10 +259,12 @@ class params_sql{
     }
 
     /**
-     * Asigna where  un sql
-     * @version 1.106.26
-     * @param string $sql_where_previo Sql previo
-     * @return string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función integra la sentencia WHERE de una consulta SQL.
+     *
+     * @param string $sql_where_previo La condición WHERE previa.
+     * @return string Devuelve la sentencia WHERE.
+     * @version 15.5.0
      */
     private function where(string $sql_where_previo): string
     {
