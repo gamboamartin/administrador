@@ -20,7 +20,6 @@ class joins{
 
     /**
      * Ajusta el nombre de un modelo con el namespace models
-     * @version 1.0.0
      * @param string $tabla Tabla o modelo o seccion a ajustar
      * @return stdClass|array obj->tabla y obj->name_model
      */
@@ -42,7 +41,6 @@ class joins{
 
     /**
      * Ajusta el nombre de un modelo para generarlo modo namespace
-     * @version 1.12.8
      * @param string $tabla Tabla o modelo o seccion a ajustar
      * @param string $tabla_enlace Tabla de enlace de un join
      * @return array|stdClass

@@ -1528,6 +1528,24 @@ class modelo extends modelo_base {
         return $r_pred;
     }
 
+    final public function inserta_registro_si_no_existe(array $registro): array|string|stdClass
+    {
+
+        $existe = $this->existe_by_id(registro_id: $registro['id']);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al verificar si existe registro',data:  $existe);
+        }
+        $inserta = 'Id '.$registro['id'].' Ya existe';
+        if(!$existe) {
+            $inserta = $this->alta_registro(registro: $registro);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar cat_sat_tipo_persona', data: $inserta);
+            }
+        }
+        return $inserta;
+
+    }
+
     final public function inserta_registros(array $registros)
     {
         $out = array();
@@ -1539,6 +1557,23 @@ class modelo extends modelo_base {
             }
             $out[] = $alta_bd;
         }
+        return $out;
+
+    }
+
+    final public function inserta_registros_no_existentes_id(array $registros): array
+    {
+        $out = array();
+        foreach ($registros as $registro) {
+
+            $inserta = $this->inserta_registro_si_no_existe(registro: $registro);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar registro', data: $inserta);
+            }
+            $out[] = $inserta;
+
+        }
+
         return $out;
 
     }
