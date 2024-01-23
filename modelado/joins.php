@@ -94,10 +94,49 @@ class joins{
     }
 
     /**
-     * Genera los datos ajustados para la generacion de un join
-     * @version 1.0.0
-     * @param array $tabla_join Datos para hacer join con tablas
-     * @return stdClass|array
+     * POR DOCUMENTAR EN WIKI
+     * Realiza la preparación de los datos para una operación de join (unión) de tablas.
+     *
+     * @param array $tabla_join Un arreglo que contiene las tablas que se van a unir.
+     *
+     * Los elementos del arreglo son:
+     * 'tabla_base'         - La tabla principal con la que se realizará la unión.
+     * 'tabla_enlace'       - La tabla secundaria con la que se unirá la tabla principal.
+     * 'tabla_renombrada'   - (Opcional) El nuevo nombre que tendrá 'tabla_enlace' después de la unión.
+     * 'campo_tabla_base_id'- (Opcional) Nombre del campo de 'tabla_base' que se usará para la unión.
+     * 'campo_renombrado'   - (Opcional) Nuevo nombre que se le asignará al campo de 'tabla_enlace' después de la unión.
+     *
+     * @return stdClass|array Retorna un objeto con la información para la operación de unión de tablas.
+     * En caso de error, devuelve un arreglo con la información del error.
+     *
+     * @example
+     *
+     * $datosJoin = [
+     *     'tabla_base' => 'usuarios',
+     *     'tabla_enlace' => 'pedidos',
+     *     'tabla_renombrada' => 'ped',
+     *     'campo_tabla_base_id' => 'id',
+     *     'campo_renombrado' => 'id_pedido'
+     * ];
+     *
+     * $resultado = joins.data_join($datosJoin);
+     *
+     * // $resultado será un objeto stdClass con la información para realizar la operación de unión de tablas.
+     * // En el caso de que la tabla sea renombrada y los campos sean renombrados, el resultado sería algo como:
+     *
+     * var_dump($resultado);
+     *
+     * // object(stdClass)#1 (5) {
+     * //   ["tabla_base"]=> string(8) "usuarios"
+     * //   ["tabla_enlace"]=> string(7) "pedidos"
+     * //   ["tabla_renombre"]=> string(3) "ped"
+     * //   ["campo_renombrado"]=> string(9) "id_pedido"
+     * //   ["campo_tabla_base_id"]=> string(2) "id"
+     * // }
+     *
+     * @throws errores Si 'tabla_base' y 'tabla_enlace' no están establecidos dentro del array $tabla_join.
+     * @version 15.7.0
+     *
      */
     private function data_join(array $tabla_join): stdClass|array
     {
@@ -159,7 +198,6 @@ class joins{
 
     /**
      * Genera los datos para proceder con la configuracion de un JOIN en sql
-     * @version 1.59.17
      * @param array $tabla_join Datos para hacer join con tablas
      * @return array|string
      */
