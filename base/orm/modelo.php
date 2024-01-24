@@ -30,6 +30,8 @@ class modelo extends modelo_base {
 
     public string $etiqueta = '';
 
+    public bool $valida_atributos_criticos = true;
+
 
 
 
@@ -67,9 +69,11 @@ class modelo extends modelo_base {
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
                                 bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
                                 bool $temp = false, array $childrens = array(), array $defaults = array(),
-                                array $parents_data = array(), array $atributos_criticos = array()){
+                                array $parents_data = array(), array $atributos_criticos = array(),
+                                bool $valida_atributos_criticos = true){
 
 
+        $this->valida_atributos_criticos = $valida_atributos_criticos;
 
         /**
          * REFCATORIZAR
@@ -123,12 +127,13 @@ class modelo extends modelo_base {
             die('Error');
         }
 
-
-        $valida = $this->valida_atributos_criticos(atributos_criticos: $atributos_criticos);
-        if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al verificar atributo critico '.$tabla, data: $valida);
-            print_r($error);
-            die('Error');
+        if($this->valida_atributos_criticos) {
+            $valida = $this->valida_atributos_criticos(atributos_criticos: $atributos_criticos);
+            if (errores::$error) {
+                $error = $this->error->error(mensaje: 'Error al verificar atributo critico ' . $tabla, data: $valida);
+                print_r($error);
+                die('Error');
+            }
         }
 
 

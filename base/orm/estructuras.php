@@ -357,8 +357,22 @@ class estructuras{
     }
 
     /**
-     * Obtiene las tablas de una base de datos completa
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Método privado get_tables_sql.
+     *
+     * Este método se encarga de obtener una lista de todas las tablas en la base de datos.
+     * Utiliza la clase "sql" para generar la consulta SQL "SHOW TABLES" y la clase "modelo_base"
+     * para ejecutar la consulta.
+     *
+     * En caso de error, ya sea en la generación de la consulta SQL o en la ejecución de la misma,
+     * el método devuelve un objeto de error con los detalles. Además, si no se obtienen tablas,
+     * también retorna un objeto de error.
+     *
+     * @return array Devuelve un array con el resultado de la consulta.
+     *               Cada elemento del array corresponde a una fila del resultado,
+     *               con los nombres de las columnas como claves y los datos correspondientes como valores.
+     *               Si se produce un error, se devuelve un objeto de error en lugar de un array con los resultados.
+     * @version 15.25.0
      */
     private function get_tables_sql(): array
     {
@@ -522,8 +536,6 @@ class estructuras{
 
     /**
      * Funcion que obtiene todas las tablas de una base de datos del sistema en ejecucion
-     * @version 1.168.33
-     * @verfuncion 1.2.0 Se valida name_db
      * @author mgamboa
      * @fecha 2022-07-25 17:26
      * @param string $name_db Nombre de la base de datos
