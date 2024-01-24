@@ -130,6 +130,33 @@ class _instalacion
         return $adds;
     }
 
+    private function add_unique_base(string $campo, string $table)
+    {
+        $columnas_unique = array($campo);
+        $index_unique = $this->index_unique(columnas: $columnas_unique,table:  $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar unique', data: $index_unique);
+        }
+        return $index_unique;
+
+    }
+
+    private function add_uniques_base(stdClass $campos_por_integrar, string $table)
+    {
+        $indexs_unique = array();
+        foreach ($campos_por_integrar as $campo=>$atributos){
+            if(isset($atributos->unique) && $atributos->unique){
+                $index_unique = $this->add_unique_base(campo: $campo,table:  $table);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al integrar unique', data: $index_unique);
+                }
+                $indexs_unique[] = $index_unique;
+            }
+
+        }
+        return $indexs_unique;
+    }
+
     final public function campo_double(stdClass $campos, string $name_campo, string $default = '0',
                                        string $longitud = '100,2'): array|stdClass
     {
@@ -197,16 +224,21 @@ class _instalacion
 
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
-        $sql = (new sql())->create_table(campos: $campos, table: $table);
+        $data_sql = (new sql())->create_table(campos: $campos, table: $table);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+            return $this->error->error(mensaje: 'Error al generar sql', data: $data_sql);
         }
-
-
-        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        $exe = $this->modelo->ejecuta_sql(consulta: $data_sql->sql);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
+
+        $campos_por_integrar = $data_sql->datos_tabla->campos_por_integrar;
+        $indexs_unique = $this->add_uniques_base(campos_por_integrar: $campos_por_integrar,table:  $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar uniques', data: $indexs_unique);
+        }
+
         return $exe;
 
     }

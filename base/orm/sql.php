@@ -104,21 +104,11 @@ class sql{
 
     }
 
-    /**
-     * Genera una sentencia SQL para crear una tabla con los campos proporcionados.
-     * Si los campos están vacíos o si hay errores al obtener los datos de la tabla o al crear la tabla,
-     * retorna un mensaje de error.
-     *
-     * @param stdClass $campos El objeto que contiene los campos y sus atributos.
-     * @param string $table El nombre de la tabla que se creará.
-     * @return string|array Devuelve la sentencia SQL para crear la tabla,
-     *                      o en caso de error, devuelve un array con el mensaje y los datos del error.
-     */
-    final public function create_table(stdClass $campos, string $table): array|string
+
+    final public function create_table(stdClass $campos, string $table): array|stdClass
     {
         if(count((array)$campos) === 0){
             return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos);
-
         }
 
         $datos_tabla = (new _create())->datos_tabla(campos: $campos);
@@ -131,7 +121,11 @@ class sql{
             return $this->error->error(mensaje: 'Error al obtener create',data: $sql);
         }
 
-        return $sql;
+        $data = new stdClass();
+        $data->sql = $sql;
+        $data->datos_tabla = $datos_tabla;
+
+        return $data;
 
     }
 

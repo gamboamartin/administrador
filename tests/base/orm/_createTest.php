@@ -10,6 +10,18 @@ use stdClass;
 class _createTest extends TestCase
 {
 
+    public function test_atributo_codigo(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $result = $_create->atributo_codigo($campos);
+        $this->assertTrue($result->codigo->unique);
+
+        errores::$error = false;
+    }
     public function test_atributos_base(){
         errores::$error = false;
         // Arrange (Organizar)

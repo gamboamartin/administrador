@@ -16,6 +16,43 @@ class _create
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * La función _create.atributo_codigo se encarga de modificar el objeto que se le pasa como parámetro,
+     * específicamente añadiendo una nueva propiedad 'codigo' a este objeto.
+     * Esta nueva propiedad es de tipo stdclass y se le asigna un valor boolean 'true'.
+     *
+     * @param stdClass $campos Un objeto stdClass. Este objeto se modifica dentro de la función.
+     *
+     * @return stdClass Devuelve el objeto stdClass modificado. Este objeto ahora contendrá una nueva propiedad 'codigo',
+     *                  que es de tipo stdclass y tiene un valor boolean 'true'.
+     *
+     * @version 15.17.0
+     */
+    private function atributo_codigo(stdClass $campos): stdClass
+    {
+        $campos->codigo = new stdClass();
+        $campos->codigo->unique = true;
+        return $campos;
+    }
+
+    private function atributo_integer(stdClass $campos, string $campo): stdClass
+    {
+        $campos->$campo = new stdClass();
+        $campos->$campo->tipo_dato = 'INT';
+
+        return $campos;
+
+    }
+
+    private function atributo_status(stdClass $campos): stdClass
+    {
+        $campos->status = new stdClass();
+        $campos->status->default = 'activo';
+        return $campos;
+
+    }
+
+    /**
      * Define los atributos de una nueva instancia basándose en los atributos proporcionados.
      * Si ocurre un error al obtener los atributos iniciales o al establecer los atributos base,
      * el método generará un error y retornará un mensaje de error.
@@ -71,6 +108,20 @@ class _create
 
     }
 
+    private function atributos_fecha_base(stdClass $campos): stdClass
+    {
+        $campos->fecha_alta = new stdClass();
+        $campos->fecha_alta->tipo_dato = 'TIMESTAMP';
+        $campos->fecha_alta->default = 'CURRENT_TIMESTAMP';
+
+        $campos->fecha_update = new stdClass();
+        $campos->fecha_update->tipo_dato = 'TIMESTAMP';
+        $campos->fecha_update->default = 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;';
+
+        return $campos;
+
+    }
+
     /**
      * POR DOCUMENTAR WIKI
      * Define los atributos iniciales para el nuevo objeto que será creado.
@@ -88,6 +139,18 @@ class _create
         $data->not_null = "NOT NULL";
 
         return $data;
+    }
+
+    private function atributos_integer(stdClass $campos, array $campos_integer)
+    {
+        foreach ($campos_integer as $campo){
+            $campos = $this->atributo_integer(campos: $campos,campo: $campo);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener '.$campo,data: $campos);
+            }
+        }
+        return $campos;
+
     }
 
 
@@ -116,6 +179,41 @@ class _create
         $atributos_base->longitud_sql = $longitud_sql;
 
         return $atributos_base;
+
+    }
+
+    private function campos_base(stdClass $campos): stdClass
+    {
+
+        $campos = $this->atributo_codigo(campos: $campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener codigo',data: $campos);
+        }
+
+        $campos->descripcion = new stdClass();
+
+        $campos = $this->atributo_status(campos: $campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener status',data: $campos);
+        }
+
+        $campos = $this->atributos_integer(campos: $campos,campos_integer: array('usuario_alta_id','usuario_update_id'));
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener atributos user',data: $campos);
+        }
+
+        $campos = $this->atributos_fecha_base(campos: $campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener atributos user',data: $campos);
+        }
+
+        $campos->descripcion_select = new stdClass();
+        $campos->alias = new stdClass();
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        return $campos;
 
     }
 
@@ -183,16 +281,17 @@ class _create
         return $foreign_keys;
     }
 
-    /**
-     * Genera las sentencias SQL de los campos y las claves foráneas para una tabla a partir de los atributos proporcionados.
-     * Si no se pueden generar estas sentencias, este método retorna un mensaje de error.
-     *
-     * @param stdClass $campos El objeto que contiene los campos y sus atributos.
-     * @return stdClass|array Retorna un objeto que contiene las sentencias SQL para los campos y las claves foráneas,
-     *                        o, si ocurre un error, retorna un array con el mensaje y los datos del error.
-     */
+
     final public function datos_tabla(stdClass $campos):array|stdClass
     {
+        if(count((array)$campos) === 0){
+            $campos = $this->campos_base(campos: $campos);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener campos_base',data: $campos);
+            }
+
+        }
+
         $campos_sql = $this->crea_campos_sql(campos: $campos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos_sql',data: $campos_sql);
@@ -203,9 +302,12 @@ class _create
             return $this->error->error(mensaje: 'Error al obtener foreign_keys',data: $foreign_keys);
         }
 
+
+
         $data = new stdClass();
         $data->campos = $campos_sql;
         $data->foreigns = $foreign_keys;
+        $data->campos_por_integrar  = $campos;
 
         return $data;
     }
