@@ -388,8 +388,6 @@ class _instalacion
         return $exe;
 
     }
-
-
     final public function foreign_key_seguro(string $campo, string $table, string $default = '')
     {
 
@@ -434,7 +432,6 @@ class _instalacion
         return $fk;
 
     }
-
     private function foreign_no_conf(string $campo, array $campo_origen, string $table)
     {
         $fk = 'Campo asignado '.$campo;
@@ -447,7 +444,6 @@ class _instalacion
         return $fk;
 
     }
-
     private function foreign_no_conf_integra(string $campo, array $campos_origen, string $table)
     {
         $fk = 'No existe campo '.$campo;
@@ -489,8 +485,19 @@ class _instalacion
         return $fk;
 
     }
+    final public function index_unique(array $columnas, $table)
+    {
+        $sql = (new sql())->index_unique(columnas: $columnas,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
 
-
+        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+    }
 
     /**
      * Integra una clave foránea en una tabla si el campo correspondiente no existe ya en la tabla.

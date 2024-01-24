@@ -137,6 +137,67 @@ class sql{
 
     /**
      * POR DOCUMENTAR EN WIKI
+     * La función data_index se utiliza para configurar un índice en una o varias columnas de una base de datos SQL.
+     *
+     * @param string $columna El nombre de la columna para la cual se creará el índice.
+     * @param string $columnas_index Cadena que contiene los nombres de las columnas para las que se creará el índice, separados por comas.
+     * @param string $index_name El nombre del índice a crear.
+     *
+     * @return array|stdClass Retorna un objeto stdClass con dos propiedades. "index_name" que almacena el nombre del índice,
+     *                    y "columnas_index" que es una cadena que contiene los nombres de las columnas del índice separados por comas.
+     *                    Si ocurre algún error, retorna un objeto error.
+     *
+     * @throws errores Si el nombre de la columna está vacío, la función arrojará un error.
+     *
+     * @example
+     * $dataIndex = data_index('columna1', 'columna2,columna3', 'miIndice');
+     * echo $dataIndex->index_name; // Imprime: miIndice_columna1
+     * echo $dataIndex->columnas_index; // Imprime: columna2,columna3,columna1
+     * @version 15.16.0
+     */
+    private function data_index(string $columna, string $columnas_index, string $index_name): array|stdClass
+    {
+        $columna = trim($columna);
+        if($columna === ''){
+            return $this->error->error(mensaje: 'Error columna esta vacia', data: $columna);
+        }
+        $coma = '';
+        $guion = '';
+        if($columnas_index!==''){
+            $coma = ',';
+            $guion = '_';
+        }
+
+        $index_name.=$guion.$columna;
+        $columnas_index.=$coma.$columna;
+
+        $data = new stdClass();
+        $data->index_name = $index_name;
+        $data->columnas_index = $columnas_index;
+
+        return $data;
+
+    }
+
+    private function data_index_unique(array $columnas, string $table)
+    {
+        $data = new stdClass();
+        $data->columnas_index = '';
+        $data->index_name = $table.'_unique_';
+        foreach ($columnas as $columna){
+            $data = $this->data_index(columna: $columna,columnas_index:  $data->columnas_index,
+                index_name:  $data->index_name);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error obtener datos de index', data: $data);
+            }
+        }
+
+        return $data;
+
+    }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
      * Genera una declaración SQL para establecer un valor predeterminado en una columna.
      *
      * @param string $value El valor predeterminado a establecer.
@@ -249,7 +310,7 @@ class sql{
      * @return string|array
      * @version 1.548.51
      */
-    public function in(string $llave, string $values_sql): string|array
+    final public function in(string $llave, string $values_sql): string|array
     {
         $valida = $this->valida_in(llave: $llave, values_sql: $values_sql);
         if(errores::$error){
@@ -266,6 +327,25 @@ class sql{
         return $in_sql;
     }
 
+    final public function index_unique(array $columnas, string $table): string|array
+    {
+        if(count($columnas ) === 0){
+            return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+
+        $data = $this->data_index_unique(columnas: $columnas,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error obtener datos de index', data: $data);
+        }
+
+        $sql = "CREATE UNIQUE INDEX $data->index_name  ON $table ($data->columnas_index);";
+        return trim($sql);
+
+    }
     private function inicializa_param(string $key, stdClass $params_base): array|stdClass
     {
         if(!isset($params_base->$key)){

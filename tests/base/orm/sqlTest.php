@@ -63,6 +63,36 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_index(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+        $columna = 'columna';
+        $columnas_index = '';
+        $index_name = '';
+        $resultado = $sql->data_index($columna, $columnas_index, $index_name);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('columna',$resultado->index_name);
+        $this->assertEquals('columna',$resultado->index_name);
+
+        errores::$error = false;
+
+        $columna = 'columna';
+        $columnas_index = 'a';
+        $index_name = 'b';
+        $resultado = $sql->data_index($columna, $columnas_index, $index_name);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('b_columna',$resultado->index_name);
+        $this->assertEquals('a,columna',$resultado->columnas_index);
+        errores::$error = false;
+
+
+    }
+
     public function test_default(): void
     {
         errores::$error = false;
