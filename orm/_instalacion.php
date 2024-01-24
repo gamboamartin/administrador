@@ -131,10 +131,10 @@ class _instalacion
         return $adds;
     }
 
-    private function add_unique_base(string $campo, string $table)
+    private function add_unique_base(string $campo, string $table, string $index_name = '')
     {
         $columnas_unique = array($campo);
-        $index_unique = $this->index_unique(columnas: $columnas_unique,table:  $table);
+        $index_unique = $this->index_unique(columnas: $columnas_unique,table:  $table, index_name: $index_name);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar unique', data: $index_unique);
         }
@@ -147,7 +147,11 @@ class _instalacion
         $indexs_unique = array();
         foreach ($campos_por_integrar as $campo=>$atributos){
             if(isset($atributos->unique) && $atributos->unique){
-                $index_unique = $this->add_unique_base(campo: $campo,table:  $table);
+                $index_name = '';
+                if(isset($atributos->index_name)){
+                    $index_name = trim($atributos->index_name);
+                }
+                $index_unique = $this->add_unique_base(campo: $campo,table:  $table, index_name: $index_name);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al integrar unique', data: $index_unique);
                 }
@@ -531,9 +535,9 @@ class _instalacion
         return $fk;
 
     }
-    final public function index_unique(array $columnas, $table)
+    final public function index_unique(array $columnas, $table, string $index_name = '')
     {
-        $sql = (new sql())->index_unique(columnas: $columnas,table:  $table);
+        $sql = (new sql())->index_unique(columnas: $columnas,table:  $table, index_name: $index_name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }

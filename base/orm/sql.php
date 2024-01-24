@@ -173,17 +173,59 @@ class sql{
 
     }
 
-    private function data_index_unique(array $columnas, string $table)
+    /**
+     * POR DOCUMENTAR WIKI
+     * Esta función se utiliza para preparar los datos necesarios para la creación de un índice único en una tabla SQL.
+     *
+     * @param array $columnas Arreglo de columnas sobre las que se va a construir el índice único. No debe estar vacío.
+     * @param string $table Nombre de la tabla en la que se va a crear el índice. No debe estar vacío.
+     * @param string $index_name Nombre opcional del índice único. Si se proporciona, este nombre se utilizará para el índice en lugar del predeterminado.
+     * @return stdClass|array Si la función se ejecuta con éxito, devuelve un objeto stdClass que contiene los detalles del índice que se va a crear. Si ocurre un error, devuelve un objeto de error.
+     *
+     * @throws errores Se lanza si $columnas está vacío o si $table está vacía o si una columna dentro de $columnas está vacía.
+     *
+     * Ejemplo de uso:
+     *
+     * ```php
+     * $columnas = ['nombre', 'apellido'];
+     * $tabla = 'usuarios';
+     *
+     *
+     * $resultado = data_index_unique($columnas, $tabla);
+     * if (errores::error) {
+     *     print_r (resultado)
+     * } else {
+     *     echo 'Datos de índice preparados con éxito. Índice a ser creado: ' . $resultado->index_name;
+     * }
+     *
+     * ```
+     * @version 15.22.0
+     */
+    private function data_index_unique(array $columnas, string $table, string $index_name = ''): array|stdClass
     {
+        if(count($columnas) === 0){
+            return $this->error->error(mensaje: 'Error columnas esta vacio', data: $columnas);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
         $data = new stdClass();
         $data->columnas_index = '';
         $data->index_name = $table.'_unique_';
         foreach ($columnas as $columna){
+            $columna = trim($columna);
+            if($columna === ''){
+                return $this->error->error(mensaje: 'Error columna esta vacia', data: $columna);
+            }
             $data = $this->data_index(columna: $columna,columnas_index:  $data->columnas_index,
                 index_name:  $data->index_name);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error obtener datos de index', data: $data);
             }
+        }
+        if(trim($index_name) !== ''){
+            $data->index_name = trim($index_name);
         }
 
         return $data;
@@ -321,7 +363,7 @@ class sql{
         return $in_sql;
     }
 
-    final public function index_unique(array $columnas, string $table): string|array
+    final public function index_unique(array $columnas, string $table, string $index_name = ''): string|array
     {
         if(count($columnas ) === 0){
             return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas);
@@ -331,7 +373,7 @@ class sql{
             return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
         }
 
-        $data = $this->data_index_unique(columnas: $columnas,table:  $table);
+        $data = $this->data_index_unique(columnas: $columnas,table:  $table, index_name: $index_name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error obtener datos de index', data: $data);
         }

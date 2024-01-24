@@ -93,6 +93,35 @@ class sqlTest extends test {
 
     }
 
+    public function test_data_index_unique(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $table = 'v';
+        $columnas = array();
+        $columnas[] = 'a';
+        $resultado = $sql->data_index_unique($columnas, $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('v_unique_a',$resultado->index_name);
+        $this->assertEquals('a',$resultado->columnas_index);
+        errores::$error = false;
+
+        $table = 'v';
+        $columnas = array();
+        $columnas[] = 'a';
+        $resultado = $sql->data_index_unique($columnas, $table,'z');
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('z',$resultado->index_name);
+        $this->assertEquals('a',$resultado->columnas_index);
+        errores::$error = false;
+
+
+    }
+
     public function test_default(): void
     {
         errores::$error = false;
