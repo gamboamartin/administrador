@@ -35,8 +35,21 @@ class _create
         return $campos;
     }
 
-    private function atributo_integer(stdClass $campos, string $campo): stdClass
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método se utiliza para establecer un atributo como un entero y añadirlo a un conjunto de campos.
+     *
+     * @param stdClass $campos El objeto que contiene todos los campos a los que se debe añadir el nuevo atributo.
+     * @param string $campo El nombre del nuevo atributo a añadir.
+     * @return stdClass|array Retorna $campos con el nuevo atributo añadido o un array de error si el nombre del campo está vacío.
+     * @version 15.19.0
+     */
+    private function atributo_integer(stdClass $campos, string $campo): stdClass|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
         $campos->$campo = new stdClass();
         $campos->$campo->tipo_dato = 'INT';
 
@@ -45,6 +58,7 @@ class _create
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Este método establece el atributo 'status' en un objeto.
      *
      * Este método recibe un objeto, le añade la propiedad 'status' y le asigna el valor 'activo'.
@@ -200,7 +214,7 @@ class _create
 
     }
 
-    private function campos_base(stdClass $campos): stdClass
+    final public function campos_base(stdClass $campos): stdClass
     {
 
         $campos = $this->atributo_codigo(campos: $campos);
@@ -302,14 +316,6 @@ class _create
 
     final public function datos_tabla(stdClass $campos):array|stdClass
     {
-        if(count((array)$campos) === 0){
-            $campos = $this->campos_base(campos: $campos);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener campos_base',data: $campos);
-            }
-
-        }
-
         $campos_sql = $this->crea_campos_sql(campos: $campos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener campos_sql',data: $campos_sql);

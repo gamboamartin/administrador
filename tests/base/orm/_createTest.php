@@ -22,6 +22,20 @@ class _createTest extends TestCase
 
         errores::$error = false;
     }
+
+    public function test_atributo_integer(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $campo = 'A';
+        $result = $_create->atributo_integer($campos, $campo);
+        $this->assertEquals('INT', $result->A->tipo_dato);
+
+        errores::$error = false;
+    }
     public function test_atributos_base(){
         errores::$error = false;
         // Arrange (Organizar)

@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\models;
 
+use base\orm\_create;
 use base\orm\estructuras;
 use base\orm\modelo_base;
 use base\orm\sql;
@@ -224,6 +225,13 @@ class _instalacion
 
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
+        if(count((array)$campos) === 0){
+            $campos = (new _create())->campos_base(campos: $campos);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener campos_base',data: $campos);
+            }
+        }
+
         $data_sql = (new sql())->create_table(campos: $campos, table: $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $data_sql);
