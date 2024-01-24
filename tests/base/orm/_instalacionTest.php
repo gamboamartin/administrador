@@ -399,6 +399,29 @@ class _instalacionTest extends test
         errores::$error = false;
     }
 
+    public function test_existen_entidad(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+
+
+        $table = 'a';
+
+        $resultado = $ins->existe_entidad($table);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+        $table = 'zzzz';
+
+        $resultado = $ins->existe_entidad($table);
+        $this->assertNotTrue($resultado);
+
+
+        errores::$error = false;
+    }
+
+
     public function test_foreign_key_completo(): void
     {
         errores::$error = false;

@@ -272,6 +272,39 @@ class _instalacion
         return $existe_campo;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Verifica si la entidad proporcionada existe en la base de datos.
+     *
+     * @param string $table El nombre de la tabla a verificar.
+     *
+     * @return bool|array Devuelve un error si la tabla está vacía o si hay un error al validar.
+     *               De lo contrario, devuelve verdadero o falso dependiendo de si la entidad existe.
+     *
+     * Ejemplo de uso:
+     *
+     * $instalacion = new _instalacion();
+     * if($instalacion->existe_entidad("nombre_tabla")) {
+     *    // La tabla existe
+     * } else {
+     *    // La tabla no existe
+     * }
+     * @version 15.15.0
+     */
+    final public function existe_entidad(string $table): bool|array
+    {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table vacia', data: $table);
+        }
+        $existe = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe entidad',data: $existe);
+        }
+        return $existe;
+
+    }
+
     final public function foraneas(array $foraneas, string $table)
     {
         $results = array();
