@@ -17,6 +17,28 @@ class params_sqlTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_asigna_seguridad_data(): void
+    {
+
+
+        $_SESSION['usuario_id'] = 1;
+        errores::$error = false;
+        $ps = new params_sql();
+        $ps = new liberator($ps);
+
+        $modelo_columnas_extra = array();
+        $modelo_columnas_extra['usuario_permitido_id'] = 1;
+        $sql_where_previo = '';
+        $resultado = $ps->asigna_seguridad_data($modelo_columnas_extra, $sql_where_previo);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('  WHERE  (1) = 1 ', $resultado);
+
+
+
+        errores::$error = false;
+    }
     public function test_group_by_sql(): void
     {
         errores::$error = false;
@@ -77,8 +99,6 @@ class params_sqlTest extends test {
         $this->assertEquals(' OFFSET 1', $resultado);
         errores::$error = false;
     }
-
-
 
     public function test_order_sql(){
         errores::$error = false;

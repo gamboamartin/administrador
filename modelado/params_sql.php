@@ -12,10 +12,23 @@ class params_sql{
     }
 
     /**
-     * Asigna un where con seguridad por datos a sql
-     * @param array $modelo_columnas_extra
-     * @param string $sql_where_previo Sql previo
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Asigna seguridad a los datos.
+     *
+     * Esta función recibe como parámetros un array con las columnas extra del modelo y una cadena con la
+     * cláusula WHERE previa de una consulta SQL. Valida la seguridad del modelo y genera una nueva cláusula
+     * WHERE incluyendo un filtro por el 'usuario_permitido_id' almacenado en $modelo_columnas_extra.
+     *
+     * @param array $modelo_columnas_extra Un array asociativo que contiene las columnas extra de un modelo.
+     * @param string $sql_where_previo Una cadena de texto con la cláusula WHERE previa de una consulta SQL.
+     *
+     * @return array|string Devuelve un string con la nueva cláusula WHERE o un array con los datos de un error
+     *                         en caso de que haya ocurrido alguno durante la validación de seguridad o la
+     *                         generación de la nueva cláusula WHERE.
+     *
+     * @throws errores En caso de que ocurra un error durante la validación de seguridad o la generación de la
+     *                   la cláusula WHERE, esta función lanzará un error.
+     * @version 15.24.0
      */
     private function asigna_seguridad_data(array $modelo_columnas_extra, string $sql_where_previo): array|string
     {
@@ -249,6 +262,9 @@ class params_sql{
             registro: $modelo_columnas_extra,valida_vacio: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
+        }
+        if(!isset($_SESSION['usuario_id'])){
+            return $this->error->error(mensaje: 'Error al validar $_SESSION no esta definida', data:array());
         }
         $keys = array('usuario_id');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $_SESSION);
