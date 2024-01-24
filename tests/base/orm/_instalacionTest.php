@@ -334,28 +334,42 @@ class _instalacionTest extends test
                 exit;
             }
         }
+        //exit;
 
         $campos = new stdClass();
         $campos->a = new stdClass();
         $resultado = $ins->create_table(campos: $campos,  table: $table);
+
+        //print_r($resultado);exit;
+        //exit;
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE test (
                     id bigint NOT NULL AUTO_INCREMENT,
-                    a VARCHAR (255) NOT NULL, 
+                    a VARCHAR (255) NOT NULL , 
                     PRIMARY KEY (id) 
                    
-                    );', $resultado->sql);
+                    );', $resultado->exe->sql);
 
         errores::$error = false;
 
         $table = 'b';
 
-        $drop = $ins->drop_table( table: $table);
+
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
         if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
+            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
             print_r($error);
             exit;
+        }
+
+        if($existe_table) {
+            $drop = $ins->drop_table(table: $table);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+                print_r($error);
+                exit;
+            }
         }
 
         $table = 'a';
@@ -370,14 +384,15 @@ class _instalacionTest extends test
         $campos = new stdClass();
         $campos->a = new stdClass();
         $resultado = $ins->create_table(campos: $campos, table: $table);
+        //print_r($resultado);exit;
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE a (
                     id bigint NOT NULL AUTO_INCREMENT,
-                    a VARCHAR (255) NOT NULL, 
+                    a VARCHAR (255) NOT NULL , 
                     PRIMARY KEY (id) 
                    
-                    );', $resultado->sql);
+                    );', $resultado->exe->sql);
 
 
         $table = 'b';
@@ -387,16 +402,50 @@ class _instalacionTest extends test
         $campos->a_id->foreign_key = true;
         $campos->a_id->tipo_dato = 'bigint';
         $resultado = $ins->create_table(campos: $campos, table: $table);
+        //print_r($resultado);exit;
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE b (
                     id bigint NOT NULL AUTO_INCREMENT,
-                    a VARCHAR (255) NOT NULL, a_id bigint (255) NOT NULL, 
+                    a VARCHAR (255) NOT NULL , a_id bigint (255) NOT NULL , 
                     PRIMARY KEY (id) , 
                    FOREIGN KEY (a_id) REFERENCES a(id) ON UPDATE RESTRICT ON DELETE RESTRICT
-                    );', $resultado->sql);
+                    );', $resultado->exe->sql);
 
         errores::$error = false;
+
+
+        $table = 'z';
+        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+            print_r($error);
+            exit;
+        }
+
+        if($existe_table) {
+            $drop = $ins->drop_table(table: $table);
+            if (errores::$error) {
+                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+                print_r($error);
+                exit;
+            }
+        }
+        //exit;
+
+        $campos = new stdClass();
+        $resultado = $ins->create_table(campos: $campos, table: $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("CREATE TABLE z (
+                    id bigint NOT NULL AUTO_INCREMENT,
+                    codigo VARCHAR (255) NOT NULL , descripcion VARCHAR (255) NOT NULL , status VARCHAR (255) NOT NULL DEFAULT 'activo', usuario_alta_id INT (255) NOT NULL , usuario_update_id INT (255) NOT NULL , fecha_alta TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP, fecha_update TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, descripcion_select VARCHAR (255) NOT NULL , alias VARCHAR (255) NOT NULL , codigo_bis VARCHAR (255) NOT NULL , predeterminado VARCHAR (255) NOT NULL DEFAULT 'inactivo', 
+                    PRIMARY KEY (id) 
+                   
+                    );", $resultado->exe->sql);
+
+        errores::$error = false;
+
     }
 
     public function test_existen_entidad(): void

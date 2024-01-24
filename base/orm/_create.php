@@ -85,13 +85,25 @@ class _create
     }
 
     /**
-     * Define los atributos de una nueva instancia basándose en los atributos proporcionados.
-     * Si ocurre un error al obtener los atributos iniciales o al establecer los atributos base,
-     * el método generará un error y retornará un mensaje de error.
+     * POR DOCUMENTAR EN WIKI
+     * Esta función toma como argumento un objeto de la clase estándar de PHP (stdClass) que representa los atributos.
+     * Luego, establece los atributos iniciales y se asegura de gestionar cualquier error que pueda ocurrir durante
+     * este proceso con el método 'error' de 'this->error'.
      *
-     * @param stdClass $atributos El objeto que contiene los atributos a ser establecidos.
-     * @return stdClass|array Retorna una nueva instancia con los atributos establecidos o,
-     *                       si ocurre un error, no retorna nada y genera un mensaje de error.
+     * Después de obtener los atributos iniciales, el método procede para obtener los atributos base (atributos_base),
+     * usando el método 'atributos_base'. También maneja los errores para esta operación.
+     *
+     * Finalmente, se comprueba si el atributo es de tipo TIMESTAMP, si es así, se vacía su longitud.
+     *
+     * @param stdClass $atributos El objeto que se pasa como argumento que contiene la información sobre los atributos.
+     * @return array|stdClass Retorna un array o un objeto que contiene los atributos base.
+     * @throws errores Levanta una excepción en caso de error
+     *
+     * @see _create::atributos_iniciales()
+     * @see _create::atributos_base()
+     * @see errores::error()
+     *
+     * @version 15.21.0
      */
     private function atributos(stdClass $atributos): array|stdClass
     {
@@ -103,6 +115,10 @@ class _create
         $atributos_base = $this->atributos_base(atributos: $atributos,atributos_base:  $atributos_base);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener atributos_base',data: $atributos_base);
+        }
+
+        if($atributos_base->tipo_dato === 'TIMESTAMP'){
+            $atributos_base->longitud = '';
         }
 
         return $atributos_base;
@@ -136,6 +152,7 @@ class _create
             $atributos_base->not_null = trim($atributos->not_null);
         }
 
+
         return $atributos_base;
 
     }
@@ -148,7 +165,7 @@ class _create
 
         $campos->fecha_update = new stdClass();
         $campos->fecha_update->tipo_dato = 'TIMESTAMP';
-        $campos->fecha_update->default = 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;';
+        $campos->fecha_update->default = 'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
 
         return $campos;
 
@@ -186,16 +203,7 @@ class _create
     }
 
 
-    /**
-     * Genera los atributos SQL para el objeto a partir de los atributos base,
-     * y asigna la longitud SQL, si está presente.
-     * Si ocurre un error al obtener los atributos base o al obtener la longitud SQL,
-     * el método generará un error y retornará un mensaje de error.
-     *
-     * @param stdClass $atributos El objeto que contiene los atributos base.
-     * @return stdClass|array Retorna un objeto que contiene los atributos SQL y longitud SQL,
-     *                       o, si ocurre un error, no retorna nada y genera un mensaje de error.
-     */
+
     private function atributos_sql(stdClass $atributos): array|stdClass
     {
         $atributos_base = $this->atributos(atributos: $atributos);
@@ -208,7 +216,24 @@ class _create
             return $this->error->error(mensaje: 'Error al obtener longitud_sql',data: $longitud_sql);
         }
 
+        $atributos_base->default = '';
+        if(isset($atributos->default)){
+            $atributos_base->default = trim($atributos->default);
+        }
+        $default_sql = '';
+        if($atributos_base->tipo_dato !== ''){
+
+            if($atributos_base->default !== '') {
+                if ($atributos_base->tipo_dato === 'VARCHAR') {
+                    $default_sql = "DEFAULT '$atributos_base->default'";
+                } elseif ($atributos_base->tipo_dato === 'TIMESTAMP') {
+                    $default_sql = "DEFAULT $atributos_base->default";
+                }
+            }
+        }
+
         $atributos_base->longitud_sql = $longitud_sql;
+        $atributos_base->default_sql = $default_sql;
 
         return $atributos_base;
 
@@ -249,22 +274,14 @@ class _create
 
     }
 
-    /**
-     * Genera una sentencia SQL para un campo a partir de los atributos base proporcionados.
-     * Si no se pueden obtener los atributos base, este método retorna un mensaje de error.
-     *
-     * @param stdClass $atributos El objeto que contiene los atributos base.
-     * @param string $campo El nombre del campo para el cual se generará la sentencia SQL.
-     * @return string|array Retorna una sentencia SQL para el campo especificado
-     *                      o, si ocurre un error, retorna un array con el mensaje y los datos del error.
-     */
     private function campo_sql(stdClass $atributos, string $campo):string|array
     {
         $atributos_base = $this->atributos_sql(atributos: $atributos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener atributos_base',data: $atributos_base);
         }
-        return "$campo $atributos_base->tipo_dato $atributos_base->longitud_sql $atributos_base->not_null, ";
+
+        return "$campo $atributos_base->tipo_dato $atributos_base->longitud_sql $atributos_base->not_null $atributos_base->default_sql, ";
 
     }
 

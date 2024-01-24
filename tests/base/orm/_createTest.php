@@ -36,7 +36,31 @@ class _createTest extends TestCase
 
         errores::$error = false;
     }
-    public function test_atributos_base(){
+
+    public function test_atributos()
+    {
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $atributos = new stdClass();
+        $result = $_create->atributos($atributos);
+        $this->assertEquals('VARCHAR', $result->tipo_dato);
+        $this->assertEquals('255', $result->longitud);
+        $this->assertEquals('NOT NULL', $result->not_null);
+
+        errores::$error = false;
+
+        $atributos = new stdClass();
+        $atributos->tipo_dato = 'TIMESTAMP';
+        $result = $_create->atributos($atributos);
+        $this->assertEquals('TIMESTAMP', $result->tipo_dato);
+        $this->assertEquals('', $result->longitud);
+        $this->assertEquals('NOT NULL', $result->not_null);
+        errores::$error = false;
+    }
+        public function test_atributos_base(){
         errores::$error = false;
         // Arrange (Organizar)
         $_create = new _create();

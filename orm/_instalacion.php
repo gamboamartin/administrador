@@ -232,22 +232,28 @@ class _instalacion
             }
         }
 
+        $out = new stdClass();
+
         $data_sql = (new sql())->create_table(campos: $campos, table: $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $data_sql);
         }
+        $out->data_sql = $data_sql;
         $exe = $this->modelo->ejecuta_sql(consulta: $data_sql->sql);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
+        $out->exe = $exe;
 
         $campos_por_integrar = $data_sql->datos_tabla->campos_por_integrar;
         $indexs_unique = $this->add_uniques_base(campos_por_integrar: $campos_por_integrar,table:  $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar uniques', data: $indexs_unique);
         }
+        $out->indexs_unique = $indexs_unique;
 
-        return $exe;
+
+        return $out;
 
     }
 
