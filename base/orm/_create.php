@@ -44,6 +44,24 @@ class _create
 
     }
 
+    /**
+     * Este método establece el atributo 'status' en un objeto.
+     *
+     * Este método recibe un objeto, le añade la propiedad 'status' y le asigna el valor 'activo'.
+     * Finalmente, el objeto modificado se devuelve.
+     *
+     * @param stdClass $campos Recibe un objeto al que se le asignará un nuevo atributo 'status'.
+     * @return stdClass Retorna el objeto con el nuevo atributo 'status' con el valor por defecto 'activo'.
+     *
+     * Ejemplo de uso:
+     * ```php
+     * $obj = new stdClass();
+     * $obj = _create->atributo_status($obj);
+     * echo $obj->status->default; // Imprime: activo
+     * ```
+     * @author Martin Gamboa
+     * @version 15.18.0
+     */
     private function atributo_status(stdClass $campos): stdClass
     {
         $campos->status = new stdClass();

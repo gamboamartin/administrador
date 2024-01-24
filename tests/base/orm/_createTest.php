@@ -39,6 +39,19 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_atributo_status(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $result = $_create->atributo_status($campos);
+        $this->assertEquals('activo',$result->status->default);
+
+        errores::$error = false;
+    }
+
     /**
      * Prueba la función atributos_iniciales de la clase _create
      *
