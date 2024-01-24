@@ -378,7 +378,6 @@ class validaciones extends validacion{
     /**
      *
      * Funcion para validar que la entrada de datos en renombres sea la correcta
-     * @version 1.58.17
      * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
      * @param string $join string tipo de join INNER O LEFT O ETC
      * @param string $renombrada renombre de tabla para su salida en sql

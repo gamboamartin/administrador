@@ -547,10 +547,32 @@ class joins{
     }
 
     /**
-     * Inicializa los datos para un rename de sql
-     * @param string $tabla Tabla o modelo o seccion a ajustar
-     * @param string $tabla_enlace Tabla de enlace de un join
-     * @return stdClass|array obj->tabla obj->class obj->tabla_enlace obj->class_enlace
+     * POR DOCUMENTAR EN WIKI
+     * Función para inicializar y renombrar tablas y modelos en una operación join.
+     *
+     * Esta función toma como entrada cuatro argumentos los que corresponden a nombres de tablas y devolviéndolos en un
+     * objeto estandar de PHP o un array en caso de error.
+     *
+     * @param string $tabla Un nombre de tabla para renombrar.
+     * @param string $tabla_enlace Un nombre de tabla de enlace para renombrar.
+     *
+     * @return stdClass|array Devuelve un objeto stdClass en caso de éxito con las propiedades 'tabla', 'class', 'tabla_enlace',
+     * y 'class_enlace' establecidas a sus nuevos nombres correspondientes, cada uno de tipo string.
+     * En caso de error, se devuelve un array con información relacionada con el error.
+     *
+     * @throws errores se lanza ninguna excepción explícitamente, sin embargo, internamente maneja los errores llamando al
+     * método error del objeto error si ocurren durante el proceso de renombrado.
+     *
+     * @example
+     * <code>
+     * // Crear un objeto de la clase que contiene init_renombre
+     * $obj = new Joins();
+     * // Llamar a alguna función pública que a su vez llama a init_renombre
+     * $array = ['tabla' => 'nombre_tabla', 'tabla_enlace' => 'nombre_tabla_enlace'];
+     * $resultado = $obj->algunMetodoPublico($array);
+     * </code>
+     *
+     * @version 15.28.0
      */
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
     {
