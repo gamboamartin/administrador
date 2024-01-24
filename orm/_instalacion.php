@@ -161,6 +161,28 @@ class _instalacion
         }
         return $indexs_unique;
     }
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * El método campo_double se encarga de crear un objeto stdClass con la configuración para un campo de tipo double.
+     *
+     * @param stdClass $campos Es el objeto al que se le añadirá la configuración del nuevo campo.
+     * @param string $name_campo Es el nombre que tendrá el nuevo campo.
+     * @param string $default Es el valor por defecto que tendrá el campo, si no se establece, el valor por defecto será '0'.
+     * @param string $longitud Es la longitud que tendrá el campo, si no se establece, la longitud por defecto será '100,2'.
+     *
+     * @return array|stdClass Devuelve el objeto $campos con la configuración del nuevo campo agregada.
+     * Si el parámetro $name_campo está vacío, devuelve un error.
+     *
+     * Ejemplo de uso:
+     * $campos = new stdClass();
+     * $name_campo = "mi_campo_doble";
+     * $default = "0";
+     * $longitud = "100,2";
+     * $resultado = $instalacion->campo_double($campos, $name_campo, $default, $longitud);
+     *
+     * Tras la ejecución, $resultado contendrá la configuración para un campo 'mi_campo_doble' de tipo double, con valor por defecto '0' y longitud '100,2'.
+     * @version 15.26.0
+     */
 
     final public function campo_double(stdClass $campos, string $name_campo, string $default = '0',
                                        string $longitud = '100,2'): array|stdClass
