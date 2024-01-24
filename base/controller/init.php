@@ -637,11 +637,29 @@ class init{
     }
 
     /**
+     * ṔOR DOCUMENTAR EN WIKI
+     * Inicializa los datos del controlador con ciertos objetos necesarios para su funcionamiento.
      *
-     * Se inicializan datos base para controler
-     * @version 1.41.14
-     * @param controler $controler Controlador en ejecucion
-     * @return controler
+     * @param controler $controler - La instancia del controlador a inicializar
+     *
+     * @return controler $controler - Retorna el controlador suministrado con los datos necesarios inicializados
+     *
+     *
+     * ### Descripción detallada
+     *
+     * Esta función toma una instancia de controlador y le asigna instancias de diversos objetos que son necesarios para su funcionamiento.
+     *
+     * Los objetos que se asignan son:
+     *
+     * - errores: Una instancia de la clase `errores`, es utilizada para manejar cualquier error que ocurra durante la ejecución.
+     *
+     * - validacion: Una instancia de la clase `valida_controller` que es usada para validar los datos entrantes al controlador.
+     *
+     * - pestanas: Un objeto stdClass vacío, en donde se crearán dos array, uno para "includes" y otro para "targets".
+     *
+     * La función retorna la instancia del controlador con todos estos datos inicializados.
+     *
+     * @version 15.29.0
      */
     final public function init_data_controler(controler $controler): controler
     {

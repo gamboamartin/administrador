@@ -95,6 +95,8 @@ class controler{
 
     public array $params_upd_get = array();
 
+    public array $url_servicios = array();
+
     public stdClass $paths_conf;
 
     public function __construct(PDO $link){
