@@ -395,6 +395,44 @@ class _create
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Calcula y retorna la longitud de un cierto atributo base en SQL.
+     *
+     * @param stdClass $atributos_base Un objeto stdClass que representa los atributos base de un campo de la base de datos.
+     *
+     * @return string|array Devuelve una cadena de texto que representa la longitud para la declaración SQL.
+     *                      Si el tipo de dato es TIMESTAMP, no se precisa la longitud y se devuelve una cadena vacía.
+     *
+     * @example
+     * // Para un tipo de dato VARCHAR y longitud 255
+     * $atributos_base = new stdClass();
+     * $atributos_base->longitud = '255';
+     * $atributos_base->tipo_dato = 'VARCHAR';
+     * $longitud_sql = integra_longitud($atributos_base); // Devolverá "(255)"
+     *
+     * // Para un tipo de dato TIMESTAMP
+     * $atributos_base = new stdClass();
+     * $atributos_base->tipo_dato = 'TIMESTAMP';
+     * $longitud_sql = integra_longitud($atributos_base); // Devolverá ""
+     * @version 15.20.0
+     */
+    private function integra_longitud(stdClass $atributos_base): string|array
+    {
+        if(!isset($atributos_base->longitud)){
+            $atributos_base->longitud = '255';
+        }
+        $tipo_dato = '';
+        if(isset($atributos_base->tipo_dato)){
+            $tipo_dato = strtoupper(trim($atributos_base->tipo_dato));
+        }
+        $longitud_sql = "($atributos_base->longitud)";
+        if($tipo_dato === 'TIMESTAMP'){
+            $longitud_sql = '';
+        }
+        return $longitud_sql;
+    }
+
+    /**
      * Genera una cadena representando la longitud SQL del atributo, si está presente.
      *
      * @param stdClass $atributos_base El objeto que contiene los atributos base.
@@ -405,8 +443,12 @@ class _create
     {
         $longitud_sql = '';
         if($atributos_base->longitud !== ''){
-            $longitud_sql = "($atributos_base->longitud)";
+            $longitud_sql = $this->integra_longitud(atributos_base: $atributos_base);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener longitud_sql',data: $longitud_sql);
+            }
         }
+
         return $longitud_sql;
     }
 

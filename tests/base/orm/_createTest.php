@@ -89,4 +89,22 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_integra_longitud(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $atributos_base = new stdClass();
+        $result = $_create->integra_longitud($atributos_base);
+        $this->assertEquals("(255)", $result);
+
+        $atributos_base = new stdClass();
+        $atributos_base->tipo_dato = 'TIMESTAMP';
+        $result = $_create->integra_longitud($atributos_base);
+        $this->assertEquals("", $result);
+
+        errores::$error = false;
+    }
+
 }
