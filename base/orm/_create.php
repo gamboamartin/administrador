@@ -41,11 +41,13 @@ class _create
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Configura los atributos base del objeto proporcionado, si están presentes en el objeto atributos.
      *
      * @param stdClass $atributos Contiene los atributos a establecer, puede tener las propiedades tipo_dato, longitud y not_null.
      * @param stdClass $atributos_base El objeto objetivo en el que se establecerán los atributos. Sus valores se sobrescriben si existen en $atributos.
      * @return stdClass|array Retorna el objeto atributos_base con los atributos actualizados error al validar.
+     * @version 15.14.0
      */
     private function atributos_base(stdClass $atributos, stdClass $atributos_base): stdClass|array
     {
