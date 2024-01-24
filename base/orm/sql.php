@@ -299,6 +299,29 @@ class sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera la sentencia sql para la eliminacion de un indice
+     * @param string $name_index Nombre del indice a eliminar
+     * @param string $table Tabla o entidad donde se encuentra el indice
+     * @return string|array
+     * @version 15.22.0
+     */
+    final public function drop_index(string $name_index, string $table): string|array
+    {
+        $name_index = trim($name_index);
+        if($name_index === ''){
+            return $this->error->error(mensaje: 'Error name_index esta vacio', data: $name_index);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
+        }
+
+        $sql = "DROP INDEX '$name_index' ON $table;";
+        return trim($sql);
+    }
+
+    /**
      * Genera una sentencia SQL para eliminar una tabla.
      *
      * @param string $table El nombre de la tabla a eliminar.
@@ -697,6 +720,44 @@ class sql{
             }
         }
         return true;
+    }
+
+    /**
+     * POR DOCUMENTAR WIKI
+     * Esta función se utiliza para obtener información sobre los índices de una tabla SQL.
+     *
+     * @param string $table Nombre de la tabla de la cual se desea obtener información de los índices. No debe estar vacío.
+     * @return string|array Si la función se ejecuta con éxito, devuelve una cadena de texto que representa la
+     * consulta SQL para obtener los índices de la tabla especificada. Si ocurre
+     * un error, devuelve un objeto de error.
+     *
+     * @throws errores Se lanza si $table está vacía.
+     *
+     * Ejemplo de uso:
+     *
+     * ```php
+     * $tabla = 'usuarios';
+     *
+     *
+     * $resultado = ver_indices($tabla);
+     * if (errores::error) {
+     *     print_r (resultado)
+     * } else {
+     *     echo 'Consulta SQL para obtener índices: ' . $resultado;
+     * }
+     *
+     * ```
+     * @version 15.22.0
+     */
+    final public function ver_indices(string $table): string|array
+    {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        $sql = "SHOW INDEXES FROM $table;";
+        return trim($sql);
+
     }
 
 }

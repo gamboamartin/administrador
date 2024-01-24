@@ -180,6 +180,24 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_drop_index(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'a';
+        $name_index = 'f';
+        $resultado = $sql->drop_index($name_index, $table);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("DROP INDEX 'f' ON a;",$resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_foreign_key(): void
     {
         errores::$error = false;
@@ -576,6 +594,24 @@ class sqlTest extends test {
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error si values_sql tiene info llave debe tener info',$resultado['mensaje']);
+        errores::$error = false;
+
+    }
+
+    public function test_ver_indices(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'a';
+        $resultado = $sql->ver_indices($table);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("SHOW INDEXES FROM a;",$resultado);
+
+
         errores::$error = false;
 
     }

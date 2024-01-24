@@ -288,6 +288,20 @@ class _instalacion
         return $exe;
     }
 
+    final public function drop_index(string $name_index, string $table): array|stdClass
+    {
+        $sql = (new sql())->drop_index(name_index: $name_index, table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
+
+    }
+
     final public function drop_table(string $table): array|stdClass
     {
         $sql = (new sql())->drop_table(table: $table);
@@ -352,6 +366,38 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al validar si existe entidad',data: $existe);
         }
         return $existe;
+
+    }
+
+    final public function existe_indice_by_name(string $name_index, string $table)
+    {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
+        }
+        $name_index = trim($name_index);
+        if($name_index === ''){
+            return $this->error->error(mensaje: 'Error al name_index esta vacio',data: $name_index);
+        }
+
+        $r_indices = $this->ver_indices(table: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al buscar indices',data: $r_indices);
+        }
+
+        $indices = $r_indices->registros;
+
+        $existe = false;
+        foreach ($indices as $index){
+            $name_a_val = trim($index['Key_name']);
+
+            if($name_a_val === $name_index){
+                $existe = true;
+                break;
+            }
+        }
+        return $existe;
+
 
     }
 
@@ -613,6 +659,34 @@ class _instalacion
         }
 
         return $integraciones;
+
+    }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Retorna los índices de una tabla especificada.
+     *
+     * @param string $table El nombre de la tabla.
+     * @return array|stdClass Retorna los índices de la tabla especificada o un objeto Error en caso de error.
+     * @version 15.22.0
+     */
+    final public function ver_indices(string $table): array|stdClass
+    {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+
+        $sql = (new sql())->ver_indices(table: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+
+        $exe = $this->modelo->ejecuta_consulta(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
 
     }
 

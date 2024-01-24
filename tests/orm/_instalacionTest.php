@@ -37,6 +37,41 @@ class _instalacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_existe_indice_by_name(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $table = 'adm_seccion';
+        $name_index = 'PRIMARY';
+        $resultado = $ins->existe_indice_by_name(name_index: $name_index,table: $table);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+
+        errores::$error = false;
+    }
+    public function test_ver_indices(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $table = 'adm_seccion';
+        $resultado = $ins->ver_indices($table);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('PRIMARY', $resultado->registros[0]['Key_name']);
+
+        errores::$error = false;
+    }
+
+
 
 
 
