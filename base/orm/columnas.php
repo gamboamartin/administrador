@@ -456,10 +456,27 @@ class columnas{
     }
 
     /**
-     * Funcion para obtener las columnas de manera nativa
-     * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Devuelve información sobre las columnas de la base de datos nativa
+     *
+     * Esta función toma una instancia de un modelo base y una tabla de base de datos en formato de cadena como argumentos.
+     * Devuelve un array que contiene información sobre las columnas en la tabla de la base de datos proporcionada.
+     *
+     * @final
+     *
+     * @param   modelo_base    $modelo    Una instancia del modelo base.
+     * @param   string         $tabla_bd  Una cadena que representa la tabla de base datos
+     *
+     * @return  array          Retorna un array con información de las columnas de la tabla de búsqueda
+     *                         Retorna un array vacío y un mensaje de error si la tabla de la base de datos es vacía o es numérica,
+     *                         si hubo un error al obtener la consulta SQL o al ejecutarla, o si no existen columnas en la tabla.
+     *
+     * @throws  errores si la consulta SQL encuentra un error o ejecuta una operación fallida.
+     *
+     * @example Ejemplo de uso:
+     *          columnas_bd_native($modelo, 'tabla_muestra');
+     *
+     * @version 15.29.1
      */
     final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
