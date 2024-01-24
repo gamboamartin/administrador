@@ -236,9 +236,40 @@ class _instalacion
 
     }
 
-    final public function campos_double_default(stdClass $campos, array $name_campos)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método se encarga de procesar los campos double por defecto.
+     *
+     * @param stdClass $campos Un objeto en el que cada propiedad representa un campo. Al pasar por este método, estos campos podrían ser transformados.
+     * @param array $name_campos Un array con los nombres de los campos a procesar.
+     *
+     * @return stdClass|array Devuelve el objeto de $campos con los campos procesados.
+     *
+     * @throws errores Si el nombre del campo está vacío o si ocurre un error al procesar campo double.
+     *
+     * Ejemplo de uso:
+     * ```php
+     * $campos = new stdClass();
+     * $campos->campo1 = 1.1;
+     * $campos->campo2 = 2.2;
+     *
+     * $name_campos = ['campo1', 'campo2'];
+     *
+     * $instalacion = new _instalacion();
+     * $campos_actualizados = $instalacion->campos_double_default($campos, $name_campos);
+     *
+     * print_r($campos_actualizados);
+     * ```
+     * @version 15.27.0
+     */
+    final public function campos_double_default(stdClass $campos, array $name_campos): array|stdClass
     {
         foreach ($name_campos as $name_campo){
+            $name_campo = trim($name_campo);
+            if($name_campo === ''){
+                return $this->error->error(mensaje: 'Error name_campo esta vacio', data: $name_campo);
+            }
+
             $campos = $this->campo_double(campos: $campos,name_campo:  $name_campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar campo double', data: $campos);

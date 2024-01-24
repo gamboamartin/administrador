@@ -40,6 +40,26 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_campos_double_default(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $campos = new stdClass();
+        $name_campos = array();
+        $name_campos[] = 'a';
+        $resultado = $ins->campos_double_default($campos, $name_campos);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('double',$resultado->a->tipo_dato);
+        $this->assertEquals('0',$resultado->a->default);
+        $this->assertEquals('100,2',$resultado->a->longitud);
+
+        errores::$error = false;
+    }
     public function test_describe_table(): void
     {
 
