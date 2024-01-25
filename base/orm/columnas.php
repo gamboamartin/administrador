@@ -1063,10 +1063,23 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Método encargado de generar información de las columnas para los campos del modelo en la base de datos.
      *
-     * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
-     * @return array|stdClass
+     * Este método realiza las siguientes operaciones:
+     * 1. Recibe como parámetros un objeto del tipo modelo_base y un string que representa la tabla en la base de datos.
+     * 2. Verifica que el nombre de la tabla no esté vacío y no sea un número.
+     * 3. Obtiene las columnas nativas de la base de datos para el modelo proporcionado y la tabla especificada.
+     * 4. Crea un array con las columnas obtenidas y las retornar.
+     *
+     * Los errores se manejan devolviendo un objeto de errores si alguna verificación o proceso falla.
+     *
+     * @param modelo_base $modelo: Modelo con funcionalidad de ORM.
+     * @param string $tabla_bd: Nombre de la tabla en la base de datos.
+     * @return array|stdClass: Array con información de las columnas si todo sale bien,
+     *                         objeto de error si hay un problema.
+     * @throws errores: Se lanza una excepción si hay un error en la obtención o gestión de las columnas.
+     * @version 15.45.1
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
