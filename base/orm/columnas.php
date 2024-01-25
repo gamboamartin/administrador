@@ -153,10 +153,15 @@ class columnas{
     }
 
     /**
-     * Asigna los atributos de una tabla en un array para su uso en la maquetacion de un select
-     * @param array $columnas_parseadas Columnas ajustadas paar uso en SELECT
-     * @param string $atributo Columna a asignar en columnas parseadas
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Función que asigna columnas parseadas, añade nuevos atributos a la colección de columnas parseadas.
+     *
+     * @param string $atributo Nombre del atributo a añadir
+     * @param array $columnas_parseadas Colección existente de columnas parseadas
+     *
+     * @return array Retorna la colección de columnas parseadas añadidas con el nuevo atributo. En caso de error,
+     * devuelve un mensaje de error indicando que el atributo no puede estar vacío.
+     * @version 15.30.1
      */
     private function asigna_columnas_parseadas(string $atributo, array $columnas_parseadas): array
     {
