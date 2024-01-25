@@ -190,9 +190,27 @@ class _create
         return $data;
     }
 
-    private function atributos_integer(stdClass $campos, array $campos_integer)
+    /**
+     * POD DOCUMENTAR EN WIKI
+     * La función atributos_integer procesa cada elemento de un array, verifica
+     * si el campo está vacío y en caso de que no lo esté, invoca la función
+     * atributo_integer para cada campo.
+     *
+     * @param stdClass $campos Un objeto stdClass que representa los campos a procesar.
+     * @param array $campos_integer Un array con los nombres de los campos que se procesarán.
+     *
+     * @return array|stdClass Retorna el objeto $campos con los campos procesados.
+     *
+     * @version 15.31.1
+     */
+    private function atributos_integer(stdClass $campos, array $campos_integer): array|stdClass
     {
         foreach ($campos_integer as $campo){
+            $campo = trim($campo);
+            if($campo === ''){
+                return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            }
+
             $campos = $this->atributo_integer(campos: $campos,campo: $campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener '.$campo,data: $campos);

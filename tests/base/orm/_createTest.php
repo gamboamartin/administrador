@@ -60,7 +60,7 @@ class _createTest extends TestCase
         $this->assertEquals('NOT NULL', $result->not_null);
         errores::$error = false;
     }
-        public function test_atributos_base(){
+    public function test_atributos_base(){
         errores::$error = false;
         // Arrange (Organizar)
         $_create = new _create();
@@ -73,6 +73,21 @@ class _createTest extends TestCase
         $atributos_base->not_null = 'a';
         $result = $_create->atributos_base(atributos: $atributos,atributos_base:  $atributos_base);
         $this->assertEquals('a', $result->tipo_dato);
+
+        errores::$error = false;
+    }
+
+    public function test_atributos_integer()
+    {
+        errores::$error = false;
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $campos_integer = array();
+        $campos_integer[] = 'a';
+        $result = $_create->atributos_integer($campos, $campos_integer);
+        $this->assertEquals('INT', $result->a->tipo_dato);
 
         errores::$error = false;
     }
