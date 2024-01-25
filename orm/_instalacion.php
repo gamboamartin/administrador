@@ -314,6 +314,27 @@ class _instalacion
 
     }
 
+    final public function create_table_new(string $table): array|string|stdClass
+    {
+        $create_table = 'Ya existe tabla '.$table;
+        $existe_entidad = $this->existe_entidad(table: $table);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al verificar table', data:  $existe_entidad);
+        }
+
+        if(!$existe_entidad) {
+
+            $campos = new stdClass();
+            $create_table = $this->create_table(campos: $campos, table: $table);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al crear table', data: $create_table);
+            }
+        }
+
+        return $create_table;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Realiza una consulta para describir la estructura de una tabla.

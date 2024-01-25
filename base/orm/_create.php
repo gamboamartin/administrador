@@ -509,14 +509,37 @@ class _create
     }
 
     /**
-     * Genera una cadena representando la longitud SQL del atributo, si está presente.
+     * POR DOCUMENTAR WN WIKI
+     * Función longitud_sql
      *
-     * @param stdClass $atributos_base El objeto que contiene los atributos base.
-     * @return string Retorna una cadena representando la longitud SQL,
-     *                o una cadena vacía si la longitud no está presente en los atributos base.
+     * Esta función es privada y pertenece a la clase _create. Su propósito principal es generar una cadena que
+     * representa una longitud SQL basada en los atributos proporcionados.
+     *
+     * @access private
+     * @param stdClass $atributos_base Un objeto de la clase estándar de PHP que se espera que tenga una propiedad
+     * llamada "longitud".
+     * @return string|array Esta función devuelve una cadena que representa la longitud SQL. Sin embargo,
+     * si ocurre un error durante la obtención de la longitud SQL, se devuelve un array con información de error.
+     *
+     * @throws errores Si ocurre un error durante la obtención de la longitud SQL, la función
+     * arroja una excepción con un mensaje explicativo.
+     *
+     * @uses _create::integra_longitud Para obtener la cadena de longitud basada en los atributos proporcionados.
+     *
+     * @example
+     * $obj = new stdClass();
+     * $obj->longitud = '20';
+     * $resultado = $this->longitud_sql($obj);
+     *
+     * @see _create::integra_longitud
+     * @version 15.36.1
      */
-    private function longitud_sql(stdClass $atributos_base): string
+    private function longitud_sql(stdClass $atributos_base): string|array
     {
+        if(!isset($atributos_base->longitud)){
+            $atributos_base->longitud = '255';
+        }
+
         $longitud_sql = '';
         if($atributos_base->longitud !== ''){
             $longitud_sql = $this->integra_longitud(atributos_base: $atributos_base);

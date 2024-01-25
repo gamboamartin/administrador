@@ -194,4 +194,33 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_longitud_sql(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $atributos_base = new stdClass();
+        //$atributos_base->longitud = 'a';
+        $result = $_create->longitud_sql($atributos_base);
+        $this->assertEquals("(255)", $result);
+
+        errores::$error = false;
+
+        $atributos_base = new stdClass();
+        $atributos_base->longitud = 'a';
+        $result = $_create->longitud_sql($atributos_base);
+        $this->assertEquals("(a)", $result);
+
+        errores::$error = false;
+
+        $atributos_base = new stdClass();
+        $atributos_base->longitud = 'a';
+        $atributos_base->tipo_dato = 'TIMESTAMP';
+        $result = $_create->longitud_sql($atributos_base);
+        $this->assertEquals("", $result);
+
+        errores::$error = false;
+    }
+
 }
