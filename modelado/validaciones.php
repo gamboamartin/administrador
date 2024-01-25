@@ -376,17 +376,19 @@ class validaciones extends validacion{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Valida los parámetros necesarios para llevar a cabo operaciones de renombrado en consultas.
      *
-     * Funcion para validar que la entrada de datos en renombres sea la correcta
-     * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
-     * @param string $join string tipo de join INNER O LEFT O ETC
-     * @param string $renombrada renombre de tabla para su salida en sql
-     * @param string $tabla  tabla para la ejecucion del JOIN
-     * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
-     * @return bool|array
+     * @param string $campo_renombrado El campo que se desea renombrar.
+     * @param string $join La operación JOIN a realizar.
+     * @param string $renombrada El nuevo nombre del campo.
+     * @param string $tabla El nombre de la tabla.
+     * @param string $tabla_enlace La tabla con la que se realiza el JOIN.
+     * @return true|array Devuelve true si todas las validaciones son correctas, de lo contrario, devuelve un arreglo con un mensaje de error.
+     * @version 15.33.1
      */
-    public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
-                                     string $tabla, string $tabla_enlace): bool|array
+    final public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
+                                     string $tabla, string $tabla_enlace): true|array
     {
         if($tabla === ''){
             return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);

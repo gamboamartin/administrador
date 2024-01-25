@@ -344,7 +344,6 @@ class joins{
 
     /**
      * Asigna el id de sql para generar join
-     * @version 1.58.17
      * @param string $campo_tabla_base_id Campo id de la tabla a enlazar
      * @return string
      */
