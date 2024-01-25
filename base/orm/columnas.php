@@ -195,10 +195,21 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Asigna las columnas de una tabla al objeto de sesión y al modelo base.
      *
-     * @param modelo_base $modelo modelo o estructura de la base de datos con funcionalidades de ORM
-     * @param string $tabla_bd Tabla o estructura de una base de datos igual al modelo
-     * @return array|stdClass
+     * Esta función toma un modelo y el nombre de una tabla de la base de datos como argumentos. Primero, realiza algunas validaciones en $tabla_bd
+     * para verificar que no esté vacío y que no sea un número.
+     *
+     * Luego, genera las columnas field utilizando el modelo y la tabla de la base de datos y verifica si ocurrió algún error durante la generación.
+     *
+     * Si todo es correcto, asigna las columnas parseadas y las columnas completas a la sesión y las asigna al objeto modelo de la base. Finalmente,
+     * devuelve las columnas de la base de datos del modelo.
+     *
+     * @param modelo_base $modelo El modelo a verificar.
+     * @param string $tabla_bd El nombre de la tabla en la base de datos.
+     * @return array|stdClass Las columnas de la base de datos del modelo.
+     * @version 15.46.1
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
