@@ -426,26 +426,18 @@ class joins{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cláusula JOIN personalizada en una consulta SQL.
      *
-     * Funcion para determinar un JOIN entre dos tablas para SQL
-     * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
-     * @param string $join string tipo de join INNER O LEFT O ETC
-     * @param string $tabla  tabla para la ejecucion del JOIN
-     * @param string $renombrada renombre de tabla para su salida en sql
-     * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
-     * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
-     * @example
-     *      $sql = $this->genera_join_renombrado($campo_tabla_base_id,$join,$tabla,$renombrada,$tabla_enlace,
-     *      $campo_renombrado)
+     * @param string $campo_renombrado El nombre del campo que se va a renombrar.
+     * @param string $campo_tabla_base_id El nombre del campo en la tabla base.
+     * @param string $join La cláusula JOIN que se va a utilizar (por ejemplo, LEFT JOIN, INNER JOIN, etc.).
+     * @param string $renombrada El nombre de la tabla donde se encuentra el campo que se va a renombrar.
+     * @param string $tabla La tabla base para la cláusula JOIN.
+     * @param string $tabla_enlace La tabla que se va a unir a la tabla base.
      *
-     * @return array|string ' '.$join.' JOIN '.$tabla.' AS '.$renombrada.' ON '.$renombrada.$id_renombrada.' = '.
-     *      $tabla_enlace.'.'.$campo_renombrado
-     * @throws errores $tabla vacia
-     * @throws errores $join vacio
-     * @throws errores $renombrada vacio
-     * @throws errores $tabla_enlace vacio
-     * @throws errores $campo_renombrado vacio
-     * @uses consultas_base->genera_join
+     * @return array|string Si se genera un error durante el proceso, se devuelve un mensaje de error. Si todo va bien, se devuelve la cláusula JOIN generada.
+     * @version 15.41.1
      */
     private function genera_join_renombrado(string $campo_renombrado, string $campo_tabla_base_id, string $join,
                                             string $renombrada, string $tabla, string $tabla_enlace):array|string{
