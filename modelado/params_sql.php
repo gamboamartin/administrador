@@ -215,11 +215,33 @@ class params_sql{
     }
 
     /**
-     * Genera la seguridad de datos por usuario
-     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param array $modelo_columnas_extra
-     * @param string $sql_where_previo Sql previo
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera instrucciones de seguridad SQL en base al modelo y condiciones previas proporcionadas.
+     *
+     * @param bool $aplica_seguridad Indica si se aplica seguridad en la consulta SQL.
+     * @param array $modelo_columnas_extra Parámetros adicionales definidos en el modelo.
+     * @param string $sql_where_previo Cláusula WHERE previa que  anexara a la consulta SQL.
+     *
+     * @return array|string Devuelve la cadena de seguridad que contiene la instrucción SQL. Si hay un error durante
+     * la validación de seguridad o la asignación de seguridad, devolverá un array con detalles del error.
+     *
+     * @throws errores se genera ninguna excepción por esta función.
+     *
+     * EJEMPLO DE USO
+     *
+     * <?php
+     * $seguridad = seguridad( true,  array("usuario_id" => 10), "estado = 'activo'");
+     *
+     * Posibles resultados de salida:
+     *
+     * "usuario_id = 10 AND estado = 'activo'"
+     *
+     * O
+     *
+     * array("mensaje" => "Error al validar $modelo->columnas_extra", "data" => error detalles)
+     * array("mensaje" => "Error al generar sql de seguridad", "data" => error detalles)
+     * ?>
+     * @version 15.37.1
      */
     final public function seguridad(bool $aplica_seguridad, array $modelo_columnas_extra,
                                     string $sql_where_previo): array|string
