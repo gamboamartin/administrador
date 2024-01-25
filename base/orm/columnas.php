@@ -303,9 +303,15 @@ class columnas{
     }
 
     /**
-     * @param modelo $modelo Modelo en ejecucion
-     * @param string $tabla Tabla de modelo
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función obtiene las columnas (campos) de una tabla dada y las asigna a una instancia de un modelo dado.
+     *
+     * @param modelo $modelo Es la instancia del modelo a la que se le asignarán los campos de la tabla.
+     * @param string $tabla Es el nombre de la tabla de la que se extraerán los campos
+     *
+     * @return array Retorna un array de campos (columnas) de la tabla asignados al modelo.
+     * En caso de error, devuelve un mensaje de error.
+     * @version 15.48.1
      */
     final public function campos_tabla(modelo $modelo, string $tabla): array
     {
