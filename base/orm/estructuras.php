@@ -74,7 +74,6 @@ class estructuras{
 
     /**
      * Asigna el nombre de una tabla a un array
-     * @version 1.165.33
      * @param array $modelos Modelos obtenidos de una base de datos
      * @param string $name_db Nombre de la base de datos
      * @param array $row Registro de show tables
@@ -563,10 +562,12 @@ class estructuras{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera la clave de la tabla a partir del nombre de la base de datos.
      *
-     * @param string $name_db Nombre de la base de datos en ejecucion
-     * @version 1.163.33
-     * @return string|array
+     * @param string $name_db Nombre de la base de datos.
+     * @return string|array Retorna la clave de la tabla.
+     * @version 15.49.1
      */
     private function key_table(string $name_db): string|array
     {
@@ -581,8 +582,6 @@ class estructuras{
 
     /**
      * Funcion que retorna todas las tablas de una base de datos
-     * @version 1.167.33
-     * @verfuncion  1.2.0 Se valida name_db
      * @param string $name_db Nombre de la base de datos
      * @param array $rows Conjunto de tablas de show tables
      * @author mgamboa
