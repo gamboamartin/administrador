@@ -687,13 +687,47 @@ class joins{
     }
 
     /**
-     * Genera los JOINS necesarios de una tabla
-     * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
-     * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
-     * @param string $renombrada renombre de tabla para su salida en sql
-     * @param string $tabla  tabla para la ejecucion del JOIN
-     * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se utiliza para generar una declaración de Join SQL.
+     *
+     * @param string $campo_renombrado  El campo a renombrar.
+     * @param string $campo_tabla_base_id El campo ID de la tabla base.
+     * @param string $renombrada  La tabla a renombrar.
+     * @param string $tabla  La tabla para unirse.
+     * @param string $tabla_enlace  La tabla de enlace.
+     *
+     * @return array|string  Devuelve una cadena SQL de Join o un error si hay problemas.
+     *
+     * @throws errores Dispara una excepción si la tabla o tabla de enlace están vacías.
+     *
+     * Estructura del código de error:
+     * [
+     *    'mensaje' => string, // Descripción del error
+     *    'data' => mixed, // Datos relacionados con el error
+     * ]
+     *
+     * Ejemplo de uso:
+     *
+     * $result = $instance->sql_join("campo1", "id", "tabla1", "tabla2", "tabla3");
+     * if (is_array($result)) {
+     *     // Manejo de error
+     *     var_dump($result);
+     * } else {
+     *     // Uso del resultado de la consulta
+     *     var_dump($result);
+     * }
+     *
+     * Posibles resultados:
+     *
+     * 1) Devuelve una cadena SQL de Join en caso de éxito. Por ejemplo :
+     *    ' LEFT JOIN tabla2 AS tabla2 ON tabla2.id = tabla3.tabla2_id'
+     *
+     * 2) Devuelve un error si alguno de los nombres de las tablas ($tabla, $tabla_enlace) está vacío. Por ejemplo :
+     *    [
+     *       'mensaje' => 'Error $tabla esta vacia',
+     *       'data' => '   '
+     *    ]
+     * @version 15.42.1
      */
     private function sql_join(string $campo_renombrado, string $campo_tabla_base_id, string $renombrada, string $tabla,
                               string $tabla_enlace): array|string
