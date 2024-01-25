@@ -412,11 +412,20 @@ class columnas{
     }
 
     /**
-     * Genera las columnas de un atributo de la base de datos
-     * @param array $columna Columna con datos detallados de un DESCRIBE
-     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT
-     * @param array $columnas_completas Todas las columnas ajustadas
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Procesa los detalles de una columna y prepara una lista completa de columnas analizadas y no analizadas.
+     *
+     * Esta función analiza en profundidad los detalles de una columna proporcionada y los prepara para ser utilizados
+     * en consultas de base de datos. Espera un arreglo de columnas y dos arreglos para las columnas completas
+     * y las columnas parseadas respectivamente.
+     * Durante el procesamiento, esta función puede devolver un mensaje de error si encuentra algún problema.
+     *
+     * @param array $columna Arreglo con detalles de una columna. Debe tener una estructura clave/valor.
+     * @param array $columnas_completas Arreglo con las columnas completas.
+     * @param array $columnas_parseadas Arreglo para almacenar columnas que han sido analizadas.
+     *
+     * @return array|stdClass Un objeto que contiene las columnas parseadas y las columnas completas.
+     * @version 15.43.1
      */
     private function columnas_attr(array $columna, array $columnas_completas, array $columnas_parseadas): array|stdClass
     {

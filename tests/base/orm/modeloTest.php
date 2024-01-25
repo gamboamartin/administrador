@@ -176,7 +176,7 @@ class modeloTest extends test {
         $registro_ejecutado = array();
         $registro_id = -1;
         $sql = '';
-        $resultado = $modelo->data_result_transaccion($mensaje, $registro, $registro_ejecutado, $registro_id,
+        $resultado = $modelo->data_result_transaccion($mensaje, $registro, $registro_ejecutado, $registro_id, array(),
             new \stdClass(), $sql);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);

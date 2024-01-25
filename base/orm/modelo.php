@@ -284,6 +284,7 @@ class modelo extends modelo_base {
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
         }
+        $registro_original = $this->registro;
         $this->status_default = 'activo';
         $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
             integra_datos_base: $this->integra_datos_base,registro: $this->registro,
@@ -320,8 +321,8 @@ class modelo extends modelo_base {
         }
 
         $data = $this->data_result_transaccion(mensaje: 'Registro insertado con éxito', registro: $registro,
-            registro_ejecutado: $this->registro, registro_id: $this->registro_id, registro_puro: $registro_puro,
-            sql: $transacciones->sql);
+            registro_ejecutado: $this->registro, registro_id: $this->registro_id, registro_original: $registro_original,
+            registro_puro: $registro_puro, sql: $transacciones->sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar respuesta registro', data: $registro);
         }
@@ -333,13 +334,13 @@ class modelo extends modelo_base {
      * Obtiene un registro existente y da salida homolagada
      * @param array $filtro Filtro de registro
      * @return array|stdClass
-     * @version 10.98.3
      */
     final protected function alta_existente(array $filtro): array|stdClass
     {
         if(count($filtro) === 0){
             return $this->error->error(mensaje: 'Error filtro esta vacio',data: $filtro);
         }
+
         $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar si existe',data: $result);
@@ -353,6 +354,7 @@ class modelo extends modelo_base {
         }
 
         $registro = $result->registros[0];
+        $registro_original = $registro;
 
         $registro_puro = $this->registro(registro_id: $registro[$this->key_id],columnas_en_bruto: true,
             retorno_obj: true);
@@ -363,7 +365,7 @@ class modelo extends modelo_base {
 
         $r_alta_bd = $this->data_result_transaccion(mensaje: "Registro existente", registro: $registro,
             registro_ejecutado: $this->registro, registro_id: $registro[$this->key_id],
-            registro_puro: $registro_puro, sql: 'Sin ejecucion');
+            registro_original: $registro_original, registro_puro: $registro_puro, sql: 'Sin ejecucion');
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar salida',data: $r_alta_bd);
         }
@@ -605,13 +607,14 @@ class modelo extends modelo_base {
      * @param array $registro Registro resultante
      * @param array $registro_ejecutado Registro en ejecucion
      * @param int $registro_id Identificador resultante o en ejecucion
+     * @param array|stdClass $registro_original
      * @param stdClass $registro_puro Registro en bruto insertado completo
      * @param string $sql Sql ejecutado
      * @return stdClass
-     * @version 10.88.3
      */
     final protected function data_result_transaccion(string $mensaje, array $registro, array $registro_ejecutado,
-                                                  int $registro_id, stdClass $registro_puro, string $sql): stdClass
+                                                     int $registro_id, array|stdClass $registro_original,
+                                                     stdClass $registro_puro, string $sql): stdClass
     {
         $data = new stdClass();
         $data->mensaje = $mensaje;
@@ -622,6 +625,7 @@ class modelo extends modelo_base {
         $data->registro_ins = $registro_ejecutado;
         $data->registro_puro = $registro_puro;
         $data->campos = $this->campos_tabla;
+        $data->registro_original = $registro_original;
         return $data;
     }
 
