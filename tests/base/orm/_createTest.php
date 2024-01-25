@@ -77,6 +77,27 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_atributos_fecha_base()
+    {
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $result = $_create->atributos_fecha_base($campos);
+        //print_r($result);exit;
+        $this->assertEquals('TIMESTAMP', $result->fecha_alta->tipo_dato);
+        $this->assertEquals('CURRENT_TIMESTAMP', $result->fecha_alta->default);
+
+        $this->assertEquals('TIMESTAMP', $result->fecha_update->tipo_dato);
+        $this->assertEquals('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $result->fecha_update->default);
+
+
+        errores::$error = false;
+
+    }
+
     public function test_atributos_integer()
     {
         errores::$error = false;

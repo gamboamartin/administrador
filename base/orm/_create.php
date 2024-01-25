@@ -157,6 +157,21 @@ class _create
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función añade atributos de fecha a un objeto de campos proporcionado.
+     *
+     * @param stdClass $campos Objeto que representa los campos de una entidad.
+     * Se le añaden dos nuevos campos: fecha_alta y fecha_update.
+     *
+     * @return stdClass Retorna el objeto de campos con los nuevos atributos de fecha:
+     * fecha_alta y fecha_update. Ambos campos son de tipo TIMESTAMP.
+     * fecha_alta se inicializa con el TIMESTAMP actual cuando se crea un nuevo registro.
+     * fecha_update se actualiza con el TIMESTAMP actual cada vez que se actualiza el registro.
+     *
+     * @author Martin Gamboa
+     * @version 15.32.1
+     */
     private function atributos_fecha_base(stdClass $campos): stdClass
     {
         $campos->fecha_alta = new stdClass();
