@@ -648,13 +648,24 @@ class columnas{
 
 
     /**
-     * Asigna las columnas para ser utilizadas en la transacciones de SELECT
-     * @param string $campo Nombre del campo del modelo
-     * @param array $columnas_parseadas Columnas ajustadas para su salida para SELECT
-     * @param string|null $atributo Atributo de la base de datos
-     * @param array $columna Columna con datos detallados de un DESCRIBE
-     * @param array $columnas_completas Todas las columnas ajustadas
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Esta función 'columnas_field' recibe cinco parámetros: $atributo, $campo, $columna, $columnas_completas y
+     * $columnas_parseadas.
+     *
+     * @param string|null $atributo - El primer parámetro que es la entidad de la cual se intenta obtener información.
+     * puede ser null.
+     * @param string $campo - El nombre del campo de la entidad que se está procesando.
+     * @param array $columna - La columna de la entidad.
+     * @param array $columnas_completas - Una lista que contiene todas las columnas completas que deben ser procesadas.
+     * @param array $columnas_parseadas - Una lista de columnas que ya han sido procesadas.
+     *
+     * @return array|stdClass - Si el proceso es exitoso, este método retorna un objeto con atributos
+     * 'columnas_parseadas' y 'columnas_completas'.
+     * Si ocurre un error durante el procesamiento de 'columnas_parseadas' o 'columnas_completas',
+     * este método retornará una descripción del error a través del método $this->error->error().
+     *
+     * @throws errores - Lanza una excepción si ocurre un error durante el procesamiento
+     * @version
      */
     private function columnas_field(string|null $atributo, string $campo, array $columna, array $columnas_completas,
                                     array $columnas_parseadas): array|stdClass
