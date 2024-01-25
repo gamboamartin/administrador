@@ -272,7 +272,32 @@ class _create
 
     }
 
-    final public function campos_base(stdClass $campos): stdClass
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método se encarga de establecer y preparar los campos base de la base de datos de la aplicación.
+     *
+     * Primero, el método añade un atributo código único a los campos y se maneja cualquier error
+     * que pueda resultar de esta operación. También incluye una descripción a los campos.
+     *
+     * Posteriormente, el método añade un atributo de estado a los campos,
+     * añade atributos enteros como 'usuario_alta_id' y 'usuario_update_id',
+     * e incluye también atributos de fecha.
+     *
+     * Además, añade descripciones seleccionables, alias, un código adicional
+     * y un estado predeterminado a los campos.
+     *
+     * Este método es una parte esencial en la creación de una instancia del objeto,
+     * que se encarga de la configuración inicial correspondiente a los campos de la base de datos.
+     *
+     * @param stdClass $campos Un objeto stdClass que mantiene los atributos y sus valores.
+     * @return stdClass|errores Retorna un objeto stdClass que contiene los campos configurados
+     *         para la base de datos, o un objeto de errores si hay un problema
+     *         durante la configuración de los campos.
+     * @throws errores Se lanza una excepción en caso de que haya un error durante la
+     *         configuración de los campos de la base de datos.
+     * @version 15.35.1
+     */
+    final public function campos_base(stdClass $campos): stdClass|array
     {
 
         $campos = $this->atributo_codigo(campos: $campos);
@@ -287,7 +312,8 @@ class _create
             return $this->error->error(mensaje: 'Error al obtener status',data: $campos);
         }
 
-        $campos = $this->atributos_integer(campos: $campos,campos_integer: array('usuario_alta_id','usuario_update_id'));
+        $campos = $this->atributos_integer(campos: $campos,
+            campos_integer: array('usuario_alta_id','usuario_update_id'));
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener atributos user',data: $campos);
         }

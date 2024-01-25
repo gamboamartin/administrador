@@ -149,6 +149,33 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_campos_base(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        //$_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $result = $_create->campos_base($campos);
+        //print_r($result);exit;
+        $this->assertTrue( $result->codigo->unique);
+        $this->assertIsObject( $result->descripcion);
+        $this->assertEquals('activo', $result->status->default);
+        $this->assertEquals('INT', $result->usuario_alta_id->tipo_dato);
+        $this->assertEquals('INT', $result->usuario_update_id->tipo_dato);
+        $this->assertEquals('TIMESTAMP', $result->fecha_alta->tipo_dato);
+        $this->assertEquals('CURRENT_TIMESTAMP', $result->fecha_alta->default);
+        $this->assertEquals('TIMESTAMP', $result->fecha_update->tipo_dato);
+        $this->assertEquals('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $result->fecha_update->default);
+        $this->assertEquals('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP', $result->fecha_update->default);
+        $this->assertIsObject( $result->descripcion_select);
+        $this->assertIsObject( $result->alias);
+        $this->assertIsObject( $result->codigo_bis);
+        $this->assertEquals( 'inactivo',$result->predeterminado->default);
+
+        errores::$error = false;
+    }
+
     public function test_integra_longitud(){
         errores::$error = false;
         // Arrange (Organizar)

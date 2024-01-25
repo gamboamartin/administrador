@@ -209,7 +209,6 @@ class joins{
      * @param stdClass $init obj->tabla obj->class obj->tabla_enlace obj->class_enlace
      * @param string $join Elemento de union SQL LEFT RIGHT O INNER
      * @param string $renombrada Nombre a asignar en AS
-     * @version 1.58.17
      * @return stdClass|array obj->join_tabla obj->on_join obj->asignacion_tabla
      */
     private function data_for_rename(string $id_renombrada, stdClass $init, string $join,
