@@ -815,9 +815,20 @@ class columnas{
     }
 
     /**
-     * Integra las columnas para un select
-     * @param array $columnas Conjunto de columnas a parsear
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Método privado columnas_sql_array realiza el parseo de las columnas proporcionadas.
+     *
+     * @param array $columnas Las columnas que se van a parsear.
+     *
+     * @return array|stdClass Retorna un objeto stdClass si se produce un error durante el procesamiento de las columnas.
+     *                         En este caso, el objeto contiene información de error.
+     *                         Si el procesamiento es exitoso, se retorna un array asociativo con las columnas parseadas y completas.
+     *                         El array tiene los siguientes elementos:
+     *                           - 'columnas_parseadas': Un array con las columnas parseadas.
+     *                           - 'columnas_completas': Un array con todas las columnas procesadas.
+     *
+     * @throws errores Lanza un error si $columna no es un array o si hay un error al obtener las columnas.
+     * @version 15.44.1
      */
     private function columnas_sql_array(array $columnas): array|stdClass
     {
