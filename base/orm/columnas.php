@@ -1278,13 +1278,21 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene columnas de una modelo de base de datos especificada
      *
-     * Funcion que obtiene todas las columnas de un modelo para su transaformacion en sql, además asigna a una
-     *  variable de session para su reutilizacion futura
-     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @return array|stdClass conjunto de columnas para la futura transaformacion de un sql
-     * @example
-     * $columnas_parseadas = $this->obten_columnas($tabla_original);
+     * Esta función toma un modelo de base de datos y el nombre de una tabla.
+     * Primero, verifica si la tabla proporcionada es válida. Luego, trata de asignar las columnas de la tabla
+     * al modelo dado utilizando 'asigna_columnas_en_session'. Si esto no es exitoso, intenta obtener las columnas
+     * nuevamente utilizando 'asigna_columnas_session_new'. Finalmente, retorna las columnas del modelo.
+     *
+     * @param modelo_base $modelo instancia del modelo base desde donde se obtienen las columnas
+     * @param string $tabla_original Nombre original de la tabla en la BD
+     *
+     * @return array|stdClass las columnas del modelo en caso de éxito, en caso contrario, retorna un objeto de error
+     *
+     * @throws errores si hay un error al asignar o obtener las columnas
+     * @version 15.47.1
      */
     private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
         $tabla_original = trim(str_replace('models\\','',$tabla_original));
