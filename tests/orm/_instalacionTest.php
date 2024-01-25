@@ -40,7 +40,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_campos_double_default(): void
     {
 
@@ -74,6 +73,30 @@ class _instalacionTest extends test {
         $this->assertNotTrue(errores::$error);
 
         errores::$error = false;
+    }
+    public function test_existe_campo_origen(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $campo_integrar = 'a';
+        $campos_origen = array();
+        $resultado = $ins->existe_campo_origen($campo_integrar, $campos_origen);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+        errores::$error = false;
+
+        $campo_integrar = 'a';
+        $campos_origen[]['Field'] = 'a';
+        $resultado = $ins->existe_campo_origen($campo_integrar, $campos_origen);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
     }
     public function test_existe_indice_by_name(): void
     {

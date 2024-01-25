@@ -391,16 +391,32 @@ class _instalacion
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Verifica si un campo específico existe en un conjunto de campos dado.
      *
      * @param string $campo_integrar El nombre del campo a buscar.
      * @param array $campos_origen Un array de campos en los que buscar el campo.
-     * @return bool Retorna true si el campo existe en el conjunto, false en caso contrario.
+     * @return bool|array Retorna true si el campo existe en el conjunto, false en caso contrario.
+     * @version 15.50.1
      */
-    private function existe_campo_origen(string $campo_integrar, array $campos_origen): bool
+    private function existe_campo_origen(string $campo_integrar, array $campos_origen): bool|array
     {
+        $campo_integrar = trim($campo_integrar);
+        if($campo_integrar === ''){
+            return $this->error->error(mensaje: 'Error campo_integrar esta vacio', data: $campo_integrar);
+        }
+
         $existe_campo = false;
         foreach ($campos_origen as $datos_campos){
+            if(!is_array($datos_campos)){
+                return $this->error->error(mensaje: 'Error datos_campos debe ser  un array', data: $datos_campos);
+            }
+            $keys = array('Field');
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro: $datos_campos);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar datos_campos', data: $valida);
+            }
+
             $campo_original = trim($datos_campos['Field']);
             if($campo_original === $campo_integrar){
                 $existe_campo = true;
