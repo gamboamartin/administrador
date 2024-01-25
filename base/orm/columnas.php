@@ -91,11 +91,32 @@ class columnas{
     }
 
     /**
-     * Asigna los valor de una columna obtenida de un DESCRIBE para su uso en la maquetacion de SELECT
-     * @param string $atributo
-     * @param array $columna
-     * @param array $columnas_completas
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Función asigna_columna_completa
+     *
+     * Esta función asigna los valores de una columna obtenidos mediante un DESCRIBE
+     * para su uso en la creación de una consulta SQL SELECT.
+     *
+     * @param string $atributo El nombre del atributo a asignar.
+     * @param array $columna Un array asociativo con los datos de la columna obtenidos a partir de un DESCRIBE.
+     * @param array $columnas_completas Un array asociativo que contiene el estado actual de las columnas completas.
+     *
+     * @return array Retorna las columnas completas con el nuevo atributo asignado.
+     *
+     * @throws errores Se lanza esta excepción si el $atributo es una cadena vacía
+     * @throws errores Se lanza esta excepción si hay un error al validar la $columna
+     *
+     * @example
+     * ```php
+     * $resultado = asigna_columna_completa('nombre', ['Type' => 'int', 'Null' => 'NO', 'Key' => 'PRI'], []);
+     * echo $resultado; // ['nombre' => ['campo' => 'nombre', 'Type' => 'int', 'Key' => 'PRI', 'Null' => 'NO']]
+     * ```
+     *
+     * Posibles Resultados:
+     * - Un array asociativo con las columnas completas y el nuevo atributo asignado.
+     * - Un error si el $atributo es una cadena vacía
+     * - Un error si hay problemas al validar la $columna
+     * @version 15.38.1
      */
     private function  asigna_columna_completa(string $atributo, array $columna, array $columnas_completas): array
     {
@@ -106,7 +127,7 @@ class columnas{
         $keys = array('Type','Null');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $columna);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar $columna', data: $valida, params: get_defined_vars());
+            return $this->error->error(mensaje:'Error al validar $columna', data: $valida);
         }
         if(!isset($columna['Key']) ){
             $columna['Key'] = '';
