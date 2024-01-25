@@ -343,9 +343,29 @@ class joins{
 
 
     /**
-     * Asigna el id de sql para generar join
-     * @param string $campo_tabla_base_id Campo id de la tabla a enlazar
-     * @return string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función renombra un `id` en la tabla base de acuerdo al valor proporcionado.
+     *
+     * @param string $campo_tabla_base_id Es el nombre que se asignará al `id` de la tabla base.
+     * Si este parámetro está vacío, se asignará el valor '.id' por defecto.
+     *
+     * @return string Retorna la `id` de la tabla base modificada.
+     * Si el parámetro de entrada está vacío, retorna '.id', en otro caso concatena '.' al principio
+     * del valor de entrada, y lo retorna.
+     *
+     * Ejemplo:
+     *
+     * code:
+     * // el valor del $campo_tabla_base_id es 'user'
+     * $id_renombrada = id_renombrada('user');
+     * echo $id_renombrada;
+     * // Retorna: '.user'
+     *
+     * // el valor del $campo_tabla_base_id es ''
+     * $id_renombrada2 = id_renombrada('');
+     * echo $id_renombrada2;
+     * // Retorna: '.id'
+     * @version 15.34.1
      */
     private function id_renombrada(string $campo_tabla_base_id): string
     {
