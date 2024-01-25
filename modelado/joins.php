@@ -204,12 +204,22 @@ class joins{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera la información requerida para realizar un "JOIN" en una consulta SQL.
      *
-     * @param string $id_renombrada LLave de tabla a nivel sql
-     * @param stdClass $init obj->tabla obj->class obj->tabla_enlace obj->class_enlace
-     * @param string $join Elemento de union SQL LEFT RIGHT O INNER
-     * @param string $renombrada Nombre a asignar en AS
-     * @return stdClass|array obj->join_tabla obj->on_join obj->asignacion_tabla
+     * @param string $id_renombrada El identificador de la tabla renombrada.
+     * @param stdClass $init Contiene los datos iniciales necesarios para crear el "JOIN".
+     * @param string $join Indica el tipo de "JOIN" a realizar (INNER JOIN, LEFT JOIN, RIGHT JOIN, etc).
+     * @param string $renombrada El nombre que se le asignará a la tabla después del renombramiento.
+     *
+     * @return stdClass|array Retorna un objeto stdClass con la descripción del "JOIN" a realizar,
+     * o un arreglo en caso de que se produzca un error.
+     *
+     * El objeto retornado tiene la siguiente estructura:
+     * - 'join_tabla': La declaración del "JOIN" realizada con la tabla y su alias.
+     * - 'on_join': La condición bajo la cual se realizará el "JOIN".
+     * - 'asignacion_tabla': La asignación de renombramiento de la tabla.
+     * @version 15.40.1
      */
     private function data_for_rename(string $id_renombrada, stdClass $init, string $join,
                                     string $renombrada): stdClass|array
