@@ -934,8 +934,22 @@ class columnas{
         return $columnas;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función maneja la adición de una coma en una consulta SQL.
+     *
+     * El propósito de esta función es agregar una coma al final de una lista de columnas SQL.
+     * Solo se agrega la coma si el parámetro de entrada no es un string vacío.
+     *
+     * @param string $columnas_sql El string que contiene las columnas SQL que ya se han construido en la consulta.
+     *                             Este parámetro puede ser un string vacío, en cuyo caso la función no hará nada.
+     *
+     * @return string Retorna una coma como un string. Si $columnas_sql es un string vacío, se retorna un string vacío.
+     * @version 15.60.1
+     */
     private function coma(string $columnas_sql): string
     {
+        $columnas_sql = trim($columnas_sql);
         $coma = '';
         if($columnas_sql !== ''){
             $coma = ', ';

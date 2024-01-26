@@ -492,9 +492,6 @@ class columnasTest extends test {
         $this->assertEmpty($resultado);
         errores::$error = false;
     }
-
-
-
     public function test_columnas_bd_native(){
 
         errores::$error = false;
@@ -522,7 +519,6 @@ class columnasTest extends test {
         $this->assertEquals('id', $resultado[0]['Field']);
         errores::$error = false;
     }
-
     public function test_columnas_by_table(): void
     {
         errores::$error = false;
@@ -944,6 +940,30 @@ class columnasTest extends test {
 
         errores::$error = false;
 
+    }
+
+    public function test_coma(){
+        errores::$error = false;
+
+        $col = new columnas();
+        $col = new liberator($col);
+
+
+        $columnas_sql = '';
+        $resultado = $col->coma($columnas_sql);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $columnas_sql = 'a';
+        $resultado = $col->coma($columnas_sql);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(', ', $resultado);
+
+
+        errores::$error = false;
     }
 
     public function test_data_for_columnas_envio(){
