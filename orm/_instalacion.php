@@ -390,6 +390,24 @@ class _instalacion
 
     }
 
+    final public function drop_table_segura(string $table): array|stdClass|string
+    {
+        $exe = 'No existe la entidad '.$table;
+        $existe = $this->existe_entidad(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error verificar si existe entidad', data: $existe);
+        }
+
+        if($existe) {
+            $exe = $this->drop_table(table: $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+            }
+        }
+        return $exe;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Verifica si un campo específico existe en un conjunto de campos dado.
@@ -649,11 +667,41 @@ class _instalacion
 
     }
 
-    private function foreign_por_campo(string $campo, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método se utiliza para crear la clave foránea de un campo existente de una tabla específica en función de un campo específico.
+     * Realiza varias validaciones y devoluciones en caso de errores.
+     *
+     * @param string $campo El campo del que se quiere obtener la clave foránea.
+     * @param string $table La tabla en la que se va a buscar la clave foránea.
+     *
+     * @return stdClass|array Devuelve la clave foránea si la operación tuvo éxito, de lo contrario devuelve un error.
+     *
+     * @throws errores en caso de que ocurra un error al generar SQL.
+     *
+     * ### Ejemplo de uso - Supongamos que tenemos la tabla 'usuarios' con campo 'ciudad_id':
+     *
+     * ```php
+     * $instalacion = new _instalacion();
+     * $result = $instalacion->foreign_por_campo('ciudad_id', 'usuarios');
+     *
+     * if (errores::$error) {
+     *     echo 'Error!';
+     *     die;
+     * }
+     * echo $result;
+     * ```
+     * @version 15.53.1
+     */
+    private function foreign_por_campo(string $campo, string $table): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
             return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $table = trim($table);
+        if ($table === '') {
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
         }
         $valida = (new validacion())->key_id(txt: $campo);
         if(errores::$error){
