@@ -23,7 +23,7 @@ use validacion\confs\configuraciones;
 
 
 class controlador_base extends controler
-{ //PRUEBAS FINALIZADAS DEBUG
+{
     public array $acciones_no_visibles;
     public array $directivas_extra = array();
     public int $error;

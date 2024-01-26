@@ -13,7 +13,6 @@ class configuraciones extends validacion {
      * @param stdClass $paths_conf Paths de configuracion
      * @param string $tipo_conf Tipos de configuracion
      * @return bool|array
-     * @version 1.522.51
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
@@ -37,7 +36,6 @@ class configuraciones extends validacion {
      * Valida las configuraciones para ejecutar el sistema
      * @param stdClass $paths_conf Archivos de configuracion
      * @return bool|array
-     * @version 1.522.51
      */
     final public function valida_confs(stdClass $paths_conf): bool|array
     {
@@ -57,7 +55,6 @@ class configuraciones extends validacion {
 
     /**
      * Valida los elementos de composer
-     * @version 1.522.51
      */
     private function valida_conf_composer(string $tipo_conf): bool|array
     {
@@ -83,13 +80,32 @@ class configuraciones extends validacion {
     }
 
     /**
-     * Valida que existan los archivos de configuracion necesarios para arrancar el sistema
-     * @version 1.13.8
-     * @param stdClass $paths_conf rutas de los archivos conf
-     * @param string $tipo_conf tipos de configuraciones
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Verifica la existencia y validez de un archivo de configuración específico.
+     *
+     * @param stdClass $paths_conf Contiene los paths de todos los archivos de configuración.
+     * @param string   $tipo_conf  Representa el tipo de archivo de configuración que se va a verificar.
+     *
+     * @return bool|array Retorna `true` si el archivo de configuración es válido.
+     *                    En caso contrario, retorna un array con la información del error.
+     *
+     * @throws errores Lanza una excepción si `$tipo_conf` es una cadena vacía
+     *                   o si el archivo de configuración no existe.
+     *
+     * @example
+     *   $configPath = new stdClass();
+     *   $configPath->myConfig = "myConfigPath/myConfig.php";
+     *
+     *   $isValid = $this->valida_conf_file($configPath, "myConfig");
+     *
+     *   if ($isValid) {
+     *       echo "El archivo de configuración es válido.";
+     *   } else {
+     *       echo "El archivo de configuración no es válido.";
+     *   }
+     * @version 15.51.1
      */
-    private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): bool|array
+    private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): true|array
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
