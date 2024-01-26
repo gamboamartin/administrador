@@ -787,19 +787,25 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Método que genera una cadena SQL para columnas.
      *
-     * Funcion que genera una columna en forma de sql para ser utilizada en un SELECT
-     * @param string $columnas_sql columnas en forma de sql
-     * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
-     * @param string $columna_parseada columna ajustada para ser anexada al sql
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param string $alias_columnas columna ajustada para ser anexada al sql como un alias
+     * Este método genera una cadena SQL para columnas dependiendo de varios parámetros de entrada proporcionados.
+     * La cadena generada es útil para consultas SQL donde se pueden necesitar alias para las columnas nombradas en SQL.
+     *
      * @example
-    $columnas_sql = $this->columnas_sql($columnas_sql,$tabla_nombre,$columna_parseada,$alias_columnas);
-     * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
-     * @throws errores $tabla_nombre no puede venir vacia
-     * @throws errores $columna_parseada no puede venir vacia
-     * @throws errores $alias_columnas no puede venir vacia
+     * Supongamos que tienes una tabla "usuarios" con la columna "nombre"
+     * Usar este método así: columnas_sql('nombre_completo', 'nombre', false, '', 'usuarios')
+     * Devolverá: "usuarios.nombre AS nombre_completo"
+     *
+     * @param string $alias_columnas Alias para la columna parseada que se incluirá en la consulta SQL final.
+     * @param string $columna_parseada Nombre de la columna extraído que se considerará para generar la consulta SQL.
+     * @param bool $columnas_en_bruto Si se establece como verdadero, el alias de la columna será igual a la columna parseada.
+     * @param string $columnas_sql Cadena de columnas SQL existente a la que se añadirá el nuevo segmento de columna.
+     * @param string $tabla_nombre Nombre de la tabla en la que se encuentra la columna.
+     *
+     * @return array|string Devuelve la cadena SQL generada con las columnas o un array con información de cualquier error que pueda haber ocurrido.
+     * @version 15.61.1
      */
     private function columnas_sql(string $alias_columnas, string $columna_parseada, bool $columnas_en_bruto,
                                   string $columnas_sql, string $tabla_nombre):array|string{
