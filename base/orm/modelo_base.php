@@ -1258,21 +1258,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Función para obtener el nombre de una tabla.
      *
-     * Funcion que obtiene con base en la tabla renombrada si tabla renombrada no es vacia cambia el nombre a tabla original
-     * @version 1.45.14
-     * @param string $tabla_original nombre del modelo
-     * @param string $tabla_renombrada nombre a renombrar tabla
-     * @example
-    $tabla_nombre = $this->obten_nombre_tabla($tabla_renombrada,$tabla_original);
-    if(isset($tabla_nombre['error'])){
-    return $this->error->error('Error al obtener nombre de tabla',
-    __LINE__,__FILE__,$tabla_nombre);
-    }
-     * @return array|string tabla nombre ajustado
-     * @throws errores $tabla_renombrada y $tabla_renombrada = vacio
+     * @param string $tabla_original      El nombre original de la tabla.
+     * @param string $tabla_renombrada    El nombre renombrado de la tabla.
+     *
+     * @return array|string               Retorna el nombre de la tabla si los parámetros son válidos, en otro caso retorna un mensaje de error.
+     *
+     * @throws errores                      Lanza una excepción si ambos parámetros están vacíos.
+     * @version 15.52.1
      */
-    public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada):array|string{
+    final public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada):array|string{
 
         if(trim($tabla_original)==='' && trim($tabla_renombrada) === ''){
             return $this->error->error(mensaje: 'Error no pueden venir vacios todos los parametros',
