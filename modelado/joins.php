@@ -387,21 +387,20 @@ class joins{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una instrucción SQL JOIN.
      *
-     * Funcion para determinar un JOIN entre dos tablas para SQL
-     * @param string $campo_tabla_base_id campo base con el nombre del id a tomar tabla_id
-     * @param string $tabla  tabla para la ejecucion del JOIN
-     * @param string $renombrada renombre de tabla para su salida en sql
-     * @param string $tabla_enlace tabla para la union del join LEFT JOIN tabla ON $tabla_enlace
-     * @param string $campo_renombrado campo de renombre a su utilizacion en JOIN
-     * @example
-     *      $tablas = $tablas . $this->genera_join($tabla_base, $tabla_enlace,$tabla_renombre,$campo_renombrado,
-     *          $campo_tabla_base_id);
+     * Esta función genera una instrucción SQL JOIN entre dos tablas, pudiendo además renombrar campos.
+     * Retorna un string con la instrucción SQL generada en caso de éxito, y un arreglo en caso de error.
      *
-     * @return array|string conjunto de joins en forma de SQL
-     * @throws errores $tabla vacia
-     * @throws errores $tabla_enlace vacio
-     * @throws errores $tabla no es una clase de tipo modelo
+     * @param  string $tabla El nombre completo de la tabla base para el JOIN. No puede estar vacío.
+     * @param  string $tabla_enlace El nombre completo de la tabla con la que se establecerá el JOIN. No puede estar vacío.
+     * @param  string $campo_renombrado (Opcional) El nombre del campo que se desea renombrar. Si se omite, no se renombrará ningún campo.
+     * @param  string $campo_tabla_base_id (Opcional)  El nombre del campo en la tabla base que se usará para el JOIN. Si se omite, se usa el campo id por defecto.
+     * @param  string $renombrada (Opcional) El nuevo nombre para $campo_renombrado. Se usa solo si $campo_renombrado está presente.
+     * @return string|array Retorna una cadena con la instrucción SQL JOIN en caso de éxito, y un arreglo con el error en caso contrario.
+     * @throws errores Se lanza una excepción si alguno de los parámetros requeridos (tabla o tabla_enlace) está vacío.
+     * @version 15.56.1
      */
     private function genera_join(string $tabla, string $tabla_enlace, string $campo_renombrado = '',
                                  string $campo_tabla_base_id = '', string $renombrada = '' ):array|string{

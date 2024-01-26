@@ -3,6 +3,7 @@ namespace gamboamartin\administrador\models;
 
 use base\orm\_create;
 use base\orm\estructuras;
+use base\orm\modelo;
 use base\orm\modelo_base;
 use base\orm\sql;
 use base\orm\val_sql;
@@ -332,6 +333,34 @@ class _instalacion
         }
 
         return $create_table;
+
+    }
+
+    final public function data_adm(string $descripcion, modelo $modelo, array $row_ins)
+    {
+        $filtro = array();
+        $filtro[$modelo->tabla.'_descripcion'] = $descripcion;
+
+        $existe = $modelo->existe(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener '.$modelo->tabla, data:  $existe);
+        }
+        if(!$existe){
+
+            $alta = $modelo->alta_registro(registro: $row_ins);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar menu', data:  $alta);
+            }
+            $id = $alta->registro_id;
+        }
+        else{
+            $r_filtro= $modelo->filtro_and(filtro: $filtro);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener datos', data:  $r_filtro);
+            }
+            $id = $r_filtro->registros[0][$modelo->key_id];
+        }
+        return $id;
 
     }
 
