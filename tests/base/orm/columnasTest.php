@@ -761,7 +761,7 @@ class columnasTest extends test {
             columnas_en_bruto: false, columnas_sql: $columnas_sql, tabla_nombre: $tabla_nombre);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $tabla_nombre no puede venir vacia', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar datos de entrada', $resultado['mensaje']);
         errores::$error = false;
 
         $columnas_sql = '';
@@ -772,7 +772,7 @@ class columnasTest extends test {
             columnas_en_bruto: false, columnas_sql: $columnas_sql, tabla_nombre: $tabla_nombre);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $columna_parseada no puede venir vacia', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar datos de entrada', $resultado['mensaje']);
 
         errores::$error = false;
         $columnas_sql = '';
@@ -783,7 +783,7 @@ class columnasTest extends test {
             columnas_en_bruto: false, columnas_sql: $columnas_sql, tabla_nombre: $tabla_nombre);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $alias_columnas no puede venir vacia', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al validar datos de entrada', $resultado['mensaje']);
 
         errores::$error = false;
         $columnas_sql = '';
@@ -1301,6 +1301,22 @@ class columnasTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('',$resultado);
+        errores::$error = false;
+    }
+
+    public function test_valida_columnas_sql(){
+
+        errores::$error = false;
+        $col = new columnas();
+        $col = new liberator($col);
+        $alias_columnas = 'c';
+        $columna_parseada = 'b';
+        $tabla_nombre = 'a';
+
+        $resultado = $col->valida_columnas_sql($alias_columnas, $columna_parseada, $tabla_nombre);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
         errores::$error = false;
     }
 

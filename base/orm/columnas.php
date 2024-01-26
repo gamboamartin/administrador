@@ -789,7 +789,6 @@ class columnas{
     /**
      *
      * Funcion que genera una columna en forma de sql para ser utilizada en un SELECT
-     * @version 1.45.14
      * @param string $columnas_sql columnas en forma de sql
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
      * @param string $columna_parseada columna ajustada para ser anexada al sql
@@ -805,28 +804,22 @@ class columnas{
     private function columnas_sql(string $alias_columnas, string $columna_parseada, bool $columnas_en_bruto,
                                   string $columnas_sql, string $tabla_nombre):array|string{
 
-        /**
-         * REFACTORIZAR
-         */
-        if($tabla_nombre === ''){
-            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre);
+
+        $valida = $this->valida_columnas_sql(alias_columnas: $alias_columnas,columna_parseada:  $columna_parseada,
+            tabla_nombre:  $tabla_nombre);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al validar datos de entrada',data: $valida);
         }
-        if($columna_parseada === ''){
-            return $this->error->error(mensaje:'Error $columna_parseada no puede venir vacia',data: $columna_parseada);
-        }
-        if($alias_columnas === ''){
-            return $this->error->error(mensaje:'Error $alias_columnas no puede venir vacia',data: $alias_columnas);
+        $coma = $this->coma(columnas_sql: $columnas_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al integrar coma',data: $coma);
         }
 
         if($columnas_en_bruto){
             $alias_columnas = $columna_parseada;
         }
-        if($columnas_sql === ''){
-            $columnas_sql.= $tabla_nombre.'.'.$columna_parseada.' AS '.$alias_columnas;
-        }
-        else{
-            $columnas_sql.=', '.$tabla_nombre.'.'.$columna_parseada.' AS '.$alias_columnas;
-        }
+
+        $columnas_sql.= $coma.$tabla_nombre.'.'.$columna_parseada.' AS '.$alias_columnas;
 
         return $columnas_sql;
     }
@@ -873,7 +866,6 @@ class columnas{
     /**
      *
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
-     * @version 1.45.14
      * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
      * @param array $columnas_parseadas arreglo con datos para la creacion de las columnas en sql
      * @param array $columnas columnas inicializadas a mostrar a peticion
@@ -940,6 +932,16 @@ class columnas{
             $columnas = (string)$result;
         }
         return $columnas;
+    }
+
+    private function coma(string $columnas_sql): string
+    {
+        $coma = '';
+        if($columnas_sql !== ''){
+            $coma = ', ';
+        }
+        return $coma;
+
     }
 
     /**
@@ -1402,6 +1404,42 @@ class columnas{
         }
 
         return $sub_querys_sql;
+    }
+
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Valida las columnas SQL proporcionadas.
+     *
+     * Esta función privada toma tres parámetros: 'alias_columnas', 'columna_parseada', y 'tabla_nombre', y realiza varias
+     * comprobaciones para confirmar que son válidos para el procesamiento adicional.
+     * Retorna true si todos los parámetros pasan las validaciones o un error si alguno de los parámetros es vacío.
+     *
+     * @param string $alias_columnas Representa alias de las columnas
+     * @param string $columna_parseada Representa la columna parseada
+     * @param string $tabla_nombre Representa el nombre de la tabla
+     *
+     * @return array|true Retorna true si todos los parámetros son validos. De otra manera, retorna un error.
+     *
+     * @throws errores
+     *
+     * @internal
+     * @version 15.55.1
+     */
+    private function valida_columnas_sql(string $alias_columnas, string $columna_parseada,
+                                         string $tabla_nombre): true|array
+    {
+        if($tabla_nombre === ''){
+            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre);
+        }
+        if($columna_parseada === ''){
+            return $this->error->error(mensaje:'Error $columna_parseada no puede venir vacia',data: $columna_parseada);
+        }
+        if($alias_columnas === ''){
+            return $this->error->error(mensaje:'Error $alias_columnas no puede venir vacia',data: $alias_columnas);
+        }
+        return true;
+
     }
 
 }
