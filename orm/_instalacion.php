@@ -336,10 +336,12 @@ class _instalacion
 
     }
 
-    final public function data_adm(string $descripcion, modelo $modelo, array $row_ins)
+    final public function data_adm(string $descripcion, modelo $modelo, array $row_ins, array $filtro = array())
     {
-        $filtro = array();
-        $filtro[$modelo->tabla.'_descripcion'] = $descripcion;
+        if(count($filtro) === 0) {
+            $filtro = array();
+            $filtro[$modelo->tabla . '_descripcion'] = $descripcion;
+        }
 
         $existe = $modelo->existe(filtro: $filtro);
         if(errores::$error){

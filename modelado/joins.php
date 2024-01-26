@@ -242,9 +242,24 @@ class joins{
     }
 
     /**
-     * Genera los datos para proceder con la configuracion de un JOIN en sql
-     * @param array $tabla_join Datos para hacer join con tablas
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función obtiene los JOINs entre las tablas proporcionadas como array.
+     * Valida la existencia de las claves necesarias en $tabla_join.
+     * Si hay un error durante la validación, se retorna una cadena con el mensaje de error.
+     *
+     * Luego, intenta generar los datos de la unión.
+     * Si hay un error en este proceso, se retorna una cadena con el detalle del error.
+     *
+     * Finalmente, intenta generar el join en sí. Si hay un error en este proceso, se retorna una cadena con el error.
+     *
+     * @param array $tabla_join Contiene las tablas a unir.
+     * @return array|string Devuelve una matriz con los datos de la unión o una cadena con el detalle del error, en caso de que haya uno.
+     * @throws errores Esta función arroja excepciones de la clase errores en caso de incidentes.
+     *
+     * @example
+     * $instance->data_para_join(['tabla_base' => 'clientes', 'tabla_enlace' => 'pedidos']);
+     *
+     * @version v15.57.1
      */
     private function data_para_join(array $tabla_join): array|string
     {
