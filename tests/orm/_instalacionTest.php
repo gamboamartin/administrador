@@ -116,6 +116,55 @@ class _instalacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_foreign_key_completo(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $drop = $ins->drop_table_segura('test');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $table = 'b';
+
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $create = $ins->create_table($campos, $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+        $campo = 'a_id';
+        $add_campo = $ins->add_colum($campo, $table, 'bigint');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear add_campo',data:  $add_campo);
+            print_r($error);
+            exit;
+        }
+
+
+        $campo = 'a';
+        $table = 'b';
+        $resultado = $ins->foreign_key_completo($campo, $table);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
+
+        errores::$error = false;
+    }
     public function test_foreign_por_campo(): void
     {
 

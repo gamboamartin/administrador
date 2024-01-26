@@ -534,11 +534,25 @@ class _instalacion
     }
 
     /**
-     * Agrega una columna a una tabla y luego establece una clave foránea en la misma.
+     * POR DOCUMENTAR WIKI
+     * Esta es la función 'foreign_key_completo'.
      *
-     * @param string $campo El nombre de la columna a agregar, que luego se convertirá en la clave foránea.
-     * @param string $table El nombre de la tabla a la que se agregará la columna y se establecerá la clave foránea.
-     * @return array|stdClass Devuelve el resultado del proceso de generar la clave foránea o, en caso de error, devuelve un mensaje de error.
+     * Retorna una clave extranjera completa a partir de la especificación dada.
+     *
+     * @param string $campo El nombre del campo que se va a usar como clave extranjera.
+     * @param string $table El nombre de la tabla en la que se va a agregar el nuevo campo.
+     * @param string $default Un valor predeterminado opcional que se le asignará al campo recién creado.
+     * @return array|stdClass Retorna una clave extranjera completa en caso de éxito, y un objeto de errores en caso contrario
+     *
+     * @example Ejemplo de uso:
+     * <?php
+     * $instalacion->foreign_key_completo('id_usuario', 'usuarios', '1');
+     * ?>
+     *
+     * Este código intenta crear una nueva clave extranjera 'id_usuario' en la tabla 'usuarios' con un valor predeterminado de '1'.
+     * Si los parámetros 'id_usuario' y 'usuarios' son válidos y no existen errores durante la ejecución, se retorna una clave extranjera.
+     * Si ocurre un error, se retorna un objeto de error.
+     * @version 15.54.1
      */
     final public function foreign_key_completo(string $campo, string $table, string $default = ''): array|stdClass
     {
