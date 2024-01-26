@@ -1150,18 +1150,21 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera una tabla de columnas. Se encarga de validar los parámetros proporcionados,
+     * obtener las columnas de la tabla y generar una lista de columnas SQL.
      *
-     * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
-     * @param array $columnas columnas inicializadas a mostrar a peticion
-     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @param string $tabla_renombrada nombre para renombre de la tabla
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @example
-    $columnas_sql = $this->genera_columnas_tabla($tabla_original,$tabla_renombrada, $columnas);
-     * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
-     * @throws errores $tabla_original no puede venir vacia
-     * @throws errores $tabla_original no es una clase o modelo
+     * @param bool $columnas_en_bruto Define si las columnas se entregan en bruto o no.
+     * @param modelo_base $modelo Es la clase modelo que encapsula los datos y la funcionalidad de un registro de la tabla.
+     * @param string $tabla_original Es el nombre original de la tabla en la base de datos.
+     * @param string $tabla_renombrada Es el nombre con el cual la tabla será renombrada.
+     * @param array $columnas Es un array que contiene los nombres de las columnas de la tabla.
+     *
+     * @return array|string Devuelve un array de columnas SQL si todo va bien. Si surge algún error, devuelve un mensaje de error.
+     *
+     * @throws errores Si el nombre de la tabla original está vacío o es numérico, lanza una excepción.
+     * También hay excepciones para errores al obtener columnas y al obtener el nombre de la tabla.
+     * @version 15.63.1
      */
 
     private function genera_columnas_tabla(bool $columnas_en_bruto,modelo_base $modelo, string $tabla_original,
