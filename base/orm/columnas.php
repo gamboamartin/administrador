@@ -870,18 +870,25 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Método columnas_sql_init
      *
-     * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT
-     * @param string $tabla_nombre nombre de la tabla para hacer la union y formar el sql
-     * @param array $columnas_parseadas arreglo con datos para la creacion de las columnas en sql
-     * @param array $columnas columnas inicializadas a mostrar a peticion
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @example
-    $columnas_parseadas = $this->obten_columnas($tabla_original);
-    $tabla_nombre = $this->obten_nombre_tabla($tabla_renombrada,$tabla_original);
-    $columnas_sql = $this->columnas_sql_init($columnas_parseadas,$tabla_nombre,$columnas);
-     * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
-     * @throws errores $tabla_nombre no puede venir vacia
+     * Inicializa las columnas de SQL de acuerdo a los parámetros suministrados.
+     *
+     * @param array  $columnas           Las columnas a procesar
+     * @param bool   $columnas_en_bruto  Indica si las columnas se encuentran en bruto
+     * @param array  $columnas_parseadas Las columnas que ya han sido parseadas
+     * @param string $tabla_nombre       El nombre de la tabla
+     *
+     * @return array|string  Las columnas de SQL inicializadas, o un mensaje de error.
+     *
+     * @throws errores Si $?tabla_nombre? está vacío.
+     * @throws errores Si ocurre un error al obtener las columnas de SQL.
+     *
+     * @example columnas_sql_init(['id', 'nombre'], false, ['id', 'nombre'], 'mi_tabla') Inicializa columnas de SQL
+     *
+     * @internal Este método es privado y sólo debe ser utilizado por la clase contenedora.
+     * @version 15.62.1
      */
     private function columnas_sql_init(array $columnas, bool $columnas_en_bruto, array $columnas_parseadas,
                                        string $tabla_nombre):array|string{
