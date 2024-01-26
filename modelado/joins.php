@@ -285,7 +285,6 @@ class joins{
 
     /**
      * Obtiene los parametros necesarios para generar un join
-     * @version 1.60.17
      * @param string $key Tabla left
      * @param string $tabla_join Datos para hacer join con tablas
      * @return array|string
@@ -852,10 +851,26 @@ class joins{
 
 
     /**
-     * Genera la configuracion base de JOINS
-     * @param array $tabla_join Datos para hacer join con tablas
-     * @param string $tablas Tablas en forma de SQL
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * La función tablas_join_base forma la base para realizar operaciones de unión entre tablas en una base de datos.
+     *
+     * @param array $tabla_join   Este parámetro es un arreglo que contiene información sobre las tablas
+     *                            que se unirán. Debe contener claves como 'tabla_base' y 'tabla_enlace'.
+     *
+     * @param string $tablas      Este parámetro es una cadena que representa las tablas que ya están en la unión.
+     *                            Esta cadena se actualizará para incluir las nuevas tablas de la operación de unión.
+     *
+     * La función primero verifica si el arreglo $tabla_join contiene las claves necesarias,
+     * 'tabla_base' y 'tabla_enlace', a través del método valida_existencia_keys del objeto validacion.
+     * Si $tabla_join no tiene las claves necesarias, la función devuelve un error.
+     *
+     * Si $tabla_join tiene las claves necesarias, entonces la función procede a generar "datos para unirse"
+     * a través del método data_para_join. Si hay un error al generar estos datos, la función devuelve un error.
+     *
+     * Si los "datos para unirse" se generan con éxito, se agregan a la cadena $tablas.
+     *
+     * @return array|string   La función devuelve la cadena $tablas actualizada o un arreglo de error si se encuentra alguno.
+     * @version 15.59.1
      */
     private function tablas_join_base(array $tabla_join, string $tablas): array|string
     {
@@ -876,7 +891,6 @@ class joins{
     /**
      *
      * @param string $key Key tabla
-     * @version 1.60.17
      * @param string $tabla_join Tabla para join
      * @param string $tablas conjunto de tablas previamente cargadas
      * @return array|string

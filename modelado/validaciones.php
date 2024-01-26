@@ -415,7 +415,6 @@ class validaciones extends validacion{
 
     /**
      * Valida los datos necesarios pa integrar un join
-     * @version 1.60.17
      * @param string $key Key a verificar debe ser el  nombre de una tabla
      * @param string $tabla_join Tabla para generar JOIN
      * @return bool|array

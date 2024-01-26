@@ -340,7 +340,7 @@ class _instalacion
     {
         if(count($filtro) === 0) {
             $filtro = array();
-            $filtro[$modelo->tabla . '_descripcion'] = $descripcion;
+            $filtro[$modelo->tabla . '.descripcion'] = $descripcion;
         }
 
         $existe = $modelo->existe(filtro: $filtro);
