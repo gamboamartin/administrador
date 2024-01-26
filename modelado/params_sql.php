@@ -126,23 +126,23 @@ class params_sql{
     }
 
     /**
-     * Obtiene los parametros necesarios para la ejecucion de un SELECT
-     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param int $limit Numero de registros a mostrar
-     * @param array $modelo_columnas_extra
-     * @param int $offset Numero de inicio de registros
-     * @param array $order con parametros para generar sentencia
-     * @param string $sql_where_previo Sql previo
-     * @return array|stdClass
-     *          string stdClass->group_by_sql GROUP BY $group_by[tabla.campo] o ''
-     *          string stdClass->order_sql ORDER BY $order[tabla.campo] $order[tipo_order] o ''
-     *          string stdClass->limit_sql LIMIT $limit o ''
-     *          string stdClass->offset_sql OFFSET $offset o ''
-     *          string stdClass->seguridad WHERE usuario_permitido_id = $_SESSION[usuario_id] o ''
+     * POR DOCUMENTAR EN WIKI
+     * Prepara y asegura las cláusulas SQL para su ejecución segura.
+     *
+     * @param bool $aplica_seguridad Si es true, entonces aplica los procedimientos de seguridad a la consulta SQL.
+     * @param array $group_by Arreglo que contiene las columnas para la cláusula GROUP BY.
+     * @param int $limit Número entero para la cláusula LIMIT.
+     * @param array $modelo_columnas_extra Arreglo que contiene columnas adicionales para el modelo.
+     * @param int $offset Número entero para la cláusula OFFSET.
+     * @param array $order Arreglo que contiene las columnas para la cláusula ORDER BY.
+     * @param string $sql_where_previo Cadena de texto con una declaración SQL WHERE anterior.
+     *
+     * @return array|stdClass Devuelve un objeto stdClass o un array que contienen los componentes SQL preparados.
+     *                        Si se encuentra un error durante el proceso, devuelve un mensaje de error.
+     * @version 15.58.1
      */
-    final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,  int $offset,
-                               array $order, string $sql_where_previo): array|stdClass
+    final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,
+                                     int $offset, array $order, string $sql_where_previo): array|stdClass
     {
         if($limit<0){
             return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
