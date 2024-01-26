@@ -27,6 +27,23 @@ class _instalacion
 
     }
 
+    private function add(stdClass $atributos, string $campo, string $table)
+    {
+        $atributos_fin = $this->ajusta_atributos(atributos: $atributos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ajustar atributos_fin', data: $atributos_fin);
+        }
+
+        $add = $this->add_colum(campo: $campo, table: $table, tipo_dato: $atributos_fin->tipo_dato,
+            default: $atributos_fin->default, longitud: $atributos_fin->longitud,
+            not_null: $atributos_fin->not_null);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
+        }
+        return $add;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Agrega una columna a una tabla dada.
@@ -87,49 +104,30 @@ class _instalacion
         }
         $campos_origen = $datos->registros;
 
-        $adds = array();
-        foreach ($campos as $campo=>$atributos){
-
-            $existe_campo = $this->existe_campo_origen(campo_integrar: $campo,campos_origen:  $campos_origen);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
-            }
-
-            if(!$existe_campo){
-                $tipo_dato = 'VARCHAR';
-                if(isset($atributos->tipo_dato)){
-                    $atributos->tipo_dato = strtoupper($atributos->tipo_dato);
-                    $tipo_dato = $atributos->tipo_dato;
-                }
-                $default = '';
-                if(isset($atributos->default)){
-                    $default = $atributos->default;
-                }
-                $longitud = '255';
-
-                if($tipo_dato === 'DOUBLE'){
-                    $longitud = '100,4';
-                }
-
-                if(isset($atributos->longitud)){
-                    $longitud = $atributos->longitud;
-                }
-
-                $not_null = true;
-                if(isset($atributos->not_null)){
-                    $not_null = $atributos->not_null;
-                }
-                $add = $this->add_colum(campo: $campo, table: $table, tipo_dato: $tipo_dato, default: $default,
-                    longitud: $longitud, not_null: $not_null);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
-                }
-                $adds[] = $add;
-            }
-
+        $adds = $this->adds(campos: $campos,campos_origen:  $campos_origen,table:  $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al agregar columna sql', data: $adds);
         }
 
         return $adds;
+    }
+
+    private function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen, string $table)
+    {
+        $existe_campo = $this->existe_campo_origen(campo_integrar: $campo,campos_origen:  $campos_origen);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
+        }
+
+        if(!$existe_campo){
+            $add = $this->add(atributos: $atributos,campo:  $campo,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
+            }
+            $adds[] = $add;
+        }
+        return $adds;
+
     }
 
     private function add_unique_base(string $campo, string $table, string $index_name = '')
@@ -162,6 +160,64 @@ class _instalacion
         }
         return $indexs_unique;
     }
+
+    private function adds(stdClass $campos, array $campos_origen, string $table)
+    {
+        $adds = array();
+        foreach ($campos as $campo=>$atributos){
+            $adds = $this->add_existente(adds: $adds,atributos:  $atributos,campo:  $campo,
+                campos_origen:  $campos_origen,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al agregar columna sql', data: $adds);
+            }
+        }
+        return $adds;
+
+    }
+
+    private function ajusta_atributos(stdClass $atributos)
+    {
+        $tipo_dato = $this->tipo_dato(atributos: $atributos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ajustar tipo dato', data: $tipo_dato);
+        }
+        $default = $this->default(atributos: $atributos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ajustar default', data: $default);
+        }
+        $longitud = $this->longitud(atributos: $atributos, tipo_dato: $tipo_dato);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ajustar default', data: $default);
+        }
+        $not_null = $this->not_null(atributos: $atributos);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ajustar not_null', data: $not_null);
+        }
+
+        $data = new stdClass();
+        $data->tipo_dato = $tipo_dato;
+        $data->default = $default;
+        $data->longitud = $longitud;
+        $data->not_null = $not_null;
+
+        return $data;
+
+    }
+
+
+    private function ajusta_tipo_dato(stdClass $atributos): stdClass|array
+    {
+        $keys = array('tipo_dato');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $atributos,valida_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar atributos', data: $valida);
+        }
+
+        $atributos->tipo_dato = strtoupper($atributos->tipo_dato);
+        return $atributos;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * El método campo_double se encarga de crear un objeto stdClass con la configuración para un campo de tipo double.
@@ -363,6 +419,16 @@ class _instalacion
             $id = $r_filtro->registros[0][$modelo->key_id];
         }
         return $id;
+
+    }
+
+    private function default(stdClass $atributos)
+    {
+        $default = '';
+        if(isset($atributos->default)){
+            $default = $atributos->default;
+        }
+        return $default;
 
     }
 
@@ -842,6 +908,44 @@ class _instalacion
         }
 
         return $integraciones;
+
+    }
+
+    private function longitud(stdClass $atributos, string $tipo_dato)
+    {
+        $longitud = '255';
+
+        if($tipo_dato === 'DOUBLE'){
+            $longitud = '100,4';
+        }
+        if(isset($atributos->longitud)){
+            $longitud = $atributos->longitud;
+        }
+        return $longitud;
+
+    }
+
+    private function not_null(stdClass $atributos)
+    {
+        $not_null = true;
+        if(isset($atributos->not_null)){
+            $not_null = $atributos->not_null;
+        }
+        return $not_null;
+
+    }
+
+    private function tipo_dato(stdClass $atributos)
+    {
+        $tipo_dato = 'VARCHAR';
+        if(isset($atributos->tipo_dato)){
+            $atributos = $this->ajusta_tipo_dato(atributos: $atributos);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ajustar tipo dato', data: $atributos);
+            }
+            $tipo_dato = $atributos->tipo_dato;
+        }
+        return $tipo_dato;
 
     }
 

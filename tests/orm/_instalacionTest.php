@@ -21,6 +21,24 @@ class _instalacionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_ajusta_tipo_dato(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $atributos = new stdClass();
+        $atributos->tipo_dato = 'a';
+        $resultado = $ins->ajusta_tipo_dato($atributos);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A',$resultado->tipo_dato);
+
+        errores::$error = false;
+    }
+
     public function test_campo_double(): void
     {
 
