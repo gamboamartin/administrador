@@ -780,7 +780,21 @@ class _instalacion
         return $exe;
 
     }
-    final public function foreign_key_seguro(string $campo, string $table, string $default = '')
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * foreign_key_seguro
+     *
+     * Esta función valida y gestiona keys foráneas en la base de datos de forma segura
+     *
+     * @param string $campo Campo para el que se genera la key foránea
+     * @param string $table Tabla relacionada con la key foránea
+     * @param string $default Valor por defecto para el campo
+     *
+     * @return array|stdClass Retorna un array o un objeto stdClass dependiendo del resultado del proceso
+     * @version 15.78.1
+     */
+    final public function foreign_key_seguro(string $campo, string $table, string $default = ''):array|stdClass
     {
 
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);

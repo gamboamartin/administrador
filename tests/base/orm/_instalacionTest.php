@@ -470,7 +470,6 @@ class _instalacionTest extends test
         errores::$error = false;
     }
 
-
     public function test_foreign_key_completo(): void
     {
         errores::$error = false;
@@ -558,6 +557,46 @@ class _instalacionTest extends test
 
 
 
+    }
+
+    public function test_foreign_key_seguro(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+
+        $drop = $ins->drop_table_segura(table: 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al drop', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $table = 'b';
+        $drop = $ins->drop_table_segura(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al drop', data: $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new($table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al create', data: $create);
+            print_r($error);
+            exit;
+        }
+
+        $add = $ins->add_colum('a_id',$table, 'bigint');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al add', data: $add);
+            print_r($error);
+            exit;
+        }
+
+        $campo = 'a';
+        $resultado = $ins->foreign_key_seguro($campo, $table);
+        $this->assertEquals('ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);', $resultado->sql);
+
+        errores::$error = false;
     }
 
     public function test_integra_foraneas(): void
