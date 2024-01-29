@@ -759,7 +759,7 @@ class columnasTest extends test {
         $columnas_sql = array();
         $modelo = new adm_seccion($this->link);
         $renombres = array();
-        $resultado = $col->columnas_renombre($columnas, $columnas_sql, true, $modelo, $renombres);
+        $resultado = $col->columnas_renombre($columnas, $columnas_sql, $modelo, $renombres);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEmpty($resultado);

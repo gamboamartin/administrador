@@ -38,7 +38,6 @@ class columnas{
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq Integra las columnas extra si true
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
@@ -488,13 +487,14 @@ class columnas{
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
-        $columnas = $this->columnas_extra(columnas: $columnas, columnas_sql: $columnas_sql, extra_join: $extra_join, modelo: $modelo);
+        $columnas = $this->columnas_extra(columnas: $columnas, columnas_sql: $columnas_sql, extra_join: $extra_join,
+            modelo: $modelo);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
-        $columnas = $this->columnas_renombre(columnas: $columnas, columnas_sql: $columnas_sql, con_sq: $con_sq,
-            modelo: $modelo, renombres: $renombres);
+        $columnas = $this->columnas_renombre(columnas: $columnas, columnas_sql: $columnas_sql, modelo: $modelo,
+            renombres: $renombres);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
@@ -766,12 +766,11 @@ class columnas{
      * Genera las columnas con renombre para integrarlas en un SELECT
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $renombres Conjunto de tablas para renombrar
      * @return array|string
      */
-    private function columnas_renombre(string $columnas, array $columnas_sql, bool $con_sq, modelo_base $modelo,
+    private function columnas_renombre(string $columnas, array $columnas_sql, modelo_base $modelo,
                                        array $renombres): array|string
     {
         foreach($renombres as $tabla=>$data){
@@ -1278,12 +1277,23 @@ class columnas{
     }
 
     /**
-     * Integra las columnas en forma de SQL de forma recursiva
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @return stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Función que integra columnas en una cadena.
+     *
+     * Esta función tiene la tarea de integrar los nombres de las columnas
+     * en formato de cadena que serán utilizados para construir las consultas SQL.
+     *
+     * @param string $columnas Cadena con los nombres de las columnas actuales.
+     * @param string $resultado_columnas Cadena con los nombres de las columnas a añadir.
+     *
+     * @return stdClass Retorna un objeto que contiene las columnas integradas y una señal de continuación.
+     *         - columnas (string): Representa los nombres de las columnas ya integradas.
+     *         - continue (boolean): Indica si se debe continuar la operación. Se vuelve verdadero si la entrada $resultado_columnas está vacía.
+     *
+     * @version 15.71.1
+     *
      */
-    #[Pure] private function integra_columnas(string $columnas, string $resultado_columnas): stdClass
+    private function integra_columnas(string $columnas, string $resultado_columnas): stdClass
     {
         $data = new stdClass();
         $continue = false;
@@ -1315,7 +1325,7 @@ class columnas{
     {
         $data = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $data, params: get_defined_vars());
+            return $this->error->error(mensaje: 'Error al integrar columnas', data: $data);
         }
         return $data->columnas;
     }
