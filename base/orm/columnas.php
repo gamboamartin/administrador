@@ -625,13 +625,30 @@ class columnas{
     }
 
     /**
-     * Genera las columnas de una extension de base de datos
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
-     * logica natural de dependencias
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Ajusta y extiende las columnas pasadas según la estructura proveída.
+     *
+     * Esta función recibe los nombres de las columnas, una arreglo asocativo con la estructura de
+     * columnas SQL, una estrucura extra para las columnas y un modelo donde se realizarán los cambios.
+     * La función ajusta las columnas segun la estructura pasada y las reglas internas.
+     *
+     * @param string $columnas Nombres de las columnas que serán extendidas.
+     * @param array $columnas_sql Proporciona la estructura de las columnas SQL.
+     * @param array $extension_estructura Estructura extra a agregar a las columnas.
+     * @param modelo_base $modelo Modelo donde se aplicarán las extensiones de columnas.
+     *
+     * @throws errores Cuando la estructura pasada es inválida.
+     *
+     * @return string|array Retorna las columnas extendidas ajustadas o un mensaje de error.
+     *
+     * @example
+     * $columnas = 'nombre,apellido';
+     * $columnas_sql = ['nombre' => 'VARCHAR', 'apellido' => 'VARCHAR'];
+     * $extension_estructura = ['nombre' => ['extension' => 'sortable']];
+     * $modelo = new modelo_base();
+     * $columnas_extension = columnas_extension($columnas, $columnas_sql, $extension_estructura, $modelo);
+     * @version 15.80.1
+     *
      */
     private function columnas_extension(string $columnas, array $columnas_sql, array $extension_estructura,
                                         modelo_base $modelo): array|string
