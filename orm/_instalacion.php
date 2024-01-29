@@ -824,8 +824,38 @@ class _instalacion
         return $fk;
 
     }
-    private function foreign_no_conf(string $campo, array $campo_origen, string $table)
+
+    /**
+     * POR DOCUMENTAR WIKI
+     * Este método verifica y maneja la asignación de llaves extranjeras a un campo específico en una tabla.
+     *
+     * Primero, verifica que tanto el campo como la tabla no estén vacíos. Luego, se asegura de que el parámetro
+     * $campo_origen contenga la clave 'Key'. Si el valor de 'Key' no es 'MUL', se llama al método
+     * foreign_por_campo para tratar de asignar una llave extranjera al campo. Si este proceso encuentra
+     * algún error, se registra y se retorna el error.
+     *
+     * @param string $campo El nombre del campo al que se va a asignar la llave extranjera.
+     * @param array $campo_origen Un arreglo que contiene los detalles del campo original.
+     *                              Se espera que tenga una clave 'Key'.
+     * @param string $table El nombre de la tabla que contiene el campo.
+     * @return string|stdClass|array Retorna un mensaje indicando que el campo fue asignado si el proceso es
+     *                              exitoso, o un objeto de error si se encuentra algún problema.
+     * @version 15.75.1
+     */
+    private function foreign_no_conf(string $campo, array $campo_origen, string $table):string|stdClass|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $table = trim($table);
+        if ($table === '') {
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+
+        if(!isset($campo_origen['Key'])){
+            $campo_origen['Key'] = '';
+        }
         $fk = 'Campo asignado '.$campo;
         if($campo_origen['Key'] !== 'MUL'){
             $fk = $this->foreign_por_campo(campo: $campo,table:  $table);
