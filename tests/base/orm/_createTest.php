@@ -176,6 +176,49 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_default_sql(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $atributos_base = new stdClass();
+        $atributos_base->tipo_dato = '';
+        $result = $_create->default_sql($atributos_base);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$result);
+
+        errores::$error = false;
+
+        $atributos_base = new stdClass();
+        $atributos_base->tipo_dato = 'a';
+        $result = $_create->default_sql($atributos_base);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$result);
+
+        errores::$error = false;
+
+        $atributos_base = new stdClass();
+        $atributos_base->tipo_dato = 'VARCHAR';
+        $atributos_base->default = 'x';
+
+        $result = $_create->default_sql($atributos_base);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("DEFAULT 'x'",$result);
+
+        errores::$error = false;
+
+        $atributos_base = new stdClass();
+        $atributos_base->tipo_dato = 'TIMESTAMP';
+        $atributos_base->default = 'x';
+
+        $result = $_create->default_sql($atributos_base);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("DEFAULT x",$result);
+        errores::$error = false;
+    }
+
     public function test_integra_longitud(){
         errores::$error = false;
         // Arrange (Organizar)

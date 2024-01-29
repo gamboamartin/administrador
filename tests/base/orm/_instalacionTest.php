@@ -435,6 +435,7 @@ class _instalacionTest extends test
 
         $campos = new stdClass();
         $resultado = $ins->create_table(campos: $campos, table: $table);
+        //print_r($resultado);exit;
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("CREATE TABLE z (
@@ -447,6 +448,8 @@ class _instalacionTest extends test
         errores::$error = false;
 
     }
+
+
 
     public function test_existen_entidad(): void
     {

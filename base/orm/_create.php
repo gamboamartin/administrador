@@ -253,17 +253,11 @@ class _create
         if(isset($atributos->default)){
             $atributos_base->default = trim($atributos->default);
         }
-        $default_sql = '';
-        if($atributos_base->tipo_dato !== ''){
-
-            if($atributos_base->default !== '') {
-                if ($atributos_base->tipo_dato === 'VARCHAR') {
-                    $default_sql = "DEFAULT '$atributos_base->default'";
-                } elseif ($atributos_base->tipo_dato === 'TIMESTAMP') {
-                    $default_sql = "DEFAULT $atributos_base->default";
-                }
-            }
+        $default_sql = $this->default_sql(atributos_base: $atributos_base);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener default_sql',data: $default_sql);
         }
+
 
         $atributos_base->longitud_sql = $longitud_sql;
         $atributos_base->default_sql = $default_sql;
@@ -410,6 +404,40 @@ class _create
         $data->campos_por_integrar  = $campos;
 
         return $data;
+    }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una consulta SQL por defecto basada en un conjunto de atributos.
+     *
+     * @param stdClass $atributos_base Objeto que contiene los atributos para generar la consulta SQL.
+     *
+     * $atributos_base->tipo_dato se refiere al tipo de datos de la columna en la consulta SQL.
+     * $atributos_base->default se refiere al valor por defecto que se debe usar para la columna en la consulta SQL.
+     *
+     * @return string Devuelve una consulta SQL por defecto como una cadena de texto. Si hay un error,
+     * devuelve un array con la información del error.
+     * @version 15.84.1
+     *
+     */
+    private function default_sql(stdClass $atributos_base): string
+    {
+        $default_sql = '';
+        if($atributos_base->tipo_dato !== ''){
+
+            if(!isset($atributos_base->default)){
+                $atributos_base->default = '';
+            }
+            if($atributos_base->default !== '') {
+                if ($atributos_base->tipo_dato === 'VARCHAR') {
+                    $default_sql = "DEFAULT '$atributos_base->default'";
+                } elseif ($atributos_base->tipo_dato === 'TIMESTAMP') {
+                    $default_sql = "DEFAULT $atributos_base->default";
+                }
+            }
+        }
+        return $default_sql;
+
     }
 
 
