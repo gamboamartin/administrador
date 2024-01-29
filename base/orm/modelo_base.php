@@ -841,7 +841,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
             columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_seleccionables, con_sq: $con_sq, extension_estructura: $extension_estructura,
+            columnas_sql: $columnas_seleccionables, extension_estructura: $extension_estructura,
             extra_join: $extra_join, renombres: $renombradas);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener columnas en '.$this->tabla,data: $columnas_sql);

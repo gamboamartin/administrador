@@ -1026,14 +1026,21 @@ class columnas{
     }
 
     /**
-     * Funcion que genera las columnas de una tabla junto con sus relaciones
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param string $key Tabla a verificar obtencion de sql
-     * @param modelo_base $modelo Modelo o tabla de aplicacion
-     * @return array|string
-     */
+     * POR DOCUMENTAR EN WIKI
+     * Este método genera una nueva columna para la tabla.
+     *
+     * @param string $columnas Cadena de caracteres con los nombres de las columnas.
+     * @param bool $columnas_en_bruto Indica si las columnas están en bruto (true) o no (false).
+     * @param array $columnas_sql Array con las columnas SQL.
+     * @param string $key Clave única para la columna.
+     * @param modelo_base $modelo Modelo base para generar la columna.
+     *
+     * @return array|string Si ocurre un error, se devuelve un array con información sobre el error. De lo contrario,
+     * se devuelve una cadena de caracteres con la columna generada.
+     *
+     * @throws errores Si la clave es un número, se lanza un error.
+     * @version 15.77.1
+     **/
     private function genera_columna_tabla(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
                                           string $key, modelo_base $modelo): array|string
     {
@@ -1397,24 +1404,21 @@ class columnas{
     /**
      *
      * Genera las columnas en forma de sql para ser utilizado en un SELECT de todas las columnas unidas por el modelo
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq Integra las columnas extra si true
-     * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
-     * @param array $renombres conjunto de columnas renombradas
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd
+     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
+     * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
+     * @param array $extra_join
+     * @param array $renombres conjunto de columnas renombradas
      * @return array|string sql con las columnas para un SELECT
-     * @throws errores definidos en la maquetacion de las columnas
-     * @throws errores $consulta_base->estructura_bd[$this->tabla]['columnas'] no existe
-     *@example
+     * @example
      *      $columnas = $this->obten_columnas_completas($columnas);
      * @pordoc false
      */
     final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                                    bool $columnas_en_bruto = false, array $columnas_sql = array(),
-                                                   bool $con_sq = true, array $extension_estructura = array(),
-                                                   array $extra_join = array(),
+                                                   array $extension_estructura = array(), array $extra_join = array(),
                                                    array $renombres = array()):array|string{
 
 
