@@ -1510,8 +1510,33 @@ class columnas{
         return $sub_querys_sql;
     }
 
-    private function tabla_renombrada_extra(array $data, string $tabla): string
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función privada que devuelve el nombre renombrado de una tabla con base en los datos proporcionados.
+     *
+     * @param array $data Conjunto de datos los cuales pueden contener el renombre asignado a la tabla.
+     * @param string $tabla Nombre de la tabla que se necesita renombrar.
+     *
+     * @return string|array Devuelve el nombre renombrado de la tabla o un mensaje de error.
+     *
+     * La función comienza por limpiar los espacios en blanco en el nombre de la tabla proporcionado.
+     * Si después de este proceso el nombre de la tabla está vacío, la función devuelve un error indicando que
+     * la tabla está vacía.
+     *
+     * A continuación, la función comprueba si en el conjunto de datos proporcionado se incluye un nombre alternativo
+     * ('renombre') para la tabla. Si no es así, se devuelve el nombre original de la tabla.
+     *
+     * Si se proporciona un nombre alternativo y este no está vacío luego de limpiar los espacios en blanco,
+     * la función lo devolverá como el nuevo nombre de la tabla.
+     *
+     * @version 15.82.1
+     */
+    private function tabla_renombrada_extra(array $data, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:"Error tabla esta vacia", data:$tabla);
+        }
         $tabla_renombrada = $tabla;
         if(isset($data['renombre'])){
             $data['renombre'] = trim($data['renombre']);

@@ -1352,6 +1352,19 @@ class columnasTest extends test {
         $this->assertEquals('',$resultado);
         errores::$error = false;
     }
+    public function test_tabla_renombrada_extra(){
+
+        errores::$error = false;
+        $col = new columnas();
+        $col = new liberator($col);
+        $data['renombre'] = 'd';
+        $tabla = 'a';
+        $resultado = $col->tabla_renombrada_extra($data, $tabla);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('d',$resultado);
+        errores::$error = false;
+    }
 
     public function test_valida_columnas_sql(){
 
