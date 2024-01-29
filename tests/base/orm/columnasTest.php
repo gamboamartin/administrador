@@ -706,7 +706,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $columas_by_table = array();
-        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, true, $extension_estructura, array(), $modelo,
+        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, $extension_estructura, array(), $modelo,
             $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -720,7 +720,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $columas_by_table = array('adm_menu');
-        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, true, $extension_estructura, array(), $modelo,
+        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, $extension_estructura, array(), $modelo,
             $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -737,7 +737,7 @@ class columnasTest extends test {
         $columas_by_table = array('adm_dia');
         $extra_join = array();
         $extra_join['adm_dia'] = array();
-        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, true, $extension_estructura,$extra_join, $modelo,
+        $resultado = $col->columnas_full($columas_by_table, false, $columnas_sql, $extension_estructura,$extra_join, $modelo,
             $renombres, $tablas_select);
 
         //print_r($resultado);exit;

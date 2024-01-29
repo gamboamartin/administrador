@@ -34,14 +34,26 @@ class columnas{
     }
 
     /**
-     * Genera las columnas sql para un select
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Método privado que permite ajustar las columnas completas para una consulta SQL.
+     *
+     * @param string $columnas Cadena de caracteres con el nombre de las columnas.
+     * @param bool $columnas_en_bruto Bandera para indicar si las columnas están en bruto.
+     * @param array $columnas_sql Memoria de las columnas SQL en un array.
+     * @param modelo_base $modelo Instancia del modelo base.
+     * @param string $tabla Nombre de la tabla.
+     * @param string $tabla_renombrada Nombre de la tabla renombrada.
+     *
+     * @return array|string El resultado puede ser una matriz de columnas o una cadena de error.
+     *
+     * Un paso del método es verificar que el nombre de la tabla no sea numérico. De serlo, se genera un error.
+     *
+     * Después se genera las columnas de la consulta, en caso de error en la generación de las columnas, se genera un error.
+     *
+     * Posteriormente se integran las columnas por data. Si ocurre un error en la integración de columnas, se genera un error.
+     *
+     * En caso de no haber errores, se devuelve las columnas generadas.
+     * @version 15.73.1
      */
     private function ajusta_columnas_completas(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
                                                modelo_base $modelo, string $tabla, string $tabla_renombrada): array|string
@@ -725,7 +737,6 @@ class columnas{
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
      * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
@@ -734,7 +745,7 @@ class columnas{
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      */
-    private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
+    private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
                                    array $renombres, array $tablas_select): array|string
     {
@@ -1414,8 +1425,8 @@ class columnas{
         }
 
         $columnas = $this->columnas_full(columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_sql, con_sq: $con_sq, extension_estructura: $extension_estructura,
-            extra_join: $extra_join, modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
+            columnas_sql: $columnas_sql, extension_estructura: $extension_estructura, extra_join: $extra_join,
+            modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al integrar columnas en '.$modelo->tabla, data: $columnas);
         }
