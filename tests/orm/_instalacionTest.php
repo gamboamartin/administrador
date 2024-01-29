@@ -244,7 +244,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_foreign_no_conf(): void
     {
 
@@ -283,6 +282,70 @@ class _instalacionTest extends test {
         $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
 
         errores::$error = false;
+    }
+
+    public function test_foreign_no_conf_integra()
+    {
+        $ins = new _instalacion(link: $this->link);
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $add = $ins->add_colum('a_id','b', 'bigint');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear campo',data:  $add);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $campo = 'a';
+        $campos_origen = array();
+        $table = 'b';
+        $resultado = $ins->foreign_no_conf_integra($campo, $campos_origen, $table);
+        //print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campos_origen = array();
+        $table = 'b';
+        $campos_origen[]['Field'] = 'b';
+        $resultado = $ins->foreign_no_conf_integra($campo, $campos_origen, $table);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campos_origen = array();
+        $table = 'b';
+        $campos_origen[]['Field'] = 'a';
+        $resultado = $ins->foreign_no_conf_integra($campo, $campos_origen, $table);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado[0]->sql);
+
+        errores::$error = false;
+
     }
     public function test_foreign_por_campo(): void
     {

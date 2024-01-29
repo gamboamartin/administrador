@@ -866,22 +866,56 @@ class _instalacion
         return $fk;
 
     }
-    private function foreign_no_conf_integra(string $campo, array $campos_origen, string $table)
-    {
-        $fk = 'No existe campo '.$campo;
-        foreach ($campos_origen as $campo_origen){
 
-            $campo_origen_name = $campo_origen['Field'];
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método integra una relación de clave ajena (Foreign Key) para la cual no haya una configuración definida.
+     *
+     * @param string $campo Es el campo para el cual se desea establecer la relación de clave ajena.
+     * @param array  $campos_origen Es una lista de campos de origen entre los cuales se establecerá la relación.
+     * @param string $table Es la tabla en que se desea establecer la relación.
+     *
+     * @return array Devuelve un arreglo que contiene los detalles de las claves ajenas establecidas.
+     *    En caso de error devuelve un mensaje de error con detalles al respecto.
+     *
+     * @throws errores En caso de que ocurra cualquier error en la ejecución, se lanza una excepción con detalles.
+     * @version 15.76.1
+     */
+    private function foreign_no_conf_integra(string $campo, array $campos_origen, string $table):array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $table = trim($table);
+        if ($table === '') {
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+
+        $fks = array();
+        foreach ($campos_origen as $campo_origen){
+            if(!is_array($campo_origen)){
+                return $this->error->error(mensaje: 'Error campo_origen no es un array', data: $campo_origen);
+            }
+            $keys = array('Field');
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar campo_origen', data: $valida);
+            }
+
+            $campo_origen_name = trim($campo_origen['Field']);
 
             if($campo_origen_name === $campo) {
+
                 $fk = $this->foreign_no_conf(campo: $campo, campo_origen: $campo_origen, table: $table);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
                 }
+                $fks[] = $fk;
                 break;
             }
         }
-        return $fk;
+        return $fks;
 
     }
 
