@@ -317,9 +317,28 @@ class _instalacion
         return $campos;
 
     }
-
-    private function campos_origen(string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Metodo campos_origen
+     *
+     * Este método se encarga de describir los campos de una tabla específica en la base de datos.
+     *
+     * @param string $table - Nombre de la tabla para describir.
+     *
+     * @return array - Retorna los registros de los campos de la tabla si la operación es exitosa,
+     *                 de lo contrario, devuelve un mensaje de error.
+     *
+     * @throws errores - Lanza una excepción si ocurre un error al validar la tabla o ejecutar la consulta SQL.
+     *
+     * @version 15.66.1
+     */
+    private function campos_origen(string $table): array
     {
+        $table = trim($table);
+        $valida = (new val_sql())->tabla(tabla: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar table', data: $valida);
+        }
         $datos = $this->describe_table(table: $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);

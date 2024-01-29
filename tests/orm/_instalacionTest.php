@@ -113,6 +113,25 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_campos_origen(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $table = 'a';
+        $resultado = $ins->campos_origen($table);
+       // print_r($resultado);exit;
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('bigint',$resultado[0]['Type']);
+
+
+        errores::$error = false;
+    }
     public function test_describe_table(): void
     {
 
