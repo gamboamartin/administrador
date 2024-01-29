@@ -9,7 +9,6 @@ use gamboamartin\administrador\ctl\activacion;
 use gamboamartin\administrador\ctl\altas;
 use gamboamartin\administrador\ctl\normalizacion_ctl;
 use gamboamartin\administrador\models\adm_categoria_secciones;
-use gamboamartin\administrador\models\adm_categoria_usuario;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_seccion;

@@ -54,9 +54,19 @@ class configuraciones extends validacion {
 
 
     /**
-     * Valida los elementos de composer
+     * POR DOCUMENTAR EN WIKI
+     * Esta función valida la configuración necesaria para un proyecto Composer.
+     *
+     * @param   string $tipo_conf El tipo de configuración que se desea validar.
+     * @return  bool|array Si la validación es exitosa, devuelve true.
+     *                     Si la validación falla, entonces se devolverá un array
+     *                     con el error que ocurrió.
+     * @throws  errores Excepción lanzada si ocurre un error al codificar el objeto a formato JSON.
+     *
+     * @author  Martin Gamboa
+     * @version 16.0.0
      */
-    private function valida_conf_composer(string $tipo_conf): bool|array
+    private function valida_conf_composer(string $tipo_conf): true|array
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
