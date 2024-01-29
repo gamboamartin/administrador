@@ -671,6 +671,20 @@ class columnas{
         return $columnas_env;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función columnas_extra
+     *
+     * Esta función se utiliza para procesar las columnas extra en las consultas SQL.
+     *
+     * @param string $columnas El nombre de las columnas a procesar.
+     * @param array $columnas_sql El array de columnas SQL.
+     * @param array $extra_join El array de tablas extra para hacer un JOIN.
+     * @param modelo_base $modelo El modelo base que se utilizará para el procesamiento.
+     *
+     * @return array|string Devuelve las columnas procesadas si no hubo errores. En caso de errores, devuelve un mensaje de error.
+     * @version 15.83.1
+     */
     private function columnas_extra(string $columnas, array $columnas_sql,  array $extra_join,
                                     modelo_base $modelo): array|string
     {
