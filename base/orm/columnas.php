@@ -924,12 +924,30 @@ class columnas{
     }
 
     /**
-     * Genera las columnas para un sql con joins
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param modelo_base $modelo Modelo o tabla de aplicacion
-     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * La función columnas_tablas_select elabora las columnas que se seleccionarán en una consulta SQL.
+     *
+     * @param bool $columnas_en_bruto Indica si las columnas se proporcionan en bruto. Si es true, la función establece
+     *                                $tablas_select para ser un arreglo vacío y $modelo->tabla como valor.
+     *
+     * @param array $columnas_sql Representa las columnas SQL que se usarán en la consulta.
+     *
+     * @param modelo_base $modelo Instancia del modelo base utilizado para configurar la tabla.
+     *                            Se utiliza el valor de $modelo->tabla.
+     *
+     * @param array $tablas_select Define las tablas que se seleccionarán en la consulta.
+     *
+     * @return array|string Si hay algún error durante la ejecución, retorna un mensaje de error con los detalles.
+     *                      Si todo va bien, retorna las columnas formuladas como una cadena.
+     *
+     * @throws errores Si $key es un número, se lanza una excepción con un mensaje de error.
+     *                   Si hay un error al integrar las columnas, se lanza una excepción con un mensaje de error.
+     *
+     * La función recorre cada elemento en $tablas_select, por cada tabla llama a la función genera_columna_tabla con
+     * los parámetros necesarios. Si encuentra algún error, retorna el mensaje de error con los detalles.
+     * Si todo va bien, actualiza el valor de $columnas y continúa hasta que no queden más elementos en $tablas_select.
+     * Finalmente, retorna $columnas que ahora son la consulta SQL finalizada.
+     * @version 15.79.1
      */
     private function columnas_tablas_select(bool $columnas_en_bruto, array $columnas_sql,  modelo_base $modelo,
                                             array $tablas_select): array|string
@@ -1441,7 +1459,6 @@ class columnas{
     /**
      *
      * Devuelve un conjunto de campos obtenidos de this->sub_querys
-     * @version 1.66.17
      * @param string $columnas columnas previamente generadas en SQL
      * @param modelo_base $modelo Modelos en ejecucion
      * @param array $columnas_seleccionables Conjunto de columnas a generar subquerys
