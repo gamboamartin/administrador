@@ -320,7 +320,7 @@ class columnasTest extends test {
         $data = array();
         $columnas = '';
         $tabla = '';
-        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql,true, $data, $modelo, $tabla);
+        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql, $data, $modelo, $tabla);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error al validar data', $resultado['mensaje']);
@@ -331,7 +331,7 @@ class columnasTest extends test {
         $columnas = '';
         $tabla = '';
         $data['nombre_original'] = 'adm_seccion';
-        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql,true, $data, $modelo, $tabla);
+        $resultado = $col->carga_columna_renombre($columnas, $columnas_sql, $data, $modelo, $tabla);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('adm_seccion_descripcion, adm_seccion.etiqueta_label', $resultado);

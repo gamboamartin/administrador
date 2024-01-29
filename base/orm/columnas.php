@@ -330,13 +330,12 @@ class columnas{
      * Carga a un string de forma SQL los campos SELECTS
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq
      * @param array $data Datos para la maquetacion del JOIN
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
      * @return array|string
      */
-    private function carga_columna_renombre(string $columnas, array $columnas_sql, bool $con_sq, array $data, modelo_base $modelo,
+    private function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
                                             string $tabla): array|string
     {
 
@@ -583,10 +582,23 @@ class columnas{
     }
 
     /**
-     * Funcion que genera el sql de columnas en forma de texto para campos SELECT
-     * @param string $columnas_extra_sql Columnas que vienen de modelo->columnas_extra
-     * @param string $columnas_sql Columnas que vienen de modelo->columnas de cada tabla
-     * @return string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función maneja la combinación de columnas para una consulta SQL basada en las entradas $columnas_extra_sql y $columnas_sql.
+     *
+     * @param string $columnas_extra_sql Las columnas SQL extra. Pueden contener nombres de columnas adicionales para la consulta SQL.
+     * @param string $columnas_sql Las columnas SQL principales. Contienen los nombres de las columnas principales para la consulta.
+     *
+     * @return string Devuelve un string que contiene las columnas para la consulta SQL. Si $columnas_sql está vacío,
+     *                se devuelve $columnas_extra_sql. Si ambas no están vacías, se devolverá una cadena que contiene ambas,
+     *                estos estarán separados por una coma.
+     *
+     * @example
+     * // Ejemplo de uso:
+     * $columnas_sql = 'id, nombre';
+     * $columnas_extra_sql = 'direccion, telefono';
+     * $resultado = columnas_envio($columnas_extra_sql, $columnas_sql);
+     * // $resultado ahora contiene 'id, nombre, direccion, telefono'
+     * @version 15.69.1
      */
     private function columnas_envio(string $columnas_extra_sql, string $columnas_sql): string
     {
@@ -768,7 +780,7 @@ class columnas{
                 return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data);
             }
             $r_columnas = $this->carga_columna_renombre(columnas: $columnas, columnas_sql: $columnas_sql,
-                con_sq: $con_sq, data: $data, modelo: $modelo, tabla: $tabla);
+                data: $data, modelo: $modelo, tabla: $tabla);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al integrar columnas', data: $r_columnas);
             }
