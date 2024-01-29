@@ -422,6 +422,8 @@ class sql{
         return $params_base;
     }
 
+
+
     private function init_params(stdClass $params_base): array|stdClass
     {
         $params_base_ = $params_base;
@@ -442,6 +444,47 @@ class sql{
         return $params_base_;
     }
 
+    private function longitud(string|int|float $longitud, string $tipo_dato): int|string
+    {
+        if($tipo_dato === 'BIGINT'){
+            if($longitud === ''){
+                $longitud = 100;
+            }
+        }
+        if($tipo_dato === 'VARCHAR'){
+            if($longitud === ''){
+                $longitud = 255;
+            }
+        }
+        return $longitud;
+
+    }
+
+    private function longitud_sql(int|string|float $longitud, string $tipo_dato)
+    {
+        $longitud = $this->longitud(longitud: $longitud,tipo_dato: $tipo_dato);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar longitud', data: $longitud);
+        }
+
+        $longitud_sql = $this->longitud_sql_ini(longitud: $longitud);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar longitud_sql', data: $longitud_sql);
+        }
+        return $longitud_sql;
+
+    }
+
+    private function longitud_sql_ini(string|float|int $longitud): string
+    {
+        $longitud_sql = '';
+        if($longitud !== ''){
+            $longitud_sql = "($longitud)";
+        }
+        return $longitud_sql;
+
+    }
+
     /**
      * Genera una consulta SQL para modificar una columna en una tabla.
      *
@@ -453,10 +496,12 @@ class sql{
      */
     final public function modify_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): string
     {
-        $longitud_sql = '';
-        if($longitud === ''){
-            $longitud_sql = "($longitud)";
+        $longitud_sql = $this->longitud_sql(longitud: $longitud,tipo_dato:  $tipo_dato);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar longitud_sql', data: $longitud_sql);
         }
+
+
         return "ALTER TABLE $table MODIFY COLUMN $campo $tipo_dato $longitud_sql;";
 
     }

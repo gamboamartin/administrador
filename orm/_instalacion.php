@@ -29,6 +29,11 @@ class _instalacion
 
     private function add(stdClass $atributos, string $campo, string $table)
     {
+        $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+        }
+
         $atributos_fin = $this->ajusta_atributos(atributos: $atributos);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ajustar atributos_fin', data: $atributos_fin);
@@ -65,8 +70,12 @@ class _instalacion
         $table = trim($table);
         $tipo_dato = trim($tipo_dato);
         $tipo_dato = strtoupper($tipo_dato);
-
         $longitud = trim($longitud);
+
+        $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+        }
 
         if($longitud === '') {
             if ($tipo_dato === 'VARCHAR') {
@@ -98,11 +107,10 @@ class _instalacion
     final public function add_columns(stdClass $campos, string $table)
     {
 
-        $datos = $this->describe_table(table: $table);
+        $campos_origen = $this->campos_origen(table: $table);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $campos_origen);
         }
-        $campos_origen = $datos->registros;
 
         $adds = $this->adds(campos: $campos,campos_origen:  $campos_origen,table:  $table);
         if (errores::$error) {
@@ -112,8 +120,13 @@ class _instalacion
         return $adds;
     }
 
-    private function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen, string $table)
+    PUBLIC function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen, string $table)
     {
+        $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+        }
+
         $existe_campo = $this->existe_campo_origen(campo_integrar: $campo,campos_origen:  $campos_origen);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
@@ -125,6 +138,41 @@ class _instalacion
                 return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
             }
             $adds[] = $add;
+        }
+        else{
+            $campos_origen_data = $this->campos_origen(table: $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $campos_origen_data);
+            }
+            foreach ($campos_origen_data as $campo_origen_data){
+                if($campo_origen_data['Field'] === $campo){
+                    $type_origen = trim(strtoupper($campo_origen_data['Type']));
+
+                    $desglose = explode('(', $type_origen);
+                    $tipo_dato_origen = strtoupper(trim($desglose[0]));
+
+                    $type_new = 'VARCHAR';
+                    if(isset($atributos->tipo_dato)) {
+                        $type_new = trim(strtoupper($atributos->tipo_dato));
+                    }
+                    $longitud = '';
+                    if(isset($atributos->longitud)) {
+                        $longitud = trim($atributos->longitud);
+                    }
+
+                    if ($type_new !== $tipo_dato_origen) {
+                        $modifica = $this->modifica_columna(campo: $campo, longitud: $longitud, table: $table, tipo_dato: $type_new);
+                        if (errores::$error) {
+                            return $this->error->error(mensaje: 'Error al agregar modificar columnas', data: $modifica);
+                        }
+                        $adds[] = $modifica;
+                    }
+
+
+
+                }
+            }
+
         }
         return $adds;
 
@@ -267,6 +315,16 @@ class _instalacion
         $campos->$name_campo->default = $default;
 
         return $campos;
+
+    }
+
+    private function campos_origen(string $table)
+    {
+        $datos = $this->describe_table(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $datos);
+        }
+        return $datos->registros;
 
     }
 
@@ -922,6 +980,20 @@ class _instalacion
             $longitud = $atributos->longitud;
         }
         return $longitud;
+
+    }
+
+    final public function modifica_columna(string $campo, string $longitud, string $table, string $tipo_dato)
+    {
+        $sql = (new sql())->modify_column(campo: $campo,table:  $table,tipo_dato:  $tipo_dato,longitud: $longitud);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
+        }
+        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+        return $exe;
 
     }
 

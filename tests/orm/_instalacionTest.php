@@ -21,6 +21,43 @@ class _instalacionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_add_existente(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $adds = array();
+        $atributos = new stdClass();
+        $campo = 'a';
+        $campos_origen[0]['Field'] = 'a';
+        $table = 'z';
+
+
+        $resultado = $ins->add_existente($adds, $atributos, $campo, $campos_origen, $table);
+        //print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+        $adds = array();
+        $atributos = new stdClass();
+        $atributos->tipo_dato = 'BIGINT';
+        $campo = 'a';
+        $campos_origen[0]['Field'] = 'a';
+        $table = 'z';
+
+
+        $resultado = $ins->add_existente($adds, $atributos, $campo, $campos_origen, $table);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        //$this->assertNotTrue("ALTER TABLE z MODIFY COLUMN a BIGINT (100);",$resultado->sql);
+        errores::$error = false;
+
+    }
     public function test_ajusta_tipo_dato(): void
     {
 
@@ -38,7 +75,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_campo_double(): void
     {
 
@@ -133,7 +169,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_foreign_key_completo(): void
     {
 
