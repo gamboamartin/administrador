@@ -677,6 +677,7 @@ class columnas{
         $columnas_env = $columnas;
         foreach($extra_join as $tabla=>$data){
             $tabla = str_replace('models\\','',$tabla);
+
             if(is_numeric($tabla)){
                 return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
                     data: $extra_join);
@@ -685,14 +686,12 @@ class columnas{
                 return $this->error->error(mensaje: 'Error data debe ser un array ',
                     data: $data);
             }
-            $tabla_renombrada = $tabla;
-            if(isset($data['renombre'])){
-                $data['renombre'] = trim($data['renombre']);
-                if($data['renombre'] !== ''){
-                    $tabla_renombrada = $data['renombre'];
-                }
 
+            $tabla_renombrada = $this->tabla_renombrada_extra(data: $data,tabla:  $tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al integrar tabla_renombrada', data:$tabla_renombrada);
             }
+
             $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: false,
                 columnas_sql: $columnas_sql,  modelo: $modelo, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
             if(errores::$error){
@@ -1509,6 +1508,19 @@ class columnas{
         }
 
         return $sub_querys_sql;
+    }
+
+    private function tabla_renombrada_extra(array $data, string $tabla): string
+    {
+        $tabla_renombrada = $tabla;
+        if(isset($data['renombre'])){
+            $data['renombre'] = trim($data['renombre']);
+            if($data['renombre'] !== ''){
+                $tabla_renombrada = $data['renombre'];
+            }
+        }
+        return $tabla_renombrada;
+
     }
 
 
