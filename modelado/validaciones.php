@@ -100,11 +100,10 @@ class validaciones extends validacion{
     /**
      * Valida la tabla de una columnas
      * @param array $data Datos para la maquetacion del JOIN
-     * @version 1.51.14
      * @param string $tabla Tabla o estructura de la base de datos modelo o seccion
      * @return bool|array
      */
-    public function valida_data_columna(array $data, string $tabla): bool|array
+    final public function valida_data_columna(array $data, string $tabla): bool|array
     {
 
         $keys = array('nombre_original');
