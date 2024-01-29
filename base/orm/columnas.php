@@ -362,7 +362,6 @@ class columnas{
      * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
      * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
@@ -375,8 +374,8 @@ class columnas{
      * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
      */
     private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
-                              array $columnas_sql, bool $con_sq, array $extension_estructura, array $extra_join,
-                              modelo_base $modelo, array $renombres, array $tablas_select): array|string
+                              array $columnas_sql, array $extension_estructura, array $extra_join, modelo_base $modelo,
+                              array $renombres, array $tablas_select): array|string
     {
         if(!$aplica_columnas_by_table) {
 
@@ -387,8 +386,8 @@ class columnas{
             }
 
             $columnas = $this->columnas_base(columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql,
-                con_sq: $con_sq, extension_estructura: $extension_estructura, extra_join: $extra_join,
-                modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
+                extension_estructura: $extension_estructura, extra_join: $extra_join, modelo: $modelo,
+                renombres: $renombres, tablas_select: $tablas_select);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar columnas base en '.$modelo->tabla,
                     data: $columnas);
@@ -462,7 +461,6 @@ class columnas{
      * Genera las columnas en forma de SQL para un select con todas las configuracion nativas de un modelo
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq Integra las columnas extra si true
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
      * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
@@ -471,9 +469,9 @@ class columnas{
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      */
-    private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, bool $con_sq,
-                                   array $extension_estructura, array $extra_join, modelo_base $modelo,
-                                   array $renombres, array $tablas_select): array|string
+    private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, array $extension_estructura,
+                                   array $extra_join, modelo_base $modelo, array $renombres,
+                                   array $tablas_select): array|string
     {
         $columnas = $this->columnas_tablas_select(columnas_en_bruto: $columnas_en_bruto,
             columnas_sql: $columnas_sql,  modelo: $modelo, tablas_select: $tablas_select);
@@ -748,9 +746,9 @@ class columnas{
         }
 
         $columnas = $this->columnas(aplica_columnas_by_table: $aplica_columnas_by_table,
-            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_sql, con_sq: $con_sq, extension_estructura: $extension_estructura,
-            extra_join: $extra_join, modelo: $modelo, renombres: $renombres, tablas_select: $tablas_select);
+            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql,
+            extension_estructura: $extension_estructura, extra_join: $extra_join, modelo: $modelo,
+            renombres: $renombres, tablas_select: $tablas_select);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas en modelo '.$modelo->tabla,
                 data: $columnas);
@@ -1316,10 +1314,23 @@ class columnas{
     }
 
     /**
-     * Integra las columnas de un objeto para su sos en un select
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param string $resultado_columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @return array|string String con todas las columnas de una tabla
+     * POR DOCUMENTAR EN WIKI
+     * Método que integra las columnas por datos.
+     *
+     * La función se encargará de:
+     * - Invocar a la función `integra_columnas` con las columnas y los resultados de columnas dados como parámetros.
+     * - Manejar cualquier error que pueda surgir en el proceso anterior.
+     * - Si no hay errores, devolverá las columnas integradas.
+     *
+     * @param string $columnas Columnas para integrar.
+     * @param string $resultado_columnas Resultado de las columnas.
+     *
+     * @return array|string Devuelve las columnas integradas si no hay errores, si surge algún error, devolverá una cadena describiendo el error.
+     *
+     * @throws errores "Error al integrar columnas" si surge algún error en el proceso.
+     *
+     * @access private
+     * @version 15.72.1
      */
     private function integra_columnas_por_data(string $columnas, string $resultado_columnas):array|string
     {

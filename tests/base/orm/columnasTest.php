@@ -353,7 +353,7 @@ class columnasTest extends test {
         $renombres = array();
         $tablas_select = array('adm_seccion'=>false,'adm_accion'=>'adm_seccion');
 
-        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,true,
+        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,
             $extension_estructura, array(), $modelo, $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -374,7 +374,7 @@ class columnasTest extends test {
         $extra_join['adm_menu']['renombre'] = 'adm_menu_s';
 
 
-        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,true,
+        $resultado = $col->columnas($aplica_columnas_by_table, $columnas_by_table, $columnas_en_bruto, $columnas_sql,
             $extension_estructura, $extra_join, $modelo, $renombres, $tablas_select);
 
         //print_r($resultado);exit;
@@ -427,7 +427,7 @@ class columnasTest extends test {
         $modelo = new adm_seccion($this->link);
         $renombres = array();
         $tablas_select = array();
-        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, true, $extension_estructura, array(),
+        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, $extension_estructura, array(),
             $modelo, $renombres, $tablas_select);
 
         //print_r($resultado);exit;
@@ -446,7 +446,7 @@ class columnasTest extends test {
         $renombres = array();
         $tablas_select = array();
         $tablas_select['adm_accion'] = 'x';
-        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql,true, $extension_estructura, array(),
+        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, $extension_estructura, array(),
             $modelo, $renombres, $tablas_select);
 
         $this->assertIsString($resultado);
@@ -466,7 +466,7 @@ class columnasTest extends test {
         $tablas_select['adm_accion'] = 'x';
         $extra_join = array();
         $extra_join['adm_accion'] = array();
-        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql,true, $extension_estructura, $extra_join,
+        $resultado = $col->columnas_base($columnas_en_bruto, $columnas_sql, $extension_estructura, $extra_join,
             $modelo, $renombres, $tablas_select);
 
         //print_r($resultado);exit;
