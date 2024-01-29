@@ -118,6 +118,14 @@ class _instalacionTest extends test {
     {
 
         errores::$error = false;
+
+        $create = (new _instalacion(link: $this->link))->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
         $ins = new _instalacion(link: $this->link);
         $ins = new liberator($ins);
 

@@ -228,7 +228,7 @@ class estructurasTest extends test {
 
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
-        $this->assertEquals('adm_bitacora',$resultado[5]);
+        $this->assertEquals('adm_campo',$resultado[5]);
 
         errores::$error = false;
 

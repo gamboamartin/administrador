@@ -374,7 +374,7 @@ class _instalacionTest extends test
 
         $table = 'a';
 
-        $drop = $ins->drop_table(table: $table);
+        $drop = $ins->drop_table_segura(table: $table);
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al eliminar tabla',data:  $drop);
             print_r($error);

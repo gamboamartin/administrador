@@ -483,7 +483,7 @@ class columnas{
         }
 
         $columnas = $this->columnas_extension(columnas: $columnas, columnas_sql: $columnas_sql,
-            con_sq: $con_sq, extension_estructura: $extension_estructura, modelo: $modelo);
+            extension_estructura: $extension_estructura, modelo: $modelo);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
@@ -618,13 +618,12 @@ class columnas{
      * Genera las columnas de una extension de base de datos
      * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
      * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $con_sq
      * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
      * logica natural de dependencias
      * @param modelo_base $modelo Modelo con funcionalidad de ORM
      * @return array|string
      */
-    private function columnas_extension(string $columnas, array $columnas_sql, bool $con_sq, array $extension_estructura,
+    private function columnas_extension(string $columnas, array $columnas_sql, array $extension_estructura,
                                         modelo_base $modelo): array|string
     {
         $columnas_env = $columnas;
@@ -1044,16 +1043,17 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera las columnas para una consulta SQL de acuerdo a los parámetros de entrada.
      *
-     * Genera las columnas en forma de sql para ser utilizado en un SELECT
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param string $tabla_original nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @param string $tabla_renombrada Tabla o renombre de como quedara el AS en SQL de la tabla original
-     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @return array|string
-     * @example
-     *      $resultado_columnas = $this->genera_columnas_consulta($key,'',$columnas_sql);
+     * @param bool $columnas_en_bruto Determina si las columnas se pasarán en bruto.
+     * @param modelo_base $modelo El modelo base que se utilizará para la consulta.
+     * @param string $tabla_original El nombre original de la tabla en la que se llevará a cabo la consulta.
+     * @param string $tabla_renombrada El nombre nuevo de la tabla en caso de que haya sido renombrada.
+     * @param array $columnas Un array con los nombres de las columnas para la consulta.
+     *
+     * @return array|string Devuelve un array con las columnas para llevar a cabo la consulta o una cadena en caso de error.
+     * @version 15.70.1
      */
     private function genera_columnas_consulta(bool $columnas_en_bruto,  modelo_base $modelo, string $tabla_original,
                                               string $tabla_renombrada, array $columnas = array()):array|string{
