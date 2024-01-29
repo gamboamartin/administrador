@@ -414,12 +414,20 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida los datos necesarios pa integrar un join
-     * @param string $key Key a verificar debe ser el  nombre de una tabla
-     * @param string $tabla_join Tabla para generar JOIN
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida los parámetros de entrada de una junta de tablas (_table join_).
+     *
+     * @final
+     *
+     * @param string $key La clave que se va a validar. No puede ser un número ni una cadena vacía.
+     * @param string $tabla_join El nombre de la tabla que se va a unir (_join_). No puede ser un número ni una cadena vacía.
+     *
+     * @return true|array Retorna verdadero si la validación fue exitosa. Si ocurre un error, retorna un arreglo con información sobre el error.
+     *
+     * @throws errores Si algún parámetro no cumple las condiciones, se lanza un error con la descripción del problema.
+     * @version 15.68.1
      */
-    public function valida_tabla_join(string $key, string $tabla_join ): bool|array
+    final public function valida_tabla_join(string $key, string $tabla_join ): true|array
     {
         $key = trim($key);
         if(is_numeric($key)){
@@ -435,6 +443,7 @@ class validaciones extends validacion{
         if($tabla_join === ''){
             return $this->error->error(mensaje:'Error $tabla_join esta vacio',data: $tabla_join);
         }
+
         return true;
     }
 
