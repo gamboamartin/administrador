@@ -253,6 +253,17 @@ class _instalacion
     }
 
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método privado que ajusta el tipo de dato de los atributos recibidos.
+     *
+     * Este método se encarga de verificar que exista el atributo 'tipo_dato' y luego convertir este atributo a mayúsculas.
+     *
+     * @param stdClass $atributos Objeto de tipo stdClass que contiene los atributos a ajustar.
+     * @return stdClass|array Retorna el objeto con los atributos ajustados. Si ocurre un error durante la verificación,
+     * retorna un arreglo con la información del error.
+     * @version 16.9.0
+     */
     private function ajusta_tipo_dato(stdClass $atributos): stdClass|array
     {
         $keys = array('tipo_dato');
