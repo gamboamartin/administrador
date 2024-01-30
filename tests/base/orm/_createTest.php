@@ -326,4 +326,18 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_references(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campo = 'a_id';
+        $result = $_create->references($campo);
+        $this->assertEquals("a", $result);
+
+        errores::$error = false;
+    }
+
+
 }

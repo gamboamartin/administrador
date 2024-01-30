@@ -617,16 +617,24 @@ class _create
     }
 
     /**
-     * Procesa un campo que tiene la estructura de nombre seguido por "_id"
-     * y devuelve el nombre del campo sin el sufijo "_id". Esto es útil para obtener
-     * en qué tabla debe buscar una clave foránea basada en una convención de nombres.
+     * POR DOCUMENTAR EN WIKI
+     * Esta función privada se encarga de procesar una referencia.
      *
-     * @param string $campo El campo de la base de datos que termina en "_id".
-     * @return string El nombre del campo sin el sufijo "_id".
+     * @param string $campo Representa un string que se va a procesar.
+     *
+     * @return string|array Devuelve un array si el campo está vacío y una cadena recortada en caso contrario.
+     *
+     * @throws errores si el campo es vacío, lanza un error con un mensaje y el dato del campo.
+     * @version 16.15.0
      */
-    private function references(string $campo): string
+    private function references(string $campo): string|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo vacio',data: $campo);
+        }
         $explode_ref = explode('_id', $campo);
+
         return reset($explode_ref);
     }
 
