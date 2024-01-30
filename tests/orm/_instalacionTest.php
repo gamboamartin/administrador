@@ -619,6 +619,24 @@ class _instalacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_not_null(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+
+        $atributos = new stdClass();
+        $resultado = $ins->not_null($atributos);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue( $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_tipo_dato(): void
     {
 

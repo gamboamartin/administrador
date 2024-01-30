@@ -1162,7 +1162,16 @@ class _instalacion
 
     }
 
-    private function not_null(stdClass $atributos)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función maneja el parámetro not_null dentro de los atributos de entrada.
+     *
+     * @param stdClass $atributos El objeto que contiene los atributos de entrada.
+     * @return bool Retorna el valor de not_null si está definido dentro de los atributos de entrada,
+     * de lo contrario, retorna true.
+     * @version 16.16.0
+     */
+    private function not_null(stdClass $atributos): bool
     {
         $not_null = true;
         if(isset($atributos->not_null)){
