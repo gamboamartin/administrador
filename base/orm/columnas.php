@@ -572,11 +572,13 @@ class columnas{
     }
 
     /**
-     * Obtiene un SQL solo con las columnas de una tabla
-     * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param modelo_base $modelo Modelo o tabla de aplicacion
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene las columnas en sql de una entidad con sus relaciones
+     * @param array $columnas_by_table Array de cadenas con los nombres de las tablas desde las cuales se desean extraer las columnas.
+     * @param bool $columnas_en_bruto Dependiendo el valor booleano, se obtienen las columnas en bruto o no.
+     * @param modelo_base $modelo Modelo base desde el cual se obtendrán las columnas.
+     * @return array|string Dependiendo del proceso, retorna un array con las columnas de salida o un string con un mensaje de error.
+     * @version 16.17.0
      */
     private function columnas_by_table(array $columnas_by_table, bool $columnas_en_bruto,
                                        modelo_base $modelo): array|string

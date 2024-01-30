@@ -1510,8 +1510,6 @@ class modelo extends modelo_base {
     }
 
 
-
-
     /**
      * Inserta un registro predeterminado del modelo en ejecucion
      * @param string|int $codigo Codigo predeterminado default
@@ -2089,6 +2087,20 @@ class modelo extends modelo_base {
         }
 
         return $resultado['registros'][0][$this->tabla.'_id'] + 1;
+    }
+
+    final public function primer_id()
+    {
+        $rows = $this->registros(columnas_en_bruto: true, limit: 1);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener registros',data: $rows);
+        }
+        $primer_id = -1;
+        if(count($rows) > 0){
+            $primer_id = (int)$rows[0]['id'];
+        }
+        return $primer_id;
+
     }
 
 
