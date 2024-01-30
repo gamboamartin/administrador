@@ -811,12 +811,16 @@ class columnas{
     }
 
     /**
-     * Genera las columnas con renombre para integrarlas en un SELECT
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param array $renombres Conjunto de tablas para renombrar
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Renombra las columnas de la base de datos para su manipulación dentro del código.
+     *
+     * @param string      $columnas     Las columnas a las que se les aplicará el cambio de nombre.
+     * @param array       $columnas_sql Las columnas obtenidas de la consulta SQL.
+     * @param modelo_base $modelo       El modelo base del que se obtendrán las columnas.
+     * @param array       $renombres    Array asociativo con los nombres de las columnas y los nombres deseados.
+     *
+     * @return array|string Regresa las columnas con los nombres modificados en formato de string o array según sea el caso.
+     * @version 16.4.0
      */
     private function columnas_renombre(string $columnas, array $columnas_sql, modelo_base $modelo,
                                        array $renombres): array|string
