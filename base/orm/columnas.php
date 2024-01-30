@@ -376,23 +376,25 @@ class columnas{
     }
 
     /**
-     * REFACTORIZAR
-     * Obtiene las columnas para un select dependiendo de si aplica o no una tabla o todas
-     * @param bool $aplica_columnas_by_table Si aplica columnas by table solo se tra la info de las columnas
-     * cargadas en el array
-     * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
-     * logica natural de dependencias
-     * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
-     * @param modelo_base $modelo Modelo o tabla de aplicacion
-     * @param array $renombres Conjunto de tablas para renombrar
-     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
-     * @return array|string
-     * @example Si $aplica_columnas_by_table es true debe haber columnas_by_table con
-     * datos columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] =nombre_tabla
-     * @example Si !$aplica_columnas_by_table $columnas_by_table deb ser vacio
+     * POR DOCUMENTAR EN WIKI
+     * Función para manejar columnas en el modelo de base.
+     *
+     * Esta función procesa las columnas pasadas y las configura apropiadamente basándose en la condición de $aplica_columnas_by_table.
+     * Si $aplica_columnas_by_table es falsa, entonces las columnas se formatean usando el método 'columnas_base'.
+     * En caso contrario, las columnas se formatean utilizando el método 'columnas_by_table'.
+     *
+     * @param bool $aplica_columnas_by_table Booleano para decidir el formato de las columnas.
+     * @param array $columnas_by_table Conjunto de columnas. Si $aplica_columnas_by_table es verdadero, debería contener datos.
+     * @param bool $columnas_en_bruto Booleano que indica si las columnas están en formato bruto.
+     * @param array $columnas_sql Array de columnas SQL.
+     * @param array $extension_estructura Estructura de extensión para las columnas.
+     * @param array $extra_join Información adicional para el JOIN en SQL.
+     * @param modelo_base $modelo La instancia del modelo base para maniobrar los datos.
+     * @param array $renombres Array de renombres para las tablas.
+     * @param array $tablas_select Array de tablas seleccionadas.
+     *
+     * @return array|string Retorna un array o string. Si hay error en el formato de columnas, retorna una cadena de error.
+     * @version 16.18.0
      */
     private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
                               array $columnas_sql, array $extension_estructura, array $extra_join, modelo_base $modelo,
