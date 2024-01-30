@@ -1281,10 +1281,17 @@ class columnas{
     }
 
     /**
-     * Inicializa los datos necesarios pa integrar las columnas puras de una sola tabla
-     * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
-     * @return stdClass|array obj->columnas_sql obj->tablas_select
-     * @example $columnas_by_table[] = 'adm_accion'
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa las columnas por tabla.
+     *
+     * @param array $columnas_by_table La matriz de nombres de columna por tabla.
+     *                                 Debe estar estructurada de la siguiente forma $columnas_by_table[] = "nombre_tabla".
+     * @return stdClass|array          Si $columnas_by_table es vacío, retorna un objeto de error.
+     *                                 De lo contrario, retorna un objeto que contiene dos propiedades:
+     *                                 - columnas_sql: una matriz vacía que posteriormente puede ser llenada con las columnas SQL.
+     *                                 - tablas_select: una matriz que asocia cada nombre de tabla con el valor false.
+     * @throws errores               Lanza una excepción si $columnas_by_table está vacío.
+     * @version 16.14.0
      */
     private function init_columnas_by_table(array $columnas_by_table): stdClass|array
     {
