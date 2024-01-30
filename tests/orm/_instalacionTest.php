@@ -582,6 +582,43 @@ class _instalacionTest extends test {
         }
     }
 
+    public function test_longitud(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+
+        $atributos = new stdClass();
+        $tipo_dato = '';
+        $resultado = $ins->longitud($atributos, $tipo_dato);
+        //($resultado);exit;
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("255", $resultado);
+
+        errores::$error = false;
+
+        $atributos = new stdClass();
+        $tipo_dato = 'DOUBLE';
+        $resultado = $ins->longitud($atributos, $tipo_dato);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("100,4", $resultado);
+
+        errores::$error = false;
+
+        $atributos = new stdClass();
+        $tipo_dato = 'TIMESTAMP';
+        $resultado = $ins->longitud($atributos, $tipo_dato);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("", $resultado);
+        errores::$error = false;
+    }
+
     public function test_tipo_dato(): void
     {
 

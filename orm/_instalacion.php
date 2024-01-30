@@ -1117,12 +1117,29 @@ class _instalacion
 
     }
 
-    private function longitud(stdClass $atributos, string $tipo_dato)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método que determina la longitud del atributo basado en el tipo de dato.
+     *
+     * Este método establece la longitud por defecto de diferentes tipos de datos (por ejemplo, DOUBLE y TIMESTAMP).
+     * Si se especifica la longitud en los atributos, se sobreescribirá la longitud predeterminada.
+     *
+     * @param stdClass $atributos Los atributos del campo para el que se determinará la longitud.
+     * Si la longitud es especificada en los atributos, esta será utilizada.
+     * @param string $tipo_dato El tipo de dato para el que se determinará la longitud.
+     *
+     * @return string Retorna la longitud determinada para el atributo.
+     * @version 16.12.0
+     */
+    private function longitud(stdClass $atributos, string $tipo_dato): string
     {
         $longitud = '255';
 
         if($tipo_dato === 'DOUBLE'){
             $longitud = '100,4';
+        }
+        if($tipo_dato === 'TIMESTAMP'){
+            $longitud = '';
         }
         if(isset($atributos->longitud)){
             $longitud = $atributos->longitud;
