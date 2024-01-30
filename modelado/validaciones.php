@@ -98,12 +98,18 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida la tabla de una columnas
-     * @param array $data Datos para la maquetacion del JOIN
-     * @param string $tabla Tabla o estructura de la base de datos modelo o seccion
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida los datos de una columna específica.
+     *
+     * @param array $data  Los datos que se van a validar.
+     * @param string $tabla  El nombre de la tabla que contiene la columna a validar.
+     *
+     * @return true|array  Devuelve verdadero si los datos son válidos, de lo contrario devuelve un array de errores.
+     *
+     * @throws errores  Se lanza una excepción si encuentra un error durante la validación.
+     * @version 16.1.0
      */
-    final public function valida_data_columna(array $data, string $tabla): bool|array
+    final public function valida_data_columna(array $data, string $tabla): true|array
     {
 
         $keys = array('nombre_original');
