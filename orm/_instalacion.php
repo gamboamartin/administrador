@@ -1139,7 +1139,29 @@ class _instalacion
 
     }
 
-    private function tipo_dato(stdClass $atributos)
+    /**
+     * POD DOCUMENTAR EN WIKI
+     * Esta función se encarga de ajustar el tipo de dato de una propiedad definida en un
+     * objeto estándar de PHP (stdClass).
+     *
+     * - Permite verificar y ajustar el tipo de dato de una propiedad específica,
+     *   siempre y cuando esta propiedad esté disponible en el objeto.
+     * - Si se produce un error durante el ajuste del tipo de dato, se detiene la
+     *   ejecución de la función y retorna un error específico.
+     * - Por defecto, si no se especifica cualquier tipo de dato para el atributo,
+     *   se inicializa como 'VARCHAR'.
+     * - Retorna el tipo de dato ajustado o el valor por defecto 'VARCHAR' en caso de
+     *   que el atributo no esté definido en el objeto.
+     *
+     * @param stdClass $atributos El objeto que contiene los atributos con los respectivos
+     *                            tipos de datos que necesitan ser ajustados.
+     *
+     * @return string|array Retorna una cadena de texto que representa el tipo de dato ajustado,
+     *                o 'VARCHAR' como un tipo de dato predeterminado.
+     *
+     * @version 16.10.0
+     */
+    private function tipo_dato(stdClass $atributos): string|array
     {
         $tipo_dato = 'VARCHAR';
         if(isset($atributos->tipo_dato)){

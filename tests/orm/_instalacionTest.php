@@ -557,6 +557,24 @@ class _instalacionTest extends test {
             exit;
         }
     }
+
+    public function test_tipo_dato(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $atributos = new stdClass();
+        $resultado = $ins->tipo_dato($atributos);
+       // print_r($resultado);exit;
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('VARCHAR', $resultado);
+
+        errores::$error = false;
+    }
     public function test_ver_indices(): void
     {
 
