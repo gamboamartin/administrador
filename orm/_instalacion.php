@@ -509,8 +509,24 @@ class _instalacion
         return $id;
 
     }
-
-    private function default(stdClass $atributos)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método 'default'
+     *
+     * Si el objeto $atributos tiene un atributo 'default', este método
+     * retornará el valor de dicho atributo. En caso contrario, retornará una
+     * cadena de texto vacía.
+     *
+     * @param stdClass $atributos, un objeto estándar de PHP, que puede contener un
+     *                             atributo llamado 'default'.
+     *
+     * @return string  Retorna el valor del atributo 'default' si está presente en $atributos.
+     *                 Se retorna una cadena vacía si 'default' no es un atributo en $atributos.
+     *
+     * @access private
+     * @version 16.11.0
+     */
+    private function default(stdClass $atributos): string
     {
         $default = '';
         if(isset($atributos->default)){

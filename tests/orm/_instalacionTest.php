@@ -139,6 +139,30 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_default(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $atributos = new stdClass();
+        $resultado = $ins->default($atributos);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+        $atributos = new stdClass();
+        $atributos->default = 'a';
+        $resultado = $ins->default($atributos);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado);
+    }
     public function test_describe_table(): void
     {
 
