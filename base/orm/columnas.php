@@ -431,11 +431,6 @@ class columnas{
             }
         }
 
-        /*$columnas = trim($columnas);
-        if($columnas === ''){
-            return $this->error->error(mensaje: 'Error ninguna configuracion es aceptable en '.$modelo->tabla,
-                data: $columnas);
-        }*/
         $columnas = trim($columnas);
         if($columnas === ''){
             $columnas = "$modelo->key_filtro_id as $modelo->key_id";
@@ -479,16 +474,21 @@ class columnas{
     }
 
     /**
-     * Genera las columnas en forma de SQL para un select con todas las configuracion nativas de un modelo
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
-     * logica natural de dependencias
-     * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
-     * @param modelo_base $modelo Modelo o tabla de aplicacion
-     * @param array $renombres Conjunto de tablas para renombrar
-     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * La función 'columnas_base' es una función privada que se utiliza para integrar columnas de varias partes del modelo de datos.
+     *
+     * @param bool $columnas_en_bruto Es una variable booleana que determina si se usarán o no las columnas en bruto.
+     * @param array $columnas_sql Es una matriz de columnas SQL que deben integrarse en el modelo de datos.
+     * @param array $extension_estructura Es una matriz que contiene la estructura de extensión que se utilizará para el modelo de datos.
+     * @param array $extra_join  Es una matriz de joins extra que debe aplicarse al modelo de datos.
+     * @param modelo_base $modelo Es el modelo base que se utilizará para crear el modelo de datos.
+     * @param array $renombres Es una matriz de columnas que deben renombrarse en el modelo de datos.
+     * @param array $tablas_select Es una matriz de tablas seleccionadas que deben incluirse en el modelo de datos.
+     *
+     * @return array|string Devuelve un array de columnas si la operación fue exitosa, en caso de error devuelve un mensaje de error.
+     *
+     * @throw errores Puede arrojar excepciones si ocurre algún error durante la integración de columnas.
+     * @version 16.6.0
      */
     private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, array $extension_estructura,
                                    array $extra_join, modelo_base $modelo, array $renombres,
@@ -1285,7 +1285,6 @@ class columnas{
      * @param array $columnas_by_table Conjunto de tablas a obtener campos para un SELECT
      * @return stdClass|array obj->columnas_sql obj->tablas_select
      * @example $columnas_by_table[] = 'adm_accion'
-     * @version 1.53.16
      */
     private function init_columnas_by_table(array $columnas_by_table): stdClass|array
     {
