@@ -166,6 +166,25 @@ class _createTest extends TestCase
 
     }
 
+    public function test_campo_sql(){
+        errores::$error = false;
+
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $atributos = new stdClass();
+        $campo = 'a';
+        $result = $_create->campo_sql($atributos, $campo);
+
+        //print_r($result);exit;
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($result);
+        $this->assertEquals('a VARCHAR (255) NOT NULL , ', $result);
+
+
+        errores::$error = false;
+    }
+
     public function test_campos_base(){
         errores::$error = false;
         // Arrange (Organizar)

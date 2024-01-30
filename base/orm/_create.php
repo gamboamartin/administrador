@@ -342,15 +342,32 @@ class _create
         return $campos;
 
     }
-
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Crea una sentencia SQL para un campo específico de acuerdo a los atributos proporcionados
+     *
+     * @param stdClass $atributos Un objeto con los atributos del campo, incluyendo su tipo de dato y longitud.
+     * @param string $campo El nombre del campo para el que se está construyendo la sentencia SQL.
+     *
+     * @return string|array Regresa la sentencia SQL generada para el campo. En caso de error, devuelve un objeto
+     * de error con detalles sobre el problema encontrado.
+     * @version 16.5.0
+     */
     private function campo_sql(stdClass $atributos, string $campo):string|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
         $atributos_base = $this->atributos_sql(atributos: $atributos);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener atributos_base',data: $atributos_base);
         }
 
-        return "$campo $atributos_base->tipo_dato $atributos_base->longitud_sql $atributos_base->not_null $atributos_base->default_sql, ";
+        $rs = "$campo $atributos_base->tipo_dato $atributos_base->longitud_sql ";
+        $rs .= "$atributos_base->not_null $atributos_base->default_sql, ";
+
+        return $rs;
 
     }
 
