@@ -372,18 +372,22 @@ class _create
     }
 
     /**
-     * Genera las sentencias SQL para todos los campos proporcionados.
-     * Si no se puede generar la sentencia SQL para un campo, este método retorna un mensaje de error.
+     * POR DOCUMENTAR EN WIKI
+     * Este método se utiliza para generar campos SQL para la operación de creación.
      *
-     * @param stdClass $campos El objeto que contiene los campos y sus atributos.
-     * @return string|array Retorna una cadena conteniendo las sentencias SQL para todos los campos,
-     *                      o, si ocurre un error, retorna un array con el mensaje y los datos del error.
+     * @param stdClass $campos Una colección de campos para los cuales se debe generar el SQL.
+     *
+     * @return string|array Los campos SQL generados como una cadena de texto,
+     *                      o un arreglo de error si ocurre un error.
+     * @version 16.7.0
      */
     private function crea_campos_sql(stdClass $campos):string|array
     {
         $campos_sql = '';
         foreach ($campos as $campo=>$atributos){
-
+            if(!is_object($atributos)){
+                return $this->error->error(mensaje: 'Error atributos debe ser un objeto',data: $atributos);
+            }
             $campo_sql = $this->campo_sql(atributos: $atributos, campo: $campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener campo_sql',data: $campo_sql);

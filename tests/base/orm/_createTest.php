@@ -212,6 +212,30 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_crea_campos_sql(){
+        errores::$error = false;
+
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $result = $_create->crea_campos_sql($campos);
+
+        //print_r($result);exit;
+        $this->assertNotTrue( errores::$error);
+        $this->assertIsString( $result);
+        $this->assertEquals('a VARCHAR (255) NOT NULL , ', $result);
+
+        errores::$error = false;
+        $campos->b = new stdClass();
+        $campos->b->tipo_dato = 'timestamp';
+        $result = $_create->crea_campos_sql($campos);
+        $this->assertNotTrue( errores::$error);
+        $this->assertIsString( $result);
+        $this->assertEquals('a VARCHAR (255) NOT NULL , b timestamp  NOT NULL , ', $result);
+        errores::$error = false;
+    }
     public function test_default_sql(){
         errores::$error = false;
         // Arrange (Organizar)
