@@ -284,10 +284,16 @@ class joins{
     }
 
     /**
-     * Obtiene los parametros necesarios para generar un join
-     * @param string $key Tabla left
-     * @param string $tabla_join Datos para hacer join con tablas
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Genera una estructura de JOIN a partir de una clave y una tabla.
+     *
+     * @param string $key La clave que será usada para el JOIN.
+     * @param string $tabla_join La tabla con la que se hará el JOIN.
+     *
+     * @return array|string Si todo va bien, devuelve una estructura de JOIN.
+     * En caso de error durante la validación con `valida_tabla_join` o durante la generación del JOIN con `genera_join`,
+     * devuelve un mensaje con la descripción del error.
+     * @version 16.13.0
      */
     private function data_para_join_esp(string $key, string $tabla_join): array|string
     {
