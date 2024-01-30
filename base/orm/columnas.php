@@ -338,13 +338,22 @@ class columnas{
 
 
     /**
-     * Carga a un string de forma SQL los campos SELECTS
-     * @param string $columnas Columnas en forma de SQL para consultas, forma tabla_nombre_campo
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $data Datos para la maquetacion del JOIN
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param string $tabla nombre del modelo debe de coincidir con una estructura de la base de datos
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * La función responsable para cargar y renombrar las columnas en una tabla.
+     *
+     * @param string $columnas Cadena que representa las columnas en la tabla.
+     * @param array $columnas_sql Array que contiene la información / esquema de las columnas SQL.
+     * @param array $data Array de los datos a validar e integrar.
+     * @param modelo_base $modelo Un objeto de la clase modelo_base que maneja la interacción con la base de datos.
+     * @param string $tabla Nombre de la tabla que se está procesando.
+     *
+     * @return array|string Devuelve un array con los datos de las columnas ajustadas.
+     *                      En caso de error, devuelve una cadena con el mensaje de error.
+     *
+     * @throws errores Si hay un error durante la validación de los datos o la integración de las columnas, se lanza una excepción.
+     *
+     * @example cargo_columna_renombre('$columnas', ['$columna1', 'columna2'], ['$data1', '$data2'], $modelo, 'mi_tabla')
+     * @version 16.3.0
      */
     private function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
                                             string $tabla): array|string
