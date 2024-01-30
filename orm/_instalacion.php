@@ -683,8 +683,32 @@ class _instalacion
 
     }
 
-    final public function foraneas(array $foraneas, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Se ocupa de las operaciones en las tablas foráneas de una tabla dada.
+     *
+     * @param array $foraneas Array de claves foránea. Cada clave foránea es un conjunto clave-valor, donde la
+     * clave es el nombre de la clave foránea y el valor es el valor de la clave foránea.
+     * @param string $table
+     * @return array Regresa un array con los resultados de la operación.
+     *
+     * @example
+     * $foraneas = array();
+     * $foraneas['b'] = '';
+     * $tabla = 'a';
+     * $resultado = $ins->foraneas($foraneas, $tabla);
+     * @version 16.8.0
+     *
+     */
+    final public function foraneas(array $foraneas, string $table): array
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+        }
+        if(is_numeric($table)){
+            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
+        }
         $results = array();
         foreach ($foraneas as $campo=>$atributos){
 

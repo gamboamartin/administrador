@@ -195,6 +195,63 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_foraneas(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+        $campo = 'b_id';
+        $add_campo = $ins->add_colum($campo, 'a', 'bigint');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear add_campo',data:  $add_campo);
+            print_r($error);
+            exit;
+        }
+
+        $foraneas = array();
+        $foraneas['b'] = '';
+        $table = 'a';
+        $resultado = $ins->foraneas($foraneas, $table);
+        //print_r($resultado);exit;
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("ALTER TABLE a ADD CONSTRAINT a__b_id FOREIGN KEY (b_id) REFERENCES b(id);", $resultado[0]->sql);
+
+        errores::$error = false;
+    }
     public function test_foreign_key_completo(): void
     {
 
@@ -209,7 +266,29 @@ class _instalacionTest extends test {
             exit;
         }
 
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
         $table = 'b';
+
 
         $drop = $ins->drop_table_segura($table);
         if(errores::$error){
@@ -219,7 +298,13 @@ class _instalacionTest extends test {
         }
 
         $campos = new stdClass();
-        $create = $ins->create_table($campos, $table);
+        $create = $ins->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('b');
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
             print_r($error);
@@ -243,6 +328,20 @@ class _instalacionTest extends test {
         $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
 
         errores::$error = false;
+
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
     }
     public function test_foreign_no_conf(): void
     {
@@ -258,6 +357,13 @@ class _instalacionTest extends test {
             exit;
         }
         $create = $ins->create_table_new('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new('a');
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
             print_r($error);
@@ -282,8 +388,21 @@ class _instalacionTest extends test {
         $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
 
         errores::$error = false;
-    }
 
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+    }
     public function test_foreign_no_conf_integra()
     {
         $ins = new _instalacion(link: $this->link);
@@ -294,6 +413,13 @@ class _instalacionTest extends test {
             exit;
         }
         $create = $ins->create_table_new('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new('a');
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
             print_r($error);
@@ -346,6 +472,20 @@ class _instalacionTest extends test {
 
         errores::$error = false;
 
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
     }
     public function test_foreign_por_campo(): void
     {
@@ -374,6 +514,13 @@ class _instalacionTest extends test {
 
         $campos = new stdClass();
 
+        $create = $ins->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
         $create = $ins->create_table($campos, $table);
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
@@ -396,6 +543,19 @@ class _instalacionTest extends test {
         $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
 
         errores::$error = false;
+
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
     }
     public function test_ver_indices(): void
     {

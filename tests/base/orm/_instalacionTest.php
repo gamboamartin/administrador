@@ -319,21 +319,13 @@ class _instalacionTest extends test
 
         $table = 'test';
 
-        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+        $drop = $ins->drop_table_segura(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
             print_r($error);
             exit;
         }
 
-        if($existe_table) {
-            $drop = $ins->drop_table(table: $table);
-            if (errores::$error) {
-                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
-                print_r($error);
-                exit;
-            }
-        }
         //exit;
 
         $campos = new stdClass();
@@ -364,6 +356,7 @@ class _instalacionTest extends test
         }
 
         if($existe_table) {
+
             $drop = $ins->drop_table(table: $table);
             if (errores::$error) {
                 $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
