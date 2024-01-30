@@ -235,8 +235,24 @@ class _create
 
     }
 
-
-
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método genera el SQL necesario para la creación de atributos en base a un objeto atributos dado.
+     *
+     * @param stdClass $atributos El objeto de entrada que contiene los atributos para la generación de SQL.
+     *
+     * @return array|stdClass En caso de éxito, devuelve un objeto stdClass que contiene la longitud de los atributos sql y el sql default.
+     * Si ocurre un error, devuelve un array con el error detallado.
+     *
+     * @throws errores Es posible que se lance una excepción si hay un error al obtener los atributos base, longitud sql o default sql.
+     *
+     * @example
+     * $atributos = new stdClass();
+     * $atributos->atributo1 = "valor1";
+     * $atributos->atributo2 = "valor2";
+     * $atributos_sql = $this->_create()->atributos_sql($atributos);
+     * @version 16.2.0
+     */
     private function atributos_sql(stdClass $atributos): array|stdClass
     {
         $atributos_base = $this->atributos(atributos: $atributos);

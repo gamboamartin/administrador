@@ -37,6 +37,18 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_atributo_status(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $result = $_create->atributo_status($campos);
+        $this->assertEquals('activo',$result->status->default);
+
+        errores::$error = false;
+    }
     public function test_atributos()
     {
         errores::$error = false;
@@ -113,19 +125,6 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
-    public function test_atributo_status(){
-        errores::$error = false;
-        // Arrange (Organizar)
-        $_create = new _create();
-        $_create = new liberator($_create);
-
-        $campos = new stdClass();
-        $result = $_create->atributo_status($campos);
-        $this->assertEquals('activo',$result->status->default);
-
-        errores::$error = false;
-    }
-
     /**
      * Prueba la función atributos_iniciales de la clase _create
      *
@@ -147,6 +146,24 @@ class _createTest extends TestCase
         $this->assertEquals($expected, $result);
 
         errores::$error = false;
+    }
+
+    public function test_atributos_sql()
+    {
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $atributos = new stdClass();
+        $result = $_create->atributos_sql($atributos);
+        //print_r($result);exit;
+        $this->assertEquals('VARCHAR', $result->tipo_dato);
+        $this->assertEquals('255', $result->longitud);
+        $this->assertEquals('(255)', $result->longitud_sql);
+
+        errores::$error = false;
+
     }
 
     public function test_campos_base(){
