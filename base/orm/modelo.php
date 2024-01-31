@@ -1342,10 +1342,10 @@ class modelo extends modelo_base {
     final public function get_data_descripcion(string $dato, int $limit = 10, bool $por_descripcion_select = false)
     {
         $filtro = array();
-        $filtro[$this->tabla.'_descripcion'] = $dato;
+        $filtro[$this->tabla.'.descripcion'] = $dato;
         if($por_descripcion_select){
             $filtro = array();
-            $filtro[$this->tabla.'_descripcion_select'] = $dato;
+            $filtro[$this->tabla.'.descripcion_select'] = $dato;
         }
         $r_data = $this->filtro_and(filtro: $filtro, limit: $limit, tipo_filtro: 'textos');
         if(errores::$error){

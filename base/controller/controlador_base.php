@@ -715,6 +715,39 @@ class controlador_base extends controler
         return $r_modelo;
     }
 
+    public function get_data_descripcion(bool $header, bool $ws): array
+    {
+
+        $data = trim($_GET['data']);
+        $data = addslashes($data);
+
+        $limit = 10;
+        if(isset($_GET['limit'])){
+            $limit = $_GET['limit'];
+        }
+        $por_descripcion_select = true;
+        if(isset($_GET['por_descripcion_select'])){
+            if($_GET['por_descripcion_select'] === 0){
+                $por_descripcion_select = false;
+            }
+        }
+
+        $result = $this->modelo->get_data_descripcion(dato: $data,limit: $limit,por_descripcion_select: $por_descripcion_select);
+        if (errores::$error) {
+            return $this->retorno_error(mensaje: 'Error al obtener datos',data:  $result,header:  $header,ws:  $ws);
+        }
+
+        if ($ws) {
+            ob_clean();
+            header('Content-Type: application/json');
+            $registros = $result;
+            echo json_encode($registros);
+            exit;
+        }
+
+        return $result;
+    }
+
     /**
      * Genera un a liga de menu base
      * @param array $menu Datos del menu

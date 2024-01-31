@@ -9,6 +9,7 @@ use gamboamartin\administrador\models\adm_bitacora;
 use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_dia;
 use gamboamartin\administrador\models\adm_elemento_lista;
+use gamboamartin\administrador\models\adm_estado_civil;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_mes;
 use gamboamartin\administrador\models\adm_seccion;
@@ -130,8 +131,6 @@ class modeloTest extends test {
 
         errores::$error = false;
     }
-
-
 
     public function test_cuenta(): void
     {
@@ -605,6 +604,31 @@ class modeloTest extends test {
         $this->assertTrue(errores::$error);
 
 
+        errores::$error = false;
+    }
+
+    public function test_get_data_descripcion(){
+        errores::$error = false;
+        $modelo = new adm_estado_civil($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $_SESSION['usuario_id'] = 2;
+
+        $dato = '';
+        $resultado = $modelo->get_data_descripcion(dato: $dato);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertCount(5,$resultado->registros);
+
+        errores::$error = false;
+
+        $dato = 'S';
+        $resultado = $modelo->get_data_descripcion(dato: $dato);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertCount(2,$resultado->registros);
         errores::$error = false;
     }
 
