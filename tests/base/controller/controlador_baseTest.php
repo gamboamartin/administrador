@@ -6,6 +6,7 @@ use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\administrador\models\adm_year;
 use gamboamartin\administrador\tests\base_test;
+use gamboamartin\controllers\controlador_adm_estado_civil;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -196,6 +197,24 @@ class controlador_baseTest extends test {
         $ctl->registro_id = '1';
 
         $resultado = $ctl->elimina_bd(false,false);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
+    public function test_get_data_descripcion(): void
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+
+
+        $ctl = new controlador_adm_estado_civil(link: $this->link, paths_conf: $this->paths_conf);
+        //$ctl = new liberator($ctl);
+
+        $resultado = $ctl->get_data_descripcion(false, false);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;

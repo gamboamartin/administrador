@@ -715,9 +715,12 @@ class controlador_base extends controler
         return $r_modelo;
     }
 
-    public function get_data_descripcion(bool $header, bool $ws): array
+    public function get_data_descripcion(bool $header, bool $ws): array|stdClass
     {
 
+        if(!isset($_GET['data'])){
+            $_GET['data'] = '';
+        }
         $data = trim($_GET['data']);
         $data = addslashes($data);
 
