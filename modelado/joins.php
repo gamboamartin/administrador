@@ -111,10 +111,20 @@ class joins{
     }
 
     /**
-     * Ajusta las tablas para JOIN
-     * @param string $tablas Tablas en forma de SQL
-     * @param array $tablas_join Datos para hacer join con tablas
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Ajusta las tablas para las consultas SQL con JOINs.
+     *
+     * Esta función toma una cadena que representa una tabla primaria y un array de 'joins' para ajustar
+     * adecuadamente las tablas que se usarán en la consulta. Si se produce un error durante el proceso,
+     * se maneja y se devuelve un error específico.
+     *
+     * @param string $tablas     La tabla primaria que se usará en la consulta.
+     * @param array  $tablas_join Las tablas adicionales que se unirán a la consulta.
+     *
+     * @return array|string     Devuelve las tablas ajustadas si no hay errores, de lo contrario devuelve un error.
+     *
+     * @throws errores Si se produjo un error al generar las tablas de unión.
+     * @version 16.28.0
      */
     private function ajusta_tablas( string $tablas, array $tablas_join): array|string
     {
