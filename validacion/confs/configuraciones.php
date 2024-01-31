@@ -9,10 +9,13 @@ class configuraciones extends validacion {
 
 
     /**
-     * Valida configuraciones
-     * @param stdClass $paths_conf Paths de configuracion
-     * @param string $tipo_conf Tipos de configuracion
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Función para validar una configuración especificada.
+     *
+     * @param stdClass $paths_conf - Ruta de la configuración a validar.
+     * @param string $tipo_conf - El tipo de configuración a validar.
+     * @return bool|array Devuelve true si la validación fue exitosa, o un error en caso contrario.
+     * @version 16.24.0
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
