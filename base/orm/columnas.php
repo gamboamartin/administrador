@@ -776,6 +776,7 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Obtiene las columnas para un SELECT
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
@@ -787,6 +788,7 @@ class columnas{
      * @param array $renombres Conjunto de tablas para renombrar
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
+     * @version 16.19.0
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
