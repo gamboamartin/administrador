@@ -478,17 +478,28 @@ class _create
     }
 
 
-
     /**
-     * Crea una sentencia de clave foránea SQL.
+     * POR DOCUMENTAR EN WIKI
+     * Esta función es para crear una clave foránea en la base de datos.
      *
-     * @param string $campo El campo que se utilizará como clave foránea.
-     * @param string $references La tabla de referencia para la clave foránea.
-     * @return string Retorna una sentencia de clave foránea en formato SQL.
+     * @param string $campo Es el nombre del campo en la tabla que queremos usar como clave foránea.
+     * @param string $references Es el nombre de la tabla a la que hace referencia la clave foránea.
+     * @return string|array Retorna una cadena que corresponde a la sentencia SQL para la creación de la clave foránea.
+     *                      En el caso de un error al intentar generar esta sentencia, la función retornará un array con detalles sobre el error.
+     *
+     * @version 16.27.0
      */
-    private function foreign_key(string $campo, string $references): string
+    private function foreign_key(string $campo, string $references): string|array
     {
-        return  $foreign_key = "FOREIGN KEY ($campo) REFERENCES $references(id) ON UPDATE RESTRICT ON DELETE RESTRICT";
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
+        $references = trim($references);
+        if($references === ''){
+            return $this->error->error(mensaje: 'Error references esta vacio',data: $references);
+        }
+        return   "FOREIGN KEY ($campo) REFERENCES $references(id) ON UPDATE RESTRICT ON DELETE RESTRICT";
     }
 
     /**

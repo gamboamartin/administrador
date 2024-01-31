@@ -330,7 +330,7 @@ class joins{
      * un error durante el proceso.
      *
      * @throws errores En caso de que ocurra un error durante el proceso, este método lanzará una excepción.
-     * @version 
+     * @version 16.26.0
      */
     private function data_tabla_sql(string $key, array|string $tabla_join, string $tablas): array|string
     {
