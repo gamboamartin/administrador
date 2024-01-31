@@ -449,13 +449,21 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * Valida la entrada de los parametros de u permiso
-     * @param string $adm_accion Accion a validar
-     * @param int $adm_grupo_id Grupo a validar permiso
-     * @param string $adm_seccion Seccion a validar
-     * @return array|true
+     * POR DOCUMENTAR EN WIKI
+     * Valida los datos del permiso sean correctos a nivel parametros.
+     *
+     * Esta función recibe los datos que representan a un permiso de un grupo de usuario y realiza validaciones
+     * sobre los mismos antes de permitir operaciones adicionales. En caso de encontrar un error, detendrá
+     * la operación y generará un error.
+     *
+     * @param string $adm_accion Acción del administrador a ser validada.
+     * @param int    $adm_grupo_id ID del grupo al que pertenece el administrador.
+     * @param string $adm_seccion Sección del administrador a ser validada.
+     *
+     * @return true|array Resultado de las validaciones. En caso de un error, se genera un error.
+     * @version 16.31.0
      */
-    private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): bool|array
+    private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): true|array
     {
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
