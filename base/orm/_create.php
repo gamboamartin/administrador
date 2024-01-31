@@ -537,16 +537,25 @@ class _create
     }
 
     /**
-     * Genera una sentencia de clave foránea SQL, si la clave foránea está configurada en los atributos proporcionados.
-     * Si no se puede generar la clave foránea, este método retorna un mensaje de error.
+     * POR DOCUMENTAR EN WEB
+     * Genera la definición de una clave externa (Foreign Key) para una tabla de base de datos,
+     * basándose en los atributos proporcionados.
      *
-     * @param stdClass $atributos El objeto que contiene los atributos en los que puede estar configurada la clave foránea.
-     * @param string $campo El campo que se utilizará como clave foránea.
-     * @return string|array Retorna una sentencia de clave foránea en formato SQL
-     *                      o, si ocurre un error, retorna un array con el mensaje y los datos del error.
+     * @param stdClass $atributos Contiene los atributos y propiedades del campo para el cual se desea generar la
+     * clave externa, incluyendo el atributo `foreign_key` que indica si el campo es una clave externa.
+     * @param string $campo Es el nombre del campo para el cual se genera la clave externa.
+     *
+     * @return string|array Retorna la definición SQL de la clave externa si se pudo generar
+     * exitosamente, o un error en caso de un problema.
+     * @version 16.33.0
      */
     private function genera_foreign_key(stdClass $atributos, string $campo):string|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo vacio',data: $campo);
+        }
+
         $foreign_key = '';
         if(isset($atributos->foreign_key) && $atributos->foreign_key){
 

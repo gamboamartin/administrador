@@ -309,6 +309,23 @@ class _createTest extends TestCase
         errores::$error = false;
 
     }
+    public function test_genera_foreign_key()
+    {
+        errores::$error = false;
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campo = 'x';
+        $atributos = new stdClass();
+        $atributos->foreign_key = true;
+        $result = $_create->genera_foreign_key($atributos, $campo);
+        $this->assertEquals('FOREIGN KEY (x) REFERENCES x(id) ON UPDATE RESTRICT ON DELETE RESTRICT', $result);
+
+        errores::$error = false;
+
+
+    }
+
 
     public function test_integra_longitud(){
         errores::$error = false;
