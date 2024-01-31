@@ -676,15 +676,18 @@ class joins{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Función para obtener las tablas completas.
      *
-     * Funcion para determinar un JOINs entre dos p mas tablas para SQL
-     * @param string $tabla  tabla para la ejecucion del JOIN
-     * @param array $columnas_join  array con conjunto de tablas para join
-     * @example
-     *      $tablas = $consulta_base->obten_tablas_completas($tabla, $this->columnas);
+     * Esta función toma un array de columnas join y el nombre de una tabla, y devuelve un array que representa las tablas completas.
      *
-     * @return array|string conjunto de joins en forma de SQL
-     * @throws errores $tabla vacia
+     * @param array $columnas_join Un array que contiene las columnas de join.
+     * @param string $tabla El nombre de la tabla a partir de la cual se generaran las tablas completas.
+     *
+     * @return array|string Las tablas completas obtenidas o un error en caso de que algo salga mal durante la generación de las tablas.
+     *
+     * @throws errores En caso de que la tabla enviada esté vacía o si hubo un error al generar las tablas.
+     * @version 16.29.0
      */
     final public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
         $tabla = str_replace('models\\','',$tabla);
