@@ -699,14 +699,41 @@ class _create
     }
 
     /**
-     * Genera una sentencia SQL para crear una tabla con los campos y claves foráneas especificados.
+     * POR DOCUMENTAR EN WIKI
+     * El método `table` de la clase `_create`.
+     * Este método genera una consulta para crear una nueva tabla con los parámetros especificados.
      *
-     * @param stdClass $datos_tabla Objeto que contiene los datos de los campos y las claves foráneas.
-     * @param string $table Nombre de la tabla que se creará.
-     * @return string Sentencia de creación de tabla en SQL.
+     * @param stdClass $datos_tabla Contiene los parámetros para la creación de la tabla.
+     * Parámetros:
+     *   'campos' - es la lista de campos para la nueva tabla,
+     *   'foreigns' - son las claves opcionales para configurar las restricciones de clave externa.
+     *
+     * @param string $table El nombre de la tabla a crear.
+     *
+     * @return string|array Devuelve una consulta SQL como string si la validación de los parámetros de entrada es
+     * exitosa. De lo contrario, devuelve un array con datos de error.
+     *
+     * @throws errores Si falla alguna validación.
+     *
+     * Nota: Actualiza 'SomeExceptionClass' a la clase de excepción correcta que el método puede lanzar y
+     * describe cuándo puede ser lanzada.
+     * @version 16.36.0
      */
-    final public function table(stdClass $datos_tabla, string $table): string
+    final public function table(stdClass $datos_tabla, string $table): string|array
     {
+        if(!isset($datos_tabla->foreigns)){
+            $datos_tabla->foreigns = '';
+        }
+        $keys = array('campos');
+        $valida = $this->valida->valida_existencia_keys(keys: $keys,registro:  $datos_tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos_tabla',data: $valida);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
+        }
+
         $coma_key = '';
         if($datos_tabla->foreigns!==''){
             $coma_key = ', ';

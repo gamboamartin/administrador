@@ -452,5 +452,20 @@ class _createTest extends TestCase
         errores::$error = false;
     }
 
+    public function test_table(){
+        errores::$error = false;
+        // Arrange (Organizar)
+        $_create = new _create();
+        //$_create = new liberator($_create);
+
+        $datos_tabla = new stdClass();
+        $datos_tabla->campos = 'a';
+        $table = 'v';
+        $result = $_create->table($datos_tabla, $table);
+        $this->assertStringContainsStringIgnoringCase("id bigint NOT NULL AUTO_INCREMENT,", $result);
+
+        errores::$error = false;
+    }
+
 
 }
