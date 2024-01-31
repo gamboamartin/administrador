@@ -14,13 +14,19 @@ class columnas{
     }
 
     /**
-     * Anexa las columnas para suma
-     * @param string $campo Campo a integrar
-     * @param string $alias Alias del campo para salida
-     * @return string|array
-     * @version 1.477.49
+     * POR DOCUMENTAR EN WIKI
+     * Añade una columna en una consulta SQL.
+     *
+     * @param string $alias Identificador único para la columna a añadir.
+     * @param string $campo Identifica la columna en una tabla de la base de datos.
+     *
+     * @return string|array Retorna una cadena qué representa la sentencia SQL para sumar y añadir una columna en la consulta.
+     *                      Retorna un arreglo en caso de que haya un error con los parámetros de entrada.
+     *
+     * @throws errores En caso de que $alias o $campo esten vacios.
+     * @version 16.30.0
      */
-    public function add_column(string $alias, string $campo): string|array
+    final public function add_column(string $alias, string $campo): string|array
     {
         $campo = trim($campo);
         if($campo === ''){

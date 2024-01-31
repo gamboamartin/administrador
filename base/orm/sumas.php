@@ -27,7 +27,6 @@ class sumas{
      *
      * @function $data = $sumas->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
      * La funcion enlista y maqueta el nombre de $campo y $alias para completar una cadena de texto.
-     * @version 1.478.49
      */
     public function columnas_suma(array $campos): array|string
     {
@@ -75,7 +74,6 @@ class sumas{
      *
      * @function $coma = (new sql_bass())->coma_sql(columnas: $columnas); Funcion que hace llamado
      * al metodo "coma_sql" para maquetar una cadena de texto conforme a los valores de la variable $columnas
-     * @version 1.477.49
      */
     private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
     {

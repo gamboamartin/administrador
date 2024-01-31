@@ -97,7 +97,6 @@ class sql_bass{
      * Anexa coma al SQL
      * @param string $columnas Columnas previas
      * @return string
-     * @version 1.477.49
      */
     public function coma_sql(string $columnas): string
     {
