@@ -503,15 +503,27 @@ class _create
     }
 
     /**
-     * Genera una sentencia clave foránea SQL para el campo especificado.
-     * Esta sentencia incluirá una referencia a la tabla adecuada, basada en el nombre del campo.
+     * POR DOCUMENTAR EN WIKI
+     * Genera SQL para las claves foráneas de la base de datos.
      *
-     * @param string $campo El campo que se utilizará como clave foránea.
-     * @return string|array Retorna una sentencia de clave foránea en formato SQL,
-     *                     o, si ocurre un error, no retorna nada y genera un mensaje de error.
+     * Esta función toma el nombre de un campo y genera SQL para las claves foráneas.
+     * Primero, verifica que el campo no esté vacío y de no ser así, emite un error utilizando la clase 'errores'.
+     * Luego, intenta obtener las referencias para el campo especificado.
+     * Si algún error ocurre durante este proceso, también devuelve un mensaje de 'errores'.
+     * Por último, genera la clave foránea utilizando el campo y las referencias obtenidas y retorna los resultados.
+     * Nuevamente, si surge algún error en este paso, retorna un mensaje de 'errores'.
+     *
+     * @param  string $campo Nombre del campo para el cual se generará la SQL de la clave foránea.
+     * @return array|string Retorna un string con la SQL generada para la clave foránea o un array con el error en caso de fallar alguno de los pasos.
+     * @version 16.32.0
      */
     private function foreign_key_sql(string $campo): array|string
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo vacio',data: $campo);
+        }
+
         $references = $this->references(campo: $campo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener references',data: $references);

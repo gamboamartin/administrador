@@ -295,6 +295,21 @@ class _createTest extends TestCase
 
     }
 
+    public function test_foreign_key_sql()
+    {
+        errores::$error = false;
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campo = 'z';
+        $result = $_create->foreign_key_sql($campo);
+
+        $this->assertEquals('FOREIGN KEY (z) REFERENCES z(id) ON UPDATE RESTRICT ON DELETE RESTRICT', $result);
+
+        errores::$error = false;
+
+    }
+
     public function test_integra_longitud(){
         errores::$error = false;
         // Arrange (Organizar)
