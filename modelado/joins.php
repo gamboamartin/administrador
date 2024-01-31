@@ -895,11 +895,32 @@ class joins{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * tablas_join_esp Genera una string que representa una operación JOIN en SQL en español.
      *
-     * @param string $key Key tabla
-     * @param string $tabla_join Tabla para join
-     * @param string $tablas conjunto de tablas previamente cargadas
-     * @return array|string
+     * @param string $key Clave que se utiliza para buscar y unir la tabla especificada.
+     * @param string $tabla_join Nombre de la tabla que se está uniendo.
+     * @param string $tablas Variable acumulativa en la cual se van guardando las condiciones de union de las tablas.
+     *
+     * @return array|string Devuelve una cadena de texto que representa las condiciones de unión de las tablas si todo sale bien.
+     *                     Si ocurre un error en las validaciones o en la generación del JOIN, se devuelve un array con información sobre el error.
+     *
+     * ## Ejemplos de uso
+     * ```php
+     * $instancia = new ClaseDondeEstaDefinidaEstaFuncion();
+     * $joins = $instancia->tablas_join_esp('clave', 'tabla_a_unirse', 'otras_tablas_join');
+     * if (is_array($joins)) {
+     *     // Hubo un error, manejarlo aquí.
+     * } else {
+     *     // $joins es una string con las condiciones de JOIN SQL, utilizarla en el query.
+     * }
+     * ```
+     *
+     * @see validaciones::valida_tabla_join() para la validación utilizada.
+     * @see data_para_join_esp() se utiliza para recopilar los datos necesarios para el JOIN.
+     *
+     * @throws errores si ocurre un error durante la validación o la generación del JOIN.
+     * @version 16.25.0
      */
     private function tablas_join_esp(string $key, string $tabla_join, string $tablas): array|string
     {
