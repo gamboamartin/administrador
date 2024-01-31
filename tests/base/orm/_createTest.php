@@ -236,6 +236,24 @@ class _createTest extends TestCase
         $this->assertEquals('a VARCHAR (255) NOT NULL , b timestamp  NOT NULL , ', $result);
         errores::$error = false;
     }
+
+    public function test_crea_foreign_keys(){
+        errores::$error = false;
+
+        $_create = new _create();
+        $_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $campos->a->foreign_key = true;
+
+        $result = $_create->crea_foreign_keys($campos);
+        $this->assertNotTrue( errores::$error);
+        $this->assertIsString( $result);
+        $this->assertEquals('FOREIGN KEY (a) REFERENCES a(id) ON UPDATE RESTRICT ON DELETE RESTRICT', $result);
+        errores::$error = false;
+
+    }
     public function test_default_sql(){
         errores::$error = false;
         // Arrange (Organizar)

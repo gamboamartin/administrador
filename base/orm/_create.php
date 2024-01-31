@@ -399,18 +399,26 @@ class _create
 
     }
     /**
-     * Genera las sentencias SQL de clave foránea para todos los campos proporcionados.
-     * Si no se puede generar la sentencia de clave foránea para un campo, este método retorna un mensaje de error.
+     * POR DOCUMENTAR EN WIKI
+     * Esta función crea claves foráneas.
      *
-     * @param stdClass $campos El objeto que contiene los campos y sus atributos.
-     * @return string|array Retorna una cadena conteniendo las sentencias SQL de clave foránea para todos los campos,
-     *                      o, si ocurre un error, retorna un array con el mensaje y los datos del error.
+     * Recibe como parámetro un objeto con los campos de la tabla.
+     * Recorre cada campo y para cada uno genera una clave foránea.
+     * Si ocurre algún error durante la obtención de la clave foránea, retorna un error.
+     * Finalmente, devuelve todas las claves foráneas generadas como un string.
+     *
+     * @param stdClass $campos Objeto con los campos de la tabla
+     * @return string|array Retorna todas las claves foráneas generadas como un string o un error si ocurre algún problema
+     * @version 16.34.0
      */
     private function crea_foreign_keys(stdClass $campos):string|array
     {
         $foreign_keys = '';
         foreach ($campos as $campo=>$atributos){
 
+            if(!is_object($atributos)){
+                return $this->error->error(mensaje: 'Error atributos debe ser un objeto',data: $atributos);
+            }
             $foreign_key = $this->genera_foreign_key(atributos: $atributos,campo: $campo);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener foreign_key',data: $foreign_key);
