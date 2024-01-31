@@ -63,6 +63,26 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_create_table(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $table = 'f';
+        $resultado = $sql->create_table($campos, $table);
+        //print_r($resultado);exit;
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('id bigint NOT NULL AUTO_INCREMENT,',$resultado->sql);
+
+        errores::$error = false;
+
+
+    }
+
     public function test_data_index(): void
     {
         errores::$error = false;

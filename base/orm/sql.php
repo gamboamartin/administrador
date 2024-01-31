@@ -104,11 +104,35 @@ class sql{
 
     }
 
-
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Crea una tabla en la base de datos SQL.
+     *
+     * @param stdClass $campos Un objeto con los campos y características de cada campo en la tabla
+     * @param string $table Nombre de la tabla a ser creado
+     *
+     * @throws errores Excepción cuando algún error ocurre durante el proceso de creación de la tabla.
+     *
+     * @return array|stdClass Regresa un objeto que contiene la sentencia SQL creada y la descripción de los campos
+     * de la tabla. En caso de error, regresa un arreglo con información del error.
+     *
+     * @example
+     * $object = new stdClass;
+     * $object->nombre = 'varchar(255)';
+     * $object->edad = 'int';
+     * create_table($object, 'users');
+     *
+     * @version 16.37.0
+     *
+     */
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
         if(count((array)$campos) === 0){
             return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
         }
 
         $datos_tabla = (new _create())->datos_tabla(campos: $campos);
