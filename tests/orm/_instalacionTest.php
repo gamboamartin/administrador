@@ -58,6 +58,29 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
+
+    public function test_ajusta_atributos(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $atributos = new stdClass();
+        $resultado = $ins->ajusta_atributos($atributos);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('VARCHAR',$resultado->tipo_dato);
+        $this->assertEmpty($resultado->default);
+        $this->assertEquals('255',$resultado->longitud);
+        $this->assertTrue($resultado->not_null);
+
+
+        errores::$error = false;
+
+
+
+    }
     public function test_ajusta_tipo_dato(): void
     {
 

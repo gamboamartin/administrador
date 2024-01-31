@@ -223,7 +223,15 @@ class _instalacion
 
     }
 
-    private function ajusta_atributos(stdClass $atributos)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Ajusta los atributos de un objeto data para su uso en funciones posteriores.
+     *
+     * @param stdClass $atributos Los atributos a ajustar.
+     * @return stdClass $data Un nuevo objeto data con los atributos ajustados.
+     * @version 16.20.0
+     */
+    private function ajusta_atributos(stdClass $atributos): stdClass
     {
         $tipo_dato = $this->tipo_dato(atributos: $atributos);
         if (errores::$error) {
