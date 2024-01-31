@@ -1475,19 +1475,18 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR WN WIKI
+     * Función para obtener las columnas completas de un modelo de base de datos.
      *
-     * Genera las columnas en forma de sql para ser utilizado en un SELECT de todas las columnas unidas por el modelo
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $extension_estructura conjunto de columnas mostradas como extension de datos tablas 1 a 1
-     * @param array $extra_join
-     * @param array $renombres conjunto de columnas renombradas
-     * @return array|string sql con las columnas para un SELECT
-     * @example
-     *      $columnas = $this->obten_columnas_completas($columnas);
-     * @pordoc false
+     * @param modelo_base $modelo - El modelo base a analizar.
+     * @param array $columnas_by_table - Especifica las columnas por tabla.
+     * @param bool $columnas_en_bruto - Especifica si se deben obtener las columnas en bruto (sin procesar).
+     * @param array $columnas_sql - Permite definir columnas de SQL adicionales.
+     * @param array $extension_estructura - Permite definir una estructura de extensión para las columnas.
+     * @param array $extra_join - Define uniones adicionales para las consultas.
+     * @param array $renombres - Permite cambiar el nombre de las columnas.
+     * @return array|string - Devuelve las columnas completas como un array o string en caso de error.
+     * @version 16.21.0
      */
     final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                                    bool $columnas_en_bruto = false, array $columnas_sql = array(),

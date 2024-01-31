@@ -1338,6 +1338,23 @@ class modelo extends modelo_base {
 
         return $random_string;
     }
+    
+    final public function get_data_descripcion(string $dato, int $limit = 10, bool $por_descripcion_select = false)
+    {
+        $filtro = array();
+        $filtro[$this->tabla.'_descripcion'] = $dato;
+        if($por_descripcion_select){
+            $filtro = array();
+            $filtro[$this->tabla.'_descripcion_select'] = $dato;
+        }
+        $r_data = $this->filtro_and(filtro: $filtro, limit: $limit, tipo_filtro: 'textos');
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $r_data);
+        }
+
+        return $r_data;
+
+    }
 
     /**
      * Obtiene los datos para datatable
