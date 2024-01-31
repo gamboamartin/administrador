@@ -313,11 +313,24 @@ class joins{
     }
 
     /**
-     * Obtiene las tablas para hacer un join
-     * @param string $key Tabla LEFT
-     * @param array|string $tabla_join Datos para hacer join con tablas
-     * @param string $tablas Tablas en forma de SQL
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Genera datos para una operación JOIN en SQL desde varias tablas.
+     *
+     * Esta función permite unir varias tablas de una base de datos SQL.
+     * Admite tanto operaciones de unión básicas como personalizadas.
+     *
+     * @param string $key Llave utilizada para identificar un JOIN específico.
+     * @param array|string $tabla_join Representa la(s) tabla(s) para realizar la operación JOIN.
+     * Esto podría ser un array que contenga los nombres de múltiples tablas a unir o una cadena que contenga
+     * el nombre de una sola tabla.
+     * @param string $tablas Nombre de las tablas base donde se realizará la operación JOIN.
+     *
+     * @return array|string Dependiendo del escenario, esta función puede devolver una array de datos generados
+     * para la operación JOIN, o una string que representa un mensaje de error, en caso de que se produzca
+     * un error durante el proceso.
+     *
+     * @throws errores En caso de que ocurra un error durante el proceso, este método lanzará una excepción.
+     * @version 
      */
     private function data_tabla_sql(string $key, array|string $tabla_join, string $tablas): array|string
     {
