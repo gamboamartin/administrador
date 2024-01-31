@@ -400,7 +400,7 @@ class _instalacionTest extends test
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('CREATE TABLE b (
                     id bigint NOT NULL AUTO_INCREMENT,
-                    a VARCHAR (255) NOT NULL , a_id bigint (255) NOT NULL , 
+                    a VARCHAR (255) NOT NULL , a_id BIGINT (255) NOT NULL , 
                     PRIMARY KEY (id) , 
                    FOREIGN KEY (a_id) REFERENCES a(id) ON UPDATE RESTRICT ON DELETE RESTRICT
                     );', $resultado->exe->sql);

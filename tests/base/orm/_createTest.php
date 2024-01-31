@@ -254,6 +254,53 @@ class _createTest extends TestCase
         errores::$error = false;
 
     }
+
+    public function test_datos_tabla(){
+        errores::$error = false;
+
+        $_create = new _create();
+        //$_create = new liberator($_create);
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        //$campos->a->foreign_key = true;
+
+        $result = $_create->datos_tabla($campos);
+        $this->assertNotTrue( errores::$error);
+        $this->assertIsObject( $result);
+        $this->assertEquals('a VARCHAR (255) NOT NULL , ', $result->campos);
+
+        errores::$error = false;
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $campos->a->foreign_key = true;
+
+        $result = $_create->datos_tabla($campos);
+        $this->assertNotTrue( errores::$error);
+        $this->assertIsObject( $result);
+        $this->assertEquals('a BIGINT (255) NOT NULL , ', $result->campos);
+        $this->assertEquals('FOREIGN KEY (a) REFERENCES a(id) ON UPDATE RESTRICT ON DELETE RESTRICT', $result->foreigns);
+        errores::$error = false;
+
+        errores::$error = false;
+
+        $campos = new stdClass();
+        $campos->a_id = new stdClass();
+        $campos->a_id->foreign_key = true;
+        $campos->b = new stdClass();
+        $campos->c = new stdClass();
+
+
+        $result = $_create->datos_tabla($campos);
+
+        $this->assertNotTrue( errores::$error);
+        $this->assertIsObject( $result);
+        $this->assertEquals('a_id BIGINT (255) NOT NULL , b VARCHAR (255) NOT NULL , c VARCHAR (255) NOT NULL , ', $result->campos);
+        $this->assertEquals('FOREIGN KEY (a_id) REFERENCES a(id) ON UPDATE RESTRICT ON DELETE RESTRICT', $result->foreigns);
+        errores::$error = false;
+
+    }
     public function test_default_sql(){
         errores::$error = false;
         // Arrange (Organizar)

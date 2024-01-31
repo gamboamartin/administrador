@@ -151,6 +151,10 @@ class _create
         if(isset($atributos->not_null)){
             $atributos_base->not_null = trim($atributos->not_null);
         }
+        if(isset($atributos->foreign_key) && $atributos->foreign_key){
+            $atributos_base->foreign_key = true;
+            $atributos_base->tipo_dato = 'BIGINT';
+        }
 
 
         return $atributos_base;
@@ -429,6 +433,22 @@ class _create
     }
 
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función procesa y agrupa los campos de una tabla y sus claves foráneas.
+     *
+     * El método `datos_tabla` es una función que recibe como parámetro un objeto que contiene todos los campos de una tabla.
+     * Con este objeto crea los campos SQL usando la función `crea_campos_sql` y genera las claves foráneas con la función `crea_foreign_keys`.
+     * Si ocurren errores durante este proceso, la función devuelve un error específico.
+     *
+     * Finalmente, la función agrupa estos elementos y los devuelve en un nuevo objeto stdClass, que contiene las propiedades:
+     * `campos`, `foreigns` y `campos_por_integrar`.
+     *
+     * @param stdClass $campos Objeto que contiene todos los campos de una tabla.
+     * @return stdClass|array Retorna un objeto con los campos procesados y las claves foráneas o un array de error si ocurre algún problema.
+     * @throws errores Lanza una excepción si ocurre un error al obtener los campos SQL o las claves foráneas.
+     * @version 16.35.0
+     */
     final public function datos_tabla(stdClass $campos):array|stdClass
     {
         $campos_sql = $this->crea_campos_sql(campos: $campos);
