@@ -58,7 +58,6 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
-
     public function test_ajusta_atributos(): void
     {
 
