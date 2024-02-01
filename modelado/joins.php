@@ -366,7 +366,6 @@ class joins{
      * @param string $modelo_tabla
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
-     * @version 1.63.17
      */
     private function extensiones_join(array $extension_estructura, string $modelo_tabla, string $tablas): array|string
     {

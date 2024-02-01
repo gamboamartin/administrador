@@ -230,7 +230,6 @@ class validaciones extends validacion{
 
     /**
      * Valida que existan los elementos necesarios para un JOIN
-     * @version 1.62.17
      * @param array $data data[key,enlace,key_enlace]
      * @param string $tabla Tabla en ejecucion
      * @return bool|array
