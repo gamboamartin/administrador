@@ -410,6 +410,39 @@ class sql{
         return $in_sql;
     }
 
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Crea un índice único en una tabla.
+     *
+     * @param array $columnas
+     *   Las columnas de la tabla en las que se creará el índice.
+     * @param string $table
+     *   El nombre de la tabla a la que se agregará el índice único.
+     * @param string $index_name
+     *   El nombre del índice (opcional).
+     *   Si no se proporciona, se generará un nombre de índice predeterminado.
+     *
+     * @return string|array
+     *   Si no hay errores durante la generación y ejecución de SQL,
+     *   devuelve el resultado de la ejecución SQL.
+     *   Si ocurre un error durante la generación de SQL,
+     *   devuelve un error con los detalles de $sql.
+     *   Si ocurre un error durante la ejecución de SQL,
+     *   devuelve un error con los detalles de $exe.
+     *
+     * @throws errores
+     *   Si ocurre un error durante la generación o ejecución de SQL.
+     *
+     * @example
+     *   $index = $object->index_unique(["columna1", "columna2"], "mi_tabla", "mi_indice_unico");
+     *   if ($index !== true) {
+     *        echo "Error al agregar el índice único: " . $index;
+     *   } else {
+     *        echo "Índice único agregado con éxito";
+     *   }
+     * @version 16.39.0
+     */
     final public function index_unique(array $columnas, string $table, string $index_name = ''): string|array
     {
         if(count($columnas ) === 0){

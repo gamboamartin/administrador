@@ -276,6 +276,24 @@ class sqlTest extends test {
 
         errores::$error = false;
     }
+    public function test_index_unique(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'a';
+        $columnas = array();
+        $columnas[] = 'z';
+        $resultado = $sql->index_unique($columnas, $table);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('CREATE UNIQUE INDEX a_unique_z  ON a (z);',$resultado);
+
+        errores::$error = false;
+    }
+
 
     public function test_show_tables(): void
     {
