@@ -219,7 +219,25 @@ class _instalacion
 
     }
 
-    private function add_uniques_base(stdClass $campos_por_integrar, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método privado 'add_uniques_base' agrega índices únicos a la base en una tabla específica.
+     *
+     * @param stdClass $campos_por_integrar Un objeto cuyas propiedades son campos para integrar.
+     * @param string $table El nombre de la tabla en la que se deben agregar los índices únicos.
+     *
+     * @return array Retorna una matriz de índices únicos agregados exitosamente.
+     *
+     * Este método itera sobre cada campo en el parámetro $campos_por_integrar. Si el atributo 'unique' está establecido y es verdadero,
+     * se intentará agregar un índice único a la base para el campo.
+     * Además, si hay disponible un 'index_name', se utilizará como nombre para el índice único. Si no, se generará un nombre por defecto.
+     *
+     * Si hay un error durante la adición de un índice único, el método retornará un error utilizando el controlador de errores.
+     *
+     * De lo contrario, el índice único se agregará a la lista de índices únicos que se ha agregado con éxito y que será devuelto al final del método.
+     * @version 16.45.0
+     */
+    private function add_uniques_base(stdClass $campos_por_integrar, string $table): array
     {
         $indexs_unique = array();
         foreach ($campos_por_integrar as $campo=>$atributos){
