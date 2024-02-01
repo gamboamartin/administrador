@@ -548,7 +548,20 @@ class sql{
 
     }
 
-    private function longitud_sql(int|string|float $longitud, string $tipo_dato)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera el segmento de longitud para una declaración SQL a partir de un valor de longitud y tipo de dato.
+     *
+     * @param int|string|float $longitud Un valor que especifica la longitud que se desea configurar.
+     * @param string $tipo_dato Descripción del tipo de dato que se desea manejar.
+     *
+     * @return array|string Retorna la cadena SQL de longitud generada si no hay ningun error.
+     *                      En caso de error retorna un arreglo con la información del error
+     *                      generada por la función error() desde la clase errores.
+     *
+     * @version 16.51.0
+     */
+    private function longitud_sql(int|string|float $longitud, string $tipo_dato): array|string
     {
         $longitud = $this->longitud(longitud: $longitud,tipo_dato: $tipo_dato);
         if(errores::$error){
