@@ -131,7 +131,7 @@ class _instalacion
         return $adds;
     }
 
-    PUBLIC function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen, string $table)
+    private function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen, string $table)
     {
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
         if(errores::$error){

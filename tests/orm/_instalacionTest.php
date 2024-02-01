@@ -26,7 +26,21 @@ class _instalacionTest extends test {
 
         errores::$error = false;
         $ins = new _instalacion(link: $this->link);
-        //$ins = new liberator($ins);
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $ins = new liberator($ins);
 
         $adds = array();
         $atributos = new stdClass();
@@ -56,6 +70,13 @@ class _instalacionTest extends test {
         $this->assertNotTrue(errores::$error);
         //$this->assertNotTrue("ALTER TABLE z MODIFY COLUMN a BIGINT (100);",$resultado->sql);
         errores::$error = false;
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
 
     }
     public function test_add_unique_base(): void

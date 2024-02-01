@@ -294,7 +294,39 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_longitud(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
 
+        $longitud = '';
+        $tipo_dato = '';
+        $resultado = $sql->longitud($longitud, $tipo_dato);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+        $longitud = '';
+        $tipo_dato = 'bigint';
+        $resultado = $sql->longitud($longitud, $tipo_dato);
+
+        $this->assertIsNumeric( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(100,$resultado);
+
+        errores::$error = false;
+
+        $longitud = '';
+        $tipo_dato = 'double';
+        $resultado = $sql->longitud($longitud, $tipo_dato);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('100,4',$resultado);
+        errores::$error = false;
+    }
     public function test_show_tables(): void
     {
         errores::$error = false;

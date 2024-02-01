@@ -501,8 +501,27 @@ class sql{
         return $params_base_;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Calcula la longitud de un dato de tipo string|int|float dependiendo del tipo de dato que se le pase.
+     *
+     * @param string|int|float $longitud Longitud inicial del dato.
+     * @param string $tipo_dato Tipo del dato. Puede ser 'BIGINT', 'VARCHAR', 'DOUBLE', 'TIMESTAMP', 'TEXT'.
+     *
+     * @return int|string Devuelve la longitud calculada. Si el tipo de dato es 'TIMESTAMP' o 'TEXT' devuelve una cadena vacía.
+     *
+     * @example
+     *
+     * longitud('', 'BIGINT'); // Devolverá 100
+     * longitud('', 'VARCHAR'); // Devolverá 255
+     * longitud('', 'DOUBLE'); // Devolverá '100,4'
+     * longitud('', 'TIMESTAMP'); // Devolverá ''
+     * longitud('', 'TEXT'); // Devolverá ''
+     * @version 16.49.0
+     */
     private function longitud(string|int|float $longitud, string $tipo_dato): int|string
     {
+        $tipo_dato = strtoupper($tipo_dato);
         if($tipo_dato === 'BIGINT'){
             if($longitud === ''){
                 $longitud = 100;
@@ -513,6 +532,18 @@ class sql{
                 $longitud = 255;
             }
         }
+        if($tipo_dato === 'DOUBLE'){
+            if($longitud === ''){
+                $longitud = '100,4';
+            }
+        }
+        if($tipo_dato === 'TIMESTAMP'){
+            $longitud = '';
+        }
+        if($tipo_dato === 'TEXT'){
+            $longitud = '';
+        }
+
         return $longitud;
 
     }
