@@ -1251,6 +1251,12 @@ class _instalacion
         if($tipo_dato === 'TIMESTAMP'){
             $longitud = '';
         }
+        if($tipo_dato === 'DATE'){
+            $longitud = '';
+        }
+        if($tipo_dato === 'DATETIME'){
+            $longitud = '';
+        }
         if(isset($atributos->longitud)){
             $longitud = $atributos->longitud;
         }

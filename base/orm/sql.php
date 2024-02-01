@@ -543,6 +543,12 @@ class sql{
         if($tipo_dato === 'TEXT'){
             $longitud = '';
         }
+        if($tipo_dato === 'DATE'){
+            $longitud = '';
+        }
+        if($tipo_dato === 'DATETIME'){
+            $longitud = '';
+        }
 
         return $longitud;
 
