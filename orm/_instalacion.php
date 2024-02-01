@@ -534,6 +534,21 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Crea una nueva tabla en la base de datos con el nombre de tabla dado.
+     *
+     * @param string $table El nombre de la tabla que se va a crear.
+     *
+     * @return array|string|stdClass Devuelve un mensaje string si ya existe la tabla.
+     * Si la tabla no existe, intenta crearla. Si tiene éxito, retorna el resultado del proceso de creación de la tabla.
+     * (puede ser un array, string o un stdClass dependiendo del proceso de creación).
+     * Si hay un error durante el proceso, devolverá un objeto de error (instancia de la clase 'errores').
+     *
+     * @throws errores Lanza una excepción si hay un error durante el proceso de verificación o creación de la tabla.
+     * @version 16.48.0
+     */
+
     final public function create_table_new(string $table): array|string|stdClass
     {
         $create_table = 'Ya existe tabla '.$table;

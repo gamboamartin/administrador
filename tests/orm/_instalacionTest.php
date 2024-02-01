@@ -255,7 +255,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_create_table(): void
     {
 
@@ -273,6 +272,39 @@ class _instalacionTest extends test {
         $campos = new stdClass();
         $table = 'a';
         $resultado = $ins->create_table($campos, $table);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsString("codigo VARCHAR (255) NOT NULL , descripcion VARCHAR (255) NOT NULL , status VARCHAR (255) NOT NU",$resultado->data_sql->sql);
+
+
+        errores::$error = false;
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+    }
+
+    public function test_create_table_new(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+
+        $table = 'a';
+        $resultado = $ins->create_table_new($table);
         //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
