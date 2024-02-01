@@ -27,7 +27,18 @@ class _instalacion
 
     }
 
-    private function add(stdClass $atributos, string $campo, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método para agregar una columna a una tabla en la base de datos.
+     *
+     * @param stdClass $atributos Atributos de la columna para agregar.
+     * @param string $campo Nombre de la columna a agregar.
+     * @param string $table Nombre de la tabla a la cual agregar la columna.
+     * @return array|stdClass Respuesta de la función add_colum si la operación fue exitosa, objeto
+     * de error si ocurrió un error.
+     * @version 16.38.0
+     */
+    private function add(stdClass $atributos, string $campo, string $table):array|stdClass
     {
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
         if(errores::$error){

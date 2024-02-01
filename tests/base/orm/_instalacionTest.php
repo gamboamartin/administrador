@@ -3,6 +3,7 @@
 use base\orm\estructuras;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 class _instalacionTest extends test
@@ -15,6 +16,76 @@ class _instalacionTest extends test
         $this->errores = new errores();
     }
 
+    public function test_add(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $table = 'z';
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data: $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data: $create);
+            print_r($error);
+            exit;
+        }
+
+        $campo = 'a';
+
+        $atributos = new stdClass();
+        $resultado = $ins->add($atributos, $campo, $table);
+
+        //print_r($resultado);exit;
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE z ADD a VARCHAR (255)  NOT NULL;', $resultado->sql);
+
+        errores::$error = false;
+
+        $campo = 'b';
+        $atributos = new stdClass();
+        $atributos->tipo_dato = 'bigint';
+        $resultado = $ins->add($atributos, $campo, $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE z ADD b BIGINT (255)  NOT NULL;', $resultado->sql);
+
+        errores::$error = false;
+
+        $campo = 'c';
+        $atributos = new stdClass();
+        $atributos->tipo_dato = 'timestamp';
+        $resultado = $ins->add($atributos, $campo, $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE z ADD c TIMESTAMP   NOT NULL;', $resultado->sql);
+
+        errores::$error = false;
+
+        $campo = 'd_id';
+        $atributos = new stdClass();
+        $atributos->foreign_key = true;
+        $resultado = $ins->add($atributos, $campo, $table);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE z ADD d_id VARCHAR (255)  NOT NULL;', $resultado->sql);
+        errores::$error = false;
+
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+    }
     public function test_add_colum(): void
     {
         errores::$error = false;
@@ -441,8 +512,6 @@ class _instalacionTest extends test
         errores::$error = false;
 
     }
-
-
 
     public function test_existen_entidad(): void
     {
