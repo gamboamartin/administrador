@@ -664,31 +664,81 @@ class _instalacionTest extends test
         errores::$error = false;
     }
 
+    public function test_index_unique(): void
+    {
+
+        $ins = new _instalacion(link: $this->link);
+
+        $drop = $ins->drop_table_segura(table: 'b');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al drop', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new(table: 'b');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al create', data: $create);
+            print_r($error);
+            exit;
+        }
+
+        $add = $ins->add_colum(campo: 'z', table: 'b', tipo_dato: 'bigint');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al add', data: $add);
+            print_r($error);
+            exit;
+        }
+        errores::$error = false;
+
+        $table = 'b';
+        $columnas = array();
+        $columnas[] = 'z';
+        $resultado = $ins->index_unique($columnas, $table);
+        $this->assertNotTrue($resultado);
+        $this->assertEquals('CREATE UNIQUE INDEX b_unique_z  ON b (z);',$resultado->sql);
+
+
+        $drop = $ins->drop_table_segura(table: 'b');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al drop', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+    }
+
     public function test_integra_foraneas(): void
     {
         errores::$error = false;
         $ins = new _instalacion(link: $this->link);
 
         $table = 'test';
-        $existe_table = (new estructuras(link: $this->link))->existe_entidad($table);
-        if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
+
+        $drop = $ins->drop_table_segura(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
             print_r($error);
             exit;
         }
 
-        if($existe_table) {
-            $drop = $ins->drop_table(table: $table);
-            if (errores::$error) {
-                $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
-                print_r($error);
-                exit;
-            }
+        $drop = $ins->drop_table_segura(table: 'b');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
         }
 
-        $campos = new stdClass();
-        $campos->a = new stdClass();
-        $table_create = $ins->create_table($campos, 'test');
+
+        $table_create = $ins->create_table_new( 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
+            print_r($error);
+            exit;
+        }
+
+        $table_create = $ins->create_table_new( 'b');
         if (errores::$error) {
             $error = (new errores())->error(mensaje: 'Error al crear tabla', data: $table_create);
             print_r($error);
@@ -699,6 +749,7 @@ class _instalacionTest extends test
         $campos->b_id = new stdClass();
         $campos->b_id->foreign_key = true;
         $resultado = $ins->integra_foraneas(campos: $campos,table: 'test');
+
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado[0]->sql);
@@ -740,5 +791,19 @@ class _instalacionTest extends test
         $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__c_id FOREIGN KEY (c_id) REFERENCES c(id);', $resultado[0]->sql);
 
         errores::$error = false;
+
+        $drop = $ins->drop_table_segura(table: 'test');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura(table: 'b');
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al eliminar tabla', data: $drop);
+            print_r($error);
+            exit;
+        }
     }
 }

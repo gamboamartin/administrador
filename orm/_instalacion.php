@@ -1055,8 +1055,28 @@ class _instalacion
         return $fk;
 
     }
-    final public function index_unique(array $columnas, $table, string $index_name = '')
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * La función index_unique se utiliza para crear un índice único en una tabla específica.
+     *
+     * @param array $columnas representa las columnas para las cuales se va a crear el índice único.
+     * @param string $table es el nombre de la tabla sobre la que se va a establecer el índice.
+     * @param string $index_name es el nombre opcional que se puede dar al índice.
+     *
+     * @return array|stdClass $exe  representa la respuesta obtenida después de la ejecución del sql.
+     * 16.40.0
+     *
+     */
+    final public function index_unique(array $columnas,string $table, string $index_name = ''): array|stdClass
     {
+        if(count($columnas ) === 0){
+            return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
         $sql = (new sql())->index_unique(columnas: $columnas,table:  $table, index_name: $index_name);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
