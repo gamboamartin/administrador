@@ -382,6 +382,53 @@ class _instalacionTest extends test
         errores::$error = false;
     }
 
+    public function test_add_unique_base(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $create = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data: $create);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data: $create);
+            print_r($error);
+            exit;
+        }
+        $add = $ins->add_colum('v', 'a', 'varchar');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al add',data: $add);
+            print_r($error);
+            exit;
+        }
+
+        $campo = 'v';
+        $table = 'a';
+
+        $resultado = $ins->add_unique_base($campo, $table);
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('CREATE UNIQUE INDEX a_unique_v  ON a (v);', $resultado->sql);
+
+        errores::$error = false;
+
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+    }
+
     public function test_create_table(): void
     {
         errores::$error = false;

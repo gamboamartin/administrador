@@ -189,8 +189,27 @@ class _instalacion
 
     }
 
-    private function add_unique_base(string $campo, string $table, string $index_name = '')
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método para agregar un índice único a una columna en una tabla.
+     *
+     * @param string $campo Nombre de la columna a la que se agregará el índice.
+     * @param string $table Nombre de la tabla a la que pertenece la columna.
+     * @param string $index_name Nombre del índice a agregar. Es opcional. Si no se especifica un nombre, el método generará uno.
+     * @return array|stdClass La respuesta de la función index_unique si la operación fue exitosa, objeto de error si ocurrió un error.
+     * @version 16.41.0
+     */
+    private function add_unique_base(string $campo, string $table, string $index_name = ''): array|stdClass
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacia', data: $campo);
+        }
+
         $columnas_unique = array($campo);
         $index_unique = $this->index_unique(columnas: $columnas_unique,table:  $table, index_name: $index_name);
         if (errores::$error) {
