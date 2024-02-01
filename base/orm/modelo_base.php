@@ -935,6 +935,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces[]  = 'gamboamartin\\nomina\\models\\';
         $namespaces[]  = 'gamboamartin\\im_registro_patronal\\models\\';
         $namespaces[]  = 'gamboamartin\\importador\\models\\';
+        $namespaces[]  = 'gamboamartin\\importador_cva\\models\\';
         $namespaces[]  = 'gamboamartin\\proceso\\models\\';
         $namespaces[]  = 'gamboamartin\\notificaciones\\models\\';
         $namespaces[]  = 'gamboamartin\\inmuebles\\models\\';
