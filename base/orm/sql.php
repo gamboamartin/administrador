@@ -563,6 +563,16 @@ class sql{
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Devuelve una cadena de texto que representa la longitud en SQL.
+     *
+     * @param string|float|int $longitud La longitud del elemento SQL.
+     *
+     * @return string Una cadena de texto que representa la longitud en SQL.
+     *                En caso de que $longitud sea una cadena vacía, se devuelve una cadena vacía.
+     * @version 16.50.0
+     */
     private function longitud_sql_ini(string|float|int $longitud): string
     {
         $longitud_sql = '';

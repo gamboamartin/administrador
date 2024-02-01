@@ -327,6 +327,31 @@ class sqlTest extends test {
         $this->assertEquals('100,4',$resultado);
         errores::$error = false;
     }
+    public function test_longitud_ini(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $longitud = '';
+
+        $resultado = $sql->longitud_sql_ini($longitud);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+        $longitud = 'x';
+
+        $resultado = $sql->longitud_sql_ini($longitud);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('(x)',$resultado);
+        errores::$error = false;
+    }
+
     public function test_show_tables(): void
     {
         errores::$error = false;
