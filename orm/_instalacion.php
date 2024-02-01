@@ -197,6 +197,7 @@ class _instalacion
      * @param string $table Nombre de la tabla a la que pertenece la columna.
      * @param string $index_name Nombre del índice a agregar. Es opcional. Si no se especifica un nombre, el método generará uno.
      * @return array|stdClass La respuesta de la función index_unique si la operación fue exitosa, objeto de error si ocurrió un error.
+     * @version 16.44.0
      */
     private function add_unique_base(string $campo, string $table, string $index_name = ''): array|stdClass
     {

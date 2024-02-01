@@ -58,6 +58,53 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
+
+    public function test_add_unique_base(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+        $add = $ins->add_colum('a', 'z','varchar');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al add',data:  $add);
+            print_r($error);
+            exit;
+        }
+        //$ins = new liberator($ins);
+
+        $campo = 'a';
+        $table = 'z';
+
+        $resultado = $ins->add_unique_base($campo, $table);
+        $this->assertEquals('CREATE UNIQUE INDEX z_unique_a  ON z (a);',$resultado->sql);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+
+    }
     public function test_ajusta_atributos(): void
     {
 
