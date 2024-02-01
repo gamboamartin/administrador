@@ -481,6 +481,20 @@ class _instalacion
 
     }
 
+    /**
+     * Crea una tabla utilizando la información suministrada.
+     *
+     * @param stdClass $campos Objeto que contiene la información sobre los campos requeridos para la tabla
+     * @param string $table Nombre de la tabla que se va a crear
+     * @throws errores Si no se puede obtener campos_base o al generar sql o al ejecutar sql, lanza una excepción
+     * @return array|stdClass Si hay un error, la función regresa un array o un objeto stdClass con la estructura de:
+     *      'sql' (la consulta sql generada),
+     *      'errores' (mensaje de error),
+     *      'exe' (resultado de la ejecución de la consulta sql),
+     *      'indexs_unique' (resultado de agregar los campos únicos a la tabla)
+     * @final
+     * @version 16.46.0
+     */
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
         if(count((array)$campos) === 0){
