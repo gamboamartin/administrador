@@ -58,7 +58,6 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
-
     public function test_add_unique_base(): void
     {
 
@@ -105,7 +104,6 @@ class _instalacionTest extends test {
 
 
     }
-
     public function test_add_uniques_base(): void
     {
 
@@ -258,6 +256,38 @@ class _instalacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_create_table(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $table = 'a';
+        $resultado = $ins->create_table($campos, $table);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsString("codigo VARCHAR (255) NOT NULL , descripcion VARCHAR (255) NOT NULL , status VARCHAR (255) NOT NU",$resultado->data_sql->sql);
+
+
+        errores::$error = false;
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+    }
     public function test_default(): void
     {
 
@@ -286,6 +316,20 @@ class _instalacionTest extends test {
 
         errores::$error = false;
         $ins = new _instalacion(link: $this->link);
+
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $create = (new _instalacion(link: $this->link))->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create entidad',data:  $create);
+            print_r($error);
+            exit;
+        }
+
         $ins = new liberator($ins);
 
         $table = 'a';
@@ -295,6 +339,13 @@ class _instalacionTest extends test {
         $this->assertNotTrue(errores::$error);
 
         errores::$error = false;
+
+        $drop = (new _instalacion(link: $this->link))->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop entidad',data:  $drop);
+            print_r($error);
+            exit;
+        }
     }
     public function test_existe_campo_origen(): void
     {
@@ -337,7 +388,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_foraneas(): void
     {
 
@@ -699,7 +749,6 @@ class _instalacionTest extends test {
             exit;
         }
     }
-
     public function test_longitud(): void
     {
 
@@ -736,7 +785,6 @@ class _instalacionTest extends test {
         $this->assertEquals("", $resultado);
         errores::$error = false;
     }
-
     public function test_not_null(): void
     {
 
@@ -754,7 +802,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_tipo_dato(): void
     {
 

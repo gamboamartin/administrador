@@ -482,6 +482,7 @@ class _instalacion
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Crea una tabla utilizando la información suministrada.
      *
      * @param stdClass $campos Objeto que contiene la información sobre los campos requeridos para la tabla
@@ -502,6 +503,10 @@ class _instalacion
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener campos_base',data: $campos);
             }
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
         }
 
         $out = new stdClass();
