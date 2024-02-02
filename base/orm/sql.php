@@ -537,6 +537,7 @@ class sql{
                 $longitud = '100,4';
             }
         }
+
         if($tipo_dato === 'TIMESTAMP'){
             $longitud = '';
         }
@@ -547,6 +548,12 @@ class sql{
             $longitud = '';
         }
         if($tipo_dato === 'DATETIME'){
+            $longitud = '';
+        }
+        if($tipo_dato === 'LONGBLOB'){
+            $longitud = '';
+        }
+        if($tipo_dato === 'BLOB'){
             $longitud = '';
         }
 
