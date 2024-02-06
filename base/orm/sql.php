@@ -610,13 +610,20 @@ class sql{
     }
 
     /**
-     * Genera una consulta SQL para modificar una columna en una tabla.
+     * POR DOCUMENTAR EN WIKI
+     * Modifica los atributos de una columna en una tabla de base de datos
      *
-     * @param string $campo El nombre de la columna a modificar.
-     * @param string $table El nombre de la tabla que contiene la columna a modificar.
-     * @param string $tipo_dato El nuevo tipo de datos para la columna.
-     * @param string $longitud Opcional. La nueva longitud para el campo, si aplica. Por defecto es una cadena vacía.
-     * @return string|array Devuelve la consulta SQL para modificar la columna en la tabla.
+     * @param string $campo El nombre de la columna que se quiere modificar.
+     * @param string $table El nombre de la tabla donde se encuentra la columna que se quiere modificar.
+     * @param string $tipo_dato El nuevo tipo de dato que se quiere asignar a la columna.
+     * @param string $longitud La nueva longitud que el dato de la columna debe tener. Es opcional.
+     *
+     * @return string|array Regresa una cadena con la instrucción SQL para alterar la columna de la tabla.
+     * O bien, regresa un array con información sobre el error si se produce uno.
+     *
+     * @throws errores En caso de que alguno de los parámetros 'campo', 'table' o 'tipo_dato' esté vacío,
+     * esta función arrojará una excepción con un mensaje de error.
+     * @version 16.56.0
      */
     final public function modify_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
     {
