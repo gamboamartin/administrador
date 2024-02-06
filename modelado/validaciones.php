@@ -229,12 +229,19 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida que existan los elementos necesarios para un JOIN
-     * @param array $data data[key,enlace,key_enlace]
-     * @param string $tabla Tabla en ejecucion
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Función valida_keys_sql
+     *
+     * Esta función valida los parámetros entregados para una consulta SQL.
+     * Los parámetros a validar son 'key', 'enlace', 'key_enlace'. Estos deben existir y no deben estar vacíos.
+     *
+     * @param array $data    Datos a validar. Debe tener los indices 'key', 'enlace' y 'key_enlace'.
+     * @param string $tabla  La tabla SQL en la que se está trabajando para el contexto del mensaje de error.
+     *
+     * @return true|array    Retorna verdadero si los datos son válidos. En caso contrario retorna un array con el error.
+     * @version 16.55.0
      */
-    public function valida_keys_sql(array $data, string $tabla): bool|array
+    final public function valida_keys_sql(array $data, string $tabla): true|array
     {
         if(!isset($data['key'])){
             return $this->error->error(mensaje: 'Error data[key] debe existir en '.$tabla, data: $data);
