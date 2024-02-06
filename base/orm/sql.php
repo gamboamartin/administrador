@@ -625,7 +625,8 @@ class sql{
      * esta función arrojará una excepción con un mensaje de error.
      * @version 16.56.0
      */
-    final public function modify_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
+    final public function modify_column(
+        string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
     {
         $campo = trim($campo);
         if($campo === ''){

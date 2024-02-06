@@ -390,6 +390,27 @@ class sqlTest extends test {
 
     }
 
+    public function test_rename_column(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $campo = 'Z';
+        $table = 'H';
+        $new_name = 'F';
+
+        $resultado = $sql->rename_column($campo, $new_name, $table);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE H RENAME COLUMN Z to F;',$resultado);
+
+        errores::$error = false;
+
+
+    }
+
     public function test_show_tables(): void
     {
         errores::$error = false;
