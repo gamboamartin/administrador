@@ -369,6 +369,27 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_modify_column(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $campo = 'a';
+        $table = 'v';
+        $tipo_dato = 'c';
+
+        $resultado = $sql->modify_column($campo, $table, $tipo_dato);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE v MODIFY COLUMN a c ;',$resultado);
+
+        errores::$error = false;
+
+
+    }
+
     public function test_show_tables(): void
     {
         errores::$error = false;

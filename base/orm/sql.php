@@ -616,10 +616,22 @@ class sql{
      * @param string $table El nombre de la tabla que contiene la columna a modificar.
      * @param string $tipo_dato El nuevo tipo de datos para la columna.
      * @param string $longitud Opcional. La nueva longitud para el campo, si aplica. Por defecto es una cadena vacía.
-     * @return string Devuelve la consulta SQL para modificar la columna en la tabla.
+     * @return string|array Devuelve la consulta SQL para modificar la columna en la tabla.
      */
-    final public function modify_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): string
+    final public function modify_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
+        }
+        $tipo_dato = trim($tipo_dato);
+        if($tipo_dato === ''){
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato);
+        }
         $longitud_sql = $this->longitud_sql(longitud: $longitud,tipo_dato:  $tipo_dato);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar longitud_sql', data: $longitud_sql);
