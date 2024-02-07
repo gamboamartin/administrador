@@ -1456,6 +1456,25 @@ class modelo extends modelo_base {
         return $out;
     }
 
+    final public function get_id_by_codigo(string $codigo)
+    {
+        $id = -1;
+        $existe = $this->existe_by_codigo(codigo: $codigo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe codigo',data:  $existe);
+        }
+        if($existe){
+            $filtro[$this->tabla.'.codigo'] = $codigo;
+            $r_filtro = $this->filtro_and(columnas_en_bruto: true, filtro: $filtro);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_filtro);
+            }
+            $id = (int)$r_filtro->registros[0]->id;
+        }
+        return $id;
+
+    }
+
     private function get_predeterminado(): array|stdClass
     {
         $key = $this->tabla.'.predeterminado';

@@ -856,6 +856,8 @@ class joins{
 
     private function tabla_renombrada(array $data, string $tabla): string
     {
+        $tabla = trim($tabla);
+
         $tabla_renombrada = $tabla;
         if(isset($data['renombre'])){
             $data['renombre'] = trim($data['renombre']);
@@ -863,7 +865,7 @@ class joins{
                 $tabla_renombrada = $data['renombre'];
             }
         }
-        return $tabla_renombrada;
+        return trim($tabla_renombrada);
 
     }
 
