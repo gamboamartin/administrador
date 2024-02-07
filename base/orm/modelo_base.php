@@ -487,9 +487,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-
-
-
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
      * @param array $registro Registro en ejecucion
@@ -705,8 +702,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
-
-
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion

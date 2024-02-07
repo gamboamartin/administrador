@@ -538,13 +538,9 @@ class joins{
 
         $tablas.=$left_join;
 
-        $tabla_renombrada = $tabla;
-        if(isset($data['renombre'])){
-            $data['renombre'] = trim($data['renombre']);
-            if($data['renombre'] !== ''){
-                $tabla_renombrada = $data['renombre'];
-            }
-
+        $tabla_renombrada = $this->tabla_renombrada(data: $data,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar tabla_renombrada', data:$tabla_renombrada);
         }
 
         $str_join = $this->string_sql_join(data:  $data, modelo_tabla: $modelo_tabla, tabla: $tabla,
@@ -856,6 +852,19 @@ class joins{
         }
 
         return "$tabla AS $tabla_renombrada  ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]";
+    }
+
+    private function tabla_renombrada(array $data, string $tabla): string
+    {
+        $tabla_renombrada = $tabla;
+        if(isset($data['renombre'])){
+            $data['renombre'] = trim($data['renombre']);
+            if($data['renombre'] !== ''){
+                $tabla_renombrada = $data['renombre'];
+            }
+        }
+        return $tabla_renombrada;
+
     }
 
     /**

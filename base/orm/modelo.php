@@ -967,6 +967,16 @@ class modelo extends modelo_base {
         return $existe;
     }
 
+    final public function existe_by_codigo(string $codigo): bool|array
+    {
+        $filtro[$this->tabla.'.codigo'] = $codigo;
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al obtener row', data: $existe);
+        }
+        return $existe;
+    }
+
     /**
      * PHPUNIT
      * Funcion para validar si existe un valor de un key de un array dentro de otro array
