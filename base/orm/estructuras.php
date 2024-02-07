@@ -73,11 +73,17 @@ class estructuras{
     }
 
     /**
-     * Asigna el nombre de una tabla a un array
-     * @param array $modelos Modelos obtenidos de una base de datos
-     * @param string $name_db Nombre de la base de datos
-     * @param array $row Registro de show tables
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Función que asigna un modelo de datos a partir de un array dado.
+     *
+     * @param array $modelos Array de modelos existentes.
+     * @param string $name_db Nombre de la base de datos.
+     * @param array $row Array de datos a asignar.
+     *
+     * @return array Devuelve un array de modelos añadiendo el nuevo modelo de datos.
+     *
+     * @throws errores Si el nombre de base de datos está vacío, si ocurre un error al generar la clave, si la clave
+     * no existe en $row, o si $row[$key] está vacío.
      */
     private function asigna_data_modelo(array $modelos, string $name_db, array $row): array
     {

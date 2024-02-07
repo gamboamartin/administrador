@@ -40,6 +40,7 @@ class modelo extends modelo_base {
      * @param bool $aplica_bitacora
      * @param bool $aplica_seguridad
      * @param bool $aplica_transaccion_inactivo
+     * @param bool $aplica_transacciones_base
      * @param array $campos_encriptados
      * @param array $campos_obligatorios
      * @param array $columnas
@@ -61,9 +62,9 @@ class modelo extends modelo_base {
      * @param bool $valida_atributos_criticos
      */
     public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
-                                bool $aplica_transaccion_inactivo = true, array $campos_encriptados = array(),
-                                array $campos_obligatorios= array(), array $columnas = array(),
-                                array $campos_view= array(), array $columnas_extra = array(),
+                                bool $aplica_transaccion_inactivo = true, bool $aplica_transacciones_base = true,
+                                array $campos_encriptados = array(), array $campos_obligatorios= array(),
+                                array $columnas = array(), array $campos_view= array(), array $columnas_extra = array(),
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
                                 bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
@@ -80,7 +81,8 @@ class modelo extends modelo_base {
 
 
         $tabla = str_replace('models\\','',$tabla);
-        parent::__construct(link:$link, defaults: $defaults, parents_data: $parents_data, temp: $temp);
+        parent::__construct(link: $link, aplica_transacciones_base: $aplica_transacciones_base, defaults: $defaults,
+            parents_data: $parents_data, temp: $temp);
 
         $this->temp = false;
         $this->tabla = $tabla;
@@ -203,12 +205,13 @@ class modelo extends modelo_base {
      * @param bool $reactiva Si reactiva valida si el registro se puede reactivar
      * @param int $registro_id
      * @return array|stdClass
-     * @version 1.495.49
      * @final revisada
      */
     public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
 
-
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data:  $registro_id);
+        }
 
         if($registro_id>0){
             $this->registro_id  = $registro_id;
@@ -247,6 +250,9 @@ class modelo extends modelo_base {
      */
     public function activa_todo(): array
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data:  array());
+        }
 
         $this->transaccion = 'UPDATE';
         $consulta = "UPDATE " . $this->tabla . " SET status = 'activo'  ";
@@ -283,6 +289,11 @@ class modelo extends modelo_base {
         if($_SESSION['usuario_id'] <= 0){
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
         }
+
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro);
+        }
+
         $registro_original = $this->registro;
         $this->status_default = 'activo';
         $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
@@ -336,6 +347,9 @@ class modelo extends modelo_base {
      */
     final protected function alta_existente(array $filtro): array|stdClass
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $filtro);
+        }
         if(count($filtro) === 0){
             return $this->error->error(mensaje: 'Error filtro esta vacio',data: $filtro);
         }
@@ -382,6 +396,10 @@ class modelo extends modelo_base {
     private function alta_predeterminado(
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro);
+        }
+
         $pred_ins['predeterminado'] = 'activo';
         $pred_ins['codigo'] = $codigo;
         $pred_ins['descripcion'] = $descripcion;
@@ -409,6 +427,9 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO en modelo '.$this->tabla,
                 data: $_SESSION['usuario_id']);
         }
+         if(!$this->aplica_transacciones_base){
+             return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro);
+         }
 
         $this->registro = $registro;
 
@@ -639,6 +660,12 @@ class modelo extends modelo_base {
         if($this->registro_id<=0){
             return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id);
         }
+
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',
+                data: $this->registro_id);
+        }
+
         $registro = $this->registro(registro_id: $this->registro_id);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
@@ -678,7 +705,9 @@ class modelo extends modelo_base {
      */
     public function desactiva_todo(): array
     {
-
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+        }
 
         $consulta = /** @lang MYSQL */
             "UPDATE  $this->tabla SET status='inactivo'";
@@ -710,6 +739,10 @@ class modelo extends modelo_base {
      * @version 1.563.51
      */
     public function elimina_bd(int $id): array|stdClass{
+
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $id);
+        }
 
         if($id <= 0){
             return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
@@ -777,8 +810,12 @@ class modelo extends modelo_base {
      */
     public function elimina_con_filtro_and(array $filtro): array{
 
+
         if(count($filtro) === 0){
             return $this->error->error('Error no existe filtro', $filtro);
+        }
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $filtro);
         }
 
         $result = $this->filtro_and(filtro: $filtro);
@@ -803,6 +840,9 @@ class modelo extends modelo_base {
 
     public function elimina_full_childrens(): array
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+        }
         $dels = array();
         foreach ($this->childrens as $modelo_children=>$namespace){
 
@@ -825,7 +865,9 @@ class modelo extends modelo_base {
      */
     public function elimina_todo(): array
     {
-
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+        }
 
         $elimina_todo_children = $this->elimina_full_childrens();
         if (errores::$error) {
@@ -1536,6 +1578,11 @@ class modelo extends modelo_base {
     final public function inserta_predeterminado(
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
     {
+
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+        }
+
         $r_pred = new stdClass();
         $existe = $this->existe_predeterminado();
         if(errores::$error){
@@ -1553,6 +1600,9 @@ class modelo extends modelo_base {
 
     final public function inserta_registro_si_no_existe(array $registro, array $con_descripcion = array()): array|string|stdClass
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
 
         if(count($con_descripcion) === 0) {
             $existe = $this->existe_by_id(registro_id: $registro['id']);
@@ -1581,6 +1631,9 @@ class modelo extends modelo_base {
 
     final public function inserta_registros(array $registros)
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registros);
+        }
         $out = array();
         foreach ($registros as $registro){
             $alta_bd = $this->alta_registro(registro: $registro);
@@ -1596,6 +1649,9 @@ class modelo extends modelo_base {
 
     final public function inserta_registros_no_existentes_id(array $registros): array
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registros);
+        }
         $out = array();
         foreach ($registros as $registro) {
 
@@ -1724,6 +1780,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
         }
 
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
+
         $registro = $this->limpia_campos_sin_bd(registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al limpiar campos',data: $registro);
@@ -1770,6 +1830,9 @@ class modelo extends modelo_base {
      */
     public function modifica_con_filtro_and(array $filtro, array $registro): array
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
 
         $this->registro_upd = $registro;
         if(count($this->registro_upd) === 0){
@@ -1808,6 +1871,9 @@ class modelo extends modelo_base {
     public function modifica_por_id(array $registro,int $id): array
     {
 
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
         $r_modifica = $this->modifica_bd($registro, $id);
         if(errores::$error){
             return $this->error->error("Error al modificar", $r_modifica);
@@ -2458,6 +2524,9 @@ class modelo extends modelo_base {
      */
     public function status(string $campo, int $registro_id): array|stdClass
     {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro_id);
+        }
         $registro = $this->registro(registro_id: $registro_id,columnas_en_bruto: true,retorno_obj: true);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registro',data: $registro);

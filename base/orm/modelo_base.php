@@ -91,20 +91,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     public array $campos_entidad = array();
 
+    protected bool $aplica_transacciones_base = true;
+
 
     /**
      * Modelado
      * @param PDO $link Conexion a la BD
      * @param bool $temp Si temp, crea cache de sql del modelo en ejecucion
-     * @version 2.12.2.1
      */
     public function __construct(
-        PDO $link, array $defaults = array(), array $parents_data = array(), bool $temp = false ){ //PRUEBAS EN PROCESO
+        PDO $link, bool $aplica_transacciones_base = true, array $defaults = array(), array $parents_data = array(),
+        bool $temp = false ){
+
         $this->error = new errores();
         $this->link = $link;
         $this->validacion = new base_modelos();
         $this->temp = false;
         $this->atributos = new stdClass();
+        $this->aplica_transacciones_base = true;
 
 
         $this->patterns['double'] = "/^\\$?[1-9]+,?([0-9]*,?[0,9]*)*.?[0-9]{0,4}$/";
