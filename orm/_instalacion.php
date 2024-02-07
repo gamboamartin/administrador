@@ -768,6 +768,33 @@ class _instalacion
 
     }
 
+    private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table)
+    {
+        $datas_index = $this->get_data_indices(name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table, table: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error obtener datos de indices', data: $datas_index);
+        }
+        $existe_indice = $this->existe_foreign_base(datas_index: $datas_index);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe indice', data: $existe_indice);
+        }
+        return $existe_indice;
+
+    }
+
+    private function existe_foreign_base(stdClass $datas_index): bool
+    {
+        $existe_indice = false;
+        foreach ($datas_index->indices as $indice){
+            if($datas_index->name_indice === $indice->CONSTRAINT_NAME){
+                $existe_indice = true;
+                break;
+            }
+        }
+        return $existe_indice;
+
+    }
+
     final public function existe_indice_by_name(string $name_index, string $table)
     {
         $table = trim($table);
@@ -893,7 +920,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR TRUE
      * Verifica si existe el atributo y agrega una clave foránea (FOREIGN KEY) en una tabla dada.
      *
      * @param string $table El nombre de la tabla en la cual se verificará la clave foránea.
@@ -904,7 +930,6 @@ class _instalacion
      * @return array|stdClass Devuelve un objeto de tipo stdClass con el resultado de la consulta SQL.
      * En caso de error, devuelve un array con información sobre el error.
      * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
-     * @version 16.71.0
      */
     final public function foreign_key_existente(
         string $relacion_table, string $table, string $name_indice_opt = ''): array|stdClass
@@ -918,14 +943,28 @@ class _instalacion
             return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
         }
 
-        $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table,
-            name_indice_opt: $name_indice_opt);
+
+        $existe_foreign = $this->existe_foreign(
+            name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table,table:  $table);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+            return $this->error->error(mensaje: 'Error al validar si existe indice', data: $existe_foreign);
         }
-        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-        if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+
+
+        $exe = new stdClass();
+        $exe->mensaje = 'El indice ya existe de la table '.$table.' Relacion '.$relacion_table;
+
+        if(!$existe_foreign) {
+
+            $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table,
+                name_indice_opt: $name_indice_opt);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+            }
+            $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+            }
         }
         return $exe;
 
@@ -1129,6 +1168,43 @@ class _instalacion
         }
 
         return $fk;
+
+    }
+
+    private function get_data_indices(string $name_indice_opt, string $relacion_table,  string $table)
+    {
+        $indices = $this->get_foraneas(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener indices', data: $indices);
+        }
+
+        $name_indice = (new sql())->name_index_foranea(
+            name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error obtener name_indice', data: $name_indice);
+        }
+
+        $data = new stdClass();
+        $data->indices = $indices;
+        $data->name_indice = $name_indice;
+
+        return $data;
+
+    }
+
+    private function get_foraneas(string $table)
+    {
+        $sql = (new sql())->get_foraneas(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+        }
+
+        $result = $this->modelo->ejecuta_consulta(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
+        }
+
+        return $result->registros_obj;
 
     }
 

@@ -233,6 +233,23 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_get_foraneas(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'a';
+        $resultado = $sql->get_foraneas($table);
+       // print_r($resultado);exit;
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsString("SELECT * FROM information_schema.TABLE_CONSTRAINTS 
+                WHERE information_schema.TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'FOREIGN KEY' 
+                AND information_schema.TABLE_CONSTRAINTS.TABLE_SCHEMA = ",$resultado);
+        errores::$error = false;
+    }
+
     public function test_in(): void
     {
         errores::$error = false;

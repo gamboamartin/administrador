@@ -1,5 +1,6 @@
 <?php
 namespace base\orm;
+use config\database;
 use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\errores\errores;
 use stdClass;
@@ -358,7 +359,6 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Genera una sentencia SQL que crea una clave foránea (FOREIGN KEY) para una tabla determinada.
      *
      * @param string $table El nombre de la tabla a la que se agregará la clave foránea.
@@ -369,7 +369,6 @@ class sql{
      * @return string|array Devuelve una cadena con la sentencia SQL generada para crear la clave foránea.
      * En caso de error, devuelve un array con información sobre el error.
      * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
-     * @version 16.71.0
      */
     final public function foreign_key(string $table, string $relacion_table, string $name_indice_opt = ''): string|array
     {
@@ -383,15 +382,31 @@ class sql{
         }
 
         $fk = $relacion_table.'_id';
-        $name_indice = $table.'_'.$fk;
-        $name_indice_opt = trim($name_indice_opt);
-        if($name_indice_opt !==''){
-            $name_indice = $name_indice_opt;
-        }
 
+        $name_indice = $this->name_index_foranea(
+            name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error obtener name_indice', data: $name_indice);
+        }
 
         return "ALTER TABLE $table ADD CONSTRAINT $name_indice FOREIGN KEY ($fk) REFERENCES $relacion_table(id);";
 
+
+    }
+
+
+    final public function get_foraneas(string $table): string|array
+    {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table vacia',data:  $table);
+        }
+        $db_name = (new database())->db_name;
+        $sql = "SELECT * FROM information_schema.TABLE_CONSTRAINTS 
+                WHERE information_schema.TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'FOREIGN KEY' 
+                AND information_schema.TABLE_CONSTRAINTS.TABLE_SCHEMA = '$db_name'
+                AND information_schema.TABLE_CONSTRAINTS.TABLE_NAME = '$table';";
+        return trim($sql);
 
     }
 
@@ -487,8 +502,6 @@ class sql{
         $params_base->$key = '';
         return $params_base;
     }
-
-
 
     private function init_params(stdClass $params_base): array|stdClass
     {
@@ -656,7 +669,17 @@ class sql{
 
     }
 
+    final public function name_index_foranea(string $name_indice_opt, string $relacion_table, string $table): string
+    {
+        $fk = $relacion_table.'_id';
+        $name_indice = $table.'_'.$fk;
+        $name_indice_opt = trim($name_indice_opt);
+        if($name_indice_opt !==''){
+            $name_indice = $name_indice_opt;
+        }
+        return $name_indice;
 
+    }
     final public function rename_column(string $campo, string $new_name, string $table): string|array
     {
         $campo = trim($campo);
