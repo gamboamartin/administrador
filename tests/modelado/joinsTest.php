@@ -417,6 +417,30 @@ class joinsTest extends test {
         errores::$error = false;
     }
 
+    public function test_join_base(){
+        errores::$error = false;
+        $joins = new joins();
+        $joins = new liberator($joins);
+
+
+        $tabla = 'tabla';
+        $data = array();
+        $data['key'] = 'key';
+        $data['enlace'] = 'enlace';
+        $data['key_enlace'] = 'key_enlace';
+        $modelo_tabla = '';
+        $tablas = '';
+
+        $resultado = $joins->join_base(data: $data,modelo_tabla:  $modelo_tabla,tabla:  $tabla,tablas:  $tablas);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals(' tabla AS tabla  ON tabla.key = enlace.key_enlace',$resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_join_renombres(){
         errores::$error = false;
         $joins = new joins();
