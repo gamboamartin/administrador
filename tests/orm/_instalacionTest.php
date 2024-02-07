@@ -308,7 +308,6 @@ class _instalacionTest extends test {
         }
 
     }
-
     public function test_create_table_new(): void
     {
 
@@ -837,6 +836,59 @@ class _instalacionTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("", $resultado);
         errores::$error = false;
+    }
+
+    public function test_modifica_columna(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+       // $ins = new liberator($ins);
+        $table = 'b';
+
+        $drop = $ins->drop_table_segura(table: $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new(table: $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $campo = 'a';
+        $add = $ins->add_colum($campo, $table, 'varchar');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al add',data:  $add);
+            print_r($error);
+            exit;
+        }
+
+
+        $longitud = '';
+
+        $tipo_dato = 'int';
+        $resultado = $ins->modifica_columna($campo, $longitud, $table, $tipo_dato);
+
+        //print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("ALTER TABLE b MODIFY COLUMN a int ;", $resultado->sql);
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table_segura(table: $table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
     }
     public function test_not_null(): void
     {

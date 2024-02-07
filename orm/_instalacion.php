@@ -635,7 +635,7 @@ class _instalacion
      * devuelve un mensaje de error.
      * @version 15.13.0
      */
-    private function describe_table(string $table): array|stdClass
+    final public function describe_table(string $table): array|stdClass
     {
         $valida = (new val_sql())->tabla(tabla: $table);
         if(errores::$error){
@@ -1272,6 +1272,16 @@ class _instalacion
 
     final public function modifica_columna(string $campo, string $longitud, string $table, string $tipo_dato)
     {
+        $campo = trim($campo);
+        $table = trim($table);
+        $tipo_dato = trim($tipo_dato);
+        $longitud = trim($longitud);
+
+        $valida = (new sql())->valida_datos_modify(campo: $campo,table:  $table,tipo_dato:  $tipo_dato);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
         $sql = (new sql())->modify_column(campo: $campo,table:  $table,tipo_dato:  $tipo_dato,longitud: $longitud);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
@@ -1338,6 +1348,8 @@ class _instalacion
         return $tipo_dato;
 
     }
+
+
 
     /**
      * POR DOCUMENTAR EN WIKI

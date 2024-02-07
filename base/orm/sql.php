@@ -629,16 +629,13 @@ class sql{
         string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
     {
         $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
-        }
         $table = trim($table);
-        if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
-        }
         $tipo_dato = trim($tipo_dato);
-        if($tipo_dato === ''){
-            return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato);
+        $longitud = trim($longitud);
+
+        $valida = $this->valida_datos_modify(campo: $campo,table:  $table,tipo_dato:  $tipo_dato);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
         $longitud_sql = $this->longitud_sql(longitud: $longitud,tipo_dato:  $tipo_dato);
         if(errores::$error){
@@ -879,6 +876,24 @@ class sql{
         }
         if(is_numeric($table)){
             return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
+        }
+        return true;
+
+    }
+
+    final public function valida_datos_modify(string $campo, string $table, string $tipo_dato): true|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
+        }
+        $tipo_dato = trim($tipo_dato);
+        if($tipo_dato === ''){
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato);
         }
         return true;
 
