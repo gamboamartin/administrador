@@ -854,10 +854,13 @@ class joins{
         return "$tabla AS $tabla_renombrada  ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]";
     }
 
-    private function tabla_renombrada(array $data, string $tabla): string
+    private function tabla_renombrada(array $data, string $tabla): string|array
     {
         $tabla = trim($tabla);
 
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error $tabla esta vacia', data:$tabla);
+        }
         $tabla_renombrada = $tabla;
         if(isset($data['renombre'])){
             $data['renombre'] = trim($data['renombre']);

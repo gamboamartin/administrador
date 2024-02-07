@@ -417,8 +417,6 @@ class joinsTest extends test {
         errores::$error = false;
     }
 
-
-
     public function test_join_renombres(){
         errores::$error = false;
         $joins = new joins();
@@ -708,6 +706,34 @@ class joinsTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsString($resultado);
         $this->assertStringContainsStringIgnoringCase(' LEFT JOIN adm_seccion AS adm_seccion ON adm_seccion.id = b.adm_seccion_id',$resultado);
+        errores::$error = false;
+    }
+
+    public function test_tabla_renombrada(){
+        errores::$error = false;
+        $joins = new joins();
+        $joins = new liberator($joins);
+
+        $data = array();
+        $tabla = 'a';
+
+        $resultado = $joins->tabla_renombrada($data, $tabla);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('a',$resultado);
+
+
+        errores::$error = false;
+
+        $data = array();
+        $tabla = 'a';
+        $data['renombre'] = 'b';
+
+        $resultado = $joins->tabla_renombrada($data, $tabla);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsString($resultado);
+        $this->assertEquals('b',$resultado);
         errores::$error = false;
     }
 
