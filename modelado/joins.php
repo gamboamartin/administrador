@@ -660,9 +660,13 @@ class joins{
     }
 
     /**
-     * Integra LEFT JOIN en SQL
-     * @param string $tablas Tablas en JOIN SQL
-     * @return string
+     * POR DOCUMENTAR EN WIKI
+     * Crea una cadena de texto para realizar un LEFT JOIN en una consulta SQL, si la cadena $tablas no está vacía.
+     *
+     * @param string $tablas Una cadena que contiene el nombre de las tablas a unir.
+     *
+     * @return string La cadena ' LEFT JOIN ' si $tablas no está vacía, de lo contrario devuelve una cadena vacía.
+     * @version 16.63.0
      */
     private function left_join_str(string $tablas): string
     {
