@@ -662,7 +662,6 @@ class joins{
     /**
      * Integra LEFT JOIN en SQL
      * @param string $tablas Tablas en JOIN SQL
-     * @version 1.62.17
      * @return string
      */
     private function left_join_str(string $tablas): string
@@ -810,7 +809,6 @@ class joins{
      * @param string $tabla Tabla en LEFT
      * @param string $tabla_renombrada Tabla con nuevo nombre se aplica en AS
      * @return string|array
-     * @version 1.63.17
      */
     private function string_sql_join( array $data, string $modelo_tabla, string $tabla,
                                       string $tabla_renombrada): string|array
