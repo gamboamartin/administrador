@@ -359,14 +359,19 @@ class sql{
 
     /**
      * POR DOCUMENTAR EN WIKI
-     * Genera una sentencia SQL para agregar una clave foránea a una tabla.
+     * Genera una sentencia SQL que crea una clave foránea (FOREIGN KEY) para una tabla determinada.
      *
      * @param string $table El nombre de la tabla a la que se agregará la clave foránea.
-     * @param string $relacion_table El nombre de la tabla referenciada por la clave foránea.
-     * @return string|array Devuelve la sentencia SQL que crea la clave foránea en la tabla.
-     * @version 13.27.0
+     * @param string $relacion_table El nombre de la tabla con la cual se establecerá la relación.
+     * @param string $name_indice_opt Opcional. El nombre personalizado del índice. Si no se proporciona, se genera
+     * automáticamente a partir del nombre de las tablas relacionadas.
+     *
+     * @return string|array Devuelve una cadena con la sentencia SQL generada para crear la clave foránea.
+     * En caso de error, devuelve un array con información sobre el error.
+     * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
+     * @version 16.71.0
      */
-    final public function foreign_key(string $table, string $relacion_table): string|array
+    final public function foreign_key(string $table, string $relacion_table, string $name_indice_opt = ''): string|array
     {
         $table = trim($table);
         if($table === ''){
@@ -378,8 +383,12 @@ class sql{
         }
 
         $fk = $relacion_table.'_id';
+        $name_indice = $table.'_'.$fk;
+        $name_indice_opt = trim($name_indice_opt);
+        if($name_indice_opt !==''){
+            $name_indice = $name_indice_opt;
+        }
 
-        $name_indice = $table.'__'.$fk;
 
         return "ALTER TABLE $table ADD CONSTRAINT $name_indice FOREIGN KEY ($fk) REFERENCES $relacion_table(id);";
 

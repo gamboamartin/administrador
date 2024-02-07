@@ -801,7 +801,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Se ocupa de las operaciones en las tablas foráneas de una tabla dada.
      *
      * @param array $foraneas Array de claves foránea. Cada clave foránea es un conjunto clave-valor, donde la
@@ -814,7 +813,6 @@ class _instalacion
      * $foraneas['b'] = '';
      * $tabla = 'a';
      * $resultado = $ins->foraneas($foraneas, $tabla);
-     * @version 16.8.0
      *
      */
     final public function foraneas(array $foraneas, string $table): array
@@ -833,12 +831,17 @@ class _instalacion
             if(isset($atributos->default)){
                 $default = trim($atributos->default);
             }
+            $name_indice_opt = '';
+            if(isset($atributos->name_indice_opt)){
+                $name_indice_opt = $atributos->name_indice_opt;
+            }
             $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
             }
 
-            $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default);
+            $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default,
+                name_indice_opt: $name_indice_opt);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al ajustar foranea', data:  $result);
             }
@@ -849,7 +852,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR WIKI
      * Esta es la función 'foreign_key_completo'.
      *
      * Retorna una clave extranjera completa a partir de la especificación dada.
@@ -867,9 +869,9 @@ class _instalacion
      * Este código intenta crear una nueva clave extranjera 'id_usuario' en la tabla 'usuarios' con un valor predeterminado de '1'.
      * Si los parámetros 'id_usuario' y 'usuarios' son válidos y no existen errores durante la ejecución, se retorna una clave extranjera.
      * Si ocurre un error, se retorna un objeto de error.
-     * @version 15.54.1
      */
-    final public function foreign_key_completo(string $campo, string $table, string $default = ''): array|stdClass
+    final public function foreign_key_completo(string $campo, string $table, string $default = '',
+                                               string $name_indice_opt =''): array|stdClass
     {
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
         if(errores::$error){
@@ -881,7 +883,7 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
         }
 
-        $fk = $this->foreign_por_campo(campo: $campo, table: $table);
+        $fk = $this->foreign_por_campo(campo: $campo, table: $table, name_indice_opt: $name_indice_opt);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
         }
@@ -891,15 +893,21 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Genera una sentencia SQL para crear una clave foránea y luego la ejecuta.
+     * POR DOCUMENTAR TRUE
+     * Verifica si existe el atributo y agrega una clave foránea (FOREIGN KEY) en una tabla dada.
      *
-     * @param string $relacion_table El nombre de la tabla que la clave foránea está referenciando.
-     * @param string $table El nombre de la tabla donde se creará la clave foránea.
-     * @return array|stdClass Devuelve el resultado de la ejecución de la consulta SQL, o un error si ocurre uno.
-     * @version 13.29.0
+     * @param string $table El nombre de la tabla en la cual se verificará la clave foránea.
+     * @param string $relacion_table El nombre de la tabla con la cual se establece la relación.
+     * @param string $name_indice_opt Opcional. El nombre personalizado del índice. Si no se proporciona,
+     * se genera automáticamente.
+     *
+     * @return array|stdClass Devuelve un objeto de tipo stdClass con el resultado de la consulta SQL.
+     * En caso de error, devuelve un array con información sobre el error.
+     * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
+     * @version 16.71.0
      */
-    final public function foreign_key_existente(string $relacion_table, string $table): array|stdClass
+    final public function foreign_key_existente(
+        string $relacion_table, string $table, string $name_indice_opt = ''): array|stdClass
     {
         $table = trim($table);
         if ($table === '') {
@@ -910,7 +918,8 @@ class _instalacion
             return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
         }
 
-        $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table);
+        $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table,
+            name_indice_opt: $name_indice_opt);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
@@ -923,7 +932,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * foreign_key_seguro
      *
      * Esta función valida y gestiona keys foráneas en la base de datos de forma segura
@@ -933,9 +941,9 @@ class _instalacion
      * @param string $default Valor por defecto para el campo
      *
      * @return array|stdClass Retorna un array o un objeto stdClass dependiendo del resultado del proceso
-     * @version 15.78.1
      */
-    final public function foreign_key_seguro(string $campo, string $table, string $default = ''):array|stdClass
+    final public function foreign_key_seguro(
+        string $campo, string $table, string $default = '', string $name_indice_opt = ''):array|stdClass
     {
 
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
@@ -963,13 +971,14 @@ class _instalacion
         }
 
         if(!$existe_campo){
-            $fk = $this->foreign_key_completo(campo: $campo,table:  $table, default: $default);
+            $fk = $this->foreign_key_completo(campo: $campo, table: $table, default: $default, name_indice_opt: $name_indice_opt);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
         }
         else{
-            $fk = $this->foreign_no_conf_integra(campo: $campo, campos_origen: $campos_origen, table: $table);
+            $fk = $this->foreign_no_conf_integra(campo: $campo, campos_origen: $campos_origen,
+                name_indice_opt: $name_indice_opt, table: $table);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign no conf', data: $fk);
             }
@@ -981,7 +990,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR WIKI
      * Este método verifica y maneja la asignación de llaves extranjeras a un campo específico en una tabla.
      *
      * Primero, verifica que tanto el campo como la tabla no estén vacíos. Luego, se asegura de que el parámetro
@@ -995,9 +1003,8 @@ class _instalacion
      * @param string $table El nombre de la tabla que contiene el campo.
      * @return string|stdClass|array Retorna un mensaje indicando que el campo fue asignado si el proceso es
      *                              exitoso, o un objeto de error si se encuentra algún problema.
-     * @version 15.75.1
      */
-    private function foreign_no_conf(string $campo, array $campo_origen, string $table):string|stdClass|array
+    private function foreign_no_conf(string $campo, array $campo_origen, string $name_indice_opt, string $table):string|stdClass|array
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -1013,7 +1020,7 @@ class _instalacion
         }
         $fk = 'Campo asignado '.$campo;
         if($campo_origen['Key'] !== 'MUL'){
-            $fk = $this->foreign_por_campo(campo: $campo,table:  $table);
+            $fk = $this->foreign_por_campo(campo: $campo,table:  $table, name_indice_opt: $name_indice_opt);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
@@ -1023,7 +1030,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Este método integra una relación de clave ajena (Foreign Key) para la cual no haya una configuración definida.
      *
      * @param string $campo Es el campo para el cual se desea establecer la relación de clave ajena.
@@ -1034,9 +1040,8 @@ class _instalacion
      *    En caso de error devuelve un mensaje de error con detalles al respecto.
      *
      * @throws errores En caso de que ocurra cualquier error en la ejecución, se lanza una excepción con detalles.
-     * @version 15.76.1
      */
-    private function foreign_no_conf_integra(string $campo, array $campos_origen, string $table):array
+    private function foreign_no_conf_integra(string $campo, array $campos_origen, string $name_indice_opt, string $table):array
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -1062,7 +1067,8 @@ class _instalacion
 
             if($campo_origen_name === $campo) {
 
-                $fk = $this->foreign_no_conf(campo: $campo, campo_origen: $campo_origen, table: $table);
+                $fk = $this->foreign_no_conf(campo: $campo, campo_origen: $campo_origen,
+                    name_indice_opt: $name_indice_opt, table: $table);
                 if (errores::$error) {
                     return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
                 }
@@ -1075,7 +1081,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Este método se utiliza para crear la clave foránea de un campo existente de una tabla específica en función de un campo específico.
      * Realiza varias validaciones y devoluciones en caso de errores.
      *
@@ -1098,9 +1103,8 @@ class _instalacion
      * }
      * echo $result;
      * ```
-     * @version 15.53.1
      */
-    private function foreign_por_campo(string $campo, string $table): array|stdClass
+    private function foreign_por_campo(string $campo, string $table, string $name_indice_opt): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -1118,7 +1122,8 @@ class _instalacion
         $explode_campo = explode('_id', $campo);
         $relacion_table = $explode_campo[0];
 
-        $fk = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table);
+        $fk = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table,
+            name_indice_opt: $name_indice_opt);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
         }

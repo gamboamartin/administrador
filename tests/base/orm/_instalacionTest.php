@@ -388,9 +388,23 @@ class _instalacionTest extends test
         $ins = new _instalacion(link: $this->link);
         $ins = new liberator($ins);
 
-        $create = $ins->drop_table_segura('a');
+        $drop = $ins->drop_table_segura('a');
         if(errores::$error){
-            $error = (new errores())->error(mensaje: 'Error al create',data: $create);
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
             print_r($error);
             exit;
         }
@@ -618,7 +632,7 @@ class _instalacionTest extends test
         $campo = 'b_id';
         $table = 'test';
         $resultado = $ins->foreign_key_completo(campo: $campo,table:  $table);
-        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test_b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado->sql);
 
         errores::$error = false;
     }
@@ -663,7 +677,7 @@ class _instalacionTest extends test
         $resultado = $ins->foreign_key_existente($relacion_table, $table);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado->sql);
+        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test_b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado->sql);
 
         errores::$error = false;
 
@@ -706,7 +720,7 @@ class _instalacionTest extends test
 
         $campo = 'a';
         $resultado = $ins->foreign_key_seguro($campo, $table);
-        $this->assertEquals('ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);', $resultado->sql);
+        $this->assertEquals('ALTER TABLE b ADD CONSTRAINT b_a_id FOREIGN KEY (a_id) REFERENCES a(id);', $resultado->sql);
 
         errores::$error = false;
     }
@@ -799,7 +813,7 @@ class _instalacionTest extends test
 
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado[0]->sql);
+        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test_b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado[0]->sql);
 
         errores::$error = false;
 
@@ -835,7 +849,7 @@ class _instalacionTest extends test
         $resultado = $ins->integra_foraneas(campos: $campos,table: 'test');
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test__c_id FOREIGN KEY (c_id) REFERENCES c(id);', $resultado[0]->sql);
+        $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test_c_id FOREIGN KEY (c_id) REFERENCES c(id);', $resultado[0]->sql);
 
         errores::$error = false;
 

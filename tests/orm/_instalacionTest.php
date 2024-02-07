@@ -492,7 +492,7 @@ class _instalacionTest extends test {
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("ALTER TABLE a ADD CONSTRAINT a__b_id FOREIGN KEY (b_id) REFERENCES b(id);", $resultado[0]->sql);
+        $this->assertEquals("ALTER TABLE a ADD CONSTRAINT a_b_id FOREIGN KEY (b_id) REFERENCES b(id);", $resultado[0]->sql);
 
         errores::$error = false;
     }
@@ -569,7 +569,7 @@ class _instalacionTest extends test {
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
+        $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b_a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
 
         errores::$error = false;
 
@@ -624,7 +624,7 @@ class _instalacionTest extends test {
         $campo = 'a';
         $campo_origen = array();
         $table = 'b';
-        $resultado = $ins->foreign_no_conf($campo, $campo_origen, $table);
+        $resultado = $ins->foreign_no_conf(campo: $campo, campo_origen: $campo_origen, name_indice_opt: 'b__a_id', table: $table);
         //print_r($resultado);exit;
 
         $this->assertIsObject($resultado);
@@ -684,7 +684,7 @@ class _instalacionTest extends test {
         $campo = 'a';
         $campos_origen = array();
         $table = 'b';
-        $resultado = $ins->foreign_no_conf_integra($campo, $campos_origen, $table);
+        $resultado = $ins->foreign_no_conf_integra(campo: $campo, campos_origen: $campos_origen, name_indice_opt: '', table: $table);
         //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -696,7 +696,7 @@ class _instalacionTest extends test {
         $campos_origen = array();
         $table = 'b';
         $campos_origen[]['Field'] = 'b';
-        $resultado = $ins->foreign_no_conf_integra($campo, $campos_origen, $table);
+        $resultado = $ins->foreign_no_conf_integra(campo: $campo, campos_origen: $campos_origen, name_indice_opt: '', table: $table);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -708,7 +708,7 @@ class _instalacionTest extends test {
         $campos_origen = array();
         $table = 'b';
         $campos_origen[]['Field'] = 'a';
-        $resultado = $ins->foreign_no_conf_integra($campo, $campos_origen, $table);
+        $resultado = $ins->foreign_no_conf_integra(campo: $campo, campos_origen: $campos_origen, name_indice_opt: 'b__a_id', table: $table);
 
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
@@ -780,11 +780,11 @@ class _instalacionTest extends test {
         }
 
 
-        $resultado = $ins->foreign_por_campo($campo, $table);
+        $resultado = $ins->foreign_por_campo(campo: $campo,table:  $table, name_indice_opt: '');
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b__a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
+        $this->assertEquals("ALTER TABLE b ADD CONSTRAINT b_a_id FOREIGN KEY (a_id) REFERENCES a(id);", $resultado->sql);
 
         errores::$error = false;
 
