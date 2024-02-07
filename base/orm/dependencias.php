@@ -18,7 +18,6 @@ class dependencias{
      * Ajusta los nombres de los modelos dependendientes
      * @param string $name_modelo
      * @return string|array
-     * @version 1.519.51
      */
     private function ajusta_modelo_comp(string $name_modelo): string|array
     {
@@ -330,7 +329,6 @@ class dependencias{
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string $modelo_dependiente Modelo a validar
      * @return array|string
-     * @version 11.20.0
      */
     private function modelo_dependiente_val(modelo_base $modelo, string $modelo_dependiente): array|string
     {

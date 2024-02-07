@@ -108,7 +108,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->validacion = new base_modelos();
         $this->temp = false;
         $this->atributos = new stdClass();
-        $this->aplica_transacciones_base = true;
+        $this->aplica_transacciones_base = $aplica_transacciones_base;
 
 
         $this->patterns['double'] = "/^\\$?[1-9]+,?([0-9]*,?[0,9]*)*.?[0-9]{0,4}$/";
