@@ -807,12 +807,29 @@ class joins{
     }
 
     /**
-     * Genera el SQL PARA joins
-     * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
-     * @param string $modelo_tabla
-     * @param string $tabla Tabla en LEFT
-     * @param string $tabla_renombrada Tabla con nuevo nombre se aplica en AS
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cadena SQL para una operación JOIN con las condiciones especificadas.
+     *
+     * @param array  $data          Los datos utilizados para generar la cláusula JOIN. Esta es una matriz asociativa
+     * que contiene los siguientes elementos: 'key' (la clave utilizada en la tabla principal),
+     * 'enlace' (la tabla con la que se realiza la unión) y 'key_enlace' (la clave utilizada en la tabla de enlace).
+     * @param string $modelo_tabla  El nombre del modelo de tabla en el que se basará la condición JOIN.
+     * @param string $tabla         El nombre de la tabla principal.
+     * @param string $tabla_renombrada El alias de la tabla con el que se realizará la unión.
+     *
+     * @return string|array Una cadena que representa la cláusula JOIN en SQL o una matriz con información de
+     * error si ocurre un problema.
+     *
+     * Las verificaciones de error en la función incluyen:
+     * - Error al validar data
+     * - $tabla no puede estar vacía
+     * - $tabla_renombrada no puede estar vacía
+     * - $tabla debe ser un texto (no puede ser numérico)
+     * - $tabla_renombrada debe ser texto
+     *
+     * Ejemplo de uso:
+     * -> string_sql_join(['key' => 'id', 'enlace' => 'usuarios', 'key_enlace' => 'usuario_id'], 'usuarios', 'pedidos', 'p')
+     * @version 16.65.0
      */
     private function string_sql_join( array $data, string $modelo_tabla, string $tabla,
                                       string $tabla_renombrada): string|array
