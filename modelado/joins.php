@@ -854,6 +854,17 @@ class joins{
         return "$tabla AS $tabla_renombrada  ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]";
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función sirve para renombrar una tabla si recibe el parámetro de 'renombre'.
+     *
+     * @param array $data Contiene la información sobre el renombramiento.
+     * @param string $tabla Es el nombre original de la tabla.
+     *
+     * @return string|array Retorna el nombre renombrado de la tabla si se proporciona 'renombre'.
+     *                      Retorna un error si el nombre de la tabla proporcionado está vacío.
+     * @version 16.69.0
+     */
     private function tabla_renombrada(array $data, string $tabla): string|array
     {
         $tabla = trim($tabla);

@@ -1469,7 +1469,7 @@ class modelo extends modelo_base {
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_filtro);
             }
-            $id = (int)$r_filtro->registros[0]->id;
+            $id = (int)$r_filtro->registros_obj[0]->id;
         }
         return $id;
 
