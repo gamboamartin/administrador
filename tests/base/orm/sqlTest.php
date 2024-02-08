@@ -184,7 +184,6 @@ class sqlTest extends test {
         $this->assertEquals('DESCRIBE a',$resultado);
         errores::$error = false;
     }
-
     public function test_drop_column(): void
     {
         errores::$error = false;
@@ -199,7 +198,6 @@ class sqlTest extends test {
         $this->assertEquals('ALTER TABLE v DROP COLUMN a;',$resultado);
         errores::$error = false;
     }
-
     public function test_drop_index(): void
     {
         errores::$error = false;
@@ -217,7 +215,6 @@ class sqlTest extends test {
         errores::$error = false;
 
     }
-
     public function test_foreign_key(): void
     {
         errores::$error = false;
@@ -232,7 +229,6 @@ class sqlTest extends test {
         $this->assertEquals('ALTER TABLE table ADD CONSTRAINT table_relacion_table_id FOREIGN KEY (relacion_table_id) REFERENCES relacion_table(id);',$resultado);
         errores::$error = false;
     }
-
     public function test_get_foraneas(): void
     {
         errores::$error = false;
@@ -249,7 +245,6 @@ class sqlTest extends test {
                 AND information_schema.TABLE_CONSTRAINTS.TABLE_SCHEMA = ",$resultado);
         errores::$error = false;
     }
-
     public function test_in(): void
     {
         errores::$error = false;
@@ -310,7 +305,6 @@ class sqlTest extends test {
 
         errores::$error = false;
     }
-
     public function test_longitud(): void
     {
         errores::$error = false;
@@ -344,7 +338,6 @@ class sqlTest extends test {
         $this->assertEquals('100,4',$resultado);
         errores::$error = false;
     }
-
     public function test_longitud_sql(): void
     {
         errores::$error = false;
@@ -385,7 +378,6 @@ class sqlTest extends test {
         $this->assertEquals('(x)',$resultado);
         errores::$error = false;
     }
-
     public function test_modify_column(): void
     {
         errores::$error = false;
@@ -406,7 +398,6 @@ class sqlTest extends test {
 
 
     }
-
     public function test_rename_column(): void
     {
         errores::$error = false;
@@ -427,7 +418,6 @@ class sqlTest extends test {
 
 
     }
-
     public function test_show_tables(): void
     {
         errores::$error = false;
@@ -440,7 +430,6 @@ class sqlTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('SHOW TABLES',$resultado);
     }
-
     public function test_sql_select(): void
     {
         errores::$error = false;
@@ -458,7 +447,6 @@ class sqlTest extends test {
         $this->assertEquals('a  z    ',$resultado);
         errores::$error = false;
     }
-
     public function test_sql_select_init(): void
     {
         errores::$error = false;
@@ -640,7 +628,6 @@ class sqlTest extends test {
 
         errores::$error = false;
     }
-
     public function test_update(): void
     {
         errores::$error = false;
@@ -672,7 +659,6 @@ class sqlTest extends test {
         errores::$error = false;
 
     }
-
     public function test_valida_column_base(): void
     {
         errores::$error = false;
@@ -726,6 +712,33 @@ class sqlTest extends test {
 
 
     }
+
+    public function test_valida_datos_modify(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'a';
+        $campo = 'b';
+        $tipo_dato = '1';
+        $resultado = $sql->valida_datos_modify($campo, $table, $tipo_dato);
+        //print_r($resultado);exit;
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+        $table = 'a_';
+        $campo = 'b';
+        $tipo_dato = '1';
+        $resultado = $sql->valida_datos_modify($campo, $table, $tipo_dato);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        errores::$error = false;
+
+    }
     public function test_valida_in(): void
     {
         errores::$error = false;
@@ -768,7 +781,6 @@ class sqlTest extends test {
         errores::$error = false;
 
     }
-
     public function test_ver_indices(): void
     {
         errores::$error = false;

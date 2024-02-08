@@ -3,6 +3,7 @@ namespace base\orm;
 use config\database;
 use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\errores\errores;
+use gamboamartin\validacion\validacion;
 use stdClass;
 
 class sql{
@@ -913,6 +914,7 @@ class sql{
 
     }
 
+
     final public function valida_datos_modify(string $campo, string $table, string $tipo_dato): true|array
     {
         $campo = trim($campo);
@@ -927,6 +929,15 @@ class sql{
         if($tipo_dato === ''){
             return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato);
         }
+        $valida = (new validacion())->valida_texto_pep_8(txt: $campo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar campo', data: $valida);
+        }
+        $valida = (new validacion())->valida_texto_pep_8(txt: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar table', data: $valida);
+        }
+
         return true;
 
     }
