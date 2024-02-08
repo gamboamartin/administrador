@@ -513,12 +513,33 @@ class joins{
     }
 
     /**
-     * Genera los JOINS de una extension 1 a 1
-     * @param array $data data[key,enlace,key_enlace] datos para genera JOIN
-     * @param string $modelo_tabla
-     * @param string $tabla Tabla en LEFT
-     * @param string $tablas Tablas en JOIN SQL
-     * @return array|string tabla as tabla ON tabla.data[key] = data[enlace].data[key_enlace]
+     * POR DOCUMENTAR EN WIKI
+     * Este método genera una cadena SQL JOIN.
+     *
+     * @param array $data Los datos que se utilizarán en la cláusula SQL JOIN.
+     * @param string $modelo_tabla El nombre del modelo de la tabla con la que se realizará la operación JOIN.
+     * @param string $tabla El nombre de la tabla con la que se realizará la operación JOIN.
+     * @param string $tablas Cadena que representa la consulta SQL actualmente en construcción.
+     *
+     * @return string|array Devuelve la cadena SQL JOIN generada o un error si ocurre alguna excepción.
+     *
+     * @throws errores Si los datos proporcionados son incorrectos, lanza una excepción con un mensaje de error.
+     *
+     * @example
+     * // Crear una instancia de la clase en la que se encuentra el método
+     * $joins = new Joins();
+     *
+     * // Llamar al método con los datos necesarios
+     * $tablas = $joins->join_base(
+     *      ["columna1" => "valor1", "columna2" => "valor2"],
+     *      "modelo_tabla",
+     *      "nombre_tabla",
+     *      "SELECT * FROM nombre_tabla"
+     * );
+     *
+     * // Ahora, $tablas contiene una cadena SQL JOIN completa con los datos proporcionados
+     *
+     * @version 16.75.0
      */
     private function join_base(array $data, string $modelo_tabla, string $tabla, string $tablas): array|string
     {
