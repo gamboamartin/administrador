@@ -1390,6 +1390,22 @@ class modelo extends modelo_base {
 
         return $random_string;
     }
+
+    final public function get_data_by_code(string $codigo, bool $columnas_en_bruto = false)
+    {
+        $filtro = array();
+        $filtro[$this->tabla.'.codigo'] = $codigo;
+
+        $r_data = $this->filtro_and(columnas_en_bruto: $columnas_en_bruto, filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $r_data);
+        }
+        if($r_data->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe registro', data: $r_data);
+        }
+        return $r_data->registros_obj[0];
+
+    }
     
     final public function get_data_descripcion(string $dato, int $limit = 10, bool $por_descripcion_select = false)
     {

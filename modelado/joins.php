@@ -361,11 +361,23 @@ class joins{
     }
 
     /**
-     * Genera los JOINS de extensiones de tablas 1 a 1
-     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
-     * @param string $modelo_tabla
-     * @param string $tablas Tablas en JOIN SQL
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Este método se utiliza para unir extensiones de estructura en una tabla base.
+     *
+     * Este método recorre cada extensión en la estructura proporcionada, llamando al método join_base()
+     * para cada extensión y agregándola a la tabla base.
+     *
+     * @param array  $extension_estructura Datos que describen cómo se deben unir las extensiones a la tabla.
+     * @param string $modelo_tabla El modelo de la tabla a la que se unirán las extensiones.
+     * @param string $tablas Un string que detalla las tablas a las que se unirán las extensiones.
+     *
+     * @return array|string Las tablas actualizadas con las extensiones unidas se devuelven si todo ha ido bien.
+     * En caso de errores, se devuelve un mensaje indicando el error específico.
+     *
+     * @throws errores Se lanzará una excepción si los datos no son un array o si se encontró un error
+     * al validar los datos o generar la unión.
+     *
+     * @version 16.76.0
      */
     private function extensiones_join(array $extension_estructura, string $modelo_tabla, string $tablas): array|string
     {
@@ -390,8 +402,6 @@ class joins{
         }
         return $tablas_env;
     }
-
-
 
     /**
      * POR DOCUMENTAR EN WIKI
