@@ -592,7 +592,6 @@ class joins{
      * @param string $tabla_renombrada nombre nuevo de la tabla
      * @param string $tablas Conjunto de tablas cargadas en SQL
      * @return array|string
-     * @version 1.66.17
      */
     private function join_renombres(array $data, string $modelo_tabla, string $tabla_renombrada,
                                     string $tablas): array|string
@@ -740,7 +739,6 @@ class joins{
      * @param array $renombradas conjunto de tablas renombradas
      * @param string $tablas Tablas en JOIN SQL
      * @return array|string
-     * @version 1.66.17
      */
     private function renombres_join(string $modelo_tabla, array $renombradas, string $tablas): array|string
     {

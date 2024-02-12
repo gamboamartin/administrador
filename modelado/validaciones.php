@@ -204,12 +204,11 @@ class validaciones extends validacion{
 
     /**
      * Valida que los datos para ejecutar un renombre de tabla sean correctos
-     * @version 1.66.17
      * @param array $data $data[enlace,nombre_original] Datos para JOIN
      * @param string $tabla_renombrada nombre nuevo de la tabla
      * @return bool|array
      */
-    public function valida_keys_renombre(array $data, string $tabla_renombrada): bool|array
+    final public function valida_keys_renombre(array $data, string $tabla_renombrada): bool|array
     {
         if(!isset($data['enlace'])){
             return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data);
