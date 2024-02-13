@@ -997,6 +997,7 @@ class sql{
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar table', data: $valida);
         }
+        return true;
 
     }
 

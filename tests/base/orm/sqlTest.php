@@ -781,6 +781,34 @@ class sqlTest extends test {
         errores::$error = false;
 
     }
+    public function test_valida_pep_8(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $table = '';
+        $campo = '';
+
+        $resultado = $sql->valida_pep_8($campo, $table);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals("Error al validar campo",$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $table = 'a';
+        $campo = 'v';
+
+        $resultado = $sql->valida_pep_8($campo, $table);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+    }
     public function test_ver_indices(): void
     {
         errores::$error = false;
