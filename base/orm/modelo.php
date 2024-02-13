@@ -456,11 +456,12 @@ class modelo extends modelo_base {
      * @return array|stdClass Si el proceso es exitoso, retorna un objeto con los detalles de la operación.
      *                        Si ocurre un error, retorna un array con el mensaje y los datos del error.
      */
-    final public function alter_table(string $campo, string $statement, string $table, string $longitud = '',
-                                      string $new_name = '', string $tipo_dato = ''):array|stdClass
+    final public function alter_table(
+        string $campo, string $statement, string $table, string $longitud = '', string $new_name = '',
+        string $tipo_dato = '', bool $valida_pep_8 = true):array|stdClass
     {
         $sql = (new sql())->alter_table(campo: $campo,statement:  $statement,table:  $table,
-            longitud: $longitud,new_name: $new_name,tipo_dato: $tipo_dato);
+            longitud: $longitud,new_name: $new_name,tipo_dato: $tipo_dato, valida_pep_8: $valida_pep_8);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }

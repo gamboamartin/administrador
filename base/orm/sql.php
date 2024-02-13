@@ -71,8 +71,9 @@ class sql{
      * @param string $tipo_dato Opcional. El tipo de dato del campo en caso de que se agregue o modifique un campo.
      * @return array|string Devuelve una cadena con la sentencia SQL generada.
      */
-    final public function alter_table(string $campo, string $statement, string $table, string $longitud = '',
-                                      string $new_name = '', string $tipo_dato = ''): array|string
+    final public function alter_table(
+        string $campo, string $statement, string $table, string $longitud = '', string $new_name = '',
+        string $tipo_dato = '', bool $valida_pep_8 = true): array|string
     {
         $sql = '';
 
@@ -96,7 +97,8 @@ class sql{
             }
         }
         if($statement === 'MODIFY'){
-            $sql = $this->modify_column(campo: $campo, table: $table,tipo_dato: $tipo_dato,longitud: $longitud);
+            $sql = $this->modify_column(
+                campo: $campo, table: $table,tipo_dato: $tipo_dato,longitud: $longitud, valida_pep_8: $valida_pep_8);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql',data: $sql);
             }
@@ -649,7 +651,6 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Modifica los atributos de una columna en una tabla de base de datos
      *
      * @param string $campo El nombre de la columna que se quiere modificar.
@@ -662,17 +663,17 @@ class sql{
      *
      * @throws errores En caso de que alguno de los parámetros 'campo', 'table' o 'tipo_dato' esté vacío,
      * esta función arrojará una excepción con un mensaje de error.
-     * @version 16.56.0
      */
     final public function modify_column(
-        string $campo, string $table, string $tipo_dato, string $longitud = ''): string|array
+        string $campo, string $table, string $tipo_dato, string $longitud = '', bool $valida_pep_8 = true): string|array
     {
         $campo = trim($campo);
         $table = trim($table);
         $tipo_dato = trim($tipo_dato);
         $longitud = trim($longitud);
 
-        $valida = $this->valida_datos_modify(campo: $campo,table:  $table,tipo_dato:  $tipo_dato);
+        $valida = $this->valida_datos_modify(
+            campo: $campo,table:  $table,tipo_dato:  $tipo_dato, valida_pep_8:  $valida_pep_8);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
@@ -931,7 +932,8 @@ class sql{
     }
 
 
-    final public function valida_datos_modify(string $campo, string $table, string $tipo_dato): true|array
+    final public function valida_datos_modify(
+        string $campo, string $table, string $tipo_dato, bool $valida_pep_8 = true): true|array
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -945,13 +947,11 @@ class sql{
         if($tipo_dato === ''){
             return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato);
         }
-        $valida = (new validacion())->valida_texto_pep_8(txt: $campo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar campo', data: $valida);
-        }
-        $valida = (new validacion())->valida_texto_pep_8(txt: $table);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar table', data: $valida);
+        if($valida_pep_8) {
+            $valida = $this->valida_pep_8(campo: $campo,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+            }
         }
 
         return true;
@@ -983,6 +983,21 @@ class sql{
             }
         }
         return true;
+    }
+
+    private function valida_pep_8(string $campo, string $table)
+    {
+        $campo = trim($campo);
+        $table = trim($table);
+        $valida = (new validacion())->valida_texto_pep_8(txt: $campo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar campo', data: $valida);
+        }
+        $valida = (new validacion())->valida_texto_pep_8(txt: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar table', data: $valida);
+        }
+
     }
 
     /**

@@ -49,8 +49,8 @@ class _instalacionTest extends test {
         $table = 'z';
 
 
-        $resultado = $ins->add_existente($adds, $atributos, $campo, $campos_origen, $table);
-        //print_r($resultado);exit;
+        $resultado = $ins->add_existente($adds, $atributos, $campo, $campos_origen, $table, true);
+       // print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -65,7 +65,7 @@ class _instalacionTest extends test {
         $table = 'z';
 
 
-        $resultado = $ins->add_existente($adds, $atributos, $campo, $campos_origen, $table);
+        $resultado = $ins->add_existente($adds, $atributos, $campo, $campos_origen, $table, true);
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         //$this->assertNotTrue("ALTER TABLE z MODIFY COLUMN a BIGINT (100);",$resultado->sql);

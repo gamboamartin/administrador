@@ -36,9 +36,34 @@ class configuraciones extends validacion {
     }
 
     /**
-     * Valida las configuraciones para ejecutar el sistema
-     * @param stdClass $paths_conf Archivos de configuracion
-     * @return bool|array
+     * POR DOCUMENTAR WN WIKI
+     * Valida las configuraciones de la aplicación.
+     *
+     * Esta función verifica las configuraciones de `generales`, `database` y `views`.
+     * Retorna `true` si todas las configuraciones son válidas.
+     * Si alguna configuración no es válida, se retorna un array con el mensaje de error y los datos de validación.
+     *
+     * @param stdClass $paths_conf  Las rutas de las configuraciones a validar.
+     * @return bool|array           `true` si todas las configuraciones son válidas.
+     *                              Si no, un array con el mensaje del error y los datos de validación.
+     *
+     * @throws errores            Lanza una excepción si ocurre un error durante la validación.
+     *
+     * @example
+     * ```php
+     * $configuraciones = new Configuraciones();
+     * $paths_conf = new stdClass();
+     * $paths_conf->generales = '/path/to/generales.php';
+     * $paths_conf->database = '/path/to/database.php';
+     * $paths_conf->views = '/path/to/views.php';
+     * $result = $configuraciones->valida_confs($paths_conf);
+     * if (is_array($result)) {
+     *     echo "Se produjo un error al validar las configuraciones: " . $result['mensaje'];
+     * } else {
+     *     echo "Las configuraciones se validaron correctamente.";
+     * }
+     * ```
+     * @version 16.79.0
      */
     final public function valida_confs(stdClass $paths_conf): bool|array
     {

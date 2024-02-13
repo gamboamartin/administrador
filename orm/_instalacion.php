@@ -131,7 +131,8 @@ class _instalacion
         return $adds;
     }
 
-    private function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen, string $table)
+    private function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen,
+                                   string $table, bool $valida_pep_8)
     {
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
         if(errores::$error){
@@ -172,7 +173,9 @@ class _instalacion
                     }
 
                     if ($type_new !== $tipo_dato_origen) {
-                        $modifica = $this->modifica_columna(campo: $campo, longitud: $longitud, table: $table, tipo_dato: $type_new);
+                        $modifica = $this->modifica_columna(
+                            campo: $campo, longitud: $longitud, table: $table, tipo_dato: $type_new,
+                            valida_pep_8: $valida_pep_8);
                         if (errores::$error) {
                             return $this->error->error(mensaje: 'Error al agregar modificar columnas', data: $modifica);
                         }
@@ -261,8 +264,12 @@ class _instalacion
     {
         $adds = array();
         foreach ($campos as $campo=>$atributos){
+            $valida_pep_8 = true;
+            if(isset($atributos->valida_pep_8)){
+                $valida_pep_8 = $atributos->valida_pep_8;
+            }
             $adds = $this->add_existente(adds: $adds,atributos:  $atributos,campo:  $campo,
-                campos_origen:  $campos_origen,table:  $table);
+                campos_origen:  $campos_origen,table:  $table, valida_pep_8: $valida_pep_8);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al agregar columna sql', data: $adds);
             }
@@ -1351,19 +1358,22 @@ class _instalacion
 
     }
 
-    final public function modifica_columna(string $campo, string $longitud, string $table, string $tipo_dato)
+    final public function modifica_columna(
+        string $campo, string $longitud, string $table, string $tipo_dato, bool $valida_pep_8 = true)
     {
         $campo = trim($campo);
         $table = trim($table);
         $tipo_dato = trim($tipo_dato);
         $longitud = trim($longitud);
 
-        $valida = (new sql())->valida_datos_modify(campo: $campo,table:  $table,tipo_dato:  $tipo_dato);
+        $valida = (new sql())->valida_datos_modify(
+            campo: $campo,table:  $table,tipo_dato:  $tipo_dato, valida_pep_8: $valida_pep_8);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $sql = (new sql())->modify_column(campo: $campo,table:  $table,tipo_dato:  $tipo_dato,longitud: $longitud);
+        $sql = (new sql())->modify_column(
+            campo: $campo,table:  $table,tipo_dato:  $tipo_dato,longitud: $longitud, valida_pep_8: $valida_pep_8 );
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
