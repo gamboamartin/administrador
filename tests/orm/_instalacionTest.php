@@ -801,6 +801,30 @@ class _instalacionTest extends test {
             exit;
         }
     }
+
+    public function test_get_foraneas(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $table = 'adm_accion';
+        $resultado = $ins->get_foraneas($table);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("def", $resultado[0]->CONSTRAINT_CATALOG);
+        $this->assertEquals("administrador", $resultado[0]->CONSTRAINT_SCHEMA);
+        $this->assertEquals("adm_accion_ibfk_1", $resultado[0]->CONSTRAINT_NAME);
+        $this->assertEquals("administrador", $resultado[0]->TABLE_SCHEMA);
+        $this->assertEquals("adm_accion", $resultado[0]->TABLE_NAME);
+        $this->assertEquals("FOREIGN KEY", $resultado[0]->CONSTRAINT_TYPE);
+        $this->assertEquals("YES", $resultado[0]->ENFORCED);
+
+        errores::$error = false;
+
+    }
     public function test_longitud(): void
     {
 
@@ -837,7 +861,6 @@ class _instalacionTest extends test {
         $this->assertEquals("", $resultado);
         errores::$error = false;
     }
-
     public function test_modifica_columna(): void
     {
 

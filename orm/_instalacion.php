@@ -1201,6 +1201,11 @@ class _instalacion
 
     private function get_foraneas(string $table)
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table vacia',data:  $table);
+        }
+
         $sql = (new sql())->get_foraneas(table: $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
