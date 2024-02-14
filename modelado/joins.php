@@ -586,12 +586,23 @@ class joins{
 
 
     /**
-     * Genera joins renombrados
-     * @param array $data $data[enlace,nombre_original,key_enlace] Datos para JOIN
-     * @param string $modelo_tabla
-     * @param string $tabla_renombrada nombre nuevo de la tabla
-     * @param string $tablas Conjunto de tablas cargadas en SQL
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Método para gestionar los joins de SQL en PHP.
+     *
+     * @param array $data Representa los datos para el join. Debe tener las claves 'nombre_original' y 'enlace'.
+     * @param string $modelo_tabla Las tablas en las que se realiza el join.
+     * @param string $tabla_renombrada El nombre bajo el que se referenciará la tabla tras el join.
+     * @param string $tablas += ' '.$str_join;
+     *
+     * Este método realiza varias validaciones sobre los datos proporcionados y devuelve errores en caso de que no sean válidos.
+     *
+     * @return array|string Devuelve un string que representa la consulta SQL con los joins, o un array con información de error.
+     *
+     * @throws validaciones()->valida_keys_renombre En caso de que los datos no sean válidos
+     * @throws validaciones()->valida_keys_sql En caso de que los datos SQL no sean válidos
+     * @throws errores Si hay un error al generar el string SQL para el join
+     * @throws errores Si hay un error al generar la consulta SQL completa
+     * @version 16.83.0
      */
     private function join_renombres(array $data, string $modelo_tabla, string $tabla_renombrada,
                                     string $tablas): array|string
