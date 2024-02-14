@@ -392,7 +392,19 @@ class _instalacion
 
     }
 
-    final public function campos_double(stdClass $campos, array $campos_new)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Agregar campos de tipo "double" a una instancia existente de stdClass
+     *
+     * @param stdClass $campos Instancia a la cual agregar nuevos campos de tipo "double".
+     * @param array $campos_new array de strings, donde cada string es el nombre de un nuevo campo a añadir.
+     *
+     * @return array|stdClass Objeto con los nuevos campos de tipo "double" añadidos, o un mensaje de error si ocurre algún problema.
+     *
+     * @version 16.85.0
+     *
+     */
+    final public function campos_double(stdClass $campos, array $campos_new): array|stdClass
     {
         foreach ($campos_new as $campo_new){
             $campo_new = trim($campo_new);
