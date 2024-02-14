@@ -203,12 +203,28 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida que los datos para ejecutar un renombre de tabla sean correctos
-     * @param array $data $data[enlace,nombre_original] Datos para JOIN
-     * @param string $tabla_renombrada nombre nuevo de la tabla
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función verifica y valida los campos clave en el proceso de renombramiento.
+     *
+     * @param array $data - Los datos proporcionados por el usuario que contienen 'enlace' y 'nombre_original'
+     * @param string $tabla_renombrada - El nombre de la tabla renombrada
+     *
+     * @return true|array - Regresa verdadero si todas las validaciones son exitosas,
+     *                      de lo contrario, devuelve un array con información de error generada por la función error()
+     *
+     * ### Proceso de validación:
+     * 1.   Verifica si existe la clave 'enlace' en la matriz de datos proporcionada.
+     *      Si no existe, genera un error y devuelve la respuesta del error.
+     * 2.   Verifica si existe la clave 'nombre_original' en la matriz de datos proporcionada.
+     *      Si no existe, genera un error y devuelve la respuesta del error.
+     * 3.   Realiza un trim() en el valor de 'nombre_original' y verifica si está vacío.
+     *      Si está vacío, genera un error y devuelve la respuesta del error.
+     * 4.   Realiza un trim() en el valor de la variable $tabla_renombrada y verifica si está vacío.
+     *      Si está vacío, genera un error y devuelve la respuesta del error.
+     *
+     * @version 16.81.0
      */
-    final public function valida_keys_renombre(array $data, string $tabla_renombrada): bool|array
+    final public function valida_keys_renombre(array $data, string $tabla_renombrada): true|array
     {
         if(!isset($data['enlace'])){
             return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data);
