@@ -903,6 +903,9 @@ class _instalacion
             }
 
             if($default !== ''){
+                /**
+                 * refactoriza
+                 */
                 if(isset($atributos->modelo)){
                     /**
                      * @var modelo $modelo;

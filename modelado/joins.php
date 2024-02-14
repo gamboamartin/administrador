@@ -929,14 +929,29 @@ class joins{
     }
 
     /**
-     * Obtiene los joins de todas las tablas de un modelo
-     * @param array $columnas conjunto de tablas para realizar los joins
-     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
-     * @param array $extra_join Join extra a peticion en funciones
-     * @param string $modelo_tabla
-     * @param array $renombradas conjunto de tablas renombradas
-     * @param string $tabla Tabla con el nombre original
-     * @return array|string
+     * POR DOCUMNETAR EN WIKI
+     * Este método se utiliza para generar un conjunto de tablas para una consulta SQL JOIN.
+     *
+     * Acepta una serie de parámetros que definen la estructura de la consulta SQL y devuelve un array con las tablas resultantes.
+     * Si se encuentra algún error durante el proceso, se devuelve una cadena con el mensaje de error.
+     *
+     * @param array $columnas Un array que contiene las columnas que se van a seleccionar en la consulta SQL.
+     * @param array $extension_estructura Un array que contiene información adicional sobre la estructura de la consulta.
+     * @param array $extra_join Un array con información adicional para el JOIN.
+     * @param string $modelo_tabla La tabla base que se va a usar en la consulta SQL JOIN.
+     * @param array $renombradas Un array con los nuevos nombres que se van a asignar a las columnas seleccionadas.
+     * @param string $tabla El nombre de la tabla a considerar.
+     *
+     * @return array|string Retorna una matriz con las tablas generadas para la consulta SQL JOIN.
+     * Si ocurre un error, retorna una cadena con el mensaje de error.
+     *
+     * @throws errores Se lanza una excepción si detecta que la tabla está vacía.
+     * Otros errores posibles que se pueden generar están relacionados con las operaciones de la función interna 'error'.
+     *
+     * @example
+     * $res = $instance->tablas(['col1', 'col2'], [], [], 'tabla1', [], 'tabla2');
+     * print_r($res);
+     * @version 16.88.0
      */
     final public function tablas(array $columnas, array $extension_estructura, array $extra_join, string $modelo_tabla,
                                  array $renombradas, string $tabla): array|string
