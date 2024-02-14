@@ -250,6 +250,35 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_campos_double(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        //$ins = new liberator($ins);
+
+        $campos = new stdClass();
+        $campos_new = array();
+        $resultado = $ins->campos_double($campos, $campos_new);
+        //print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+        $campos = new stdClass();
+        $campos_new = array();
+        $campos_new[] = 'a';
+        $resultado = $ins->campos_double($campos, $campos_new);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('double',$resultado->a->tipo_dato);
+        $this->assertEquals(0.0,$resultado->a->default);
+        $this->assertEquals('100,2',$resultado->a->longitud);
+
+    }
     public function test_campos_origen(): void
     {
 

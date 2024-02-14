@@ -391,6 +391,22 @@ class _instalacion
         return $campos;
 
     }
+
+    final public function campos_double(stdClass $campos, array $campos_new)
+    {
+        foreach ($campos_new as $campo_new){
+            $campo_new = trim($campo_new);
+            if($campo_new === ''){
+                return $this->error->error(mensaje: 'Error campo_new esta vacio', data: $campo_new);
+            }
+            $campos = $this->campo_double(campos: $campos,name_campo:  $campo_new);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar campo double '.$campo_new, data: $campos);
+            }
+        }
+        return $campos;
+
+    }
     /**
      * POR DOCUMENTAR EN WIKI
      * Metodo campos_origen
