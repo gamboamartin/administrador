@@ -1785,7 +1785,6 @@ class modelo extends modelo_base {
      * Limpia los campos no integrados en la entidad de base de datos
      * @param array $registro Registro en proceso
      * @return array
-     * @version 9.92.1
      */
     private function limpia_campos_sin_bd(array $registro): array
     {
@@ -1817,8 +1816,6 @@ class modelo extends modelo_base {
      * @internal  $this->agrega_usuario_session();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($this->registro_upd,__FUNCTION__, $consulta);
-     * @finalrev
-     * @version 9.120.4
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
@@ -1866,6 +1863,53 @@ class modelo extends modelo_base {
 
 
         return $resultado;
+    }
+
+    final public function modifica_bd_base(array $registro, int $id, bool $reactiva = false)
+    {
+        if($this->usuario_id <=0){
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
+        }
+
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
+
+        $registro = $this->limpia_campos_sin_bd(registro: $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al limpiar campos',data: $registro);
+        }
+
+
+        $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al inicializar',data: $init);
+        }
+
+        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd,
+            tipo_campos: $this->tipo_campos);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
+        }
+
+        $ajusta = (new inicializacion())->ajusta_campos_upd(id:$id, modelo: $this);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
+        }
+
+        $ejecuta_upd = (new upd())->ejecuta_upd(id:$id,modelo:  $this);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al verificar actualizacion',data:$ejecuta_upd);
+        }
+
+        $resultado = (new upd())->aplica_ejecucion(ejecuta_upd: $ejecuta_upd,id:  $id,modelo:  $this,
+            reactiva:  $reactiva,registro:  $registro, valida_user: $this->valida_user);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
+        }
+
+        return $resultado;
+
     }
 
     /**
