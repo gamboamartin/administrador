@@ -902,6 +902,31 @@ class _instalacion
                 return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
             }
 
+            if($default !== ''){
+                if(isset($atributos->modelo)){
+                    /**
+                     * @var modelo $modelo;
+                     */
+                    $modelo = $atributos->modelo;
+                    $registros = $modelo->registros(columnas_en_bruto: true);
+                    if(errores::$error){
+                        return $this->error->error(mensaje: 'Error al obtener registros',data: $registros);
+                    }
+
+                    foreach ($registros as $registro){
+                        if((int)$registro[$campo] === 0){
+                            $registro_upd = array();
+                            $registro_upd[$campo] = $default;
+                            $upd = $modelo->modifica_bd_base(registro: $registro_upd, id: $registro['id']);
+                            if(errores::$error){
+                                return $this->error->error(mensaje: 'Error al actualiza row',data: $upd);
+                            }
+
+                        }
+                    }
+                }
+            }
+
             $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default,
                 name_indice_opt: $name_indice_opt);
             if(errores::$error){

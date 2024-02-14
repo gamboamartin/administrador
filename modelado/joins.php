@@ -745,11 +745,16 @@ class joins{
     }
 
     /**
-     * Genera renombres de tablas en sql
-     * @param string $modelo_tabla
-     * @param array $renombradas conjunto de tablas renombradas
-     * @param string $tablas Tablas en JOIN SQL
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se usa para renombrar múltiples tablas en una operación Join.
+     *
+     * @param string $modelo_tabla La tabla principal que se está uniendo.
+     * @param array $renombradas Un array asociativo de tablas para renombrar y sus correspondientes datos.
+     * @param string $tablas Las tablas a las que se unirán.
+     *
+     * @return array|string Devuelve un string actualizado de tablas renombradas para el comando Join.
+     *                      Si ocurre un error, devuelve un array que contiene información del error.
+     * @version 16.87.0
      */
     private function renombres_join(string $modelo_tabla, array $renombradas, string $tablas): array|string
     {
