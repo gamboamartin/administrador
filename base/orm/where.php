@@ -121,7 +121,6 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Esta función maneja la comparación de datos dentro del código.
      *
      * @param array $columnas_extra Un array con columnas extra para la comparación.
@@ -134,7 +133,6 @@ class where{
      *
      * $resultado = comparacion_pura($columnas_extra, $data, $key);
      *
-     * @version 16.94.0
      */
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
 
@@ -1557,7 +1555,6 @@ class where{
 
     /**
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * @version 1.25.14
      * $data[(string)campo] $data[(string)value] sino un string
      * @return string|array
      */
