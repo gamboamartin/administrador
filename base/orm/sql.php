@@ -651,18 +651,20 @@ class sql{
     }
 
     /**
-     * Modifica los atributos de una columna en una tabla de base de datos
+     * POR MODIFICAR EN WIKI
+     * Modifica una columna en una tabla de la base de datos.
      *
-     * @param string $campo El nombre de la columna que se quiere modificar.
-     * @param string $table El nombre de la tabla donde se encuentra la columna que se quiere modificar.
-     * @param string $tipo_dato El nuevo tipo de dato que se quiere asignar a la columna.
-     * @param string $longitud La nueva longitud que el dato de la columna debe tener. Es opcional.
+     * @param string $campo     El nombre del campo de la tabla a modificar.
+     * @param string $table     El nombre de la tabla en la cual se encuentra el campo a modificar.
+     * @param string $tipo_dato El nuevo tipo de dato que se asignará al campo.
+     * @param string $longitud  La longitud máxima permitida para los valores del campo en el caso que el tipo de dato lo requiera.
+     * @param bool   $valida_pep_8 Indica si se deben aplicar las reglas del manual de estilo de código PEP 8 a los datos de entrada. Por defecto es true.
      *
-     * @return string|array Regresa una cadena con la instrucción SQL para alterar la columna de la tabla.
-     * O bien, regresa un array con información sobre el error si se produce uno.
+     * @return string|array retorna una sentencia SQL de modificación de columna si no encuentran errores,
+     * de lo contrario retorna un array con la descripción del error.
      *
-     * @throws errores En caso de que alguno de los parámetros 'campo', 'table' o 'tipo_dato' esté vacío,
-     * esta función arrojará una excepción con un mensaje de error.
+     * @throws errores si hay un error al validar los datos o al inicializar la longitud SQL.
+     * @version 16.92.0
      */
     final public function modify_column(
         string $campo, string $table, string $tipo_dato, string $longitud = '', bool $valida_pep_8 = true): string|array
