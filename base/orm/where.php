@@ -115,12 +115,20 @@ class where{
     }
 
     /**
-     * Funcion para asignar el valor de una comparacion para filtro
-     * @param array $columnas_extra Columnas en forma de Subquery para se ejecutado en un SELECT
-     * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * $data[(string)campo] $data[(string)value] sino un string
-     * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Esta función maneja la comparación de datos dentro del código.
+     *
+     * @param array $columnas_extra Un array con columnas extra para la comparación.
+     * @param array|string|null $data Datos que se usarán para la comparación. Puede ser un array, un string o null.
+     * @param string $key Clave que se usará para la comparación.
+     * @return array|stdClass Devuelve un array o un stdClass que contiene los resultados de la comparación.
+     * @throws errores En caso de error, lanza una exception.
+     *
+     * Ejemplo de uso:
+     *
+     * $resultado = comparacion_pura($columnas_extra, $data, $key);
+     *
+     * @version 16.94.0
      */
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
 
