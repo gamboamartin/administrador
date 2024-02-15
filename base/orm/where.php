@@ -684,7 +684,6 @@ class where{
     /**
      *
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
-     * @version 1.123.29
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $filtro filtros para la maquetacion de filtros
      * @return array|string Sentencia del lado WHERE aplicado con %% para textos
@@ -1554,9 +1553,16 @@ class where{
     }
 
     /**
-     * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * $data[(string)campo] $data[(string)value] sino un string
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Función privada que procesa los datos de entrada y los limpia para su posterior uso.
+     *
+     * @param array|string|null $data Datos de entrada para ser procesados.
+     *
+     * @return string|array En caso de error, retorna un array con detalles del error. De lo contrario,
+     * retorna los datos de entrada procesados y limpios en forma de string.
+     *
+     * @throws errores en caso de que haya algún error durante el proceso.
+     * @version 16.98.0
      */
     private function value(array|string|null $data):string|array{
         $value = $data;
