@@ -1255,7 +1255,22 @@ class _instalacion
 
     }
 
-    private function get_foraneas(string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene las claves foráneas de una tabla especificada.
+     *
+     * @param string $table - Nombre de la tabla a consultar.
+     *
+     * @return array|stdClass - Retorna un objeto con los resultados en caso de éxito,
+     *                 o un error en caso de fallo.
+     *
+     *
+     * Uso:
+     *      $result = get_foraneas('users');
+     *
+     * @version 16.90.0
+     */
+    private function get_foraneas(string $table): array|stdClass
     {
         $table = trim($table);
         if($table === ''){

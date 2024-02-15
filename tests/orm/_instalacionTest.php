@@ -250,7 +250,6 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
-
     public function test_campos_double(): void
     {
 
@@ -830,7 +829,6 @@ class _instalacionTest extends test {
             exit;
         }
     }
-
     public function test_get_foraneas(): void
     {
 
