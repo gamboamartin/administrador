@@ -932,6 +932,22 @@ class sql{
     }
 
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método para validar los datos antes de la modificación.
+     *
+     * Esta función toma como argumentos los datos proporcionados y realiza varias comprobaciones para
+     * asegurarse de que son válidos para la modificación. Si los datos no son válidos, se devuelve un error.
+     *
+     * @param string $campo Nombre del campo en la tabla. Este parámetro es obligatorio y no puede estar vacío.
+     * @param string $table Nombre de la tabla en la base de datos. Este parámetro es obligatorio y no puede estar vacío.
+     * @param string $tipo_dato Tipo de dato del campo que esta siendo validado. Este parametro es obligatorio y no puede estar vacío.
+     * @param bool $valida_pep_8 Realiza validación de los datos contra las reglas de nombres de PEP 8. Este parámetro es opcional y por defecto es true.
+     *
+     * @return true|array Si los datos son válidos, devuelve true. Si no son válidos, devuelve un array con información del error.
+     * @throws errores En caso de un fallo en la ejecución.
+     * @version 16.89.0
+     */
     final public function valida_datos_modify(
         string $campo, string $table, string $tipo_dato, bool $valida_pep_8 = true): true|array
     {
