@@ -104,7 +104,6 @@ class where{
 
     /**
      * Funcion que asigna valor default en comparacion para filtro
-     * @version 1.25.14
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
      * @param string $default
