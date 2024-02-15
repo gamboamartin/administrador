@@ -69,11 +69,15 @@ class where{
     }
 
     /**
-     * Funcion que ajusta el valor de un  campo de un registro y agregarle comillas
-     * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * $data[(string)campo] sino un string
-     * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función procesa las entradas proporcionadas y devuelve el "campo" apropiado.
+     *
+     * @param array|string|null $data los datos proporcionados para extraer el campo. Pueden ser de tipos array, string o null.
+     * @param string $key la clave proporcionada para extraer el campo del array.
+     * @return string|array Devuelve el "campo" después de ser procesado y garantiza que no contenga caracteres de escape.
+     *
+     * @throws errores si la clave proporcionada está vacía.
+     * @version 16.93.0
      */
     private function campo(array|string|null $data, string $key):string|array{
         if($key === ''){
