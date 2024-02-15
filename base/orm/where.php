@@ -70,7 +70,6 @@ class where{
 
     /**
      * Funcion que ajusta el valor de un  campo de un registro y agregarle comillas
-     * @version 1.12.8
      * @param array|string|null $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] sino un string
      * @param string $key valor de campo de asignacion de campo name si es un array data busca valor en data
@@ -113,7 +112,6 @@ class where{
 
     /**
      * Funcion para asignar el valor de una comparacion para filtro
-     * @version 1.25.14
      * @param array $columnas_extra Columnas en forma de Subquery para se ejecutado en un SELECT
      * @param array|string|null $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] sino un string
@@ -206,7 +204,6 @@ class where{
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
-     * @version 1.575.51
      */
     final public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
                                       array $filtro_especial, array $filtro_extra, array $filtro_fecha,
@@ -625,7 +622,6 @@ class where{
     /**
      *
      * Devuelve un conjunto de condiciones de tipo AND en forma de sql
-     * @version 1.26.14
      * @param array $columnas_extra Columnas en forma de Subquery para se ejecutado en un SELECT
      * @param array $filtro parametros para maquetar filtro[data] =  $data $data dato para la asignacion de un nombre de un campo si es array debe ser
      * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
@@ -910,7 +906,6 @@ class where{
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
-     * @version 1.575.51
      */
     private function genera_filtros_sql(array $columnas_extra, array $diferente_de, array $filtro,
                                         array $filtro_especial, array $filtro_extra, array $filtro_rango, array $in,
@@ -1092,7 +1087,6 @@ class where{
      * @example
      *      $sentencia = $this->genera_sentencia_base($tipo_filtro);
      * @uses modelo
-     * @version 1.123.29
      */
     private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);

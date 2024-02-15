@@ -142,7 +142,6 @@ class adm_seccion extends _modelo_children {
         }
         return $r_adm_accion->registros;
     }
-
     final public function acciones_permitidas(int $grupo_id, string $seccion): array
     {
         $filtro['adm_grupo.id'] = $grupo_id;
@@ -156,6 +155,41 @@ class adm_seccion extends _modelo_children {
 
     }
 
+    final public function adm_seccion(string $descripcion)
+    {
+        $filtro['adm_seccion.descripcion'] = $descripcion;
+
+        $existe = $this->existe_seccion(descripcion: $descripcion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe seccion',data: $existe);
+        }
+        if(!$existe){
+            return $this->error->error(mensaje: 'Error no existe la seccion',data: $existe);
+        }
+
+        $r_adm_seccion = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error obtener seccion',data: $r_adm_seccion);
+        }
+        return (object)$r_adm_seccion->registros[0];
+    }
+    final public function adm_seccion_id(string $descripcion)
+    {
+        $existe = $this->existe_seccion(descripcion: $descripcion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe seccion',data: $existe);
+        }
+        if(!$existe){
+            return $this->error->error(mensaje: 'Error no existe la seccion',data: $existe);
+        }
+
+        $adm_seccion = $this->adm_seccion(descripcion: $descripcion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error obtener seccion',data: $adm_seccion);
+        }
+        return $adm_seccion->adm_seccion_id;
+
+    }
     public function alta_bd(): array|stdClass
     {
 
@@ -203,7 +237,6 @@ class adm_seccion extends _modelo_children {
         return $r_alta_bd;
 
     }
-
     protected function asigna_full_status_alta(array $registro): array
     {
         $keys = array();
@@ -255,6 +288,16 @@ class adm_seccion extends _modelo_children {
         return $r_elimina_bd;
     }
 
+    final public function existe_seccion(string $descripcion)
+    {
+        $filtro['adm_seccion.descripcion'] = $descripcion;
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error a verificar si existe seccion',data:  $existe);
+        }
+        return $existe;
+
+    }
     private function inserta_accion(array $accion_basica, int $registro_id){
         $accion = $this->accion_maqueta(accion_basica: $accion_basica, registro_id: $registro_id);
         if (errores::$error){
@@ -269,7 +312,6 @@ class adm_seccion extends _modelo_children {
         }
         return $r_alta_accion;
     }
-
     private function inserta_acciones(array $acciones_basicas, int $registro_id){
         $insert = array();
         foreach ($acciones_basicas as $accion_basica) {
@@ -281,7 +323,6 @@ class adm_seccion extends _modelo_children {
         }
         return $insert;
     }
-
     private function inserta_acciones_basicas(int $registro_id){
         $r_accion_basica = (new adm_accion_basica($this->link))->obten_registros_activos();
         if (errores::$error){
@@ -296,8 +337,6 @@ class adm_seccion extends _modelo_children {
         }
         return $r_alta_acciones;
     }
-
-
 
     public function modifica_bd(array $registro, int $id, bool $reactiva = false, array $keys = array('adm_menu_id','adm_namespace_id','descripcion')): array|stdClass
     {
