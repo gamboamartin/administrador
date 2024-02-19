@@ -642,21 +642,19 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR WIKI
+     * Esta función genera una cadena de declaración SQL AND basada en los filtros y columnas extras proporcionados.
      *
-     * Devuelve un conjunto de condiciones de tipo AND en forma de sql
-     * @param array $columnas_extra Columnas en forma de Subquery para se ejecutado en un SELECT
-     * @param array $filtro parametros para maquetar filtro[data] =  $data $data dato para la asignacion de un nombre de un campo si es array debe ser
-     * $data[(string)campo] $data[(string)value] data[(string)comparacion] sino un string
-     * @return array|string
-     * @example
-     *      $sentencia = $this->genera_and();
-     * if(isset($sentencia['error'])){
-     * return $this->error->error('Error al generar and',__LINE__,
-     * __FILE__,$sentencia);
-     * }
-     * $consulta = "DELETE FROM $tabla WHERE $sentencia";
+     * @param array $columnas_extra Las columnas adicionales que han de considerarse al generar la declaración SQL.
+     * @param array $filtro Los filtros que se utilizarán para la generación de la declaración SQL.
+     *
+     * @return string|array Retornará una cadena que es la declaración SQL AND generada. Si ocurre algún error al
+     * procesar, retornará un objeto de error.
+     *
+     * @throws errores si hay algún problema con los filtros o columnas proporcionados.
+     * @version 16.100.0
      */
-    public function genera_and(array $columnas_extra, array $filtro):array|string{
+    final public function genera_and(array $columnas_extra, array $filtro):array|string{
         $sentencia = '';
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
