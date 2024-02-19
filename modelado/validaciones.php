@@ -127,7 +127,6 @@ class validaciones extends validacion{
 
     /**
      * Valida que los datos de un filtro especial sean correctos para la integracion de un WHERE
-     * @version 1.127.29
      * @param string $campo Campo en ejecucion para integrarlo al filtro
      * @param array $filtro Filtro a ajustar de manera recursiva
      * @return bool|array

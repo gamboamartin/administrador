@@ -354,7 +354,6 @@ class where{
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
      *
      * @return array|string
-     * @version 1.130.30
      * @example
      *      Ej 1
      *      $filtro_especial[0][tabla.campo]['operador'] = '>';
@@ -745,7 +744,6 @@ class where{
     /**
      *
      * Genera la condicion sql de un filtro especial
-     * @version 1.130.30
      *
      *
      * @param string $filtro_especial_sql //condicion en forma de sql
@@ -1260,7 +1258,6 @@ class where{
      * @param array $filtro filtro a validar
      *
      * @return array|string
-     * @version 1.127.29
      *
      * @example
      *      Ej 1
@@ -1349,7 +1346,6 @@ class where{
      *
      * @param string $filtro_especial_sql //condicion en forma de sql
      * @return array|string
-     * @version 1.130.30
      * @example
      *      Ej 1
      *      $filtro_esp[tabla.campo]['operador'] = '>';
