@@ -1106,16 +1106,18 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera la sentencia SQL base de filtro según el tipo de filtro
+     * proporcionado (numeros o textos).
      *
-     * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE o =
-     * @param string $tipo_filtro numeros = textos LIKE
-     * @param array $filtro parametros para generar sentencia
-     * @param array $columnas_extra Columnas para subquerys declarados en el modelo
-     * @return array|string con sentencia en SQL
-     * @throws errores $this->filtro[key] es un numero
-     * @example
-     *      $sentencia = $this->genera_sentencia_base($tipo_filtro);
-     * @uses modelo
+     * @param array $columnas_extra Array de columnas adicionales para incluir en la consulta.
+     * @param array $filtro Array de condiciones para ser incluidos en la cláusula WHERE de la sentencia.
+     * @param string $tipo_filtro Define el tipo del filtro. Puede ser "numeros" o "textos".
+     *
+     * @return array|string Retorna la sentencia generada o un string describiendo un error si sucede alguno.
+     *
+     * @throws errores si el tipo de filtro no es válido.
+     * @version 16.102.0
      */
     private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
