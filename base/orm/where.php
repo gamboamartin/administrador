@@ -686,14 +686,24 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera y gestiona sentencias AND para operaciones SQL.
+     * La función procesa el filtro y las columnas adicionales proporcionadas para generar una sentencia SQL AND.
      *
-     * Devuelve un conjunto de condiciones de tipo AND en forma de sql  con LIKE
-     * @param array $columnas_extra Columnas para subquerys declarados en el modelo
-     * @param array $filtro filtros para la maquetacion de filtros
-     * @return array|string Sentencia del lado WHERE aplicado con %% para textos
+     * @param array $columnas_extra Columnas adicionales para usar en la generación de sentencias.
+     * @param array $filtro Los filtros que se aplicarán a la sentencia SQL.
+     * @return array|string Devuelve una sentencia SQL estructurada como un string.
+     *
+     * @throws errores Si los filtros proporcionados tienen claves numéricas.
+     * Las claves deben hacer referencia a campo de una tabla en formato "tabla.campo".
+     *
+     * @throws errores Si se produce un error durante la construcción de la sentencia SQL.
+     *
      * @example
-     *      $sentencia = $this->genera_and_textos($this->filtro);
-     * @uses modelo_basico
+     * genera_and_textos(['columna1', 'columna2'], ['tabla.campo' => 'valor']);
+     * Esto generará una sentencia SQL AND que puede parecerse a "tabla.campo LIKE '%valor%'".
+     * Nota: El operador predeterminado es 'LIKE'.
+     * @version 16.101.0
      */
     private function genera_and_textos(array $columnas_extra, array $filtro):array|string{
 
