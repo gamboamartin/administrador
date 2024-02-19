@@ -325,6 +325,16 @@ class where{
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Determina si un campo es un subquery basado en la existencia del campo en las columnas extra.
+     *
+     * @param string $campo El campo a evaluar si es un subquery.
+     * @param array $columnas_extra Las columnas extra donde se va a buscar el campo.
+     * @return bool|array Retorna verdadero si el campo es un subquery, en caso contrario retorna falso.
+     *  En el caso de que el campo esté vacío, se retorna un error.
+     * @version 16.107.0
+     */
     private function es_subquery(string $campo, array $columnas_extra): bool|array
     {
         $campo = trim($campo);
