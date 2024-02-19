@@ -121,17 +121,23 @@ class where{
     }
 
     /**
-     * Esta función maneja la comparación de datos dentro del código.
+     * POR DOCUMENTAR EN WIKI
+     * La función comparacion_pura compara los datos pasados con las columnas extra en base a una llave.
      *
-     * @param array $columnas_extra Un array con columnas extra para la comparación.
-     * @param array|string|null $data Datos que se usarán para la comparación. Puede ser un array, un string o null.
-     * @param string $key Clave que se usará para la comparación.
-     * @return array|stdClass Devuelve un array o un stdClass que contiene los resultados de la comparación.
-     * @throws errores En caso de error, lanza una exception.
+     * @param array $columnas_extra Las columnas extra a considerar en la comparación.
+     * @param array|string|null $data Los datos que se van a comparar con las columnas extra, puede ser un array,
+     *  un string o nulo.
+     * @param string $key La llave que se usará en la comparación.
      *
-     * Ejemplo de uso:
+     * @return array|stdClass Retorna un objeto con los resultados de la comparación, si se encuentra algún error
+     *  durante la comparación,
+     * se retornará un objeto con información del error.
      *
-     * $resultado = comparacion_pura($columnas_extra, $data, $key);
+     * @throws errores Si la llave esta vacía.
+     * @throws errores Si los datos están vacíos.
+     * @throws errores Si hay un error al maquetar el campo con los datos y la llave.
+     * @throws errores Si hay un error al validar la maquetación.
+     * @version 16.99.0
      *
      */
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
