@@ -87,6 +87,20 @@ class where{
         return addslashes($campo);
     }
 
+    private function campo_filtro_especial(string $campo, array $columnas_extra)
+    {
+        $es_subquery = $this->es_subquery(campo: $campo,columnas_extra:  $columnas_extra);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al subquery bool',  data:$es_subquery);
+        }
+
+        if($es_subquery){
+            $campo = $columnas_extra[$campo];
+        }
+        return $campo;
+
+    }
+
     /**
      * si existe txt integra coma
      * @param string $txt Texto previo
@@ -282,6 +296,43 @@ class where{
         $data->llave = $in['llave'];
         $data->values = $in['values'];
         return $data;
+    }
+
+    private function data_sql(string $campo, string $campo_filtro, array $filtro)
+    {
+        $data_sql = $this->data_sql_base(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
+        }
+
+        if(isset($filtro[$campo_filtro]['valor_es_campo']) && $filtro[$campo_filtro]['valor_es_campo']){
+            $data_sql = $this->data_sql_campo(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+            if(errores::$error){
+                return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
+            }
+        }
+        return $data_sql;
+
+    }
+    private function data_sql_base(string $campo, string $campo_filtro, array $filtro): string
+    {
+        return " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
+    }
+
+    private function data_sql_campo(string $campo, string $campo_filtro, array $filtro): string
+    {
+        return "'".$campo."'".$filtro[$campo_filtro]['operador'].$filtro[$campo_filtro]['valor'];
+
+    }
+
+    private function es_subquery(string $campo, array $columnas_extra): bool
+    {
+        $es_subquery = false;
+        if(isset($columnas_extra[$campo])){
+            $es_subquery = true;
+        }
+        return $es_subquery;
+
     }
 
     /**
@@ -1288,25 +1339,19 @@ class where{
             return $this->error->error(mensaje:'Error al validar filtro',  data:$valida);
         }
 
-        /**
-         * REFACTORIZAR
-         */
+
         $campo_filtro = $campo;
-        $es_subquery = false;
-        if(isset($columnas_extra[$campo])){
-            $es_subquery = true;
+
+        $campo = $this->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al obtener campo',  data:$campo);
         }
 
-        if($es_subquery){
-            $campo = $columnas_extra[$campo];
+        $data_sql = $this->data_sql(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
         }
 
-        $data_sql = " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
-
-        if(isset($filtro[$campo_filtro]['valor_es_campo']) && $filtro[$campo_filtro]['valor_es_campo']){
-
-            $data_sql = "'".$campo."'".$filtro[$campo_filtro]['operador'].$filtro[$campo_filtro]['valor'];
-        }
 
         return $data_sql;
     }
