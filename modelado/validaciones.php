@@ -126,12 +126,22 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida que los datos de un filtro especial sean correctos para la integracion de un WHERE
-     * @param string $campo Campo en ejecucion para integrarlo al filtro
-     * @param array $filtro Filtro a ajustar de manera recursiva
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida la data del filtro especial proporcionado.
+     *
+     * Esta función recibe dos parámetros, un string que representa el campo y un array que representa el filtro.
+     * Verifica si el campo está vacío, si el valor es un campo en el filtro, si existe un operador y si existe un valor.
+     * Si alguna de estas condiciones no se cumple, la función retorna un error. Si todas las condiciones se cumplen retorna true.
+     *
+     * @param string $campo El nombre del campo a validar.
+     * @param array $filtro El filtro a validar.
+     *
+     * @return true|array Devuelve `true` si la validación es correcta, si no, devuelve un array con información sobre el error.
+     *
+     * @throws errores Si el campo está vacío, si el valor del filtro no es un campo, si no existe un operador o si el valor es un array.
+     * @version 16.104.0
      */
-    public function valida_data_filtro_especial(string $campo, array $filtro): bool|array
+    final public function valida_data_filtro_especial(string $campo, array $filtro): true|array
     {
         if($campo === ''){
             return $this->error->error(mensaje: "Error campo vacio", data: $campo);
