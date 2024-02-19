@@ -1516,6 +1516,12 @@ class columnas{
         return $columnas.' ';
     }
 
+    private function sub_query_str(string $alias, string $sub_query): string
+    {
+        return $sub_query . ' AS ' . $alias;
+
+    }
+
     /**
      *
      * Devuelve un conjunto de campos obtenidos de this->sub_querys
@@ -1544,11 +1550,22 @@ class columnas{
             if((count($columnas_seleccionables) > 0) && !in_array($alias, $columnas_seleccionables, true)) {
                 continue;
             }
-            if ($sub_querys_sql === '' && $columnas === '') {
-                $sub_querys_sql .= $sub_query . ' AS ' . $alias;
-            } else {
-                $sub_querys_sql = ' , ' . $sub_query . ' AS ' . $alias;
+            $sub_query_str = $this->sub_query_str(alias: $alias,sub_query:  $sub_query);
+            if(errores::$error){
+                return $this->error->error(mensaje:"Error generar subquery con alias", data:$sub_query_str);
             }
+
+            $coma = '';
+            if ($sub_querys_sql === '' && $columnas === '') {
+                $coma = ' , ';
+            }
+
+            $sub_querys_sql .= $coma . $sub_query_str;
+            /*if ($sub_querys_sql === '' && $columnas === '') {
+                $sub_querys_sql .= $sub_query_str;
+            } else {
+                $sub_querys_sql .= ' , ' . $sub_query_str;
+            }*/
         }
 
         return $sub_querys_sql;
