@@ -424,6 +424,33 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_es_subquery(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = 'a';
+        $columnas_extra = array();
+        $resultado = $wh->es_subquery($campo, $columnas_extra);
+        //print_r($resultado);exit;
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $columnas_extra['a'] = '';
+        $resultado = $wh->es_subquery($campo, $columnas_extra);
+        //print_r($resultado);exit;
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_filtro_especial_sql(){
         errores::$error = false;
         $wh = new where();

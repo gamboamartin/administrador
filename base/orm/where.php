@@ -325,8 +325,12 @@ class where{
 
     }
 
-    private function es_subquery(string $campo, array $columnas_extra): bool
+    private function es_subquery(string $campo, array $columnas_extra): bool|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
+        }
         $es_subquery = false;
         if(isset($columnas_extra[$campo])){
             $es_subquery = true;
