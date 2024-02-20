@@ -1516,6 +1516,17 @@ class columnas{
         return $columnas.' ';
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Crea una consulta subalterna con su correspondiente alias.
+     *
+     * @param string $alias El alias para la consulta subalterna.
+     * @param string $sub_query La consulta subalterna como cadena.
+     *
+     * @return string|array Devuelve la consulta subalterna con su alias, en caso de que los parámetros sean válidos,
+     * de lo contrario arroja un error.
+     * @version 16.112.0
+     */
     private function sub_query_str(string $alias, string $sub_query): string|array
     {
         $sub_query = trim($sub_query);
