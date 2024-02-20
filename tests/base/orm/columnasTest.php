@@ -1352,6 +1352,20 @@ class columnasTest extends test {
         $this->assertEquals('',$resultado);
         errores::$error = false;
     }
+
+    public function test_sub_query_str(){
+
+        errores::$error = false;
+        $col = new columnas();
+        $col = new liberator($col);
+        $alias = 'b';
+        $sub_query = 'a';
+        $resultado = $col->sub_query_str($alias, $sub_query);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a AS b',$resultado);
+        errores::$error = false;
+    }
     public function test_tabla_renombrada_extra(){
 
         errores::$error = false;

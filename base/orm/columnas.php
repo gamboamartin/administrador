@@ -1516,8 +1516,16 @@ class columnas{
         return $columnas.' ';
     }
 
-    private function sub_query_str(string $alias, string $sub_query): string
+    private function sub_query_str(string $alias, string $sub_query): string|array
     {
+        $sub_query = trim($sub_query);
+        if($sub_query === ''){
+            return $this->error->error(mensaje: 'Error sub_query esta vacio ', data: $sub_query);
+        }
+        $alias = trim($alias);
+        if($alias === ''){
+            return $this->error->error(mensaje: 'Error alias esta vacio ', data: $alias);
+        }
         return $sub_query . ' AS ' . $alias;
 
     }
