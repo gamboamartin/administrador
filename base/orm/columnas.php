@@ -1542,15 +1542,24 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Función que genera subqueries SQL a partir de un modelo.
      *
-     * Devuelve un conjunto de campos obtenidos de this->sub_querys
-     * @param string $columnas columnas previamente generadas en SQL
-     * @param modelo_base $modelo Modelos en ejecucion
-     * @param array $columnas_seleccionables Conjunto de columnas a generar subquerys
+     * @param string $columnas Columnas para las que se generarán las subqueries.
+     * @param modelo_base $modelo Modelo base que contiene las subqueries a generar.
+     * @param array $columnas_seleccionables Opcional. Array de columnas seleccionables que se usarán en las subqueries.
+     * Si el array está vacío, se utilizarán todas las columnas.
      *
-     * @return array|string
-     * @example
-     *      $sub_querys_sql = $this->sub_querys($columnas);
+     * @return array|string Si hay un error, se devuelve un array con información del error. Si no hay errores,
+     * se devuelve una cadena con las subqueries SQL generadas.
+     *
+     * Los errores pueden ser:
+     * - Subquery vacía.
+     * - Alias vacío.
+     * - Alias que es un número.
+     * - Error al generar subquery con alias.
+     *
+     * @version 16.113.0
      */
     final public function sub_querys(string $columnas, modelo_base $modelo,
                                array $columnas_seleccionables = array()):array|string{
@@ -1580,11 +1589,6 @@ class columnas{
             }
 
             $sub_querys_sql .= $coma . $sub_query_str;
-            /*if ($sub_querys_sql === '' && $columnas === '') {
-                $sub_querys_sql .= $sub_query_str;
-            } else {
-                $sub_querys_sql .= ' , ' . $sub_query_str;
-            }*/
         }
 
         return $sub_querys_sql;
