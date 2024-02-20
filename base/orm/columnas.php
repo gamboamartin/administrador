@@ -1171,7 +1171,6 @@ class columnas{
      *
      * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT obtenidas de
      *      this->columnas_extra this->columnas_extra debe ser un conjunto de subquerys
-     * @version 1.45.14
      * @param array $columnas columnas a mostrar y obtener en el sql
      * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
      * @throws errores subquerys mal formados
