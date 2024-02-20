@@ -746,7 +746,6 @@ class init{
      * @param string $name_model Nombre del modelo
      * @param string $namespace_paquete Paquete
      * @return array
-     * @version 2.101.9
      */
     private function maqueta_key_select_input(array  $selects, string $name_model, string $namespace_paquete): array
     {
@@ -1319,7 +1318,6 @@ class init{
      * @param array $init_data Datos inicializados
      * @param array $selects Selectores de front
      * @return array
-     * @version 6.26.0
      */
     final public function select_key_input(array $init_data, array $selects): array
     {
