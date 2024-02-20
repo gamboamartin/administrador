@@ -92,6 +92,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     public array $campos_entidad = array();
 
     protected bool $aplica_transacciones_base = true;
+    public array $letras = array();
 
 
     /**
@@ -162,9 +163,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $_2027 = array('numero_texto'=>'2027','numero'=>2027,'nombre'=>'DOS MIL VIENTISIETE','abreviado'=>27);
         $_2028 = array('numero_texto'=>'2028','numero'=>2028,'nombre'=>'DOS MIL VIENTIOCHO','abreviado'=>28);
         $_2029 = array('numero_texto'=>'2029','numero'=>2029,'nombre'=>'DOS MIL VIENTINUEVE','abreviado'=>29);
-        $_2030 = array('numero_texto'=>'2023','numero'=>2023,'nombre'=>'DOS MIL TREINTA','abreviado'=>30);
+        $_2030 = array('numero_texto'=>'2030','numero'=>2030,'nombre'=>'DOS MIL TREINTA','abreviado'=>30);
         $this->year['espaniol'] = array(2019=>$_2019,2020=>$_2020,2021=>$_2021,2022=>$_2022,2023=>$_2023,2024=>$_2024,
             2025=>$_2025,2026=>$_2026,2027=>$_2027,2028=>$_2028,2029=>$_2029,2030=>$_2030);
+
+
+        $this->letras = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S',
+            'T','U','V','W','X','Y','Z');
 
 
     }

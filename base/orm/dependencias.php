@@ -15,9 +15,16 @@ class dependencias{
     }
 
     /**
-     * Ajusta los nombres de los modelos dependendientes
-     * @param string $name_modelo
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Método privado que ajusta el valor del nombre del modelo
+     * proporcionado como argumento.
+     *
+     * @param string $name_modelo Nombre del modelo a ajustar.
+     *
+     * @return string|array Devuelve el nombre del modelo ajustado o un array conteniendo información de error.
+     *
+     * @throws errores Si el $name_modelo está vacío.
+     * @version 16.111.0
      */
     private function ajusta_modelo_comp(string $name_modelo): string|array
     {
