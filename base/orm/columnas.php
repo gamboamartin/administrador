@@ -1168,16 +1168,30 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función es responsable de generar columnas adicionales para una consulta SQL en base a un conjunto de
+     * columnas proporcionadas y un modelo específico.
      *
-     * Funcion que genera conjunto de columnas en forma de sql para ser utilizada en un SELECT obtenidas de
-     *      this->columnas_extra this->columnas_extra debe ser un conjunto de subquerys
-     * @param array $columnas columnas a mostrar y obtener en el sql
-     * @return array|string string en forma de sql con los datos de las columnas a ejecutar SELECT
-     * @throws errores subquerys mal formados
-     * @throws errores si key de $this->columnas_extra no es un txt
-     * @throws errores si sql de $this->columnas_extra[key] viene vacio
-     *@example
-     * $columnas_extra_sql = $this->genera_columnas_extra();
+     * @param array $columnas Un array de columnas para las que se generarán columnas adicionales.
+     * @param modelo_base $modelo Una instancia del modelo base que se usa para la generación de las columnas adicionales.
+     * @return array|string Retorna una cadena SQL de columnas generadas, o un array de mensaje de error y datos
+     * correlacionados en caso de error.
+     *
+     * @throws errores Esta función puede lanzar una excepción si alguna de las condiciones para el nombre de las
+     * subqueries no es cumplida:
+     * - Si el nombre de la subquery es numérico.
+     * - Si el nombre de la subquery está vacío.
+     * - Si la sql de la subquery está vacía.
+     *
+     * @example
+     * $model = new modelo_base();
+     * $columnas = ['nombre', 'apellido'];
+     * echo genera_columnas_extra($columnas, $model);
+     *
+     * Este código imprimirá una cadena de SQL que contiene las columnas adicionales construidas a partir de las
+     * columnas proporcionadas y el modelo dado,
+     * o imprimirá un mensaje de error con los datos relacionados, si alguna de las condiciones no se cumple.
+     * @version
      */
     final public function genera_columnas_extra(array $columnas, modelo_base $modelo):array|string{//FIN
         $columnas_sql = '';

@@ -1084,7 +1084,7 @@ class columnasTest extends test {
         errores::$error = false;
         $col = new columnas();
         $modelo = new adm_seccion($this->link);
-        $col = new liberator($col);
+        //$col = new liberator($col);
         $columnas = array();
         $resultado = $col->genera_columnas_extra($columnas,$modelo);
         $this->assertIsString($resultado);
