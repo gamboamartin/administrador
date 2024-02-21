@@ -371,9 +371,9 @@ class validaciones extends validacion{
      * Valida un regex basado en el tipo de campo
      * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
      * @param array $registro_upd
-     * @return bool|array
+     * @return true|array
      */
-    private function valida_regex(array $tipo_campos, array $registro_upd): bool|array
+    private function valida_regex(array $tipo_campos, array $registro_upd): true|array
     {
         foreach ($tipo_campos as $campo =>$tipo_campo){
             if(!isset($registro_upd[$campo])){
@@ -421,10 +421,10 @@ class validaciones extends validacion{
         }
         $valida = (new validacion())->valida_pattern(key: $tipo_campo,txt:  $registro_upd[$campo]);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar',data:  $valida);
+            return $this->error->error(mensaje: 'Error al validar ',data:  $valida);
         }
         if(!$valida){
-            return $this->error->error(mensaje: 'Error al validar '.$campo.' debe tener formato'.$tipo_campo,
+            return $this->error->error(mensaje: 'Error al validar '.$campo.' debe tener formato '.$tipo_campo,
                 data: $registro_upd[$campo]);
         }
         return true;

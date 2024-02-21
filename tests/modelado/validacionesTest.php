@@ -491,6 +491,71 @@ class validacionesTest extends test {
 
     }
 
+    public function test_valida_regex(): void
+    {
+        errores::$error = false;
+        $val = new validaciones();
+        $val = new liberator($val);
+
+        $registro_upd = array();
+        $tipo_campos = array();
+        $resultado = $val->valida_regex($tipo_campos, $registro_upd);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+        $registro_upd = array();
+        $tipo_campos = array();
+        $tipo_campos[] = '';
+        $resultado = $val->valida_regex($tipo_campos, $registro_upd);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+        $registro_upd = array();
+        $tipo_campos = array();
+        $tipo_campos['a'] = '';
+        $resultado = $val->valida_regex($tipo_campos, $registro_upd);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+        $registro_upd = array();
+        $tipo_campos = array();
+        $tipo_campos['a'] = '';
+        $registro_upd['a'] = '';
+        $resultado = $val->valida_regex($tipo_campos, $registro_upd);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+        $registro_upd = array();
+        $tipo_campos = array();
+        $tipo_campos['a'] = 'id';
+        $registro_upd['a'] = 'z';
+        $resultado = $val->valida_regex($tipo_campos, $registro_upd);
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertIsArray($resultado);
+
+        errores::$error = false;
+        $registro_upd = array();
+        $tipo_campos = array();
+        $tipo_campos['a'] = 'id';
+        $registro_upd['a'] = '1';
+        $resultado = $val->valida_regex($tipo_campos, $registro_upd);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
     public function test_valida_regex_campo(): void
     {
         errores::$error = false;

@@ -1845,6 +1845,8 @@ class modelo extends modelo_base {
 
     final public function modifica_bd_base(array $registro, int $id, bool $reactiva = false)
     {
+        $registro_original = $registro;
+        $registro_original = serialize($registro_original);
         if($this->usuario_id <=0){
             return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
         }
@@ -1858,10 +1860,10 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al limpiar campos',data: $registro);
         }
 
-
         $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar',data: $init);
+            return $this->error->error(mensaje: 'Error al inicializar registro original '.$registro_original.
+                ' del modelo '.$this->tabla, data: $init);
         }
 
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd,
