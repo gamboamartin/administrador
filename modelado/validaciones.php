@@ -515,14 +515,21 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida los elementos basicos de un upd
-     * @param int $id Identificador a modificar
-     * @param array $registro_upd Registro a modificar
-     * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
-     * @param bool $valida_row_vacio
-     * @return array|bool
-     * @author mgamboa
-     * @fecha 2022-08-08 12:27
+     * POR DOCUMENTAR EN WIKI
+     * Esta función valida los datos del registro que se va a actualizar.
+     *
+     * @param int $id Id del registro que se va a actualizar. Debe ser mayor que 0.
+     * @param array $registro_upd Array con los datos del registro a actualizar.
+     * @param array $tipo_campos (opcional) Array con los tipos de campos para cada dato del registro que se va a
+     *  actualizar.
+     * @param bool $valida_row_vacio (opcional) Valor para indicar si se debe validar que el registro no debe ser
+     * un array vacío. Por defecto el valor es verdadero (true).
+     *
+     * @return bool|array Retorna verdadero (true) si la validación es correcta. Si la validación falla,
+     * retorna un array con la información del error.
+     *
+     * @throws errores Si ocurre algún error durante la validación.
+     * @version 16.124.0
      */
     final public function valida_upd_base(int $id, array $registro_upd, array $tipo_campos = array(),
                                           bool $valida_row_vacio = true): bool|array

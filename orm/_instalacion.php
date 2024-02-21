@@ -1544,6 +1544,9 @@ class _instalacion
     {
         $upds = array();
         foreach ($registros as $registro){
+            if(!isset($registro[$campo])){
+                continue;
+            }
             if((int)$registro[$campo] === 0){
                 $upd = $this->upd_row_default(campo: $campo,default:  $default,modelo:  $modelo,registro:  $registro);
                 if(errores::$error){
