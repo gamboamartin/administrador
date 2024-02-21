@@ -291,11 +291,20 @@ class columnas{
     }
 
     /**
-     * Elimina los campos no actualizables de un modelo
-     * @version 1.76.17
-     * @param array $campos_no_upd viene de modelo campos_no_upd
-     * @param array $registro Arreglo de tipo registro a modificar
-     * @return array Registro ajustado
+     * POR DOCUMENTAR EN WIKI
+     * Este método recibe dos arrays $campos_no_upd y $registro y devuelve un array $registro después de eliminar
+     * elementos que existen en ambos arrays.
+     * El propósito principal de este método es filtrar ciertos campos de un registro que no se deben actualizar.
+     *
+     * @param array $campos_no_upd Array que contiene los nombres de los campos que no deben actualizarse.
+     * @param array $registro Array que contiene el registro original (por ejemplo, una fila de la base de datos).
+     *
+     * @return array $registro Devuelve el array original $registro después de eliminar aquellos elementos cuyos
+     * nombres de campo estaban presentes en el array $campos_no_upd.
+     *
+     * @throws errores
+     *       Se arroja una excepción con un mensaje de error si el $campo_no_upd está vacío o si es numérico.
+     * @version 16.119.0
      */
     final public function campos_no_upd(array $campos_no_upd, array $registro): array
     {

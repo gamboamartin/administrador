@@ -625,7 +625,10 @@ class inicializacion{
 
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos del modelo '.$modelo->tabla,data: $valida);
+            $datos = serialize($registro);
+            return $this->error->error(
+                mensaje: 'Error al validar datos del modelo '.$modelo->tabla.' del id '.$id.' datos '.$datos,
+                data: $valida);
         }
 
         $data = new stdClass();
