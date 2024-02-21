@@ -410,7 +410,8 @@ class _instalacion
 
     }
 
-    final public function campo_status(stdClass $campos, string $name_campo, string $default = 'inactivo'): array|stdClass
+    final public function campo_status(
+        stdClass $campos, string $name_campo, string $default = 'inactivo'): array|stdClass
     {
         $name_campo = trim($name_campo);
         if($name_campo === ''){
