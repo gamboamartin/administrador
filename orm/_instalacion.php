@@ -27,6 +27,37 @@ class _instalacion
 
     }
 
+    private function actualiza_defaults(stdClass $atributos, string $campo, string $default)
+    {
+        $upds = array();
+        if($default !== ''){
+            if(isset($atributos->modelo)){
+                $upds = $this->actualiza_rows_atributo(campo: $campo,default:  $default,
+                    modelo:  $atributos->modelo);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al actualizar rows',data: $upds);
+                }
+            }
+        }
+        return $upds;
+
+    }
+    private function actualiza_rows_atributo(string $campo, string $default, modelo $modelo)
+    {
+
+        $registros = $modelo->registros(columnas_en_bruto: true);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener registros',data: $registros);
+        }
+
+        $upds = $this->upd_rows_default(campo: $campo,default:  $default,modelo:  $modelo,registros:  $registros);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualizar rows',data: $upds);
+        }
+        return $upds;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Método para agregar una columna a una tabla en la base de datos.
@@ -889,6 +920,9 @@ class _instalacion
         $results = array();
         foreach ($foraneas as $campo=>$atributos){
 
+            if(is_string($atributos)){
+                $atributos = new stdClass();
+            }
             $default = '';
             if(isset($atributos->default)){
                 $default = trim($atributos->default);
@@ -902,33 +936,11 @@ class _instalacion
                 return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
             }
 
-            if($default !== ''){
-                /**
-                 * refactoriza
-                 */
-                if(isset($atributos->modelo)){
-                    /**
-                     * @var modelo $modelo;
-                     */
-                    $modelo = $atributos->modelo;
-                    $registros = $modelo->registros(columnas_en_bruto: true);
-                    if(errores::$error){
-                        return $this->error->error(mensaje: 'Error al obtener registros',data: $registros);
-                    }
-
-                    foreach ($registros as $registro){
-                        if((int)$registro[$campo] === 0){
-                            $registro_upd = array();
-                            $registro_upd[$campo] = $default;
-                            $upd = $modelo->modifica_bd_base(registro: $registro_upd, id: $registro['id']);
-                            if(errores::$error){
-                                return $this->error->error(mensaje: 'Error al actualiza row',data: $upd);
-                            }
-
-                        }
-                    }
-                }
+            $upds = $this->actualiza_defaults(atributos: $atributos,campo:  $campo,default:  $default);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al actualizar rows',data: $upds);
             }
+
 
             $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default,
                 name_indice_opt: $name_indice_opt);
@@ -1516,7 +1528,33 @@ class _instalacion
 
     }
 
+    private function upd_row_default(string $campo, string $default, modelo $modelo, array $registro)
+    {
+        $registro_upd = array();
+        $registro_upd[$campo] = $default;
+        $upd = $modelo->modifica_bd_base(registro: $registro_upd, id: $registro['id'], valida_row_vacio: false);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al actualiza row',data: $upd);
+        }
+        return $upd;
 
+    }
+
+    private function upd_rows_default(string $campo, string $default, modelo $modelo, array $registros)
+    {
+        $upds = array();
+        foreach ($registros as $registro){
+            if((int)$registro[$campo] === 0){
+                $upd = $this->upd_row_default(campo: $campo,default:  $default,modelo:  $modelo,registro:  $registro);
+                if(errores::$error){
+                    return $this->error->error(mensaje: 'Error al actualizar row',data: $upd);
+                }
+                $upds[] = $upd;
+            }
+        }
+        return $upds;
+
+    }
 
     /**
      * POR DOCUMENTAR EN WIKI

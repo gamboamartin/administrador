@@ -1843,7 +1843,7 @@ class modelo extends modelo_base {
         return $resultado;
     }
 
-    final public function modifica_bd_base(array $registro, int $id, bool $reactiva = false)
+    final public function modifica_bd_base(array $registro, int $id, bool $reactiva = false, bool $valida_row_vacio = true)
     {
         $registro_original = $registro;
         $registro_original = serialize($registro_original);
@@ -1866,8 +1866,9 @@ class modelo extends modelo_base {
                 ' del modelo '.$this->tabla, data: $init);
         }
 
+
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd,
-            tipo_campos: $this->tipo_campos);
+            tipo_campos: $this->tipo_campos, valida_row_vacio: $valida_row_vacio);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
         }

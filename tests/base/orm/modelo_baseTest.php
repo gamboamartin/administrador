@@ -291,6 +291,48 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_extra_columns()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+
+        $columnas = array();
+        $columnas_seleccionables = array();
+        $columnas_sql = '';
+        $con_sq = true;
+
+        $resultado = $mb->extra_columns($columnas, $columnas_seleccionables, $columnas_sql, $con_sq);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->sub_querys_sql);
+        $this->assertEquals('', $resultado->columnas_extra_sql);
+        errores::$error = false;
+
+
+        $mb = new adm_accion($this->link);
+        $mb->columnas_extra['a'] = 'a';
+        $mb = new liberator($mb);
+
+        $columnas = array();
+        $columnas_seleccionables = array();
+        $columnas_sql = '';
+        $con_sq = true;
+
+        $resultado = $mb->extra_columns($columnas, $columnas_seleccionables, $columnas_sql, $con_sq);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->sub_querys_sql);
+        $this->assertEquals('(SELECT COUNT(*) FROM adm_accion_grupo WHERE adm_accion_grupo.adm_accion_id = adm_accion.id) AS adm_accion_n_permisos,a AS a', $resultado->columnas_extra_sql);
+        errores::$error = false;
+
+    }
+
     public function test_ds_init_no_codigo()
     {
 

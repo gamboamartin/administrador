@@ -368,10 +368,22 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida un regex basado en el tipo de campo
-     * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
-     * @param array $registro_upd
-     * @return true|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida cada campo de entrada contra una expresión regular.
+     *
+     * Esta función recorre cada campo en $tipo_campos y les aplica una validación.
+     * Si el campo no está en $registro_upd o está vacío, se omite la validación para ese campo.
+     * De lo contrario, se invoca a la función `valida_regex_campo` con parametros correspondientes.
+     * Si `valida_regex_campo` causa un error, se regresa el error.
+     * Si no hay errores, se regresa true.
+     *
+     * @param array $tipo_campos Un array asociativo donde cada clave es el nombre de un campo y su valor
+     *  una expresión regular para la validación.
+     * @param array $registro_upd Un array asociativo que contiene el estado actual del registro. Cada clave en
+     * este array corresponde con el nombre del campo y su valor es el valor del campo.
+     * @return true|array Regresa un valor verdadero (TRUE) si todas las validaciones son exitosas, de lo
+     * contrario se devuelve un array de errores.
+     * @version 16.123.0
      */
     private function valida_regex(array $tipo_campos, array $registro_upd): true|array
     {
@@ -507,17 +519,21 @@ class validaciones extends validacion{
      * @param int $id Identificador a modificar
      * @param array $registro_upd Registro a modificar
      * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
+     * @param bool $valida_row_vacio
      * @return array|bool
      * @author mgamboa
      * @fecha 2022-08-08 12:27
      */
-    final public function valida_upd_base(int $id, array $registro_upd, array $tipo_campos = array()): bool|array
+    final public function valida_upd_base(int $id, array $registro_upd, array $tipo_campos = array(),
+                                          bool $valida_row_vacio = true): bool|array
     {
         if($id <=0){
             return $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $id);
         }
-        if(count($registro_upd) === 0){
-            return $this->error->error(mensaje: 'El registro no puede venir vacio',data: $registro_upd);
+        if($valida_row_vacio) {
+            if (count($registro_upd) === 0) {
+                return $this->error->error(mensaje: 'El registro no puede venir vacio', data: $registro_upd);
+            }
         }
         $valida_regex = $this->valida_regex(tipo_campos: $tipo_campos,registro_upd: $registro_upd);
         if(errores::$error){

@@ -608,11 +608,12 @@ class inicializacion{
      * @param int $id Identificador del modelo a actualizar
      * @param modelo $modelo Modelo en ejecucion
      * @param array $registro Registro a con datos a actualizar
+     * @param bool $valida_row_vacio
      * @return array|stdClass
      * @author mgamboa
      * @fecha 2022-08-08 13:17
      */
-    final public function init_upd(int $id, modelo $modelo, array $registro): array|stdClass
+    final public function init_upd(int $id, modelo $modelo, array $registro, bool $valida_row_vacio = true): array|stdClass
     {
         $registro_original = $registro;
         $registro = (new columnas())->campos_no_upd(campos_no_upd: $modelo->campos_no_upd, registro: $registro);
@@ -624,7 +625,7 @@ class inicializacion{
         $modelo->registro_upd = $registro;
         $modelo->registro_id = $id;
 
-        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd);
+        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd, valida_row_vacio: $valida_row_vacio);
         if(errores::$error){
             $datos = serialize($registro);
             $registro_original = serialize($registro_original);
