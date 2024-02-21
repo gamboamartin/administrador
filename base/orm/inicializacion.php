@@ -614,6 +614,7 @@ class inicializacion{
      */
     final public function init_upd(int $id, modelo $modelo, array $registro): array|stdClass
     {
+        $registro_original = $registro;
         $registro = (new columnas())->campos_no_upd(campos_no_upd: $modelo->campos_no_upd, registro: $registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ajustar camp no upd',data: $registro);
@@ -626,9 +627,12 @@ class inicializacion{
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd);
         if(errores::$error){
             $datos = serialize($registro);
-            return $this->error->error(
-                mensaje: 'Error al validar datos del modelo '.$modelo->tabla.' del id '.$id.' datos '.$datos,
-                data: $valida);
+            $registro_original = serialize($registro_original);
+            $mensaje = "Error al validar datos del modelo ";
+            $mensaje .= $modelo->tabla." del id $id";
+            $mensaje .= " registro procesado $datos";
+            $mensaje .= " registro original $registro_original";
+            return $this->error->error(mensaje: $mensaje, data: $valida);
         }
 
         $data = new stdClass();

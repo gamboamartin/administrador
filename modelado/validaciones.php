@@ -391,11 +391,20 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida un regex con patter de campo
-     * @param string $campo Campo a validar
-     * @param array $registro_upd Registro a validar
-     * @param string $tipo_campo Tipo de campo para aplicacion de regex
-     * @return true|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida un campo especificado en el arreglo de registros proporcionado según un patrón especificado en $tipo_campo.
+     *
+     * @param string $campo Nombre del campo del registro a validar.
+     * @param array $registro_upd Arreglo del registro que contiene el campo a validar.
+     * @param string $tipo_campo Patrón de la expresión regular que se va a utilizar para la validación.
+     *
+     * @return true|array Devuelve true si la validación es exitosa. Si hay un error, devuelve un arreglo con la información del error.
+     *
+     * @throws errores Si $campo está vacío, si $tipo_campo está vacío,
+     *               si el campo especificado no existe en el registro proporcionado $registro_upd,
+     *               si ocurre un error durante la validación.
+     *
+     * @version 16.120.0
      */
     private function valida_regex_campo(string $campo, array $registro_upd, string $tipo_campo): true|array
     {
