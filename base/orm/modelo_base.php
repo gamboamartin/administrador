@@ -434,6 +434,35 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    private function columnas_data(string $columnas_extra_sql, string $columnas_sql, string $sub_querys_sql): stdClass
+    {
+        $sub_querys_sql = trim($sub_querys_sql);
+        $columnas_extra_sql = trim($columnas_extra_sql);
+        $columnas_sql = trim($columnas_sql);
+
+        $columns_data = new stdClass();
+        $columns_data->columnas_sql = $columnas_sql;
+        $columns_data->sub_querys_sql = $sub_querys_sql;
+        $columns_data->columnas_extra_sql = $columnas_extra_sql;
+
+        return $columns_data;
+
+    }
+
+    private function columns_final(string $column_data, string $columns_final): string
+    {
+        if($columns_final === ''){
+            $columns_final.=$column_data;
+        }
+        else{
+            if($column_data !==''){
+                $columns_final = $columns_final.','.$column_data;
+            }
+        }
+        return $columns_final;
+
+    }
+
     /**
      * Inicializa los elementos para una transaccion
      * @param array $data Datos de campos a automatizar
@@ -676,6 +705,32 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    private function extra_columns(array $columnas, array $columnas_seleccionables, string $columnas_sql, bool $con_sq)
+    {
+        $sub_querys_sql = '';
+        $columnas_extra_sql = '';
+        if($con_sq) {
+            $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
+                columnas_seleccionables: $columnas_seleccionables);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla, data: $sub_querys_sql);
+            }
+
+            $columnas_extra_sql = (new columnas())->genera_columnas_extra(columnas: $columnas, modelo: $this);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql);
+            }
+        }
+
+        $data = new stdClass();
+        $data->sub_querys_sql = $sub_querys_sql;
+        $data->columnas_extra_sql = $columnas_extra_sql;
+
+        return $data;
+
+
+    }
+
     /**
      * Devuelve un array que contiene un rango de fechas con fecha inicial y final
      *
@@ -706,6 +761,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
+    }
+
+    private function genera_columns_final(stdClass $columns_data)
+    {
+        $columns_final = '';
+        foreach ($columns_data as $column_data){
+            $column_data = trim($column_data);
+            $columns_final = trim($columns_final);
+
+            $columns_final = $this->columns_final(column_data: $column_data,columns_final:  $columns_final);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al integrar columns_final', data: $columns_final);
+            }
+        }
+        return $columns_final;
+
     }
 
     /**
@@ -835,9 +906,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
                                                 array $extra_join = array(),
                                                 array $renombradas = array()):array|string{
 
-        /**
-         * REFACTORIZAR
-         */
 
         $this->tabla = str_replace('models\\','',$this->tabla);
 
@@ -858,52 +926,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }
 
-        $sub_querys_sql = '';
-        $columnas_extra_sql = '';
-        if($con_sq) {
-            $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
-                columnas_seleccionables: $columnas_seleccionables);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla, data: $sub_querys_sql);
-            }
-
-            $columnas_extra_sql = (new columnas())->genera_columnas_extra(columnas: $columnas, modelo: $this);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_extra_sql);
-            }
-
+        $columns_final = $this->integra_columns_final(columnas: $columnas,
+            columnas_seleccionables:  $columnas_seleccionables,columnas_sql:  $columnas_sql,
+            con_sq:  $con_sq,count:  $count);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar columns_final', data: $columns_final);
         }
-
-        $sub_querys_sql = trim($sub_querys_sql);
-        $columnas_extra_sql = trim($columnas_extra_sql);
-        $columnas_sql = trim($columnas_sql);
-
-        $columns_data = new stdClass();
-        $columns_data->columnas_sql = $columnas_sql;
-        $columns_data->sub_querys_sql = $sub_querys_sql;
-        $columns_data->columnas_extra_sql = $columnas_extra_sql;
-
-
-        $columns_final = '';
-        foreach ($columns_data as $column_data){
-            $column_data = trim($column_data);
-            $columns_final = trim($columns_final);
-
-            if($columns_final === ''){
-                $columns_final.=$column_data;
-            }
-            else{
-                if($column_data !==''){
-                    $columns_final = $columns_final.','.$column_data;
-                }
-            }
-
-        }
-
-        if($count){
-            $columns_final = "COUNT(*) AS total_registros";
-        }
-
 
         return /** @lang MYSQL */ "SELECT $columns_final FROM $tablas";
     }
@@ -1126,6 +1154,33 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    private function integra_columns_final(array $columnas, array $columnas_seleccionables, string $columnas_sql, bool $con_sq, bool $count)
+    {
+        $extra_columns = $this->extra_columns(columnas: $columnas,columnas_seleccionables:  $columnas_seleccionables,
+            columnas_sql:  $columnas_sql,con_sq:  $con_sq);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar extra_columns', data: $extra_columns);
+        }
+
+
+        $columns_data = $this->columnas_data(columnas_extra_sql: $extra_columns->columnas_extra_sql,columnas_sql:  $columnas_sql,
+            sub_querys_sql:  $extra_columns->sub_querys_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al maquetar columnas_data', data: $columns_data);
+        }
+
+        $columns_final = $this->genera_columns_final(columns_data: $columns_data);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar columns_final', data: $columns_final);
+        }
+
+        if($count){
+            $columns_final = "COUNT(*) AS total_registros";
+        }
+
+        return $columns_final;
+
+    }
 
 
     /**
