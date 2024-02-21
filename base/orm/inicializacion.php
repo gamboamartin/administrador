@@ -605,12 +605,10 @@ class inicializacion{
 
     /**
      * Inicializa los datos minimos necesarios para un upd
-     * @version 1.77.17
      * @param int $id Identificador del modelo a actualizar
      * @param modelo $modelo Modelo en ejecucion
      * @param array $registro Registro a con datos a actualizar
      * @return array|stdClass
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-08 13:17
      */
@@ -627,7 +625,7 @@ class inicializacion{
 
         $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd);
         if(errores::$error){
-            return $this->error->error('Error al validar datos',$valida);
+            return $this->error->error(mensaje: 'Error al validar datos del modelo '.$modelo->tabla,data: $valida);
         }
 
         $data = new stdClass();

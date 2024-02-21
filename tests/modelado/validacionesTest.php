@@ -491,6 +491,25 @@ class validacionesTest extends test {
 
     }
 
+    public function test_valida_regex_campo(): void
+    {
+        errores::$error = false;
+        $val = new validaciones();
+        $val = new liberator($val);
+
+        $tipo_campo = 'id';
+        $registro_upd = array();
+        $campo = 'a';
+        $registro_upd['a'] = '1';
+        $resultado = $val->valida_regex_campo($campo, $registro_upd, $tipo_campo);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_valida_tabla_join(): void
     {
         errores::$error = false;

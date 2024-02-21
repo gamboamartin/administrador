@@ -395,10 +395,21 @@ class validaciones extends validacion{
      * @param string $campo Campo a validar
      * @param array $registro_upd Registro a validar
      * @param string $tipo_campo Tipo de campo para aplicacion de regex
-     * @return bool|array
+     * @return true|array
      */
-    private function valida_regex_campo(string $campo, array $registro_upd, string $tipo_campo): bool|array
+    private function valida_regex_campo(string $campo, array $registro_upd, string $tipo_campo): true|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo);
+        }
+        $tipo_campo = trim($tipo_campo);
+        if($tipo_campo === ''){
+            return $this->error->error(mensaje: 'Error el tipo_campo esta vacio',data:  $tipo_campo);
+        }
+        if(!isset($registro_upd[$campo])){
+            return $this->error->error(mensaje: 'Error no existe el campo en el registro '.$campo,data:  $registro_upd);
+        }
         $valida = (new validacion())->valida_pattern(key: $tipo_campo,txt:  $registro_upd[$campo]);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar',data:  $valida);
@@ -488,8 +499,6 @@ class validaciones extends validacion{
      * @param array $registro_upd Registro a modificar
      * @param array $tipo_campos Tipos de campo a verificar aplicacion de regex
      * @return array|bool
-     * @version 1.77.17
-     * @verfuncion 1.2.0 Se integra tipo campos para validar con regex
      * @author mgamboa
      * @fecha 2022-08-08 12:27
      */
