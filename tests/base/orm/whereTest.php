@@ -160,6 +160,24 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_campo_filtro_especial(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = 'a';
+        $columnas_extra = array();
+        $columnas_extra['a'] = 'x';
+        $resultado = $wh->campo_filtro_especial($campo, $columnas_extra);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('x', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_comparacion(){
 
         errores::$error = false;

@@ -89,6 +89,11 @@ class where{
 
     private function campo_filtro_especial(string $campo, array $columnas_extra)
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
+        }
+
         $es_subquery = $this->es_subquery(campo: $campo,columnas_extra:  $columnas_extra);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al subquery bool',  data:$es_subquery);
