@@ -17,7 +17,6 @@ class inicializacion{
 
     /**
      * Ajusta los campos de un registro si estos no tienen campo los quitar del upd
-     * @version 1.79.17
      * @param int $id Identificador del registro
      * @param modelo $modelo Modelo en ejecucion
      * @return array Registro ajustado
@@ -75,7 +74,6 @@ class inicializacion{
     /**
      * Ajusta los elementos de un row a modificar para comparar los campos con valores que ya esten en base de datos
      * no seas actualizados
-     * @version 1.78.18
      * @param string $campo Campo del modelo en ejecucion
      * @param modelo $modelo Modelo en ejecucion
      * @param stdClass $registro_previo Registro antes de ser modificado
@@ -613,7 +611,8 @@ class inicializacion{
      * @author mgamboa
      * @fecha 2022-08-08 13:17
      */
-    final public function init_upd(int $id, modelo $modelo, array $registro, bool $valida_row_vacio = true): array|stdClass
+    final public function init_upd(
+        int $id, modelo $modelo, array $registro, bool $valida_row_vacio = true): array|stdClass
     {
         $registro_original = $registro;
         $registro = (new columnas())->campos_no_upd(campos_no_upd: $modelo->campos_no_upd, registro: $registro);
@@ -625,7 +624,8 @@ class inicializacion{
         $modelo->registro_upd = $registro;
         $modelo->registro_id = $id;
 
-        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd, valida_row_vacio: $valida_row_vacio);
+        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $modelo->registro_upd,
+            valida_row_vacio: $valida_row_vacio);
         if(errores::$error){
             $datos = serialize($registro);
             $registro_original = serialize($registro_original);
