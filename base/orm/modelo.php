@@ -1548,12 +1548,27 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Obtiene el identificador mas usado de una entidad, ej la seccion mas integrada en accion
-     * @param string $entidad_preferida Nombre de la entidad a buscar esta debe ser un externo de this
-     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
-     * @param array $extra_join Join extra a peticion en funciones
-     * @param array $renombradas conjunto de tablas renombradas
-     * @return array|int
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene el id preferido de una entidad.
+     *
+     * Esta función está diseñada para recuperar el identificador preferido (el más frecuentemente utilizado)
+     * de la entidad proporcionada.
+     * Para ello, realiza un conteo en la base de datos y devuelve el identificador que aparece con más frecuencia.
+     *
+     * @param string $entidad_preferida Nombre de la entidad. Debe ser no vacío.
+     * @param array  $extension_estructura Array para definir la estructura extendida de la entidad. Por defecto,
+     * se configura como un array vacío.
+     * @param array  $extra_join Array para especificar joins adicionales en la consulta. Por defecto, se configura como un array vacío.
+     * @param array  $renombradas Array que permite renombrar campos en la consulta. Por defecto, se configura como un array vacío.
+     *
+     * @return int|array Devuelve el identificador de la entidad preferida.
+     * En caso de error, devuelve -1 o el array del error generado.
+     *
+     * @throws errores Si 'entidad_preferida' está vacía,
+     * si ocurre algún error al generar 'joins' o
+     * si hay un error al obtener el 'id' preferido.
+     *
+     * @version 16.128.0
      */
     final public function id_preferido_detalle(string $entidad_preferida, array $extension_estructura = array(),
                                                array $extra_join = array(), array $renombradas = array()): int|array
@@ -1573,7 +1588,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
         }
 
-        $sql = sprintf("SELECT COUNT(*), %s AS %s FROM %s GROUP BY %s 
+        $sql = sprintf(/** @lang MYSQL */ "SELECT COUNT(*), %s AS %s FROM %s GROUP BY %s 
                                   ORDER BY COUNT(*) DESC LIMIT 1;",
             $key_id_preferido, $key_id_preferido_out, $tablas, $key_id_preferido);
 
