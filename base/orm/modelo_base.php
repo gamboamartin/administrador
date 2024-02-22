@@ -445,6 +445,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $columns_data->sub_querys_sql = $sub_querys_sql;
         $columns_data->columnas_extra_sql = $columnas_extra_sql;
 
+
         return $columns_data;
 
     }

@@ -26,8 +26,6 @@ class modelo_baseTest extends test {
         $this->errores = new errores();
     }
 
-
-
     public function test_ajusta_row_select(){
 
 
@@ -210,6 +208,37 @@ class modelo_baseTest extends test {
         $this->assertEquals('z', $resultado['codigo_bis']);
         $this->assertEquals('z Z', $resultado['descripcion_select']);
         $this->assertEquals('z', $resultado['alias']);
+        errores::$error = false;
+    }
+
+    public function test_columnas_data(){
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $columnas_extra_sql = '';
+        $columnas_sql = '';
+        $sub_querys_sql = '';
+        $resultado = $mb->columnas_data($columnas_extra_sql, $columnas_sql, $sub_querys_sql);
+        //PRINT_R($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->columnas_sql);
+        $this->assertEquals('', $resultado->sub_querys_sql);
+        $this->assertEquals('', $resultado->columnas_extra_sql);
+
+        errores::$error = false;
+
+        $columnas_extra_sql = '';
+        $columnas_sql = 'a';
+        $sub_querys_sql = '';
+        $resultado = $mb->columnas_data($columnas_extra_sql, $columnas_sql, $sub_querys_sql);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado->columnas_sql);
+        $this->assertEquals('', $resultado->sub_querys_sql);
+        $this->assertEquals('', $resultado->columnas_extra_sql);
         errores::$error = false;
     }
 
