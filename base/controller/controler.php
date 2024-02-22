@@ -259,7 +259,6 @@ class controler{
      * @param array $keys conjunto de datos a integrar en filtros
      * @param bool $ws out web services JSON
      * @return array|stdClass
-     * @version 1.504.50
      */
     final protected function get_out(bool $header, array $keys, bool $ws): array|stdClass
     {

@@ -161,4 +161,44 @@ class filtrosTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }
+
+    public function test_valida_data_filtro_base(): void
+    {
+
+        errores::$error = false;
+
+        $fl = new filtros();
+        $fl = new liberator($fl);
+
+        $campo = '';
+        $tabla = '';
+
+        $resultado = $fl->valida_data_filtro_base($campo, $tabla);
+        //print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error $campo esta vacio',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $tabla = '';
+
+        $resultado = $fl->valida_data_filtro_base($campo, $tabla);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error $tabla esta vacio',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $tabla = 'v';
+
+        $resultado = $fl->valida_data_filtro_base($campo, $tabla);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        //print_r($resultado);exit;
+        errores::$error = false;
+    }
 }

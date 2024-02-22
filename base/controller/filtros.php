@@ -70,7 +70,6 @@ class filtros{
      * @param array $keys Keys a verificar para asignacion de filtros via GET
      * @param string $seccion
      * @return array
-     * @version 1.117.28
      * @example
      *      $keys['tabla'] = array('id','descripcion');
      *      $filtro = $ctl->asigna_filtro_get(keys:$keys);
@@ -107,8 +106,6 @@ class filtros{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
-
-
 
         $key_filter = $this->key_filter(campo:$campo,tabla:  $tabla);
         if(errores::$error){
@@ -168,7 +165,6 @@ class filtros{
      * @param string $seccion Seccion en ejecucion
      * @param string $tabla Tabla de filtro proveniente de GET
      * @return bool|array
-     * @version 2.41.4
      */
     private function valida_data_filtro(string $campo, string $seccion, string $tabla): bool|array
     {
