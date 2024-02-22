@@ -837,7 +837,7 @@ class _instalacion
 
     private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table)
     {
-        $datas_index = $this->get_data_indices(name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table, table: $table);
+        $datas_index = $this->  get_data_indices(name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table, table: $table);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error obtener datos de indices', data: $datas_index);
         }
@@ -947,7 +947,7 @@ class _instalacion
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al actualizar rows',data: $upds);
             }
-            $result->upds = $upds;
+            //$result->upds = $upds;
 
             $results[] = $result;
 

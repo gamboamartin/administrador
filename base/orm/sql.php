@@ -689,6 +689,17 @@ class sql{
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método genera un nombre para un índice foráneo.
+     *
+     * @param string $name_indice_opt Nombre opcional para el índice foráneo.
+     * @param string $relacion_table Nombre de la tabla de relación.
+     * @param string $table Nombre de la tabla que contiene el índice foráneo.
+     * @return string|array Retorna el nombre generado para el índice foráneo.
+     *                      Si ocurre un error, retorna un array con la descripción del error.
+     * @version 16.132.0
+     */
     final public function name_index_foranea(
         string $name_indice_opt, string $relacion_table, string $table): string|array
     {
