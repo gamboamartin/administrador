@@ -705,7 +705,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function extra_columns(array $columnas, array $columnas_seleccionables, string $columnas_sql, bool $con_sq)
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método extra_columns
+     *
+     * Este método se utiliza para agregar subqueries y columnas adicionales al SQL final.
+     * Esta función genera las sentencias SQL para subquerys y columnas extra, las une y las devuelve.
+     *
+     * @param array $columnas Array de las columnas presentes en el modelo.
+     * @param array $columnas_seleccionables Array de columnas que son seleccionables.
+     * @param string $columnas_sql String de las columnas separadas por comas para la consulta SQL.
+     * @param bool $con_sq Un indicador para decidir si se deben agregar subquerys.
+     *
+     * @return stdClass|array Objeto que contiene las sentencias SQL finales para subquerys y columnas extras.
+     * @version 16.130.0
+     *
+     */
+    private function extra_columns(
+        array $columnas, array $columnas_seleccionables, string $columnas_sql, bool $con_sq): stdClass|array
     {
         $sub_querys_sql = '';
         $columnas_extra_sql = '';
