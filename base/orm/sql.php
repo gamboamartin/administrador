@@ -689,8 +689,18 @@ class sql{
 
     }
 
-    final public function name_index_foranea(string $name_indice_opt, string $relacion_table, string $table): string
+    final public function name_index_foranea(
+        string $name_indice_opt, string $relacion_table, string $table): string|array
     {
+        $relacion_table = trim($relacion_table);
+        if($relacion_table === ''){
+            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+
         $fk = $relacion_table.'_id';
         $name_indice = $table.'_'.$fk;
         $name_indice_opt = trim($name_indice_opt);

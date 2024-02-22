@@ -937,18 +937,20 @@ class _instalacion
                 return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
             }
 
-            $upds = $this->actualiza_defaults(atributos: $atributos,campo:  $campo,default:  $default);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al actualizar rows',data: $upds);
-            }
-
-
             $result = $this->foreign_key_seguro(campo: $campo,table: $table, default: $default,
                 name_indice_opt: $name_indice_opt);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al ajustar foranea', data:  $result);
             }
+
+            $upds = $this->actualiza_defaults(atributos: $atributos,campo:  $campo,default:  $default);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al actualizar rows',data: $upds);
+            }
+            $result->upds = $upds;
+
             $results[] = $result;
+
         }
         return $results;
 

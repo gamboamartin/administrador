@@ -398,6 +398,38 @@ class sqlTest extends test {
 
 
     }
+
+    public function test_name_index_foranea(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+        $table = 'b';
+        $relacion_table = 'a';
+        $name_indice_opt = '';
+
+        $resultado = $sql->name_index_foranea($name_indice_opt, $relacion_table, $table);
+        //print_r($resultado);exit;
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('b_a_id',$resultado);
+
+        errores::$error = false;
+        $table = 'b';
+        $relacion_table = 'a';
+        $name_indice_opt = 'cc';
+
+        $resultado = $sql->name_index_foranea($name_indice_opt, $relacion_table, $table);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('cc',$resultado);
+
+        errores::$error = false;
+
+    }
     public function test_rename_column(): void
     {
         errores::$error = false;
