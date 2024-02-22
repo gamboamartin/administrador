@@ -1447,8 +1447,22 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Modifica especificaciones de una columna existente en la base de datos.
+     *
+     * @param string $campo El nombre de la columna a modificar.
+     * @param string $longitud La nueva longitud o especificaciones de la columna.
+     * @param string $table El nombre de la tabla que contiene la columna a modificar.
+     * @param string $tipo_dato El nuevo tipo de dato de la columna.
+     * @param bool $valida_pep_8 Indica si se deben seguir las reglas del estándar PEP 8 para el nombre de la columna.
+     *
+     * @return stdClass|array Retorna resultado de la ejecución SQL si es exitosa, o alternativamente un
+     * error si ocurre algún problema.
+     * @version 16.127.0
+     */
     final public function modifica_columna(
-        string $campo, string $longitud, string $table, string $tipo_dato, bool $valida_pep_8 = true)
+        string $campo, string $longitud, string $table, string $tipo_dato, bool $valida_pep_8 = true):stdClass|array
     {
         $campo = trim($campo);
         $table = trim($table);
