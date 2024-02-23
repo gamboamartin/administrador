@@ -829,6 +829,26 @@ class _instalacionTest extends test {
             exit;
         }
     }
+
+    public function test_get_data_indices(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $name_indice_opt = '';
+        $relacion_table = 'b';
+        $table = 'a';
+        $resultado = $ins->get_data_indices($name_indice_opt, $relacion_table, $table);
+        //print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+
+    }
     public function test_get_foraneas(): void
     {
 
