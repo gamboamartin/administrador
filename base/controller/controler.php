@@ -377,7 +377,6 @@ class controler{
      * of stdClass or an array representing the error details.
      * @param stdClass|array $error Error de resultado
      * @return void
-     * @version 13.2.0
      */
     private function out_ws_error(stdClass|array $error): void
     {
