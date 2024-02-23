@@ -87,7 +87,21 @@ class where{
         return addslashes($campo);
     }
 
-    private function campo_filtro_especial(string $campo, array $columnas_extra)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función valida el campo proporcionado para ser filtrado y verifica si el campo es parte de una subconsulta.
+     * Si el campo proporcionado está vacío, se retorna un error.
+     * Una verificación adicional se realiza para garantizar si el campo proporcionado pertenece a una subconsulta.
+     *
+     * @param string $campo Representa el campo en el que se aplicará el filtro especial.
+     * @param array $columnas_extra Un array de columnas adicionales que pueden estar presentes en la tabla objetivo.
+     *
+     * @return string|array Retorna el campo de filtro si la validación es exitosa o un objeto de error si hay algún problema.
+     *
+     * @throws errores Puede lanzar una excepción si el campo proporcionado es una subconsulta incorrecta.
+     * @version 16.145.0
+     */
+    private function campo_filtro_especial(string $campo, array $columnas_extra): array|string
     {
         $campo = trim($campo);
         if($campo === ''){
