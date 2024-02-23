@@ -365,7 +365,6 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo a verificar si tiene permiso
      * @param string $seccion Seccion a verificar
      * @return array
-     * @version 10.15.2
      */
     private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
     {
@@ -414,7 +413,6 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo de usuario
      * @param string $seccion Seccion
      * @return bool|array
-     * @version 10.20.2
      */
     private function genera_permiso_valido(string $accion, int $grupo_id, string $seccion): bool|array
     {
@@ -678,7 +676,6 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo a validar
      * @param string $seccion Seccion a validar
      * @return int|array
-     * @version 10.15.2
      */
     private function n_permisos(string $accion, int $grupo_id, string $seccion): int|array
     {
@@ -735,7 +732,6 @@ class adm_accion extends _modelo_children {
      * @param string $accion Accion a verificar
      * @param string $seccion Seccion a verificar
      * @return array|bool
-     * @version 10.22.2
      */
     final public function permiso(string $accion, string $seccion): bool|array
     {
@@ -801,7 +797,6 @@ class adm_accion extends _modelo_children {
      * @param int $grupo_id Grupo a validar
      * @param string $seccion Seccion a validar
      * @return bool|array
-     * @version 10.14.2
      */
     private function valida_data_permiso(string $accion, int $grupo_id, string $seccion): bool|array
     {
@@ -830,7 +825,6 @@ class adm_accion extends _modelo_children {
      * @functions $permiso_valido = $adm_accion->genera_permiso_valido(accion: $accion, grupo_id: $grupo_id,seccion:  $seccion);
      * Verifica y maqueta un "$permiso valido" en base a "$seccion" y "$accion" realizada por el usuario de un grupo. En caso de
      * error lanzará un mensaje
-     * @version 10.21.2
      *
      */
 	private function valida_permiso(string $accion, string $seccion): bool|array
