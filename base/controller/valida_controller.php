@@ -40,7 +40,6 @@ class valida_controller extends base_modelos{
 
     /**
      * Valida que los datos de una seccion de un controlador sean validos
-     * @version 1.98.25
      * @param controler $controler Controlador en ejecucion
      * @return bool|array
      */
@@ -110,8 +109,6 @@ class valida_controller extends base_modelos{
 
     /**
      * Valida los elementos enviado por POST en alta bd
-     * @version 1.210.37
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-07-29 12:20
      * @return bool|array

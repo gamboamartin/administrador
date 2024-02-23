@@ -54,7 +54,6 @@ class normalizacion_ctl{
 
     /**
      * Asigna el valor modo namespace controller a controlador en ejecucion
-     * @version 1.88.19
      * @param controler $controler Controlador en ejecucion
      * @return string|array
      */
@@ -245,7 +244,6 @@ class normalizacion_ctl{
 
     /**
      * Limpia los elementos de los botones
-     * @version 1.98.25
      * @return array
      */
     final public function limpia_post_alta(): array
