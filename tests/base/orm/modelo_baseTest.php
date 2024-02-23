@@ -565,6 +565,23 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_columns_final(){
+
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        $modelo = new liberator($modelo);
+        $columns_data = new stdClass();
+        $columns_data->a = 'a';
+        $resultado = $modelo->genera_columns_final($columns_data);
+        //print_r($resultado);exit;
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        $this->assertEquals('a', $resultado);
+        errores::$error = false;
+    }
+
     public function test_genera_consulta_base(){
 
         errores::$error = false;
