@@ -58,6 +58,26 @@ class controllerTest extends test {
         errores::$error = false;
     }
 
+    public function test_retorno_error(): void
+    {
+
+        errores::$error = false;
+
+        $ctl = new controler($this->link);
+        //$ctl = new liberator($ctl);
+
+        $mensaje = 'a';
+        $data = '';
+        $header = false;
+        $ws = false;
+        $ctl->modelo = new adm_atributo($this->link);
+        $resultado = $ctl->retorno_error($mensaje, $data, $header, $ws);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 
