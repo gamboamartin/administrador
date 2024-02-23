@@ -1374,7 +1374,6 @@ class modelo extends modelo_base {
      * Genera un codigo aleatorio de longitud N
      * @param int $longitud Longitud chars code
      * @return string|array
-     * @version 9.66.1
      */
     final public function get_codigo_aleatorio(int $longitud = 6): string|array
     {
