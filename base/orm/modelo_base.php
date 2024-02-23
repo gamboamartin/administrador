@@ -468,9 +468,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $columns_data;
 
     }
-
     private function columns_final(string $column_data, string $columns_final): string
     {
+        $columns_final = trim ($columns_final);
+        $column_data = trim ($column_data);
         if($columns_final === ''){
             $columns_final.=$column_data;
         }

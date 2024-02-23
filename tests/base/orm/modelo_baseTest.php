@@ -242,6 +242,44 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_columns_final(){
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $column_data = '';
+        $columns_final = '';
+
+        $resultado = $mb->columns_final($column_data, $columns_final);
+        //print_r($resultado);exit;
+        //PRINT_R($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+        errores::$error = false;
+
+        $column_data = 'a';
+        $columns_final = '';
+
+        $resultado = $mb->columns_final($column_data, $columns_final);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a', $resultado);
+        errores::$error = false;
+
+        $column_data = 'a';
+        $columns_final = 'v';
+
+        $resultado = $mb->columns_final($column_data, $columns_final);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('v,a', $resultado);
+        errores::$error = false;
+
+
+    }
+
     public function test_data_base(){
 
         errores::$error = false;
