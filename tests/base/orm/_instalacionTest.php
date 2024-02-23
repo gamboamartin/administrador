@@ -747,6 +747,32 @@ class _instalacionTest extends test
         errores::$error = false;
     }
 
+    public function test_get_data_indices(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $name_indice_opt = '';
+        $relacion_table = 'b';
+        $table = 'a';
+        $resultado = $ins->get_data_indices($name_indice_opt, $relacion_table, $table);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
+        $name_indice_opt = '';
+        $relacion_table = 'adm_seccion';
+        $table = 'adm_accion';
+        $resultado = $ins->get_data_indices($name_indice_opt, $relacion_table, $table);
+        $this->assertNotTrue($resultado);
+        $this->assertIsObject($resultado);
+        $this->assertEquals('adm_accion',$resultado->indices[0]->TABLE_NAME);
+        errores::$error = false;
+
+    }
+
     public function test_index_unique(): void
     {
 
