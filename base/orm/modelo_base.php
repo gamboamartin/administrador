@@ -468,6 +468,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $columns_data;
 
     }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Calcula y aplica la cadena SQL final de columnas al consulta actual en ejecución.
+     *
+     * @param string $column_data Cadena SQL parcial para una columna
+     * @param string $columns_final Cadena SQL actual para todas las columnas
+     *
+     * @return string Cadena SQL final después de agregar $column_data
+     * @version 16.143.0
+     */
     private function columns_final(string $column_data, string $columns_final): string
     {
         $columns_final = trim ($columns_final);
