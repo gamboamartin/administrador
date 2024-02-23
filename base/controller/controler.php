@@ -372,11 +372,13 @@ class controler{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * This function is used to handle and output errors in a web
      * service context. It accepts a parameter which can be an instance
      * of stdClass or an array representing the error details.
      * @param stdClass|array $error Error de resultado
      * @return void
+     * @version 16.138.0
      */
     private function out_ws_error(stdClass|array $error): void
     {
@@ -397,12 +399,22 @@ class controler{
     }
 
     /**
-     * @param string $mensaje
-     * @param mixed $data
-     * @param bool $header
-     * @param bool $ws
-     * @param array $params
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Retorna un error.
+     *
+     * Esta función se encarga de gestionar errores dentro de la aplicación. Recibe un mensaje de error,
+     * datos adicionales, un booleano para determinar si enviar la cabecera HTTP, un booleano para determinar
+     * si se trata de un error de Web Service y un array de parámetros opcionales.
+     *
+     * @param string $mensaje Mensaje de error.
+     * @param mixed $data Datos adicionales del error.
+     * @param bool $header Flag para determinar si enviar la cabecera HTTP.
+     * @param bool $ws Flag para determinar si se trata de un error de Web Service.
+     * @param array $params Parámetros adicionales (opcional).
+     *
+     * @return array Array con informacion del error.
+     * @version 16.138.0
+     *
      */
     final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws,
                                         array $params = array()): array
