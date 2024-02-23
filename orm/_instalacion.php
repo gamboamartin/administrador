@@ -1249,7 +1249,20 @@ class _instalacion
 
     }
 
-    private function get_data_indices(string $name_indice_opt, string $relacion_table,  string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se encarga de obtener los índices de los datos de una tabla determinada.
+     *
+     * @param string $name_indice_opt Nombre del índice opcional.
+     * @param string $relacion_table Nombre de la tabla de relación.
+     * @param string $table Nombre de la tabla.
+     *
+     * @return array|stdClass Retorna un error en caso de que la tabla esté vacía, de que la tabla de relaciones esté vacía,
+     *               de error al obtener índices o de error al obtener el nombre del índice. Si todo es correcto, retorna
+     *               un objeto con los índices obtenidos y el nombre del índice.
+     * @version 16.147.0
+     */
+    private function get_data_indices(string $name_indice_opt, string $relacion_table,  string $table): array|stdClass
     {
         $table = trim($table);
         if($table === ''){
