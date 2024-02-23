@@ -587,6 +587,7 @@ class adm_accionTest extends test {
         errores::$error = false;
 
     }
+
     public function test_permiso_valido(){
 
         errores::$error = false;
@@ -615,8 +616,6 @@ class adm_accionTest extends test {
         $this->assertTrue($resultado);
         errores::$error = false;
     }
-
-
 
     public function test_valida_alta_bd(){
         errores::$error = false;

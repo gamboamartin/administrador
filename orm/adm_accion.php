@@ -792,13 +792,18 @@ class adm_accion extends _modelo_children {
     }
 
     /**
-     * Valida los elementos de entrada de un permiso
-     * @param string $accion Accion a validar
-     * @param int $grupo_id Grupo a validar
-     * @param string $seccion Seccion a validar
-     * @return bool|array
+     * POR DOCUMENTAR EB WIKI
+     * Valida los datos de permiso.
+     * Comprueba si la acción y la sección no están vacías y si el id del grupo es mayor que 0.
+     *
+     * @param  string $accion El nombre de la acción a validar.
+     * @param  int $grupo_id El ID del grupo al que pertenece la acción.
+     * @param  string $seccion La sección a la que pertenece la acción.
+     *
+     * @return true|array Devuelve verdadero si todos los datos son válidos, de lo contrario devuelve un array con la información de error.
+     * @version 16.142.0
      */
-    private function valida_data_permiso(string $accion, int $grupo_id, string $seccion): bool|array
+    private function valida_data_permiso(string $accion, int $grupo_id, string $seccion): true|array
     {
         $accion = trim($accion);
         if($accion === ''){
