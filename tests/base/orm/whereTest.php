@@ -371,6 +371,24 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_sql_base(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = 'c';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = '=>';
+        $filtro['a']['valor'] = '';
+        $resultado = $wh->data_sql_base($campo, $campo_filtro, $filtro);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(" c => '' ", $resultado);
+        errores::$error = false;
+    }
+
     public function test_diferente_de(){
         errores::$error = false;
         $wh = new where();
