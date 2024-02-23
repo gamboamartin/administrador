@@ -434,6 +434,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función columnas_data
+     *
+     * Esta función se encarga de crear un objeto con varias cadenas de consultas SQL necesarias
+     * para interactuar con la base de datos.
+     *
+     * @param string $columnas_extra_sql Representa cadenas de SQL extras para las columnas.
+     * @param string $columnas_sql Representa las cadenas de SQL para las columnas.
+     * @param string $sub_querys_sql Representa las cadenas de SQL para las subconsultas.
+     *
+     * @return stdClass Un objeto con propiedades que contienen las cadenas SQL.
+     *
+     * Las propiedades del objeto retornado son:
+     * - columnas_sql: Contiene la cadena SQL para las columnas.
+     * - sub_querys_sql: Contiene la cadena SQL para las subconsultas.
+     * - columnas_extra_sql: Contiene las cadenas SQL extras para las columnas.
+     * @version 16.135.0
+     */
     private function columnas_data(string $columnas_extra_sql, string $columnas_sql, string $sub_querys_sql): stdClass
     {
         $sub_querys_sql = trim($sub_querys_sql);
