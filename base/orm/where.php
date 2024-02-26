@@ -349,35 +349,22 @@ class where{
      */
     private function data_sql_base(string $campo, string $campo_filtro, array $filtro): string|array
     {
-        $campo_filtro = trim($campo_filtro);
-        if($campo_filtro === ''){
-            return $this->error->error(mensaje:'Error campo_filtro esta vacio',  data:$campo_filtro);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
-        }
-        if(!isset($filtro[$campo_filtro])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.']',  data:$campo);
-        }
-        if(!is_array($filtro[$campo_filtro])){
-            return $this->error->error(mensaje:'Error no es un array $filtro['.$campo_filtro.']',  data:$campo);
-        }
-        if(!isset($filtro[$campo_filtro]['operador'])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][operador]',  data:$campo);
-        }
-        if(!isset($filtro[$campo_filtro]['valor'])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][valor]',  data:$campo);
-        }
-        if(trim(($filtro[$campo_filtro]['operador'])) === ''){
-            return $this->error->error(mensaje:'Error esta vacio $filtro['.$campo_filtro.'][operador]',  data:$campo);
+        $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al validar datos',  data:$valida);
         }
 
         return " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
     }
 
-    private function data_sql_campo(string $campo, string $campo_filtro, array $filtro): string
+    private function data_sql_campo(string $campo, string $campo_filtro, array $filtro): string|array
     {
+
+        $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al validar datos',  data:$valida);
+        }
+
         return "'".$campo."'".$filtro[$campo_filtro]['operador'].$filtro[$campo_filtro]['valor'];
 
     }
@@ -1597,6 +1584,34 @@ class where{
         }
 
         return "$and('$data->fecha' >= $data->campo_1 AND '$data->fecha' <= $data->campo_2)";
+    }
+
+    private function valida_campo_filtro(string $campo, string $campo_filtro, array $filtro): true|array
+    {
+        $campo_filtro = trim($campo_filtro);
+        if($campo_filtro === ''){
+            return $this->error->error(mensaje:'Error campo_filtro esta vacio',  data:$campo_filtro);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
+        }
+        if(!isset($filtro[$campo_filtro])){
+            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.']',  data:$campo);
+        }
+        if(!is_array($filtro[$campo_filtro])){
+            return $this->error->error(mensaje:'Error no es un array $filtro['.$campo_filtro.']',  data:$campo);
+        }
+        if(!isset($filtro[$campo_filtro]['operador'])){
+            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][operador]',  data:$campo);
+        }
+        if(!isset($filtro[$campo_filtro]['valor'])){
+            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][valor]',  data:$campo);
+        }
+        if(trim(($filtro[$campo_filtro]['operador'])) === ''){
+            return $this->error->error(mensaje:'Error esta vacio $filtro['.$campo_filtro.'][operador]',  data:$campo);
+        }
+        return true;
     }
 
     /**

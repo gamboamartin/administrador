@@ -1720,6 +1720,27 @@ class modelo extends modelo_base {
 
     }
 
+    final public function inserta_registro_si_no_existe_filtro(array $registro, array $filtro): array|string|stdClass
+    {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
+        $existe = $this->existe(filtro: $filtro);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
+        }
+        $inserta = 'Id '.$registro['descripcion'].' Ya existe';
+
+        if(!$existe) {
+            $inserta = $this->alta_registro(registro: $registro);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar cat_sat_tipo_persona', data: $inserta);
+            }
+        }
+        return $inserta;
+
+    }
+
     final public function inserta_registros(array $registros)
     {
         if(!$this->aplica_transacciones_base){

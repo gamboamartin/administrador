@@ -389,6 +389,26 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_sql_campo(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $campo = 'v';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = 'c';
+        $filtro['a']['valor'] = '';
+        $resultado = $wh->data_sql_campo($campo, $campo_filtro, $filtro);
+       // print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase("'v'c", $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_diferente_de(){
         errores::$error = false;
         $wh = new where();
