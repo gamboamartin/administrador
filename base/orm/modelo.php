@@ -594,7 +594,6 @@ class modelo extends modelo_base {
 
     /**
      * Genera los datos de una sentencia para WHERE EN SQL
-     * @version 1.147.31
      * @param string $where palabra WHERE si vacio lo genera
      * @param string $sentencia Sentencias previamenete cargadas
      * @param string $campo Campo a cargar filtro de or en SQL
@@ -2574,7 +2573,6 @@ class modelo extends modelo_base {
     /**
      *
      * @param string $sentencia Sentencias previamenete cargadas
-     * @version 1.66.17
      * @param string $campo Campo a cargar filtro de or en SQL
      * @param string $value Valor a comparar
      * @return string|array
