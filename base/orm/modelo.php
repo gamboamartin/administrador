@@ -1374,6 +1374,24 @@ class modelo extends modelo_base {
         return $sql;
     }
 
+    private function genera_where_seguridad(string $where)
+    {
+        $seguridad = (new params_sql())->seguridad(aplica_seguridad:$this->aplica_seguridad,
+            modelo_columnas_extra: $this->columnas_extra,
+            sql_where_previo:  $where);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
+        }
+
+        $where = $this->where_seguridad(seguridad: $seguridad,where:  $where);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
+        }
+
+        return $where;
+
+    }
+
     /**
      * Genera un codigo aleatorio de longitud N
      * @param int $longitud Longitud chars code
@@ -1783,6 +1801,19 @@ class modelo extends modelo_base {
 
     }
 
+    private function integra_where_seguridad(string $consulta, string $where)
+    {
+        $where = $this->genera_where_seguridad(where: $where);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
+        }
+
+        $consulta .= $where;
+
+        return $consulta;
+
+    }
+
 
     /**
      * PHPUNIT
@@ -2133,30 +2164,15 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
         }
 
-        $this->campo_llave === "" ? $where = " WHERE $tabla".".id = $this->registro_id " :
-            $where = " WHERE $tabla".".$this->campo_llave = $this->registro_id ";
-
-
-        $seguridad = (new params_sql())->seguridad(aplica_seguridad:$this->aplica_seguridad,
-            modelo_columnas_extra: $this->columnas_extra,
-            sql_where_previo:  $where);
+        $where = $this->where_inicial(campo_llave: $this->campo_llave,registro_id:  $this->registro_id,tabla:  $tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
+            return $this->error->error(mensaje: 'Error al generar where',data:  $where);
         }
 
-        if($this->aplica_seguridad){
-            $where = trim($where);
-            if($where === ''){
-                $where .= " WHERE $seguridad ";
-            }
-            else{
-                $where .= " AND $seguridad ";
-            }
-            $where = " $where ";
+        $consulta = $this->integra_where_seguridad(consulta: $consulta,where:  $where);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
         }
-
-        $consulta .= $where;
-
 
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados,
             hijo: $hijo);
@@ -2906,5 +2922,53 @@ class modelo extends modelo_base {
 
         return $valida;
     }
+
+    private function where_campo_llave(string $campo_llave, int $registro_id, string $tabla): string
+    {
+        return " WHERE $tabla".".$campo_llave = $registro_id ";
+
+
+    }
+    private function where_id_base(int $registro_id, string $tabla): string
+    {
+        return " WHERE $tabla".".id = $registro_id ";
+    }
+
+    private function where_inicial(string $campo_llave, int $registro_id, string $tabla)
+    {
+        $where_id_base = $this->where_id_base(registro_id: $registro_id,tabla:  $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_id_base);
+        }
+        $where_campo_llave = $this->where_campo_llave(campo_llave: $campo_llave, registro_id: $registro_id, tabla: $tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_id_base);
+        }
+
+        if($this->campo_llave === ""){
+            $where = $where_id_base;
+        }
+        else{
+            $where = $where_campo_llave;
+        }
+        return $where;
+
+    }
+
+    private function where_seguridad(string $seguridad, string $where): string
+    {
+        if($this->aplica_seguridad){
+            $where = trim($where);
+            if($where === ''){
+                $where .= " WHERE $seguridad ";
+            }
+            else{
+                $where .= " AND $seguridad ";
+            }
+            $where = " $where ";
+        }
+        return $where;
+    }
+
 
 }
