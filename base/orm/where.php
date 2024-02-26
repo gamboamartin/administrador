@@ -317,7 +317,21 @@ class where{
         return $data;
     }
 
-    private function data_sql(string $campo, string $campo_filtro, array $filtro)
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una consulta SQL a partir de los parámetros proporcionados.
+     *
+     * @param string $campo Campo de la consulta SQL.
+     * @param string $campo_filtro Campo para el filtrado de la consulta.
+     * @param array $filtro Filtro a aplicar en la consulta.
+     *
+     * @return string|array Retorna el resultado de la consulta SQL o un error si algo va mal.
+     *
+     * @throws errores Error al validar datos o generar la consulta SQL.
+     * @version 16.163.0
+     */
+    private function data_sql(string $campo, string $campo_filtro, array $filtro): array|string
     {
         $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
         if(errores::$error){
