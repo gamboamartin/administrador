@@ -6,8 +6,6 @@ use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
-
-
 class adm_accion extends _modelo_children {
     /**
      * DEBUG INI
@@ -227,6 +225,24 @@ class adm_accion extends _modelo_children {
         return $r_acciones->registros;
     }
 
+    final public function adm_accion_id(string $adm_accion_descripcion, string $adm_seccion_descripcion)
+    {
+        $filtro['adm_accion.descricpion'] = $adm_accion_descripcion;
+        $filtro['adm_seccion.descricpion'] = $adm_seccion_descripcion;
+        $result = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion',data:  $result);
+        }
+        if($result->n_registros === 0){
+            return -1;
+        }
+        if($result->n_registros > 1){
+            return $this->error->error(mensaje: 'Error tienes mas de una accion',data:  $result);
+        }
+        return (int)$result->registros[0]['adm_accion_id'];
+
+    }
+
     /**
      * inserta un registro de tipo accion y agrega permisos a usuarios de tipo root
      * @return array|stdClass con datos del registro insertado
@@ -318,7 +334,6 @@ class adm_accion extends _modelo_children {
 
         return (int)$n_permisos;
     }
-
     public function elimina_bd(int $id): array|stdClass
     {
 

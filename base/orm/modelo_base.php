@@ -1214,7 +1214,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
-    private function integra_columns_final(array $columnas, array $columnas_seleccionables, string $columnas_sql, bool $con_sq, bool $count)
+    private function integra_columns_final(array $columnas, array $columnas_seleccionables, string $columnas_sql,
+                                           bool $con_sq, bool $count)
     {
         $extra_columns = $this->extra_columns(columnas: $columnas,columnas_seleccionables:  $columnas_seleccionables,
             columnas_sql:  $columnas_sql,con_sq:  $con_sq);
@@ -1223,7 +1224,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
 
-        $columns_data = $this->columnas_data(columnas_extra_sql: $extra_columns->columnas_extra_sql,columnas_sql:  $columnas_sql,
+        $columns_data = $this->columnas_data(columnas_extra_sql: $extra_columns->columnas_extra_sql,
+            columnas_sql:  $columnas_sql,
             sub_querys_sql:  $extra_columns->sub_querys_sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al maquetar columnas_data', data: $columns_data);
