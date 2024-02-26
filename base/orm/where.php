@@ -1586,6 +1586,33 @@ class where{
         return "$and('$data->fecha' >= $data->campo_1 AND '$data->fecha' <= $data->campo_2)";
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Comprueba y valida los valores de un campo y un campo de filtro.
+     *
+     * @param string $campo Representa el nombre del campo a validar.
+     * @param string $campo_filtro Es el nombre del campo de filtro.
+     * @param array $filtro Es un array que contiene los filtros a aplicar.
+     *
+     * @return true|array Si la validación es successful, retorna true.
+     *                    En caso contrario, se retorna un array con detalles del error producido.
+     *
+     * @throws errores si algún parámetro no es del tipo esperado.
+     *
+     * Ejemplo de uso:
+     *
+     *      valida_campo_filtro("nombre", "nombre_filtro", array("nombre_filtro" => array("operador" => "igual", "valor" => "Juan")))
+     *
+     * Los posibles errores que retorna son:
+     * - Error campo_filtro esta vacio.
+     * - Error campo esta vacio.
+     * - Error no existe $filtro[campo_filtro].
+     * - Error no es un array $filtro[campo_filtro].
+     * - Error no existe $filtro[campo_filtro][operador].
+     * - Error no existe $filtro[campo_filtro][valor].
+     * - Error esta vacio $filtro[campo_filtro][operador].
+     * @version 16.160.0
+     */
     private function valida_campo_filtro(string $campo, string $campo_filtro, array $filtro): true|array
     {
         $campo_filtro = trim($campo_filtro);
