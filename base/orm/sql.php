@@ -362,6 +362,7 @@ class sql{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera una sentencia SQL que crea una clave foránea (FOREIGN KEY) para una tabla determinada.
      *
      * @param string $table El nombre de la tabla a la que se agregará la clave foránea.
@@ -372,6 +373,7 @@ class sql{
      * @return string|array Devuelve una cadena con la sentencia SQL generada para crear la clave foránea.
      * En caso de error, devuelve un array con información sobre el error.
      * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
+     * @version
      */
     final public function foreign_key(string $table, string $relacion_table, string $name_indice_opt = ''): string|array
     {
