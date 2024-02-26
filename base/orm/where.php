@@ -1389,6 +1389,7 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      *
      * Genera la condicion sql de un filtro especial
      *
@@ -1411,7 +1412,7 @@ class where{
      *      $resultado = maqueta_filtro_especial($campo, $filtro);
      *      $resultado = 'x'> x
      *
-     * @uses modelo_basico->obten_filtro_especial
+     * @version 16.164.0
      */
     private function maqueta_filtro_especial(string $campo, array $columnas_extra, array $filtro):array|string{
         $campo = trim($campo);
