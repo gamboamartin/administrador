@@ -357,6 +357,17 @@ class where{
         return " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Valida el campo del filtro y retorna un string para la consulta SQL o un mensaje de error.
+     *
+     * @param string $campo El campo a validar.
+     * @param string $campo_filtro El campo del filtro a utilizar.
+     * @param array $filtro El array del filtro a aplicar.
+     *
+     * @return string|array Retorna un string formateado para la consulta SQL o un mensaje de error.
+     * @version 16.161.0
+     */
     private function data_sql_campo(string $campo, string $campo_filtro, array $filtro): string|array
     {
 
