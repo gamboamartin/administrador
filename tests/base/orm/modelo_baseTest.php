@@ -910,6 +910,29 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_columns_final()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $columnas = array();
+        $columnas[] = '';
+        $columnas_seleccionables = array();
+        $columnas_seleccionables[] = '';
+        $columnas_sql = 'a';
+        $con_sq = false;
+        $count = true;
+        $resultado = $mb->integra_columns_final($columnas, $columnas_seleccionables, $columnas_sql, $con_sq, $count);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('COUNT(*) AS total_registros', $resultado);
+        errores::$error = false;
+    }
+
     public function test_key_tmp()
     {
 
@@ -1084,7 +1107,6 @@ class modelo_baseTest extends test {
         $this->assertEquals('X', $resultado['descripcion_select']);
         errores::$error = false;
     }
-
     public function test_registro_por_id()
     {
 
@@ -1104,7 +1126,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
 
     }
-
     public function test_result()
     {
 
@@ -1125,7 +1146,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
 
     }
-
     public function test_result_sql()
     {
 
@@ -1146,7 +1166,6 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
     }
-
     public function test_str_replace_first(){
         errores::$error = false;
         $modelo = new modelo_base($this->link);
@@ -1175,12 +1194,6 @@ class modelo_baseTest extends test {
         errores::$error = false;
 
     }
-
-
-
-
-
-
 
     public function test_valida_registro_modelo()
     {

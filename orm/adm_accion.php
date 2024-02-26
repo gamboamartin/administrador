@@ -227,8 +227,8 @@ class adm_accion extends _modelo_children {
 
     final public function adm_accion_id(string $adm_accion_descripcion, string $adm_seccion_descripcion)
     {
-        $filtro['adm_accion.descricpion'] = $adm_accion_descripcion;
-        $filtro['adm_seccion.descricpion'] = $adm_seccion_descripcion;
+        $filtro['adm_accion.descripcion'] = $adm_accion_descripcion;
+        $filtro['adm_seccion.descripcion'] = $adm_seccion_descripcion;
         $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion',data:  $result);
