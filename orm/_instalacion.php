@@ -850,6 +850,18 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método que verifica si existe un índice foráneo en una tabla.
+     *
+     * @param stdClass $datas_index  Contiene los datos del índice a verificar.
+     *                               - $datas_index->indices: Debe ser un array con los índices de la tabla.
+     *                               - $datas_index->name_indice: Nombre del índice a verificar.
+     *
+     * @return bool|array Regresa `true` si el índice existe, `false` si no existe.
+     *                    En caso de error, regresa un array con información del error.
+     * @version 16.156.0
+     */
     private function existe_foreign_base(stdClass $datas_index): bool|array
     {
 
