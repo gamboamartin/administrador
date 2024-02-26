@@ -6,6 +6,7 @@ use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 use stdClass;
+use function PHPUnit\Framework\assertNotTrue;
 
 
 class whereTest extends test {
@@ -1267,6 +1268,97 @@ class whereTest extends test {
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("('2020-01-01' >= a AND '2020-01-01' <= a)",$resultado);
+        errores::$error = false;
+    }
+
+    public function test_valida_campo_filtro(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = '';
+        $campo_filtro = '';
+        $filtro = array();
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error campo_filtro esta vacio',$resultado['mensaje_limpio']);
+        errores::$error = false;
+
+        $campo = '';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error campo esta vacio',$resultado['mensaje_limpio']);
+        errores::$error = false;
+
+        $campo = 'b';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error no existe $filtro[a]',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'b';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a'] = '';
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error no es un array $filtro[a]',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'b';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a'] = array();
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error no existe $filtro[a][operador]',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'b';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = '';
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error no existe $filtro[a][valor]',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'b';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = '';
+        $filtro['a']['valor'] = '';
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error esta vacio $filtro[a][operador]',$resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $campo = 'b';
+        $campo_filtro = 'a';
+        $filtro = array();
+        $filtro['a']['operador'] = 'g';
+        $filtro['a']['valor'] = '';
+        $resultado = $wh->valida_campo_filtro($campo, $campo_filtro, $filtro);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
         errores::$error = false;
     }
 
