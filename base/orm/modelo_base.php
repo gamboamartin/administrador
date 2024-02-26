@@ -945,19 +945,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * Funcion que genera el SQL para un SELECT
-     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto Envia las columnas tal como estan en la bd
-     * @param bool $con_sq Integra las columnas extra si true
-     * @param array $extension_estructura columnas estructura tabla ligada 1 a 1
-     * @param array $renombradas columnas estructura tabla ligadas renombradas
-     * @return array|string string en forma de sql con los datos para la ejecucion de SELECT
-     * @functions $this->obten_columnas_completas($columnas);
-     * @functions $consulta_base->obten_tablas_completas($tabla, $this->columnas);
-     * @functions $sub_querys_sql = $this->sub_querys($columnas);
-     * @example
-     * $consulta = $this->genera_consulta_base($columnas);
+     * POR DOCUMENTAR EN WIKI
+     * Final public function genera_consulta_base() en la clase modelo_base.
+     *
+     * Este método facilita la construcción de consultas SQL básicas. Con base en
+     * los parámetros de entrada, este método genera una consulta que refleja las
+     * necesidades especificadas.
+     *
+     * @param array  $columnas Un array que indica las columnas a seleccionar.
+     * @param array  $columnas_by_table Un array con las columnas agrupadas por tabla.
+     * @param bool   $columnas_en_bruto Flag para indicar si las columnas se usarán en su forma bruta.
+     * @param bool   $con_sq Flag para indicar si la consulta incluirá sub-consultas.
+     * @param bool   $count Flag para indicar si la consulta tendrá una cláusula COUNT.
+     * @param array  $extension_estructura Un array para expandir la estructura.
+     * @param array  $extra_join Un array para especificar joins adicionales.
+     * @param array  $renombradas Un array con columnas renombradas.
+     *
+     * @return array|string Devuelve una cadena que representa la consulta SQL generada o un array de errores si se
+     * produce algún problema.
+     * @version 16.167.0
      */
 
     final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
