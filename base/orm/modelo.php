@@ -2571,11 +2571,14 @@ class modelo extends modelo_base {
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Función privada que genera una sentencia OR en SQL.
      *
-     * @param string $sentencia Sentencias previamenete cargadas
-     * @param string $campo Campo a cargar filtro de or en SQL
-     * @param string $value Valor a comparar
-     * @return string|array
+     * @param string $campo El nombre del campo en la base de datos.
+     * @param string $sentencia La sentencia SQL existente a la cual se añadira la cláusula OR.
+     * @param string $value El valor que está siendo comparado en la cláusula OR.
+     * @return string|array Retorna la sentencia actualizada. Si hay un error, retorna un array con detalles del error.
+     * @version 16.169.0
      */
     private function sentencia_or(string $campo,  string $sentencia, string $value): string|array
     {
