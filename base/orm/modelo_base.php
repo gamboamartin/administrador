@@ -813,7 +813,17 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return array ('fecha_inicial'=>$fechas->fecha_inicial,'fecha_final'=>$fechas->fecha_final);
     }
 
-    private function genera_columns_final(stdClass $columns_data)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cadena que contiene las columnas finales basadas en los datos de las columnas proporcionados.
+     *
+     * @param stdClass $columns_data El objeto que contiene los datos de las columnas que se deben procesar.
+     *
+     * @return string|array Un string que representa las columnas finales obtenidas de los datos de entrada de las columnas.
+     *
+     * @version 16.151.0
+     */
+    private function genera_columns_final(stdClass $columns_data): string|array
     {
         $columns_final = '';
         foreach ($columns_data as $column_data){
