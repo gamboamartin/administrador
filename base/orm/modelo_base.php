@@ -1214,8 +1214,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Integra la información final de las columnas, tras aplicar varias manipulaciones.
+     *
+     * @param array $columnas Lista de columnas.
+     * @param array $columnas_seleccionables Lista de columnas seleccionables.
+     * @param string $columnas_sql Las columnas ya formateadas como cadena SQL.
+     * @param bool $con_sq Condición para la ejecución de subconsultas.
+     * @param bool $count Determina si se debe contar el número total de registros.
+     *
+     * @return array|string Devuelve una cadena con las columnas finales para la consulta SQL.
+     *                      En caso de activarse $count, se devuelve "COUNT(*) AS total_registros".
+     *
+     * @throws errores Retorna error si falla alguna de las etapas de generación de columnas.
+     * @version 16.165.0
+     */
     private function integra_columns_final(array $columnas, array $columnas_seleccionables, string $columnas_sql,
-                                           bool $con_sq, bool $count)
+                                           bool $con_sq, bool $count): array|string
     {
         $extra_columns = $this->extra_columns(columnas: $columnas,columnas_seleccionables:  $columnas_seleccionables,
             columnas_sql:  $columnas_sql,con_sq:  $con_sq);
