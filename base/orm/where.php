@@ -319,6 +319,11 @@ class where{
 
     private function data_sql(string $campo, string $campo_filtro, array $filtro)
     {
+        $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al validar datos',  data:$valida);
+        }
+
         $data_sql = $this->data_sql_base(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);

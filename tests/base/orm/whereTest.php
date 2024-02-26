@@ -372,6 +372,26 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_data_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $campo = 'z';
+        $campo_filtro = 'x';
+        $filtro = array();
+        $filtro['x']['operador'] = 's';
+        $filtro['x']['valor'] = 's';
+
+        $resultado = $wh->data_sql($campo, $campo_filtro, $filtro);
+
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(" z s 's' ", $resultado);
+        errores::$error = false;
+    }
+
     public function test_data_sql_base(){
         errores::$error = false;
         $wh = new where();
