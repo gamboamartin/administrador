@@ -593,12 +593,17 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Genera los datos de una sentencia para WHERE EN SQL
-     * @param string $where palabra WHERE si vacio lo genera
-     * @param string $sentencia Sentencias previamenete cargadas
-     * @param string $campo Campo a cargar filtro de or en SQL
-     * @param string $value Valor a comparar
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Función que genera y retorna un objeto que contiene la sentencia SQL y la condición WHERE.
+     *
+     * @param string $campo     El nombre del campo a considerar en la sentencia SQL.
+     * @param string $sentencia La sentencia SQL a ejecutar.
+     * @param string $value     El valor a comparar en la sentencia SQL.
+     * @param string $where     La condición WHERE de la sentencia SQL.
+     *
+     * @return array|stdClass   Retorna un objeto con las propiedades 'where' y 'sentencia' si todo va bien,
+     *                          de lo contrario, retorna un array con el detalle del error.
+     * @version 16.170.0
      */
     private function data_sentencia(string $campo, string $sentencia, string $value, string $where): array|stdClass
     {
