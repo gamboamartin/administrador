@@ -835,8 +835,24 @@ class _instalacion
 
     }
 
-
-    private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función verifica si existe un índice foreign en una tabla específica.
+     *
+     * @private
+     *
+     * @param  string $name_indice_opt Nombre del índice opcional.
+     * @param  string $relacion_table Nombre de la tabla con la que está relacionada la clave externa.
+     * @param  string $table Nombre de la tabla en la que se busca la clave externa.
+     *
+     * @return bool|array Retorna verdadero si existe el índice en la tabla, de lo contrario,
+     * retorna falso. Si ocurre un error, se devuelve un objeto de error.
+     *
+     * @throws errores Si surge algún error durante el proceso, se lanza una excepción.
+     * @version 16.158.0
+     *
+     */
+    private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table): bool|array
     {
         $table = trim($table);
         if($table === ''){
