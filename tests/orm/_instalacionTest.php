@@ -451,6 +451,28 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
+
+    public function test_existe_foreign_base(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $datas_index = new stdClass();
+        $datas_index->name_indice = 'a';
+        $datas_index->indices = array();
+        $datas_index->indices[0] = new stdClass();
+        $datas_index->indices[0]->CONSTRAINT_NAME = 'a';
+        $resultado = $ins->existe_foreign_base($datas_index);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+
+    }
     public function test_existe_indice_by_name(): void
     {
 

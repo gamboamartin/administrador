@@ -837,7 +837,8 @@ class _instalacion
 
     private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table)
     {
-        $datas_index = $this->get_data_indices(name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table, table: $table);
+        $datas_index = $this->get_data_indices(name_indice_opt: $name_indice_opt,
+            relacion_table:  $relacion_table, table: $table);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error obtener datos de indices', data: $datas_index);
         }
@@ -849,13 +850,23 @@ class _instalacion
 
     }
 
-    private function existe_foreign_base(stdClass $datas_index): bool
+    private function existe_foreign_base(stdClass $datas_index): bool|array
     {
+
         $existe_indice = false;
-        foreach ($datas_index->indices as $indice){
-            if($datas_index->name_indice === $indice->CONSTRAINT_NAME){
-                $existe_indice = true;
-                break;
+
+        if(isset($datas_index->indices)) {
+            if(!is_array($datas_index->indices)){
+                return $this->error->error(mensaje: 'Error $datas_index->indices debe ser un array',data: $datas_index);
+            }
+            foreach ($datas_index->indices as $indice) {
+                if(!isset($datas_index->name_indice)){
+                    continue;
+                }
+                if ($datas_index->name_indice === $indice->CONSTRAINT_NAME) {
+                    $existe_indice = true;
+                    break;
+                }
             }
         }
         return $existe_indice;

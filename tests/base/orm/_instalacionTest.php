@@ -388,6 +388,13 @@ class _instalacionTest extends test
         $ins = new _instalacion(link: $this->link);
         $ins = new liberator($ins);
 
+        $drop = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
         $drop = $ins->drop_table_segura('a');
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
@@ -632,6 +639,7 @@ class _instalacionTest extends test
         $campo = 'b_id';
         $table = 'test';
         $resultado = $ins->foreign_key_completo(campo: $campo,table:  $table);
+        //print_r($resultado);exit;
         $this->assertEquals('ALTER TABLE test ADD CONSTRAINT test_b_id FOREIGN KEY (b_id) REFERENCES b(id);', $resultado->sql);
 
         errores::$error = false;
