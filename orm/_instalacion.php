@@ -835,8 +835,18 @@ class _instalacion
 
     }
 
+
     private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table)
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table vacia',data:  $table);
+        }
+        $relacion_table = trim($relacion_table);
+        if($relacion_table === ''){
+            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
+        }
+
         $datas_index = $this->get_data_indices(name_indice_opt: $name_indice_opt,
             relacion_table:  $relacion_table, table: $table);
         if(errores::$error){

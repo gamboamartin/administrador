@@ -452,6 +452,28 @@ class _instalacionTest extends test {
 
     }
 
+    public function test_existe_foreign(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $name_indice_opt = '';
+        $relacion_table = 'b';
+        $table = 'a';
+
+        $resultado = $ins->existe_foreign($name_indice_opt, $relacion_table, $table);
+        //print_r($resultado);exit;
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+        errores::$error = false;
+
+
+    }
+
     public function test_existe_foreign_base(): void
     {
 
