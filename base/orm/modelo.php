@@ -1689,6 +1689,37 @@ class modelo extends modelo_base {
 
     }
 
+    final public function inserta_registro_si_no_existe_code(array $registro, array $con_descripcion = array()): array|string|stdClass
+    {
+        if(!$this->aplica_transacciones_base){
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        }
+
+        if(count($con_descripcion) === 0) {
+            $existe = $this->existe_by_codigo(codigo: $registro['codigo']);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
+            }
+            $inserta = 'Codigo '.$registro['codigo'].' Ya existe';
+        }
+        else{
+            $existe = $this->existe(filtro: $con_descripcion);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
+            }
+            $inserta = 'Descripcion '.$registro['descripcion'].' Ya existe';
+        }
+
+        if(!$existe) {
+            $inserta = $this->alta_registro(registro: $registro);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar cat_sat_tipo_persona', data: $inserta);
+            }
+        }
+        return $inserta;
+
+    }
+
     final public function inserta_registros(array $registros)
     {
         if(!$this->aplica_transacciones_base){

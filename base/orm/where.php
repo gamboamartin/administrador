@@ -333,6 +333,20 @@ class where{
         return $data_sql;
 
     }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método para generar una cadena SQL para un filtro base.
+     *
+     * @param string $campo Nombre del campo en la base de datos.
+     * @param string $campo_filtro Nombre del campo del filtro.
+     * @param array $filtro El filtro a aplicar en la sentencia SQL.
+     * @return string|array Retorna una cadena con la sentencia SQL en caso de que se haya generado correctamente,
+     *                      en caso contrario retorna un array con los detalles del error.
+     *
+     * @throws errores Lanza una excepción en caso de errores.
+     * @version 16.152.0
+     */
     private function data_sql_base(string $campo, string $campo_filtro, array $filtro): string|array
     {
         $campo_filtro = trim($campo_filtro);
