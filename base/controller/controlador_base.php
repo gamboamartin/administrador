@@ -839,11 +839,27 @@ class controlador_base extends controler
 
 
     /**
-     * Inicializa la vista de modifica
-     * @param bool $header Si header retorna en html
-     * @param bool $ws retorna json
-     * @return array|stdClass
-     * @finalrev
+     * POR DOCUMENTAR EN WIKI
+     * Método que permite la modificación de un registro en la sección del modelo seleccionado.
+     *
+     * @param bool $header        Indicador del encabezado de la solicitud.
+     *                            Si es verdadero, se incluye el encabezado en la respuesta.
+     * @param bool $ws            Especifica si la respuesta es para un Servicio Web.
+     *                            Si es verdadero, la respuesta se ajusta para un Servicio Web.
+     *
+     * @return array|stdClass     Retorna dos conjuntos de datos.
+     *                            'registro' que contiene los datos asignados para modificar el registro actual,
+     *                            y 'row_upd' que contiene los datos originales del registro antes de la modificación.
+     *                            Si ocurre algún error durante el proceso se retorna un array con mensaje de error,
+     *                            detalles de datos y los banderas de encabezado y Servicio Web.
+
+     *
+     * @example
+     * usage:
+     * $resultado = $controler->modifica($header = true, $ws = false);
+     *
+     * @version 16.198.0
+     *
      */
     public function modifica(bool $header, bool $ws = false): array|stdClass
     {
