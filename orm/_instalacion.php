@@ -766,6 +766,27 @@ class _instalacion
 
     }
 
+    private function exe_foreign_key(bool $existe_foreign, string $name_indice_opt, string $relacion_table, string $table)
+    {
+        $exe = new stdClass();
+        $exe->mensaje = 'El indice ya existe de la table '.$table.' Relacion '.$relacion_table;
+
+        if(!$existe_foreign) {
+
+            $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table,
+                name_indice_opt: $name_indice_opt);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
+            }
+            $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+            }
+        }
+        return $exe;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Verifica si un campo específico existe en un conjunto de campos dado.
@@ -1070,28 +1091,16 @@ class _instalacion
             return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
         }
 
-
         $existe_foreign = $this->existe_foreign(
             name_indice_opt: $name_indice_opt,relacion_table:  $relacion_table,table:  $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar si existe indice', data: $existe_foreign);
         }
 
-
-        $exe = new stdClass();
-        $exe->mensaje = 'El indice ya existe de la table '.$table.' Relacion '.$relacion_table;
-
-        if(!$existe_foreign) {
-
-            $sql = (new sql())->foreign_key(table: $table, relacion_table: $relacion_table,
-                name_indice_opt: $name_indice_opt);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
-            }
-            $exe = $this->modelo->ejecuta_sql(consulta: $sql);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
-            }
+        $exe = $this->exe_foreign_key(existe_foreign: $existe_foreign,name_indice_opt:  $name_indice_opt,
+            relacion_table:  $relacion_table,table:  $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
         return $exe;
 
