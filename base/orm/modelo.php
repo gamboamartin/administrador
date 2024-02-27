@@ -2977,7 +2977,19 @@ class modelo extends modelo_base {
         return " WHERE $tabla".".id = $registro_id ";
     }
 
-    private function where_inicial(string $campo_llave, int $registro_id, string $tabla)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cláusula WHERE SQL inicial basándose en el campo clave proporcionado y el registro_id.
+     *
+     * @param string $campo_llave El nombre del campo clave para el cual se generará la cláusula WHERE.
+     * @param int $registro_id El identificador del registro para el que se generará la cláusula WHERE.
+     * @param string $tabla El nombre de la tabla donde se realizará la consulta.
+     *
+     * @return array|string Si todo va bien, retorna la cláusula WHERE generada. En caso de error,
+     * retorna un array con la descripción del error.
+     * @version 16.180.0
+     */
+    private function where_inicial(string $campo_llave, int $registro_id, string $tabla): array|string
     {
         $tabla = trim($tabla);
         if($tabla === ''){
