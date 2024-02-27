@@ -15,10 +15,23 @@ class upd{
     }
 
     /**
-     * Funcion que obtiene los datos de un registro a modificar
-     * @version 1.50.14
-     * @param controler $controler Controlador en ejecucion
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Este método asigna datos para modificar utilizando un objeto de controlador proporcionado.
+     *
+     * Primero, intenta limpiar el espacio de nombres de la sección del controlador objetivo.
+     * Si la sección del controlador está vacía, genera un error.
+     * Si el registro_id del controlador es igual o menor que 0, también genera un error.
+     *
+     * Luego, asigna el registro_id al modelo del controlador y intenta obtener la data con ese registro_id.
+     *
+     * Si se encuentra un error durante la obtención de data, este método generará un error.
+     * En caso contrario, devuelve el resultado de la obtención de data.
+     *
+     * @param controler $controler - El controlador con la sección y el registro_id a manejar.
+     * @return array - Un array que contiene el resultado de la obtención de data o un array de error.
+     * @throws errores - Si la sección del controlador está vacía, o el registro_id es igual o menor que 0,
+     * o si ocurre un error durante la obtención de data.
+     * @version 16.194.0
      */
 
     final public function asigna_datos_modifica(controler $controler):array{

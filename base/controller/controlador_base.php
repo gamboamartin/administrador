@@ -843,7 +843,6 @@ class controlador_base extends controler
      * @param bool $header Si header retorna en html
      * @param bool $ws retorna json
      * @return array|stdClass
-     * @version 2.17.2.1
      * @finalrev
      */
     public function modifica(bool $header, bool $ws = false): array|stdClass
