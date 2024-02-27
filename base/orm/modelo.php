@@ -2390,18 +2390,20 @@ class modelo extends modelo_base {
 
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método toma un ID de registro y otras opciones para luego obtener y devolver los datos de dicho registro.
      *
-     * Funcion que regresa en forma de array un registro de una estructura de datos del registro_id unico de dicha
-     * estructura
-     * @param int $registro_id $id Identificador del registro
-     * @param array $columnas columnas a obtener del registro
-     * @param bool $columnas_en_bruto
-     * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas
-     * a configuracion
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param bool $retorno_obj
-     * @return array|stdClass
-     * @pordoc
+     * @param int $registro_id El ID del registro a obtener.
+     * @param array $columnas (opcional) Especifica las columnas a obtener del registro.
+     * @param bool $columnas_en_bruto (opcional) Si se establece en verdadero, se devolverán las columnas en crudo (sin procesar).
+     * @param array $extension_estructura (opcional) Especifica cualquier extensión de la estructura de los datos a obtener.
+     * @param array $hijo (opcional) Especifica cualquier hijo a obtener junto con el registro.
+     * @param bool $retorno_obj (opcional) Si se establece en verdadero, se devolverán los datos del registro como un objeto en lugar de un array.
+     *
+     * @return array|stdClass Devuelve los datos del registro en forma de array o de objeto, según el parámetro $retorno_obj.
+     *
+     * @throws errores En caso de error, se lanza una excepción con detalles del error.
+     * @version 16.197.0
      */
     final public function registro(int $registro_id, array $columnas = array(), bool $columnas_en_bruto = false,
                              array $extension_estructura = array(), array $hijo = array(),
