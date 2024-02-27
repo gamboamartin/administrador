@@ -741,7 +741,6 @@ class modelo extends modelo_base {
      * @internal  $this->obten_data();
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
-     * @version 1.563.51
      */
     public function elimina_bd(int $id): array|stdClass{
 
