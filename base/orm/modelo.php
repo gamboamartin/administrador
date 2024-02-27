@@ -3015,6 +3015,24 @@ class modelo extends modelo_base {
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método que se encarga de aplicar una condición de seguridad a una declaración WHERE de SQL.
+     *
+     * @param string $seguridad La condición de seguridad a aplicar.
+     * @param string $where La declaración WHERE actual, a la que se añadirá la condición de seguridad.
+     *
+     * @return string|array Si 'aplica_seguridad' es verdadero, devuelve una nueva declaración WHERE con la condición de seguridad aplicada.
+     *                      Si 'aplica_seguridad' es falso, simplemente devuelve la declaración WHERE original.
+     *
+     *                      Si la condición de seguridad o la declaración WHERE están vacías, termina la ejecución del método y
+     *                      devuelve un array con un mensaje de error y la condición de seguridad que causó el problema.
+     *
+     * @example Si 'aplica_seguridad' es verdadero, $seguridad es 'usuario_id = 1' y $where es 'producto_id = 5', el método devolverá
+     *          'producto_id = 5 AND usuario_id = 1'.
+     *
+     * @version 16.184.0
+     */
     private function where_seguridad(string $seguridad, string $where): string|array
     {
         if($this->aplica_seguridad){
