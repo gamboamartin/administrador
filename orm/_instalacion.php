@@ -766,8 +766,22 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Ejecuta una operación de clave extranjera
+     *
+     * @param bool $existe_foreign Indica si existe o no una clave extranjera
+     * @param string $name_indice_opt Nombre opcional del índice
+     * @param string $relacion_table Nombre de la tabla con la que se establece la relación
+     * @param string $table Nombre de la tabla en la que se aplicará la clave extranjera
+     *
+     * @return stdClass|array Retorna un objeto que contiene el mensaje del resultado de la operación
+     * y, en caso de error, el detalle del mismo.
+     *
+     * @version 16.181.0
+     */
     private function exe_foreign_key(
-        bool $existe_foreign, string $name_indice_opt, string $relacion_table, string $table)
+        bool $existe_foreign, string $name_indice_opt, string $relacion_table, string $table): stdClass|array
     {
         $table = trim($table);
         if($table === ''){
