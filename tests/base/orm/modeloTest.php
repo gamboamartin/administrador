@@ -846,6 +846,30 @@ class modeloTest extends test {
 
     }
 
+    public function test_integra_where_seguridad(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $where = '';
+        $consulta = '';
+        $resultado = $modelo->integra_where_seguridad($consulta, $where);
+       // print_r($resultado);exit;
+
+        //print_r($resultado);exit;
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+
+
+
+    }
+
     public function test_limpia_campos_extras(): void
     {
         errores::$error = false;
