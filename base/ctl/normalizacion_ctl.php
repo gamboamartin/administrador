@@ -53,9 +53,16 @@ class normalizacion_ctl{
 
 
     /**
-     * Asigna el valor modo namespace controller a controlador en ejecucion
-     * @param controler $controler Controlador en ejecucion
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Asigna el valor del modo del namespace a 'models\\' para controler en ejecución.
+     * Esta función transforma el valor de la sección del controler quitando namespaces previos y añadiendo 'models\\'.
+     * Regresa el nombre de la clase del modelo con su namespace completo en caso de éxito,
+     * o un arreglo con el mensaje y los datos del error en caso de falla.
+     *
+     * @param controler $controler El controler que se está ejecutando.
+     * @return string|array El nombre de la clase del modelo con su namespace completo o un arreglo con el error.
+     * @throws errores Cuando la sección del controler está vacía.
+     * @version 16.189.0
      */
     final public function clase_model(controler $controler): string|array
     {
