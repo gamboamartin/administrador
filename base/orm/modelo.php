@@ -1374,7 +1374,21 @@ class modelo extends modelo_base {
         return $sql;
     }
 
-    private function genera_where_seguridad(string $where)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Metodo genera_where_seguridad
+     *
+     * Este método se encarga de generar la parte WHERE de una consulta SQL, dependiendo de ciertas condiciones de seguridad.
+     *
+     * @access private
+     * @param string $where El WHERE inicial de la consulta
+     * @return array|string El WHERE final de la consulta luego de aplicar las condiciones de seguridad
+     *
+     * @uses params_sql::seguridad() para generar las condiciones de seguridad
+     * @uses modelo::where_seguridad() para formar la parte WHERE de la consulta con las condiciones de seguridad
+     * @version 16.187.0
+     */
+    private function genera_where_seguridad(string $where): array|string
     {
         $seguridad = (new params_sql())->seguridad(aplica_seguridad:$this->aplica_seguridad,
             modelo_columnas_extra: $this->columnas_extra,
