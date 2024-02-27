@@ -2929,8 +2929,12 @@ class modelo extends modelo_base {
 
 
     }
-    private function where_id_base(int $registro_id, string $tabla): string
+    private function where_id_base(int $registro_id, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+        }
         return " WHERE $tabla".".id = $registro_id ";
     }
 

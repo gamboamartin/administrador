@@ -1380,6 +1380,22 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_where_id_base(): void
+{
+    errores::$error = false;
+    $modelo = new adm_seccion($this->link);
+    $modelo = new liberator($modelo);
+
+    $tabla = 'a';
+    $registro_id = 1;
+    $resultado = $modelo->where_id_base($registro_id, $tabla);
+    //print_r($resultado);exit;
+    $this->assertIsString( $resultado);
+    $this->assertNotTrue(errores::$error);
+    $this->assertEquals(" WHERE a.id = 1 ",$resultado);
+    errores::$error = false;
+}
+
     public function test_where_suma(): void
     {
         errores::$error = false;
