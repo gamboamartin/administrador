@@ -1282,6 +1282,7 @@ class _instalacion
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Este método se utiliza para crear la clave foránea de un campo existente de una tabla específica en función de un campo específico.
      * Realiza varias validaciones y devoluciones en caso de errores.
      *
@@ -1304,6 +1305,7 @@ class _instalacion
      * }
      * echo $result;
      * ```
+     * @version 16.190.0
      */
     private function foreign_por_campo(string $campo, string $table, string $name_indice_opt): array|stdClass
     {
