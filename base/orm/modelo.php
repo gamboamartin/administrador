@@ -2166,17 +2166,19 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Devuelve un array con un elemento declarado por $this->>registro_id
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
-     * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas a configuracion
-     * @return array|stdClass con datos del registro encontrado o registro vacio
-     * @example
-     *      if($this->registro_id < 0){
-     * return $this->error->error('Error el id debe ser mayor a 0',
-     * __LINE__,__FILE__,$this->registro_id);
-     * }
-     * $resultado = $this->obten_por_id($hijo, $columnas);
+     * POR DOCUMENTAR EN WIKI
+     * Este método se encarga de obtener un registro de la base de datos según el ID del registro.
+     *
+     * @param array $columnas Array de columnas a devolver en la consulta de SQL.
+     * @param array $columnas_by_table Array de columnas organizado por tablas que existen en la extensión de la estructura.
+     * @param bool  $columnas_en_bruto Indica si las columnas se devolverán en bruto, true para bruto, false para no bruto.
+     * @param array $extension_estructura Array de extensiones a utilizar en la organización de la estructura.
+     * @param array $extra_join Array de joins extra a agregar en la consulta de SQL.
+     * @param array $hijo Array de datos del registro hijo a procesar en caso de ser necesario.
+     *
+     * @return array|stdClass Retorna un arreglo o un objeto stdClass con el resultado de la consulta,
+     * en caso de error se devuelve un objeto con el error.
+     * @version 16.192.0
      */
     private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(),
                                   bool $columnas_en_bruto = false, array $extension_estructura= array(),
