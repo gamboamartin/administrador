@@ -1381,7 +1381,7 @@ class modeloTest extends test {
     }
 
     public function test_where_campo_llave(): void
-{
+    {
     errores::$error = false;
     $modelo = new adm_seccion($this->link);
     $modelo = new liberator($modelo);
@@ -1396,7 +1396,32 @@ class modeloTest extends test {
     $this->assertNotTrue(errores::$error);
     $this->assertEquals(" WHERE z.d = -1 ",$resultado);
     errores::$error = false;
-}
+    }
+    public function test_where_inicial(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $registro_id = -1;
+        $campo_llave = '';
+        $tabla = 'z';
+        $resultado = $modelo->where_inicial($campo_llave, $registro_id, $tabla);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' WHERE z.id = -1 ',$resultado);
+        errores::$error = false;
+
+        $registro_id = -1;
+        $campo_llave = 'd';
+        $tabla = 'z';
+        $resultado = $modelo->where_inicial($campo_llave, $registro_id, $tabla);
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' WHERE z.d = -1 ',$resultado);
+        errores::$error = false;
+
+    }
 
     public function test_where_suma(): void
     {
