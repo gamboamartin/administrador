@@ -1773,7 +1773,7 @@ class modelo extends modelo_base {
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
         }
-        $inserta = 'Id '.$registro['descripcion'].' Ya existe';
+        $inserta = 'Row '.serialize($filtro).' Ya existe';
 
         if(!$existe) {
             $inserta = $this->alta_registro(registro: $registro);

@@ -1473,7 +1473,7 @@ class where{
     }
 
     /**
-     *
+     * POR DOCUMENTAR EN WIKI
      * Genera la condicion sql de un filtro especial
      * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_esp //array con datos del filtro $filtro_esp[tabla.campo]= array('operador'=>'AND','valor'=>'x');
@@ -1495,7 +1495,7 @@ class where{
      *      $filtro_especial_sql = ' tabla.campo2 = 1';
      *      $resultado = obten_filtro_especial($filtro_esp, $filtro_especial_sql);
      *      $resultado =  tabla.campo > 'x' AND tabla.campo2 = 1
-     *
+     * @version 16.195.0
      *
      */
 
