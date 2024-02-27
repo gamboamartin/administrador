@@ -3015,9 +3015,13 @@ class modelo extends modelo_base {
 
     }
 
-    private function where_seguridad(string $seguridad, string $where): string
+    private function where_seguridad(string $seguridad, string $where): string|array
     {
         if($this->aplica_seguridad){
+            $seguridad = trim($seguridad);
+            if($seguridad === ''){
+                return $this->error->error(mensaje: 'Error seguridad esta vacia',data:  $seguridad);
+            }
             $where = trim($where);
             if($where === ''){
                 $where .= " WHERE $seguridad ";
