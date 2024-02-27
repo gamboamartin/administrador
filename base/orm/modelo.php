@@ -2931,10 +2931,17 @@ class modelo extends modelo_base {
         return $valida;
     }
 
-    private function where_campo_llave(string $campo_llave, int $registro_id, string $tabla): string
+    private function where_campo_llave(string $campo_llave, int $registro_id, string $tabla): string|array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error tabla esta vacia', data:$tabla);
+        }
+        $campo_llave = trim($campo_llave);
+        if($campo_llave === ''){
+            return $this->error->error(mensaje:'Error campo_llave esta vacia', data:$campo_llave);
+        }
         return " WHERE $tabla".".$campo_llave = $registro_id ";
-
 
     }
 
@@ -2965,15 +2972,15 @@ class modelo extends modelo_base {
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_id_base);
         }
-        $where_campo_llave = $this->where_campo_llave(campo_llave: $campo_llave, registro_id: $registro_id, tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_id_base);
-        }
 
         if($this->campo_llave === ""){
             $where = $where_id_base;
         }
         else{
+            $where_campo_llave = $this->where_campo_llave(campo_llave: $campo_llave, registro_id: $registro_id, tabla: $tabla);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_campo_llave);
+            }
             $where = $where_campo_llave;
         }
         return $where;

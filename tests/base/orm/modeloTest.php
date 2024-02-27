@@ -1380,19 +1380,21 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
-    public function test_where_id_base(): void
+    public function test_where_campo_llave(): void
 {
     errores::$error = false;
     $modelo = new adm_seccion($this->link);
     $modelo = new liberator($modelo);
 
-    $tabla = 'a';
-    $registro_id = 1;
-    $resultado = $modelo->where_id_base($registro_id, $tabla);
+    $registro_id = -1;
+    $campo_llave = 'd';
+    $tabla = 'z';
+    $resultado = $modelo->where_campo_llave($campo_llave, $registro_id, $tabla);
+   // print_r($resultado);exit;
     //print_r($resultado);exit;
     $this->assertIsString( $resultado);
     $this->assertNotTrue(errores::$error);
-    $this->assertEquals(" WHERE a.id = 1 ",$resultado);
+    $this->assertEquals(" WHERE z.d = -1 ",$resultado);
     errores::$error = false;
 }
 

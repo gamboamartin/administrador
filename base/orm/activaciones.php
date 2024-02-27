@@ -17,7 +17,6 @@ class activaciones{
 
     /**
      * Inicializa la transaccion de activacion, y valida que el modelo sea aplicable a dicha transaccion
-     * @version 1.110.27
      * @param modelo $modelo Modelo a normalizar, debe ser una estructura de la base de datos
      * @param bool $reactiva Si no es aplicable la reactivacion retornara error
      * @return array|stdClass obj->consulta, obj->transaccion y obj->name_model
@@ -75,7 +74,6 @@ class activaciones{
     /**
      * Genera el SQL para la activacion de un registro validado ue el modelo permita que se puedan
      * ejecutar cambios de activacion
-     * @version 1.17.9
      * @param modelo $modelo Modelo a verificar validacion
      * @param bool $reactiva Si no es aplicable la reactivacion retornara error
      * @return array|stdClass Obj->consulta, Obj->transaccion
@@ -106,7 +104,6 @@ class activaciones{
 
     /**
      * Funcion que normaliza el nombre de un modelo de la forma namespace
-     * @version 1.16.9
      * @param modelo $modelo Modelo a normalizar, debe ser una estructura de la base de datos
      * @return array|string string con nombre de la tabla normalizada como la clase en forma de namespace
      */
@@ -144,7 +141,6 @@ class activaciones{
 
     /**
      * Valida que la transaccion cuando en el modelo valida transaccion activa sea true bloquee la transaccion
-     * @version 1.17.9
      * @param modelo $modelo Modelo a verificar validacion
      * @return bool|array Verdadero sila configuracion es valida
      */
@@ -171,7 +167,6 @@ class activaciones{
 
     /**
      * Valida que la transaccion cuando en el modelo valida transaccion activa sea true bloquee la transaccion
-     * @version 1.17.9
      * @param modelo $modelo Modelo a verificar validacion
      * @param bool $reactiva Si no es aplicable la reactivacion retornara error
      * @return bool|array Verdadero si es correcta la validacion
