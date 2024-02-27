@@ -1393,9 +1393,17 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Genera un codigo aleatorio de longitud N
-     * @param int $longitud Longitud chars code
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Este método genera un código aleatorio con longitud especificada.
+     *
+     * @param int $longitud La longitud deseada para el código aleatorio. Por defecto es 6.
+     *
+     * @throws errores Si la longitud proporcionada es menor o igual a 0, se genera un error con el mensaje
+     * 'Error longitud debe ser mayor a 0'.
+     *
+     * @return string|array Devuelve una cadena aleatoria con la longitud especificada.
+     * Si se produce un error, devuelve un array con información del error.
+     * @version 16.174.0
      */
     final public function get_codigo_aleatorio(int $longitud = 6): string|array
     {
