@@ -664,7 +664,6 @@ class where{
     /**
      *
      * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
-     * @version 1.130.30
      *
      * @param array $filtro_rango
      *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
@@ -881,7 +880,7 @@ class where{
 
 
     /**
-     *
+     * POR DOCUMENTAR EN WIKI
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -918,8 +917,10 @@ class where{
      *
      *
      * @return array|string
-     * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe, Debe existir $filtro_esp[$campo]['comparacion']
+     * @throws errores $filtro_especial_sql != '' $filtro_esp[$campo]['comparacion'] no existe,
+     *  Debe existir $filtro_esp[$campo]['comparacion']
      * @throws errores $filtro_especial_sql != '' = $data_sql = '',  data_sql debe tener info
+     * @version 16.182.0
      */
 
     private function genera_filtro_especial(string $campo, string $data_sql, array $filtro_esp,
@@ -945,7 +946,6 @@ class where{
     /**
      *
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
-     * @version 1.130.30
      * @param string $campo
      *                  Opcion 1.-Si valor_es_campo = false,
      *                      El valor definido debe ser un campo de la base de datos con la siguiente forma tabla.campo
@@ -1552,7 +1552,6 @@ class where{
     /**
      *
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
-     * @version 1.130.30
      * @access public
      * @param string $filtro_rango_sql debe ser un sql con una condicion
      * @param string $condicion debe ser un sql con una condicion
