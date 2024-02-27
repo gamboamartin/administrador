@@ -2929,6 +2929,19 @@ class modelo extends modelo_base {
 
 
     }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Este método genera una condición WHERE para una consulta SQL utilizando
+     * el ID de registro y el nombre de tabla proporcionados.
+     *
+     * @param int $registro_id Es el ID del registro en la base de datos
+     * @param string $tabla Es el nombre de la tabla en la base de datos
+     * @return string|array Retorna una cadena que representa una condición WHERE
+     * en caso de éxito y un array con un mensaje de error si el nombre de la tabla
+     * proporcionado está vacío
+     * @version 16.173.0
+     */
     private function where_id_base(int $registro_id, string $tabla): string|array
     {
         $tabla = trim($tabla);
