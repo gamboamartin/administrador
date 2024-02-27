@@ -2087,19 +2087,20 @@ class modelo extends modelo_base {
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene los datos de un registro dado su identificador.
      *
-     * Devuelve un array con el registro buscado por this->registro_id del modelo
-     * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param array $extension_estructura arreglo con la extension de una estructura para obtener datos de foraneas a configuracion
-     * @example
-     *      $salida_producto_id = $_GET['salida_producto_id'];
-    $salida_producto_modelo = new salida_producto($this->link);
-    $salida_producto_modelo->registro_id = $salida_producto_id;
-    $salida_producto = $salida_producto_modelo->obten_data();
+     * @param array $columnas Opcional. Vector de columnas a recuperar. Si está vacío, se devolverán todas las columnas.
+     * @param bool $columnas_en_bruto Opcional. Si está establecido en true, se devolverán las columnas en su formato bruto.
+     * @param array $extension_estructura Opcional. Vector de estructuras adicionales a incluir en el resultado.
+     * @param array $hijo Opcional. Vector de hijos a incluir.
      *
-     * @return array con datos del registro encontrado
-     * @pordoc
+     * @return array Devuelve un vector asociativo que representa el registro. En caso de error devuelve un error.
+     *
+     * @throws errores Si el `registro_id` es menor que 0.
+     * @throws errores Si hay un error al recuperar el registro por su id.
+     * @throws errores Si no existe registro con el id proporcionado.
+     * @version 16.193.0
      */
     final public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
                                array $extension_estructura = array(), array $hijo= array()): array{
