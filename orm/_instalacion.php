@@ -1092,6 +1092,7 @@ class _instalacion
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Verifica si existe el atributo y agrega una clave foránea (FOREIGN KEY) en una tabla dada.
      *
      * @param string $table El nombre de la tabla en la cual se verificará la clave foránea.
@@ -1102,6 +1103,7 @@ class _instalacion
      * @return array|stdClass Devuelve un objeto de tipo stdClass con el resultado de la consulta SQL.
      * En caso de error, devuelve un array con información sobre el error.
      * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
+     * @version 16.185.0
      */
     final public function foreign_key_existente(
         string $relacion_table, string $table, string $name_indice_opt = ''): array|stdClass
