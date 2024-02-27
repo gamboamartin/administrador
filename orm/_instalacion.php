@@ -1051,23 +1051,19 @@ class _instalacion
     }
 
     /**
-     * Esta es la función 'foreign_key_completo'.
+     * POR DOCUMENTAR EN WIKI
+     * Este método realiza un conjunto de operaciones para generar una clave ajena completa en la base de datos.
+     * Primero valida los datos de entrada, segundo añade una columna a la base de datos,
+     * y por último genera una clave externa para dicha columna.
      *
-     * Retorna una clave extranjera completa a partir de la especificación dada.
+     * @param string $campo El nombre del campo a añadir.
+     * @param string $table El nombre de la tabla donde se añadirá el campo.
+     * @param string $default El valor por defecto del campo a añadir.
+     * @param string $name_indice_opt Nombre opcional para el índice de la clave externa.
+     * @return array|stdClass Devuelve un array o un objeto estándar dependiendo de si se realiza la operación correctamente.
+     *      En caso de error, se devuelve un objeto de error.
      *
-     * @param string $campo El nombre del campo que se va a usar como clave extranjera.
-     * @param string $table El nombre de la tabla en la que se va a agregar el nuevo campo.
-     * @param string $default Un valor predeterminado opcional que se le asignará al campo recién creado.
-     * @return array|stdClass Retorna una clave extranjera completa en caso de éxito, y un objeto de errores en caso contrario
-     *
-     * @example Ejemplo de uso:
-     * <?php
-     * $instalacion->foreign_key_completo('id_usuario', 'usuarios', '1');
-     * ?>
-     *
-     * Este código intenta crear una nueva clave extranjera 'id_usuario' en la tabla 'usuarios' con un valor predeterminado de '1'.
-     * Si los parámetros 'id_usuario' y 'usuarios' son válidos y no existen errores durante la ejecución, se retorna una clave extranjera.
-     * Si ocurre un error, se retorna un objeto de error.
+     * @version 16.196.0
      */
     final public function foreign_key_completo(string $campo, string $table, string $default = '',
                                                string $name_indice_opt =''): array|stdClass
