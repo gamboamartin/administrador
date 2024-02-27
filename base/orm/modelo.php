@@ -2931,6 +2931,17 @@ class modelo extends modelo_base {
         return $valida;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * The `where_campo_llave` function constructs an SQL WHERE clause based upon
+     * the parameters given.
+     *
+     * @param string $campo_llave The name of the key field's column.
+     * @param int $registro_id The id of the record.
+     * @param string $tabla The name of the table.
+     * @return string|array The SQL WHERE clause OR error array with message and data if either $campo_llave or $tabla are empty.
+     * @version 16.177.0
+     */
     private function where_campo_llave(string $campo_llave, int $registro_id, string $tabla): string|array
     {
         $tabla = trim($tabla);
