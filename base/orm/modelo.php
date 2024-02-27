@@ -1823,7 +1823,17 @@ class modelo extends modelo_base {
 
     }
 
-    private function integra_where_seguridad(string $consulta, string $where)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función integra la cláusula WHERE segura a la consulta SQL proporcionada.
+     *
+     * @param string $consulta Consulta SQL a la que se le debe agregar la cláusula WHERE.
+     * @param string $where Condición WHERE a ser agregadada a la consulta.
+     * @return string|array Consulta SQL con la cláusula WHERE segura agregada.
+     * @version 16.191.0
+     *
+     */
+    private function integra_where_seguridad(string $consulta, string $where): string|array
     {
         $where = $this->genera_where_seguridad(where: $where);
         if(errores::$error){
