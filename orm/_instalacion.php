@@ -766,8 +766,18 @@ class _instalacion
 
     }
 
-    private function exe_foreign_key(bool $existe_foreign, string $name_indice_opt, string $relacion_table, string $table)
+    private function exe_foreign_key(
+        bool $existe_foreign, string $name_indice_opt, string $relacion_table, string $table)
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+        $relacion_table = trim($relacion_table);
+        if($relacion_table === ''){
+            return $this->error->error(mensaje: 'Error relacion_table esta vacia', data: $relacion_table);
+        }
+
         $exe = new stdClass();
         $exe->mensaje = 'El indice ya existe de la table '.$table.' Relacion '.$relacion_table;
 

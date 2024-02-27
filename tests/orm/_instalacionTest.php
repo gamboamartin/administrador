@@ -427,6 +427,71 @@ class _instalacionTest extends test {
             exit;
         }
     }
+
+    public function test_exe_foreign_key(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $del = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop table',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop table',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear table',data:  $create);
+            print_r($error);
+            exit;
+        }
+        $add = $ins->add_colum('b_id','a','BIGINT');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al add table',data:  $add);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear table',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $existe_foreign = false;
+        $name_indice_opt = '';
+        $relacion_table = 'b';
+        $table = 'a';
+        $resultado = $ins->exe_foreign_key($existe_foreign, $name_indice_opt, $relacion_table, $table);
+        //print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("ALTER TABLE a ADD CONSTRAINT a_b_id FOREIGN KEY (b_id) REFERENCES b(id);",$resultado->sql);
+        errores::$error = false;
+        $del = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop table',data:  $del);
+            print_r($error);
+            exit;
+        }
+        $del = $ins->drop_table_segura('b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop table',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+
+    }
     public function test_existe_campo_origen(): void
     {
 
