@@ -99,6 +99,25 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_template_modifica(): void
+    {
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $upd = new upd();
+
+
+        $controlador = new controlador_adm_mes(link: $this->link, paths_conf: $this->paths_conf);
+        $controlador->seccion = 'a';
+        $registro_id = 1;
+
+        $resultado = $upd->template_modifica($registro_id, $controlador);
+       // print_r($resultado);exit;
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 

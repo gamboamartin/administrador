@@ -104,11 +104,14 @@ class upd{
     final public function template_modifica(int $registro_id, controler $controlador):array|stdClass{
 
         if($controlador->seccion === ''){
-            return $this->error->error('Error seccion esta vacia',$_GET);
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data: $_GET);
+        }
+        if($registro_id <=0){
+            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data: $_GET);
         }
         $controlador->registro_id = $registro_id;
 
-        $template_modifica = $controlador->modifica(false);
+        $template_modifica = $controlador->modifica(header: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar $template_modifica',data: $template_modifica);
         }
