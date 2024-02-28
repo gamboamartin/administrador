@@ -1647,9 +1647,11 @@ class modelo extends modelo_base {
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera una llave de tipo in para SQL
      * @param array $in IN precargada
      * @return array
+     * @version 16.205.0
      */
     private function in_llave(array $in): array
     {

@@ -20,7 +20,6 @@ class where{
 
     /**
      * Asigna and  A FILTRO
-     * @version 1.150.31
      * @param string $txt Filtro en forma de sql
      * @return string
      */
@@ -429,7 +428,6 @@ class where{
      * @param string $diferente_de_sql sql previo
      * @param string $value Valor a verificar
      * @return string|array
-     * @version 1.571.51
      */
     private function diferente_de(string $campo, string $diferente_de_sql, string $value): string|array
     {
@@ -456,7 +454,6 @@ class where{
      * Integra el diferente de en sql
      * @param array $diferente_de Parametros diferente de
      * @return array|string
-     * @version 1.572.51
      */
     private function diferente_de_sql(array $diferente_de): array|string
     {
@@ -1578,10 +1575,11 @@ class where{
                 data: $filtro_rango_sql);
         }
 
-        $and = '';
-        if($filtro_rango_sql !==''){
-            $and = ' AND ';
+        $and = $this->and_filtro_fecha(txt: $filtro_rango_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje:'error al integrar and ',data: $and);
         }
+
 
         $filtro_rango_sql.= $and.$condicion;
 
