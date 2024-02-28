@@ -1650,7 +1650,6 @@ class modelo extends modelo_base {
      * Genera una llave de tipo in para SQL
      * @param array $in IN precargada
      * @return array
-     * @version 10.51.0
      */
     private function in_llave(array $in): array
     {
