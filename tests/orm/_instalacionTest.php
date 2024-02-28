@@ -981,6 +981,88 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
+
+    public function test_integra_fc_no_conf(): void
+    {
+        $ins = new _instalacion(link: $this->link);
+
+        $drop = $ins->drop_table_segura(table: 'b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $drop = $ins->drop_table_segura(table: 'a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new(table: 'a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new(table: 'b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+        $add = $ins->add_colum(campo: 'a_id',table: 'b',tipo_dato: 'BIGINT');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al add',data:  $add);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+
+        $ins = new liberator($ins);
+
+        $campo = '';
+        $campo_origen = array();
+        $campo_origen['Field'] = 'a';
+        $fks = array();
+        $name_indice_opt = '';
+        $table = 'v';
+        $resultado = $ins->integra_fc_no_conf($campo, $campo_origen, $fks, $name_indice_opt, $table);
+        //print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado->break);
+
+        errores::$error = false;
+
+        $campo = 'a';
+        $campo_origen = array();
+        $campo_origen['Field'] = 'a';
+        $fks = array();
+        $name_indice_opt = '';
+        $table = 'b';
+        $resultado = $ins->integra_fc_no_conf($campo, $campo_origen, $fks, $name_indice_opt, $table);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado->break);
+
+        $drop = $ins->drop_table_segura(table: 'b');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $drop = $ins->drop_table_segura(table: 'a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+    }
     public function test_longitud(): void
     {
 

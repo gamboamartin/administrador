@@ -1492,8 +1492,13 @@ class _instalacion
         return $integraciones;
     }
 
-    private function integra_fc_no_conf(string $campo, array $campo_origen, array $fks, string $name_indice_opt, string $table)
+    private function integra_fc_no_conf(
+        string $campo, array $campo_origen, array $fks, string $name_indice_opt, string $table)
     {
+        $table = trim($table);
+        if ($table === '') {
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
 
         $keys = array('Field');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen);
