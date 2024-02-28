@@ -1187,21 +1187,26 @@ class _instalacion
     }
 
     /**
-     * Este método verifica y maneja la asignación de llaves extranjeras a un campo específico en una tabla.
+     * POR DOCUMENTAR EN WIKI
+     * La función `foreign_no_conf` agrega soporte para campos sin una configuración de clave foránea.
      *
-     * Primero, verifica que tanto el campo como la tabla no estén vacíos. Luego, se asegura de que el parámetro
-     * $campo_origen contenga la clave 'Key'. Si el valor de 'Key' no es 'MUL', se llama al método
-     * foreign_por_campo para tratar de asignar una llave extranjera al campo. Si este proceso encuentra
-     * algún error, se registra y se retorna el error.
+     * @param string $campo              El campo al que se aplicará la configuración.
+     * @param array $campo_origen        Información sobre el campo proporcionada por la base de datos.
+     * @param string $name_indice_opt    Nombre de la opción de índice asociada con el campo.
+     * @param string $table              El nombre de la tabla a la que pertenece el campo.
      *
-     * @param string $campo El nombre del campo al que se va a asignar la llave extranjera.
-     * @param array $campo_origen Un arreglo que contiene los detalles del campo original.
-     *                              Se espera que tenga una clave 'Key'.
-     * @param string $table El nombre de la tabla que contiene el campo.
-     * @return string|stdClass|array Retorna un mensaje indicando que el campo fue asignado si el proceso es
-     *                              exitoso, o un objeto de error si se encuentra algún problema.
+     * @return string|stdClass|array
+     *   El valor de retorno será `Campo asignado` seguido por el nombre de campo si no hay una configuración de clave foránea.
+     *   Si existe una configuración de clave foránea, se generará y devolverá a través de `foreign_por_campo`.
+     *   En caso de producirse un error en el proceso de generación, se devolverá un error a través de `error->error`.
+     *
+     * @throws errores
+     *   En caso de producirse un error al asignar la clave foránea, se lanzará una excepción con el mensaje 'Error al integrar foreign'.
+     * @version 16.203.0
+     *
      */
-    private function foreign_no_conf(string $campo, array $campo_origen, string $name_indice_opt, string $table):string|stdClass|array
+    private function foreign_no_conf(string $campo, array $campo_origen, string $name_indice_opt,
+                                     string $table):string|stdClass|array
     {
         $campo = trim($campo);
         if($campo === ''){
