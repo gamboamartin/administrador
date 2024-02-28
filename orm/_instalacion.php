@@ -1243,7 +1243,8 @@ class _instalacion
      *
      * @throws errores En caso de que ocurra cualquier error en la ejecución, se lanza una excepción con detalles.
      */
-    private function foreign_no_conf_integra(string $campo, array $campos_origen, string $name_indice_opt, string $table):array
+    private function foreign_no_conf_integra(
+        string $campo, array $campos_origen, string $name_indice_opt, string $table):array
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -1259,24 +1260,17 @@ class _instalacion
             if(!is_array($campo_origen)){
                 return $this->error->error(mensaje: 'Error campo_origen no es un array', data: $campo_origen);
             }
-            $keys = array('Field');
-            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen);
+
+            $result = $this->integra_fc_no_conf(campo: $campo,campo_origen:  $campo_origen,fks:  $fks,
+                name_indice_opt:  $name_indice_opt,table:  $table);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al validar campo_origen', data: $valida);
+                return $this->error->error(mensaje: 'Error al integrar foreign', data: $result);
             }
-
-            $campo_origen_name = trim($campo_origen['Field']);
-
-            if($campo_origen_name === $campo) {
-
-                $fk = $this->foreign_no_conf(campo: $campo, campo_origen: $campo_origen,
-                    name_indice_opt: $name_indice_opt, table: $table);
-                if (errores::$error) {
-                    return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
-                }
-                $fks[] = $fk;
+            $fks = $result->fks;
+            if($result->break){
                 break;
             }
+
         }
         return $fks;
 
@@ -1498,6 +1492,36 @@ class _instalacion
         return $integraciones;
     }
 
+    private function integra_fc_no_conf(string $campo, array $campo_origen, array $fks, string $name_indice_opt, string $table)
+    {
+
+        $keys = array('Field');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar campo_origen', data: $valida);
+        }
+        $break = false;
+
+        $campo_origen_name = trim($campo_origen['Field']);
+
+        if($campo_origen_name === $campo) {
+
+            $fk = $this->foreign_no_conf(campo: $campo, campo_origen: $campo_origen,
+                name_indice_opt: $name_indice_opt, table: $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
+            }
+            $fks[] = $fk;
+            //$fks[] = $fk;
+            $break = true;
+        }
+
+        $out = new stdClass();
+        $out->fks = $fks;
+        $out->break = $break;
+        return $out;
+
+    }
     final public function integra_foraneas(stdClass $campos, string $table)
     {
         $datos = $this->describe_table(table: $table);
