@@ -2,6 +2,7 @@
 namespace gamboamartin\administrador\instalacion;
 
 use gamboamartin\administrador\models\_instalacion;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\administrador\models\adm_namespace;
 use gamboamartin\administrador\models\adm_seccion;
@@ -18,6 +19,29 @@ class _adm
     public function __construct()
     {
         $this->error = new errores();
+
+    }
+
+    private function adm_accion_ins(int $adm_seccion_id, string $descripcion, string $es_view,
+                                    string $icono, string $lista, string $titulo): array
+    {
+        $adm_accion_ins['descripcion'] = $descripcion;
+        $adm_accion_ins['adm_seccion_id'] = $adm_seccion_id;
+        $adm_accion_ins['icono'] = $icono;
+        $adm_accion_ins['visible'] = 'inactivo';
+        $adm_accion_ins['inicio'] = 'inactivo';
+        $adm_accion_ins['lista'] = $lista;
+        $adm_accion_ins['seguridad'] = 'activo';
+        $adm_accion_ins['es_modal'] = 'inactivo';
+        $adm_accion_ins['es_view'] = $es_view;
+        $adm_accion_ins['titulo'] = $titulo;
+        $adm_accion_ins['css'] = 'warning';
+        $adm_accion_ins['es_status'] = 'inactivo';
+        $adm_accion_ins['es_lista'] = $lista;
+        $adm_accion_ins['muestra_icono_btn'] = 'activo';
+        $adm_accion_ins['muestra_titulo_btn'] = 'inactivo';
+
+        return $adm_accion_ins;
 
     }
 
@@ -172,6 +196,52 @@ class _adm
         }
 
         return $adm_sistema_id;
+
+    }
+
+    private function inserta_accion(string $adm_accion_descripcion, array $adm_accion_ins,
+                                    string $adm_seccion_descripcion, PDO $link): array|stdClass
+    {
+        $alta = new stdClass();
+        $filtro['adm_accion.descripcion'] = $adm_accion_descripcion;
+        $filtro['adm_seccion.descripcion'] = $adm_seccion_descripcion;
+
+        $existe  = (new adm_accion(link: $link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener accion',data:  $existe);
+        }
+        if(!$existe){
+            $alta = (new adm_accion(link: $link))->alta_registro(registro: $adm_accion_ins);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta);
+            }
+        }
+
+        return $alta;
+
+
+    }
+
+    final public function inserta_accion_base(string $adm_accion_descripcion,string $adm_seccion_descripcion,
+                                         string $es_view, string $icono, PDO $link, string $lista, string $titulo)
+    {
+        $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: $adm_seccion_descripcion);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_seccion_id', data:  $adm_seccion_id);
+        }
+
+        $adm_accion_ins = $this->adm_accion_ins(adm_seccion_id: $adm_seccion_id,descripcion:  $adm_accion_descripcion,
+            es_view:  $es_view,icono:  $icono,lista:  $lista,titulo:  $titulo);
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener accion ins',data:  $adm_accion_ins);
+        }
+
+        $alta_accion = $this->inserta_accion(adm_accion_descripcion: $adm_accion_descripcion,adm_accion_ins:  $adm_accion_ins,
+            adm_seccion_descripcion:  $adm_seccion_descripcion,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
 
     }
 

@@ -3,6 +3,7 @@ namespace gamboamartin\administrador\models;
 
 use gamboamartin\errores\errores;
 use PDO;
+use stdClass;
 
 class _init_sistema
 {
@@ -25,6 +26,8 @@ class _init_sistema
         $link->commit();
 
     }
+
+
     private function adm_sistema(): array|true
     {
         foreach ($this->adm_sistemas as $descripcion){
@@ -51,5 +54,9 @@ class _init_sistema
         return true;
 
     }
+
+
+
+
 
 }

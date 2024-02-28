@@ -488,6 +488,7 @@ class where{
 
     /**
      *
+     * POR DOCUMENTAR EN WIKI
      * Genera las condiciones sql de un filtro especial
      * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -519,7 +520,7 @@ class where{
      *      $resultado = filtro_especial_sql($filtro_especial);
      *      $resultado =  tabla.campo < 'x' OR tabla.campo2  >= x
      *
-     *
+     * @version 16.204.0
      */
     private function filtro_especial_sql(array $columnas_extra, array $filtro_especial):array|string{ //DEBUG
 
