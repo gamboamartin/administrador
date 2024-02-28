@@ -39,9 +39,13 @@ class valida_controller extends base_modelos{
     }
 
     /**
-     * Valida que los datos de una seccion de un controlador sean validos
-     * @param controler $controler Controlador en ejecucion
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Valida que los datos de una seccion de un controlador sean validos.
+     *
+     * @param controler $controler Controlador en ejecución
+     * @return bool|array Retorna true si la validación es exitosa, de lo contrario, retorna un array con
+     * información sobre el error.
+     * @version 16.202.0
      */
     final public function valida_clase(controler $controler): bool|array
     {
