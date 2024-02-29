@@ -785,7 +785,6 @@ class sql{
      * @param stdClass $params_base Parametros de integracion
      * @param string $sql_extra Sql extra
      * @return string|array
-     * @version 1.374.41
      */
     final public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string|array
     {
@@ -805,20 +804,27 @@ class sql{
     }
 
     /**
-     * Funcion que inicializa los elementos de un SQL para sus where
-     * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
-     * @param array $columnas Columnas de a obtener en select
-     * @param bool $columnas_en_bruto Obtiene las columnas tal como estan en base de datos
-     * @param bool $con_sq Integra las columnas extra si true
-     * @param array $extension_estructura Extension de estructura para joins
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param int $limit Limit en sql
-     * @param modelo $modelo Modelo en ejecucion
-     * @param int $offset Sql de integracion tipo offset
-     * @param array $order con parametros para generar sentencia
-     * @param array $renombres Tablas renombradas
-     * @param string $sql_where_previo Sql previo a incrustar
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa una consulta SELECT SQL.
+     *
+     * @param bool $aplica_seguridad Indica si se deben aplicar medidas de seguridad a la consulta.
+     * @param array $columnas Array con los nombres de las columnas que se incluirán en la consulta.
+     * @param bool $columnas_en_bruto Indica si los nombres de las columnas se deben pasar sin procesar.
+     * @param bool $con_sq Indica si se debe incluir una cláusula SQ en la consulta.
+     * @param array $extension_estructura Array con información adicional sobre la estructura de la consulta.
+     * @param array $group_by Array con los nombres de las columnas para agrupar los resultados de la consulta.
+     * @param int $limit Número máximo de resultados a devolver en la consulta.
+     * @param modelo $modelo Instancia del modelo que realiza la consulta.
+     * @param int $offset Número de resultados a ignorar al inicio del conjunto de resultados.
+     * @param array $order Array con los nombres de las columnas para ordenar los resultados de la consulta.
+     * @param array $renombres Array con los nombres de las columnas a cambiar en la consulta.
+     * @param string $sql_where_previo Cadena con condiciones WHERE previas a incorporar en la consulta.
+     *
+     * @return array|stdClass Devuelve un array o un objeto stdClass.
+     *                         El objeto o array contiene los parámetros finales de la consulta y la consulta en sí misma.
+     *
+     * @throws errores Puede lanzar una excepción si se produce un error al generar los parámetros de la consulta o la consulta en sí.
+     * @version 16.214.0
      */
     final public function sql_select_init(bool $aplica_seguridad, array $columnas, bool $columnas_en_bruto,
                                           bool $con_sq, array $extension_estructura, array $group_by, int $limit,
