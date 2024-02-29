@@ -28,7 +28,7 @@ class data_base{
      * @param array $registro_previo – Arreglo con datos originales, para copiar en caso de que $key no existe en $data
      *
      * @return array Retorna un arreglo modificado con elementos añadidos, si necesario
-     * @version
+     * @version 16.224.0
      */
     private function asigna_data_no_existe(array $data, string $key, array $registro_previo): array
     {
