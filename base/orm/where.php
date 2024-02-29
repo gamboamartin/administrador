@@ -427,11 +427,18 @@ class where{
     }
 
     /**
-     * Genera un elemento diferente de
-     * @param string $campo Campo de integracion del modelo
-     * @param string $diferente_de_sql sql previo
-     * @param string $value Valor a verificar
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera una declaración SQL para verificar si un campo es
+     * diferente de un valor dado.
+     *
+     * @param string $campo              El campo de la tabla SQL.
+     * @param string $diferente_de_sql   String SQL que determina las condiciones bajo las cuales las entradas se consideran diferentes.
+     * @param string $value              El valor que no debería coincidir con el campo.
+     *
+     * @return string|array              Devuelve una cadena que representa la declaración SQL generada,
+     *                                   o un array que representa un mensaje de error.
+     *
+     * @version 16.219.0
      */
     private function diferente_de(string $campo, string $diferente_de_sql, string $value): string|array
     {
