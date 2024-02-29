@@ -19,9 +19,13 @@ class where{
     }
 
     /**
-     * Asigna and  A FILTRO
-     * @param string $txt Filtro en forma de sql
-     * @return string
+     * POR DOCUMENTAR EN WIKI
+     * La función 'and_filtro_fecha' agrega 'AND' al string dado si este no está vacío.
+     *
+     * @param string $txt Texto que se verificará si está vacío o no.
+     * @return string Devuelve el texto original con ' AND ' agregado si el texto original no estaba vacío,
+     * de lo contrario, devuelve el texto original.
+     * @version 16.215.0
      */
     private function and_filtro_fecha(string $txt): string
     {
