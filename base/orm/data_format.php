@@ -80,11 +80,17 @@ class data_format{
     }
 
     /**
-     * Regenera los valores de moneda a double cuando estos vienen en formato de moneda local
-     * @param string $campo Campo a ajustar valor
-     * @param array $registro Registro al que se le ajustaran los valores antes de insertar
-     * @param string $tipo_dato Ajustara el dato si viene como double o moneda el tipo de dato
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Este método se utiliza para asignar un valor de tipo moneda a un campo especificado en un registro.
+     *
+     * @param string $campo Es el nombre del campo al que se le asignará el valor.
+     * @param array $registro Es el registro donde se encuentra el campo a asignar.
+     * @param string $tipo_dato Es el tipo de dato que se asignará. Debe ser 'double' o 'moneda'.
+     *
+     * @return array Retorna el registro con el campo asignado. Si se encuentra un error, se retorna información detallada del error.
+     *
+     * @throws errores Si el campo o el tipo de dato están vacíos o no existen, se lanza una excepción.
+     * @version 16.222.0
      */
     private function asignacion_campo_moneda(string $campo, array $registro, string $tipo_dato): array
     {
