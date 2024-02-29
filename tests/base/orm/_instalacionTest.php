@@ -581,6 +581,29 @@ class _instalacionTest extends test
 
     }
 
+    public function test_data_column(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $atributos = new stdClass();
+        $campo_origen_data = array();
+        $campo_origen_data['Type'] = 'a';
+        $resultado = $ins->data_column($atributos, $campo_origen_data);
+
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("A", $resultado->type_origen);
+        $this->assertEquals("A", $resultado->tipo_dato_origen);
+        $this->assertEquals("VARCHAR", $resultado->type_new);
+        $this->assertEquals("", $resultado->longitud);
+
+        errores::$error = false;
+
+    }
+
     public function test_existen_entidad(): void
     {
         errores::$error = false;

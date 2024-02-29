@@ -690,8 +690,14 @@ class _instalacion
 
     }
 
-    private function data_column(stdClass $atributos, array $campo_origen_data): stdClass
+    private function data_column(stdClass $atributos, array $campo_origen_data): stdClass|array
     {
+        $keys = array('Type');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen_data);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar campo_origen_data', data:  $valida);
+        }
+
         $type_origen = trim(strtoupper($campo_origen_data['Type']));
 
         $desglose = explode('(', $type_origen);
