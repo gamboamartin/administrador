@@ -127,12 +127,23 @@ class data_base{
     }
 
     /**
-     * Valida que los elementos para incializar un campo sean validos
-     * @param mixed $key key a validar
-     * @param array $registro_previo Registro con datos para asignacion
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Función valida_init_data
+     *
+     * Esta función examina una clave y un registro previo para determinar si pueden ser utilizados para secuencias
+     * de operaciones en la base de datos.
+     *
+     * @param  mixed $key - Una clave que se quiere examinar. Debe ser una cadena de caracteres.
+     * @param  array $registro_previo - Un arreglo que representa el registro anterior, tal como sería almacenado en la base de datos.
+     *
+     * @return true|array devuelve true si las validaciones son correctas, en caso contrario retorna un arreglo representando un mensaje de error.
+     *
+     * @throws errores si la clave no es una cadena de texto.
+     * @throws errores si la clave está vacía.
+     * @throws errores si hay un error al validar el registro previo.
+     * @version 16.221.0
      */
-    private function valida_init_data(mixed $key, array $registro_previo): bool|array
+    private function valida_init_data(mixed $key, array $registro_previo): true|array
     {
         if(!is_string($key)){
             return $this->error->error(mensaje: 'Error key debe ser un string',data: $key);
