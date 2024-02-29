@@ -690,6 +690,19 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función prepara la estructura de datos para una columna de una tabla de base de datos.
+     *
+     * @param stdClass $atributos Un objeto que contiene atributos para una columna de base de datos.
+     * @param array $campo_origen_data Un array asociativo que contiene datos de la columna original.
+     *
+     * @return stdClass|array Devuelve un objeto de error en caso de error, o el resultado de varias operaciones
+     *               de modificación de columna en caso de éxito.
+     *
+     * @version 16.210.0
+     */
+
     private function data_column(stdClass $atributos, array $campo_origen_data): stdClass|array
     {
         $keys = array('Type');
