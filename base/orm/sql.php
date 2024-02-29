@@ -509,6 +509,11 @@ class sql{
     }
     private function inicializa_param(string $key, stdClass $params_base): array|stdClass
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
+
         if(!isset($params_base->$key)){
             $params_base = $this->init_param(key: $key,params_base:  $params_base);
             if(errores::$error){
