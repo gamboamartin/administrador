@@ -91,6 +91,46 @@ class _instalacion
 
     }
 
+    private function add_campo(array $adds, stdClass $atributos, string $campo, array $campo_origen_data, string $table, bool $valida_pep_8)
+    {
+        $data_column = $this->data_column(atributos: $atributos,campo_origen_data:  $campo_origen_data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener data_column', data: $data_column);
+        }
+
+        if ($data_column->type_new !== $data_column->tipo_dato_origen) {
+            $modifica = $this->modifica_columna(
+                campo: $campo, longitud: $data_column->longitud, table: $table, tipo_dato: $data_column->type_new,
+                valida_pep_8: $valida_pep_8);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al agregar modificar columnas', data: $modifica);
+            }
+            $adds[] = $modifica;
+        }
+        return $adds;
+
+    }
+
+    private function add_campo_final(array $adds, stdClass $atributos, string $campo, bool $existe_campo, string $table, bool $valida_pep_8)
+    {
+        if(!$existe_campo){
+            $add = $this->add(atributos: $atributos,campo:  $campo,table:  $table);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
+            }
+            $adds[] = $add;
+        }
+        else{
+            $adds = $this->campo_origen_data_add(adds: $adds,atributos:  $atributos,campo:  $campo,
+                table:  $table,valida_pep_8:  $valida_pep_8);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $adds);
+            }
+        }
+        return $adds;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Agrega una columna a una tabla dada.
@@ -175,50 +215,12 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al validar si existe campo', data: $existe_campo);
         }
 
-        if(!$existe_campo){
-            $add = $this->add(atributos: $atributos,campo:  $campo,table:  $table);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al agregar columna sql', data: $add);
-            }
-            $adds[] = $add;
+        $adds = $this->add_campo_final(adds: $adds,atributos:  $atributos,campo:  $campo,
+            existe_campo:  $existe_campo,table:  $table,valida_pep_8:  $valida_pep_8);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al agregar columna sql', data: $adds);
         }
-        else{
-            $campos_origen_data = $this->campos_origen(table: $table);
-            if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al ejecutar sql', data: $campos_origen_data);
-            }
-            foreach ($campos_origen_data as $campo_origen_data){
-                if($campo_origen_data['Field'] === $campo){
-                    $type_origen = trim(strtoupper($campo_origen_data['Type']));
 
-                    $desglose = explode('(', $type_origen);
-                    $tipo_dato_origen = strtoupper(trim($desglose[0]));
-
-                    $type_new = 'VARCHAR';
-                    if(isset($atributos->tipo_dato)) {
-                        $type_new = trim(strtoupper($atributos->tipo_dato));
-                    }
-                    $longitud = '';
-                    if(isset($atributos->longitud)) {
-                        $longitud = trim($atributos->longitud);
-                    }
-
-                    if ($type_new !== $tipo_dato_origen) {
-                        $modifica = $this->modifica_columna(
-                            campo: $campo, longitud: $longitud, table: $table, tipo_dato: $type_new,
-                            valida_pep_8: $valida_pep_8);
-                        if (errores::$error) {
-                            return $this->error->error(mensaje: 'Error al agregar modificar columnas', data: $modifica);
-                        }
-                        $adds[] = $modifica;
-                    }
-
-
-
-                }
-            }
-
-        }
         return $adds;
 
     }
@@ -481,6 +483,27 @@ class _instalacion
 
     }
 
+    private function campo_origen_data_add(array $adds, stdClass $atributos, string $campo, string $table, bool $valida_pep_8)
+    {
+        $campos_origen_data = $this->campos_origen(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $campos_origen_data);
+        }
+        foreach ($campos_origen_data as $campo_origen_data){
+            if($campo_origen_data['Field'] === $campo){
+
+                $adds = $this->add_campo(adds: $adds,atributos:  $atributos,campo: $campo,
+                    campo_origen_data:  $campo_origen_data,table:  $table,valida_pep_8:  $valida_pep_8);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al agregar modificar columnas', data: $adds);
+                }
+
+            }
+        }
+        return $adds;
+
+    }
+
     final public function campos_status_activo(stdClass $campos, array $name_campos)
     {
         foreach ($name_campos as $name_campo){
@@ -664,6 +687,32 @@ class _instalacion
             $id = $r_filtro->registros[0][$modelo->key_id];
         }
         return $id;
+
+    }
+
+    private function data_column(stdClass $atributos, array $campo_origen_data): stdClass
+    {
+        $type_origen = trim(strtoupper($campo_origen_data['Type']));
+
+        $desglose = explode('(', $type_origen);
+        $tipo_dato_origen = strtoupper(trim($desglose[0]));
+
+        $type_new = 'VARCHAR';
+        if(isset($atributos->tipo_dato)) {
+            $type_new = trim(strtoupper($atributos->tipo_dato));
+        }
+        $longitud = '';
+        if(isset($atributos->longitud)) {
+            $longitud = trim($atributos->longitud);
+        }
+
+        $out = new stdClass();
+        $out->type_origen = $type_origen;
+        $out->tipo_dato_origen = $tipo_dato_origen;
+        $out->type_new = $type_new;
+        $out->longitud = $longitud;
+
+        return $out;
 
     }
     /**
