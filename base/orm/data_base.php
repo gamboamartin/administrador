@@ -18,11 +18,17 @@ class data_base{
     }
 
     /**
-     * Asigna un valor para registro precargado
-     * @param array $data Registro en proceso
-     * @param string $key campo a integrar
-     * @param array $registro_previo Registro precargado
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Este método verifica si un elemento específico está presente en un arreglo
+     * proporcionado por el usuario ($data). Si el elemento no existe,
+     * se asignará el valor correspondiente a partir de otro arreglo ($registro_previo).
+     *
+     * @param array $data – Datos proporcionados por el usuario
+     * @param string $key – Llave para verificar en $data
+     * @param array $registro_previo – Arreglo con datos originales, para copiar en caso de que $key no existe en $data
+     *
+     * @return array Retorna un arreglo modificado con elementos añadidos, si necesario
+     * @version
      */
     private function asigna_data_no_existe(array $data, string $key, array $registro_previo): array
     {
