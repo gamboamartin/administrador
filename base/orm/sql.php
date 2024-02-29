@@ -518,6 +518,17 @@ class sql{
         return $params_base;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa un nuevo parámetro en el objeto de parámetros pasado.
+     *
+     * @param string $key - La clave del parámetro que se va a inicializar.
+     * @param stdClass $params_base - El objeto en el que se inicializará el nuevo parámetro.
+     *
+     * @return stdClass|array - Retorna el objeto de parámetros después de inicializar el nuevo parámetro.
+     * Si la clave está vacía, en su lugar se retorna un array con mensaje de error.
+     * @version 16.217.0
+     */
     private function init_param(string $key, stdClass $params_base): stdClass|array
     {
         $key = trim($key);
