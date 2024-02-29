@@ -12,6 +12,7 @@ use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_seccion_pertenece;
 use gamboamartin\administrador\models\adm_sistema;
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
 
 
@@ -24,6 +25,25 @@ class adm_menuTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_etiqueta_label()
+    {
+
+        errores::$error = false;
+        $modelo = new adm_menu($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $registro['descripcion'] = 'a';
+
+        $resultado = $modelo->etiqueta_label($registro);
+        //print_r($resultado);exit;
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('A',$resultado);
+        errores::$error = false;
+    }
     public function test_menus_visibles_permitidos()
     {
 

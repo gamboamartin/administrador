@@ -23,7 +23,6 @@ class data_base{
      * @param string $key campo a integrar
      * @param array $registro_previo Registro precargado
      * @return array
-     * @version 2.53.6
      */
     private function asigna_data_no_existe(array $data, string $key, array $registro_previo): array
     {
@@ -44,7 +43,6 @@ class data_base{
      * @param int $id Identificador en proceso
      * @param modelo $modelo Modelo en ejecucion
      * @return array
-     * @version 2.65.6
      */
     private function asigna_data_row_previo(array $data, int $id, modelo $modelo): array
     {
@@ -68,7 +66,6 @@ class data_base{
      * @param array $data Registro en proceso
      * @param array $registro_previo Registro cargado anteriormente
      * @return array
-     * @version 2.27.6
      */
     private function asigna_datas_base(array $data, array $registro_previo): array
     {
@@ -91,7 +88,6 @@ class data_base{
      * @param array $keys Keys de asignacion
      * @param array $registro_previo Registro previamente cargado
      * @return array
-     * @version 2.56.6
      */
     private function asigna_datas_no_existe(array $data, array $keys, array $registro_previo): array
     {
@@ -116,7 +112,6 @@ class data_base{
      * @param int $id Identificador
      * @param modelo $modelo Modelo en ejecucion
      * @return array
-     * @version 2.68.6
      */
     final public function init_data_base(array $data, int $id, modelo $modelo): array
     {
@@ -136,7 +131,6 @@ class data_base{
      * @param mixed $key key a validar
      * @param array $registro_previo Registro con datos para asignacion
      * @return bool|array
-     * @version 2.52.5
      */
     private function valida_init_data(mixed $key, array $registro_previo): bool|array
     {

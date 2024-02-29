@@ -12,7 +12,6 @@ class _modelo_parent extends _base {
      * @param array $keys_integra_ds Key a integrar para descripcion select
      * @return array|stdClass
      * @finalrev
-     * @version 10.48.2
      */
     public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {

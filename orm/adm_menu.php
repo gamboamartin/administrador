@@ -71,10 +71,15 @@ class adm_menu extends _modelo_parent_sin_codigo {
     /**
      * Ajusta una etiqueta de menu basada en la descripcion
      * @param array $registro Registro en proceso de alta
-     * @return string
+     * @return string|array
      */
-    private function etiqueta_label(array $registro): string
+    private function etiqueta_label(array $registro): string|array
     {
+        $keys = array('descripcion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data:  $valida);
+        }
         $etiqueta_label = $registro['descripcion'];
         $etiqueta_label = str_replace('_', ' ', $etiqueta_label);
         return ucwords($etiqueta_label);

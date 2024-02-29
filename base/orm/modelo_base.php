@@ -389,7 +389,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $keys_integra_ds Campos para generar la descripcion select
      * @return array
      * @final rev
-     * @version 9.68.1
      */
     protected function campos_base(array $data, modelo $modelo, int $id = -1,
                                    array $keys_integra_ds = array('codigo','descripcion')): array
