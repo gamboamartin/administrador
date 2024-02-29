@@ -807,7 +807,7 @@ class whereTest extends test {
     public function test_genera_filtro_rango_base(){
         errores::$error = false;
         $wh = new where();
-        //$wh = new liberator($wh);
+        $wh = new liberator($wh);
 
 
         $campo = '';

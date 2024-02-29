@@ -216,6 +216,29 @@ class _adm
                 return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta);
             }
         }
+        else{
+
+            $filtro = array();
+            $filtro['adm_seccion.id'] = $adm_accion_ins['adm_seccion_id'];
+            $filtro['adm_accion.descripcion'] = $adm_accion_descripcion;
+            $filtro['adm_accion.titulo'] = $adm_accion_ins['titulo'];
+            $existe  = (new adm_accion(link: $link))->existe(filtro: $filtro);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener accion',data:  $existe);
+            }
+            if(!$existe){
+                $adm_accion_id = (new adm_accion(link: $link))->adm_accion_id(
+                    adm_accion_descripcion: $adm_accion_descripcion,adm_seccion_descripcion:  $adm_seccion_descripcion);
+
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al obtener adm_accion_id',data:  $adm_accion_id);
+                }
+                $upd = (new adm_accion(link: $link))->modifica_bd(registro: $adm_accion_ins,id:  $adm_accion_id);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al actualizar adm_accion_id',data:  $upd);
+                }
+            }
+        }
 
         return $alta;
 

@@ -204,6 +204,17 @@ class where{
         return $datas;
     }
 
+    private function condicion_entre(string $campo, array $filtro, bool $valor_campo): string
+    {
+        $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
+
+        if($valor_campo){
+            $condicion = "'".$campo."'" . ' BETWEEN '  .$filtro['valor1'] ." AND ".$filtro['valor2'];
+        }
+        return $condicion;
+
+    }
+
 
 
     /**
@@ -982,7 +993,7 @@ class where{
      * @throws errores Si filtro[valor1] = vacio
      * @throws errores Si filtro[valor2] = vacio
      */
-    PUBLIC function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
+    private function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
                                               bool $valor_campo = false):array|string{
         $campo = trim($campo);
         if($campo === ''){
@@ -994,11 +1005,11 @@ class where{
             return  $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
         }
 
-        $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
-
-        if($valor_campo){
-            $condicion = "'".$campo."'" . ' BETWEEN '  .$filtro['valor1'] ." AND ".$filtro['valor2'];
+        $condicion = $this->condicion_entre(campo: $campo,filtro:  $filtro,valor_campo:  $valor_campo);
+        if(errores::$error){
+            return  $this->error->error(mensaje: 'Error al generar condicion',data: $condicion);
         }
+
         $filtro_rango_sql_r = $this->setea_filtro_rango(condicion: $condicion, filtro_rango_sql: $filtro_rango_sql);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error $filtro_rango_sql al setear',data: $filtro_rango_sql_r);
