@@ -1559,7 +1559,7 @@ class where{
     }
 
     /**
-     *
+     * POR DOCUMENTAR EN WIKI
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      * @access public
      * @param string $filtro_rango_sql debe ser un sql con una condicion
@@ -1575,6 +1575,7 @@ class where{
      *      //return = string 'var2 = 2'
      * @return array|string
      * @throws errores Si $filtro_rango_sql es diferente de vacio y condicion es igual a vacio
+     * @version 16.226.0
      */
     private function setea_filtro_rango(string $condicion, string $filtro_rango_sql):array|string{
         $filtro_rango_sql = trim($filtro_rango_sql);
