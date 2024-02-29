@@ -89,11 +89,19 @@ class data_base{
     }
 
     /**
-     * Asigna datos faltantes default
-     * @param array $data Registro en proceso
-     * @param array $keys Keys de asignacion
-     * @param array $registro_previo Registro previamente cargado
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Ésta función asigna valores a un arreglo $data basado en una lista de llaves ($keys) y un arreglo de registros previos ($registro_previo).
+     * Verifica si cada llave en $keys existe en $registro_previo. Si la llave no existe, añade el valor de la llave al arreglo $data.
+     * La función regresa $data una vez se ha terminado de iterar sobre todas las $keys.
+     *
+     * @param array $data El arreglo al que se añaden los valores
+     * @param array $keys Las llaves que se buscan en $registro_previo
+     * @param array $registro_previo Las llaves y valores existentes que se van a comparar con $keys
+     *
+     * @return array Regresa $data con los valores agregados
+     * @throws errores Si hay algún error al validar el registro previo o al asignar el dato
+     * @version 16.225.0
+     *
      */
     private function asigna_datas_no_existe(array $data, array $keys, array $registro_previo): array
     {
