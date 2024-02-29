@@ -305,6 +305,24 @@ class sqlTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_init_param(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $key = 'a';
+        $params_base = new stdClass();
+        $resultado = $sql->init_param($key, $params_base);
+        //print_r($resultado);exit;
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->a);
+
+        errores::$error = false;
+    }
+
     public function test_longitud(): void
     {
         errores::$error = false;

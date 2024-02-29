@@ -518,8 +518,12 @@ class sql{
         return $params_base;
     }
 
-    private function init_param(string $key, stdClass $params_base): stdClass
+    private function init_param(string $key, stdClass $params_base): stdClass|array
     {
+        $key = trim($key);
+        if($key === ''){
+            return $this->error->error(mensaje: 'Error key esta vacio', data: $key);
+        }
         $params_base->$key = '';
         return $params_base;
     }

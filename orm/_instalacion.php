@@ -1245,7 +1245,8 @@ class _instalacion
         }
 
         if(!$existe_campo){
-            $fk = $this->foreign_key_completo(campo: $campo, table: $table, default: $default, name_indice_opt: $name_indice_opt);
+            $fk = $this->foreign_key_completo(campo: $campo, table: $table, default: $default,
+                name_indice_opt: $name_indice_opt);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
