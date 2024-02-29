@@ -1560,8 +1560,22 @@ class _instalacion
         return $integraciones;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Funcion que se encarga de integrar foreign keys no confluentes.
+     *
+     * @param string $campo Campo en donde se integrara la foreign key
+     * @param array $campo_origen El origen del campo
+     * @param array $fks un array de foreign keys
+     * @param string $name_indice_opt nombre opcional del indice
+     * @param string $table nombre de la tabla
+     *
+     * @return stdClass|array regresa un objeto con las foreign keys y una bandera que indica si se realizo la integración
+     * @version 16.211.0
+     *
+     */
     private function integra_fc_no_conf(
-        string $campo, array $campo_origen, array $fks, string $name_indice_opt, string $table)
+        string $campo, array $campo_origen, array $fks, string $name_indice_opt, string $table): stdClass|array
     {
         $table = trim($table);
         if ($table === '') {
@@ -1585,7 +1599,6 @@ class _instalacion
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
             $fks[] = $fk;
-            //$fks[] = $fk;
             $break = true;
         }
 
