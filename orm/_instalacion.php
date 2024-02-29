@@ -1300,16 +1300,21 @@ class _instalacion
     }
 
     /**
-     * Este método integra una relación de clave ajena (Foreign Key) para la cual no haya una configuración definida.
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se encarga de realizar la operación de integración en campos que no poseen configuración de índices foráneos.
      *
-     * @param string $campo Es el campo para el cual se desea establecer la relación de clave ajena.
-     * @param array  $campos_origen Es una lista de campos de origen entre los cuales se establecerá la relación.
-     * @param string $table Es la tabla en que se desea establecer la relación.
+     * @param string $campo El nombre del campo.
+     * @param array $campos_origen Un array de campos de origen.
+     * @param string $name_indice_opt Nombre del índice optativo.
+     * @param string $table El nombre de la tabla.
      *
-     * @return array Devuelve un arreglo que contiene los detalles de las claves ajenas establecidas.
-     *    En caso de error devuelve un mensaje de error con detalles al respecto.
+     * @return array Esta función devuelve un array.
+     * En caso de error, por ejemplo, si el campo o la tabla están vacíos, o si $campos_origen no es un array,
+     * la función devuelve un mensaje de error y la data relacionada.
+     * Si no hay errores en la operación, regresa el array de índices foráneos.
      *
-     * @throws errores En caso de que ocurra cualquier error en la ejecución, se lanza una excepción con detalles.
+     * @throws errores En caso de que haya una falla en la integración, se lanzará una excepción.
+     * @version 16.212.0
      */
     private function foreign_no_conf_integra(
         string $campo, array $campos_origen, string $name_indice_opt, string $table):array
