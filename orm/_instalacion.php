@@ -1197,15 +1197,24 @@ class _instalacion
     }
 
     /**
-     * foreign_key_seguro
+     * POR DOCUMENTAR EN WIKI
+     * Este método se usa para asegurar la existencia e integración de una llave foránea en una tabla específica.
      *
-     * Esta función valida y gestiona keys foráneas en la base de datos de forma segura
+     * @param string $campo Nombre del campo de la llave foránea.
+     * @param string $table Nombre de la tabla en la que se debe asegurar la llave.
+     * @param string $default Valor predeterminado para el campo. (opcional)
+     * @param string $name_indice_opt Nombre opcional del índice de la llave foránea. (opcional)
      *
-     * @param string $campo Campo para el que se genera la key foránea
-     * @param string $table Tabla relacionada con la key foránea
-     * @param string $default Valor por defecto para el campo
+     * @throws errores Error al validar datos de entrada si la validación falla.
+     * @throws errores Error al validar si existe entidad si la tabla no existe.
+     * @throws errores Error no existe la entidad si la tabla no existe.
+     * @throws errores Error al ejecutar sql si no es posible describir la tabla.
+     * @throws errores Error al validar si existe campo si no se encuentra el campo en la tabla.
+     * @throws errores Error al integrar foreign si no es posible integrar la llave.
+     * @throws errores Error al integrar foreign no conf si no es posible integrar la llave en caso de no confirmar.
      *
-     * @return array|stdClass Retorna un array o un objeto stdClass dependiendo del resultado del proceso
+     * @return array|stdClass Resultado de la operación, puede ser un arreglo o un objeto dependiendo de la operación.
+     * @version 16.213.0
      */
     final public function foreign_key_seguro(
         string $campo, string $table, string $default = '', string $name_indice_opt = ''):array|stdClass
