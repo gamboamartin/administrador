@@ -323,6 +323,25 @@ class sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_init_params(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        $sql = new liberator($sql);
+
+        $params_base = new stdClass();
+        $resultado = $sql->init_params($params_base);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->seguridad);
+        $this->assertEquals('',$resultado->group_by);
+        $this->assertEquals('',$resultado->order);
+        $this->assertEquals('',$resultado->limit);
+        $this->assertEquals('',$resultado->offset);
+
+        errores::$error = false;
+    }
+
     public function test_inicializa_param(): void
     {
         errores::$error = false;
