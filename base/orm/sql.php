@@ -826,11 +826,19 @@ class sql{
     }
 
     /**
-     * Integra el sql completo para la obtencion de un select
-     * @param string $consulta_base Sql base
-     * @param stdClass $params_base Parametros de integracion
-     * @param string $sql_extra Sql extra
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera la consulta SQL a partir de la consulta base y parámetros dados.
+     *
+     * @param string $consulta_base La consulta SQL base que se usará para generar la consulta final.
+     * @param stdClass $params_base Los parámetros que serán añadidos a la consulta final.
+     * @param string $sql_extra Cualquier SQL extra o ajustes que se añadirán a la consulta final.
+     *
+     * @return string|array Devuelve la consulta final generada como un string, o un array en caso de error.
+     *
+     * @final
+     * @public
+     * @version 16.235.0
+     *
      */
     final public function sql_select(string $consulta_base, stdClass $params_base, string $sql_extra): string|array
     {
