@@ -204,8 +204,19 @@ class where{
         return $datas;
     }
 
-    private function condicion_entre(string $campo, array $filtro, bool $valor_campo): string
+
+    private function condicion_entre(string $campo, array $filtro, bool $valor_campo): string|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo vacío', data: $campo);
+        }
+        if(!isset($filtro['valor1'])){
+            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor1]', data: $campo);
+        }
+        if(!isset($filtro['valor2'])){
+            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor2]', data: $campo);
+        }
         $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
 
         if($valor_campo){

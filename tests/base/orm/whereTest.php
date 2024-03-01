@@ -260,6 +260,27 @@ class whereTest extends test {
 
     }
 
+    public function test_condicion_entre(){
+
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+        $valor_campo = true;
+        $filtro = array();
+        $filtro['valor1'] = 'a';
+        $filtro['valor2'] = 'a';
+        $campo = 'campo';
+        $resultado = $wh->condicion_entre($campo, $filtro, $valor_campo);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("'campo' BETWEEN a AND a", $resultado);
+
+        errores::$error = false;
+
+
+    }
+
     public function test_data_filtro_fecha(){
         errores::$error = false;
         $wh = new where();

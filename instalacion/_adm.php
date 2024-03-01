@@ -22,8 +22,9 @@ class _adm
 
     }
 
-    private function adm_accion_ins(int $adm_seccion_id, string $descripcion, string $es_view,
-                                    string $icono, string $lista, string $titulo): array
+    private function adm_accion_ins(int $adm_seccion_id, string $css, string $descripcion, string $es_status,
+                                    string $es_view, string $icono, string $lista, string $muestra_icono_btn,
+                                    string $muestra_titulo_btn, string $titulo): array
     {
         $adm_accion_ins['descripcion'] = $descripcion;
         $adm_accion_ins['adm_seccion_id'] = $adm_seccion_id;
@@ -35,11 +36,11 @@ class _adm
         $adm_accion_ins['es_modal'] = 'inactivo';
         $adm_accion_ins['es_view'] = $es_view;
         $adm_accion_ins['titulo'] = $titulo;
-        $adm_accion_ins['css'] = 'warning';
-        $adm_accion_ins['es_status'] = 'inactivo';
+        $adm_accion_ins['css'] = $css;
+        $adm_accion_ins['es_status'] = $es_status;
         $adm_accion_ins['es_lista'] = $lista;
-        $adm_accion_ins['muestra_icono_btn'] = 'activo';
-        $adm_accion_ins['muestra_titulo_btn'] = 'inactivo';
+        $adm_accion_ins['muestra_icono_btn'] = $muestra_icono_btn;
+        $adm_accion_ins['muestra_titulo_btn'] = $muestra_titulo_btn;
 
         return $adm_accion_ins;
 
@@ -246,15 +247,20 @@ class _adm
     }
 
     final public function inserta_accion_base(string $adm_accion_descripcion,string $adm_seccion_descripcion,
-                                         string $es_view, string $icono, PDO $link, string $lista, string $titulo)
+                                              string $es_view, string $icono, PDO $link, string $lista, string $titulo,
+                                              string $css = 'warning', string $es_status = 'inactivo',
+                                              string $muestra_icono_btn = 'activo',
+                                              string $muestra_titulo_btn = 'inactivo')
     {
         $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: $adm_seccion_descripcion);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener adm_seccion_id', data:  $adm_seccion_id);
         }
 
-        $adm_accion_ins = $this->adm_accion_ins(adm_seccion_id: $adm_seccion_id,descripcion:  $adm_accion_descripcion,
-            es_view:  $es_view,icono:  $icono,lista:  $lista,titulo:  $titulo);
+        $adm_accion_ins = $this->adm_accion_ins(adm_seccion_id: $adm_seccion_id, css: $css,
+            descripcion: $adm_accion_descripcion, es_status: $es_status, es_view: $es_view, icono: $icono,
+            lista: $lista, muestra_icono_btn: $muestra_icono_btn, muestra_titulo_btn: $muestra_titulo_btn,
+            titulo: $titulo);
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener accion ins',data:  $adm_accion_ins);
