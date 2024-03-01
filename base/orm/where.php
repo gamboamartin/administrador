@@ -211,7 +211,7 @@ class where{
         if($valor_campo){
             $condicion = "'".$campo."'" . ' BETWEEN '  .$filtro['valor1'] ." AND ".$filtro['valor2'];
         }
-        
+
         return $condicion;
 
     }

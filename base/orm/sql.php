@@ -507,6 +507,21 @@ class sql{
         return trim($sql);
 
     }
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa parámetros base para la consulta SQL.
+     *
+     * Este método permite inicializar los parámetros (clausura $params_base) para la consulta SQL, dada una clave.
+     * En caso de que la clave esté vacía, se devuelve un error. También realiza una validación, si la clave no existe
+     * en $params_base, intenta inicializar ese parámetro. Si ocurre un error durante la inicialización, también devuelve un error.
+     *
+     * @param string $key La clave que se usará para inicializar el parámetro.
+     * @param stdClass $params_base La clausura que contiene los parámetros que serán utilizados en la consulta SQL.
+     *
+     * @return array|stdClass Retorna el conjunto de parámetros inicializados. En caso de error, devuelve el detalle del error.
+     * @version 16.229.0
+     */
     private function inicializa_param(string $key, stdClass $params_base): array|stdClass
     {
         $key = trim($key);
