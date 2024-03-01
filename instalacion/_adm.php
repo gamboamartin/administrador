@@ -223,6 +223,8 @@ class _adm
             $filtro['adm_seccion.id'] = $adm_accion_ins['adm_seccion_id'];
             $filtro['adm_accion.descripcion'] = $adm_accion_descripcion;
             $filtro['adm_accion.titulo'] = $adm_accion_ins['titulo'];
+            $filtro['adm_accion.icono'] = $adm_accion_ins['icono'];
+            $filtro['adm_accion.css'] = $adm_accion_ins['css'];
             $existe  = (new adm_accion(link: $link))->existe(filtro: $filtro);
             if(errores::$error){
                 return (new errores())->error(mensaje: 'Error al obtener accion',data:  $existe);

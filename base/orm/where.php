@@ -590,7 +590,6 @@ class where{
     /**
      *
      * Funcion que genera las condiciones de sql de un filtro extra
-     * @version 1.132.30
      *
      * @param array $filtro_extra arreglo que contiene las condiciones
      * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
@@ -991,7 +990,7 @@ class where{
     }
 
     /**
-     *
+     * POR DOCUMENTAR EN WIKI
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      * @param string $campo
      *                  Opcion 1.-Si valor_es_campo = false,
@@ -1019,6 +1018,7 @@ class where{
      * @throws errores Si $campo = vacio
      * @throws errores Si filtro[valor1] = vacio
      * @throws errores Si filtro[valor2] = vacio
+     * @version 16.233.0
      */
     private function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
                                               bool $valor_campo = false):array|string{
