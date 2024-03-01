@@ -205,6 +205,21 @@ class where{
     }
 
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función privada que genera una condición BETWEEN para una consulta SQL.
+     *
+     * @param string $campo El nombre del campo en el que se aplicará la condición.
+     * @param array $filtro Un array asociativo que debe contener los elementos 'valor1' y 'valor2'
+     * los cuales delimitarán el rango de la condición BETWEEN.
+     * @param bool $valor_campo Indica si el valor de $campo debe ser tratado como un string
+     *        (si $valor_campo es true, se añaden comillas simples alrededor del nombre del campo).
+     *
+     * @return string|array Retorna la condición BETWEEN como un string si todo está correcto.
+     *        En caso contrario, si $campo está vacío o $filtro no contiene los elementos 'valor1' y 'valor2',
+     * retorna un error.
+     * @version 16.232.0
+     */
     private function condicion_entre(string $campo, array $filtro, bool $valor_campo): string|array
     {
         $campo = trim($campo);
