@@ -12,17 +12,31 @@ class data_format{
     public errores $error;
     public validacion $validacion;
 
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new validacion();
     }
 
     /**
-     * Funcion ajusta los campos en formato moneda previo a la insersion, los limpia y los integra como double
-     * @param array $registro Registro donde se ajustaran los valores
-     * @param array $tipo_campos Son los tipos de campos declarados en el modelo
-     * @fecha 2022-07-30 13:26
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función ajusta los campos de tipo moneda en un arreglo.
+     *
+     * @param array $registro Es el registro donde se van a buscar y ajustar los campos.
+     * @param array $tipo_campos Es un arreglo que define el tipo de dato para cada campo en $registro.
+     *                           Debe seguir la forma $modelo->tipo_campos[campo] = regex.
+     *                           Donde el regex debe existir en el paquete de validaciones en validacion->patterns.
+     *
+     * @return array Retorna el registro ajustado. En caso de error, retorna un arreglo con información del error.
+     *               Los posibles errores incluyen campos vacios, y tipo de dato no es una cadena de texto.
+     *
+     * @throws errores En caso de que $campo esté vacío, se lanza un error.
+     *               En caso de que el tipo de dato no sea un string, se lanza un error.
+     *               En caso de que $tipo_dato esté vacío, se lanza un error.
+     *               Todas estas excepciones incluyen 'mensaje', 'data', y 'fix' en el arreglo de retorno del error.
+     *
+     *
+     * @final
+     * @version 16.237.0
      */
     final public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
     {

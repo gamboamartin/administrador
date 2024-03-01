@@ -317,7 +317,6 @@ class inicializacion{
 
     /**
      * Encripta los campos indicados desde modelo->campos_encriptados
-     * @version 1.0.0
      * @param string $campo Campo a validar si es aplicable a encriptar
      * @param array $campos_encriptados Conjunto de campos del modelo a encriptar
      * @param array $registro Registro a verificar
@@ -363,7 +362,6 @@ class inicializacion{
 
     /**
      * Encripta los campos del modelo
-     * @version 1.0.0
      * @param array $campos_encriptados conjunto de campos a encriptar
      * @param array $registro Registro a aplicar la encriptacion
      * @return array Registro con campos encriptados
@@ -702,7 +700,6 @@ class inicializacion{
 
     /**
      * Funcion que limpia los valores quita elementos iniciales y finales no imprimibles
-     * @version 1.0.0
      * @param string $campo Campo del registro del modelo a limpiar
      * @param string $valor Valor del registro en el campo indicado
      * @return stdClass|array
