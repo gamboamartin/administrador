@@ -559,6 +559,17 @@ class sql{
         return $params_base;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa los parámetros de la consulta SQL.
+     *
+     * Esta función prepara los parámetros para una consulta SQL antes de que se ejecute. Este proceso puede implicar
+     * la limpieza de los datos, la comprobación de tipos de datos o la asignación de valores por defecto.
+     *
+     * @param stdClass $params_base
+     * @return array|stdClass Los parámetros inicializados que están listos para utilizar en una consulta.
+     * @version 16.234.0
+     */
     private function init_params(stdClass $params_base): array|stdClass
     {
         $params_base_ = $params_base;
