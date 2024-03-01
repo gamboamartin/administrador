@@ -708,6 +708,7 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      *
      * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
      *
@@ -736,6 +737,7 @@ class where{
      * @throws errores Si filtro[0] = array('valor1'=>'1') Debe existir valor2
      * @throws errores Si filtro[0] = array('valor2'=>'1') Debe existir valor1
      * @throws errores Si filtro[0] = array('valor1'=>'1','valor2'=>'2') key debe ser tabla.campo error sql
+     * @version 16.236.0
      */
     private function filtro_rango_sql(array $filtro_rango):array|string{//DOC DEBUG
         $filtro_rango_sql = '';
