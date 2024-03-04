@@ -91,8 +91,24 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Agrega o modifica un campo en una tabla específica si no cumple con los requisitos especificados.
+     *
+     * @param array $adds Inicialmente un array vacío, se le agregan las operaciones de modificación de columnas realizadas.
+     * @param stdClass $atributos Objeto que contiene los atributos de la columna.
+     * @param string $campo Nombre del campo que se va a agregar o modificar.
+     * @param array $campo_origen_data Información original de la columna.
+     * @param string $table Nombre de la tabla en la que se va a agregar o modificar el campo.
+     * @param bool $valida_pep_8 Define si se valida o no la nomenclatura del campo de acuerdo a las normas PEP 8.
+     * @return array El array $adds con las operaciones de modificación realizadas, retorna errores en caso de encontrarlos.
+     *
+     * @throws errores Si ocurre un error durante el proceso.
+     * @version 16.240.0
+     */
     private function add_campo(
-        array $adds, stdClass $atributos, string $campo, array $campo_origen_data, string $table, bool $valida_pep_8)
+        array $adds, stdClass $atributos, string $campo, array $campo_origen_data, string $table,
+        bool $valida_pep_8): array
     {
         $keys = array('Type');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen_data);
