@@ -1521,6 +1521,10 @@ class where{
 
     private function integra_filtro_extra(array $data_filtro, string $filtro_extra_sql)
     {
+        if(count($data_filtro) === 0){
+            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
+        }
+
         $datos = $this->datos_filtro_especial(data_filtro: $data_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener datos de filtro',data:  $datos);

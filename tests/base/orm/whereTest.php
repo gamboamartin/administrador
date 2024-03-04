@@ -1161,6 +1161,24 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_integra_filtro_extra(){
+        errores::$error = false;
+        $wh = new where();
+         $wh = new liberator($wh);
+
+        $data_filtro = array();
+        $data_filtro['z']['operador'] = 'operador';
+        $data_filtro['z']['valor'] = 'valor';
+        $data_filtro['z']['comparacion'] = 'comparacion';
+        $filtro_extra_sql = '';
+        $resultado = $wh->integra_filtro_extra($data_filtro, $filtro_extra_sql);
+       // print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("zoperador'valor'",$resultado);
+        errores::$error = false;
+    }
+
     public function test_limpia_filtros(){
         errores::$error = false;
         $wh = new where();
