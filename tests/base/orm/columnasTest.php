@@ -661,6 +661,20 @@ class columnasTest extends test {
         $this->assertEquals('adm_menu_rnm.id AS adm_menu_rnm_id, adm_menu_rnm.descripcion AS adm_menu_rnm_descripcion, adm_menu_rnm.etiqueta_label AS adm_menu_rnm_etiqueta_label, adm_menu_rnm.icono AS adm_menu_rnm_icono, adm_menu_rnm.status AS adm_menu_rnm_status, adm_menu_rnm.usuario_update_id AS adm_menu_rnm_usuario_update_id, adm_menu_rnm.fecha_alta AS adm_menu_rnm_fecha_alta, adm_menu_rnm.fecha_update AS adm_menu_rnm_fecha_update, adm_menu_rnm.usuario_alta_id AS adm_menu_rnm_usuario_alta_id, adm_menu_rnm.codigo AS adm_menu_rnm_codigo, adm_menu_rnm.codigo_bis AS adm_menu_rnm_codigo_bis, adm_menu_rnm.descripcion_select AS adm_menu_rnm_descripcion_select, adm_menu_rnm.alias AS adm_menu_rnm_alias, adm_menu_rnm.titulo AS adm_menu_rnm_titulo',$resultado);
 
         errores::$error = false;
+        $extra_joins['adm_menu'] = array();
+        $extra_joins['adm_menu']['renombre'] = 'adm_menu_rnm';
+
+        $extra_joins['adm_sistema'] = array();
+        $extra_joins['adm_sistema']['renombre'] = 'adm_sistema_rnm';
+
+        $resultado = $col->columnas_extra($columnas, $columnas_sql, $extra_joins, $modelo);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('adm_menu_rnm.id AS adm_menu_rnm_id, adm_menu_rnm.descripcion AS adm_menu_rnm_descripcion, adm_menu_rnm.etiqueta_label AS adm_menu_rnm_etiqueta_label, adm_menu_rnm.icono AS adm_menu_rnm_icono, adm_menu_rnm.status AS adm_menu_rnm_status, adm_menu_rnm.usuario_update_id AS adm_menu_rnm_usuario_update_id, adm_menu_rnm.fecha_alta AS adm_menu_rnm_fecha_alta, adm_menu_rnm.fecha_update AS adm_menu_rnm_fecha_update, adm_menu_rnm.usuario_alta_id AS adm_menu_rnm_usuario_alta_id, adm_menu_rnm.codigo AS adm_menu_rnm_codigo, adm_menu_rnm.codigo_bis AS adm_menu_rnm_codigo_bis, adm_menu_rnm.descripcion_select AS adm_menu_rnm_descripcion_select, adm_menu_rnm.alias AS adm_menu_rnm_alias, adm_menu_rnm.titulo AS adm_menu_rnm_titulo, adm_sistema_rnm.id AS adm_sistema_rnm_id, adm_sistema_rnm.descripcion AS adm_sistema_rnm_descripcion, adm_sistema_rnm.codigo AS adm_sistema_rnm_codigo, adm_sistema_rnm.status AS adm_sistema_rnm_status, adm_sistema_rnm.usuario_alta_id AS adm_sistema_rnm_usuario_alta_id, adm_sistema_rnm.usuario_update_id AS adm_sistema_rnm_usuario_update_id, adm_sistema_rnm.fecha_alta AS adm_sistema_rnm_fecha_alta, adm_sistema_rnm.fecha_update AS adm_sistema_rnm_fecha_update, adm_sistema_rnm.codigo_bis AS adm_sistema_rnm_codigo_bis, adm_sistema_rnm.descripcion_select AS adm_sistema_rnm_descripcion_select, adm_sistema_rnm.alias AS adm_sistema_rnm_alias',$resultado);
+
+        errores::$error = false;
+
 
     }
 

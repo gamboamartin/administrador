@@ -713,7 +713,7 @@ class columnas{
      * @return array|string Devuelve las columnas procesadas si no hubo errores. En caso de errores, devuelve un mensaje de error.
      * @version 15.83.1
      */
-    private function columnas_extra(string $columnas, array $columnas_sql,  array $extra_join,
+    PUBLIC function columnas_extra(string $columnas, array $columnas_sql,  array $extra_join,
                                     modelo_base $modelo): array|string
     {
         $columnas_env = $columnas;
