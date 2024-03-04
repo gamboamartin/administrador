@@ -90,6 +90,17 @@ class where{
         return addslashes($campo);
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * La función campo_data_filtro se usa para aplicar ciertas validaciones en la clave del array $data_filtro.
+     *
+     * @param  array $data_filtro El array de entrada que se tiene que validar.
+     * @throws errores Si la clave del array está vacía o si la clave no es un string válido (no numérico).
+     * @return string|array Devuelve la clave del array $data_filtro después de apliar trim() si la validación es exitosa.
+     *                     En caso de error, se devuelve un array con los detalles del error.
+     *
+     * @version 16.244.0
+     */
     private function campo_data_filtro(array $data_filtro): string|array
     {
         if(count($data_filtro) === 0){
