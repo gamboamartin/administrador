@@ -142,7 +142,8 @@ class _instalacion
 
     }
 
-    private function add_campo_final(array $adds, stdClass $atributos, string $campo, bool $existe_campo, string $table, bool $valida_pep_8)
+    private function add_campo_final(
+        array $adds, stdClass $atributos, string $campo, bool $existe_campo, string $table, bool $valida_pep_8)
     {
         if(!$existe_campo){
             $add = $this->add(atributos: $atributos,campo:  $campo,table:  $table);
@@ -518,8 +519,23 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función agrega campos en "campo origen data" de acuerdo a los atributos y parámetros recibidos.
+     *
+     * @param array $adds Array utilizado para agregar datos al campo origen.
+     * @param stdClass $atributos Atributos del campo origen.
+     * @param string $campo Nombre del campo origen actual.
+     * @param string $table Nombre de la tabla de la base de datos en donde será implementado el campo origen.
+     * @param bool $valida_pep_8 Determina si se realizará la validación PEP8.
+     *
+     * @return array Retorna el array de datos de campo origen con el nuevo campo añadido.
+     *
+     * @throws errores En caso de que se genere un error al ejecutar el SQL o al agregar/modificar columnas.
+     * @version 16.242.0
+     */
     private function campo_origen_data_add(
-        array $adds, stdClass $atributos, string $campo, string $table, bool $valida_pep_8)
+        array $adds, stdClass $atributos, string $campo, string $table, bool $valida_pep_8): array
     {
         $campos_origen_data = $this->campos_origen(table: $table);
         if (errores::$error) {
