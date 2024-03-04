@@ -2351,23 +2351,22 @@ class modelo extends modelo_base {
     }
 
     /**
-     * PHPUNIT
      * @return array|int
      */
-    public function obten_ultimo_registro(): int|array
+    final public function obten_ultimo_registro(): int|array
     {
         $this->order = array($this->tabla.'.id'=>'DESC');
         $this->limit = 1;
-        $resultado = $this->obten_registros();
-        if(isset($resultado['error'])){
+        $resultado = $this->obten_registros(limit: $this->limit);
+        if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
         }
 
-        if((int)$resultado['n_registros'] === 0){
+        if((int)$resultado->n_registros === 0){
             return 1;
         }
 
-        return $resultado['registros'][0][$this->tabla.'_id'] + 1;
+        return $resultado->registros[0][$this->key_id] + 1;
     }
 
     final public function primer_id()

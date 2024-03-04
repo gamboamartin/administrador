@@ -830,7 +830,6 @@ class modeloTest extends test {
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
     }*/
-
     public function test_inserta_predeterminado(): void
     {
         $_SESSION['usuario_id'] = 2;
@@ -1096,6 +1095,23 @@ class modeloTest extends test {
         $resultado = $modelo->obten_registros_filtro_and_ordenado($campo, false, array(), $filtros, $orden);
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
+    public function test_obten_ultimo_registro(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->obten_ultimo_registro();
+       // print_r($resultado);exit;
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+
         errores::$error = false;
 
     }
