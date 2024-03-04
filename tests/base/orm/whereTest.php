@@ -161,6 +161,21 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_campo_data_filtro(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $data_filtro = array();
+        $data_filtro['a'] = '';
+        $resultado = $wh->campo_data_filtro($data_filtro);
+        //print_r($resultado);exit;
+        $this->assertEquals('a', $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_campo_filtro_especial(): void
     {
         errores::$error = false;
@@ -611,7 +626,7 @@ class whereTest extends test {
         $resultado = $wh->filtro_extra_sql($filtro_extra);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error data_filtro[][operador] debe existir', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al generar filtro', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -620,7 +635,7 @@ class whereTest extends test {
         $resultado = $wh->filtro_extra_sql($filtro_extra);
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error data_filtro[operador][operador]', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al generar filtro', $resultado['mensaje']);
 
         errores::$error = false;
 

@@ -90,6 +90,23 @@ class where{
         return addslashes($campo);
     }
 
+    private function campo_data_filtro(array $data_filtro): string|array
+    {
+        if(count($data_filtro) === 0){
+            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
+        }
+        $campo = key($data_filtro);
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: "Error key vacio",data:  $campo);
+        }
+        if(is_numeric($campo )){
+            return $this->error->error(mensaje: "Error key debe ser un texto valido",data:  $campo);
+        }
+        return trim($campo);
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Esta función valida el campo proporcionado para ser filtrado y verifica si el campo es parte de una subconsulta.
@@ -440,6 +457,51 @@ class where{
 
     }
 
+    private function datos_filtro_especial(array $data_filtro)
+    {
+        $campo = $this->campo_data_filtro(data_filtro: $data_filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al obtener campo',data:  $campo);
+        }
+
+        if(!isset($data_filtro[$campo]['operador'])){
+            return $this->error->error(mensaje:'Error data_filtro['.$campo.'][operador] debe existir',
+                data:$data_filtro);
+        }
+
+        $operador = $data_filtro[$campo]['operador'];
+        if($operador===''){
+            return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador);
+        }
+
+        if(!isset($data_filtro[$campo]['valor'])){
+            return $this->error->error(mensaje:'Error data_filtro['.$campo.'][valor] debe existir',
+                data:$data_filtro);
+        }
+        if(!isset($data_filtro[$campo]['comparacion'])){
+            return $this->error->error(mensaje:'Error data_filtro['.$campo.'][comparacion] debe existir',
+                data:$data_filtro);
+        }
+
+        $valor = $data_filtro[$campo]['valor'];
+        if($valor===''){
+            return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor);
+        }
+        $valor = addslashes($valor);
+        $comparacion = $data_filtro[$campo]['comparacion'];
+        $condicion = $campo.$operador."'$valor'";
+
+        $datos = new stdClass();
+        $datos->campo = $campo;
+        $datos->operador = $operador;
+        $datos->valor = $valor;
+        $datos->comparacion = $comparacion;
+        $datos->condicion = $condicion;
+
+        return $datos;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Determina si un campo es un subquery basado en la existencia del campo en las columnas extra.
@@ -614,45 +676,26 @@ class where{
             if(!is_array($data_filtro)){
                 return $this->error->error(mensaje: 'Error $data_filtro debe ser un array',data: $filtro_extra);
             }
-            $campo = key($data_filtro);
-            $campo = trim($campo);
-
-            if(!isset($data_filtro[$campo]['operador'])){
-                return $this->error->error(mensaje:'Error data_filtro['.$campo.'][operador] debe existir',
-                    data:$data_filtro);
-            }
-
-            $operador = $data_filtro[$campo]['operador'];
-            if($operador===''){
-                return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador);
-            }
-
-            if(!isset($data_filtro[$campo]['valor'])){
-                return $this->error->error(mensaje:'Error data_filtro['.$campo.'][valor] debe existir',
-                    data:$data_filtro);
-            }
-            if(!isset($data_filtro[$campo]['comparacion'])){
-                return $this->error->error(mensaje:'Error data_filtro['.$campo.'][comparacion] debe existir',
-                    data:$data_filtro);
-            }
-
-            $valor = $data_filtro[$campo]['valor'];
-            if($valor===''){
-                return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor);
-            }
-            $valor = addslashes($valor);
-            $comparacion = $data_filtro[$campo]['comparacion'];
-            $condicion = $campo.$operador."'$valor'";
-
-            if($filtro_extra_sql === ''){
-                $filtro_extra_sql .= $condicion;
-            }
-            else {
-                $filtro_extra_sql .=  $comparacion . $condicion;
+            $filtro_extra_sql = $this->integra_filtro_extra(
+                data_filtro: $data_filtro, filtro_extra_sql: $filtro_extra_sql);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al generar filtro',data:  $filtro_extra_sql);
             }
         }
 
         return $filtro_extra_sql;
+    }
+
+    private function filtro_extra_sql_genera(string $comparacion, string $condicion, string $filtro_extra_sql): string
+    {
+        if($filtro_extra_sql === ''){
+            $filtro_extra_sql .= $condicion;
+        }
+        else {
+            $filtro_extra_sql .=  $comparacion . $condicion;
+        }
+        return $filtro_extra_sql;
+
     }
 
     /**
@@ -1410,6 +1453,23 @@ class where{
             return $this->error->error(mensaje:'Error al inicializar params',data:$complemento_r);
         }
         return $complemento_r;
+    }
+
+    private function integra_filtro_extra(array $data_filtro, string $filtro_extra_sql)
+    {
+        $datos = $this->datos_filtro_especial(data_filtro: $data_filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener datos de filtro',data:  $datos);
+        }
+
+        $filtro_extra_sql = $this->filtro_extra_sql_genera(comparacion: $datos->comparacion,
+            condicion:  $datos->condicion,filtro_extra_sql:  $filtro_extra_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al generar filtro',data:  $filtro_extra_sql);
+        }
+
+        return $filtro_extra_sql;
+
     }
 
     /**
