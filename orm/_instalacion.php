@@ -91,8 +91,23 @@ class _instalacion
 
     }
 
-    private function add_campo(array $adds, stdClass $atributos, string $campo, array $campo_origen_data, string $table, bool $valida_pep_8)
+    private function add_campo(
+        array $adds, stdClass $atributos, string $campo, array $campo_origen_data, string $table, bool $valida_pep_8)
     {
+        $keys = array('Type');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $campo_origen_data);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar campo_origen_data', data:  $valida);
+        }
+        $campo = trim($campo);
+        if($campo === ''){
+            return (new errores())->error(mensaje: 'Error campo esta vacio', data:  $campo);
+        }
+        $table = trim($table);
+        if($table === ''){
+            return (new errores())->error(mensaje: 'Error table esta vacio', data:  $table);
+        }
+
         $data_column = $this->data_column(atributos: $atributos,campo_origen_data:  $campo_origen_data);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener data_column', data: $data_column);

@@ -86,6 +86,58 @@ class _instalacionTest extends test
         }
 
     }
+
+    public function test_add_campo(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $table = 'c';
+
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data: $create);
+            print_r($error);
+            exit;
+        }
+        $campo = 'b';
+        $add = $ins->add_colum(campo: $campo,table: 'c',tipo_dato: 'VARCHAR');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al add',data: $add);
+            print_r($error);
+            exit;
+        }
+
+        $adds = array();
+        $atributos = new stdClass();
+
+        $campo_origen_data = array();
+        $campo_origen_data['Type'] = 'a';
+        $valida_pep_8 = true;
+        $resultado = $ins->add_campo($adds, $atributos, $campo, $campo_origen_data, $table, $valida_pep_8);
+        //print_r($resultado);exit;
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE c MODIFY COLUMN b VARCHAR (255);', $resultado[0]->sql);
+
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+
+    }
     public function test_add_colum(): void
     {
         errores::$error = false;
