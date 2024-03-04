@@ -673,6 +673,46 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_filtro_extra_sql_genera(): void
+    {
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+        $comparacion = '';
+        $condicion = '';
+        $filtro_extra_sql = '';
+        $resultado = $wh->filtro_extra_sql_genera($comparacion, $condicion, $filtro_extra_sql);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado);
+
+        errores::$error = false;
+
+        $comparacion = 'comparacion';
+        $condicion = 'condicion';
+        $filtro_extra_sql = '';
+        $resultado = $wh->filtro_extra_sql_genera($comparacion, $condicion, $filtro_extra_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('condicion', $resultado);
+
+        errores::$error = false;
+
+        errores::$error = false;
+
+        $comparacion = 'comparacion';
+        $condicion = 'condicion';
+        $filtro_extra_sql = 'fes';
+        $resultado = $wh->filtro_extra_sql_genera($comparacion, $condicion, $filtro_extra_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('fescomparacioncondicion', $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_filtro_fecha(): void
     {
         errores::$error = false;
