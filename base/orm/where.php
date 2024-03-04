@@ -468,7 +468,42 @@ class where{
 
     }
 
-    private function datos_filtro_especial(array $data_filtro)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función gestiona un array asociativo que implementa filtros especiales para la consulta SQL
+     * que está siendo generada.
+     *
+     * @param array $data_filtro El array contiene múltiples campos para filtrar.
+     *
+     * @return stdClass|array Retorna un objeto con 5 propiedades: campo, operador, valor, comparacion,
+     *                         y condicion si la operación fue exitosa. En caso de error, devuelve un objeto Error.
+     *
+     * @throws errores si el array $data_filtro está vacío.
+     * @throws errores si el campo `operador` no existe en cada campo del array $data_filtro.
+     * @throws errores si el campo `valor` no existe en cada campo del array $data_filtro.
+     * @throws errores si el campo `comparacion` no existe en cada campo del array $data_filtro.
+     *
+     * @example
+     * $where = new Where();
+     * $filtrado = $where->datos_filtro_especial([
+     *     'age' => [
+     *         'operador' => '>',
+     *         'valor' => '21',
+     *         'comparacion' => 'AND',
+     *     ],
+     * ]);
+     * // Resultado:
+     * // stdClass Object
+     * // (
+     * //    [campo] => age
+     * //    [operador] => >
+     * //    [valor] => 21
+     * //    [comparacion] => AND
+     * //    [condicion] => age>'21'
+     * // )
+     * @version 16.248.1
+     */
+    private function datos_filtro_especial(array $data_filtro):array|stdClass
     {
         if(count($data_filtro) === 0){
             return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
