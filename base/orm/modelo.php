@@ -2219,25 +2219,21 @@ class modelo extends modelo_base {
     }
 
     /**
-     *
-     * Obtiene todos los registros de un modelo
-     * @param bool $aplica_seguridad Si aplica seguridad se integra usuario_permitido_id el cual debe existir en los
-     * registros
-     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param bool $columnas_en_bruto Si columnas en bruto obtiene los campos tal cual estan en la bd
-     * @param bool $con_sq Integra las columnas extra si true
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param int $limit Limit para integrar con sql
-     * @param bool $return_objects Retorna el resultado en objetos
-     * @param string $sql_extra Sql extra para integrar
-     * @return array|stdClass conjunto de registros obtenidos
-     * @example
-     *      $es_referido = $controlador->directiva->checkbox(4,'inactivo','Es Referido',true,'es_referido');
-     *
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene los registros completos de una entidad
+     * @param bool $aplica_seguridad Indica si se debe aplicar seguridad a la consulta SQL
+     * @param array $columnas Las columnas de la tabla que se deben incluir en la consulta SQL
+     * @param bool $columnas_en_bruto Indica si se deben incluir las columnas en bruto (sin procesar)
+     * @param bool $con_sq Indica si se debe incluir la consulta SQL en la consulta final
+     * @param array $group_by Los campos por los que se debe agrupar la consulta SQL
+     * @param int $limit El límite de registros que se deben obtener de la consulta SQL
+     * @param string $sql_extra Una sentencia SQL adicional para agregar a la consulta
+     * @return array|stdClass Los registros obtenidos de la consulta SQL
+     * @version 16.247.0
      */
     final public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
-                                          bool $columnas_en_bruto = false, bool $con_sq = true, array $group_by = array(),
-                                          int $limit = 0, bool $return_objects = false,
+                                          bool $columnas_en_bruto = false, bool $con_sq = true,
+                                          array $group_by = array(), int $limit = 0,
                                           string $sql_extra=''): array|stdClass{
 
         if($this->limit > 0){
