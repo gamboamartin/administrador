@@ -735,6 +735,21 @@ class where{
         return $filtro_extra_sql;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función filtro_extra_sql_genera
+     *
+     * @param string $comparacion La cadena de texto utilizada para comparar
+     * @param string $condicion La cadena de texto que representa la condición
+     * @param string $filtro_extra_sql Una expresión SQL adicional que se añadirá al filtro
+     * @return string $filtro_extra_sql Retorna la cadena de texto SQL actualizada
+     *
+     * Esta función genera un filtro SQL adicional a partir de las condiciones y la cadena de comparación proporcionadas.
+     * Si el filtro SQL adicional ya está establecido, la función añadirá la condición a este utilizando la cadena de comparación.
+     * Sin embargo, si el filtro SQL adicional no está establecido, la función simplemente añadirá la condición a este.
+     * Finalmente, la función devuelve el filtro SQL adicional actualizado.
+     * @version 16.252.1
+     */
     private function filtro_extra_sql_genera(string $comparacion, string $condicion, string $filtro_extra_sql): string
     {
         if($filtro_extra_sql === ''){
