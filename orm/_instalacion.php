@@ -145,6 +145,11 @@ class _instalacion
     private function add_campo_final(
         array $adds, stdClass $atributos, string $campo, bool $existe_campo, string $table, bool $valida_pep_8)
     {
+        $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+        }
+
         if(!$existe_campo){
             $add = $this->add(atributos: $atributos,campo:  $campo,table:  $table);
             if (errores::$error) {

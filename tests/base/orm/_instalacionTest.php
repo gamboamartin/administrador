@@ -138,6 +138,51 @@ class _instalacionTest extends test
         errores::$error = false;
 
     }
+
+    public function test_add_campo_final(): void
+    {
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $table = 'b';
+
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data: $create);
+            print_r($error);
+            exit;
+        }
+
+        $adds = array();
+        $atributos = new stdClass();
+        $campo = 'a';
+        $existe_campo = false;
+
+        $valida_pep_8 = true;
+        $resultado = $ins->add_campo_final($adds, $atributos, $campo, $existe_campo, $table, $valida_pep_8);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE b ADD a VARCHAR (255)  NOT NULL;', $resultado[0]->sql);
+
+        $drop = $ins->drop_table_segura($table);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+
+    }
     public function test_add_colum(): void
     {
         errores::$error = false;
@@ -271,7 +316,6 @@ class _instalacionTest extends test
         errores::$error = false;
 
     }
-
     public function test_add_columns(): void
     {
         errores::$error = false;
@@ -433,7 +477,6 @@ class _instalacionTest extends test
 
         errores::$error = false;
     }
-
     public function test_add_unique_base(): void
     {
         errores::$error = false;
