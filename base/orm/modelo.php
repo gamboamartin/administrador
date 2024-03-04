@@ -2494,7 +2494,7 @@ class modelo extends modelo_base {
      * @param bool $return_obj Si retorna obj el resultado se envia en un stdclass
      * @return array|stdClass
      */
-    public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true,                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
+    final public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true,                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
                               bool $return_obj = false):array|stdClass{
 
         $this->order = $order;
