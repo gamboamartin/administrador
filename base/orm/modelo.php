@@ -2483,16 +2483,19 @@ class modelo extends modelo_base {
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta es la función 'registros', que se utiliza para obtener los registros de una tabla.
      *
-     * Obtiene los registros de una tabla
-     * @param array $columnas Columnas a mostrar en resultado SQL
-     * @param bool $columnas_en_bruto Regresa las columnas en su estado puro de la base de datos
-     * @param bool $con_sq Integra las columnas extra si true
-     * @param bool $aplica_seguridad Si aplica seguridad buscara usuario permitido
-     * @param int $limit Limit de resultado
-     * @param array $order Orden de resultado
-     * @param bool $return_obj Si retorna obj el resultado se envia en un stdclass
-     * @return array|stdClass
+     * @param array $columnas Se utiliza para especificar las columnas que se desean obtener.
+     * @param bool $columnas_en_bruto Se usa para determinar si se desea recuperar las columnas en su formato original.
+     * @param bool $con_sq Indica si se quieren obtener las columnas que tienen una sub-consulta.
+     * @param bool $aplica_seguridad Indica si se quiere aplicar las reglas de seguridad en la consulta.
+     * @param int $limit Se utiliza para limitar el número de registros retornados.
+     * @param array $order Se utiliza para ordenar los registros obtenidos.
+     * @param bool $return_obj Indica si se requiere devolver un objeto en lugar de un array.
+     *
+     * @return array|stdClass Devuelve un array de registros o un objeto si $return_obj está establecido como 'true'.
+     * @version 16.254.1
      */
     final public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true,                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
                               bool $return_obj = false):array|stdClass{
