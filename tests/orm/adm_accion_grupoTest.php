@@ -14,6 +14,31 @@ class adm_accion_grupoTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_filtro_and(){
+
+        errores::$error = false;
+        $modelo = new adm_accion_grupo($this->link);
+        //$modelo = new liberator($modelo);
+
+        $extra_join = array();
+        $extra_join['adm_grupo']['key'] = 'id';
+        $extra_join['adm_grupo']['enlace'] = 'adm_grupo';
+        $extra_join['adm_grupo']['key_enlace'] = 'id';
+        $extra_join['adm_grupo']['renombre'] = 'a';
+
+        $extra_join['adm_accion']['key'] = 'id';
+        $extra_join['adm_accion']['enlace'] = 'adm_accion';
+        $extra_join['adm_accion']['key_enlace'] = 'id';
+        $extra_join['adm_accion']['renombre'] = 'b';
+
+        $resultado = $modelo->filtro_and(extra_join: $extra_join);
+        //print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_grupos_por_accion(): void
     {
 

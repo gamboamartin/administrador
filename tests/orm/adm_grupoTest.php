@@ -16,6 +16,8 @@ class adm_grupoTest extends test {
         $this->errores = new errores();
     }
 
+
+
     public function test_grupos_root(){
 
         errores::$error = false;

@@ -734,7 +734,7 @@ class columnas{
                 return $this->error->error(mensaje:'Error al integrar tabla_renombrada', data:$tabla_renombrada);
             }
 
-            $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: false,
+            $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas_env, columnas_en_bruto: false,
                 columnas_sql: $columnas_sql,  modelo: $modelo, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
             if(errores::$error){
                 return $this->error->error(mensaje:'Error al integrar columnas', data:$columnas_env);
