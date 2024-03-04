@@ -466,6 +466,29 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_datos_filtro_especial(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $data_filtro = array();
+        $data_filtro['a']['operador'] = 'operador';
+        $data_filtro['a']['valor'] = 'valor';
+        $data_filtro['a']['comparacion'] = 'comparacion';
+        $resultado = $wh->datos_filtro_especial($data_filtro);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado->campo);
+        $this->assertEquals("operador", $resultado->operador);
+        $this->assertEquals("valor", $resultado->valor);
+        $this->assertEquals("comparacion", $resultado->comparacion);
+        $this->assertEquals("aoperador'valor'", $resultado->condicion);
+
+        errores::$error = false;
+    }
+
     public function test_diferente_de(){
         errores::$error = false;
         $wh = new where();

@@ -470,6 +470,9 @@ class where{
 
     private function datos_filtro_especial(array $data_filtro)
     {
+        if(count($data_filtro) === 0){
+            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
+        }
         $campo = $this->campo_data_filtro(data_filtro: $data_filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener campo',data:  $campo);
