@@ -219,7 +219,11 @@ class _instalacion
 
     final public function add_columns(stdClass $campos, string $table)
     {
-
+        $table = trim($table);
+        $valida = (new val_sql())->tabla(tabla: $table);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar table', data: $valida);
+        }
         $campos_origen = $this->campos_origen(table: $table);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $campos_origen);
@@ -514,7 +518,8 @@ class _instalacion
 
     }
 
-    private function campo_origen_data_add(array $adds, stdClass $atributos, string $campo, string $table, bool $valida_pep_8)
+    private function campo_origen_data_add(
+        array $adds, stdClass $atributos, string $campo, string $table, bool $valida_pep_8)
     {
         $campos_origen_data = $this->campos_origen(table: $table);
         if (errores::$error) {
