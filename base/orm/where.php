@@ -362,9 +362,18 @@ class where{
     }
 
     /**
-     * Integra los valores de data in
-     * @param array $in in
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se utiliza para procesar los datos entrantes ($in) y los organiza en un formato específico.
+     *
+     * @param array $in Datos entrantes que se deben procesar.
+     *                  Debe contener las claves 'llave' y 'values'.
+     * @return array|stdClass Devuelve un objeto que contiene los datos procesados.
+     *                        Si hay un error durante la validación, devuelve un array con detalles del error.
+     *
+     * @throws errores Si los datos entrantes no contienen las claves requeridas,
+     *               o si 'values' no es un array. En caso de error, se devuelve un array con detalles del error.
+     *
+     * @version 16.259.1
      */
     private function data_in(array $in): array|stdClass
     {
