@@ -21,6 +21,53 @@ class _instalacionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_add_campo_final(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $ins = new liberator($ins);
+
+        $adds = array();
+        $atributos = new stdClass();
+        $campo = 'a';
+        $existe_campo = false;
+        $table = 'z';
+        $valida_pep_8 = true;
+
+
+        $resultado = $ins->add_campo_final($adds, $atributos, $campo, $existe_campo, $table, $valida_pep_8);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("ALTER TABLE z ADD a VARCHAR (255)  NOT NULL;",$resultado[0]->sql);
+
+
+        errores::$error = false;
+
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        errores::$error = false;
+
+    }
     public function test_add_existente(): void
     {
 
