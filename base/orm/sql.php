@@ -436,7 +436,6 @@ class sql{
      * @param string $llave Llave o campo
      * @param string $values_sql Valores a integrar
      * @return string|array
-     * @version 1.548.51
      */
     final public function in(string $llave, string $values_sql): string|array
     {
@@ -1064,7 +1063,6 @@ class sql{
      * @param string $llave LLave a integrar
      * @param string $values_sql Valores
      * @return bool|array
-     * @version 1.548.51
      *
      */
     public function valida_in(string $llave, string $values_sql): bool|array

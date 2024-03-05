@@ -365,7 +365,6 @@ class where{
      * Integra los valores de data in
      * @param array $in in
      * @return array|stdClass
-     * @version 1.549.51
      */
     private function data_in(array $in): array|stdClass
     {
@@ -699,7 +698,7 @@ class where{
     }
 
     /**
-     *
+     * POR DOCUMENTAR EN WIKI
      * Funcion que genera las condiciones de sql de un filtro extra
      *
      * @param array $filtro_extra arreglo que contiene las condiciones
@@ -717,6 +716,7 @@ class where{
      *
      * @return array|string
      * @uses filtro_and()
+     * @version 16.258.1
      *
      */
     private function filtro_extra_sql(array $filtro_extra):array|string{
@@ -1301,7 +1301,6 @@ class where{
      * Genera el SQL para IN
      * @param array $in params para in
      * @return array|string
-     * @version 1.551.52
      */
     private function genera_in(array $in): array|string
     {
@@ -1328,7 +1327,6 @@ class where{
      * Genera un sql para integrar sql
      * @param array $in Arreglo con params para IN
      * @return array|string
-     * @version 1.552.51
      */
     private function genera_in_sql(array $in): array|string
     {
@@ -1356,7 +1354,6 @@ class where{
 
     /**
      * Genera un not in para sql
-     * @version 1.135.31
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @return array|string
      */
@@ -1376,7 +1373,6 @@ class where{
 
     /**
      * Genera el SQL a aplicar en un where en forma de NOT IN
-     * @version 1.137.31
      * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
      * @return array|string
      */
@@ -1469,7 +1465,6 @@ class where{
      * @param string $llave Llave o campo
      * @param array $values Valores a integrar a IN
      * @return array|string
-     * @version 1.548.51
      */
     private function in_sql(string $llave, array $values): array|string
     {
@@ -1976,7 +1971,6 @@ class where{
 
     /**
      * Genera comas o values para ser utilizados en un SELECT
-     * @version 1.134.31
      * @param string $value Valor a reasignar coma
      * @param string $values_sql Valores previos sql
      * @return array|stdClass
@@ -2002,7 +1996,6 @@ class where{
 
     /**
      * Obtiene los valores de un sql para generar un where
-     * @version 1.134.31
      * @param array $values Valores a ajustar en sql in
      * @return string|array
      */
