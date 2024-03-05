@@ -263,7 +263,7 @@ class controlador_base extends controler
             registro_id: $this->registro_id, tabla: $this->modelo->tabla);
 
         if (errores::$error) {
-            $error = $this->errores->error('Error al validar transaccion activa', $valida);
+            $error = $this->errores->error(mensaje: 'Error al validar transaccion activa', data: $valida);
             if ($header) {
                 print_r($error);
                 die('Error');
@@ -274,7 +274,7 @@ class controlador_base extends controler
         $resultado = (new activacion())->activa_bd_base(
             modelo: $this->modelo, registro_id: $this->registro_id, seccion: $this->seccion);
         if (errores::$error) {
-            $error = $this->errores->error('Error al activar registro', $resultado);
+            $error = $this->errores->error(mensaje: 'Error al activar registro', data: $resultado);
 
             if ($header) {
                 print_r($error);

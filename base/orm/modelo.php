@@ -2390,10 +2390,12 @@ class modelo extends modelo_base {
      *
      * @param int $registro_id El ID del registro a obtener.
      * @param array $columnas (opcional) Especifica las columnas a obtener del registro.
-     * @param bool $columnas_en_bruto (opcional) Si se establece en verdadero, se devolverán las columnas en crudo (sin procesar).
+     * @param bool $columnas_en_bruto (opcional) Si se establece en verdadero, se devolverán las columnas en
+     *  crudo (sin procesar).
      * @param array $extension_estructura (opcional) Especifica cualquier extensión de la estructura de los datos a obtener.
      * @param array $hijo (opcional) Especifica cualquier hijo a obtener junto con el registro.
-     * @param bool $retorno_obj (opcional) Si se establece en verdadero, se devolverán los datos del registro como un objeto en lugar de un array.
+     * @param bool $retorno_obj (opcional) Si se establece en verdadero, se devolverán los datos del registro como un
+     *  objeto en lugar de un array.
      *
      * @return array|stdClass Devuelve los datos del registro en forma de array o de objeto, según el parámetro $retorno_obj.
      *

@@ -1116,6 +1116,23 @@ class modeloTest extends test {
 
     }
 
+    public function test_primer_id(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->primer_id();
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado);
+
+
+        errores::$error = false;
+
+    }
+
     public function test_registro(): void
     {
         errores::$error = false;
