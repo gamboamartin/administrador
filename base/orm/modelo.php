@@ -2369,7 +2369,13 @@ class modelo extends modelo_base {
         return $resultado->registros[0][$this->key_id] + 1;
     }
 
-    final public function primer_id()
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Obtiene el primer id del modelo en ejecucion
+     * @return array|int un array si existe error, un numero entero en caso de exito
+     * @version 16.256.1
+     */
+    final public function primer_id(): int|array
     {
         $rows = $this->registros(columnas_en_bruto: true, limit: 1);
         if(errores::$error){
