@@ -1979,10 +1979,18 @@ class where{
     }
 
     /**
-     * Genera comas o values para ser utilizados en un SELECT
-     * @param string $value Valor a reasignar coma
-     * @param string $values_sql Valores previos sql
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Este método comprueba si el valor proporcionado está vacío y, en caso de que no lo esté,
+     * añade una coma al final de la cadena de valores SQL existente.
+     *
+     * @param string $value El valor para comprobar y añadir a la cadena SQL.
+     * @param string $values_sql La cadena SQL existente que se actualizará.
+     *
+     * @return array|stdClass Devuelve un objeto con el valor y la coma si todo está bien,
+     *                        de lo contrario retorna un mensaje de error.
+     *
+     * @throws errores Si el valor está vacío.
+     * @version 16.261.1
      */
     private function value_coma(string $value, string $values_sql): array|stdClass
     {
