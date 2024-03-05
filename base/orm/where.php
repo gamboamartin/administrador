@@ -1519,7 +1519,21 @@ class where{
         return $complemento_r;
     }
 
-    private function integra_filtro_extra(array $data_filtro, string $filtro_extra_sql)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función toma un filtro adicional y lo integra a la consulta SQL actual.
+     * Recibe una matriz de datos del filtro y una cadena que representa el filtro SQL extra.
+     *
+     * @param array $data_filtro La matriz de datos del filtro. La función devuelve un error si la matriz está vacía.
+     * @param string $filtro_extra_sql La cadena que representa el filtro extra para la consulta SQL.
+     *
+     * Si se produce algún error durante el proceso, la función retornará detalles sobre el error.
+     *
+     * @return object|string|array Retorna el filtro SQL extra integrado en caso de éxito. Si ocurre un error,
+     *  retorna un objeto de error.
+     * @version 16.257.1
+     */
+    private function integra_filtro_extra(array $data_filtro, string $filtro_extra_sql): object|string|array
     {
         if(count($data_filtro) === 0){
             return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
