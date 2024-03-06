@@ -248,7 +248,6 @@ class inicializacion{
 
     /**
      * Asigna un valor encriptado a un campo
-     * @version 1.0.0
      * @param stdClass $campo_limpio debe tener obj->valor obj->campo
      * @param array $registro Registro con el valor encriptado
      * @return array
@@ -699,10 +698,17 @@ class inicializacion{
     }
 
     /**
-     * Funcion que limpia los valores quita elementos iniciales y finales no imprimibles
-     * @param string $campo Campo del registro del modelo a limpiar
-     * @param string $valor Valor del registro en el campo indicado
-     * @return stdClass|array
+     * POR DOCUMENTAR EN WIKI
+     * Este método limpia los valores entregados y los agrupa en un objeto de tipo stdClass.
+     *
+     * @param string $campo El nombre del campo a procesar.
+     * @param string $valor El valor del campo a procesar.
+     *
+     * @return stdClass|array Retorna un objeto con los atributos "campo" y "valor" si todo ha ido bien,
+     *                        o un error si el campo de entrada está vacío.
+     *
+     * @throws errores En caso de que el campo de entrada esté vacío.
+     * @version 16.266.1
      */
     private function limpia_valores(string $campo, string $valor): stdClass|array
     {
