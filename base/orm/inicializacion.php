@@ -90,11 +90,9 @@ class inicializacion{
             return $this->error->error(mensaje: 'Error el campo esta vacio', data:$campo);
         }
 
-        if(!isset($registro_previo->$campo)){
-            $registro_previo->$campo = '';
-        }
-        if(is_null($registro_previo->$campo)){
-            $registro_previo->$campo = '';
+        $registro_previo = $this->registro_previo_null(campo: $campo,registro_previo:  $registro_previo);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al integrar registro_previo', data:$registro_previo);
         }
 
         $keys = array($campo);
@@ -109,6 +107,7 @@ class inicializacion{
         if($value_previo === $value_upd){
             unset($modelo->registro_upd[$campo]);
         }
+
         return $modelo->registro_upd;
     }
 
@@ -699,6 +698,7 @@ class inicializacion{
         return $values_in;
     }
 
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Este método limpia los valores entregados y los agrupa en un objeto de tipo stdClass.
@@ -861,6 +861,18 @@ class inicializacion{
         }
 
         return $registro;
+    }
+
+    private function registro_previo_null(string $campo, stdClass $registro_previo): stdClass
+    {
+        if(!isset($registro_previo->$campo)){
+            $registro_previo->$campo = '';
+        }
+        if(is_null($registro_previo->$campo)){
+            $registro_previo->$campo = '';
+        }
+        return $registro_previo;
+
     }
 
     /**
