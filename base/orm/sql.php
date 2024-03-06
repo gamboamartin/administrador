@@ -1059,13 +1059,19 @@ class sql{
     }
 
     /**
-     * Valida los datos de entrada para un IN
-     * @param string $llave LLave a integrar
-     * @param string $values_sql Valores
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Función para validar los valores de entrada `llave` y `values_sql`
      *
+     * @param string $llave      Nombre de la llave. Debe ser una cadena de texto no vacía si `values_sql` no está vacía.
+     * @param string $values_sql Valor SQL para la llave. Debe ser una cadena de texto no vacía si `llave` no está vacía.
+     *
+     * @return bool|array Retorna verdadero si la validación fue exitosa.
+     *                    En caso de error, retorna un array con información de error proporcionada por la función `error`.
+     *
+     * @final Esta función no puede ser sobrescrita en una clase hija.
+     * @version 16.265.1
      */
-    public function valida_in(string $llave, string $values_sql): bool|array
+    final public function valida_in(string $llave, string $values_sql): bool|array
     {
         $llave = trim($llave);
         $values_sql = trim($values_sql);

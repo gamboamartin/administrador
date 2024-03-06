@@ -830,7 +830,7 @@ class sqlTest extends test {
     {
         errores::$error = false;
         $sql = new sql();
-        $sql = new liberator($sql);
+        //$sql = new liberator($sql);
 
         $llave = '';
         $values_sql = '';
