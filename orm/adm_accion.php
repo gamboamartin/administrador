@@ -375,11 +375,18 @@ class adm_accion extends _modelo_children {
     }
 
     /**
-     * Obtiene el filtro para determinar permisos de ejecucion
-     * @param string $accion Accion a ejecutar
-     * @param int $grupo_id Grupo a verificar si tiene permiso
-     * @param string $seccion Seccion a verificar
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Este método se utiliza para filtrar permisos.
+     *
+     * @param string $accion El nombre de la acción para la cual se está verificando el permiso.
+     * @param int $grupo_id El ID del grupo para el cual se está verificando el permiso.
+     * @param string $seccion La sección para la cual se está verificando el permiso.
+     * @return array Retorna un array con los filtros aplicados.
+     *               Este filtro incluye si la acción, el grupo y la sección están activos,
+     *               además de correspondencia entre el grupo_id proporcionado y las descripciones de acción y sección proporcionadas.
+     *
+     * @throws errores Si existe algún error al validar el permiso.
+     * @version 16.263.1
      */
     private function filtro_permiso(string $accion, int $grupo_id, string $seccion): array
     {
