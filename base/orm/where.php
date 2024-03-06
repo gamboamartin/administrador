@@ -1642,7 +1642,6 @@ class where{
 
     /**
      * Genera los elementos not in de un sql
-     * @version 1.134.31
      * @param array $values Valores a ajustar en sql in
      * @param string $llave campo a aplicar not in
      * @return array|string
