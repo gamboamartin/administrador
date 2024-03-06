@@ -2012,9 +2012,20 @@ class where{
     }
 
     /**
-     * Obtiene los valores de un sql para generar un where
-     * @param array $values Valores a ajustar en sql in
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función privada toma un array de valores y los procesa para formar una parte de una consulta SQL.
+     *
+     * Recorre cada valor en el conjunto de valores proporcionado para escapar y formatear correctamente el valor en
+     * una representación de cadena que puede ser utilizada en una consulta SQL.
+     * Los valores son escapados para seguridad y entre comillas para representarlos como cadenas en SQL.
+     * Finalmente, cada valor procesado se concatena a la cadena $values_sql con una coma y el valor.
+     *
+     * Si ocurre algún error durante este proceso, se devolverá un mensaje de error.
+     *
+     * @param array $values Un conjunto de valores que se deben formatear y escapar para su uso en una consulta SQL.
+     * @return string|array Una cadena que representa la parte de una consulta SQL con valores formateados y escapados,
+     * o un mensaje de error si se encuentra algún problema.
+     * @version 16.262.1
      */
     private function values_sql_in(array $values): string|array
     {
