@@ -448,9 +448,12 @@ class sql{
         if($values_sql!==''){
             $in_sql.="$llave IN ($values_sql)";
         }
-        str_replace('  ', ' ', $in_sql);
-        str_replace('  ', ' ', $in_sql);
-        str_replace('  ', ' ', $in_sql);
+
+        $in_sql = $this->limpia_espacios_dobles(txt: $in_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al limpiar sql', data: $in_sql);
+        }
+
         return $in_sql;
     }
 
@@ -587,6 +590,17 @@ class sql{
         }
 
         return $params_base_;
+    }
+
+    private function limpia_espacios_dobles(string $txt, int $n_iteraciones = 10): string
+    {
+        $iteracion = 0;
+        while ($iteracion <= $n_iteraciones){
+            str_replace('  ', ' ', $txt);
+            $iteracion++;
+        }
+        return $txt;
+
     }
 
     /**
