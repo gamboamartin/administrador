@@ -599,14 +599,16 @@ class inicializacion{
     }
 
     /**
-     * Inicializa los datos minimos necesarios para un upd
-     * @param int $id Identificador del modelo a actualizar
-     * @param modelo $modelo Modelo en ejecucion
-     * @param array $registro Registro a con datos a actualizar
-     * @param bool $valida_row_vacio
-     * @return array|stdClass
-     * @author mgamboa
-     * @fecha 2022-08-08 13:17
+     * POR DOCUMENTAR EN WIKI
+     * Método para inicializar los datos que serán actualizados en un modelo.
+     *
+     * @param int $id El identificador único del registro.
+     * @param modelo $modelo Una instancia del modelo donde se realizará la actualización.
+     * @param array $registro Los datos que se utilizarán para la actualización.
+     * @param bool $valida_row_vacio Un parámetro opcional que sirve para validar si el registro está vacío.
+     *
+     * @return array|stdClass Devuelve un objeto con los datos de actualización o un array en caso de error.
+     * @version 16.267.1
      */
     final public function init_upd(
         int $id, modelo $modelo, array $registro, bool $valida_row_vacio = true): array|stdClass
