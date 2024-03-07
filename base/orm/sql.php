@@ -592,6 +592,14 @@ class sql{
         return $params_base_;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Limpia todos los espacios dobles definidos en un texto
+     * @param string $txt Texto a limpiar
+     * @param int $n_iteraciones no de veces que ejecutara la limpieza
+     * @return string
+     * @version 16.271.1
+     */
     private function limpia_espacios_dobles(string $txt, int $n_iteraciones = 10): string
     {
         $iteracion = 0;
