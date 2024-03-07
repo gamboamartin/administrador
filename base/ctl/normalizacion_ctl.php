@@ -250,8 +250,15 @@ class normalizacion_ctl{
     }
 
     /**
-     * Limpia los elementos de los botones
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Limpia los valores post tras una alta.
+     *
+     * Esta función elimina ciertos valores del array $_POST que son generados
+     * al hacer una solicitud POST cuando se da de alta una instancia en la aplicación.
+     * Los valores que se eliminan son: 'btn_agrega', 'btn_guarda', 'Enviar' y 'btn_action_next'.
+     *
+     * @return array Retorna el array $_POST después de realizar la limpieza.
+     * @version 16.273.1
      */
     final public function limpia_post_alta(): array
     {
