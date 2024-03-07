@@ -1641,10 +1641,33 @@ class where{
     }
 
     /**
-     * Genera los elementos not in de un sql
-     * @param array $values Valores a ajustar en sql in
-     * @param string $llave campo a aplicar not in
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cláusula SQL NOT IN a partir de una llave y valores proporcionados.
+     *
+     * @param string $llave Clave que será usada en la cláusula NOT IN.
+     * @param array $values Valores que serán incorporados en la cláusula NOT IN.
+     *
+     * @return string|array Devuelve una cadena que contiene una cláusula SQL NOT IN si la operación es exitosa.
+     * Si ocurre un error, devuelve un array conteniendo detalles sobre el error.
+     *
+     * ## Uso:
+     * ```php
+     * not_in_sql("id", [1, 2, 3])
+     * ```
+     *
+     * ## Ejemplo de respuesta en caso de éxito:
+     * ```sql
+     * "id NOT IN (1, 2, 3)"
+     * ```
+     *
+     * ## Ejemplo de respuesta en caso de error:
+     * ```php
+     * [
+     *     "codigo" => "ERR_CODE",
+     *     "mensaje" => "Descripción detallada del error"
+     * ]
+     * ```
+     * @version 16.272.1
      */
     private function not_in_sql(string $llave, array $values): array|string
     {
@@ -1653,12 +1676,12 @@ class where{
             return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave);
         }
 
-        $not_in_sql = '';
         $values_sql = $this->values_sql_in(values:$values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
         }
 
+        $not_in_sql = '';
         if($values_sql!==''){
             $not_in_sql.="$llave NOT IN ($values_sql)";
         }
