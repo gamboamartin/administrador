@@ -596,7 +596,7 @@ class sql{
     {
         $iteracion = 0;
         while ($iteracion <= $n_iteraciones){
-            str_replace('  ', ' ', $txt);
+            $txt = str_replace('  ', ' ', $txt);
             $iteracion++;
         }
         return $txt;
