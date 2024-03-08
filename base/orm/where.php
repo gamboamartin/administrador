@@ -1388,9 +1388,23 @@ class where{
     }
 
     /**
-     * Genera el SQL a aplicar en un where en forma de NOT IN
-     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Genera la cláusula SQL NOT IN basada en los valores proporcionados.
+     *
+     * Esta función toma una matriz asociativa como parámetro, donde `llave` es el nombre del campo y `values` es una
+     * matriz de valores que se utilizarán en la cláusula NOT IN en una sentencia SQL. Luego, genera la cláusula SQL
+     * NOT IN correspondiente.
+     *
+     * Si ocurre algún error durante la validación de los parámetros o la generación de la cláusula SQL NOT IN,
+     * la función devolverá un mensaje de error.
+     *
+     * @param array $not_in Matriz asociativa con los claves 'llave' y 'values'.
+     *        Ejemplo: ['llave' => 'miCampo', 'values' => [1, 2, 3]]
+     *
+     * @return string|array Devuelve la cláusula SQL NOT IN como una cadena si la función se ejecuta correctamente.
+     *                      En caso de error, devuelve una matriz con los detalles del error.
+     *
+     * @version 16.278.1
      */
     private function genera_not_in_sql(array $not_in): array|string
     {
