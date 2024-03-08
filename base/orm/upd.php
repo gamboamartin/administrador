@@ -65,7 +65,6 @@ class upd{
      * @param array $registro Registro en proceso
      * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|stdClass
-     * @version 4.2.0
      */
     final public function aplica_ejecucion(
         stdClass $ejecuta_upd, int $id, modelo $modelo, bool $reactiva, array $registro, bool $valida_user): array|stdClass
@@ -228,7 +227,6 @@ class upd{
 
     /**
      * Verifica si aplica ejecucion de modificacion de datos
-     * @version 1.80.17
      * @param int $id Identificador del modelo
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass

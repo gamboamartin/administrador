@@ -16,10 +16,21 @@ class inicializacion{
     }
 
     /**
-     * Ajusta los campos de un registro si estos no tienen campo los quitar del upd
-     * @param int $id Identificador del registro
-     * @param modelo $modelo Modelo en ejecucion
-     * @return array Registro ajustado
+     * POR DOCUMENTAR EN WIKI
+     * Ajusta los campos al actualizar un registro.
+     *
+     * Este método se utiliza para limpiar y verificar los campos
+     * que se envían para actualizar un registro en la base de datos.
+     * Si encuentra algún error, retorna un error con mensaje detallando el problema.
+     *
+     * @param int $id El ID del registro que se va a actualizar.
+     * @param modelo $modelo El modelo de datos que contiene el registro.
+     * @return array Devuelve el registro actualizado si todo va bien, o un error si algo va mal.
+     *
+     * @throws errores Si algún problema surge durante el proceso,
+     * la función lanzará una excepción de un tipo específico definido en su implementación.
+     *
+     * @version 16.279.1
      */
     final public function ajusta_campos_upd(int $id, modelo $modelo): array
     {
@@ -904,7 +915,6 @@ class inicializacion{
 
     /**
      * Inicializa el resultado en warning cuando no hay elementos a modificar
-     * @version 1.79.17
      * @param int $id Identificador del registro
      * @param array $registro_upd Registro limpio en upd
      * @param stdClass $resultado Resultado previamente inicializado
