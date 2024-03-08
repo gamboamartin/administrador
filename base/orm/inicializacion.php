@@ -863,6 +863,18 @@ class inicializacion{
         return $registro;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método privado que valida y realiza asignaciones a un objeto stdClass en base a la key proporcionada.
+     *
+     * @param string $campo        El nombre del campo del stdClass que se quiere validar y asignar.
+     * @param stdClass $registro_previo   Objeto stdClass que será validado y modificado.
+     *
+     * @return stdClass|array   Devuelve el objeto stdClass modificado o un arreglo de errores.
+     *
+     * @throws errores   Si el $campo proporcionado está vacío.
+     * @version 16.275.1
+     */
     private function registro_previo_null(string $campo, stdClass $registro_previo): stdClass|array
     {
         $campo = trim($campo);
