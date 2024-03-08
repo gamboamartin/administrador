@@ -72,13 +72,24 @@ class inicializacion{
     }
 
     /**
-     * Ajusta los elementos de un row a modificar para comparar los campos con valores que ya esten en base de datos
-     * no seas actualizados
-     * @param string $campo Campo del modelo en ejecucion
-     * @param modelo $modelo Modelo en ejecucion
-     * @param stdClass $registro_previo Registro antes de ser modificado
-     * @param string|null $value_upd Valor que se pretende modificar
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Ajusta la información de registro para una operación de actualización.
+     *
+     * Esta función compara un valor previo con el nuevo valor proporcionado para un campo específico.
+     * Si ambos valores son iguales, entonces el campo respectivo es eliminado del registro de actualización
+     *  del Modelo.
+     * En el caso de que el campo esté vacío, arroja un error indicando que el campo está vacío.
+     * También valida el registro previo para verificar si contiene el campo especificado.
+     *
+     * @param string $campo El campo que se necesita ajustar.
+     * @param modelo $modelo El modelo en el que se realiza la operación de actualización.
+     * @param stdClass $registro_previo Registro previo del modelo antes de la operación de actualización.
+     * @param string|null $value_upd El nuevo valor que se quiere establecer para el campo.
+     *
+     * @return array Retorna el registro actualizado del modelo.
+     * @throws errores si el campo está vacío, si la integración del registro previo falla o si la validacion del
+     *  registro previo falla.
+     * @version 16.277.1
      */
     private function ajusta_registro_upd(string $campo, modelo $modelo, stdClass $registro_previo,
                                         string|null $value_upd): array
