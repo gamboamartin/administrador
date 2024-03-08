@@ -648,6 +648,23 @@ class inicializacionTest extends test {
         errores::$error = false;
     }
 
+    public function test_registro_previo_null(): void
+    {
+        errores::$error = false;
+        $modelo = new inicializacion();
+        $modelo = new liberator($modelo);
+
+        $campo = 'a';
+        $registro_previo = new stdClass();
+        $resultado = $modelo->registro_previo_null($campo, $registro_previo);
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->a);
+
+        errores::$error = false;
+
+    }
+
     public function test_result_warning_upd(){
         errores::$error = false;
         $inicializacion = new inicializacion();

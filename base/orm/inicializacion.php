@@ -863,8 +863,12 @@ class inicializacion{
         return $registro;
     }
 
-    private function registro_previo_null(string $campo, stdClass $registro_previo): stdClass
+    private function registro_previo_null(string $campo, stdClass $registro_previo): stdClass|array
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+        }
         if(!isset($registro_previo->$campo)){
             $registro_previo->$campo = '';
         }
