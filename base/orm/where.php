@@ -1362,9 +1362,16 @@ class where{
     }
 
     /**
-     * Genera un not in para sql
-     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Método privado que genera una cláusula NOT IN SQL a partir de un arreglo proporcionado.
+     *
+     * @param array $not_in Arreglo de elementos a ser excluidos en la consulta SQL.
+     *
+     * @return array|string Regresa la cláusula NOT IN SQL generada o un mensaje de error en caso de un error
+     * detectado en la generación de la cláusula.
+     *
+     * @throws errores Lanza una excepción de tipo Error en caso de error en la generación de la cláusula SQL.
+     * @version 16.276.1
      */
     private function genera_not_in(array $not_in): array|string
     {
