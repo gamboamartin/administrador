@@ -185,7 +185,6 @@ class upd{
      * @param array $registro Registro en ejecucion
      * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|stdClass
-     * @version 1.567.51
      */
     private function ejecuta_upd_modelo(int $id, modelo $modelo, bool $reactiva, array $registro,
                                         bool $valida_user): array|stdClass
@@ -226,10 +225,17 @@ class upd{
     }
 
     /**
-     * Verifica si aplica ejecucion de modificacion de datos
-     * @param int $id Identificador del modelo
-     * @param modelo $modelo Modelo en ejecucion
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Este método ejecuta la actualización de un modelo en la base de datos.
+     *
+     * @param int $id ID del modelo que se va a actualizar.
+     * @param modelo $modelo Modelo que contiene los datos de actualización.
+     *
+     * @return array|stdClass Retorna un objeto stdClass en caso de error, o un array con los datos de la operación de actualización.
+     * - $data->ejecuta_upd (boolean): Bandera que indica si se puede proceder con la actualización del modelo.
+     * - $data->resultado (stdClass): Objeto que contiene información detallada sobre el resultado de la operación.
+     *
+     * @version 16.285.1
      */
     final public function ejecuta_upd(int $id, modelo $modelo): array|stdClass
     {
@@ -382,7 +388,6 @@ class upd{
      * @param array $registro Registro a actualizar
      * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|string
-     * @version 1.566.51
      */
     private function sql_update(int $id, modelo $modelo, bool $reactiva, array $registro, bool $valida_user): array|string
     {
@@ -424,7 +429,6 @@ class upd{
      * @param bool $reactiva Si !$reactiva bloquea
      * @param array $registro Registro a verificar
      * @return bool|array
-     * @version 1.427.48
      */
     private function reactiva(modelo $modelo, bool $reactiva, array $registro): bool|array
     {
