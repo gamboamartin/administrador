@@ -44,11 +44,20 @@ class data_base{
     }
 
     /**
-     * Asigna los datos de un registro previo
-     * @param array $data Datos de registro en proceso
-     * @param int $id Identificador en proceso
-     * @param modelo $modelo Modelo en ejecucion
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Asigna datos a una fila previa basándose en un id y un modelo proporcionados.
+     *
+     * @param array $data El arreglo de datos base que se va a asignar a la fila.
+     * @param int $id El id de la fila a la que se le asignan los datos.
+     * @param modelo $modelo Modelo que contiene el registro.
+     *
+     * @return array Devuelve el arreglo de datos asignado en caso de éxito, en caso contrario devuelve error.
+     *
+     * @throws errores Si el id es menor o igual a cero se lanza un error.
+     * @throws errores Si hay un error al obtener el registro previo basándose en el id proporcionado se lanza un error.
+     * @throws errores Si hay un error al asignar los datos al registro se lanza un error.
+     *
+     * @version 28.7.0
      */
     private function asigna_data_row_previo(array $data, int $id, modelo $modelo): array
     {
