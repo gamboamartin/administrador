@@ -260,8 +260,24 @@ class _instalacion
         return $adds;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se utiliza para agregar un campo existente a la configuración final del ORM.
+     *
+     * @param array $adds Un array de campos que ya se han agregado.
+     * @param stdClass $atributos Un objeto que contiene los atributos para el campo.
+     * @param string $campo El nombre del campo que se agrega.
+     * @param array $campos_origen Un array de los campos en la base de datos original.
+     * @param string $table El nombre de la tabla a la que pertenece el campo.
+     * @param bool $valida_pep_8 Un flag para indicar si el nombre del campo debe validarse según las reglas PEP 8.
+     *
+     * @return array Devuelve la matriz $adds actualizada con el nuevo campo agregado.
+     *
+     * @throws errores Si ocurre un error durante la validación del campo o el campo no existe en la base de datos original.
+     * @version 16.283.1
+     */
     private function add_existente(array $adds, stdClass $atributos, string $campo, array $campos_origen,
-                                   string $table, bool $valida_pep_8)
+                                   string $table, bool $valida_pep_8): array
     {
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
         if(errores::$error){
