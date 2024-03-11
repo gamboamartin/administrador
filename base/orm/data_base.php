@@ -68,10 +68,20 @@ class data_base{
     }
 
     /**
-     * Asigna datos para una base inicial
-     * @param array $data Registro en proceso
-     * @param array $registro_previo Registro cargado anteriormente
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Asigna valores a un array $data basado en un array $registro_previo.
+     *
+     * Esta función realiza lo siguiente:
+     * 1. Verifica la existencia de las keys 'descripcion' y 'codigo' en el array $registro_previo.
+     * 2. Si las keys existen, procede a asignar valores del array $registro_previo a las mismas keys en el array $data.
+     * 3. En caso de error durante la validación o la asignación, llama a la función error de la clase errores y retorna el resultado.
+     *
+     * @param array $data  array al que se le asignarán datos.
+     * @param array $registro_previo El array desde donde se obtendrán los datos.
+     *
+     * @return array Retorna el array $data con los nuevos valores asignados.
+     * En caso de error durante el proceso, retorna el resultado de la función error de la clase errores.
+     * @version 16.278.1
      */
     private function asigna_datas_base(array $data, array $registro_previo): array
     {
