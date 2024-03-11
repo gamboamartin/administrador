@@ -220,6 +220,48 @@ class _instalacionTest extends test {
 
 
     }
+
+    public function test_adds(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+        $create = $ins->create_table_new('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al create',data:  $create);
+            print_r($error);
+            exit;
+        }
+
+        $campos = new stdClass();
+        $campos->a = new stdClass();
+        $campos_origen = array();
+        $table = 'z';
+        $resultado = $ins->adds($campos, $campos_origen, $table);
+
+        $this->assertEquals('ALTER TABLE z ADD a VARCHAR (255)  NOT NULL;',$resultado[0]->sql);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+        $drop = $ins->drop_table_segura('z');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data:  $drop);
+            print_r($error);
+            exit;
+        }
+
+
+    }
     public function test_ajusta_atributos(): void
     {
 

@@ -369,8 +369,21 @@ class _instalacion
 
     private function adds(stdClass $campos, array $campos_origen, string $table)
     {
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
         $adds = array();
         foreach ($campos as $campo=>$atributos){
+
+            if(!is_object($atributos)){
+                return $this->error->error(mensaje: 'Error atributos debe ser un objeto', data: $atributos);
+            }
+            $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar datos de entrada',data: $valida);
+            }
+
             $valida_pep_8 = true;
             if(isset($atributos->valida_pep_8)){
                 $valida_pep_8 = $atributos->valida_pep_8;
