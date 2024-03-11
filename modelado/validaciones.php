@@ -51,8 +51,6 @@ class validaciones extends validacion{
      * @param array $registro Registro a validar
      * @param string $tabla Nombre de tabla a validar
      * @return bool|array
-     * @version 1.244.39
-     * @version 1.1.0
      * @fecha 2022-08-01 16:39
      * @author mgamboa
      */

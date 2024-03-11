@@ -304,7 +304,6 @@ class val_sql extends validaciones {
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @param array $parents Campos parents a verificar
      * @return bool|array
-     * @version 1.444.48
      */
     final public function valida_base_alta(array $campos_obligatorios, modelo $modelo, array $no_duplicados, array $registro,
                                      string $tabla, array $tipo_campos, array $parents): bool|array
@@ -461,7 +460,6 @@ class val_sql extends validaciones {
      * @param string $tabla Tabla a verificar
      * @param array $tipo_campos Campos con tipificacion desde modelo
      * @return bool|array
-     * @version 1.444.48
      */
     private function verifica_estructura(array $campos_obligatorios, array $registro, string $tabla,
                                          array $tipo_campos): bool|array

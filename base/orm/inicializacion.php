@@ -346,12 +346,18 @@ class inicializacion{
     }
 
     /**
-     * Encripta los campos indicados desde modelo->campos_encriptados
-     * @param string $campo Campo a validar si es aplicable a encriptar
-     * @param array $campos_encriptados Conjunto de campos del modelo a encriptar
-     * @param array $registro Registro a verificar
-     * @param string $valor Valor a encriptar si aplica
-     * @return array Registro con el campo encriptado
+     * POR DOCUMENTAR EN WIKI
+     * Esta función realiza la encriptación de un valor de registro y lo adjunta al registro.
+     *
+     * @param string $campo Nombre del campo a encriptar.
+     * @param array $campos_encriptados Array de campos que deben ser encriptados.
+     * @param array $registro Registro actual que contiene los datos a encriptar.
+     * @param mixed $valor El valor a encriptar.
+     *
+     * @return array Retorna el registro con el valor encriptado adjunto.
+     *
+     * @throws errores En caso de que ocurra una excepción, se devuelve un mensaje de error relevante.
+     * @version 16.288.1
      */
     private function encripta_valor_registro(string $campo, array $campos_encriptados, array $registro,
                                             mixed $valor): array
