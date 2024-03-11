@@ -268,10 +268,20 @@ class inicializacion{
     }
 
     /**
-     * Asigna un valor encriptado a un campo
-     * @param stdClass $campo_limpio debe tener obj->valor obj->campo
-     * @param array $registro Registro con el valor encriptado
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Asigna un valor encriptado a un campo específico en el registro.
+     *
+     * @param stdClass $campo_limpio Un objeto con los datos sobre el campo a encriptar.
+     * @param array $registro El registro que contiene el campo a encriptar.
+     *
+     * @return array Devuelve el registro con el valor del campo encriptado.
+     * Se devuelve un error si ocurre un problema durante la encriptación,
+     * o si falta un campo requerido en el objeto $campo_limpio.
+     *
+     * @throws errores Lanza una excepción si ocurre un error durante el proceso de encriptación.
+     *
+     * @see encriptador::encripta Para el método que se utiliza para la encriptación.
+     * @version 16.287.1
      */
     private function asigna_valor_encriptado(stdClass $campo_limpio, array $registro): array
     {
