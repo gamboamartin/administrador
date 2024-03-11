@@ -142,8 +142,25 @@ class _instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Agrega un campo al final de una tabla.
+     *
+     * @param array $adds Lista de campos a agregar.
+     * @param stdClass $atributos Atributos del campo.
+     * @param string $campo Nombre del campo a agregar.
+     * @param bool $existe_campo Indica si ya existe el campo en la tabla.
+     * @param string $table Nombre de la tabla.
+     * @param bool $valida_pep_8 Indica si se debe validar el campo con las reglas de PEP 8.
+     * @return array Lista de campos agregados.
+     *
+     * @throws errores Error al validar datos de entrada.
+     * @throws errores Error al agregar columna sql.
+     * @throws errores Error al ejecutar sql.
+     * @version 16.280.1
+     */
     private function add_campo_final(
-        array $adds, stdClass $atributos, string $campo, bool $existe_campo, string $table, bool $valida_pep_8)
+        array $adds, stdClass $atributos, string $campo, bool $existe_campo, string $table, bool $valida_pep_8): array
     {
         $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
         if(errores::$error){
