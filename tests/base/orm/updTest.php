@@ -348,6 +348,29 @@ class updTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_upd()
+    {
+        $_SESSION['usuario_id'] = 2;
+
+        errores::$error = false;
+        $upd = new upd();
+        $upd = new liberator($upd);
+
+
+        $modelo = new adm_accion(link: $this->link);
+        $modelo->registro_upd[] = '';
+        $id = 1;
+
+        $resultado = $upd->valida_upd($modelo, $id);
+       // print_r($resultado);exit;
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_value_null()
     {
 

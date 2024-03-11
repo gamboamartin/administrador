@@ -534,7 +534,7 @@ class upd{
 
     }
 
-    private function valida_upd(modelo $modelo, int $id): bool|array
+    private function valida_upd(modelo $modelo, int $id): true|array
     {
         if(count($modelo->registro_upd) === 0){
             return $this->error->error(mensaje: 'El registro_upd de modelo no puede venir vacio',
