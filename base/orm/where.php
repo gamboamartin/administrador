@@ -2074,6 +2074,10 @@ class where{
     {
         $values_sql = '';
         foreach ($values as $value){
+            $value = trim($value);
+            if($value === ''){
+                return $this->error->error(mensaje: 'Error value esta vacio',data: $value);
+            }
             $data = $this->value_coma(value:$value, values_sql: $values_sql);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error obtener datos de value',data: $data);

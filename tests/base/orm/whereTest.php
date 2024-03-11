@@ -1148,6 +1148,24 @@ class whereTest extends test {
 
     }
 
+    public function test_in_sql(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $values = array();
+        $values[] = '1';
+        $values[] = '2';
+        $llave = 'a';
+        $resultado = $wh->in_sql($llave, $values);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('1' ,'2')",$resultado);
+        errores::$error = false;
+
+    }
+
     public function test_init_params_sql(){
         errores::$error = false;
         $wh = new where();
@@ -1597,7 +1615,7 @@ class whereTest extends test {
         $resultado = $wh->values_sql_in($values);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error obtener datos de value', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error value esta vacio', $resultado['mensaje']);
 
         errores::$error = false;
 
