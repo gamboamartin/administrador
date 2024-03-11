@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\instalacion;
 
+use base\orm\modelo;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_menu;
@@ -200,6 +201,38 @@ class _adm
 
     }
 
+    final public function genera_pr_etapa_proceso(string $adm_accion_descripcion, string $adm_seccion_descripcion,
+                                             modelo $modelo_pr_etapa, modelo $modelo_pr_etapa_proceso, modelo $modelo_pr_proceso,
+                                             modelo $modelo_pr_tipo_proceso, string $pr_etapa_codigo,
+                                             string $pr_proceso_codigo, string $pr_tipo_proceso_codigo): array
+    {
+        $inserta = $this->inserta_pr_tipo_proceso(codigo: $pr_tipo_proceso_codigo,modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+
+        $inserta = $this->inserta_pr_etapa(codigo: $pr_etapa_codigo,modelo_pr_etapa: $modelo_pr_etapa);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+        $inserta = $this->inserta_pr_proceso(codigo: $pr_proceso_codigo, modelo_pr_proceso: $modelo_pr_proceso,
+            modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso, pr_tipo_proceso_codigo: $pr_tipo_proceso_codigo);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+        $inserta = $this->inserta_pr_etapa_proceso(adm_accion_descripcion: $adm_accion_descripcion,
+            adm_seccion_descripcion: $adm_seccion_descripcion, modelo_pr_etapa: $modelo_pr_etapa,
+            modelo_pr_etapa_proceso: $modelo_pr_etapa_proceso, modelo_pr_proceso: $modelo_pr_proceso,
+            pr_etapa_codigo: $pr_etapa_codigo, pr_proceso_codigo: $pr_proceso_codigo);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+
+        return $inserta;
+
+
+    }
+
     private function inserta_accion(string $adm_accion_descripcion, array $adm_accion_ins,
                                     string $adm_seccion_descripcion, PDO $link): array|stdClass
     {
@@ -276,6 +309,115 @@ class _adm
 
     }
 
+    private function inserta_pr_etapa(string $codigo, modelo $modelo_pr_etapa): array
+    {
+        $pr_etapa = $this->pr_etapa(codigo: $codigo);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener row', data: $pr_etapa);
+        }
+        $pr_etapas[0] = $pr_etapa;
+
+        foreach ($pr_etapas as $pr_etapa) {
+            $inserta = $modelo_pr_etapa->inserta_registro_si_no_existe_code(registro: $pr_etapa);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar row', data: $inserta);
+            }
+        }
+        return $pr_etapas;
+
+    }
+
+    private function inserta_pr_etapa_proceso(string $adm_accion_descripcion, string $adm_seccion_descripcion,
+                                              modelo $modelo_pr_etapa, modelo $modelo_pr_etapa_proceso, modelo $modelo_pr_proceso,
+                                               string $pr_etapa_codigo , string $pr_proceso_codigo): array
+    {
+        $pr_proceso_id = $modelo_pr_proceso->get_id_by_codigo(codigo: $pr_proceso_codigo);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener row', data: $pr_proceso_id);
+        }
+        $pr_etapa_id = $modelo_pr_etapa->get_id_by_codigo(codigo: $pr_etapa_codigo);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener row', data: $pr_etapa_id);
+        }
+
+        $adm_accion_id = (new adm_accion(link: $modelo_pr_etapa->link))->adm_accion_id(
+            adm_accion_descripcion: $adm_accion_descripcion,adm_seccion_descripcion:  $adm_seccion_descripcion);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener row', data: $adm_accion_id);
+        }
+
+        $pr_etapa_proceso['pr_proceso_id'] = $pr_proceso_id;
+        $pr_etapa_proceso['pr_etapa_id'] = $pr_etapa_id;
+        $pr_etapa_proceso['adm_accion_id'] = $adm_accion_id;
+
+        $filtro = array();
+        $filtro['pr_proceso.id'] = $pr_proceso_id;
+        $filtro['pr_etapa.id'] = $pr_etapa_id;
+        $filtro['adm_accion.id'] = $adm_accion_id;
+
+        $alta_pr_etapa_proceso = $modelo_pr_etapa_proceso->inserta_registro_si_no_existe_filtro(
+            registro: $pr_etapa_proceso,filtro: $filtro);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar alta_pr_etapa_proceso',
+                data: $alta_pr_etapa_proceso);
+        }
+
+        return $pr_etapa_proceso;
+    }
+
+    private function inserta_pr_proceso(string $codigo, modelo $modelo_pr_proceso, modelo $modelo_pr_tipo_proceso, string $pr_tipo_proceso_codigo): array
+    {
+        $pr_tipo_proceso_id = $modelo_pr_tipo_proceso->get_id_by_codigo(codigo: $pr_tipo_proceso_codigo);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al obtener row', data: $pr_tipo_proceso_id);
+        }
+
+        $pr_proceso['descripcion'] = $codigo;
+        $pr_proceso['codigo'] = $codigo;
+        $pr_proceso['pr_tipo_proceso_id'] = $pr_tipo_proceso_id;
+
+        $pr_procesos[0] = $pr_proceso;
+
+        foreach ($pr_procesos as $pr_proceso) {
+            $inserta = $modelo_pr_proceso->inserta_registro_si_no_existe_code(registro: $pr_proceso);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar row', data: $inserta);
+            }
+        }
+        return $pr_procesos;
+
+    }
+
+    private function inserta_pr_tipo_proceso(string $codigo, modelo $modelo_pr_tipo_proceso): array
+    {
+        $pr_tipo_proceso = $this->pr_tipo_proceso(codigo: $codigo);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener pr_tipo_proceso', data:  $pr_tipo_proceso);
+        }
+        $pr_tipo_procesos[0] = $pr_tipo_proceso;
+
+        $inserta = $this->inserta_pr_tipos_procesos(
+            modelo_pr_tipo_proceso: $modelo_pr_tipo_proceso,pr_tipo_procesos:  $pr_tipo_procesos);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al insertar rows', data: $inserta);
+        }
+        return $inserta;
+    }
+
+    private function inserta_pr_tipos_procesos(modelo $modelo_pr_tipo_proceso, array $pr_tipo_procesos): array
+    {
+        $inserciones = array();
+        foreach ($pr_tipo_procesos as $pr_tipo_proceso) {
+            $inserta = $modelo_pr_tipo_proceso->inserta_registro_si_no_existe_code(registro: $pr_tipo_proceso);
+            if (errores::$error) {
+                return (new errores())->error(mensaje: 'Error al insertar row', data: $inserta);
+            }
+            $inserciones[] = $inserta;
+        }
+        return $inserciones;
+
+    }
+
     final public function integra_acl(string $adm_menu_descripcion, string $adm_namespace_name,string $adm_namespace_descripcion, string $adm_seccion_descripcion ,string $adm_seccion_pertenece_descripcion,
                                       string $adm_sistema_descripcion, string $etiqueta_label, PDO $link): array|stdClass
     {
@@ -298,6 +440,31 @@ class _adm
 
         return $data;
 
+    }
+
+
+    private function pr_etapa(string $codigo, string $descripcion = ''): array
+    {
+        if($descripcion === ''){
+            $descripcion = $codigo;
+        }
+        $pr_etapa['descripcion'] = $descripcion;
+        $pr_etapa['codigo'] = $codigo;
+
+        return $pr_etapa;
+    }
+    private function pr_tipo_proceso(string $codigo, string $descripcion = ''): array
+    {
+        $codigo = trim($codigo);
+        if($codigo === ''){
+            return (new errores())->error(mensaje: 'Error codigo esta vacio', data: $codigo);
+        }
+        if($descripcion === ''){
+            $descripcion = $codigo;
+        }
+        $pr_tipo_proceso['descripcion'] = $descripcion;
+        $pr_tipo_proceso['codigo'] = $codigo;
+        return $pr_tipo_proceso;
     }
 
 }
