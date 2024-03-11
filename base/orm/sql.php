@@ -432,10 +432,13 @@ class sql{
     }
 
     /**
-     * Genera el SQL IN
-     * @param string $llave Llave o campo
-     * @param string $values_sql Valores a integrar
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * Función para crear una consulta SQL con operador IN
+     *
+     * @param string $llave La clave que será buscada en la consulta SQL.
+     * @param string $values_sql Una cadena de texto con los valores que serán buscados con el operador IN.
+     * @return string|array La consulta SQL generada, o un array en caso de error.
+     * @version 16.284.1
      */
     final public function in(string $llave, string $values_sql): string|array
     {
