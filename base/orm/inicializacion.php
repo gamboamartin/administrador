@@ -914,11 +914,24 @@ class inicializacion{
     }
 
     /**
-     * Inicializa el resultado en warning cuando no hay elementos a modificar
-     * @param int $id Identificador del registro
-     * @param array $registro_upd Registro limpio en upd
-     * @param stdClass $resultado Resultado previamente inicializado
-     * @return stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Esta función personalizada en PHP se utiliza para generar un resultado de advertencia durante la actualización de un registro.
+     *
+     * @param int $id Es el identificador del registro a actualizar.
+     * @param array $registro_upd Es una matriz que contiene los datos actualizados del registro.
+     * @param stdClass $resultado Es un objeto que contiene el resultado de la operación de actualización.
+     *
+     * @return stdClass Retorna un objeto que contiene datos sobre los resultados de la operación:
+     *          - 'mensaje': un mensaje de clarificación sobre los resultados de la operación.
+     *          - 'sql': una cadena vacía.
+     *          - 'result': una cadena vacía.
+     *          - 'registro': la matriz de los datos actualizados del registro.
+     *          - 'registro_id': el identificador del registro a actualizar.
+     *          - 'salida': un estado de 'advertencia' que indica que no se realizó ninguna actualización.
+     *
+     * @final
+     * @public
+     * @version 16.280.1
      */
     final public function result_warning_upd(int $id, array $registro_upd, stdClass $resultado): stdClass
     {
