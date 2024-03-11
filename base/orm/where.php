@@ -1307,9 +1307,25 @@ class where{
     }
 
     /**
-     * Genera el SQL para IN
-     * @param array $in params para in
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cadena SQL para la cláusula IN en una consulta SQL.
+     *
+     * Esta función toma un array asociativo $in que debe tener las claves:
+     * - 'llave': representa el nombre de columna en la cláusula SQL IN
+     * - 'values': un array de valores para la cláusula SQL IN
+     *
+     * Luego realiza las siguientes operaciones:
+     * 1. Valida la existencia de las claves 'llave' y 'values' en el array proporcionado. Si algún de los claves no existe, retorna un error.
+     * 2. Genera los datos `$data_in` basados en el array dado. Si ocurre un error mientras se genera `$data_in`, retorna un error.
+     * 3. Genera la cadena SQL para la cláusula IN basado en `$data_in`. Si ocurre un error mientras se genera la cláusula SQL IN, retorna un error.
+     * 4. Si todos los pasos anteriores se completan con éxito, retorna la cadena SQL para la cláusula IN.
+     *
+     * @param array $in  'llave': string, 'values': array } Array asociativo con las claves 'llave' y 'values'
+     * @return string|array Retorna una cadena SQL para la cláusula IN si no hubo errores. En caso de error, devuelve un array que describe el error.
+     *
+     * @example genera_in(['llave' => 'id', 'values' => [1, 2, 3]]) retorna 'id IN (1,2,3)'
+     *
+     * @version 16.293.1
      */
     private function genera_in(array $in): array|string
     {
