@@ -1492,7 +1492,6 @@ class where{
 
     /**
      * Genera un filtro de fecha para sql
-     * @version 1.170.33
      * @param array $fil_fecha Filtro a validar
      * @param string $filtro_fecha_sql Filtro a generar
      * @return array|string
@@ -1960,7 +1959,6 @@ class where{
 
     /**
      * Valida los datos de una fecha
-     * @version 1.146.31
      * @param array $fil_fecha Filtro a validar
      * @return bool|array
      */
@@ -1979,9 +1977,15 @@ class where{
     }
 
     /**
-     * Valida los datos de un filtro de tipo fecha
-     * @param array $fil_fecha Filtro fecha a validar
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función valida un array de filtro de fecha.
+     *
+     * @param array $fil_fecha Array que contiene la información del filtro de fecha. Debería de contener los campos 'campo_1', 'campo_2' y 'fecha'.
+     *
+     * @return bool|array Retorna verdadero si el filtro de fecha es válido. De lo contrario, retorna un Error.
+     *
+     * @throws errores Posibles errores que pueden ocurrir durante la validación.
+     * @version 16.305.1
      */
     private function valida_filtro_fecha(array $fil_fecha): bool|array
     {
