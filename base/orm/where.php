@@ -1349,9 +1349,21 @@ class where{
     }
 
     /**
-     * Genera un sql para integrar sql
-     * @param array $in Arreglo con params para IN
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Genera una cadena SQL basada en los datos proporcionados.
+     *
+     * Este método toma como entrada un arreglo que especifica los datos a incluir
+     * en la declaración SQL y retorna la cadena SQL resultante o un error si ocurre alguna falla.
+     *
+     * @param array $in Matriz asociativa que contiene los datos para la consulta SQL.
+     *   Esta matriz debe contener las claves 'llave' y 'values'.
+     *
+     * @return array|string La cadena SQL construida si todo va bien o un error en caso contrario.
+     *
+     * @throws errores En caso de que alguna validación falle, como cuando faltan las claves
+     *   requeridas en la matriz de entrada o cuando hay un problema al generar la secuencia SQL.
+     *
+     * @version 16.300.1
      */
     private function genera_in_sql(array $in): array|string
     {

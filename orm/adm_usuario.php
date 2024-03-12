@@ -437,7 +437,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * Verifica si una session existe en base de datos asi como su permiso
      * @param array $filtro Filtro a integrar para validacion
      * @return array|stdClass
-     * @version 10.42.2
      */
     private function val_session_existe(array $filtro): array|stdClass
     {
