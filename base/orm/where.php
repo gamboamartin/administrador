@@ -1692,12 +1692,19 @@ class where{
     }
 
     /**
-     * Limpia los elementos para usar en un filtro para WHERE en SQL
-     * @param stdClass $filtros Filtros a limpiar o inicializar
-     * @param array $keys_data_filter keys de los filtros
-     * @return stdClass|array
+     * POR DOCUMENTAR EN WIKI
+     * La función limpia_filtros limpia y organiza los filtros proveídos para la consulta SQL.
+     *
+     * @param stdClass $filtros El objeto que contiene los filtros a limpiar y organizar.
+     * @param array $keys_data_filter Un arreglo con las llaves que se van a utilizar para filtrar los datos.
+     *
+     * @return stdClass|array Retorna el objeto de filtros limpio y organizado, si ocurre un error retorna un arreglo con la información del error.
+     *
+     * @throws errores Si alguna llave del filtro está vacía, se lanza una excepción con el mensaje de error y el arreglo de datos del filtro.
+     *
+     * @version 16.316.1
      */
-    public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
+    final public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
         foreach($keys_data_filter as $key){
             $key = trim($key);
