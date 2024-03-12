@@ -1503,10 +1503,23 @@ class where{
     }
 
     /**
-     * Genera un filtro de fecha para sql
-     * @param array $fil_fecha Filtro a validar
-     * @param string $filtro_fecha_sql Filtro a generar
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * La función 'genera_sql_filtro_fecha' es privada y se encarga de generar un filtro de SQL para fechas.
+     *
+     * @param array $fil_fecha Es el filtro de fecha a validar y procesar.
+     * @param string $filtro_fecha_sql Es un string que contiene la sentencia SQL para el filtro de fecha.
+     * @return array|string Retorna un string con la sentencia SQL generada o un arreglo en caso de error.
+     *
+     * @throws errores Se puede lanzar una excepción en caso de que haya un error al validar la fecha, generar datos, obtener el 'and' o al obtener el sql.
+     *
+     * La función sigue estos pasos:
+     * 1. Valida el filtro de fechas. Si hay un error, retorna un mensaje de error relatando un problema al validar la fecha.
+     * 2. Genera datos a partir del filtro de fechas. Si hay un error, retorna un mensaje de error relatando un problema al generar datos.
+     * 3. Obtiene el 'and' necesario para el filtro de fechas SQL. Si hay un error, retorna un mensaje de error relatando un problema al obtener el 'and'.
+     * 4. Genera la sentencia SQL de fecha. Si hay un error, retorna un mensaje de error relatando un problema al generar la sentencia SQL.
+     * 5. Si todo ha ido bien, retorna la sentencia SQL generada.
+     *
+     * @version 16.311.1
      */
     private function genera_sql_filtro_fecha(array $fil_fecha, string $filtro_fecha_sql): array|string
     {
