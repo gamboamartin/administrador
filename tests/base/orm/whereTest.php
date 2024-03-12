@@ -1148,6 +1148,38 @@ class whereTest extends test {
 
     }
 
+    public function test_genera_sql_filtro_fecha(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+
+        $filtro_fecha_sql = '';
+        $fil_fecha = array();
+        $fil_fecha['campo_1'] = 'a';
+        $fil_fecha['campo_2'] = 'b';
+        $fil_fecha['fecha'] = '2020-01-01';
+        $resultado = $wh->genera_sql_filtro_fecha($fil_fecha, $filtro_fecha_sql);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("('2020-01-01' >= a AND '2020-01-01' <= b)",$resultado);
+        errores::$error = false;
+
+        $filtro_fecha_sql = 's';
+        $fil_fecha = array();
+        $fil_fecha['campo_1'] = 'a';
+        $fil_fecha['campo_2'] = 'b';
+        $fil_fecha['fecha'] = '2020-01-01';
+        $resultado = $wh->genera_sql_filtro_fecha($fil_fecha, $filtro_fecha_sql);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(" AND ('2020-01-01' >= a AND '2020-01-01' <= b)",$resultado);
+        errores::$error = false;
+
+    }
+
     public function test_in_sql(){
         errores::$error = false;
         $wh = new where();
