@@ -603,7 +603,7 @@ class sql{
      * @return string
      * @version 16.271.1
      */
-    private function limpia_espacios_dobles(string $txt, int $n_iteraciones = 10): string
+    final public function limpia_espacios_dobles(string $txt, int $n_iteraciones = 10): string
     {
         $iteracion = 0;
         while ($iteracion <= $n_iteraciones){

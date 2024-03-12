@@ -1366,15 +1366,20 @@ class where{
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al generar sql',data: $in_sql);
             }
-            $in_sql = str_replace('  ', ' ', $in_sql);
-            $in_sql = str_replace('  ', ' ', $in_sql);
-            $in_sql = str_replace('( (', '(', $in_sql);
+            $in_sql = (new sql())->limpia_espacios_dobles(txt: $in_sql);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al limpiar sql',data: $in_sql);
+            }
+
+            $in_sql = str_replace('( (', '((', $in_sql);
 
         }
+        $in_sql = (new sql())->limpia_espacios_dobles(txt: $in_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al limpiar sql',data: $in_sql);
+        }
 
-        $in_sql = str_replace('  ', ' ', $in_sql);
-        $in_sql = str_replace('  ', ' ', $in_sql);
-        return str_replace('( (', '(', $in_sql);
+        return str_replace('( (', '((', $in_sql);
     }
 
     /**
