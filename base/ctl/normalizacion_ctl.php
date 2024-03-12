@@ -124,7 +124,6 @@ class normalizacion_ctl{
      * Inicializa los elementos de un controller
      * @param controler $controler Controlador en ejecucion
      * @return controler
-     * @version 2.10.2
      */
     final public function init_controler(controler $controler): controler
     {
