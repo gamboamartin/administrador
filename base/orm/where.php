@@ -37,20 +37,22 @@ class where{
     }
 
     /**
-     * Asigna los filtros a un objeto para ser utilizado en WHEREs de SQL FORMA select
-     * @param string $diferente_de_sql Integra un diferente de en SQL
-     * @param string $filtro_especial_sql Filtro en forma de SQL
-     * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $filtro_fecha_sql Filtros en forma de fecha
-     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
-     * @param string $in_sql Filtro en forma de  IN SQL
-     * @param string $not_in_sql Filtro forma SQL NOT IN
-     * @param string $sentencia Sentencia SQL previamente maquetada
-     * @param string $sql_extra Sql Generado manualmente desde llamadas a esta funcion
-     * @return stdClass
-     * @author mgamboa
-     * @fecha 2022-07-25 11:25
+     * POR DOCUMENTAR EN WIKI
+     * Esta función asigna una serie de filtros SQL a un objeto stdClass y retorna este objeto.
+     * Cada filtro es una cadena de texto formateada como una sentencia SQL.
      *
+     * @param string $diferente_de_sql     La sentencia SQL para el filtro 'diferente_de'.
+     * @param string $filtro_especial_sql  La sentencia SQL para el filtro especial.
+     * @param string $filtro_extra_sql     La sentencia SQL para el filtro extra.
+     * @param string $filtro_fecha_sql     La sentencia SQL para el filtro de fecha.
+     * @param string $filtro_rango_sql     La sentencia SQL para el filtro de rango.
+     * @param string $in_sql               La sentencia SQL para el filtro 'IN'.
+     * @param string $not_in_sql           La sentencia SQL para el filtro 'NOT IN'.
+     * @param string $sentencia            La sentencia SQL completa.
+     * @param string $sql_extra            Cualquier sentencia SQL extra.
+     *
+     * @return stdClass El objeto que contiene todos los filtros SQL.
+     * @version 16.315.1
      */
     #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
                                                 string $filtro_extra_sql, string $filtro_fecha_sql,
