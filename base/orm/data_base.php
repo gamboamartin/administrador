@@ -140,11 +140,21 @@ class data_base{
     }
 
     /**
-     * Inicializa campos
-     * @param array $data registro en proceso
-     * @param int $id Identificador
-     * @param modelo $modelo Modelo en ejecucion
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa la base de datos con campos predeterminados.
+     *
+     * Este método es responsable de iniciar la base de datos con los datos proporcionados.
+     * Si se proporciona un id y los datos no contienen los campos 'descripcion' y/o 'codigo',
+     * se asignan los valores del registro con el id proporcionado.
+     *
+     * @param array $data Los datos para inicializar la base de datos.
+     * @param int $id El ID del registro previo.
+     * @param modelo $modelo El modelo a utilizar.
+     *
+     * @return array Los datos de la base de datos después de la inicialización.
+     *
+     * @throws errores Si ocurre un error al obtener el registro previo.
+     * @version 16.295.1
      */
     final public function init_data_base(array $data, int $id, modelo $modelo): array
     {

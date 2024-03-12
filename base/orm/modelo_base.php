@@ -499,7 +499,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Datos de campos a automatizar
      * @param array $keys_integra_ds Campos de parent a integrar en select
      * @return array
-     * @version 9.65.1
      */
     final protected function data_base(array $data, array $keys_integra_ds = array('codigo','descripcion')): array
     {
@@ -579,7 +578,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Datos de registro1
      * @param array $keys_integra_ds Keys para integracion de descripcion
      * @return array|string
-     * @version 2.107.12
      */
     private function descripcion_select(array $data, array $keys_integra_ds): array|string
     {
@@ -609,7 +607,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Registro en proceso
      * @param string $key Key a integrar
      * @return string|array
-     * @version 2.83.6
      */
     private function ds_init(array $data, string $key): array|string
     {
@@ -642,7 +639,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Registro en proceso
      * @param string $key Key a integrar
      * @return string|array
-     * @version 2.83.6
      */
     private function ds_init_no_codigo(array $data, string $key): string|array
     {
@@ -1272,7 +1268,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param string $ds Descripcion previa
      * @param string $key Key de value a integrar
      * @return array|string
-     * @version 2.92.6
      */
     private function integra_ds(array $data, string $ds, string $key): array|string
     {
@@ -1477,7 +1472,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $data Datos enviados desde modelo
      * @param array $keys_integra_ds Keys a integrar
      * @return array
-     * @version 9.57.0
      */
     private function registro_descripcion_select(array $data, array $keys_integra_ds): array
     {
