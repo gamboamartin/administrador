@@ -142,8 +142,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @return array
      * El método devuelve un array con los parámetros validados y preconfigurados.
      * Si algún parámetro no es válido, se devuelve un mensaje de error correspondiente.
-     * @version 13.6.0
-     * @por_documnetar_en_wiki
      */
     private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
     {
