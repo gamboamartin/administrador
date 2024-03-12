@@ -1886,10 +1886,28 @@ class where{
     }
 
     /**
-     * Genera el sql de una fecha
-     * @param string $and AND O ''
-     * @param stdClass $data Datos de fecha
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI
+     * El método sql_fecha genera un fragmento de consulta SQL basado en un rango de fechas.
+     *
+     * Este método toma dos parámetros: uno para la conjunción de SQL (AND / OR etc.) y otro
+     * para un objeto de datos que contiene las fechas. Las fechas ingresadas se validan y luego
+     * se utilizan para construir una consulta SQL que puede usarse para filtrar registros entre dos fechas.
+     *
+     * @param string $and La conjunción de SQL (AND, OR, etc.).
+     * @param stdClass $data Objeto de datos que debe contener `fecha`, `campo_1`, y `campo_2`.
+     *                       `fecha` es la columna de la fecha, `campo_1` es la fecha de inicio
+     *                       y `campo_2` es la fecha de fin para el filtro de la consulta SQL.
+     *
+     * @throws errores En caso de que el objeto de datos no contenga alguna clave requerida o
+     *                   si algún valor está vacío o si la fecha proporcionada no es válida.
+     *
+     * @return string|array Consulta SQL generada como string. En caso de error, devuelve un array
+     *                      con datos de error.
+     *
+     * @example sql_fecha('AND', (object)['fecha' => 'created_at', 'campo_1' => '2023-01-01', 'campo_2' => '2023-12-31']);
+     *          Esto generaría: "(created_at >= '2023-01-01' AND created_at <= '2023-12-31')"
+     *
+     * @version 16.309.1
      */
     private function sql_fecha(string $and, stdClass $data): string|array
     {
