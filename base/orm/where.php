@@ -1887,7 +1887,6 @@ class where{
 
     /**
      * Genera el sql de una fecha
-     * @version 1.151.31
      * @param string $and AND O ''
      * @param stdClass $data Datos de fecha
      * @return string|array
