@@ -804,10 +804,25 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función se encarga de crear una cadena SQL para filtrar por fecha.
      *
-     * Obtiene los filtros en forma sql de una fecha
-     * @param array $filtro_fecha Filtros de fecha para sql
-     * @return array|string
+     * @param array $filtro_fecha Un array que contiene los criterios de filtro de fecha.
+     *
+     * @return array|string Retorna una cadena SQL si todo fue exitoso, o un array de errores si hubo algún problema.
+     *
+     * @throws errores Si $fil_fecha no es un array.
+     *
+     * La función itera sobre cada $fil_fecha en $filtro_fecha.
+     * Para cada $fil_fecha, valida el filtrado de la fecha utilizando $this->valida_filtro_fecha(fil_fecha: $fil_fecha).
+     * Si hay algun error de validación, retorna un error con datos relacionados al error.
+     *
+     * Luego, genera la cadena SQL utilizando $this->genera_sql_filtro_fecha(fil_fecha: $fil_fecha, filtro_fecha_sql: $filtro_fecha_sql)
+     * Si hay algun error al generar la cadena SQL, retorna un error con datos relacionados al error.
+     *
+     * Finalmente, agrega la cadena SQL al $filtro_fecha_sql y al final del ciclo retorna $filtro_fecha_sql
+     *
+     * @version 16.312.1
      */
     private function filtro_fecha_base(array $filtro_fecha): array|string
     {
