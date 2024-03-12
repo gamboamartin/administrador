@@ -273,9 +273,22 @@ class where{
 
 
     /**
-     * Genera los datos de una fecha en forma de objeto
-     * @param array $fil_fecha Filtro a generar
-     * @return stdClass|array
+     * POR DOCUMENTAR EN WIKI
+     * Manipula y valida los datos de filtro para las fechas.
+     *
+     * Esta función acepta un arreglo asociativo con tres claves: 'campo_1', 'campo_2' y 'fecha'.
+     * Primero, realiza una validación de los elementos del arreglo.
+     * Si la validación falla, se notifica el error y se detiene la ejecución de la función.
+     * Si la validación es correcta, cada valor se asigna a un nuevo objeto $data como una propiedad separada.
+     * Finalmente, se devuelve el objeto $data.
+     *
+     * @param array $fil_fecha El arreglo que contiene los campos de fecha para filtrar.
+     *        Debe tener las claves 'campo_1', 'campo_2' y 'fecha'.
+     * @return stdClass|array Retorna un objeto con los campos validados si todo es correcto.
+     *         Si hay un error, se devuelve un arreglo con información sobre el error.
+     * @throws errores Si ocurre un error durante la validación, se lanza una excepción.
+     *
+     * @version 16.307.1
      */
     private function data_filtro_fecha(array $fil_fecha): stdClass|array
     {
