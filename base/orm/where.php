@@ -784,9 +784,16 @@ class where{
     }
 
     /**
-     * Genera el SQL de filtro fecha
-     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @return array|string
+     * POR DOCUMENTAR EN WIKI
+     * Este método procesa la fecha enviada y retorna una consulta SQL representando el filtro de la fecha.
+     *
+     * @param array $filtro_fecha Representa la fecha que se va a filtrar.
+     *
+     * @return array|string Retorna una consulta SQL del filtro de fecha si es exitoso. Si ocurre un error, retorna una cadena con mensaje de error.
+     *
+     * @throws errores si no se pudo generar la consulta SQL del filtro de fecha.
+     *
+     * @version 16.313.1
      */
     private function filtro_fecha(array $filtro_fecha):array|string{
 
