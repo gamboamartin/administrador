@@ -274,7 +274,6 @@ class where{
 
     /**
      * Genera los datos de una fecha en forma de objeto
-     * @version 1.149.31
      * @param array $fil_fecha Filtro a generar
      * @return stdClass|array
      */
@@ -1958,11 +1957,24 @@ class where{
     }
 
     /**
-     * Valida los datos de una fecha
-     * @param array $fil_fecha Filtro a validar
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función valida un filtro de fecha proporcionado en un array.
+     *
+     * Dentro del array proporcionado, la función busca la presencia de las claves 'campo_1', 'campo_2' y 'fecha'.
+     * En caso de que estas claves no existan dentro del array, la función devuelve un error
+     * describiendo la ausencia de las claves requeridas.
+     *
+     * Si las claves requeridas están presentes, la función procede a validar si el valor correspondiente
+     * a la clave 'fecha' es una fecha válida. Si el valor no es una fecha válida, la función devuelve un error.
+     *
+     * En caso de que tanto las claves requeridas estén presentas y 'fecha' sea una fecha valida, la función devuelve true.
+     *
+     * @param array $fil_fecha El array que contiene el filtro de fechas. Este debe contener las claves 'campo_1', 'campo_2' y 'fecha'.
+     * @return bool|array Retorna true si las validaciones son exitosas. Retorna un array de errores si alguna validación falla.
+     *
+     * @version 16.306.1
      */
-    private function valida_data_filtro_fecha(array $fil_fecha): bool|array
+    private function valida_data_filtro_fecha(array $fil_fecha): true|array
     {
         $keys = array('campo_1','campo_2','fecha');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
