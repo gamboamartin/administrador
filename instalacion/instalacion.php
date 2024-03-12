@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\instalacion;
 
+use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\errores\errores;
 use PDO;
@@ -8,6 +9,20 @@ use stdClass;
 
 class instalacion
 {
+
+    PUBLIC function _add_adm_reporte(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_reporte');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        return $out;
+
+    }
     private function adm_accion_basica(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -51,6 +66,18 @@ class instalacion
 
 
     }
+
+
+    private function adm_reporte(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_reporte(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        return $create;
+
+    }
     final public function instala(PDO $link): array|stdClass
     {
 
@@ -62,6 +89,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_accion_basica', data: $adm_accion_basica);
         }
         $out->adm_accion_basica = $adm_accion_basica;
+
+        $adm_reporte = $this->adm_reporte(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_reporte', data: $adm_reporte);
+        }
+        $out->adm_reporte = $adm_reporte;
 
 
         return $out;
