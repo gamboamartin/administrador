@@ -129,6 +129,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Método para filtrar la acción y la sección del grupo.
      *
      * Este método acepta una acción, un grupo y una sección.
@@ -142,6 +143,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * @return array
      * El método devuelve un array con los parámetros validados y preconfigurados.
      * Si algún parámetro no es válido, se devuelve un mensaje de error correspondiente.
+     * @version 16.299.1
      */
     private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
     {
