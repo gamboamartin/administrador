@@ -34,12 +34,20 @@ class instalacion
         }
         $upds = array();
         foreach ($adm_acciones as $adm_accion){
+            $upd = array();
             if($adm_accion['es_view'] === 'false'){
-                $upd = array();
                 $upd['es_view'] = 'inactivo';
-                $r_upd = (new adm_accion(link: $link))->modifica_bd_base(registro: $upd,id: $adm_accion['id']);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al actualizar accion', data:  $r_upd);
+            }
+            if($adm_accion['descripcion'] === 'lista'){
+                if($adm_accion['visible'] === 'inactivo') {
+                    $upd['visible'] = 'activo';
+                }
+            }
+
+            if(count($upd) >0) {
+                $r_upd = (new adm_accion(link: $link))->modifica_bd_base(registro: $upd, id: $adm_accion['id']);
+                if (errores::$error) {
+                    return (new errores())->error(mensaje: 'Error al actualizar accion', data: $r_upd);
                 }
                 $upds[] = $r_upd;
             }
