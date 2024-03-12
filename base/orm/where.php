@@ -50,7 +50,6 @@ class where{
      * @return stdClass
      * @author mgamboa
      * @fecha 2022-07-25 11:25
-     * @version 1.573.51
      *
      */
     #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
@@ -631,9 +630,28 @@ class where{
     }
 
     /**
-     * Integra el diferente de en sql
-     * @param array $diferente_de Parametros diferente de
-     * @return array|string
+     * POR DOCUMNETAR EN WIKI
+     * Crea una declaración SQL para la condición WHERE en una consulta, basándose en un array de términos que deben ser diferentes.
+     *
+     * @param array $diferente_de Un array asociativo donde las claves son los nombres de las columnas en la base de datos, y los
+     *        valores son los valores especificados que deben ser diferentes. El array debe tener al menos un elemento.
+     *
+     * @return array|string Si la operación es exitosa, regresa una cadena que contiene la parte WHERE de la declaración SQL.
+     *         Si ocurre algún error durante el proceso, regresa un array con el mensaje de error y los detalles correspondientes.
+     *
+     * @throws errores Si el nombre del campo está vacío, si es un número, o si ocurre un error al generar la declaración SQL,
+     *         se lanza un error con un mensaje detallado.
+     *
+     * Ejemplo de uso:
+     * ```
+     * $condiciones = array(
+     *     'nombre' => 'Juan',
+     *     'edad' => '30'
+     * );
+     * $resultado = diferente_de_sql($condiciones);
+     * ```
+     *
+     * @version 16.314.1
      */
     private function diferente_de_sql(array $diferente_de): array|string
     {
@@ -1210,7 +1228,6 @@ class where{
      * @return array|stdClass
      * @author mgamboa
      * @fecha 2022-07-25 12:16
-     * @version 1.575.51
      */
     private function genera_filtros_iniciales(string $diferente_de_sql, string $filtro_especial_sql,
                                               string $filtro_extra_sql, string $filtro_rango_sql, string $in_sql,
@@ -1677,7 +1694,6 @@ class where{
      * @param stdClass $filtros Filtros a limpiar o inicializar
      * @param array $keys_data_filter keys de los filtros
      * @return stdClass|array
-     * @version 1.574.51
      */
     public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
     {

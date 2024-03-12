@@ -19,7 +19,6 @@ class filtros{
      * @param stdClass $complemento Complemento previo
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
-     * @version 1.560.51
      */
     private function complemento(stdClass $complemento, modelo $modelo): array|stdClass
     {
@@ -156,7 +155,6 @@ class filtros{
      * @return string|array
      * @fecha 2022-08-02 15:53
      * @author mgamboa
-     * @version 1.562.51
      */
     final public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
     {
