@@ -71,10 +71,21 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Maqueta en un objeto los elementos para validar un permiso
-     * @param string $adm_accion Accion a validar
-     * @param string $adm_seccion Seccion a validar
-     * @return array|stdClass
+     *
+     * Esta función recibe como argumentos el nombre de una acción y una sección. Luego, realiza una validación para cada una.
+     * Si está vacía cualquiera de las dos, devolverá un error especificando qué elemento está vacío.
+     *
+     * Al final, devuelve un objeto con los elementos validados
+     *
+     * @param string $adm_accion    Acción a validar.
+     * @param string $adm_seccion   Sección a validar.
+     *
+     * @return array|stdClass       Retorna un objeto con 'adm_seccion' y 'adm_accion' como propiedades si éstos son válidos.
+     *                              Retorna un array si ocurre algun error, con el mensaje de error y los datos con los que se llamó a la función.
+     *
+     * @version 16.297.1
      */
     private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
     {
