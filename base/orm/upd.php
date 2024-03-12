@@ -534,6 +534,14 @@ class upd{
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Valida que los elementos de un registro en proceso de actualizacion sean por lo menos validos
+     * @param modelo $modelo Modelo en proceso
+     * @param int $id Identificador del registro en proceso de actualizacion
+     * @return true|array
+     * @version 16.303.1
+     */
     private function valida_upd(modelo $modelo, int $id): true|array
     {
         if(count($modelo->registro_upd) === 0){

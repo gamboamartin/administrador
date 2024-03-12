@@ -2,6 +2,7 @@
 namespace gamboamartin\administrador\instalacion;
 
 use gamboamartin\administrador\models\_instalacion;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\errores\errores;
 use PDO;
@@ -21,6 +22,30 @@ class instalacion
 
 
         return $out;
+
+    }
+
+    private function adm_accion(PDO $link): array|stdClass
+    {
+
+        $adm_acciones = (new adm_accion(link: $link))->registros(columnas_en_bruto: true);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acciones', data:  $adm_acciones);
+        }
+        $upds = array();
+        foreach ($adm_acciones as $adm_accion){
+            if($adm_accion['es_view'] === 'false'){
+                $upd = array();
+                $upd['es_view'] = 'inactivo';
+                $r_upd = (new adm_accion(link: $link))->modifica_bd_base(registro: $upd,id: $adm_accion['id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al actualizar accion', data:  $r_upd);
+                }
+                $upds[] = $r_upd;
+            }
+        }
+
+        return $upds;
 
     }
     private function adm_accion_basica(PDO $link): array|stdClass
@@ -89,6 +114,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_accion_basica', data: $adm_accion_basica);
         }
         $out->adm_accion_basica = $adm_accion_basica;
+
+        $adm_accion = $this->adm_accion(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_accion', data: $adm_accion);
+        }
+        $out->adm_accion = $adm_accion;
 
         $adm_reporte = $this->adm_reporte(link: $link);
         if (errores::$error) {
