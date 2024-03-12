@@ -1881,8 +1881,6 @@ class where{
      * Asigna los parentesis  de un conjunto de filtros para SQL
      * @param stdClass $filtros Conjunto de filtros
      * @param array $keys_data_filter Keys de los filtros
-     * @version 1.575.51
-     * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 11:46
      * @return stdClass|array
