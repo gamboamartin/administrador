@@ -773,7 +773,6 @@ class where{
 
     /**
      * Genera el SQL de filtro fecha
-     * @version 1.180.34
      * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
      * @return array|string
      */
@@ -795,7 +794,6 @@ class where{
     /**
      *
      * Obtiene los filtros en forma sql de una fecha
-     * @version 1.171.33
      * @param array $filtro_fecha Filtros de fecha para sql
      * @return array|string
      */
@@ -1982,7 +1980,6 @@ class where{
 
     /**
      * Valida los datos de un filtro de tipo fecha
-     * @version 1.143.31
      * @param array $fil_fecha Filtro fecha a validar
      * @return bool|array
      */
