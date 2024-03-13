@@ -1722,6 +1722,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return true;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Valida si el valor correspondiente al campo proporcionado en la fila es numérico.
+     *
+     * @param string $campo El nombre del campo para verificar.
+     * @param array $row Un arreglo que contiene los datos de la fila.
+     *
+     * @return true|array Retorna verdadero si el valor es numérico, de lo contrario, un mensaje de error.
+     *
+     * @throws errores Si el campo está vacío o no existe en la fila.
+     * @version 17.1.0
+     */
     private function valida_totales(string $campo, array $row): true|array
     {
         $campo = trim($campo);
