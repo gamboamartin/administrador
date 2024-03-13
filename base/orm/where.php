@@ -1216,20 +1216,29 @@ class where{
     }
 
     /**
-     * Ajusta los filtros con parentesis y limpieza para su correcta ejecucion
-     * @param string $diferente_de_sql Integra un diferente de
-     * @param string $filtro_especial_sql Filtro en forma de SQL
-     * @param string $filtro_extra_sql Filtro enviado desde el origen
-     * @param string $filtro_rango_sql Filtro en forma de rango en SQL
-     * @param string $in_sql Filtro en forma de  IN SQL
-     * @param array $keys_data_filter Keys de los filtros
-     * @param string $not_in_sql Filtro en forma de NOT IN SQL
-     * @param string $sentencia Sentencia SQL previamente maquetada
-     * @param string $sql_extra Sql generado de forma manual para la funcion en ejecucion
-     * @param string $filtro_fecha_sql Filtro de fecha en forma de sql
-     * @return array|stdClass
-     * @author mgamboa
-     * @fecha 2022-07-25 12:16
+     * POR DOCUMENTAR EN WIKI
+     * Genera filtros iniciales para una consulta SQL.
+     *
+     * Este método genera filtros SQL iniciales a partir de varias entradas
+     * y devuelve un array con los filtros generados o un objeto estándar
+     * en caso de un error.
+     *
+     * @param string $diferente_de_sql       Un fragmento de consulta SQL para iniciadores de la condición "NOT EQUALS TO".
+     * @param string $filtro_especial_sql    Un fragmento de consulta SQL para condiciones especiales.
+     * @param string $filtro_extra_sql       Un fragmento de consulta SQL para condiciones extras.
+     * @param string $filtro_rango_sql       Un fragmento de consulta SQL para condiciones de rango.
+     * @param string $in_sql                 Un fragmento de consulta SQL para la cláusula "IN"
+     * @param array  $keys_data_filter       Un array que contiene las claves de los datos para la ejecución del filtro.
+     * @param string $not_in_sql             Un fragmento de consulta SQL para la cláusula "NOT IN"
+     * @param string $sentencia              Un fragmento de consulta SQL para otras sentencias ad hoc.
+     * @param string $sql_extra              Un fragmento de consulta SQL adicional.
+     * @param string $filtro_fecha_sql       Un fragmento de consulta SQL para condiciones de fecha. Predeterminado es ''.
+     *
+     * @return array|stdClass                Retorna un array con los filtros generados. En caso de un error, devuelve un objeto estándar con detalles del error.
+     *
+     * @throws errores                     Este método puede lanzar una excepción si ocurre un error durante la generación de los filtros.
+     *
+     * @version 16.320.1
      */
     private function genera_filtros_iniciales(string $diferente_de_sql, string $filtro_especial_sql,
                                               string $filtro_extra_sql, string $filtro_rango_sql, string $in_sql,

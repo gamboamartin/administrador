@@ -1253,6 +1253,55 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_totales()
+    {
+
+
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+
+        $row = array();
+        $campo = '';
+        $resultado = $mb->valida_totales($campo, $row);
+
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error campo esta vacio', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $row = array();
+        $campo = 'a';
+        $resultado = $mb->valida_totales($campo, $row);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error row[a] NO EXISTE', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $row = array();
+        $row['a'] = '';
+        $campo = 'a';
+        $resultado = $mb->valida_totales($campo, $row);
+        $this->assertIsArray($resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error row[a] no es un numero valido', $resultado['mensaje_limpio']);
+
+        errores::$error = false;
+
+        $row = array();
+        $row['a'] = '11';
+        $campo = 'a';
+        $resultado = $mb->valida_totales($campo, $row);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+    }
+
 
 
 
