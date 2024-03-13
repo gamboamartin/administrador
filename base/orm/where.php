@@ -1878,12 +1878,16 @@ class where{
     }
 
     /**
-     * Asigna los parentesis  de un conjunto de filtros para SQL
-     * @param stdClass $filtros Conjunto de filtros
-     * @param array $keys_data_filter Keys de los filtros
-     * @author mgamboa
-     * @fecha 2022-07-25 11:46
-     * @return stdClass|array
+     * POR DOCUMENTAR EN WIKI
+     * Aplica el filtro de paréntesis a un conjunto de filtros proporcionados.
+     *
+     * @param stdClass $filtros El objeto de filtros a procesar.
+     * @param array $keys_data_filter Un arreglo de claves para aplicar el filtro.
+     *
+     * @return stdClass|array Devuelve el objeto de filtros con las modificaciones aplicadas,
+     *  o un arreglo en caso de que ocurra un error.
+     *
+     * @version 16.318.1
      */
     private function parentesis_filtro(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
