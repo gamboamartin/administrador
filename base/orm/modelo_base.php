@@ -520,7 +520,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Método data_result
      *
      * Este método se utiliza para la ejecucion del sql y el retorno del resultado en forma de objeto
@@ -530,21 +529,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return array|stdClass Devuelve un array o un objeto stdClass dependiendo del resultado de la consulta
      *
-     * @version 14.26.0
      */
-    private function data_result(array $campos_encriptados, string $consulta): array|stdClass
+    private function data_result(array $campos_encriptados,array $columnas_totales, string $consulta): array|stdClass
     {
         $consulta = trim($consulta);
         if($consulta === ''){
             return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla);
         }
-        $result_sql = $this->result_sql(campos_encriptados: $campos_encriptados,consulta:  $consulta);
+        $result_sql = $this->result_sql(campos_encriptados: $campos_encriptados,
+            columnas_totales: $columnas_totales, consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al ejecutar sql", data: $result_sql);
         }
 
         $data = $this->maqueta_result(consulta: $consulta,n_registros:  $result_sql->n_registros,
-            new_array:  $result_sql->new_array);
+            new_array:  $result_sql->new_array, totales_rs: $result_sql->totales);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
@@ -659,7 +658,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     /**
      *
-     * POR DOCUMENTAR EN WIKI
      * Ejecuta una consulta en la base de datos y devuelve los resultados.
      *
      * @param string $consulta La consulta a ejecutar.
@@ -668,10 +666,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return array|stdClass Retorna un array o un objeto stdClass si la consulta se ejecutó correctamente, o
      * un error si algo salió mal.
-     * @version 14.27.0
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                     array $hijo = array()): array|stdClass{
+                                           array $columnas_totales = array(), array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
         if(trim($consulta) === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
@@ -680,7 +677,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $this->transaccion = 'SELECT';
 
         $data = $this->data_result(
-            campos_encriptados: $campos_encriptados, consulta: $consulta);
+            campos_encriptados: $campos_encriptados, columnas_totales: $columnas_totales, consulta: $consulta);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear registros", data: $data);
         }
@@ -1291,7 +1288,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Inicializa la base del resultado a partir de la consulta, el número de registros y los registros obtenidos.
      *
      * @param string $consulta       La consulta SQL que se ejecutó para obtener los registros
@@ -1300,9 +1296,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return stdClass              Retorna un objeto que contiene los registros, el número de registros y la consulta SQL
      *
-     * @version 14.21.0
      */
-    private function init_result_base(string $consulta, int $n_registros, array $new_array): stdClass
+    private function init_result_base(string $consulta, int $n_registros, array $new_array,
+                                      stdClass $totales_rs): stdClass
     {
 
         $this->registros = $new_array;
@@ -1312,6 +1308,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->registros = $new_array;
         $data->n_registros = $n_registros;
         $data->sql = $consulta;
+        $data->totales = $totales_rs;
 
         return $data;
     }
@@ -1371,7 +1368,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Función que se encarga de maquetar el resultado de una consulta.
      *
      * @param string $consulta La consulta a realizar.
@@ -1379,16 +1375,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param array $new_array El array que contiene los nuevos datos.
      * @return array|stdClass Devuelve un array con los resultados o un objeto stdClass en caso de error.
      * @throws errores Lanza una excepción de tipo errores en caso de error al parsear el resultado o los registros.
-     * @version 14.23.0
      */
-    private function maqueta_result(string $consulta, int $n_registros, array $new_array ): array|stdClass
+    private function maqueta_result(string $consulta, int $n_registros, array $new_array, stdClass $totales_rs ): array|stdClass
     {
-        $init = $this->init_result_base(consulta: $consulta,n_registros:  $n_registros,new_array:  $new_array);
+        $init = $this->init_result_base(consulta: $consulta,n_registros:  $n_registros,new_array:  $new_array, totales_rs: $totales_rs);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear resultado", data: $init);
         }
 
-        $data = $this->result(consulta: $consulta,n_registros:  $n_registros, new_array: $new_array);
+        $data = $this->result(consulta: $consulta,n_registros:  $n_registros, new_array: $new_array, totales_rs: $totales_rs);
         if (errores::$error) {
             return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
         }
@@ -1506,13 +1501,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * La función "result" ajusta el resultado de una consulta y lo devuelve en un formato específico.
      *
      * @param string $consulta La consulta SQL que se ejecutó.
      * @param int $n_registros El número de registros devueltos por la consulta.
      * @param array $new_array Un array que contiene los registros devueltos por la consulta.
-     *
      * @return object $data Un objeto que contiene los resultados de la consulta.
      * $data tiene las siguientes propiedades:
      * registros: array de registros devueltos por la consulta en formato de array asociativo.
@@ -1522,10 +1515,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * registros_obj: array de registros devueltos por la consulta en formato de objeto.
      *
      * La función convierte cada fila de $new_array de un array asociativo a un objeto y lo almacena en $data->registros_obj.
-     *
-     * @version 14.22.0
      */
-    private function result(string $consulta, int $n_registros, array $new_array): stdClass
+    private function result(string $consulta, int $n_registros, array $new_array, stdClass $totales_rs): stdClass
     {
 
         $campos_entidad = $this->campos_entidad;
@@ -1535,6 +1526,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->n_registros = (int)$n_registros;
         $data->sql = $consulta;
         $data->campos_entidad = $campos_entidad;
+        $data->totales = $totales_rs;
 
 
         $data->registros_obj = array();
@@ -1547,7 +1539,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Ejecuta una consulta SQL y devuelve los registros obtenidos
      *
      * Esta función toma una consulta SQL y un arreglo de campos encriptados.
@@ -1557,9 +1548,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @param string $consulta La consulta SQL a ejecutar.
      * @return array|stdClass Un objeto con los datos y registros procesados, o un mensaje de error en caso de falla.
      * @throws errores Si la consulta está vacía, hay un error al ejecutar la consulta SQL, o hay un error al procesar los registros.
-     * @version 14.19.0
      */
-    private function result_sql(array $campos_encriptados, string $consulta): array|stdClass
+    private function result_sql(array $campos_encriptados, array $columnas_totales, string $consulta): array|stdClass
     {
         $consulta = trim($consulta);
         if($consulta === ''){
@@ -1578,6 +1568,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
         }
 
+
+        $totales_rs = $this->totales_rs(columnas_totales: $columnas_totales,new_array:  $new_array);
+        if (errores::$error) {
+            return $this->error->error(mensaje: "Error al parsear totales_rs", data: $totales_rs);
+        }
+
+
         $n_registros = $r_sql->rowCount();
         $r_sql->closeCursor();
 
@@ -1586,6 +1583,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->r_sql = $r_sql;
         $data->new_array = $new_array;
         $data->n_registros = $n_registros;
+        $data->totales = $totales_rs;
         return $data;
     }
 
@@ -1631,6 +1629,59 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $content;
     }
 
+    private function total_rs_acumula(string $campo, array $row, stdClass $totales_rs): stdClass|array
+    {
+
+        $valida = $this->valida_totales(campo: $campo, row: $row);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar row',data: $valida);
+        }
+
+        if(!isset($totales_rs->$campo)){
+            $totales_rs->$campo = 0;
+        }
+
+        $totales_rs->$campo += $row[$campo];
+        return $totales_rs;
+
+    }
+
+    private function total_rs_campo(string $campo, array $new_array, stdClass $totales_rs)
+    {
+        $totales_rs->$campo = 0;
+        $totales_rs = $this->totales_rs_acumula(campo: $campo,new_array:  $new_array,totales_rs:  $totales_rs);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error acumular total',data: $totales_rs);
+        }
+        return $totales_rs;
+
+    }
+
+    private function totales_rs(array $columnas_totales, array $new_array): stdClass
+    {
+        $totales_rs = new stdClass();
+        foreach ($columnas_totales as $campo){
+            $totales_rs = $this->total_rs_campo(campo: $campo,new_array:  $new_array,totales_rs:  $totales_rs);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error acumular total',data: $totales_rs);
+            }
+        }
+        return $totales_rs;
+
+    }
+
+    private function totales_rs_acumula(string $campo, array $new_array, stdClass $totales_rs)
+    {
+        foreach ($new_array as $row){
+            $totales_rs = $this->total_rs_acumula(campo: $campo,row:  $row,totales_rs:  $totales_rs);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error acumular total',data: $totales_rs);
+            }
+        }
+        return $totales_rs;
+
+    }
+
 
     /**
      * PHPUNIT
@@ -1669,6 +1720,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
 
         return true;
+    }
+
+    private function valida_totales(string $campo, array $row): true|array
+    {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
+        if(!isset($row[$campo])){
+            return $this->error->error(mensaje: 'Error row['.$campo.'] NO EXISTE',data: $row);
+        }
+        if(!is_numeric($row[$campo])){
+            return $this->error->error(mensaje: 'Error row['.$campo.'] no es un numero valido',data: $row);
+        }
+        return true;
+
     }
 
     /**

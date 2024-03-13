@@ -1056,6 +1056,7 @@ class modelo extends modelo_base {
      * @param array $columnas_by_table arreglo para obtener los campos especificos de una tabla, si esta seteada,
      * no aplicara las columnas tradicionales
      * @param bool $columnas_en_bruto si true se trae las columnas sion renombrar y solo de la tabla seleccionada
+     * @param array $columnas_totales
      * @param bool $con_sq
      * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
      * @param array $extra_join Arreglo para integrar tabla integra en la consulta
@@ -1186,13 +1187,13 @@ class modelo extends modelo_base {
      */
     final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
                                      array $columnas_by_table = array(), bool $columnas_en_bruto = false,
-                                     bool $con_sq = true, array $diferente_de = array(), array $extra_join = array(),
-                                     array $filtro=array(), array $filtro_especial= array(),
-                                     array $filtro_extra = array(), array $filtro_fecha = array(),
-                                     array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
-                                     array $in = array(), int $limit=0,  array $not_in = array(), int $offset=0,
-                                     array $order = array(), string $sql_extra = '',
-                                     string $tipo_filtro='numeros'): array|stdClass{
+                                     array $columnas_totales = array(), bool $con_sq = true,
+                                     array $diferente_de = array(), array $extra_join = array(), array $filtro=array(),
+                                     array $filtro_especial= array(), array $filtro_extra = array(),
+                                     array $filtro_fecha = array(), array $filtro_rango = array(),
+                                     array $group_by=array(), array $hijo = array(), array $in = array(),
+                                     int $limit=0,  array $not_in = array(), int $offset=0, array $order = array(),
+                                     string $sql_extra = '', string $tipo_filtro='numeros'): array|stdClass{
 
 
 
@@ -1220,7 +1221,8 @@ class modelo extends modelo_base {
             return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
         }
 
-        $result = $this->ejecuta_consulta(consulta:$sql,campos_encriptados: $this->campos_encriptados, hijo: $hijo);
+        $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados,
+            columnas_totales: $columnas_totales, hijo: $hijo);
         if(errores::$error){
             return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
         }

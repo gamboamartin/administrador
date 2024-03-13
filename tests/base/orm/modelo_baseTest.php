@@ -310,7 +310,7 @@ class modelo_baseTest extends test {
         $campos_encriptados = array();
         $consulta = 'SELECT 1 as a FROM adm_seccion';
 
-        $resultado = $mb->data_result($campos_encriptados, $consulta);
+        $resultado = $mb->data_result($campos_encriptados, array(), $consulta);
         //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -883,7 +883,8 @@ class modelo_baseTest extends test {
         $n_registros = '-1';
         $new_array = array();
 
-        $resultado = $mb->init_result_base($consulta, $n_registros, $new_array);
+        $resultado = $mb->init_result_base($consulta, $n_registros, $new_array, new stdClass());
+
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -1028,7 +1029,7 @@ class modelo_baseTest extends test {
         $n_registros = '-1';
         $new_array = array();
 
-        $resultado = $mb->maqueta_result($consulta, $n_registros, $new_array);
+        $resultado = $mb->maqueta_result($consulta, $n_registros, $new_array, new stdClass());
         //print_r($resultado);exit;
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -1138,7 +1139,7 @@ class modelo_baseTest extends test {
         $consulta = '';
         $n_registros = -1;
         $new_array = array();
-        $resultado = $mb->result($consulta, $n_registros, $new_array);
+        $resultado = $mb->result($consulta, $n_registros, $new_array, new stdClass());
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -1160,7 +1161,7 @@ class modelo_baseTest extends test {
 
         $campos_encriptados = array();
         $consulta = 'SELECT adm_grupo.id FROM adm_grupo';
-        $resultado = $mb->result_sql($campos_encriptados, $consulta);
+        $resultado = $mb->result_sql($campos_encriptados, array(), $consulta);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
 
@@ -1192,6 +1193,26 @@ class modelo_baseTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('x', $resultado);
         errores::$error = false;
+
+    }
+
+    public function test_total_rs_acumula(){
+        errores::$error = false;
+        $modelo = new modelo_base($this->link);
+        $modelo = new liberator($modelo);
+
+        $campo = 'a';
+        $row = array();
+        $row['a'] = '1';
+        $totales_rs = new stdClass();
+        $resultado = $modelo->total_rs_acumula(campo: $campo,row:  $row,totales_rs:  $totales_rs);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado->a);
+
+        errores::$error = false;
+
 
     }
 
