@@ -1333,13 +1333,10 @@ class where{
         }
 
 
-        $in_sql = $this->genera_in_sql(in: $in);
+        $in_sql = $this->genera_in_sql_normalizado(in: $in);
         if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar sql',data:$in_sql);
+            return $this->error->error(mensaje:'Error al generar in_sql',data:$in_sql);
         }
-        $in_sql = str_replace('  ', ' ', $in_sql);
-        $in_sql = str_replace('  ', ' ', $in_sql);
-        $in_sql = str_replace('( (', '(', $in_sql);
 
         $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
@@ -1451,6 +1448,20 @@ class where{
             return $this->error->error(mensaje: 'Error al limpiar sql',data: $in_sql);
         }
 
+        return str_replace('( (', '((', $in_sql);
+    }
+
+    private function genera_in_sql_normalizado(array $in)
+    {
+        $in_sql = $this->genera_in_sql(in: $in);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al generar sql',data:$in_sql);
+        }
+
+        $in_sql = (new sql())->limpia_espacios_dobles(txt: $in_sql);
+        if(errores::$error){
+            return $this->error->error(mensaje:'Error al limpiar in_sql',data:$in_sql);
+        }
         return str_replace('( (', '((', $in_sql);
     }
 
