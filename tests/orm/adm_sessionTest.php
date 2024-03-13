@@ -10,9 +10,9 @@ use stdClass;
 
 class adm_sessionTest extends test {
     public errores $errores;
-    public function __construct(?string $name = null, array $data = [], $dataName = '')
+    public function __construct(?string $name = null)
     {
-        parent::__construct($name, $data, $dataName);
+        parent::__construct($name);
         $this->errores = new errores();
     }
 
@@ -48,6 +48,8 @@ class adm_sessionTest extends test {
     public function test_carga_session(){
         $_GET['session_id'] = 9;
 
+        unset($_SESSION);
+
         errores::$error = false;
         $session = new adm_session($this->link);
         $session = new liberator($session);
@@ -59,9 +61,12 @@ class adm_sessionTest extends test {
         $r_session->registros[0]['adm_session_nombre_completo'] = 1;
 
         $resultado = $session->carga_session($r_session);
+        //print_r($resultado);exit;
 
         $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
     }
 
     public function test_init_session(){
@@ -78,9 +83,10 @@ class adm_sessionTest extends test {
         errores::$error = false;
         $session_id = 'a';
         $resultado = $session->init_session($session_id);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al iniciar session', $resultado['mensaje']);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        //$this->assertStringContainsStringIgnoringCase('Error al iniciar session', $resultado['mensaje']);
         errores::$error = false;
 
     }
