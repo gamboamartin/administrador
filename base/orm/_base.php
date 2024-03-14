@@ -96,7 +96,6 @@ class _base extends modelo{
      * @param array $registro Registro en proceso
      * @return bool|array
      * @version 2.108.12
-     * @final rev
      */
     protected function valida_alta_bd(array $registro): bool|array
     {

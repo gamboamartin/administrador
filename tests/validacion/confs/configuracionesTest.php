@@ -1,5 +1,5 @@
 <?php
-namespace tests\validacion\confs;
+namespace gamboamartin\administrador\tests\validacion\confs;
 
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;

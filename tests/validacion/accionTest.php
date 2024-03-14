@@ -1,11 +1,10 @@
 <?php
-namespace tests\validacion;
+namespace gamboamartin\administrador\tests\validacion;
 
 use gamboamartin\errores\errores;
+use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use gamboamartin\validacion\validacion;
 use validacion\accion;
-use validacion\session;
 
 
 class accionTest extends test {
@@ -20,7 +19,7 @@ class accionTest extends test {
     public function test_valida_accion_permitida(){
         errores::$error = false;
         $val = new accion();
-        //$inicializacion = new liberator($inicializacion);
+
 
         $accion = '';
         $seccion = '';

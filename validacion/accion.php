@@ -6,12 +6,11 @@ class accion extends valida_controller {
 
     /**
      * Valida los datos de entrada de una accion para validar permisos
-     * @version 1.12.8
      * @param string $accion Accion a ejecutar
      * @param string $seccion Seccion a ejecutar
      * @return bool|array
      */
-   public function valida_accion_permitida(string $accion, string $seccion): bool|array
+   final public function valida_accion_permitida(string $accion, string $seccion): bool|array
    {
        if($seccion === ''){
            return $this->error->error(mensaje: 'Error $seccion debe tener info',data: $seccion);

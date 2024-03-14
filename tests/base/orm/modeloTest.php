@@ -1,7 +1,7 @@
 <?php
-namespace tests\src;
+namespace gamboamartin\administrador\tests\base\orm;
 
-use base\orm\estructuras;
+
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_accion_grupo;
@@ -18,7 +18,7 @@ use gamboamartin\administrador\tests\base_test;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use stdClass;
+
 
 class modeloTest extends test {
     public errores $errores;

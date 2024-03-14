@@ -1629,7 +1629,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $content;
     }
 
-    private function total_rs_acumula(string $campo, array $row, stdClass $totales_rs): stdClass|array
+    PUBLIC function total_rs_acumula(string $campo, array $row, stdClass $totales_rs): stdClass|array
     {
 
         $valida = $this->valida_totales(campo: $campo, row: $row);

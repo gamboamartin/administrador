@@ -1,5 +1,5 @@
 <?php
-namespace gamboamartin\administrador\tests\orm;
+namespace gamboamartin\administrador\tests\base\controller\orm;
 
 use base\orm\_base;
 use gamboamartin\administrador\models\_base_accion;

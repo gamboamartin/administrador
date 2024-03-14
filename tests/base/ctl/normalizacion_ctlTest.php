@@ -1,5 +1,5 @@
 <?php
-namespace gamboamartin\administrador\tests\base\ctl;
+namespace gamboamartin\administrador\tests\base\controller\base\ctl;
 
 use base\controller\controlador_base;
 use base\controller\controler;

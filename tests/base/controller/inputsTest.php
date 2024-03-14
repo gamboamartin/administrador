@@ -1,10 +1,7 @@
 <?php
-namespace tests\base\controller;
+namespace gamboamartin\administrador\tests\base\controller;
 
-use base\controller\controler;
-use base\controller\filtros;
 use base\controller\inputs;
-use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\controllers\controlador_adm_grupo;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;

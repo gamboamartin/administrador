@@ -6,6 +6,15 @@ use base\orm\modelo;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
+use validacion\accion;
+
+/**
+ * Class adm_accion
+ * Esta clase extiende _modelo_children
+ * En este modelo se definen las acciones a ejecutar en el sistema de las cuales se asignaran permisos por adm_grupo
+ *
+ * @package gamboamartin\administrador\models
+ */
 class adm_accion extends _modelo_children {
     /**
      * DEBUG INI
@@ -41,7 +50,7 @@ class adm_accion extends _modelo_children {
             columnas_extra: $columnas_extra, tipo_campos: $tipo_campos, childrens: $childrens, defaults: $defaults,
             parents_data: $parents_data);
         $this->NAMESPACE = __NAMESPACE__;
-        $this->validacion = new \validacion\accion();
+        $this->validacion = new accion();
 
         $this->etiqueta = 'Accion';
     }
@@ -62,7 +71,6 @@ class adm_accion extends _modelo_children {
      *
      * @functions $r_accion = adm_accion->accion_seccion. Usada para validar los resultados de la funcion "accion_seccion".
      * En caso de error lanzará un mensaje
-     * @version 2.12.2.1
      */
     public function accion_registro(string $accion, string $seccion):array{
         $valida = $this->validacion->seccion_accion(accion: $accion, seccion: $seccion);
@@ -91,7 +99,6 @@ class adm_accion extends _modelo_children {
      * @functions $valida   = adm_accion->validacion->seccion_accion  Usada para validar los resultados de la funcion "seccion_accion". En caso de error lanzará un mensaje
      * @functions $filtro   = adm_accion->filtro_accion_seccion  Usada para validar los resultados de la funcion "filtro_accion_seccion". En caso de error lanzará un mensaje
      * @functions $r_accion = adm_accion->filtro_and  Usada para validar los resultados de la funcion "filtro_and". En caso de error lanzará un mensaje
-     * @version 1.577.51
      */
     private function accion_seccion(string $accion, string $seccion ):array|stdClass{
         $valida = $this->validacion->seccion_accion(accion:  $accion, seccion: $seccion);
@@ -245,6 +252,7 @@ class adm_accion extends _modelo_children {
 
     /**
      * inserta un registro de tipo accion y agrega permisos a usuarios de tipo root
+     * Esta funcion inserta registros en adm_accion_grupo para la integracion de permisos
      * @return array|stdClass con datos del registro insertado
      * @example
      *      $r_alta_accion = $this->accion_modelo->alta_bd();
@@ -334,6 +342,12 @@ class adm_accion extends _modelo_children {
 
         return (int)$n_permisos;
     }
+
+    /**
+     * Elimina previamente los registros de adm_accion_grupo
+     * @param int $id
+     * @return array|stdClass
+     */
     public function elimina_bd(int $id): array|stdClass
     {
 
@@ -352,7 +366,6 @@ class adm_accion extends _modelo_children {
 
     /**
      * Funcion para maquetar filtro de "adm_seccion.descripcion" y "adm_accion.descripcion"
-     * @version 1.48.14
      * @param string $seccion Seccion o modelo o tabla
      * @param string $accion accion de ejecucion
      * @return array
@@ -731,7 +744,8 @@ class adm_accion extends _modelo_children {
             return $_SESSION['acciones_iniciales'];
         }
 
-        $consulta = "SELECT 
+        $consulta = /** @lang MYSQL */
+            "SELECT 
                       adm_seccion.descripcion AS adm_seccion_descripcion,
                       adm_accion.descripcion AS adm_accion_descripcion,
                       adm_accion.icono as adm_accion_icono

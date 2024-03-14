@@ -1,5 +1,5 @@
 <?php
-namespace tests\base\controller;
+namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\upd;
 use gamboamartin\administrador\models\adm_mes;

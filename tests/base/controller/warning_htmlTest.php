@@ -1,7 +1,6 @@
 <?php
-namespace tests\base\controller;
+namespace gamboamartin\administrador\tests\base\controller;
 
-use base\controller\exito_html;
 use base\controller\warning_html;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;

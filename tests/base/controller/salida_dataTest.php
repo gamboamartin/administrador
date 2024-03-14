@@ -1,14 +1,11 @@
 <?php
-namespace tests\base\controller;
+namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\salida_data;
-use base\controller\upd;
-use gamboamartin\controllers\controlador_adm_mes;
 use gamboamartin\controllers\controlador_adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
-use models\adm_mes;
 use stdClass;
 
 

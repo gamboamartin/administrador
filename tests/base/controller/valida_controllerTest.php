@@ -1,5 +1,5 @@
 <?php
-namespace tests\base\controller;
+namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\valida_controller;
 use gamboamartin\controllers\controlador_adm_seccion;

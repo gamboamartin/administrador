@@ -1,5 +1,5 @@
 <?php
-namespace tests\controllers;
+namespace gamboamartin\administrador\tests\controllers;
 
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
