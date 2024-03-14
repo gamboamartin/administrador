@@ -1096,6 +1096,31 @@ class whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_in_sql_normalizado(){
+        errores::$error = false;
+        $wh = new where();
+        $wh = new liberator($wh);
+
+
+        $in = array();
+        $resultado = $wh->genera_in_sql_normalizado($in);
+        //print_r($resultado);exit;
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("",$resultado);
+        errores::$error = false;
+
+        $in = array();
+        $in['llave'] = 'a';
+        $in['values'] = array('1',2);
+        $resultado = $wh->genera_in_sql_normalizado($in);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('1' ,'2')",$resultado);
+        errores::$error = false;
+
+    }
+
     public function test_genera_not_in(): void
     {
         errores::$error = false;

@@ -1391,6 +1391,11 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
         }
+        $values = $in['values'];
+
+        if(!is_array($values)){
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
+        }
 
         $data_in = $this->data_in(in: $in);
         if(errores::$error){
@@ -1430,6 +1435,11 @@ class where{
             $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $in);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al validar in',data: $valida);
+            }
+            $values = $in['values'];
+
+            if(!is_array($values)){
+                return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
             }
             $in_sql = $this->genera_in(in: $in);
             if(errores::$error){
