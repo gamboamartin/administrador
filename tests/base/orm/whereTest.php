@@ -1808,8 +1808,6 @@ class whereTest extends test {
         $this->assertStringContainsStringIgnoringCase('Error where mal aplicado', $resultado['mensaje']);
     }
 
-
-
     public function test_where_suma(){
         errores::$error = false;
         $wh = new where();

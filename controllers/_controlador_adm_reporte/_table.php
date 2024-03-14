@@ -14,7 +14,27 @@ class _table
 
     }
 
-    final public function genera_ths_html(string $adm_reporte_descripcion): array|string
+    final public function contenido_table(string $adm_reporte_descripcion, stdClass $result)
+    {
+        $data = new stdClass();
+        $ths_html = $this->genera_ths_html(adm_reporte_descripcion: $adm_reporte_descripcion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener ths_html',data:  $ths_html);
+        }
+
+        $trs_html = $this->genera_trs_html(adm_reporte_descripcion: $adm_reporte_descripcion,result:  $result);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener trs_html',data:  $trs_html);
+        }
+
+        $data->ths = $ths_html;
+        $data->trs = $trs_html;
+
+        return $data;
+
+    }
+
+    private function genera_ths_html(string $adm_reporte_descripcion): array|string
     {
         $ths = $this->ths_array(adm_reporte_descripcion: $adm_reporte_descripcion);
         if(errores::$error){
@@ -28,7 +48,7 @@ class _table
         return $ths_html;
     }
 
-    final public function genera_trs_html(string $adm_reporte_descripcion,  stdClass $result): array|string
+    private function genera_trs_html(string $adm_reporte_descripcion,  stdClass $result): array|string
     {
         $ths = $this->ths_array(adm_reporte_descripcion: $adm_reporte_descripcion);
         if(errores::$error){

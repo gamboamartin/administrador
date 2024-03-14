@@ -2313,14 +2313,16 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
      * @author mgamboa
      * @fecha 2022-07-25 12:33
-     * @return string
+     * @return string|array
+     * @version 17.7.0
      */
-    private function where(stdClass $filtros, array $keys_data_filter): string
+    private function where(stdClass $filtros, array $keys_data_filter): string|array
     {
         $filtros_ = $filtros;
         $filtros_ = $this->limpia_filtros(filtros: $filtros_,keys_data_filter:  $keys_data_filter);
