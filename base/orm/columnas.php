@@ -211,7 +211,6 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Asigna las columnas de una tabla al objeto de sesión y al modelo base.
      *
      * Esta función toma un modelo y el nombre de una tabla de la base de datos como argumentos. Primero, realiza algunas validaciones en $tabla_bd
@@ -225,7 +224,6 @@ class columnas{
      * @param modelo_base $modelo El modelo a verificar.
      * @param string $tabla_bd El nombre de la tabla en la base de datos.
      * @return array|stdClass Las columnas de la base de datos del modelo.
-     * @version 15.46.1
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -328,7 +326,6 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Esta función obtiene las columnas (campos) de una tabla dada y las asigna a una instancia de un modelo dado.
      *
      * @param modelo $modelo Es la instancia del modelo a la que se le asignarán los campos de la tabla.
@@ -336,7 +333,6 @@ class columnas{
      *
      * @return array Retorna un array de campos (columnas) de la tabla asignados al modelo.
      * En caso de error, devuelve un mensaje de error.
-     * @version 15.48.1
      */
     final public function campos_tabla(modelo $modelo, string $tabla): array
     {
@@ -540,7 +536,6 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Devuelve información sobre las columnas de la base de datos nativa
      *
      * Esta función toma una instancia de un modelo base y una tabla de base de datos en formato de cadena como argumentos.
@@ -560,7 +555,6 @@ class columnas{
      * @example Ejemplo de uso:
      *          columnas_bd_native($modelo, 'tabla_muestra');
      *
-     * @version 15.29.1
      */
     final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
@@ -1225,7 +1219,6 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Método encargado de generar información de las columnas para los campos del modelo en la base de datos.
      *
      * Este método realiza las siguientes operaciones:
@@ -1241,7 +1234,6 @@ class columnas{
      * @return array|stdClass: Array con información de las columnas si todo sale bien,
      *                         objeto de error si hay un problema.
      * @throws errores: Se lanza una excepción si hay un error en la obtención o gestión de las columnas.
-     * @version 15.45.1
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -1461,7 +1453,6 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Obtiene columnas de una modelo de base de datos especificada
      *
      * Esta función toma un modelo de base de datos y el nombre de una tabla.
@@ -1475,7 +1466,6 @@ class columnas{
      * @return array|stdClass las columnas del modelo en caso de éxito, en caso contrario, retorna un objeto de error
      *
      * @throws errores si hay un error al asignar o obtener las columnas
-     * @version 15.47.1
      */
     private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
         $tabla_original = trim(str_replace('models\\','',$tabla_original));
