@@ -942,8 +942,6 @@ class where{
      * Genera un AND y une los filtros
      * @param stdClass $filtros Filtros a ejecutar en un where
      * @param array $keys_data_filter Key a verificar
-     * @version 1.198.34
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-07-25 16:27
      * @return stdClass
@@ -1266,6 +1264,7 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera los filtros en forma de sql
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
@@ -1297,6 +1296,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
+     * @version 17.6.0
      */
     private function genera_filtros_sql(array $columnas_extra, array $diferente_de, array $filtro,
                                         array $filtro_especial, array $filtro_extra, array $filtro_rango, array $in,
@@ -1461,7 +1461,15 @@ class where{
         return str_replace('( (', '((', $in_sql);
     }
 
-    private function genera_in_sql_normalizado(array $in)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Función que genera una instrucción SQL normalizada a partir de un arreglo
+     *
+     * @param array $in Arreglo de elementos con los que se va a generar la instrucción SQL
+     * @return string|array $in_sql devuelve la instrucción SQL normalizada
+     * @version 17.6.0
+     */
+    private function genera_in_sql_normalizado(array $in): string|array
     {
         $in_sql = $this->genera_in_sql(in: $in);
         if(errores::$error){
@@ -2308,8 +2316,6 @@ class where{
      * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
-     * @version 1.575.51
-     * @verfuncion 1.0.0
      * @author mgamboa
      * @fecha 2022-07-25 12:33
      * @return string
