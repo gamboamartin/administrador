@@ -93,7 +93,6 @@ class atributos{
      * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array|string
-     * @version 1.558.51
      */
     final public function ejecuta_insersion_attr(modelo $modelo, int $registro_id): array|string
     {
@@ -122,7 +121,6 @@ class atributos{
      * @param int $registro_id Identificador
      * @param string $tabla Tabla modelo
      * @return array
-     * @version 1.543.51
      */
     private function inserta_atributo(array $atributo, modelo $modelo_base, int $registro_id, string $tabla): array
     {
@@ -161,7 +159,6 @@ class atributos{
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @param string $tabla_attr Tabla de atributo
      * @return array
-     * @version 1.556.51
      */
     private function inserta_atributos(modelo $modelo, int $registro_id, string $tabla_attr): array
     {
@@ -199,7 +196,6 @@ class atributos{
      * @param modelo $modelo Modelo en ejecucion
      * @param int $registro_id Identificador de la tabla u objeto de tipo modelo un entero positivo mayor a 0
      * @return array
-     * @version 1.557.51
      */
     private function inserta_data_attr(
         string $clase_attr,modelo $modelo, int $registro_id): array

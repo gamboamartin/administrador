@@ -729,6 +729,21 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    private function es_namespace_especial_como_mis_inges(string $modelo, array $namespaces): bool
+    {
+        $es_namespace_especial_como_mis_inges = false;
+        foreach ($namespaces as $namespace) {
+            $namespaces_explode = explode($namespace, $modelo);
+
+            if (is_array($namespaces_explode) && count($namespaces_explode)>1) {
+                $es_namespace_especial_como_mis_inges = true;
+                break;
+            }
+
+        }
+        return $es_namespace_especial_como_mis_inges;
+    }
+
 
     /**
      * POR DOCUMENTAR EN WIKI
@@ -996,73 +1011,35 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POD DOCUMENTAR EN WIKI
      * Genera un nuevo modelo a partir de las cadenas de nombre del modelo proporcionadas.
      *
      * @param string $modelo Nombre del modelo.
      * @param string $namespace_model Namespace del modelo, opcional.
      * @return array|modelo Retorna una nueva instancia de la clase del modelo o error si algo sale mal.
-     * @version 14.9.0
      */
     final public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
-
-        /**
-         * PRODUCTO NO CONFORME
-         */
-        $namespaces = array();
-
-        $namespaces[]  = 'gamboamartin\\administrador\\models\\';
-        $namespaces[]  = 'gamboamartin\\empleado\\models\\';
-        $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
-        $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
-        $namespaces[]  = 'gamboamartin\\direccion_postal\\models\\';
-        $namespaces[]  = 'gamboamartin\\cat_sat\\models\\';
-        $namespaces[]  = 'gamboamartin\\comercial\\models\\';
-        $namespaces[]  = 'gamboamartin\\boletaje\\models\\';
-        $namespaces[]  = 'gamboamartin\\banco\\models\\';
-        $namespaces[]  = 'gamboamartin\\gastos\\models\\';
-        $namespaces[]  = 'gamboamartin\\nomina\\models\\';
-        $namespaces[]  = 'gamboamartin\\im_registro_patronal\\models\\';
-        $namespaces[]  = 'gamboamartin\\importador\\models\\';
-        $namespaces[]  = 'gamboamartin\\importador_cva\\models\\';
-        $namespaces[]  = 'gamboamartin\\proceso\\models\\';
-        $namespaces[]  = 'gamboamartin\\notificaciones\\models\\';
-        $namespaces[]  = 'gamboamartin\\inmuebles\\models\\';
-        $namespaces[]  = 'tglobally\\tg_nomina\\models\\';
-        $namespaces[]  = 'tglobally\\tg_empleado\\models\\';
-        $namespaces[]  = 'tglobally\\tg_notificacion\\models\\';
-
-        $es_namespace_especial_como_mis_inges = false;
-        foreach ($namespaces as $namespace) {
-            $namespaces_explode = explode($namespace, $modelo);
-
-            if (is_array($namespaces_explode) && count($namespaces_explode)>1) {
-                $es_namespace_especial_como_mis_inges = true;
-                break;
-            }
-
+        $modelo = $this->genera_name_modelo(modelo: $modelo,namespace_model:  $namespace_model);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
         }
-
-        if(!$es_namespace_especial_como_mis_inges) {
-            $modelo = str_replace('models\\', '', $modelo);
-            $modelo = 'models\\' . $modelo;
-        }
-
-        if($namespace_model !==''){
-
-            $modelo = str_replace($namespace_model, '', $modelo);
-            $modelo = str_replace('models\\', '', $modelo);
-            $modelo = $namespace_model.'\\'.$modelo;
-        }
-
-        $modelo = trim($modelo);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
         }
         return new $modelo($this->link);
     }
+
+    public static function modelo_new(PDO $link,string $modelo): modelo|array
+    {
+        $modelo_gen = (new modelo_base(link: $link))->genera_modelo(modelo: $modelo);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al generar modelo',data: $modelo);
+        }
+
+        return $modelo_gen;
+    }
+
 
     /**
      * POR DOCUMENTAR EN WIKI
@@ -1120,6 +1097,29 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $modelos_hijos[$key]['namespace_model']= $modelo['namespace_model'];
         }
         return $modelos_hijos;
+    }
+
+    private function genera_name_modelo(string $modelo, string $namespace_model)
+    {
+        $namespaces = $this->namespaces();
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al obtener namespaces",data: $namespaces);
+        }
+
+        $es_namespace_especial_como_mis_inges = $this->es_namespace_especial_como_mis_inges(
+            modelo: $modelo,namespaces:  $namespaces);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al validar namespaces",data: $namespaces);
+        }
+
+        $modelo = $this->name_modelo(es_namespace_especial_como_mis_inges: $es_namespace_especial_como_mis_inges,
+            modelo:  $modelo,namespace_model:  $namespace_model);
+        if(errores::$error){
+            return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
+        }
+
+        return $modelo;
+
     }
 
     /**
@@ -1388,6 +1388,69 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return $this->error->error(mensaje: "Error al parsear registros", data: $new_array);
         }
         return $data;
+    }
+
+    private function name_modelo(bool $es_namespace_especial_como_mis_inges, string $modelo, string $namespace_model)
+    {
+        if(!$es_namespace_especial_como_mis_inges) {
+            $modelo = $this->name_modelo_base(modelo: $modelo);
+            if(errores::$error){
+                return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
+            }
+        }
+        if($namespace_model !==''){
+            $modelo = $this->name_modelo_ajustado(modelo: $modelo, namespace_model: $namespace_model);
+            if(errores::$error){
+                return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
+            }
+        }
+        return trim($modelo);
+    }
+
+    private function name_modelo_ajustado(string $modelo, string $namespace_model): string
+    {
+        $modelo = str_replace($namespace_model, '', $modelo);
+        $modelo = str_replace('models\\', '', $modelo);
+        return $namespace_model.'\\'.$modelo;
+
+
+    }
+
+    private function name_modelo_base(string $modelo): string
+    {
+        $modelo = str_replace('models\\', '', $modelo);
+        return 'models\\' . $modelo;
+
+    }
+
+    private function namespaces(): array
+    {
+
+        /**
+         * PRODUCTO NO CONFORME
+         */
+        $namespaces[]  = 'gamboamartin\\administrador\\models\\';
+        $namespaces[]  = 'gamboamartin\\empleado\\models\\';
+        $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
+        $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
+        $namespaces[]  = 'gamboamartin\\direccion_postal\\models\\';
+        $namespaces[]  = 'gamboamartin\\cat_sat\\models\\';
+        $namespaces[]  = 'gamboamartin\\comercial\\models\\';
+        $namespaces[]  = 'gamboamartin\\boletaje\\models\\';
+        $namespaces[]  = 'gamboamartin\\banco\\models\\';
+        $namespaces[]  = 'gamboamartin\\gastos\\models\\';
+        $namespaces[]  = 'gamboamartin\\nomina\\models\\';
+        $namespaces[]  = 'gamboamartin\\im_registro_patronal\\models\\';
+        $namespaces[]  = 'gamboamartin\\importador\\models\\';
+        $namespaces[]  = 'gamboamartin\\importador_cva\\models\\';
+        $namespaces[]  = 'gamboamartin\\proceso\\models\\';
+        $namespaces[]  = 'gamboamartin\\notificaciones\\models\\';
+        $namespaces[]  = 'gamboamartin\\inmuebles\\models\\';
+        /*$namespaces[]  = 'tglobally\\tg_nomina\\models\\';
+        $namespaces[]  = 'tglobally\\tg_empleado\\models\\';
+        $namespaces[]  = 'tglobally\\tg_notificacion\\models\\';*/
+        return $namespaces;
+
     }
 
     /**

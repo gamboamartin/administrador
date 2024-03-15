@@ -398,7 +398,6 @@ class inserts{
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
      * Genera las transacciones para un alta
-     * @version 1.604.54
      */
     final public function transacciones(modelo $modelo): array|stdClass
     {
@@ -441,7 +440,6 @@ class inserts{
      * @param string $consulta texto en forma de SQL
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
-     * @version 1.583.51
      */
     private function transacciones_default(string $consulta, modelo $modelo): array|stdClass
     {
