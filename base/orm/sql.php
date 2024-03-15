@@ -543,6 +543,12 @@ class sql{
         return $params_base;
     }
 
+    final public function init_auto_increment(string $table): string
+    {
+        return "ALTER TABLE '$table' AUTO_INCREMENT=0;";
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Inicializa un nuevo parámetro en el objeto de parámetros pasado.

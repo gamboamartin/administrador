@@ -1656,6 +1656,28 @@ class _instalacion
         return $exe;
     }
 
+    final public function init_auto_increment(string $table)
+    {
+
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
+
+        $sql = (new sql())->init_auto_increment(table: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
+        }
+
+        $exe = $this->modelo->ejecuta_sql(consulta: $sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
+        }
+
+        return $exe;
+
+    }
+
     /**
      * Integra una clave foránea en una tabla si el campo correspondiente no existe ya en la tabla.
      *
