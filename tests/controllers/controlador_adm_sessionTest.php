@@ -31,6 +31,8 @@ class controlador_adm_sessionTest extends test {
 
     public function test_alta_session(): void
     {
+        $_GET['seccion'] = 'adm_session';
+        $_GET['accion'] = 'login';
 
         errores::$error = false;
         $_SESSION['usuario_id'] = 2;
