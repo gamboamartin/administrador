@@ -545,7 +545,7 @@ class sql{
 
     final public function init_auto_increment(string $table): string
     {
-        return "ALTER TABLE '$table' AUTO_INCREMENT=0;";
+        return "ALTER TABLE $table AUTO_INCREMENT=0;";
 
     }
 

@@ -1,9 +1,11 @@
 <?php
 namespace base\orm;
 use config\database;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\administrador\modelado\validaciones;
+use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\plugins\files;
@@ -890,7 +892,10 @@ class modelo extends modelo_base {
             return $this->error->error('Error al ejecutar sql',$resultado);
         }
 
-
+        $exe = (new _instalacion(link: $this->link))->init_auto_increment(table: $this->tabla);
+        if(errores::$error){
+            return $this->error->error('Error al ejecutar sql init',$exe);
+        }
 
         return array('mensaje'=>'Registros eliminados con éxito');
     }

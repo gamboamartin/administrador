@@ -1038,6 +1038,29 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_namespaces()
+    {
+
+
+        errores::$error = false;
+        $mb = new adm_seccion($this->link);
+        $mb = new liberator($mb);
+
+        $resultado = $mb->namespaces();
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("gamboamartin\\administrador\models\\", $resultado[0]);
+        $this->assertEquals("gamboamartin\\empleado\models\\", $resultado[1]);
+        $this->assertEquals("gamboamartin\\facturacion\models\\", $resultado[2]);
+        $this->assertEquals("gamboamartin\organigrama\models\\", $resultado[3]);
+        $this->assertEquals("gamboamartin\direccion_postal\models\\", $resultado[4]);
+        $this->assertEquals("gamboamartin\cat_sat\models\\", $resultado[5]);
+        $this->assertEquals("gamboamartin\comercial\models\\", $resultado[6]);
+
+
+        errores::$error = false;
+    }
+
     public function test_obten_nombre_tabla(){
 
         errores::$error = false;
