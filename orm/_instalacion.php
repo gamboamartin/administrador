@@ -240,7 +240,20 @@ class _instalacion
 
     }
 
-    final public function add_columns(stdClass $campos, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * La función add_columns es responsable de agregar nuevas columnas a una tabla especificada.
+     *
+     * @param stdClass $campos Representa un conjunto de campos a ser añadidos a la tabla.
+     * @param string $table Nombre de la tabla a la cual se agregarán los campos.
+     *
+     * @return object|array Retorna el resultado de la operación. En caso de éxito, devuelve un objeto que contiene
+     * información sobre las columnas añadidas.
+     * En caso de fallo, devuelve un objeto de error con detalles del problema ocurrido.
+     *
+     * @version 17.11.0
+     */
+    final public function add_columns(stdClass $campos, string $table): object|array
     {
         $table = trim($table);
         $valida = (new val_sql())->tabla(tabla: $table);
