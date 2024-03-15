@@ -756,7 +756,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Crea una nueva tabla en la base de datos con el nombre de tabla dado.
      *
      * @param string $table El nombre de la tabla que se va a crear.
@@ -767,7 +766,6 @@ class _instalacion
      * Si hay un error durante el proceso, devolverá un objeto de error (instancia de la clase 'errores').
      *
      * @throws errores Lanza una excepción si hay un error durante el proceso de verificación o creación de la tabla.
-     * @version 16.48.0
      */
 
     final public function create_table_new(string $table): array|string|stdClass
@@ -785,6 +783,11 @@ class _instalacion
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al crear table', data: $create_table);
             }
+        }
+
+        $init = $this->init_auto_increment(table: $table);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al inicializar', data: $init);
         }
 
         return $create_table;
