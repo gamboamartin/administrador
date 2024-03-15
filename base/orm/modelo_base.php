@@ -1030,9 +1030,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return new $modelo($this->link);
     }
 
-    public static function modelo_new(PDO $link,string $modelo): modelo|array
+    public static function modelo_new(PDO $link,string $modelo, string $namespace_model): modelo|array
     {
-        $modelo_gen = (new modelo_base(link: $link))->genera_modelo(modelo: $modelo);
+        $modelo_gen = (new modelo_base(link: $link))->genera_modelo(modelo: $modelo,namespace_model: $namespace_model);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al generar modelo',data: $modelo);
         }
@@ -1426,9 +1426,6 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     private function namespaces(): array
     {
 
-        /**
-         * PRODUCTO NO CONFORME
-         */
         $namespaces[]  = 'gamboamartin\\administrador\\models\\';
         $namespaces[]  = 'gamboamartin\\empleado\\models\\';
         $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
@@ -1446,9 +1443,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $namespaces[]  = 'gamboamartin\\proceso\\models\\';
         $namespaces[]  = 'gamboamartin\\notificaciones\\models\\';
         $namespaces[]  = 'gamboamartin\\inmuebles\\models\\';
-        /*$namespaces[]  = 'tglobally\\tg_nomina\\models\\';
-        $namespaces[]  = 'tglobally\\tg_empleado\\models\\';
-        $namespaces[]  = 'tglobally\\tg_notificacion\\models\\';*/
+
         return $namespaces;
 
     }
