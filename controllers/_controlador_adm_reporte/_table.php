@@ -111,6 +111,22 @@ class _table
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función genera una celda de una tabla HTML.
+     *
+     * @param bool $bold Indica si el contenido de la celda debe ser en negrita.
+     * @param string $key_registro Es la clave que será buscada dentro del array $registro.
+     * @param array $registro Es el array donde se buscará la clave para obtener el contenido de la celda.
+     *
+     * Si $key_registro está vacía o no existe dentro de $registro, la función retornará un error. Si no hay problemas,
+     * la función generará una cadena representando una celda de tabla HTML con el contenido obtenido de $registro bajo la clave $key_registro.
+     * Si $bold es true, este contenido será envuelto en etiquetas <b>.
+     *
+     * @return string|array Retorna una cadena representando una celda de tabla HTML, o retorna un array con un mensaje
+     * de error si se presenta alguna de las condiciones anteriores.
+     * @version 17.9.0
+     */
     private function td(bool $bold,string $key_registro, array $registro): string|array
     {
         $key_registro = trim($key_registro);
@@ -145,7 +161,7 @@ class _table
         return "<th>$etiqueta</th>";
     }
 
-    private function ths_array(string $adm_reporte_descripcion): array
+    final public function ths_array(string $adm_reporte_descripcion): array
     {
         $ths = array();
 
