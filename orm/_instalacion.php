@@ -367,7 +367,22 @@ class _instalacion
         return $indexs_unique;
     }
 
-    private function adds(stdClass $campos, array $campos_origen, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Método que agrega nuevos campos a una tabla específica durante la instalación.
+     *
+     * @param stdClass $campos Objeto que contiene los campos a agregar en la tabla. Cada campo es una propiedad del objeto.
+     * @param array $campos_origen Arreglo que contiene los campos originales de la tabla.
+     * @param string $table Nombre de la tabla a la que se agregarán los campos.
+     *
+     * @return array Retorna un arreglo con los nuevos campos que se agregaron a la tabla.
+     * En caso de error, retorna una descripción del error generado.
+     *
+     * @throws errores Se lanza una excepción en caso de que la tabla esté vacía, los atributos no sean un objeto,
+     * se produzca un error al validar los datos de entrada, o si hay un error al agregar la columna SQL.
+     * @version 17.10.0
+     */
+    private function adds(stdClass $campos, array $campos_origen, string $table): array
     {
         $table = trim($table);
         if($table === ''){
