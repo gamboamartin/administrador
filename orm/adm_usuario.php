@@ -376,12 +376,16 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * Obtiene un usuario activo basado en la session
-     * @author mgamboa
-     * @fecha 2022-07-27
-     * @return array
+     * POR DOCUMENTAR EN WIKI
+     * Esta función devuelve un array con la información del usuario activo.
+     *
+     * @return array - Devuelve un array con información sobre el usuario activo en caso de éxito.
+     *                 En caso de error (no existe un ID de usuario en la sesión o el ID es negativo),
+     *                 devuelve un mensaje de error.
+     *
+     * @version 17.19.0
      */
-    public function usuario_activo():array{
+    final public function usuario_activo():array{
         if(!isset($_SESSION['usuario_id'])){
             return $this->error->error(mensaje: 'Error no existe session usuario id',data: $_SESSION);
         }
