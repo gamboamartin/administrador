@@ -1659,7 +1659,24 @@ class _instalacion
         return $exe;
     }
 
-    final public function init_auto_increment(string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa el valor de AUTO_INCREMENT de la tabla dada
+     *
+     * Esta función llama a una función correspondiente en la clase sql para obtener la sentencia sql.
+     * Se ejecuta sql y se retorna el resultado de la ejecución.
+     *
+     * @param string $table: El nombre de la tabla cuyo valor AUTO_INCREMENT se va a inicializar.
+     *
+     * @throws errores: Lanza un error si el nombre de la tabla está vacío,
+     * si hay un error al obtener sql de la clase sql,
+     * o si hay un error al ejecutar sql.
+     *
+     * @return array|stdClass: Retorna el resultado de la ejecución de sql. En caso de error, se retorna un objeto de error.
+     *
+     * @version 17.27.0
+     */
+    final public function init_auto_increment(string $table): array|stdClass
     {
 
         $table = trim($table);
