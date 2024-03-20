@@ -543,6 +543,21 @@ class sql{
         return $params_base;
     }
 
+
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Inicializa el autoincremento de una tabla en una base de datos MySQL.
+     *
+     * Este método permite inicializar el autoincremento de una tabla específica en una base de datos MySQL.
+     * Se verifica que la tabla no esté vacía y se devuelve un error en caso contrario.
+     * La sentencia SQL ALTER TABLE se utiliza para inicializar el autoincremento de la tabla a 0.
+     *
+     * @param string $table El nombre de la tabla para la cual se inicializará el autoincremento.
+     *
+     * @return string|array Retorna la sentencia SQL utilizada para inicializar el autoincremento de la tabla a 0.
+     * En caso de error, devuelve el detalle del error.
+     * @version 17.24.0
+     */
     final public function init_auto_increment(string $table): string|array
     {
         $table = trim($table);
