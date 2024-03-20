@@ -65,6 +65,21 @@ class instalacion
 
     }
 
+    private function accion_basica_importa(string $accion_basica_descripcion, PDO $link)
+    {
+        $accion_basica_importa = (new adm_accion_basica(link: $link))->accion_basica(descripcion:$accion_basica_descripcion);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener accion_basica_importa',
+                data:  $accion_basica_importa);
+        }
+        unset($accion_basica_importa['id']);
+        unset($accion_basica_importa['usuario_alta_id']);
+        unset($accion_basica_importa['usuario_update_id']);
+
+        return $accion_basica_importa;
+
+    }
+
     private function adm_accion(PDO $link): array|stdClass
     {
 
@@ -141,6 +156,26 @@ class instalacion
         $adm_acciones_basicas[1]['muestra_icono_btn'] = 'inactivo';
         $adm_acciones_basicas[1]['muestra_titulo_btn'] = 'inactivo';
 
+        $adm_acciones_basicas[2]['descripcion'] = 'importa_previo';
+        $adm_acciones_basicas[2]['visible'] = 'inactivo';
+        $adm_acciones_basicas[2]['seguridad'] = 'activo';
+        $adm_acciones_basicas[2]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[2]['lista'] = 'inactivo';
+        $adm_acciones_basicas[2]['status'] = 'activo';
+        $adm_acciones_basicas[2]['es_view'] = 'activo';
+        $adm_acciones_basicas[2]['codigo'] = 'importa_previo';
+        $adm_acciones_basicas[2]['codigo_bis'] = 'importa_previo';
+        $adm_acciones_basicas[2]['descripcion_select'] = 'importa_previo';
+        $adm_acciones_basicas[2]['etiqueta_label'] = 'importa_previo';
+        $adm_acciones_basicas[2]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[2]['titulo'] = 'importa_previo';
+        $adm_acciones_basicas[2]['css'] = 'info';
+        $adm_acciones_basicas[2]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[2]['alias'] = 'importa_previo';
+        $adm_acciones_basicas[2]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[2]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[2]['muestra_titulo_btn'] = 'inactivo';
+
         $altas = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica){
             $con_descripcion['adm_accion_basica.descripcion'] = $adm_accion_basica['descripcion'];
@@ -183,35 +218,61 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener adm_secciones', data:  $adm_secciones);
         }
+        
 
-        $accion_basica_importa = (new adm_accion_basica(link: $link))->accion_basica(descripcion:'importa');
+        $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa', adm_secciones: $adm_secciones,link:  $link);
         if(errores::$error){
-            return (new errores())->error(mensaje: 'Error al obtener accion_basica_importa',
-                data:  $accion_basica_importa);
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }
-        unset($accion_basica_importa['id']);
-        unset($accion_basica_importa['usuario_alta_id']);
-        unset($accion_basica_importa['usuario_update_id']);
-        $accion = 'importa';
-        foreach ($adm_secciones as $adm_seccion){
-
-            $seccion = $adm_seccion['adm_seccion_descripcion'];
-            $existe_accion = (new adm_accion(link: $link))->existe_accion(adm_accion: $accion,adm_seccion:  $seccion);
-            if(errores::$error){
-                return (new errores())->error(mensaje: 'Error al validar accion', data:  $existe_accion);
-            }
-            if(!$existe_accion){
-                $accion_ins = $accion_basica_importa;
-                $accion_ins['adm_seccion_id'] = $adm_seccion['adm_seccion_id'];
-                $r_accion = (new adm_accion(link: $link))->alta_registro(registro: $accion_ins);
-                if(errores::$error){
-                    return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_accion);
-                }
-            }
-
+        $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa_previo', adm_secciones: $adm_secciones,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }
+
+
+
 
         return $create;
+
+    }
+
+    private function existe_accion(string $accion, array $adm_seccion, PDO $link)
+    {
+        $seccion = $adm_seccion['adm_seccion_descripcion'];
+        $existe_accion = (new adm_accion(link: $link))->existe_accion(adm_accion: $accion,adm_seccion:  $seccion);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar accion', data:  $existe_accion);
+        }
+        return $existe_accion;
+
+    }
+
+    private function inserta_accion(array $accion_basica_importa, array $adm_seccion, PDO $link): array|stdClass
+    {
+        $accion_ins = $accion_basica_importa;
+        $accion_ins['adm_seccion_id'] = $adm_seccion['adm_seccion_id'];
+        $r_accion = (new adm_accion(link: $link))->alta_registro(registro: $accion_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_accion);
+        }
+        return $r_accion;
+
+    }
+
+    private function inserta_accion_base(string $accion, array $accion_basica_importa, array $adm_seccion, PDO $link): array|stdClass
+    {
+        $r_accion = new stdClass();
+        $existe_accion = $this->existe_accion(accion: $accion,adm_seccion:  $adm_seccion, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar accion', data:  $existe_accion);
+        }
+        if(!$existe_accion){
+            $r_accion = $this->inserta_accion(accion_basica_importa: $accion_basica_importa,adm_seccion:  $adm_seccion,link:  $link);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_accion);
+            }
+        }
+        return $r_accion;
 
     }
     final public function instala(PDO $link): array|stdClass
@@ -246,6 +307,31 @@ class instalacion
 
 
         return $out;
+
+    }
+
+    private function integra_accion_basica(string $accion_basica_descripcion, array $adm_secciones, PDO $link): array
+    {
+
+        $acciones = array();
+        $accion_basica_importa = $this->accion_basica_importa(accion_basica_descripcion: $accion_basica_descripcion,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener accion_basica_importa',
+                data:  $accion_basica_importa);
+        }
+
+        foreach ($adm_secciones as $adm_seccion){
+
+            $r_accion = $this->inserta_accion_base(accion: $accion_basica_descripcion,
+                accion_basica_importa:  $accion_basica_importa,adm_seccion:  $adm_seccion,link:  $link);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_accion);
+            }
+            $acciones[] = $r_accion;
+
+        }
+
+        return $acciones;
 
     }
 
