@@ -13,8 +13,6 @@ class monedas{
      * Elimina los caracteres para convertir el valor en un double
      * @param string|int|float|null $value Valor moneda
      * @return string|int|float|null
-     * @version 1.275.40
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-08 12:44
      *
@@ -35,7 +33,6 @@ class monedas{
      * @param array $tipos_moneda Tipos moneda campos
      * @param int|string|float|null $value Valor a limpiar
      * @return float|array|int|string|null
-     * @version 1.337.41
      */
     private function limpia_monedas_values(string $tipo_dato, array $tipos_moneda,
                                            int|string|float|null $value): float|array|int|string|null
@@ -60,8 +57,6 @@ class monedas{
      * @param array $tipos_moneda Campos tipos moneda declarados en modelo
      * @param string|int|float|null $value
      * @return float|array|int|string|null
-     * @version 1.358.41
-
      */
     private function reasigna_value_moneda(string $campo, modelo $modelo, array $tipos_moneda,
                                            string|int|float|null $value): float|array|int|string|null
@@ -87,7 +82,6 @@ class monedas{
      * @param modelo $modelo Modelo en ejecucion para validacion
      * @param string|float|int|null $value Valor a ajustar
      * @return float|array|int|string|null
-     * @version 1.404.45
      *
      */
     public function value_moneda(

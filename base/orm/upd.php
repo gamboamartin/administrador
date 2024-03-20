@@ -120,7 +120,6 @@ class upd{
      * Genera los campos para un update
      * @param modelo_base $modelo Modelo en ejecucion
      * @return array|string
-     * @version 1.432.48
      */
     private function campos(modelo_base $modelo): array|string
     {
@@ -147,7 +146,6 @@ class upd{
      * @param modelo $modelo Modelo en ejecucion
      * @param bool $valida_user si false no se valida la existencia del user en database
      * @return array|string
-     * @version 1.565.51
      */
     private function campos_sql(modelo $modelo, bool $valida_user): array|string
     {
@@ -268,7 +266,6 @@ class upd{
      * @internal $consultas_base->obten_campos($this->tabla,'modifica', $this->link);
      * @internal $this->obten_campos_update();
      * @param modelo_base $modelo Modelo en ejecucion
-     * @version 1.445.48
      */
     private function genera_campos_update(modelo_base $modelo): array|string
     {
@@ -293,7 +290,6 @@ class upd{
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string|int|float|null $value Valor a ajustar
      * @return array|string
-     * @version 1.429.48
      */
     private function maqueta_rows_upd(string $campo, string $campos,
                                       modelo_base $modelo, string|int|float|null $value): array|string
@@ -328,7 +324,6 @@ class upd{
      * @throws errores $this->registro_upd[campo] campo es vacio
      * @example
      *       $campos = $this->obten_campos_update();
-     * @version 1.438.48
      *
      */
     private function obten_campos_update(modelo_base $modelo): array|string
@@ -353,7 +348,6 @@ class upd{
      * @param modelo_base $modelo Modelo en ejecucion
      * @param string|float|int|null $value Valor a ajustar
      * @return array|stdClass
-     * @version 1.425.48
      */
     private function params_data_update(string $campo, modelo_base $modelo, string|float|int|null $value): array|stdClass
     {
