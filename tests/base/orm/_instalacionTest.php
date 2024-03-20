@@ -1026,6 +1026,46 @@ class _instalacionTest extends test
         errores::$error = false;
     }
 
+    public function test_init_auto_increment(): void
+    {
+
+        $ins = new _instalacion(link: $this->link);
+
+        $table = 'a';
+        $drop = $ins->drop_table_segura(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al drop', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $create = $ins->create_table_new(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al create', data: $create);
+            print_r($error);
+            exit;
+        }
+
+
+        errores::$error = false;
+
+
+        $resultado = $ins->init_auto_increment($table);
+        //print_r($resultado);exit;
+        $this->assertFalse(errores::$error);
+        $this->assertEquals('ALTER TABLE a AUTO_INCREMENT=0;',$resultado->sql);
+
+
+        $drop = $ins->drop_table_segura(table: $table);
+        if (errores::$error) {
+            $error = (new errores())->error(mensaje: 'Error al drop', data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        errores::$error = false;
+    }
+
     public function test_integra_foraneas(): void
     {
         errores::$error = false;
