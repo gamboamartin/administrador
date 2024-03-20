@@ -756,16 +756,24 @@ class _instalacion
     }
 
     /**
-     * Crea una nueva tabla en la base de datos con el nombre de tabla dado.
+     * POR DOCUMENTAR EN WIKI
+     * Crea una nueva tabla si no existe y luego inicializa su AUTO_INCREMENT
      *
-     * @param string $table El nombre de la tabla que se va a crear.
+     * Esta función primero verifica si la tabla dada ya existe.
+     * Si la tabla no existe, entonces llama a la función `create_table` para crear la tabla.
+     * Luego llama a la función `init_auto_increment` para inicializar el AUTO_INCREMENT de la tabla.
      *
-     * @return array|string|stdClass Devuelve un mensaje string si ya existe la tabla.
-     * Si la tabla no existe, intenta crearla. Si tiene éxito, retorna el resultado del proceso de creación de la tabla.
-     * (puede ser un array, string o un stdClass dependiendo del proceso de creación).
-     * Si hay un error durante el proceso, devolverá un objeto de error (instancia de la clase 'errores').
+     * @param string $table: El nombre de la tabla a crear.
      *
-     * @throws errores Lanza una excepción si hay un error durante el proceso de verificación o creación de la tabla.
+     * @throws errores: Lanza un error si hay un error al verificar si la tabla existe,
+     * si hay un error al crear la tabla,
+     * o si hay un error al inicializar AUTO_INCREMENT.
+     *
+     * @return array|string|stdClass: Retorna un mensaje si la tabla ya existe.
+     * Retorna un objeto error si se produce un error.
+     * Retorna el resultado de la función `create_table` si la tabla se crea correctamente.
+     * @version 17.28.0
+     *
      */
 
     final public function create_table_new(string $table): array|string|stdClass
