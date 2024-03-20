@@ -543,10 +543,14 @@ class sql{
         return $params_base;
     }
 
-    final public function init_auto_increment(string $table): string
+    final public function init_auto_increment(string $table): string|array
     {
-        return "ALTER TABLE $table AUTO_INCREMENT=0;";
+        $table = trim($table);
+        if($table === ''){
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+        }
 
+        return /** @lang MYSQL */ "ALTER TABLE $table AUTO_INCREMENT=0;";
     }
 
     /**
