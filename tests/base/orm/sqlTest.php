@@ -322,6 +322,22 @@ class sqlTest extends test {
 
         errores::$error = false;
     }
+    public function test_init_auto_increment(): void
+    {
+        errores::$error = false;
+        $sql = new sql();
+        //$sql = new liberator($sql);
+
+
+        $table = 'a';
+        $resultado = $sql->init_auto_increment($table);
+        //print_r($resultado);exit;
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('ALTER TABLE a AUTO_INCREMENT=0;',$resultado);
+
+        errores::$error = false;
+    }
 
     public function test_init_params(): void
     {
