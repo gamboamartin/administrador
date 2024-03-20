@@ -1,4 +1,4 @@
-<?php //DEBUG FIN
+<?php 
 namespace base\controller;
 
 use base\frontend\sidebar;

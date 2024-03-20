@@ -377,8 +377,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     /**
      * Obtiene un usuario activo basado en la session
-     * @version 1.209.37
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-07-27
      * @return array

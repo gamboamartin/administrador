@@ -121,9 +121,13 @@ class normalizacion_ctl{
     }
 
     /**
-     * Inicializa los elementos de un controller
-     * @param controler $controler Controlador en ejecucion
-     * @return controler
+     * POR DOCUMENTAR EN WIKI
+     * Esta función inicializa un controlador con los valores obtenidos desde la petición GET.
+     *
+     * @param controler $controler - El controlador a inicializar.
+     *
+     * @return controler - Devuelve el controlador con sus atributos configurados.
+     * @version 17.18.0
      */
     final public function init_controler(controler $controler): controler
     {
