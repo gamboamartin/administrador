@@ -10,7 +10,6 @@ class base_html{
 
     /**
      * Genera boton close para alert
-     * @version 1.71.17
      * @return string
      */
     final protected function close_btn(): string

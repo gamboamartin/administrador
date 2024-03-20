@@ -72,6 +72,8 @@ class controler{
     public string $include_lista_thead= '';
     public array $buttons = array(); //Usado para system e integrar botones permitidos
 
+    public string $link_importa_previo = '';
+
     public array $subtitulos_menu = array();
 
     public int $number_active = -1;

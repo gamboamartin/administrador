@@ -36,7 +36,6 @@ class errores_html extends base_html {
      * Maqueta los datos de errores para dar salida html
      * @param array $errores_previos Conjunto de errores
      * @return array|string
-     * @version 2.10.2.2
      */
     private function data_modal_error(array $errores_previos): array|string
     {
@@ -159,7 +158,6 @@ class errores_html extends base_html {
     /**
      * Genera los errores para formato html
      * @return array|string
-     * @version 2.10.2.3
      */
     final public function errores_transaccion(): array|string
     {
