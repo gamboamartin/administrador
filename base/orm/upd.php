@@ -424,11 +424,23 @@ class upd{
     }
 
     /**
-     * Valida siu aplica o no una reactivacion de registro
-     * @param modelo $modelo Modelo a validar
-     * @param bool $reactiva Si !$reactiva bloquea
-     * @param array $registro Registro a verificar
-     * @return bool|array
+     * POR DOCUMENTAR EN WIKI
+     * Reactiva un registro en la tabla del modelo proporcionado si la transacción está inactiva
+     *
+     * Esta función verifica si la transacción está inactiva.
+     * Si está inactiva, valida que la transacción está inactiva usando la función `valida_transaccion_activa` del objeto de validación del modelo.
+     *
+     * @param modelo $modelo: El objeto modelo cuya tabla contiene el registro a reactivar.
+     * @param bool $reactiva: Un valor booleano que indica si la transacción está activa.
+     * @param array $registro: El registro a reactivar.
+     *
+     * @throws errores: Lanza un error si hay un error al validar si la transacción está activa.
+     *
+     * @return bool|array: Retorna verdadero si la transacción está inactiva y el registro puede ser reactivado.
+     * Retorna un objeto de error si se produce un error.
+     *
+     * @version 17.29.0
+     *
      */
     private function reactiva(modelo $modelo, bool $reactiva, array $registro): bool|array
     {
