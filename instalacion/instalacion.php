@@ -218,7 +218,7 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener adm_secciones', data:  $adm_secciones);
         }
-        
+
 
         $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa', adm_secciones: $adm_secciones,link:  $link);
         if(errores::$error){

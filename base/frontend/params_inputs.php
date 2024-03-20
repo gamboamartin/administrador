@@ -39,8 +39,6 @@ class params_inputs{
     
     /**
      * Si disabled retorna attr disabled  en string
-     * @stable true
-     * @version 1.588.52
      * @param bool $disabled Si disabled retorna attr disabled
      * @return string
      *
