@@ -478,6 +478,7 @@ class modelo_baseTest extends test {
         }
 
 
+
         $registro['id'] = 1;
         $registro['descripcion'] = 'adm_seccion';
         $registro['adm_menu_id'] = '1';
@@ -485,6 +486,13 @@ class modelo_baseTest extends test {
         $alta = (new adm_seccion($this->link))->alta_registro($registro);
         if(errores::$error){
             $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);
+            exit;
+        }
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
             print_r($error);
             exit;
         }
@@ -668,7 +676,12 @@ class modelo_baseTest extends test {
             exit;
         }
 
-
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
         $adm_accion['id'] = 1;
         $adm_accion['descripcion'] = 'test';
         $adm_accion['titulo'] = 'test';

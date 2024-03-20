@@ -364,6 +364,17 @@ class adm_accion extends _modelo_children {
         return $r_elimina_bd;
     }
 
+    final public function existe_accion(string $adm_accion, string $adm_seccion)
+    {
+        $filtro['adm_accion.descripcion'] = $adm_accion;
+        $filtro['adm_seccion.descripcion'] = $adm_seccion;
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
+        }
+        return $existe;
+    }
+
     /**
      * Funcion para maquetar filtro de "adm_seccion.descripcion" y "adm_accion.descripcion"
      * @param string $seccion Seccion o modelo o tabla

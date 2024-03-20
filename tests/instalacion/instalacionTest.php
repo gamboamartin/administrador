@@ -54,6 +54,7 @@ class instalacionTest extends test {
         $instalacion = new instalacion();
        // $ctl = new liberator($ctl);
         $resultado = $instalacion->instala(link: $this->link);
+        //print_r($resultado);exit;
         $this->assertFalse(errores::$error);
         $this->assertIsObject($resultado);
         errores::$error = false;

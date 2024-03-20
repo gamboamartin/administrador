@@ -133,7 +133,12 @@ class controlador_adm_sessionTest extends test {
             exit;
         }
 
-
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
+        }
         $adm_accion['id'] = 1;
         $adm_accion['descripcion'] = 'denegado';
         $adm_accion['titulo'] = 'denegado';

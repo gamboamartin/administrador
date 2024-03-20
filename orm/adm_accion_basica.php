@@ -33,6 +33,23 @@ class adm_accion_basica extends _modelo_parent {
         return strtoupper($registro['descripcion']);
     }
 
+    final public function accion_basica(string $descripcion)
+    {
+        $filtro['adm_accion_basica.descripcion'] = $descripcion;
+        $r_adm_accion_basica = $this->filtro_and(columnas_en_bruto: true, filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener accion_basica',data: $r_adm_accion_basica);
+        }
+        if($r_adm_accion_basica->n_registros === 0){
+            return $this->error->error(mensaje: 'Error al obtener accion_basica no existe',data: $r_adm_accion_basica);
+        }
+        if($r_adm_accion_basica->n_registros > 1){
+            return $this->error->error(mensaje: 'Error al obtener accion_basica existe mas de una',
+                data: $r_adm_accion_basica);
+        }
+        return $r_adm_accion_basica->registros[0];
+
+    }
     public function alta_bd(array $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {
         $registro = $this->init_alta_bd(registro: $this->registro);

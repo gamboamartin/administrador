@@ -4,6 +4,7 @@ namespace gamboamartin\administrador\instalacion;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -178,6 +179,38 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
         }
 
+        $adm_secciones = (new adm_seccion(link: $link))->registros();
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_secciones', data:  $adm_secciones);
+        }
+
+        $accion_basica_importa = (new adm_accion_basica(link: $link))->accion_basica(descripcion:'importa');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener accion_basica_importa',
+                data:  $accion_basica_importa);
+        }
+        unset($accion_basica_importa['id']);
+        unset($accion_basica_importa['usuario_alta_id']);
+        unset($accion_basica_importa['usuario_update_id']);
+        $accion = 'importa';
+        foreach ($adm_secciones as $adm_seccion){
+
+            $seccion = $adm_seccion['adm_seccion_descripcion'];
+            $existe_accion = (new adm_accion(link: $link))->existe_accion(adm_accion: $accion,adm_seccion:  $seccion);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al validar accion', data:  $existe_accion);
+            }
+            if(!$existe_accion){
+                $accion_ins = $accion_basica_importa;
+                $accion_ins['adm_seccion_id'] = $adm_seccion['adm_seccion_id'];
+                $r_accion = (new adm_accion(link: $link))->alta_registro(registro: $accion_ins);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_accion);
+                }
+            }
+
+        }
+
         return $create;
 
     }
@@ -186,18 +219,18 @@ class instalacion
 
         $out = new stdClass();
 
+        $adm_accion_basica = $this->adm_accion_basica(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_accion_basica', data: $adm_accion_basica);
+        }
+        $out->adm_accion_basica = $adm_accion_basica;
+
         $adm_seccion = $this->adm_seccion(link: $link);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al init adm_seccion', data: $adm_seccion);
         }
         $out->adm_seccion = $adm_seccion;
 
-
-        $adm_accion_basica = $this->adm_accion_basica(link: $link);
-        if (errores::$error) {
-            return (new errores())->error(mensaje: 'Error al init adm_accion_basica', data: $adm_accion_basica);
-        }
-        $out->adm_accion_basica = $adm_accion_basica;
 
         $adm_accion = $this->adm_accion(link: $link);
         if (errores::$error) {
