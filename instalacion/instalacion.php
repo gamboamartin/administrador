@@ -11,7 +11,7 @@ use stdClass;
 class instalacion
 {
 
-    PUBLIC function _add_adm_reporte(PDO $link): array|stdClass
+    private function _add_adm_reporte(PDO $link): array|stdClass
     {
         $out = new stdClass();
         $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_reporte');
@@ -19,6 +19,45 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al create table', data:  $create);
         }
         $out->create = $create;
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_seccion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_seccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['adm_menu_id'] = new stdClass();
+        $foraneas['adm_namespace_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_seccion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
+
+        $campos = new stdClass();
+        $campos->etiqueta_label = new stdClass();
+        $campos->etiqueta_label->default = 'SIN ETIQUETA';
+
+        $campos->icono = new stdClass();
+        $campos->icono->default = 'SIN ICONO';
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_seccion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+        $out->columnas = $result;
 
 
         return $out;
@@ -131,10 +170,27 @@ class instalacion
         return $create;
 
     }
+
+    private function adm_seccion(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_seccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        return $create;
+
+    }
     final public function instala(PDO $link): array|stdClass
     {
 
         $out = new stdClass();
+
+        $adm_seccion = $this->adm_seccion(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_seccion', data: $adm_seccion);
+        }
+        $out->adm_seccion = $adm_seccion;
 
 
         $adm_accion_basica = $this->adm_accion_basica(link: $link);
