@@ -41,6 +41,7 @@ class filtros{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Genera el complemento completo para la ejecucion de un SELECT en forma de SQL
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
@@ -74,11 +75,13 @@ class filtros{
      * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
      * @param array $diferente_de Arreglo con los elementos para integrar un diferente de en SQL
      * @return array|stdClass
+     * @version 17.20.0
      */
-    final public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro, array $filtro_especial,
-                                    array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
-                                    modelo $modelo, array $not_in, int $offset, array $order, string $sql_extra,
-                                    string $tipo_filtro, array $filtro_fecha = array()): array|stdClass
+    final public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro,
+                                          array $filtro_especial, array $filtro_extra, array $filtro_rango,
+                                          array $group_by, array $in, int $limit, modelo $modelo, array $not_in,
+                                          int $offset, array $order, string $sql_extra, string $tipo_filtro,
+                                          array $filtro_fecha = array()): array|stdClass
     {
 
         $params_fn = new stdClass();

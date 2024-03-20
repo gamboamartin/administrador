@@ -310,6 +310,7 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
      * Crea los datos de los diferentes tipos de filtro en forma de SQL
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
@@ -341,6 +342,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
+     * @version 17.20.0
      */
     final public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
                                       array $filtro_especial, array $filtro_extra, array $filtro_fecha,
@@ -1679,8 +1681,6 @@ class where{
      * @param stdClass $complemento Complemento de datos sql
      * @param array $keys_data_filter Keys para filtros
      * @return array|stdClass
-     * @version 1.260.40
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-02 14:46
      */
@@ -2347,8 +2347,6 @@ class where{
      * Genera un where base aplicando un estilo correcto SQL
      * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
-     * @version 1.236.39
-     * @verfuncion 1.1.0
      * @fecha 2022-08-01 14:42
      * @author mgamboa
      */
@@ -2369,8 +2367,6 @@ class where{
      * @param stdClass $complemento Complemento de datos sql
      * @param array $key_data_filter Keys de filtros para where
      * @return array|stdClass
-     * @version 1.251.39
-     * @verfuncion 1.1.0
      * @fecha 2022-08-02 09:43
      */
     private function where_filtro(stdClass $complemento, array $key_data_filter): array|stdClass
@@ -2392,8 +2388,6 @@ class where{
     /**
      *
      * CONVIERTE EN MAYUSCULAS EL ELEMENTO WHERE EN SQL
-     * @version 1.212.37
-     * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-07-29 13:42
      * @param stdClass $complemento Complemento de datos sql
