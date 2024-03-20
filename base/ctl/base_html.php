@@ -23,7 +23,6 @@ class base_html{
      * Genera el head de un mensaje
      * @param string $titulo Titulo a mostrar en el encabezado
      * @return string|array
-     * @version 1.68.1
      */
     final protected function head(string $titulo): string|array
     {

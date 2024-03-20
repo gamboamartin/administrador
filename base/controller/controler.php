@@ -225,6 +225,8 @@ class controler{
         $this->path_vendor_views = '';
 
         $this->url_base = (new generales())->url_base;
+
+
     }
 
 
