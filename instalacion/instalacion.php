@@ -67,7 +67,7 @@ class instalacion
         $adm_acciones_basicas[0]['inicio'] = 'inactivo';
         $adm_acciones_basicas[0]['lista'] = 'inactivo';
         $adm_acciones_basicas[0]['status'] = 'activo';
-        $adm_acciones_basicas[0]['es_view'] = 'false';
+        $adm_acciones_basicas[0]['es_view'] = 'inactivo';
         $adm_acciones_basicas[0]['codigo'] = 'get_data_descripcion';
         $adm_acciones_basicas[0]['codigo_bis'] = 'get_data_descripcion';
         $adm_acciones_basicas[0]['descripcion_select'] = 'get_data_descripcion';
@@ -80,6 +80,26 @@ class instalacion
         $adm_acciones_basicas[0]['es_lista'] = 'inactivo';
         $adm_acciones_basicas[0]['muestra_icono_btn'] = 'inactivo';
         $adm_acciones_basicas[0]['muestra_titulo_btn'] = 'inactivo';
+
+        $adm_acciones_basicas[1]['descripcion'] = 'importa';
+        $adm_acciones_basicas[1]['visible'] = 'inactivo';
+        $adm_acciones_basicas[1]['seguridad'] = 'activo';
+        $adm_acciones_basicas[1]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[1]['lista'] = 'inactivo';
+        $adm_acciones_basicas[1]['status'] = 'activo';
+        $adm_acciones_basicas[1]['es_view'] = 'activo';
+        $adm_acciones_basicas[1]['codigo'] = 'importa';
+        $adm_acciones_basicas[1]['codigo_bis'] = 'importa';
+        $adm_acciones_basicas[1]['descripcion_select'] = 'importa';
+        $adm_acciones_basicas[1]['etiqueta_label'] = 'Importa';
+        $adm_acciones_basicas[1]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[1]['titulo'] = 'Importa';
+        $adm_acciones_basicas[1]['css'] = 'info';
+        $adm_acciones_basicas[1]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[1]['alias'] = 'importa';
+        $adm_acciones_basicas[1]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[1]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[1]['muestra_titulo_btn'] = 'inactivo';
 
         $altas = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica){

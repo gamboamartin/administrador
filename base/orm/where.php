@@ -939,12 +939,16 @@ class where{
     }
 
     /**
-     * Genera un AND y une los filtros
-     * @param stdClass $filtros Filtros a ejecutar en un where
-     * @param array $keys_data_filter Key a verificar
-     * @author mgamboa
-     * @fecha 2022-07-25 16:27
-     * @return stdClass
+     * POR DOCUMENTAR EN WIKI
+     * Esta función realiza una serie de filtros completos dados los parámetros proporcionados.
+     *
+     * @param stdClass $filtros       - Objeto que contiene los filtros que se aplicarán.
+     * @param array $keys_data_filter - Claves del array que se utilizarán en los filtros.
+     *
+     * @return stdClass - Devuelve los filtros después de haber aplicado todas las operaciones.
+     *
+     * @throws errores Si hay un error al limpiar los filtros.
+     * @version 17.17.0
      */
     private function filtros_full(stdClass $filtros, array $keys_data_filter): stdClass
     {
