@@ -102,7 +102,7 @@ class monedas{
      * @return float|array|int|string|null
      *
      */
-    public function value_moneda(
+    final public function value_moneda(
         string $campo, modelo_base $modelo, string|float|int|null $value): float|array|int|string|null
     {
         $value_= $value;
