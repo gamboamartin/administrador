@@ -5,6 +5,7 @@ use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_tipo_dato;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -59,6 +60,34 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
         }
         $out->columnas = $result;
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_tipo_dato(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_tipo_dato');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $campos = new stdClass();
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_tipo_dato');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
 
 
         return $out;
@@ -236,6 +265,61 @@ class instalacion
 
     }
 
+    private function adm_tipo_dato(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_tipo_dato(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        $adm_tipo_dato_modelo = new adm_tipo_dato(link: $link);
+
+        $adm_tipos_datos = array();
+
+        $adm_tipo_dato['id'] = 1;
+        $adm_tipo_dato['descripcion'] = 'INT';
+        $adm_tipo_dato['codigo'] = 'INT';
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+
+        foreach ($adm_tipos_datos as $adm_tipo_dato){
+            $inserta = $adm_tipo_dato_modelo->inserta_registro_si_no_existe(registro: $adm_tipo_dato);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar adm_tipo_dato', data:  $inserta);
+            }
+        }
+
+        foreach ($adm_tipos_datos as $adm_tipo_dato){
+            $existe = $adm_tipo_dato_modelo->existe_by_id(registro_id: $adm_tipo_dato['id']);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al verificar si existe', data:  $existe);
+            }
+            if($existe){
+                $filtro = array();
+                $filtro['adm_tipo_dato.id'] = $adm_tipo_dato['id'];
+                $filtro['adm_tipo_dato.descripcion'] = $adm_tipo_dato['descripcion'];
+                $filtro['adm_tipo_dato.codigo'] = $adm_tipo_dato['codigo'];
+
+                $existe_fil = $adm_tipo_dato_modelo->existe(filtro: $filtro);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al verificar si existe', data:  $existe_fil);
+                }
+
+                if(!$existe_fil){
+                    $upd = $adm_tipo_dato_modelo->modifica_bd_base(registro: $adm_tipo_dato, id: $adm_tipo_dato['id']);
+                    if(errores::$error){
+                        return (new errores())->error(mensaje: 'Error al actualizar', data:  $upd);
+                    }
+                }
+
+            }
+        }
+
+        return $create;
+
+    }
+
     private function existe_accion(string $accion, array $adm_seccion, PDO $link)
     {
         $seccion = $adm_seccion['adm_seccion_descripcion'];
@@ -279,6 +363,13 @@ class instalacion
     {
 
         $out = new stdClass();
+
+        $adm_tipo_dato = $this->adm_tipo_dato(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_tipo_dato', data: $adm_tipo_dato);
+        }
+        $out->adm_tipo_dato = $adm_tipo_dato;
+
 
         $adm_accion_basica = $this->adm_accion_basica(link: $link);
         if (errores::$error) {

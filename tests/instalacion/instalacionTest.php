@@ -44,6 +44,28 @@ class instalacionTest extends test {
 
     }
 
+    public function test__add_adm_tipo_dato(): void
+    {
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+
+
+        $instalacion = new instalacion();
+        $instalacion = new liberator($instalacion);
+        $resultado = $instalacion->_add_adm_tipo_dato(link: $this->link);
+        $this->assertFalse(errores::$error);
+        $this->assertIsObject($resultado);
+        errores::$error = false;
+
+        $resultado = (new _instalacion(link: $this->link))->describe_table(table: 'adm_tipo_dato');
+        $this->assertEquals('id', $resultado->registros[0]['Field']);
+        $this->assertEquals('predeterminado', $resultado->registros[11]['Field']);
+        errores::$error = false;
+
+
+    }
+
     public function test_instala(): void
     {
 
