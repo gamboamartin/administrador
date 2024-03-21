@@ -1740,7 +1740,23 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    private function totales_rs_acumula(string $campo, array $new_array, stdClass $totales_rs)
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Acumula los totales de un conjunto de datos.
+     *
+     * Este método recorre un array y acumula los totales para un campo específico.
+     * Este campo y el array son pasados como argumentos al método.
+     *
+     * @param string $campo El nombre del campo para el cual se acumularán los totales.
+     * @param array $new_array El array de datos que se recorrerá para acumular los totales.
+     * @param stdClass $totales_rs Objeto en el que se almacenarán los totales acumulados.
+     *
+     * @return array|stdClass Retorna el objeto totales_rs con los totales acumulados,
+     *                  o retorna el error si surge algún problema durante el proceso.
+     *
+     * @version 17.48.0
+     */
+    private function totales_rs_acumula(string $campo, array $new_array, stdClass $totales_rs): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){

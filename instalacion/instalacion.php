@@ -365,6 +365,12 @@ class instalacion
 
         $adm_tipos_datos[] = $adm_tipo_dato;
 
+        $adm_tipo_dato['id'] = 5;
+        $adm_tipo_dato['descripcion'] = 'TIMESTAMP';
+        $adm_tipo_dato['codigo'] = 'TIMESTAMP';
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
 
         foreach ($adm_tipos_datos as $adm_tipo_dato){
             $inserta = $adm_tipo_dato_modelo->inserta_registro_si_no_existe(registro: $adm_tipo_dato);
