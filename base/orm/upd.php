@@ -481,7 +481,6 @@ class upd{
      * @param string $campo Campo a normalizar
      * @param string|int|float|null $value Valor a normalizar
      * @return stdClass|array
-     * @version 1.409.47
      */
     private function slaches_value(string $campo, string|int|float|null $value): stdClass|array
     {
@@ -567,7 +566,6 @@ class upd{
      * Ajusta un NULL a Value
      * @param string|int|float|null $value Valor a ajustar como NULL
      * @return string
-     * @version 1.415.48
      */
     private function value_null(string|int|float|null $value): string
     {
