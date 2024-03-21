@@ -1687,7 +1687,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $content;
     }
 
-    PUBLIC function total_rs_acumula(string $campo, array $row, stdClass $totales_rs): stdClass|array
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función acumula los totales en un campo específico.
+     *
+     * @param string $campo El nombre del campo en el que se acumulan los totales.
+     * @param array $row Los datos de la fila actual.
+     * @param stdClass $totales_rs El objeto en el que se guardan los totales acumulados.
+     *
+     * @return stdClass|array Devuelve un objeto con los totales acumulados.
+     * Si hay un error, devuelve un array con los detalles del error.
+     * @version 17.40.0
+     */
+    private function total_rs_acumula(string $campo, array $row, stdClass $totales_rs): stdClass|array
     {
 
         $valida = $this->valida_totales(campo: $campo, row: $row);

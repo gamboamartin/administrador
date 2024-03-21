@@ -13,6 +13,47 @@ use stdClass;
 class instalacion
 {
 
+    private function _add_adm_campo(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_campo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['adm_tipo_dato_id'] = new stdClass();
+        $foraneas['adm_seccion_id'] = new stdClass();
+
+        $result = (new _instalacion(link: $link))->foraneas(foraneas: $foraneas,table:  'adm_campo');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+        $campos = new stdClass();
+        $campos->sub_consulta = new stdClass();
+        $campos->sub_consulta->tipo_dato = 'TEXT';
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_tipo_dato');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+        return $out;
+
+    }
+
     private function _add_adm_reporte(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -235,6 +276,17 @@ class instalacion
 
     }
 
+    private function adm_campo(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_campo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        return $create;
+
+    }
 
     private function adm_reporte(PDO $link): array|stdClass
     {
@@ -398,6 +450,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_tipo_dato', data: $adm_tipo_dato);
         }
         $out->adm_tipo_dato = $adm_tipo_dato;
+
+        $adm_campo = $this->adm_campo(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_campo', data: $adm_campo);
+        }
+        $out->adm_campo = $adm_campo;
 
 
         $adm_accion_basica = $this->adm_accion_basica(link: $link);
