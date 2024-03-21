@@ -44,7 +44,7 @@ class instalacion
         $campos->predeterminado = new stdClass();
         $campos->predeterminado->default = 'inactivo';
 
-        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_tipo_dato');
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_campo');
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
