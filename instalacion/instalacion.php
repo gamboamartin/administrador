@@ -282,6 +282,24 @@ class instalacion
 
         $adm_tipos_datos[] = $adm_tipo_dato;
 
+        $adm_tipo_dato['id'] = 2;
+        $adm_tipo_dato['descripcion'] = 'BIGINT';
+        $adm_tipo_dato['codigo'] = 'BIGINT';
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+        $adm_tipo_dato['id'] = 3;
+        $adm_tipo_dato['descripcion'] = 'VARCHAR';
+        $adm_tipo_dato['codigo'] = 'VARCHAR';
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+        $adm_tipo_dato['id'] = 4;
+        $adm_tipo_dato['descripcion'] = 'TEXT';
+        $adm_tipo_dato['codigo'] = 'TEXT';
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
 
         foreach ($adm_tipos_datos as $adm_tipo_dato){
             $inserta = $adm_tipo_dato_modelo->inserta_registro_si_no_existe(registro: $adm_tipo_dato);
