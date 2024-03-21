@@ -33,6 +33,7 @@ class instalacion
         }
 
         $campos = new stdClass();
+        $campos->codigo = new stdClass();
         $campos->sub_consulta = new stdClass();
         $campos->sub_consulta->tipo_dato = 'TEXT';
 
@@ -128,6 +129,7 @@ class instalacion
         $out->create = $create;
 
         $campos = new stdClass();
+        $campos->codigo = new stdClass();
         $campos->descripcion_select = new stdClass();
         $campos->descripcion_select->default = 'SIN DS';
 

@@ -10,12 +10,18 @@ class monedas{
     }
 
     /**
-     * Elimina los caracteres para convertir el valor en un double
-     * @param string|int|float|null $value Valor moneda
-     * @return string|int|float|null
-     * @author mgamboa
-     * @fecha 2022-08-08 12:44
+     * POR DOCUMENTAR EN WIKI
+     * Limpia el valor de una cantidad de moneda que puede ser de tipo string, int, float o null.
      *
+     * @param string|int|float|null $value El valor de la moneda a limpiar.
+     * @return string|int|float|null Valor de la moneda después de haber sido limpiado.
+     * Si el valor ingresado en la función es null, también retorna null.
+     *
+     * Esta función está principalmente diseñada para limpiar los signos de dólar y las comas,
+     * que suelen estar presentes en las cantidades de dinero.
+     * La función trim se utiliza para eliminar los espacios en blanco del principio y del final.
+     *
+     * @version 14.42.0
      */
     private function limpia_moneda_value(string|int|float|null $value): string|int|float|null
     {
