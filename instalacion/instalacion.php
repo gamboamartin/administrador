@@ -66,6 +66,17 @@ class instalacion
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función agrega la entidad tipo de dato en el administrador.
+     *
+     * @param PDO $link Conexión a la base de datos.
+     *
+     * @return stdClass|array Devuelve un objeto con los resultados de la operación.
+     * Si hay un error, devuelve un array con los detalles del error.
+     *
+     * @version 17.39.0
+     */
     private function _add_adm_tipo_dato(PDO $link): array|stdClass
     {
         $out = new stdClass();
