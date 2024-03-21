@@ -27,4 +27,19 @@ class adm_campo extends modelo{
         return $alta_bd;
 
     }
+
+    final public function campos_by_seccion(string $adm_seccion_descripcion)
+    {
+        $filtro['adm_seccion.descripcion'] = $adm_seccion_descripcion;
+        $r_adm_campo = (new adm_campo(link: $this->link))->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener campos',data:  $r_adm_campo);
+        }
+
+        if($r_adm_campo->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existen campos',data:  $r_adm_campo);
+        }
+        return $r_adm_campo->registros;
+
+    }
 }

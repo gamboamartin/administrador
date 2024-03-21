@@ -2386,13 +2386,14 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI
+     * Esta función convierte a mayúsculas la cláusula WHERE de un objeto complemento.
+     * Si el WHERE no está definido o es una cadena vacía, no se realizará ninguna conversión.
+     * El método devolverá un error si la cláusula WHERE es distinta de una cadena vacía y de 'WHERE'.
      *
-     * CONVIERTE EN MAYUSCULAS EL ELEMENTO WHERE EN SQL
-     * @author mgamboa
-     * @fecha 2022-07-29 13:42
-     * @param stdClass $complemento Complemento de datos sql
-     * @return array|stdClass
-     *
+     * @param stdClass $complemento El objeto que contiene la cláusula WHERE a convertir.
+     * @return array|stdClass El objeto complemento con la cláusula WHERE convertida a mayúsculas o un error.
+     * @version 17.49.0
      */
     private function where_mayus(stdClass $complemento): array|stdClass
     {
