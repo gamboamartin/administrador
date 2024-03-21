@@ -34,11 +34,17 @@ class monedas{
     }
 
     /**
-     * Limpia los campos de tipo moneda previo a la insersion
-     * @param string $tipo_dato Tipo dato a limpiar
-     * @param array $tipos_moneda Tipos moneda campos
-     * @param int|string|float|null $value Valor a limpiar
-     * @return float|array|int|string|null
+     * POR DOCUMENTAR EN WIKI
+     * Limpia los valores de diversas monedas dado un tipo de dato y un array de tipos de moneda.
+     *
+     * @param string $tipo_dato El tipo de dato a procesar.
+     * @param array $tipos_moneda Los tipos de moneda disponibles en un array.
+     * @param int|string|float|null $value El valor de la moneda a limpiar.
+     * @return float|array|int|string|null Retorna el valor de la moneda después de ser limpiado.
+     * Si el tipo de dato es una cadena vacía, se devuelve un error.
+     * Si hay un error durante la limpieza, también se devuelve un error.
+     * Esta función utiliza la función limpia_moneda_value para realizar la limpieza.
+     * @version 17.43.0
      */
     private function limpia_monedas_values(string $tipo_dato, array $tipos_moneda,
                                            int|string|float|null $value): float|array|int|string|null
