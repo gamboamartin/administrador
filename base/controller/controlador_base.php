@@ -120,7 +120,9 @@ class controlador_base extends controler
             $_SESSION['registro_en_proceso'][$this->seccion] = $_POST;
         }
 
-        if (isset($_GET['tipo_mensaje'], $_GET['adm_accion']) && $_GET['adm_accion'] === 'alta' && $_GET['tipo_mensaje'] === 'error') {
+        $existe_msj_accion = isset($_GET['tipo_mensaje'], $_GET['adm_accion']);
+
+        if ($existe_msj_accion && $_GET['adm_accion'] === 'alta' && $_GET['tipo_mensaje'] === 'error') {
             $this->registros_alta = true;
         }
         $this->directivas_extra = array();
