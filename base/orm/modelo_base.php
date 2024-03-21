@@ -1742,7 +1742,18 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     private function totales_rs_acumula(string $campo, array $new_array, stdClass $totales_rs)
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+        }
         foreach ($new_array as $row){
+            if(!is_array($row)){
+                return $this->error->error(mensaje: 'Error row debe ser un array',data: $row);
+            }
+            $valida = $this->valida_totales(campo: $campo, row: $row);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al validar row',data: $valida);
+            }
             $totales_rs = $this->total_rs_acumula(campo: $campo,row:  $row,totales_rs:  $totales_rs);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error acumular total',data: $totales_rs);

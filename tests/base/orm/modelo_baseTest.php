@@ -1251,6 +1251,27 @@ class modelo_baseTest extends test {
 
 
     }
+    public function test_totales_rs_acumula(){
+        errores::$error = false;
+        $modelo = new modelo_base($this->link);
+        $modelo = new liberator($modelo);
+
+        $campo = 'a';
+        $new_array = array();
+        $new_array[]['a'] = '1';
+        $new_array[]['a'] = '5';
+        $totales_rs = new stdClass();
+        $resultado = $modelo->totales_rs_acumula($campo, $new_array, $totales_rs);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(6, $resultado->a);
+
+        errores::$error = false;
+
+
+    }
+
 
     public function test_valida_registro_modelo()
     {
