@@ -63,12 +63,18 @@ class monedas{
     }
 
     /**
-     * Ajusta valores de tipo moneda para upd
-     * @param string $campo Campo a reasignar valor
-     * @param modelo $modelo Modelo en ejecucion para validacion
-     * @param array $tipos_moneda Campos tipos moneda declarados en modelo
-     * @param string|int|float|null $value
-     * @return float|array|int|string|null
+     * POR DOCUMENTAR EN WIKI
+     * Resigna el valor de la moneda.
+     *
+     * @param string $campo          El nombre del campo.
+     * @param modelo $modelo         El objeto del modelo.
+     * @param array  $tipos_moneda   La lista de tipos de moneda.
+     * @param mixed  $value          El valor original.
+     *
+     * @return float|array|int|string|null  $value_ El valor reasignado o original. Puede ser null, flotante, entero, array, o string.
+     *
+     * @throws errores si el campo viene vacío o si el tipo del campo no está establecido en el modelo.
+     * @version 17.45.0
      */
     private function reasigna_value_moneda(string $campo, modelo $modelo, array $tipos_moneda,
                                            string|int|float|null $value): float|array|int|string|null
