@@ -637,7 +637,7 @@ class init{
     }
 
     /**
-     * ṔOR DOCUMENTAR EN WIKI
+     * ṔOR DOCUMENTAR EN WIKI FINAL REV
      * Inicializa los datos del controlador con ciertos objetos necesarios para su funcionamiento.
      *
      * @param controler $controler - La instancia del controlador a inicializar

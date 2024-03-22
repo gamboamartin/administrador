@@ -73,7 +73,6 @@ class errores_html extends base_html {
      * Obtiene el html basado en un array de errores de la clase errores
      * @param array $error_previo Error de la clase errores
      * @return string|array
-     * @version 1.70.17
      */
     private function error_previo(array $error_previo): string|array
     {
@@ -104,7 +103,6 @@ class errores_html extends base_html {
 
     /**
      * Genera las errores basado en el conjunto de errores de la clase errores
-     * @version 1.84.19
      * @param array $errores_previos Conjunto de errores
      * @return array|string
      */
@@ -114,7 +112,7 @@ class errores_html extends base_html {
         foreach ($errores_previos as $error_previo) {
             if(!is_array($error_previo)){
                 return $this->error->error(mensaje: 'Error $errores_previos[] debe ser un array',
-                    data: $errores_previos);
+                    data: $errores_previos, es_final: true);
             }
             $keys = array('mensaje','line','function','class');
             $valida = (new validaciones())->valida_existencia_keys(keys: $keys,registro:  $error_previo,

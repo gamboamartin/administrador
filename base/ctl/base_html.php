@@ -28,7 +28,7 @@ class base_html{
     {
         $titulo = trim($titulo);
         if($titulo === ''){
-            return $this->error->error(mensaje: 'Error el titulo esta vacio',data:  $titulo);
+            return $this->error->error(mensaje: 'Error el titulo esta vacio',data:  $titulo, es_final: true);
         }
 
         $errores_html = '<h4 class="alert-heading">';

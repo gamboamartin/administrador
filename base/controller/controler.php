@@ -73,6 +73,7 @@ class controler{
     public array $buttons = array(); //Usado para system e integrar botones permitidos
 
     public string $link_importa_previo = '';
+    public string $link_importa_previo_muestra = '';
 
     public array $subtitulos_menu = array();
 
@@ -120,8 +121,13 @@ class controler{
 
         $init = (new init())->init_data_controler(controler: $this);
         if(errores::$error){
-            $error =  $this->errores->error(mensaje: 'Error al inicializar',data: $init);
-            print_r($error);
+            $out = array_reverse(errores::$out);
+            foreach ($out as $msj){
+                echo $msj;
+                echo "<br>";
+                echo "<hr>";
+            }
+            die('Error');
             exit;
         }
 
@@ -129,12 +135,12 @@ class controler{
         $this->pestanas->targets = array();
 
         if(!isset($generals->path_base)){
-            $error =  $this->errores->error(mensaje: 'path base en generales debe existir',data: '');
+            $error =  $this->errores->error(mensaje: 'path base en generales debe existir',data: '',es_final: true);
             print_r($error);
             exit;
         }
         if(!isset($generals->session_id)){
-            $error =  $this->errores->error(mensaje: 'session_id en generales debe existir',data: '');
+            $error =  $this->errores->error(mensaje: 'session_id en generales debe existir',data: '',es_final: true);
             print_r($error);
             exit;
         }
