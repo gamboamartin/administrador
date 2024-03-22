@@ -259,6 +259,27 @@ class instalacion
         $adm_acciones_basicas[2]['muestra_icono_btn'] = 'inactivo';
         $adm_acciones_basicas[2]['muestra_titulo_btn'] = 'inactivo';
 
+
+        $adm_acciones_basicas[3]['descripcion'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['visible'] = 'inactivo';
+        $adm_acciones_basicas[3]['seguridad'] = 'activo';
+        $adm_acciones_basicas[3]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[3]['lista'] = 'inactivo';
+        $adm_acciones_basicas[3]['status'] = 'activo';
+        $adm_acciones_basicas[3]['es_view'] = 'activo';
+        $adm_acciones_basicas[3]['codigo'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['codigo_bis'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['descripcion_select'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['etiqueta_label'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[3]['titulo'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['css'] = 'info';
+        $adm_acciones_basicas[3]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[3]['alias'] = 'importa_previo_muestra';
+        $adm_acciones_basicas[3]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[3]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[3]['muestra_titulo_btn'] = 'inactivo';
+
         $altas = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica){
             $con_descripcion['adm_accion_basica.descripcion'] = $adm_accion_basica['descripcion'];

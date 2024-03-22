@@ -12,7 +12,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Asigna seguridad a los datos.
      *
      * Esta función recibe como parámetros un array con las columnas extra del modelo y una cadena con la
@@ -47,7 +47,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera la cadena SQL para la instrucción GROUP BY.
      *
      * @param array $group_by El arreglo que contiene los campos por los cuales agrupar.
@@ -61,10 +61,11 @@ class params_sql{
         foreach ($group_by as $campo){
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error(mensaje: 'Error el campo no puede venir vacio', data: $group_by);
+                return $this->error->error(mensaje: 'Error el campo no puede venir vacio', data: $group_by,
+                    es_final: true);
             }
             if(is_numeric($campo)){
-                return $this->error->error(mensaje:'Error el campo debe ser un texto', data: $campo);
+                return $this->error->error(mensaje:'Error el campo debe ser un texto', data: $campo, es_final: true);
             }
             if($group_by_sql === ''){
                 $group_by_sql.=' GROUP BY '.$campo.' ';
@@ -77,7 +78,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función se utiliza para limitar las consultas SQL.
      *
      * @param int $limit El límite de la consulta SQL.
@@ -90,7 +91,7 @@ class params_sql{
     private function limit_sql(int $limit): string|array
     {
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0', data: $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0', data: $limit, es_final: true);
         }
         $limit_sql = '';
         if($limit > 0){
@@ -100,7 +101,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función genera una cadena SQL para un desplazamiento (OFFSET) dado
      * un parámetro específico. Esto se usa para definir el número de registros
      * que se van a omitir antes de empezar a devolver los registros en una consulta SQL.
@@ -115,7 +116,8 @@ class params_sql{
     private function offset_sql(int $offset): string|array
     {
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
+                es_final: true);
 
         }
         $offset_sql = '';
@@ -190,7 +192,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una consulta SQL para ordenar los resultados.
      *
      * @param array $order Un array asociativo donde las claves son los nombres de las columnas a ordenar y
@@ -202,7 +204,7 @@ class params_sql{
         $order_sql = '';
         foreach ($order as $campo=>$tipo_order){
             if(is_numeric($campo)){
-                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order);
+                return $this->error->error(mensaje: 'Error $campo debe ser txt',data: $order, es_final: true);
             }
             if($order_sql === ''){
                 $order_sql.=' ORDER BY '.$campo.' '.$tipo_order;
@@ -215,7 +217,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función genera instrucciones de seguridad SQL en base al modelo y condiciones previas proporcionadas.
      *
      * @param bool $aplica_seguridad Indica si se aplica seguridad en la consulta SQL.
@@ -264,7 +266,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida la seguridad de los datos de entrada comprobando la existencia de ciertas claves en el arreglo
      * proporcionado y en la variable de sesión.
      *
@@ -286,7 +288,8 @@ class params_sql{
             return $this->error->error(mensaje: 'Error al validar $modelo->columnas_extra', data:$valida);
         }
         if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error al validar $_SESSION no esta definida', data:array());
+            return $this->error->error(mensaje: 'Error al validar $_SESSION no esta definida', data:array(),
+                es_final: true);
         }
         $keys = array('usuario_id');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $_SESSION);
@@ -297,7 +300,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función integra la sentencia WHERE de una consulta SQL.
      *
      * @param string $sql_where_previo La condición WHERE previa.

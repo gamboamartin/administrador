@@ -2153,7 +2153,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Verifica el tipo de filtro proporcionado.
      *
      * @param string $tipo_filtro El tipo de filtro a verificar.
@@ -2183,7 +2183,7 @@ class where{
 
             return $this->error->error(
                 mensaje: 'Error el tipo filtro no es correcto los filtros pueden ser o numeros o textos',
-                data: $params);
+                data: $params, es_final: true);
         }
         return true;
     }

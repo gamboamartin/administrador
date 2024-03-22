@@ -1381,7 +1381,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Metodo genera_where_seguridad
      *
      * Este método se encarga de generar la parte WHERE de una consulta SQL, dependiendo de ciertas condiciones de seguridad.
@@ -1831,7 +1831,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función integra la cláusula WHERE segura a la consulta SQL proporcionada.
      *
      * @param string $consulta Consulta SQL a la que se le debe agregar la cláusula WHERE.
@@ -3058,7 +3058,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método que se encarga de aplicar una condición de seguridad a una declaración WHERE de SQL.
      *
      * @param string $seguridad La condición de seguridad a aplicar.
@@ -3080,7 +3080,7 @@ class modelo extends modelo_base {
         if($this->aplica_seguridad){
             $seguridad = trim($seguridad);
             if($seguridad === ''){
-                return $this->error->error(mensaje: 'Error seguridad esta vacia',data:  $seguridad);
+                return $this->error->error(mensaje: 'Error seguridad esta vacia',data:  $seguridad, es_final: true);
             }
             $where = trim($where);
             if($where === ''){

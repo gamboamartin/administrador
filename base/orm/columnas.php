@@ -85,7 +85,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función verifica si el arreglo de entrada $columnas_by_table contiene algún elemento. Si el conteo
      * del arreglo es más de cero, la función devolverá true, de lo contrario, devolverá false.
      * En otras palabras, verifica si hay alguna columna en el arreglo dado que necesite ser aplicada a la tabla.
@@ -157,7 +157,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Asigna las columnas correspondientes a una tabla específica a un modelo y las almacena en la sesión.
      *
      * Esta función se encuentra en el archivo 'base/orm/columnas.php'.
@@ -175,7 +175,7 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
-            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd);
+            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd, es_final: true);
         }
         $data = new stdClass();
         if(isset($_SESSION['campos_tabla'][$tabla_bd], $_SESSION['columnas_completas'][$tabla_bd])){
@@ -247,7 +247,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Asigna los datos de las columnas de una tabla especificada a la variable de sesión correspondiente y las devuelve.
      *
      * La función se encuentra en el archivo 'base/orm/columnas.php'. El objetivo de esta función es asignar la data
@@ -265,21 +265,24 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd===''){
-            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd);
+            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd,
+                es_final: true);
         }
         if(!isset($_SESSION['campos_tabla'])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]',data: $_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]',data: $_SESSION,
+                es_final: true);
         }
         if(!isset($_SESSION['campos_tabla'][$tabla_bd])){
             return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]['.$tabla_bd.']',
-                data: $_SESSION);
+                data: $_SESSION, es_final: true);
         }
         if(!isset($_SESSION['columnas_completas'])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]',data: $_SESSION);
+            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]',data: $_SESSION,
+                es_final: true);
         }
         if(!isset($_SESSION['columnas_completas'][$tabla_bd])){
             return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]['.$tabla_bd.']',
-                data:$_SESSION);
+                data:$_SESSION, es_final: true);
         }
 
         $data->columnas_parseadas = $_SESSION['campos_tabla'][$tabla_bd];

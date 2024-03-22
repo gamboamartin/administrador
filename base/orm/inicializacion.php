@@ -1009,7 +1009,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR WIKI
+     * POR DOCUMENTAR WIKI FINAL REV
      * Recupera las columnas de la tabla especificada en el modelo dado.
      *
      * Esta función está diseñada para tomar un objeto modelo_base, obtener el nombre de la tabla del modelo y
@@ -1043,7 +1043,7 @@ class inicializacion{
         // Si no hay columnas para la tabla, devuelve un error
         if (!isset($columnas_tabla)) {
             return $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla,
-                data: $modelo->tabla);
+                data: $modelo->tabla, es_final: true);
         }
         // Si las columnas están presentes, las devuelve
         return $columnas_tabla;
