@@ -343,8 +343,10 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }
-
-
+        $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa_previo_muestra', adm_secciones: $adm_secciones,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
+        }
 
 
         return $create;

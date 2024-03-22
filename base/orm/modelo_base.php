@@ -688,7 +688,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL ERROR
      * Ejecuta una consulta SQL y devuelve un objeto con los resultados de la consulta,
      * el ID del registro recién insertado, y otros detalles sobre la operación realizada.
      *
@@ -702,7 +702,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     final public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
             return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla,
-                aplica_bitacora: true);
+                aplica_bitacora: true, es_final: true);
         }
         try {
             $result = $this->link->query( $consulta);
@@ -710,7 +710,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         catch (Throwable $e){
             return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
                 data: array($e->getCode().' '.$this->tabla.' '.$consulta.' '.$this->tabla,
-                    'registro'=>$this->registro),aplica_bitacora: true);
+                    'registro'=>$this->registro),aplica_bitacora: true,es_final: true);
         }
         if($this->transaccion ==='INSERT'){
             $this->campo_llave === "" ? $this->registro_id = $this->link->lastInsertId() :

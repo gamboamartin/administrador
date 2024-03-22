@@ -847,7 +847,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Muestra las tablas de la base de datos de acuerdo con el criterio proporcionado.
      *
      * @param string $entidad Nombre de la tabla que queremos consultar en la base de datos.
