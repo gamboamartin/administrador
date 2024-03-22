@@ -423,10 +423,12 @@ class controler{
      * @version 16.138.0
      *
      */
-    final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws,
-                                        array $params = array()): array
+    final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, string $class = '',
+                                        bool$es_final = false, string $file  = '', string$function = '',
+                                        string $line = '', array $params = array()): array
     {
-        $error = $this->errores->error(mensaje: $mensaje,data:  $data, params: $params);
+        $error = $this->errores->error(mensaje: $mensaje, data: $data, class: $class, es_final: $es_final,
+            file: $file, funcion: $function, line: $line, params: $params);
         if($ws){
             $this->out_ws_error(error: $error);
         }
@@ -452,7 +454,12 @@ class controler{
             header("Location: $liga");
             exit;
         }
-        print_r($error);
+        $out = array_reverse(errores::$out);
+        foreach ($out as $msj){
+            echo $msj;
+            echo "<br>";
+            echo "<hr>";
+        }
         die('Error');
     }
 
