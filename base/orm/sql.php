@@ -279,7 +279,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR WIKI
+     * POR DOCUMENTAR WIKI FINAL REV
      * Descripción: Este método genera la consulta SQL para obtener la descripción (estructura) de una tabla en específico.
      *
      * @param string $tabla Nombre de la tabla cuya descripción (estructura) se desea obtener.

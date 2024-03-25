@@ -211,7 +211,7 @@ class val_sql extends validaciones {
     }
 
     /**
-     * POR DOCUMENTAR WN WIKI
+     * POR DOCUMENTAR WN WIKI FINAL REV
      * Valida el nombre de una tabla.
      *
      * Esta función se asegura de que el nombre de la tabla proporcionada no esté vacío.
@@ -226,7 +226,7 @@ class val_sql extends validaciones {
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla, es_final: true);
         }
         return true;
     }
