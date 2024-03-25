@@ -105,6 +105,8 @@ class controler{
     public array $columnas_entidad = array();
     public array $columnas_calc = array();
 
+    public array $ths = array();
+
     public function __construct(PDO $link){
         $this->link = $link;
         $this->buttons_parents_alta = new stdClass();
