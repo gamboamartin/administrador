@@ -74,6 +74,7 @@ class controler{
 
     public string $link_importa_previo = '';
     public string $link_importa_previo_muestra = '';
+    public string $link_importa_previo_muestra_bd = '';
 
     public array $subtitulos_menu = array();
 

@@ -20,9 +20,17 @@ class base_html{
     }
 
     /**
-     * Genera el head de un mensaje
-     * @param string $titulo Titulo a mostrar en el encabezado
-     * @return string|array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Método para generar encabezado HTML
+     *
+     * @param string $titulo - El título del encabezado
+     *
+     * @return string|array - Retorna el elemento del encabezado HTML si todo se procesa correctamente, de lo contrario se retorna un error.
+     *
+     * @throws errores si el título está vacío.
+     *
+     * @throws errores si hay algún otro problema durante la generación del encabezado
+     * @version 18.7.0
      */
     final protected function head(string $titulo): string|array
     {
