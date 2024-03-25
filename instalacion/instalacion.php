@@ -280,6 +280,48 @@ class instalacion
         $adm_acciones_basicas[3]['muestra_icono_btn'] = 'inactivo';
         $adm_acciones_basicas[3]['muestra_titulo_btn'] = 'inactivo';
 
+
+        $adm_acciones_basicas[4]['descripcion'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['visible'] = 'inactivo';
+        $adm_acciones_basicas[4]['seguridad'] = 'activo';
+        $adm_acciones_basicas[4]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[4]['lista'] = 'inactivo';
+        $adm_acciones_basicas[4]['status'] = 'activo';
+        $adm_acciones_basicas[4]['es_view'] = 'inactivo';
+        $adm_acciones_basicas[4]['codigo'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['codigo_bis'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['descripcion_select'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['etiqueta_label'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[4]['titulo'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['css'] = 'info';
+        $adm_acciones_basicas[4]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[4]['alias'] = 'importa_previo_muestra_bd';
+        $adm_acciones_basicas[4]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[4]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[4]['muestra_titulo_btn'] = 'inactivo';
+
+
+        $adm_acciones_basicas[5]['descripcion'] = 'importa_result';
+        $adm_acciones_basicas[5]['visible'] = 'inactivo';
+        $adm_acciones_basicas[5]['seguridad'] = 'activo';
+        $adm_acciones_basicas[5]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[5]['lista'] = 'inactivo';
+        $adm_acciones_basicas[5]['status'] = 'activo';
+        $adm_acciones_basicas[5]['es_view'] = 'activo';
+        $adm_acciones_basicas[5]['codigo'] = 'importa_result';
+        $adm_acciones_basicas[5]['codigo_bis'] = 'importa_result';
+        $adm_acciones_basicas[5]['descripcion_select'] = 'importa_result';
+        $adm_acciones_basicas[5]['etiqueta_label'] = 'importa_result';
+        $adm_acciones_basicas[5]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[5]['titulo'] = 'importa_result';
+        $adm_acciones_basicas[5]['css'] = 'info';
+        $adm_acciones_basicas[5]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[5]['alias'] = 'importa_result';
+        $adm_acciones_basicas[5]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[5]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[5]['muestra_titulo_btn'] = 'inactivo';
+
         $altas = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica){
             $con_descripcion['adm_accion_basica.descripcion'] = $adm_accion_basica['descripcion'];
@@ -344,6 +386,14 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }
         $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa_previo_muestra', adm_secciones: $adm_secciones,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
+        }
+        $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa_previo_muestra_bd', adm_secciones: $adm_secciones,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
+        }
+        $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa_result', adm_secciones: $adm_secciones,link:  $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }

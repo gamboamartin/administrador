@@ -229,7 +229,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función toma dos parámetros; una matriz de campos cifrados y una matriz de filas (row). Para cada valor
      * en la matriz fila, verifica si el campo es numérico. Si es así, retorna un mensaje de error.
      * En caso contrario, desencripta el valor usando la función `value_desencriptado`.
@@ -253,7 +253,8 @@ class inicializacion{
                 $fix = ' El campo dentro de row debe ser un texto no numerico puede ser id, registro etc, no puede ';
                 $fix .= ' ser 0 o 1 o cualquier numero, ejemplo de envio de row puede ser $row[x] o';
                 $fix.= ' $row[cualquier texto no numerico] no puede ser row[0] o row[cualquier numero]';
-                return $this->error->error(mensaje: 'Error el campo debe ser un texto', data:$campo, fix: $fix);
+                return $this->error->error(mensaje: 'Error el campo debe ser un texto', data: $campo,
+                    es_final: true, fix: $fix);
             }
 
             $value_enc = $this->value_desencriptado(campo:$campo,
@@ -1050,7 +1051,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Desencripta el valor del campo proporcionado si está en la lista de campos encriptados.
      *
      * El método verifica si el nombre del campo está dentro de la lista de campos encriptados.
@@ -1073,7 +1074,8 @@ class inicializacion{
         if(is_numeric($campo)){
             $fix = ' El campo debe ser un texto no numerico puede ser id, registro etc, no puede ser 0 o 1 o cualquier 
             numero';
-            return $this->error->error(mensaje: 'Error el campo debe ser un texto', data:$campo, fix: $fix);
+            return $this->error->error(mensaje: 'Error el campo debe ser un texto', data: $campo,
+                es_final: true, fix: $fix);
         }
         $value_enc = $value;
 

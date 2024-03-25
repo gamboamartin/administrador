@@ -1146,7 +1146,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         if(!isset($data_modelo['nombre_estructura'])){
             return $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                data: $data_modelo);
+                data: $data_modelo, es_final: true);
         }
         $filtro = (new rows())->obten_filtro_para_hijo(data_modelo: $data_modelo,row: $row);
         if(errores::$error){

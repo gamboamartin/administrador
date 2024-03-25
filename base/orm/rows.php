@@ -17,7 +17,7 @@ class rows{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Filtro aplicado a los campos de las filas en una operación
      *
      * @param string $campo_filtro El campo específico para el filtrado
@@ -32,10 +32,10 @@ class rows{
      */
     private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{
         if($campo_row===''){
-            return $this->error->error(mensaje: "Error campo vacio",data: $campo_row);
+            return $this->error->error(mensaje: "Error campo vacio",data: $campo_row, es_final: true);
         }
         if($campo_filtro===''){
-            return $this->error->error(mensaje: "Error filtro",data: $campo_filtro);
+            return $this->error->error(mensaje: "Error filtro",data: $campo_filtro, es_final: true);
         }
         if(!isset($row[$campo_row])){
             $row[$campo_row] = '';
@@ -46,7 +46,7 @@ class rows{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función filtro_para_hijo genera un array de filtros basándose en los filtros y la fila de datos proporcionados.
      *
      * @param array $filtros Los filtros a aplicar.
@@ -59,7 +59,7 @@ class rows{
         $filtro = array();
         foreach($filtros as $campo_filtro=>$campo_row){
             if($campo_row===''){
-                return $this->error->error(mensaje: "Error campo vacio",data: $campo_filtro);
+                return $this->error->error(mensaje: "Error campo vacio",data: $campo_filtro, es_final: true);
             }
             $filtro = $this->filtro_hijo(campo_filtro: $campo_filtro, campo_row: $campo_row,filtro: $filtro,
                 row: $row);
@@ -71,7 +71,7 @@ class rows{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Obtiene el filtro para un hijo a partir de los datos del modelo y de una fila específica.
      *
      * @param array $data_modelo Los datos del modelo, que deben incluir las claves 'filtros' y 'filtros_con_valor'.
@@ -85,19 +85,19 @@ class rows{
     final public function obten_filtro_para_hijo(array $data_modelo, array $row):array{
         if(!isset($data_modelo['filtros'])){
             $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
+            return $this->error->error(mensaje: "Error filtro", data: $data_modelo, es_final: true, fix: $fix);
         }
         if(!isset($data_modelo['filtros_con_valor'])){
             $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros_con_valor] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
+            return $this->error->error(mensaje: "Error filtro", data: $data_modelo, es_final: true, fix: $fix);
         }
         if(!is_array($data_modelo['filtros'])){
             $fix = 'En data_modelo debe existir un key filtros como array data_modelo[filtros] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
+            return $this->error->error(mensaje: "Error filtro", data: $data_modelo, es_final: true, fix: $fix);
         }
         if(!is_array($data_modelo['filtros_con_valor'])){
             $fix = 'En data_modelo debe existir un key filtros_con_valor como array data_modelo[filtros_con_valor] = array()';
-            return $this->error->error(mensaje: "Error filtro",data: $data_modelo, fix: $fix);
+            return $this->error->error(mensaje: "Error filtro", data: $data_modelo, es_final: true, fix: $fix);
         }
 
         $filtros = $data_modelo['filtros'];
