@@ -110,6 +110,8 @@ class controler{
 
     public string $params_importa = '';
 
+    public string $input_params_importa = '';
+
     public function __construct(PDO $link){
         $this->link = $link;
         $this->buttons_parents_alta = new stdClass();

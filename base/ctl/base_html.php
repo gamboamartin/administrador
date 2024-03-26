@@ -9,8 +9,15 @@ class base_html{
     }
 
     /**
-     * Genera boton close para alert
-     * @return string
+     * POR DOCUMENTAR WIKI FINAL REV
+     * Método protegido final 'close_btn'.
+     *
+     * Este método se encarga de generar el código HTML para un botón de cierre, por lo general
+     * utilizado en cuadros de alerta o mensajes emergentes. La función en sí no acepta ningún parámetro
+     * y retorna una cadena de texto que se constituye de código HTML válido.
+     *
+     * @return string Retorna una cadena de texto que se constituye de código HTML válido para un botón de cierre
+     * @version 18.11.0
      */
     final protected function close_btn(): string
     {
