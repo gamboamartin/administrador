@@ -1435,6 +1435,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return trim($modelo);
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Ajusta el nombre del modelo dado su espacio de nombres.
+     *
+     * Este método se encarga de tomar el nombre del modelo junto con su espacio de nombres
+     * y procede a realizar ajustes para obtener una representación limpia del nombre del modelo.
+     * El espacio de nombres y el modelo son validados antes de realizar cualquier operación.
+     * En caso de error, se devuelve un mensaje de error con detalle del problema.
+     *
+     * @param string $modelo El nombre del modelo a ajustar.
+     * @param string $namespace_model El espacio de nombres del modelo.
+     * @return string|array Retorna el nombre del modelo ajustado si es exitoso, y un error si ocurre una excepción.
+     *
+     * @throws errores Si los parámetros de entrada están vacíos .
+     * @version 18.19.0
+     */
     private function name_modelo_ajustado(string $modelo, string $namespace_model): string|array
     {
         $namespace_model = trim($namespace_model);
