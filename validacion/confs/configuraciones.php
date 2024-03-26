@@ -9,7 +9,7 @@ class configuraciones extends validacion {
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para validar una configuración especificada.
      *
      * @param stdClass $paths_conf - Ruta de la configuración a validar.
@@ -36,7 +36,7 @@ class configuraciones extends validacion {
     }
 
     /**
-     * POR DOCUMENTAR WN WIKI
+     * POR DOCUMENTAR WN WIKI FINAL REV
      * Valida las configuraciones de la aplicación.
      *
      * Esta función verifica las configuraciones de `generales`, `database` y `views`.
@@ -82,7 +82,7 @@ class configuraciones extends validacion {
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función valida la configuración necesaria para un proyecto Composer.
      *
      * @param   string $tipo_conf El tipo de configuración que se desea validar.
@@ -98,7 +98,7 @@ class configuraciones extends validacion {
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
-            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf);
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf, es_final: true);
         }
 
         if(!class_exists("config\\$tipo_conf")){
@@ -108,17 +108,17 @@ class configuraciones extends validacion {
                 $llave_composer = json_encode($data_composer, JSON_THROW_ON_ERROR);
             }
             catch (Throwable $e){
-                return $this->error->error(mensaje: $mensaje,data: $e);
+                return $this->error->error(mensaje: $mensaje,data: $e, es_final: true);
             }
 
             $mensaje = "Agrega el registro $llave_composer en composer.json despues ejecuta composer update";
-            return $this->error->error(mensaje: $mensaje,data: '');
+            return $this->error->error(mensaje: $mensaje,data: '', es_final: true);
         }
         return true;
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Verifica la existencia y validez de un archivo de configuración específico.
      *
      * @param stdClass $paths_conf Contiene los paths de todos los archivos de configuración.
@@ -147,7 +147,7 @@ class configuraciones extends validacion {
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
-            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf);
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf, es_final: true);
         }
 
         $path = $paths_conf->$tipo_conf ?? "config/$tipo_conf.php";
@@ -162,7 +162,7 @@ class configuraciones extends validacion {
             $data.="<br><br>$data><br><br>";
 
             return $this->error->error(mensaje: "Error no existe el archivo $path favor de generar 
-            la ruta $path basado en la estructura del ejemplo $path_e",data: $data);
+            la ruta $path basado en la estructura del ejemplo $path_e",data: $data,es_final: true);
         }
         return true;
     }

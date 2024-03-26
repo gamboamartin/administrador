@@ -42,7 +42,6 @@ class conexion{
 
     /**
      * Asigna la codificacion de caracteres para MYSQL
-     * @version 1.158.32
      * @param PDO $link Conexion a base de datos
      * @param string $set_name Codificacion de caracteres
      * @return PDO|array
@@ -51,13 +50,13 @@ class conexion{
     {
         $set_name = trim($set_name);
         if($set_name === ''){
-            return $this->error->error(mensaje: 'Error $set_name no puede venir vacio',data:$link);
+            return $this->error->error(mensaje: 'Error $set_name no puede venir vacio',data:$set_name,es_final: true);
         }
         try {
             $link->query("SET NAMES '$set_name'");
         }
         catch (Throwable $e){
-            return $this->error->error(mensaje: 'Error al ejecutar SQL',data:$e);
+            return $this->error->error(mensaje: 'Error al ejecutar SQL',data:$e, es_final: true);
         }
         return $link;
     }
@@ -106,7 +105,6 @@ class conexion{
      * @param string $sql_mode Mode seguridad
      * @param int $time_out tiempo ejecucion maximo de consultas
      * @return PDO|array
-     * @version 9.30.0
      */
     private function asigna_parametros_query(PDO $link, string $set_name, string $sql_mode, int $time_out): PDO|array
     {
@@ -137,7 +135,6 @@ class conexion{
      * @param database|stdClass $conf_database Configuraciones para conectividad
      * @param string $motor Motor puede ser MYSQL o MSSQL=>PARA SQL SERVER
      * @return PDO|array|false
-     * @version 1.13.8
      */
     private function conecta(database|stdClass $conf_database, string $motor): PDO|array|false
     {
@@ -149,7 +146,7 @@ class conexion{
         }
 
         if(!in_array($motor, $this->motores_validos)){
-            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor);
+            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor, es_final: true);
         }
 
         if($motor === 'MYSQL' || $motor === 'MARIADB') {
@@ -157,7 +154,7 @@ class conexion{
                 $link = new PDO("mysql:host=$conf_database->db_host;dbname=$conf_database->db_name",
                     $conf_database->db_user, $conf_database->db_password);
             } catch (Throwable $e) {
-                return $this->error->error(mensaje: 'Error al conectar', data: $e);
+                return $this->error->error(mensaje: 'Error al conectar', data: $e, es_final: true);
             }
         }
         if($motor === 'MSSQL') {
@@ -168,7 +165,7 @@ class conexion{
                 $dns = "sqlsrv:server=$conf_database->db_host,1443;database=$conf_database->db_name";
                 $link = new PDO($dns, $conf_database->db_user, $conf_database->db_password);
             } catch (Throwable $e) {
-                return $this->error->error(mensaje: 'Error al conectar', data: $e);
+                return $this->error->error(mensaje: 'Error al conectar', data: $e, es_final: true);
             }
         }
         return $link;
