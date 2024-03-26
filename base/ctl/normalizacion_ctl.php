@@ -121,7 +121,7 @@ class normalizacion_ctl{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función inicializa un controlador con los valores obtenidos desde la petición GET.
      *
      * @param controler $controler - El controlador a inicializar.
