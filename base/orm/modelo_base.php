@@ -1451,6 +1451,20 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     *  Método Privado name_modelo_base
+     *
+     * Este método se encarga de procesar el nombre del modelo proporcionado y rechazar cualquier valor vacío.
+     * Reemplaza el prefijo 'models\' en el nombre del modelo y devuelve el nombre del modelo con el prefijo 'models\' añadido.
+     *
+     * @param string $modelo El nombre del modelo a procesar.
+     *
+     * @return string|array Retorna el nombre del modelo procesado, o un error si el nombre del modelo está vacío.
+     *
+     * @throws errores Se generará una excepción si el nombre del modelo está vacío.
+     * @version 18.18.0
+     */
     private function name_modelo_base(string $modelo): string|array
     {
         $modelo = trim($modelo);
