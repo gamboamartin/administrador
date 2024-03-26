@@ -729,10 +729,19 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function es_namespace_especial_como_mis_inges(string $modelo, array $namespaces): bool
+    private function es_namespace_especial(string $modelo, array $namespaces): bool|array
     {
+        if($modelo === ''){
+            return $this->error->error(mensaje: "Error modelo vacio", data: $modelo, es_final: true);
+        }
+
         $es_namespace_especial_como_mis_inges = false;
         foreach ($namespaces as $namespace) {
+            $namespace = trim($namespace);
+            if($namespace === ''){
+                return $this->error->error(mensaje: "Error namespace vacio", data: $namespaces, es_final: true);
+            }
+
             $namespaces_explode = explode($namespace, $modelo);
 
             if (is_array($namespaces_explode) && count($namespaces_explode)>1) {
@@ -1106,7 +1115,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return  $this->error->error(mensaje: "Error al obtener namespaces",data: $namespaces);
         }
 
-        $es_namespace_especial_como_mis_inges = $this->es_namespace_especial_como_mis_inges(
+        $es_namespace_especial_como_mis_inges = $this->es_namespace_especial(
             modelo: $modelo,namespaces:  $namespaces);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al validar namespaces",data: $namespaces);

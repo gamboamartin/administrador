@@ -573,6 +573,37 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_es_namespace_especial()
+    {
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $modelo = 'a';
+        $namespaces = array();
+        $namespaces[] = 'b';
+
+        $resultado = $mb->es_namespace_especial($modelo, $namespaces);
+        //print_r($resultado);exit;
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertFalse($resultado);
+
+        errores::$error = false;
+
+        $modelo = 'ba';
+        $namespaces = array();
+        $namespaces[] = 'b';
+
+        $resultado = $mb->es_namespace_especial($modelo, $namespaces);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_genera_columns_final(){
 
         errores::$error = false;
@@ -711,9 +742,10 @@ class modelo_baseTest extends test {
 
         $modelo = '';
         $resultado = $mb->genera_modelo($modelo);
+        //print_r($resultado);exit;
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar modelo', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al maquetar name modelo', $resultado['mensaje']);
 
         errores::$error = false;
         $modelo = 'adm_accion';
