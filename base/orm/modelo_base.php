@@ -1423,6 +1423,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Obtiene los namespaces de paquetes par asu uso y normalizacion en modelos
+     *
+     * @return array
+     */
     private function namespaces(): array
     {
 
