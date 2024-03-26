@@ -269,7 +269,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Asigna un valor encriptado a un campo específico en el registro.
      *
      * @param stdClass $campo_limpio Un objeto con los datos sobre el campo a encriptar.
@@ -347,7 +347,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función realiza la encriptación de un valor de registro y lo adjunta al registro.
      *
      * @param string $campo Nombre del campo a encriptar.
@@ -365,7 +365,7 @@ class inicializacion{
     {
 
         if(is_iterable($valor)){
-            return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor);
+            return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor, es_final: true);
         }
 
         $campo = trim($campo);
@@ -374,7 +374,7 @@ class inicializacion{
         }
 
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo, es_final: true);
         }
 
         $keys = array($campo);
@@ -398,7 +398,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Encripta los valores de un registro
      *
      * Esta función encripta los valores de un registro a través de un conjunto de campos especificados.
@@ -408,7 +408,7 @@ class inicializacion{
      *
      * @param array $campos_encriptados Lista de campos que se deben encriptar.
      * @param array $registro Registro a encriptar.
-     * @return array Retorna el registro con los los valores de los campos especificados encriptados.
+     * @return array Retorna el registro con los valores de los campos especificados encriptados.
      * @throws errores Si el registro está vacío, si el valor es iterable, si hay un error al asignar el campo encriptado
      * @version 16.289.1
      *
@@ -416,12 +416,13 @@ class inicializacion{
     private function encripta_valores_registro(array $campos_encriptados, array $registro): array
     {
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error el registro no puede venir vacio', data: $registro);
+            return $this->error->error(mensaje: 'Error el registro no puede venir vacio', data: $registro,
+                es_final: true);
         }
         foreach($registro as $campo=>$valor){
 
             if(is_iterable($valor)){
-                return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor);
+                return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor, es_final: true);
             }
 
             $registro = $this->encripta_valor_registro(campo:$campo
@@ -749,7 +750,7 @@ class inicializacion{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método limpia los valores entregados y los agrupa en un objeto de tipo stdClass.
      *
      * @param string $campo El nombre del campo a procesar.
@@ -767,7 +768,7 @@ class inicializacion{
         $valor = trim($valor);
 
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo, es_final: true);
         }
 
         $data = new stdClass();
@@ -889,13 +890,14 @@ class inicializacion{
     {
         $status_default = trim($status_default);
         if($status_default === ''){
-            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
+            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default,
+                es_final: true);
         }
 
         $registro = $this->status(integra_datos_base: $integra_datos_base, registro: $registro,
             status_default:  $status_default);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar status ', data: $registro);
+            return $this->error->error(mensaje: 'Error al asignar status', data: $registro);
         }
 
         $registro = (new data_format())->ajusta_campos_moneda(registro: $registro, tipo_campos: $tipo_campos);
@@ -974,7 +976,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Establece el estado de un registro.
      *
      * Este método ajusta el estado de un registro en base a diversas condiciones:
@@ -998,7 +1000,8 @@ class inicializacion{
     {
         $status_default = trim($status_default);
         if($status_default === ''){
-            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default);
+            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default,
+                es_final: true);
         }
 
         if(!isset($registro['status'])){

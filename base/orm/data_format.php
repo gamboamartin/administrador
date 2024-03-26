@@ -18,7 +18,7 @@ class data_format{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función ajusta los campos de tipo moneda en un arreglo.
      *
      * @param array $registro Es el registro donde se van a buscar y ajustar los campos.
@@ -43,19 +43,21 @@ class data_format{
         foreach($tipo_campos as $campo =>$tipo_dato){
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo);
+                return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo,es_final: true);
             }
             if(!is_string($tipo_dato)){
                 $fix = 'modelo->tipo_campos debe llevar esta forma $modelo->tipo_campos[campo] = regex 
                 donde el regex debe existir en el paquete de validaciones en validacion->patterns';
-                return $this->error->error(mensaje: 'Error el tipo_dato debe ser un string', data: $tipo_dato, fix: $fix);
+                return $this->error->error(mensaje: 'Error el tipo_dato debe ser un string', data: $tipo_dato,
+                    es_final: true, fix: $fix);
             }
 
             $tipo_dato = trim($tipo_dato);
             if($tipo_dato === ''){
                 $fix = 'modelo->tipo_campos debe llevar esta forma $modelo->tipo_campos[campo] = regex 
                 donde el regex debe existir en el paquete de validaciones en validacion->patterns';
-                return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato, fix: $fix);
+                return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato,
+                    es_final: true, fix: $fix);
             }
 
             $registro = $this->asignacion_campo_moneda(campo: $campo, registro: $registro,tipo_dato:  $tipo_dato);
@@ -67,7 +69,7 @@ class data_format{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función asigna un formato a un campo de moneda en un registro.
      * Remueve el caracter de moneda($) y las comas que son comúnmente usadas
      * en formatos de moneda.
@@ -83,10 +85,11 @@ class data_format{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio', data: $campo, es_final: true);
         }
         if(!isset($registro[$campo])){
-            return $this->error->error(mensaje: 'Error $registro['.$campo.'] no existe',data:  $registro);
+            return $this->error->error(mensaje: 'Error $registro['.$campo.'] no existe',data:  $registro,
+                es_final: true);
         }
         $registro[$campo] = str_replace('$', '', $registro[$campo]);
         $registro[$campo] = str_replace(',', '', $registro[$campo]);
@@ -94,7 +97,7 @@ class data_format{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método se utiliza para asignar un valor de tipo moneda a un campo especificado en un registro.
      *
      * @param string $campo Es el nombre del campo al que se le asignará el valor.
@@ -110,7 +113,7 @@ class data_format{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data:  $campo, es_final: true);
         }
 
 
@@ -118,7 +121,8 @@ class data_format{
         if($tipo_dato === ''){
             $fix = 'modelo->tipo_campos debe llevar esta forma $modelo->tipo_campos[campo] = regex 
                 donde el regex debe existir en el paquete de validaciones en validacion->patterns';
-            return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato, fix: $fix);
+            return $this->error->error(mensaje: 'Error el tipo_dato esta vacio', data: $tipo_dato,
+                es_final: true, fix: $fix);
         }
         if(isset($registro[$campo]) && ($tipo_dato === 'double' || $tipo_dato === 'moneda')){
             $registro = $this->asigna_campo_moneda(campo: $campo, registro: $registro);

@@ -285,15 +285,16 @@ class modelo extends modelo_base {
      */
     public function alta_bd(): array|stdClass{
         if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
+            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array(), es_final: true);
         }
 
         if($_SESSION['usuario_id'] <= 0){
-            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id']);
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id'], es_final: true);
         }
 
         if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro);
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro,
+                es_final: true);
         }
 
         $registro_original = $this->registro;
@@ -340,6 +341,12 @@ class modelo extends modelo_base {
         }
 
         return $data;
+    }
+
+    public function alta_documento(array $registro,array $file): stdClass|array
+    {
+        return new stdClass();
+
     }
 
     /**
