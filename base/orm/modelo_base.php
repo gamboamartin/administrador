@@ -729,6 +729,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Verifica si un modelo cumple con una característica especial de nombres de espacio
+     *
+     * @param string $modelo Nombre del modelo a verificar
+     * @param array $namespaces Lista de nombres de espacio a verificar en el modelo
+     *
+     * Esta función verifica si el nombre del modelo contiene uno de los nombres de espacio
+     * proporcionados.
+     *
+     * Si el modelo o alguno de los nombres de espacio está vacío, la función retorna un error.
+     *
+     * Si se encuentra alguna coincidencia, interrumpe la verificación y devuelve 'true'.
+     * En caso contrario, devuelve 'false'.
+     *
+     * @return bool|array Devuelve 'true' si el modelo contiene uno de los nombres de espacio, 'false' en caso contrario
+     * @version 18.15.0
+     *
+     */
     private function es_namespace_especial(string $modelo, array $namespaces): bool|array
     {
         if($modelo === ''){
