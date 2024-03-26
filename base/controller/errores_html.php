@@ -69,9 +69,18 @@ class errores_html extends base_html {
     }
 
     /**
-     * Obtiene el html basado en un array de errores de la clase errores
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Obtiene el HTML basado en un array de errores de la clase errores
+     *
+     * Esta función toma como parámetro un arreglo que contiene información de error y genera una cadena de texto en formato HTML
+     * que contiene los detalles del error. La función espera que el arreglo contenga los siguientes campos: 'mensaje', 'line', 'function', 'class'.
+     *
+     * La función puede devolver una cadena de texto con el mensaje de error formateado en HTML o un arreglo que contiene un mensaje de error
+     * junto con detalles adicionales en caso de que se produzca un error durante la ejecución de la función.
+     *
      * @param array $error_previo Error de la clase errores
      * @return string|array
+     * @version 18.10.0
      */
     private function error_previo(array $error_previo): string|array
     {
@@ -101,9 +110,19 @@ class errores_html extends base_html {
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera las errores basado en el conjunto de errores de la clase errores
+     *
+     * La función recibe como parámetro un arreglo de errores. Cada error es un arreglo que contiene la información del error.
+     * Esta función iterará sobre este arreglo de errores y generará una cadena de texto en formato HTML que contiene los
+     * detalles del error para cada error en el arreglo.
+     *
+     * La función puede devolver una cadena de texto en formato HTML que contiene detalles de los errores o un arreglo que contiene un
+     * mensaje de error junto con detalles adicionales en caso de que se produzca un error durante la ejecución de la función.
+     *
      * @param array $errores_previos Conjunto de errores
      * @return array|string
+     * @version 18.10.0
      */
     private function errores_previos(array $errores_previos): array|string
     {
@@ -200,7 +219,6 @@ class errores_html extends base_html {
 
     /**
      * Genera los botones de un modal para alerts de errores
-     * @version 1.118.28
      * @return array|string
      */
     private function modal_btns(): array|string
