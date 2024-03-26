@@ -1134,13 +1134,13 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             return  $this->error->error(mensaje: "Error al obtener namespaces",data: $namespaces);
         }
 
-        $es_namespace_especial_como_mis_inges = $this->es_namespace_especial(
+        $es_namespace_especial = $this->es_namespace_especial(
             modelo: $modelo,namespaces:  $namespaces);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al validar namespaces",data: $namespaces);
         }
 
-        $modelo = $this->name_modelo(es_namespace_especial_como_mis_inges: $es_namespace_especial_como_mis_inges,
+        $modelo = $this->name_modelo(es_namespace_especial: $es_namespace_especial,
             modelo:  $modelo,namespace_model:  $namespace_model);
         if(errores::$error){
             return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
@@ -1418,9 +1418,9 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function name_modelo(bool $es_namespace_especial_como_mis_inges, string $modelo, string $namespace_model)
+    private function name_modelo(bool $es_namespace_especial, string $modelo, string $namespace_model)
     {
-        if(!$es_namespace_especial_como_mis_inges) {
+        if(!$es_namespace_especial) {
             $modelo = $this->name_modelo_base(modelo: $modelo);
             if(errores::$error){
                 return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
@@ -1435,8 +1435,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return trim($modelo);
     }
 
-    private function name_modelo_ajustado(string $modelo, string $namespace_model): string
+    private function name_modelo_ajustado(string $modelo, string $namespace_model): string|array
     {
+        $namespace_model = trim($namespace_model);
+        if($namespace_model === ''){
+            return  $this->error->error(mensaje: "Error namespace_model esta vacio",data: $namespace_model);
+        }
+        if($modelo === ''){
+            return  $this->error->error(mensaje: "Error modelo esta vacio",data: $modelo);
+        }
         $modelo = str_replace($namespace_model, '', $modelo);
         $modelo = str_replace('models\\', '', $modelo);
         return $namespace_model.'\\'.$modelo;
@@ -1444,8 +1451,12 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    private function name_modelo_base(string $modelo): string
+    private function name_modelo_base(string $modelo): string|array
     {
+        $modelo = trim($modelo);
+        if($modelo === ''){
+            return  $this->error->error(mensaje: "Error modelo esta vacio",data: $modelo, es_final: true);
+        }
         $modelo = str_replace('models\\', '', $modelo);
         return 'models\\' . $modelo;
 
