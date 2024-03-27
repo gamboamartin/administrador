@@ -776,6 +776,24 @@ class modelo_baseTest extends test {
 
     }
 
+    public function test_genera_name_modelo()
+    {
+        errores::$error = false;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $modelo = 'a';
+        $namespace_model= '';
+        $resultado = $mb->genera_name_modelo($modelo, $namespace_model);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertStringContainsStringIgnoringCase('models\a', $resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_genera_registro_hijo(){
 
         errores::$error = false;

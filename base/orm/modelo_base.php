@@ -1039,11 +1039,25 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * Genera un nuevo modelo a partir de las cadenas de nombre del modelo proporcionadas.
+     * POR DOCUMENTA EN WIKI FINAL REV
+     * Genera una instancia del modelo.
      *
-     * @param string $modelo Nombre del modelo.
-     * @param string $namespace_model Namespace del modelo, opcional.
-     * @return array|modelo Retorna una nueva instancia de la clase del modelo o error si algo sale mal.
+     * Esta función se encarga de generar una instancia del modelo.
+     *
+     * Primero, genera el nombre del modelo utilizando la función `genera_name_modelo`.
+     * Si se encuentra un error durante este paso, se lanza un error con el mensaje "Error al maquetar name modelo".
+     *
+     * Luego, valida el modelo generado utilizando la función `valida_data_modelo`.
+     * Si se encuentra un error durante la validación, se lanza un error con el mensaje "Error al validar modelo".
+     *
+     * Finalmente, si todos los pasos previos son exitosos, se genera y se devuelve una nueva instancia del modelo.
+     *
+     * @param string $modelo El nombre del modelo para generar.
+     * @param string $namespace_model El namespace del modelo. Valor predeterminado es una cadena vacía.
+     * @return array|modelo Nueva instancia del modelo o un array con información del error.
+     * @throws errores Error al maquetar nombre del modelo.
+     * @throws errores Error al validar modelo.
+     * @version 18.22.0
      */
     final public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
@@ -1127,7 +1141,22 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $modelos_hijos;
     }
 
-    private function genera_name_modelo(string $modelo, string $namespace_model)
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Genera el nombre del modelo.
+     *
+     * Esta función se encarga de generar el nombre del modelo.
+     * Inicialmente, obtiene todos los namespaces disponibles.
+     * Luego, verifica si el modelo pertenece a un namespace especial.
+     * Finalmente, devuelve el nombre del modelo o lanza un error en caso de que lo haya.
+     *
+     * @param string $modelo El nombre del modelo a generar.
+     * @param string $namespace_model El namespace del modelo.
+     * @return array|string El nombre del modelo generado.
+     *
+     * @version 18.22.0
+     */
+    private function genera_name_modelo(string $modelo, string $namespace_model): array|string
     {
         $namespaces = $this->namespaces();
         if(errores::$error){
@@ -1137,7 +1166,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $es_namespace_especial = $this->es_namespace_especial(
             modelo: $modelo,namespaces:  $namespaces);
         if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar namespaces",data: $namespaces);
+            return  $this->error->error(mensaje: "Error al validar namespaces",data: $es_namespace_especial);
         }
 
         $modelo = $this->name_modelo(es_namespace_especial: $es_namespace_especial,

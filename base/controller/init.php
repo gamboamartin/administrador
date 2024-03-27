@@ -777,12 +777,12 @@ class init{
     {
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
         }
 
         $type = trim($type);
         if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, es_final: true);
         }
 
         $campos_view[$key]['type'] = $type;
@@ -802,11 +802,11 @@ class init{
 
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
         }
         $type = trim($type);
         if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, es_final: true);
         }
 
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  $type);
@@ -827,18 +827,18 @@ class init{
     {
         $type = trim($type);
         if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type);
+            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, es_final: true);
         }
 
 
         foreach ($keys as $key){
 
             if(!is_string($key)){
-                return $this->error->error(mensaje: 'Error key debe ser string',data:  $key);
+                return $this->error->error(mensaje: 'Error key debe ser string',data:  $key, es_final: true);
             }
             $key = trim($key);
             if($key === ''){
-                return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+                return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
             }
 
             $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key, type: $type);
@@ -903,15 +903,15 @@ class init{
 
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
         }
         $namespace_model = trim($namespace_model);
         if($namespace_model === ''){
-            return $this->error->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model);
+            return $this->error->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model, es_final: true);
         }
         $name_model = trim($name_model);
         if($name_model === ''){
-            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model);
+            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model, es_final: true);
         }
 
         $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');
@@ -947,7 +947,7 @@ class init{
         }
 
         if(!is_array($keys->selects)){
-            return $this->error->error(mensaje: 'Error keys->selects debe ser un array',data:  $keys);
+            return $this->error->error(mensaje: 'Error keys->selects debe ser un array',data:  $keys, es_final: true);
         }
 
         $campos_view = $this->model_init_campos_selects(
@@ -972,14 +972,14 @@ class init{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo);
+            return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo, es_final: true);
         }
 
         if(!isset($keys->$atributo)){
             $keys->$atributo = array();
         }
         if(!is_array($keys->$atributo)){
-            return $this->error->error(mensaje: 'Error $keys->'.$atributo.' debe ser un array',data:  $keys);
+            return $this->error->error(mensaje: 'Error $keys->'.$atributo.' debe ser un array',data:  $keys, es_final: true);
         }
 
 
@@ -1002,7 +1002,7 @@ class init{
         foreach ($atributos as $atributo){
             $atributo = trim($atributo);
             if($atributo === ''){
-                return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo);
+                return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo, es_final: true);
             }
 
             $campos_view = $this->modela_input(atributo: $atributo,campos_view:  $campos_view,keys:  $keys);

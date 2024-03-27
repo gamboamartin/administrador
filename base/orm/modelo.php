@@ -1,14 +1,12 @@
 <?php
 namespace base\orm;
 use config\database;
-use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
-use gamboamartin\plugins\files;
 use JsonException;
 use PDO;
 use stdClass;
