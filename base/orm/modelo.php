@@ -343,6 +343,15 @@ class modelo extends modelo_base {
         return $data;
     }
 
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Accion destinada a ser heredable en paquete documento para uso de importacion
+     * @param array $registro Registro en proceso de alta
+     * @param array $file FILE var
+     *
+     * @return stdClass|array
+     * @version 18.21.0
+     */
     public function alta_documento(array $registro,array $file): stdClass|array
     {
         return new stdClass();
