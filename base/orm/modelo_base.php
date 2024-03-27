@@ -1418,8 +1418,26 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         return $data;
     }
 
-    private function name_modelo(bool $es_namespace_especial, string $modelo, string $namespace_model)
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Genera el nombre completo del modelo que se utilizará para las operaciones de base de datos.
+     *
+     * @param bool $es_namespace_especial Indica si el espacio de nombre del modelo es especial. Si es verdadero, el nombre del modelo no se manipulará más.
+     * @param string $modelo El nombre del modelo para el que se está generando el nombre.
+     * @param string $namespace_model El espacio de nombres del modelo.
+     *
+     * @return string|array El nombre completo del modelo después de la manipulación, o un objeto Error si ocurrió un error durante el proceso.
+     *
+     * @throws errores Se lanza una excepción si el nombre del modelo está vacío después de quitar los espacios
+     *                en blanco o si ocurrió un error durante la manipulación del nombre del modelo.
+     * @version 18.20.0
+     */
+    private function name_modelo(bool $es_namespace_especial, string $modelo, string $namespace_model): string|array
     {
+        $modelo = trim($modelo);
+        if($modelo === ''){
+            return  $this->error->error(mensaje: "Error modelo esta vacio",data: $modelo, es_final: true);
+        }
         if(!$es_namespace_especial) {
             $modelo = $this->name_modelo_base(modelo: $modelo);
             if(errores::$error){

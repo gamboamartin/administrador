@@ -1083,8 +1083,47 @@ class modelo_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_name_modelo()
+    {
 
 
+        errores::$error = false;
+        $mb = new adm_seccion($this->link);
+        $mb = new liberator($mb);
+
+        $es_namespace_especial = false;
+        $modelo = 'a';
+        $namespace_model = '';
+        $resultado = $mb->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+        //print_r($resultado);exit;
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("models\a", $resultado);
+
+        errores::$error = false;
+
+        $es_namespace_especial = false;
+        $modelo = 'a';
+        $namespace_model = 'f';
+        $resultado = $mb->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("f\a", $resultado);
+
+        errores::$error = false;
+
+        $es_namespace_especial = true;
+        $modelo = 'a';
+        $namespace_model = '';
+        $resultado = $mb->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a", $resultado);
+
+        errores::$error = false;
+    }
     public function test_name_modelo_ajustado()
     {
 
