@@ -1421,6 +1421,30 @@ class modelo_baseTest extends test {
         errores::$error = false;
 
     }
+
+    public function test_totales_rs(){
+        errores::$error = false;
+        $modelo = new modelo_base($this->link);
+        $modelo = new liberator($modelo);
+
+
+        $new_array = array();
+        $new_array[]['a'] = '1';
+        $new_array[]['a'] = '2';
+        $columnas_totales = array();
+        $columnas_totales[] = 'a';
+        $resultado = $modelo->totales_rs($columnas_totales, $new_array);
+        //print_r($resultado);exit;
+        // print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(3, $resultado->a);
+
+        errores::$error = false;
+
+
+    }
     public function test_totales_rs_acumula(){
         errores::$error = false;
         $modelo = new modelo_base($this->link);
