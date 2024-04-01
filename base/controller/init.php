@@ -887,25 +887,34 @@ class init{
     }
 
     /**
-     * Inicializa los campos de tipo select
-     * @param array $campos_view Campos de view template
-     * @param array $keys Keys a integrar
-     * @param PDO $link Conexion a la base de datos
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * El método model_init_campos_selects inicializa múltiples campos Select en la vista y genera los respectivos modelos.
+     *
+     * @param array $campos_view Array con la información de los campos de la vista.
+     * @param array $keys Array asociativo donde la clave es el nombre del campo y el valor es un objeto con el nombre y el namespace del modelo.
+     * @param PDO $link Enlace a la conexión con la base de datos.
+     *
+     * @return array Retorna el array de campos de la vista con los campos Select inicializados y los modelos generados.
+     * En caso de error, el método retorna un array con un mensaje de error y los detalles del mismo.
+     *
+     * @throws errores Se lanza una excepción si la clave del campo es un número, si está vacío o si el valor asociado a la clave no es un objeto.
+     *
+     * @version 18.27.0
      */
     private function model_init_campos_selects(array $campos_view, array $keys, PDO $link): array
     {
 
         foreach ($keys as $campo =>$data){
             if(!is_object($data)){
-                return $this->error->error(mensaje: 'Error al data de ser un obj',data:  $data);
+                return $this->error->error(mensaje: 'Error al data de ser un obj',data:  $data, es_final: true);
             }
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo);
+                return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo, es_final: true);
             }
             if(is_numeric($campo)){
-                return $this->error->error(mensaje: 'Error campo es un numero debe ser un texto',data:  $campo);
+                return $this->error->error(mensaje: 'Error campo es un numero debe ser un texto',
+                    data:  $campo, es_final: true);
             }
             $keys_val = array('name_model','namespace_model');
             $valida = (new validacion())->valida_existencia_keys(keys:$keys_val, registro: $data);
@@ -925,13 +934,20 @@ class init{
     }
 
     /**
-     * Inicializa los elementos para un input de tipo select
-     * @param array $campos_view Campos de template
-     * @param string $key Campos a integrar
-     * @param PDO $link Conexion a la base de datos
-     * @param string $name_model Nombre del modelo entidad
-     * @param string $namespace_model Paquete
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * El método model_init_campos_select inicializa los campos de la vista para un Elemento Select y genera el modelo asociado.
+     *
+     * @param array $campos_view Array con la información de los campos de la vista.
+     * @param string $key Clave única de identificación del campo en la vista.
+     * @param PDO $link Enlace a la conexión de la base de datos.
+     * @param string $name_model Nombre del modelo que se va a generar.
+     * @param string $namespace_model Espacio de nombres asociado con el modelo a generar.
+     *
+     * @return array Retorna el arreglo de campos de vista con el campo Select inicializado y el modelo generado.
+     * En caso de error, este método retorna un array con detalles del error ocurrido.
+     *
+     * @throws errores Se lanza una excepción si la clave única, el nombre del modelo o el espacio de nombres del modelo están vacíos.
+     * @version 18.27.0
      */
     private function model_init_campos_select(
         array $campos_view, string $key, PDO $link, string $name_model, string $namespace_model): array
