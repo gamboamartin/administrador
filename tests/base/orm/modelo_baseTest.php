@@ -1389,6 +1389,38 @@ class modelo_baseTest extends test {
 
 
     }
+
+    public function test_total_rs_campo(){
+        errores::$error = false;
+        $modelo = new modelo_base($this->link);
+        $modelo = new liberator($modelo);
+
+        $campo = 'z';
+        $new_array = array();
+        $totales_rs = new stdClass();
+        $resultado = $modelo->total_rs_campo($campo, $new_array, $totales_rs);
+       // print_r($resultado);exit;
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(0, $resultado->z);
+
+        errores::$error = false;
+
+        $campo = 'z';
+        $new_array = array();
+        $totales_rs = new stdClass();
+        $new_array[0]['z'] = 10;
+        $new_array[1]['z'] = 1;
+        $new_array[2]['z'] = 10.55;
+        $resultado = $modelo->total_rs_campo($campo, $new_array, $totales_rs);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(21.55, $resultado->z);
+        errores::$error = false;
+
+    }
     public function test_totales_rs_acumula(){
         errores::$error = false;
         $modelo = new modelo_base($this->link);

@@ -1839,8 +1839,24 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
     }
 
-    private function total_rs_campo(string $campo, array $new_array, stdClass $totales_rs)
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Esta función calcula y acumula el total para un campo específico.
+     *
+     * @param string       $campo      El nombre del campo para el que se va a calcular el total.
+     * @param array        $new_array  Conjunto de datos que posiblemente contienen valores para el campo especificado.
+     * @param stdClass     $totales_rs Objeto que almacena los totales acumulados para los diferentes campos.
+     *
+     * @return stdClass|array    Devuelve el objeto $totales_rs que contiene el total acumulado para el campo especificado.
+     *
+     * @throws errores   Lanza una excepción si el campo específico está vacío o si ocurre un error al acumular el total.
+     */
+    private function total_rs_campo(string $campo, array $new_array, stdClass $totales_rs): array|stdClass
     {
+        $campo = trim($campo);
+        if($campo === ''){
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
+        }
         $totales_rs->$campo = 0;
         $totales_rs = $this->totales_rs_acumula(campo: $campo,new_array:  $new_array,totales_rs:  $totales_rs);
         if(errores::$error){
