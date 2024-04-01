@@ -767,11 +767,22 @@ class init{
     }
 
     /**
-     * Inicializa un campo de tipo model
-     * @param array $campos_view Conjunto de campos provenientes de modelo
-     * @param string $key Key a integrar
-     * @param string $type Tipo de input
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Función model_init_campos
+     *
+     * Esta función recibe un array de campos de vista, una clave y un tipo.
+     * Identifica si la clave y el tipo no están vacíos. Si alguno de ellos está vacío, la función
+     * retornará un mensaje de error. En caso contrario, agregará el tipo correspondiente a la clave
+     * en el array de campos de vista y lo retornará.
+     *
+     * @param array $campos_view  Array de campos de vista.
+     * @param string $key         Clave para ser utilizada en el array de campos.
+     * @param string $type        Tipo de dato que será asignado al campo de vista.
+     *
+     * @return array Retorna el array de campos de vista con el nuevo campo agregado.
+     *
+     * @throws errores Si la clave o el tipo están vacíos.
+     * @version 18.26.0
      */
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
@@ -791,11 +802,22 @@ class init{
     }
 
     /**
-     * Integra los elementos de una view para system
-     * @param array $campos_view Campos de modelo
-     * @param string $key Key a integrar
-     * @param string $type Tipo de input
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Función model_init_campos_input
+     *
+     * Esta función es una variante de la función model_init_campos, que recibe un array de campos de vista,
+     * una clave y un tipo. Inicializa estos valores y los asigna al array campos_view.
+     * Además, realiza una verificación de errores después de la inicialización.
+     * Si se encuentra un error, se retorna un error que indica que hubo un problema al inicializar el campo de vista.
+     *
+     * @param array $campos_view  Array de campos de vista.
+     * @param string $key         Clave para ser utilizada en el array de campos.
+     * @param string $type        Tipo de dato que será asignado al campo de vista.
+     *
+     * @return array Retorna el array de campos de vista con la nueva asignación.
+     *
+     * @throws errores Si la clave o el tipo están vacíos o si hay un error al inicializar el campo de vista.
+     * @version 18.26.0
      */
     private function model_init_campos_input(array $campos_view, string $key, string $type): array
     {
@@ -817,11 +839,25 @@ class init{
     }
 
     /**
-     * Inicializa los campos para un template
-     * @param array $campos_view Campos precargados
-     * @param array $keys Keys a inicializar con nombre de los campos
-     * @param string $type Typo de campo inputs o password
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Función model_init_campos_inputs
+     *
+     * Esta función extiende la funcionalidad de la función model_init_campos_input, permitiendo la inicialización
+     * de varios campos en una única llamada. La función recibe un array de campos de vista, un array de claves y
+     * un tipo. Para cada clave en el array de claves, inicializa el campo de vista correspondiente
+     * utilizando la función model_init_campos_input. Si se encuentra un error durante este proceso,
+     * se retorna un error que indica que hubo un problema al inicializar el campo de vista.
+     *
+     * @param array $campos_view  Array de campos de vista.
+     * @param array $keys         Array de claves para ser utilizadas en el array de campos.
+     * @param string $type        Tipo de dato que será asignado a los campos de vista.
+     *
+     * @return array Retorna el array de campos de vista con los nuevos campos asignados.
+     *
+     * @throws errores Si alguna de las claves no es de tipo string, si alguna de las claves está vacía,
+     *                   si el tipo está vacío o si hay un error al inicializar algún campo de vista.
+     *
+     * @version 18.26.0
      */
     private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
@@ -961,12 +997,25 @@ class init{
     }
 
     /**
-     * Modela los campos view para frontend
-     * @param string $atributo Atributo a ajustar
-     * @param array $campos_view Campos previos
-     * @param stdClass $keys Conjunto de campos a integrar
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Función modela_input
      *
+     * Esta función trabaja en conjunto con model_init_campos_inputs para inicializar
+     * múltiples campos de una sola vez. Primero, valida que el atributo proporcionado
+     * no esté vacío, y luego verifica que la propiedad 'atributo' en el objeto 'keys'
+     * exista y sea del tipo array. Posteriormente, model_init_campos_inputs es llamado
+     * con los parámetros adecuados para inicializar los campos de vista.
+     * Si se produce un error durante el proceso, éste retorna un mensaje de error.
+     *
+     * @param string $atributo     Atributo para validar y usar para inicializar los campos de vista.
+     * @param array $campos_view   Array de campos de vista para inicializar.
+     * @param stdClass $keys       Objeto conteniendo claves para ser usadas en los campos de vista.
+     *
+     * @return array Retorna el array de campos de vista con los nuevos campos asignados.
+     *
+     * @throws errores Si el atributo está vacío, si la propiedad 'atributo' en el objeto 'keys'
+     *                   no existe o no es un array, o si se produce un error al inicializar los campos de vista.
+     * @version 18.26.0
      */
     private function modela_input(string $atributo, array $campos_view, stdClass $keys): array
     {
@@ -979,11 +1028,12 @@ class init{
             $keys->$atributo = array();
         }
         if(!is_array($keys->$atributo)){
-            return $this->error->error(mensaje: 'Error $keys->'.$atributo.' debe ser un array',data:  $keys, es_final: true);
+            return $this->error->error(mensaje: 'Error $keys->'.$atributo.' debe ser un array',data:  $keys,
+                es_final: true);
         }
 
-
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys->$atributo, type: $atributo);
+        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys->$atributo,
+            type: $atributo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
         }
