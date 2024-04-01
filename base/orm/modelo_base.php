@@ -175,7 +175,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
      * hijos
      * @param array $campos_encriptados Conjunto de campos a encriptar desencriptar declarados en el modelo en ejecucion
@@ -344,7 +344,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Asigna registros hijos al modelo dado según el filtro proporcionado.
      *
      * @param array  $filtro El filtro a aplicar al conjunto de registros.
@@ -364,7 +364,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         }
         if($nombre_estructura === ''){
             return  $this->error->error(mensaje: 'Error nombre estructura no puede venir vacia',
-                data: $nombre_estructura);
+                data: $nombre_estructura,es_final: true);
         }
 
         $modelo = $this->genera_modelo(modelo: $name_modelo, namespace_model: $namespace_model);
@@ -1180,7 +1180,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera un registro hijo.
      *
      * Este método se encarga de generar un registro hijo a partir de los datos proporcionados en
@@ -1219,7 +1219,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
@@ -1248,14 +1248,15 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
             if(!isset($data_modelo['nombre_estructura'])){
                 return  $this->error->error(mensaje: 'Error debe existir $data_modelo[\'nombre_estructura\'] ',
-                    data: $data_modelo);
+                    data: $data_modelo, es_final: true);
             }
             if(!is_string($name_modelo)){
                 $fix = '$modelos_hijos debe ser un array asociativo de la siguiente forma';
                 $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
                 $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
                 $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
-                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo, fix: $fix);
+                $this->error->error(mensaje: 'Error $name_modelo debe ser un string ', data: $data_modelo,
+                    es_final: true, fix: $fix);
             }
 
             $row = $this->genera_registro_hijo(data_modelo: $data_modelo, name_modelo: $name_modelo, row: $row);
@@ -1392,7 +1393,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Maqueta el arreglo de registros de un modelo de base de datos
      *
      * Este método recorre una lista de registros devueltos de una consulta SQL
@@ -1599,7 +1600,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR WIKI
+     * POR DOCUMENTAR WIKI FINAL REV
      * Procesa los registros devueltos por una declaración SQL de PDO
      *
      * Esta función toma una declaración SQL de PDO y un arreglo de campos encriptados.
@@ -1810,7 +1811,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función acumula los totales en un campo específico.
      *
      * @param string $campo El nombre del campo en el que se acumulan los totales.
@@ -1863,7 +1864,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Acumula los totales de un conjunto de datos.
      *
      * Este método recorre un array y acumula los totales para un campo específico.
@@ -1882,11 +1883,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
         }
         foreach ($new_array as $row){
             if(!is_array($row)){
-                return $this->error->error(mensaje: 'Error row debe ser un array',data: $row);
+                return $this->error->error(mensaje: 'Error row debe ser un array',data: $row, es_final: true);
             }
             $valida = $this->valida_totales(campo: $campo, row: $row);
             if(errores::$error){
@@ -1942,7 +1943,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida si el valor correspondiente al campo proporcionado en la fila es numérico.
      *
      * @param string $campo El nombre del campo para verificar.
@@ -1957,13 +1958,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
         }
         if(!isset($row[$campo])){
-            return $this->error->error(mensaje: 'Error row['.$campo.'] NO EXISTE',data: $row);
+            return $this->error->error(mensaje: 'Error row['.$campo.'] NO EXISTE',data: $row, es_final: true);
         }
         if(!is_numeric($row[$campo])){
-            return $this->error->error(mensaje: 'Error row['.$campo.'] no es un numero valido',data: $row);
+            return $this->error->error(mensaje: 'Error row['.$campo.'] no es un numero valido',data: $row,
+                es_final: true);
         }
         return true;
 
