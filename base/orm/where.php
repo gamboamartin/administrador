@@ -19,7 +19,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función 'and_filtro_fecha' agrega 'AND' al string dado si este no está vacío.
      *
      * @param string $txt Texto que se verificará si está vacío o no.
@@ -92,7 +92,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función campo_data_filtro se usa para aplicar ciertas validaciones en la clave del array $data_filtro.
      *
      * @param  array $data_filtro El array de entrada que se tiene que validar.
@@ -105,15 +105,15 @@ class where{
     private function campo_data_filtro(array $data_filtro): string|array
     {
         if(count($data_filtro) === 0){
-            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
+            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro, es_final: true);
         }
         $campo = key($data_filtro);
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: "Error key vacio",data:  $campo);
+            return $this->error->error(mensaje: "Error key vacio",data:  $campo, es_final: true);
         }
         if(is_numeric($campo )){
-            return $this->error->error(mensaje: "Error key debe ser un texto valido",data:  $campo);
+            return $this->error->error(mensaje: "Error key debe ser un texto valido",data:  $campo, es_final: true);
         }
         return trim($campo);
 
@@ -235,7 +235,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función privada que genera una condición BETWEEN para una consulta SQL.
      *
      * @param string $campo El nombre del campo en el que se aplicará la condición.
@@ -253,13 +253,13 @@ class where{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacío', data: $campo);
+            return $this->error->error(mensaje: 'Error campo vacío', data: $campo, es_final: true);
         }
         if(!isset($filtro['valor1'])){
-            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor1]', data: $campo);
+            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor1]', data: $campo, es_final: true);
         }
         if(!isset($filtro['valor2'])){
-            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor2]', data: $campo);
+            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor2]', data: $campo, es_final: true);
         }
         $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
 
@@ -377,7 +377,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función se utiliza para procesar los datos entrantes ($in) y los organiza en un formato específico.
      *
      * @param array $in Datos entrantes que se deben procesar.
@@ -401,7 +401,7 @@ class where{
         $values = $in['values'];
 
         if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values, es_final: true);
         }
         $data = new stdClass();
         $data->llave = $in['llave'];
@@ -411,7 +411,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una consulta SQL a partir de los parámetros proporcionados.
      *
      * @param string $campo Campo de la consulta SQL.
@@ -446,7 +446,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método para generar una cadena SQL para un filtro base.
      *
      * @param string $campo Nombre del campo en la base de datos.
@@ -469,7 +469,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida el campo del filtro y retorna un string para la consulta SQL o un mensaje de error.
      *
      * @param string $campo El campo a validar.
@@ -492,7 +492,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función gestiona un array asociativo que implementa filtros especiales para la consulta SQL
      * que está siendo generada.
      *
@@ -529,7 +529,7 @@ class where{
     private function datos_filtro_especial(array $data_filtro):array|stdClass
     {
         if(count($data_filtro) === 0){
-            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
+            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro, es_final: true);
         }
         $campo = $this->campo_data_filtro(data_filtro: $data_filtro);
         if(errores::$error){
@@ -538,26 +538,26 @@ class where{
 
         if(!isset($data_filtro[$campo]['operador'])){
             return $this->error->error(mensaje:'Error data_filtro['.$campo.'][operador] debe existir',
-                data:$data_filtro);
+                data:$data_filtro, es_final: true);
         }
 
         $operador = $data_filtro[$campo]['operador'];
         if($operador===''){
-            return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador);
+            return $this->error->error(mensaje:'Error el operador debe de existir',data:$operador, es_final: true);
         }
 
         if(!isset($data_filtro[$campo]['valor'])){
             return $this->error->error(mensaje:'Error data_filtro['.$campo.'][valor] debe existir',
-                data:$data_filtro);
+                data:$data_filtro, es_final: true);
         }
         if(!isset($data_filtro[$campo]['comparacion'])){
             return $this->error->error(mensaje:'Error data_filtro['.$campo.'][comparacion] debe existir',
-                data:$data_filtro);
+                data:$data_filtro, es_final: true);
         }
 
         $valor = $data_filtro[$campo]['valor'];
         if($valor===''){
-            return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor);
+            return $this->error->error(mensaje:'Error el operador debe de existir',data:$valor, es_final: true);
         }
         $valor = addslashes($valor);
         $comparacion = $data_filtro[$campo]['comparacion'];
@@ -599,7 +599,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función genera una declaración SQL para verificar si un campo es
      * diferente de un valor dado.
      *
@@ -616,11 +616,11 @@ class where{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
+            return $this->error->error(mensaje: "Error campo esta vacio", data: $campo, es_final: true);
         }
         if(is_numeric($campo)){
             return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
-                data: $campo);
+                data: $campo, es_final: true);
         }
         $and = $this->and_filtro_fecha(txt: $diferente_de_sql);
         if(errores::$error){
@@ -634,7 +634,7 @@ class where{
     }
 
     /**
-     * POR DOCUMNETAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una declaración SQL para la condición WHERE en una consulta, basándose en un array de términos que deben ser diferentes.
      *
      * @param array $diferente_de Un array asociativo donde las claves son los nombres de las columnas en la base de datos, y los
@@ -666,11 +666,11 @@ class where{
 
                 $campo = trim($campo);
                 if($campo === ''){
-                    return $this->error->error(mensaje: "Error campo esta vacio", data: $campo);
+                    return $this->error->error(mensaje: "Error campo esta vacio", data: $campo, es_final: true);
                 }
                 if(is_numeric($campo)){
                     return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
-                        data: $campo);
+                        data: $campo, es_final: true);
                 }
 
                 $sql = $this->diferente_de(campo:$campo,diferente_de_sql:  $diferente_de_sql,value:  $value);
@@ -687,7 +687,7 @@ class where{
 
     /**
      *
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera las condiciones sql de un filtro especial
      * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -741,7 +741,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Funcion que genera las condiciones de sql de un filtro extra
      *
      * @param array $filtro_extra arreglo que contiene las condiciones
@@ -766,7 +766,8 @@ class where{
         $filtro_extra_sql = '';
         foreach($filtro_extra as $data_filtro){
             if(!is_array($data_filtro)){
-                return $this->error->error(mensaje: 'Error $data_filtro debe ser un array',data: $filtro_extra);
+                return $this->error->error(mensaje: 'Error $data_filtro debe ser un array',data: $filtro_extra,
+                    es_final: true);
             }
             $filtro_extra_sql = $this->integra_filtro_extra(
                 data_filtro: $data_filtro, filtro_extra_sql: $filtro_extra_sql);
@@ -779,7 +780,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función filtro_extra_sql_genera
      *
      * @param string $comparacion La cadena de texto utilizada para comparar
@@ -878,7 +879,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      *
      * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
      *
@@ -909,21 +910,21 @@ class where{
      * @throws errores Si filtro[0] = array('valor1'=>'1','valor2'=>'2') key debe ser tabla.campo error sql
      * @version 16.236.0
      */
-    private function filtro_rango_sql(array $filtro_rango):array|string{//DOC DEBUG
+    private function filtro_rango_sql(array $filtro_rango):array|string{
         $filtro_rango_sql = '';
         foreach ($filtro_rango as $campo=>$filtro){
             if(!is_array($filtro)){
-                return  $this->error->error(mensaje: 'Error $filtro debe ser un array',data: $filtro);
+                return  $this->error->error(mensaje: 'Error $filtro debe ser un array',data: $filtro, es_final: true);
             }
             if(!isset($filtro['valor1'])){
-                return  $this->error->error(mensaje:'Error $filtro[valor1] debe existir',data:$filtro);
+                return  $this->error->error(mensaje:'Error $filtro[valor1] debe existir',data:$filtro, es_final: true);
             }
             if(!isset($filtro['valor2'])){
-                return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro);
+                return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro, es_final: true);
             }
             $campo = trim($campo);
             if(is_numeric($campo)){
-                return  $this->error->error(mensaje:'Error campo debe ser un string',data:$campo);
+                return  $this->error->error(mensaje:'Error campo debe ser un string',data:$campo, es_final: true);
             }
             $valor_campo = false;
 
@@ -1102,7 +1103,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera la condicion sql de un filtro especial
      *
      *
@@ -1153,10 +1154,11 @@ class where{
         else{
             if(!isset($filtro_esp[$campo]['comparacion'])){
                 return $this->error->error(mensaje: 'Error $filtro_esp[$campo][\'comparacion\'] debe existir',
-                    data: $filtro_esp);
+                    data: $filtro_esp, es_final: true);
             }
             if(trim($data_sql) === ''){
-                return $this->error->error(mensaje:'Error $data_sql no puede venir vacio', data:$data_sql);
+                return $this->error->error(mensaje:'Error $data_sql no puede venir vacio', data:$data_sql,
+                    es_final: true);
             }
 
             $filtro_especial_sql .= ' '.$filtro_esp[$campo]['comparacion'].' '.$data_sql;
@@ -1166,7 +1168,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      * @param string $campo
      *                  Opcion 1.-Si valor_es_campo = false,
@@ -1200,7 +1202,7 @@ class where{
                                               bool $valor_campo = false):array|string{
         $campo = trim($campo);
         if($campo === ''){
-            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo);
+            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo, es_final: true);
         }
         $keys = array('valor1','valor2');
         $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $filtro);
@@ -1372,7 +1374,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una cadena SQL para la cláusula IN en una consulta SQL.
      *
      * Esta función toma un array asociativo $in que debe tener las claves:
@@ -1402,7 +1404,7 @@ class where{
         $values = $in['values'];
 
         if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
+            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values, es_final: true);
         }
 
         $data_in = $this->data_in(in: $in);
@@ -1419,7 +1421,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una cadena SQL basada en los datos proporcionados.
      *
      * Este método toma como entrada un arreglo que especifica los datos a incluir
@@ -1447,7 +1449,7 @@ class where{
             $values = $in['values'];
 
             if(!is_array($values)){
-                return $this->error->error(mensaje: 'Error values debe ser un array',data: $values);
+                return $this->error->error(mensaje: 'Error values debe ser un array',data: $values, es_final: true);
             }
             $in_sql = $this->genera_in(in: $in);
             if(errores::$error){
@@ -1470,7 +1472,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función que genera una instrucción SQL normalizada a partir de un arreglo
      *
      * @param array $in Arreglo de elementos con los que se va a generar la instrucción SQL
@@ -1492,7 +1494,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método privado que genera una cláusula NOT IN SQL a partir de un arreglo proporcionado.
      *
      * @param array $not_in Arreglo de elementos a ser excluidos en la consulta SQL.
@@ -1518,7 +1520,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera la cláusula SQL NOT IN basada en los valores proporcionados.
      *
      * Esta función toma una matriz asociativa como parámetro, donde `llave` es el nombre del campo y `values` es una
@@ -1633,7 +1635,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función in_sql genera y valida una instrucción SQL IN.
      *
      * @param string $llave El nombre del campo que se utilizará en la instrucción IN.
@@ -1658,7 +1660,7 @@ class where{
     {
         $llave = trim($llave);
         if($llave === ''){
-            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave);
+            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, es_final: true);
         }
 
         $values_sql = $this->values_sql_in(values:$values);
@@ -1701,7 +1703,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función toma un filtro adicional y lo integra a la consulta SQL actual.
      * Recibe una matriz de datos del filtro y una cadena que representa el filtro SQL extra.
      *
@@ -1717,7 +1719,7 @@ class where{
     private function integra_filtro_extra(array $data_filtro, string $filtro_extra_sql): object|string|array
     {
         if(count($data_filtro) === 0){
-            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro);
+            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro, es_final: true);
         }
 
         $datos = $this->datos_filtro_especial(data_filtro: $data_filtro);
@@ -1767,7 +1769,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      *
      * Genera la condicion sql de un filtro especial
      *
@@ -1824,7 +1826,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una cláusula SQL NOT IN a partir de una llave y valores proporcionados.
      *
      * @param string $llave Clave que será usada en la cláusula NOT IN.
@@ -1856,7 +1858,7 @@ class where{
     {
         $llave = trim($llave);
         if($llave === ''){
-            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave);
+            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, es_final: true);
         }
 
         $values_sql = $this->values_sql_in(values:$values);
@@ -1873,7 +1875,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera la condicion sql de un filtro especial
      * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_esp //array con datos del filtro $filtro_esp[tabla.campo]= array('operador'=>'AND','valor'=>'x');
@@ -1952,7 +1954,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
      * @access public
      * @param string $filtro_rango_sql debe ser un sql con una condicion
@@ -1977,7 +1979,7 @@ class where{
         if(trim($filtro_rango_sql) !=='' && trim($condicion) === ''){
 
             return  $this->error->error(mensaje: 'Error if filtro_rango tiene info $condicion no puede venir vacio',
-                data: $filtro_rango_sql);
+                data: $filtro_rango_sql, es_final: true);
         }
 
         $and = $this->and_filtro_fecha(txt: $filtro_rango_sql);
@@ -2038,7 +2040,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Comprueba y valida los valores de un campo y un campo de filtro.
      *
      * @param string $campo Representa el nombre del campo a validar.
@@ -2068,26 +2070,31 @@ class where{
     {
         $campo_filtro = trim($campo_filtro);
         if($campo_filtro === ''){
-            return $this->error->error(mensaje:'Error campo_filtro esta vacio',  data:$campo_filtro);
+            return $this->error->error(mensaje:'Error campo_filtro esta vacio',  data:$campo_filtro, es_final: true);
         }
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
+            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
         }
         if(!isset($filtro[$campo_filtro])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.']',  data:$campo);
+            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.']',  data:$campo,
+                es_final: true);
         }
         if(!is_array($filtro[$campo_filtro])){
-            return $this->error->error(mensaje:'Error no es un array $filtro['.$campo_filtro.']',  data:$campo);
+            return $this->error->error(mensaje:'Error no es un array $filtro['.$campo_filtro.']',  data:$campo,
+                es_final: true);
         }
         if(!isset($filtro[$campo_filtro]['operador'])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][operador]',  data:$campo);
+            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][operador]',  data:$campo,
+                es_final: true);
         }
         if(!isset($filtro[$campo_filtro]['valor'])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][valor]',  data:$campo);
+            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][valor]',  data:$campo,
+                es_final: true);
         }
         if(trim(($filtro[$campo_filtro]['operador'])) === ''){
-            return $this->error->error(mensaje:'Error esta vacio $filtro['.$campo_filtro.'][operador]',  data:$campo);
+            return $this->error->error(mensaje:'Error esta vacio $filtro['.$campo_filtro.'][operador]',  data:$campo,
+                es_final: true);
         }
         return true;
     }
@@ -2220,7 +2227,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método comprueba si el valor proporcionado está vacío y, en caso de que no lo esté,
      * añade una coma al final de la cadena de valores SQL existente.
      *
@@ -2238,7 +2245,7 @@ class where{
         $values_sql = trim($values_sql);
         $value = trim($value);
         if($value === ''){
-            return $this->error->error(mensaje: 'Error value esta vacio',data: $value);
+            return $this->error->error(mensaje: 'Error value esta vacio',data: $value, es_final: true);
         }
 
         $coma = '';
@@ -2253,7 +2260,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función privada toma un array de valores y los procesa para formar una parte de una consulta SQL.
      *
      * Recorre cada valor en el conjunto de valores proporcionado para escapar y formatear correctamente el valor en
@@ -2274,7 +2281,7 @@ class where{
         foreach ($values as $value){
             $value = trim($value);
             if($value === ''){
-                return $this->error->error(mensaje: 'Error value esta vacio',data: $value);
+                return $this->error->error(mensaje: 'Error value esta vacio',data: $value, es_final: true);
             }
             $data = $this->value_coma(value:$value, values_sql: $values_sql);
             if(errores::$error){

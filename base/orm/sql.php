@@ -432,7 +432,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para crear una consulta SQL con operador IN
      *
      * @param string $llave La clave que será buscada en la consulta SQL.
@@ -621,7 +621,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Limpia todos los espacios dobles definidos en un texto
      * @param string $txt Texto a limpiar
      * @param int $n_iteraciones no de veces que ejecutara la limpieza
@@ -1109,7 +1109,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para validar los valores de entrada `llave` y `values_sql`
      *
      * @param string $llave      Nombre de la llave. Debe ser una cadena de texto no vacía si `values_sql` no está vacía.
@@ -1127,14 +1127,15 @@ class sql{
         $values_sql = trim($values_sql);
         if($llave !== ''){
             if($values_sql ===''){
-                return $this->error->error(mensaje: 'Error si llave tiene info values debe tener info', data: $llave);
+                return $this->error->error(mensaje: 'Error si llave tiene info values debe tener info',
+                    data: $llave, es_final: true);
             }
         }
 
         if($values_sql !== ''){
             if($llave ===''){
                 return $this->error->error(
-                    mensaje: 'Error si values_sql tiene info llave debe tener info', data: $values_sql);
+                    mensaje: 'Error si values_sql tiene info llave debe tener info', data: $values_sql, es_final: true);
             }
         }
         return true;

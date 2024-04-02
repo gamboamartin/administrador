@@ -1581,7 +1581,7 @@ class _instalacion
 
     }
 
-    private function genera_adm_campo_ins(int $adm_seccion_id, array $columna): array
+    final public function genera_adm_campo_ins(int $adm_seccion_id, array $columna): array
     {
         $adm_tipo_dato_id = $this->adm_tipo_dato_id(columna: $columna,link:  $this->link);
         if(errores::$error){
@@ -1765,6 +1765,28 @@ class _instalacion
         }
 
         return $exe;
+
+    }
+
+    final public function inserta_adm_campo(array $add_campo_ins, int $adm_seccion_id): array|stdClass
+    {
+        $inserta= new stdClass();
+        $filtro = array();
+        $filtro['adm_campo.descripcion'] = $add_campo_ins['descripcion'];
+        $filtro['adm_seccion.id'] = $adm_seccion_id;
+
+        $existe = (new adm_campo(link: $this->link))->existe(filtro: $filtro);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al validar si existe adm campo', data:  $existe);
+        }
+
+        if(!$existe){
+            $inserta = (new adm_campo(link: $this->link))->alta_registro(registro: $add_campo_ins);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar campo', data:  $inserta);
+            }
+        }
+        return $inserta;
 
     }
 
