@@ -426,6 +426,17 @@ class _instalacion
 
     }
 
+    final public function adm_campo_ins(int $adm_seccion_id, int $adm_tipo_dato_id, array $columna): array
+    {
+        $add_campo_ins['descripcion'] = $columna['campo'];
+        $add_campo_ins['adm_seccion_id'] = $adm_seccion_id;
+        $add_campo_ins['sub_consulta'] = '';
+        $add_campo_ins['adm_tipo_dato_id'] = $adm_tipo_dato_id;
+        $add_campo_ins['codigo'] = $adm_seccion_id.'-'.$adm_tipo_dato_id.'-'.$columna['campo'];
+        return $add_campo_ins;
+
+    }
+
     final public function adm_tipo_dato_id(array $columna, PDO $link)
     {
         $tipo_dato_original = $this->get_tipo_dato_original(columna: $columna,link:  $link);

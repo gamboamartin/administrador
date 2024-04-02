@@ -210,7 +210,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función verifica y valida los campos clave en el proceso de renombramiento.
      *
      * @param array $data - Los datos proporcionados por el usuario que contienen 'enlace' y 'nombre_original'
@@ -234,18 +234,20 @@ class validaciones extends validacion{
     final public function valida_keys_renombre(array $data, string $tabla_renombrada): true|array
     {
         if(!isset($data['enlace'])){
-            return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data);
+            return $this->error->error(mensaje: 'Error data[enlace] debe existir', data: $data, es_final: true);
         }
         if(!isset($data['nombre_original'])){
-            return $this->error->error(mensaje:'Error data[nombre_original] debe existir', data:$data);
+            return $this->error->error(mensaje:'Error data[nombre_original] debe existir', data:$data, es_final: true);
         }
         $data['nombre_original'] = trim($data['nombre_original']);
         if($data['nombre_original'] === ''){
-            return $this->error->error(mensaje:'Error data[nombre_original] no puede venir vacia',data: $data);
+            return $this->error->error(mensaje:'Error data[nombre_original] no puede venir vacia',data: $data,
+                es_final: true);
         }
         $tabla_renombrada = trim($tabla_renombrada);
         if($tabla_renombrada === ''){
-            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada);
+            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada,
+                es_final: true);
         }
         return true;
     }

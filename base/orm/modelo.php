@@ -2343,10 +2343,11 @@ class modelo extends modelo_base {
                                                         array $filtros, string $orden):array|stdClass{
         $this->filtro = $filtros;
         if(count($this->filtro) === 0){
-            return $this->error->error(mensaje: 'Error los filtros no pueden venir vacios',data: $this->filtro);
+            return $this->error->error(mensaje: 'Error los filtros no pueden venir vacios',data: $this->filtro,
+                es_final: true);
         }
         if($campo === ''){
-            return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro);
+            return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro, es_final: true);
         }
 
         $sentencia = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);

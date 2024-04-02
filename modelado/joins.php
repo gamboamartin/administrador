@@ -362,7 +362,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método se utiliza para unir extensiones de estructura en una tabla base.
      *
      * Este método recorre cada extensión en la estructura proporcionada, llamando al método join_base()
@@ -525,7 +525,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método genera una cadena SQL JOIN.
      *
      * @param array $data Los datos que se utilizarán en la cláusula SQL JOIN.
@@ -588,7 +588,7 @@ class joins{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método para gestionar los joins de SQL en PHP.
      *
      * @param array $data Representa los datos para el join. Debe tener las claves 'nombre_original' y 'enlace'.
@@ -748,7 +748,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función se usa para renombrar múltiples tablas en una operación Join.
      *
      * @param string $modelo_tabla La tabla principal que se está uniendo.
@@ -764,7 +764,7 @@ class joins{
         $tablas_env = $tablas;
         foreach($renombradas as $tabla_renombrada=>$data){
             if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data, es_final: true);
             }
             $tablas_env = $this->join_renombres(data: $data,modelo_tabla: $modelo_tabla,
                 tabla_renombrada: $tabla_renombrada, tablas:  $tablas);
@@ -851,7 +851,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una cadena SQL para una operación JOIN con las condiciones especificadas.
      *
      * @param array  $data          Los datos utilizados para generar la cláusula JOIN. Esta es una matriz asociativa
@@ -886,24 +886,25 @@ class joins{
         $tabla_renombrada = trim($tabla_renombrada);
 
         if($tabla === ''){
-            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla);
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla, es_final: true);
         }
         if($tabla_renombrada === ''){
-            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada);
+            return $this->error->error(mensaje:'Error $tabla_renombrada no puede venir vacia', data:$tabla_renombrada,
+                es_final: true);
         }
 
         if(is_numeric($tabla)){
-            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
+            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla, es_final: true);
         }
         if(is_numeric($tabla_renombrada)){
-            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
+            return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla, es_final: true);
         }
 
         return "$tabla AS $tabla_renombrada  ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]";
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función sirve para renombrar una tabla si recibe el parámetro de 'renombre'.
      *
      * @param array $data Contiene la información sobre el renombramiento.
@@ -918,7 +919,7 @@ class joins{
         $tabla = trim($tabla);
 
         if($tabla === ''){
-            return $this->error->error(mensaje:'Error $tabla esta vacia', data:$tabla);
+            return $this->error->error(mensaje:'Error $tabla esta vacia', data:$tabla, es_final: true);
         }
         $tabla_renombrada = $tabla;
         if(isset($data['renombre'])){
@@ -932,7 +933,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMNETAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método se utiliza para generar un conjunto de tablas para una consulta SQL JOIN.
      *
      * Acepta una serie de parámetros que definen la estructura de la consulta SQL y devuelve un array con las tablas resultantes.

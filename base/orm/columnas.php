@@ -66,7 +66,7 @@ class columnas{
     {
         $tabla = str_replace('models\\','',$tabla);
         if(is_numeric($tabla)){
-            return $this->error->error(mensaje: 'Error $tabla no puede ser un numero',data:  $tabla);
+            return $this->error->error(mensaje: 'Error $tabla no puede ser un numero',data:  $tabla, es_final: true);
         }
 
         $resultado_columnas = $this->genera_columnas_consulta(columnas_en_bruto: $columnas_en_bruto,
@@ -1023,7 +1023,7 @@ class columnas{
         foreach ($tablas_select as $key=>$tabla_select){
 
             if(is_numeric($key)){
-                return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key);
+                return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key, es_final: true);
             }
 
             $result = $this->genera_columna_tabla(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
@@ -1083,10 +1083,12 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
 
         if($tabla_original === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original);
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original,
+                es_final: true);
         }
         if(is_numeric($tabla_original)){
-            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original);
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original,
+                es_final: true);
         }
 
         $columnas_sql = $this->genera_columnas_tabla( columnas_en_bruto: $columnas_en_bruto, modelo: $modelo,
@@ -1125,7 +1127,7 @@ class columnas{
     {
         $key = str_replace('models\\','',$key);
         if(is_numeric($key)){
-            return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key);
+            return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key, es_final: true);
         }
 
         $result = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
@@ -1154,7 +1156,8 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
 
         if(is_numeric($tabla_original)){
-            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original);
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original,
+                es_final: true);
         }
 
         $data = $this->data_for_columnas_envio(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
@@ -1285,11 +1288,13 @@ class columnas{
         $tabla_original = str_replace('models\\','',$tabla_original);
 
         if($tabla_original === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original);
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original,
+                es_final: true);
         }
 
         if(is_numeric($tabla_original)){
-            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original);
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original,
+                es_final: true);
         }
 
         $data = $this->obten_columnas( modelo: $modelo, tabla_original: $tabla_original);

@@ -168,7 +168,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función que realiza una comparación.
      *
      * Esta función toma un array, cadena de texto, o valor null como datos de entrada,
@@ -186,7 +186,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función comparacion_pura compara los datos pasados con las columnas extra en base a una llave.
      *
      * @param array $columnas_extra Las columnas extra a considerar en la comparación.
@@ -999,7 +999,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR WIKI
+     * POR DOCUMENTAR WIKI FINAL REV
      * Esta función genera una cadena de declaración SQL AND basada en los filtros y columnas extras proporcionados.
      *
      * @param array $columnas_extra Las columnas adicionales que han de considerarse al generar la declaración SQL.
@@ -1031,7 +1031,7 @@ class where{
 
             $operador = $data['operador'] ?? ' AND ';
             if(trim($operador) !=='AND' && trim($operador) !=='OR'){
-                return $this->error->error(mensaje:'El operador debe ser AND u OR',data:$operador);
+                return $this->error->error(mensaje:'El operador debe ser AND u OR',data:$operador, es_final: true);
             }
 
             $data_sql = "$data_comparacion->campo $comparacion '$data_comparacion->value'";
@@ -2190,7 +2190,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función privada que procesa los datos de entrada y los limpia para su posterior uso.
      *
      * @param array|string|null $data Datos de entrada para ser procesados.
@@ -2207,10 +2207,10 @@ class where{
             $value = trim($data['value']);
         }
         if(is_array($data) && count($data) === 0){
-            return $this->error->error(mensaje: "Error datos vacio",data: $data);
+            return $this->error->error(mensaje: "Error datos vacio",data: $data, es_final: true);
         }
         if(is_array($data) && !isset($data['value'])){
-            return $this->error->error(mensaje:"Error no existe valor",data: $data);
+            return $this->error->error(mensaje:"Error no existe valor",data: $data,es_final: true);
         }
         if(is_null($value)){
             $value = '';
