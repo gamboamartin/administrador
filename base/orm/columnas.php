@@ -138,7 +138,7 @@ class columnas{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo no puede venir vacio', data: $atributo);
+            return $this->error->error(mensaje: 'Error atributo no puede venir vacio', data: $atributo, es_final: true);
         }
         $keys = array('Type','Null');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $columna);
@@ -204,7 +204,7 @@ class columnas{
     {
         $atributo = trim($atributo);
         if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo no puede venir vacio',data:  $atributo);
+            return $this->error->error(mensaje: 'Error atributo no puede venir vacio',data:  $atributo, es_final: true);
         }
         $columnas_parseadas[] = $atributo;
         return $columnas_parseadas;
@@ -540,25 +540,22 @@ class columnas{
     }
 
     /**
-     * Devuelve información sobre las columnas de la base de datos nativa
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Esta función, columnas_bd_native, se utiliza para obtener detalles de las columnas de una tabla de base de
+     * datos a partir del nombre de la tabla proporcionado como argumento.
      *
-     * Esta función toma una instancia de un modelo base y una tabla de base de datos en formato de cadena como argumentos.
-     * Devuelve un array que contiene información sobre las columnas en la tabla de la base de datos proporcionada.
+     * @param modelo_base $modelo Una instancia del modelo base, que se usa para ejecutar consultas de base de datos.
+     * @param string $tabla_bd El nombre de la tabla de base de datos de la que se obtienen los detalles de las columnas.
      *
-     * @final
+     * @return array Regresa una matriz de registros que representa los detalles de las columnas de la tabla de base
+     * de datos especificada.
      *
-     * @param   modelo_base    $modelo    Una instancia del modelo base.
-     * @param   string         $tabla_bd  Una cadena que representa la tabla de base datos
-     *
-     * @return  array          Retorna un array con información de las columnas de la tabla de búsqueda
-     *                         Retorna un array vacío y un mensaje de error si la tabla de la base de datos es vacía o es numérica,
-     *                         si hubo un error al obtener la consulta SQL o al ejecutarla, o si no existen columnas en la tabla.
-     *
-     * @throws  errores si la consulta SQL encuentra un error o ejecuta una operación fallida.
-     *
-     * @example Ejemplo de uso:
-     *          columnas_bd_native($modelo, 'tabla_muestra');
-     *
+     * @throws errores Si el nombre de la tabla está vacío, se lanza un error.
+     * @throws errores Si el nombre de la tabla es numérico, se lanza un error.
+     * @throws errores Si ocurre un error al obtener la consulta SQL para describir la tabla, se lanza un error.
+     * @throws errores Si ocurre un error al ejecutar la consulta SQL, se lanza un error.
+     * @throws errores Si la tabla de base de datos especificada no tiene columnas, se lanza un error.
+     * @version 18.32.0
      */
     final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
@@ -926,7 +923,8 @@ class columnas{
         $columnas_completas = array();
         foreach($columnas as $columna ){
             if(!is_array($columna)){
-                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas);
+                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas,
+                    es_final: true);
             }
             $columnas_field = $this->columnas_attr(columna: $columna, columnas_completas:  $columnas_completas,
                 columnas_parseadas:  $columnas_parseadas);
