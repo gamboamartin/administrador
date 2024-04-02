@@ -426,7 +426,7 @@ class _instalacion
 
     }
 
-    final public function adm_campo_ins(int $adm_seccion_id, int $adm_tipo_dato_id, array $columna): array
+    private function adm_campo_ins(int $adm_seccion_id, int $adm_tipo_dato_id, array $columna): array
     {
         $add_campo_ins['descripcion'] = $columna['campo'];
         $add_campo_ins['adm_seccion_id'] = $adm_seccion_id;
@@ -437,7 +437,7 @@ class _instalacion
 
     }
 
-    final public function adm_tipo_dato_id(array $columna, PDO $link)
+    private function adm_tipo_dato_id(array $columna, PDO $link)
     {
         $tipo_dato_original = $this->get_tipo_dato_original(columna: $columna,link:  $link);
         if(errores::$error){
@@ -1578,6 +1578,23 @@ class _instalacion
         }
 
         return $fk;
+
+    }
+
+    private function genera_adm_campo_ins(int $adm_seccion_id, array $columna): array
+    {
+        $adm_tipo_dato_id = $this->adm_tipo_dato_id(columna: $columna,link:  $this->link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error adm_tipo_dato_id no se pudo obtener', data:  $adm_tipo_dato_id);
+        }
+
+        $add_campo_ins = $this->adm_campo_ins(adm_seccion_id: $adm_seccion_id,
+            adm_tipo_dato_id:  $adm_tipo_dato_id,columna:  $columna);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error add_campo_ins no se pudo obtener', data:  $add_campo_ins);
+        }
+
+        return $add_campo_ins;
 
     }
 

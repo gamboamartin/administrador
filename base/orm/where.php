@@ -120,7 +120,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función valida el campo proporcionado para ser filtrado y verifica si el campo es parte de una subconsulta.
      * Si el campo proporcionado está vacío, se retorna un error.
      * Una verificación adicional se realiza para garantizar si el campo proporcionado pertenece a una subconsulta.
@@ -137,7 +137,7 @@ class where{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
+            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
         }
 
         $es_subquery = $this->es_subquery(campo: $campo,columnas_extra:  $columnas_extra);
@@ -575,7 +575,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Determina si un campo es un subquery basado en la existencia del campo en las columnas extra.
      *
      * @param string $campo El campo a evaluar si es un subquery.
@@ -588,7 +588,7 @@ class where{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo);
+            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
         }
         $es_subquery = false;
         if(isset($columnas_extra[$campo])){
@@ -728,7 +728,7 @@ class where{
             if(!is_array($filtro_esp)){
 
                 return $this->error->error(mensaje: "Error filtro debe ser un array filtro_especial[] = array()",
-                    data: $filtro_esp);
+                    data: $filtro_esp, es_final: true);
             }
 
             $filtro_especial_sql = $this->obten_filtro_especial(columnas_extra: $columnas_extra,
@@ -1044,7 +1044,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera y gestiona sentencias AND para operaciones SQL.
      * La función procesa el filtro y las columnas adicionales proporcionadas para generar una sentencia SQL AND.
      *
@@ -1069,7 +1069,8 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro);
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
+                    es_final: true);
             }
 
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data,key:  $key);
@@ -1554,7 +1555,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera la sentencia SQL base de filtro según el tipo de filtro
      * proporcionado (numeros o textos).
      *

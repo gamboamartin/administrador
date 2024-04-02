@@ -124,7 +124,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida la data del filtro especial proporcionado.
      *
      * Esta función recibe dos parámetros, un string que representa el campo y un array que representa el filtro.
@@ -142,19 +142,22 @@ class validaciones extends validacion{
     final public function valida_data_filtro_especial(string $campo, array $filtro): true|array
     {
         if($campo === ''){
-            return $this->error->error(mensaje: "Error campo vacio", data: $campo);
+            return $this->error->error(mensaje: "Error campo vacio", data: $campo, es_final: true);
         }
         if(!isset($filtro[$campo]['valor_es_campo']) && is_numeric($campo)){
-            return $this->error->error(mensaje:'Error el campo debe ser un string $filtro[campo]', data:$filtro);
+            return $this->error->error(mensaje:'Error el campo debe ser un string $filtro[campo]', data:$filtro,
+                es_final: true);
         }
         if(!isset($filtro[$campo]['operador'])){
-            return $this->error->error(mensaje:'Error debe existir $filtro[campo][operador]', data:$filtro);
+            return $this->error->error(mensaje:'Error debe existir $filtro[campo][operador]', data:$filtro,
+                es_final: true);
         }
         if(!isset($filtro[$campo]['valor'])){
             $filtro[$campo]['valor'] = '';
         }
         if(is_array($filtro[$campo]['valor'])){
-            return $this->error->error(mensaje:'Error $filtro['.$campo.'][\'valor\'] debe ser un dato', data:$filtro);
+            return $this->error->error(mensaje:'Error $filtro['.$campo.'][\'valor\'] debe ser un dato', data:$filtro,
+                es_final: true);
         }
         return true;
     }
