@@ -107,7 +107,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función asigna_columna_completa
      *
      * Esta función asigna los valores de una columna obtenidos mediante un DESCRIBE
@@ -190,7 +190,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función que asigna columnas parseadas, añade nuevos atributos a la colección de columnas parseadas.
      *
      * @param string $atributo Nombre del atributo a añadir
@@ -457,7 +457,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Procesa los detalles de una columna y prepara una lista completa de columnas analizadas y no analizadas.
      *
      * Esta función analiza en profundidad los detalles de una columna proporcionada y los prepara para ser utilizados
@@ -742,7 +742,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función 'columnas_field' recibe cinco parámetros: $atributo, $campo, $columna, $columnas_completas y
      * $columnas_parseadas.
      *
@@ -902,7 +902,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método privado columnas_sql_array realiza el parseo de las columnas proporcionadas.
      *
      * @param array $columnas Las columnas que se van a parsear.
@@ -1222,6 +1222,7 @@ class columnas{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método encargado de generar información de las columnas para los campos del modelo en la base de datos.
      *
      * Este método realiza las siguientes operaciones:
@@ -1237,6 +1238,7 @@ class columnas{
      * @return array|stdClass: Array con información de las columnas si todo sale bien,
      *                         objeto de error si hay un problema.
      * @throws errores: Se lanza una excepción si hay un error en la obtención o gestión de las columnas.
+     * @version 18.33.0
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -1248,7 +1250,6 @@ class columnas{
             return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
                 es_final: true);
         }
-
         $columnas = $this->columnas_bd_native(modelo:$modelo, tabla_bd: $tabla_bd);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas);
