@@ -128,7 +128,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Prepara y asegura las cláusulas SQL para su ejecución segura.
      *
      * @param bool $aplica_seguridad Si es true, entonces aplica los procedimientos de seguridad a la consulta SQL.
@@ -147,10 +147,11 @@ class params_sql{
                                      int $offset, array $order, string $sql_where_previo): array|stdClass
     {
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit, es_final: true);
         }
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
+                es_final: true);
 
         }
 

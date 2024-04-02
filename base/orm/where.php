@@ -73,7 +73,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función procesa las entradas proporcionadas y devuelve el "campo" apropiado.
      *
      * @param array|string|null $data los datos proporcionados para extraer el campo. Pueden ser de tipos array, string o null.
@@ -85,7 +85,7 @@ class where{
      */
     private function campo(array|string|null $data, string $key):string|array{
         if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio",data:  $key);
+            return $this->error->error(mensaje: "Error key vacio",data:  $key, es_final: true);
         }
         $campo = $data['campo'] ?? $key;
         return addslashes($campo);
@@ -208,10 +208,10 @@ class where{
     private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
 
         if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio", data: $key);
+            return $this->error->error(mensaje: "Error key vacio", data: $key, es_final: true);
         }
         if(is_array($data) && count($data) === 0){
-            return $this->error->error(mensaje:"Error datos vacio",data: $data);
+            return $this->error->error(mensaje:"Error datos vacio",data: $data, es_final: true);
         }
         $datas = new stdClass();
         $datas->campo = $this->campo(data: $data,key:  $key);
@@ -1016,7 +1016,8 @@ class where{
         foreach ($filtro as $key => $data) {
             if(is_numeric($key)){
                 return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro);
+                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
+                    es_final: true);
             }
             $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data, key: $key);
             if(errores::$error){

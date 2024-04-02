@@ -1960,6 +1960,27 @@ class _instalacion
 
     }
 
+    final public function tipo_dato_original(array $columna): string
+    {
+        $tipo_dato_original = strtoupper($columna['Type']);
+
+        if($tipo_dato_original === 'VARCHAR(200)'){
+            $tipo_dato_original = 'VARCHAR';
+        }
+        if($tipo_dato_original === 'VARCHAR(255)'){
+            $tipo_dato_original = 'VARCHAR';
+        }
+        if($tipo_dato_original === 'BIGINT(20)'){
+            $tipo_dato_original = 'BIGINT';
+        }
+        if($tipo_dato_original === 'INT(11)'){
+            $tipo_dato_original = 'INT';
+        }
+
+        return $tipo_dato_original;
+
+    }
+
     private function upd_row_default(string $campo, string $default, modelo $modelo, array $registro)
     {
         $registro_upd = array();

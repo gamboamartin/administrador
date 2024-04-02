@@ -103,10 +103,12 @@ class filtros{
         $params_fn->tipo_filtro = $tipo_filtro;
 
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $params_fn);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $params_fn,
+                es_final: true);
         }
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $params_fn);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $params_fn,
+                es_final: true);
 
         }
         $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
