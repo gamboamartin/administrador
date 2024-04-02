@@ -426,6 +426,21 @@ class _instalacion
 
     }
 
+    final public function adm_tipo_dato_id(array $columna, PDO $link)
+    {
+        $tipo_dato_original = $this->get_tipo_dato_original(columna: $columna,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener tipo_dato_original', data:  $tipo_dato_original);
+        }
+
+        $adm_tipo_dato_id = (new adm_tipo_dato(link: $link))->get_id_by_codigo(codigo: $tipo_dato_original);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error adm_tipo_dato_id no se pudo obtener', data:  $adm_tipo_dato_id);
+        }
+        return $adm_tipo_dato_id;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Ajusta los atributos de un objeto data para su uso en funciones posteriores.
@@ -1634,7 +1649,7 @@ class _instalacion
 
     }
 
-    final public function get_tipo_dato_original(array $columna, PDO $link): array|string
+    private function get_tipo_dato_original(array $columna, PDO $link): array|string
     {
         $tipo_dato_original = $this->tipo_dato_original(columna: $columna);
         if(errores::$error){

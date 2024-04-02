@@ -392,7 +392,7 @@ class joins{
                 return $this->error->error(mensaje:'Error al validar data', data:$valida);
             }
             if(is_numeric($tabla)){
-                return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla);
+                return $this->error->error(mensaje:'Error $tabla debe ser un texto', data:$tabla, es_final: true);
             }
 
             $tablas_env = $this->join_base(data: $data, modelo_tabla: $modelo_tabla,tabla:  $tabla, tablas: $tablas);
@@ -561,7 +561,7 @@ class joins{
         }
 
         if($tabla === ''){
-            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla);
+            return $this->error->error(mensaje:'Error $tabla no puede venir vacia', data:$tabla, es_final: true);
         }
 
         $left_join = $this->left_join_str(tablas: $tablas);
@@ -700,7 +700,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una cadena de texto para realizar un LEFT JOIN en una consulta SQL, si la cadena $tablas no está vacía.
      *
      * @param string $tablas Una cadena que contiene el nombre de las tablas a unir.

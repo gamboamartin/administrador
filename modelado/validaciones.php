@@ -251,7 +251,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función valida_keys_sql
      *
      * Esta función valida los parámetros entregados para una consulta SQL.
