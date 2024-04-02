@@ -1581,7 +1581,7 @@ class _instalacion
 
     }
 
-    final public function genera_adm_campo_ins(int $adm_seccion_id, array $columna): array
+    private function genera_adm_campo_ins(int $adm_seccion_id, array $columna): array
     {
         $adm_tipo_dato_id = $this->adm_tipo_dato_id(columna: $columna,link:  $this->link);
         if(errores::$error){
@@ -1768,7 +1768,7 @@ class _instalacion
 
     }
 
-    final public function inserta_adm_campo(array $add_campo_ins, int $adm_seccion_id): array|stdClass
+    private function inserta_adm_campo(array $add_campo_ins, int $adm_seccion_id): array|stdClass
     {
         $inserta= new stdClass();
         $filtro = array();
@@ -1785,6 +1785,21 @@ class _instalacion
             if(errores::$error){
                 return (new errores())->error(mensaje: 'Error al insertar campo', data:  $inserta);
             }
+        }
+        return $inserta;
+
+    }
+
+    final public function integra_adm_campo(int $adm_seccion_id, array $columna): array|stdClass
+    {
+        $add_campo_ins = $this->genera_adm_campo_ins(adm_seccion_id: $adm_seccion_id,columna: $columna);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error add_campo_ins no se pudo obtener', data:  $add_campo_ins);
+        }
+
+        $inserta = $this->inserta_adm_campo(add_campo_ins: $add_campo_ins, adm_seccion_id: $adm_seccion_id);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar adm campo', data:  $inserta);
         }
         return $inserta;
 
