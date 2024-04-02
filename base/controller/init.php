@@ -981,11 +981,17 @@ class init{
     }
 
     /**
-     * Integra los inputs en un template
-     * @param array $campos_view Campos desde modelo
-     * @param stdClass $keys Keys a integrar
-     * @param PDO $link Conexion a la base de datos
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Función para inicializar los campos de vistas en el modelo.
+     *
+     * @param array $campos_view Un array que contiene las vistas de campo a inicializar.
+     * @param stdClass $keys Un objeto stdClass que contiene las claves para las vistas.
+     * @param PDO $link Un objeto PDO que se usa como enlace a la base de datos.
+     *
+     * @return array Devuelve las vistas de campo.
+     *
+     * @throws errores Si `selects` no es un array.
+     * @version 18.30.0
      */
     final public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
