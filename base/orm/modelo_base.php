@@ -520,15 +520,33 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * Método data_result
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Método data_result de la clase modelo_base
      *
-     * Este método se utiliza para la ejecucion del sql y el retorno del resultado en forma de objeto
+     * Este método procesa los resultados obtenidos de una consulta SQL, a partir de
+     * una lista de campos encriptados y columnas con totales. Además, verifica que la
+     * consulta no esté vacía y maneja posibles errores en el proceso.
      *
-     * @param array $campos_encriptados Array de campos encriptados
-     * @param string $consulta Consulta SQL
+     * @param array $campos_encriptados Lista de campos que han sido encriptados
+     * @param array $columnas_totales Lista de columnas que contienen totales
+     * @param string $consulta La consulta SQL a ejecutar
      *
-     * @return array|stdClass Devuelve un array o un objeto stdClass dependiendo del resultado de la consulta
+     * @throws errores Si la consulta está vacía, si hay errores al ejecutar la consulta SQL
+     * o al parsear los registros
      *
+     * @return array|stdClass Si no hay errores, retorna los datos obtenidos.
+     * Si hay errores, retorna los mensajes de error correspondientes
+     *
+     * Algoritmo:
+     * 1. Se verifica que la consulta SQL no esté vacía
+     * 2. Si la consulta está vacía, se devuelve un mensaje de error
+     * 3. De lo contrario, se ejecuta la consulta SQL
+     * 4. Si hay errores al ejecutar la consulta SQL, se devuelve un mensaje de error
+     * 5. Se obtienen y maquetan los resultados de la consulta SQL
+     * 6. Si hay errores al parsear los registros, se devuelve un mensaje de error
+     * 7. Si no hay errores, se retornan los datos obtenidos
+     *
+     * @version 18.31.0
      */
     private function data_result(array $campos_encriptados,array $columnas_totales, string $consulta): array|stdClass
     {
@@ -658,22 +676,39 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Método ejecuta_consulta de la clase modelo_base
      *
-     * Ejecuta una consulta en la base de datos y devuelve los resultados.
+     * Este método se encarga de ejecutar una consulta SQL. Recibe como parámetros la consulta,
+     * una lista de campos encriptados, una lista de columnas con totales y otra lista relacionada con el "hijo".
      *
-     * @param string $consulta La consulta a ejecutar.
-     * @param array  $campos_encriptados Una lista de campos a encriptar en la consulta.
-     * @param array  $hijo Una lista de consultas hijo para la consulta principal.
+     * @param string $consulta La consulta SQL a ejecutar
+     * @param array $campos_encriptados Lista de campos que han sido encriptados
+     * @param array $columnas_totales Lista de columnas que contienen totales
+     * @param array $hijo Lista relacionada con el "hijo"
      *
-     * @return array|stdClass Retorna un array o un objeto stdClass si la consulta se ejecutó correctamente, o
-     * un error si algo salió mal.
+     * @throws errores Si la consulta está vacía o si hay errores al parsear los registros
+     *
+     * @return array|stdClass Si no hay errores, retorna los datos de la consulta.
+     * Si hay errores, retorna los mensajes de error correspondientes
+     *
+     * Algoritmo:
+     * 1. Se asigna la lista "hijo" a la propiedad $hijo de la clase
+     * 2. Se verifica que la consulta no esté vacía
+     * 3. Si la consulta está vacía, se devuelve un mensaje de error
+     * 4. Se asigna el valor 'SELECT' a la propiedad $transaccion de la clase
+     * 5. Se llama al método data_result, pasando la consulta y las listas como parámetros
+     * 6. Si hay errores al parsear los registros, se devuelve un mensaje de error
+     * 7. Si no hay errores, se retornan los datos de la consulta
+     *
+     * @version 18.31.0
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
                                            array $columnas_totales = array(), array $hijo = array()): array|stdClass{
         $this->hijo = $hijo;
         if(trim($consulta) === ''){
             return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
-                $this->link->errorInfo(),$consulta));
+                $this->link->errorInfo(),$consulta),es_final: true);
         }
         $this->transaccion = 'SELECT';
 
@@ -1430,13 +1465,29 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * Función que se encarga de maquetar el resultado de una consulta.
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Método maqueta_result de la clase modelo_base
      *
-     * @param string $consulta La consulta a realizar.
-     * @param int $n_registros El número de registros a devolver.
-     * @param array $new_array El array que contiene los nuevos datos.
-     * @return array|stdClass Devuelve un array con los resultados o un objeto stdClass en caso de error.
-     * @throws errores Lanza una excepción de tipo errores en caso de error al parsear el resultado o los registros.
+     * Este método recibe una consulta SQL, el número de registros obtenidos,
+     * un arreglo con los nuevos resultados y los resultados obtenidos.
+     *
+     * @param string $consulta La consulta SQL a ejecutar
+     * @param int $n_registros El número de registros obtenidos
+     * @param array $new_array Arreglo donde se almacenan los nuevos resultados
+     * @param stdClass $totales_rs Los resultados obtenidos previamente acumulables
+     *
+     * @throws errores Si surgen problemas al parsear el resultado o los registros
+     *
+     * @return array|stdClass Si no hay errores, retorna los nuevos datos obtenidos.
+     * Si hay errores, retorna los mensajes de error correspondientes
+     *
+     * Algoritmo:
+     * 1. Se inicializa el resultado base con los parámetros recibidos
+     * 2. Si hay errores en la inicialización, se devuelve un mensaje de error
+     * 3. Se obtienen los nuevos resultados con los parámetros recibidos
+     * 4. Si hay errores al obtener los nuevos resultados, se devuelve un mensaje de error
+     * 5. Si no hay errores, se devuelven los nuevos datos obtenidos
+     * @version 18.31.0
      */
     private function maqueta_result(string $consulta, int $n_registros, array $new_array, stdClass $totales_rs ): array|stdClass
     {

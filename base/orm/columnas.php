@@ -229,10 +229,11 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd, es_final: true);
         }
         if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+                es_final: true);
         }
 
         $columnas_field = $this->genera_columnas_field(modelo:$modelo, tabla_bd: $tabla_bd);
@@ -563,10 +564,11 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd,es_final: true);
         }
         if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+                es_final: true);
         }
 
         $sql = (new sql())->describe_table(tabla: $tabla_bd);
@@ -579,7 +581,7 @@ class columnas{
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
         if((int)$result->n_registros === 0){
-            return $this->error->error(mensaje: 'Error no existen columnas', data: $result);
+            return $this->error->error(mensaje: 'Error no existen columnas', data: $result, es_final: true);
         }
 
         return $result->registros;
@@ -1242,10 +1244,11 @@ class columnas{
     {
         $tabla_bd = trim($tabla_bd);
         if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd, es_final: true);
         }
         if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+                es_final: true);
         }
 
         $columnas = $this->columnas_bd_native(modelo:$modelo, tabla_bd: $tabla_bd);
@@ -1475,10 +1478,12 @@ class columnas{
         $tabla_bd = $tabla_original;
 
         if($tabla_bd === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd);
+            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd,
+                es_final: true);
         }
         if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd);
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+                es_final: true);
         }
 
         $se_asignaron_columnas = $this->asigna_columnas_en_session(modelo: $modelo, tabla_bd: $tabla_bd);

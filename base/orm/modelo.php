@@ -102,7 +102,8 @@ class modelo extends modelo_base {
         $entidades = new estructuras(link: $link);
         $data = $entidades->entidades((new database())->db_name);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al obtener entidades '.$tabla, data: $data);
+            $error = $this->error->error(mensaje: 'Error al obtener entidades '.$tabla, data: $data, class: __CLASS__,
+                file: __FILE__, funcion: __FUNCTION__, line: __LINE__);
             print_r($error);
             die('Error');
         }

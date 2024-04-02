@@ -392,7 +392,7 @@ class estructuras{
         }
         if($result->n_registros === 0){
             return $this->error->error(mensaje: 'Error no existen entidades en la bd '.(new database())->db_name,
-                data: $sql);
+                data: $sql, es_final: true);
         }
 
         return $result->registros;
