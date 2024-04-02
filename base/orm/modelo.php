@@ -2691,7 +2691,7 @@ class modelo extends modelo_base {
 
         $this->filtro = $filtro;
         if(count($campos)===0){
-            return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos);
+            return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos, es_final: true);
         }
 
         $columnas = (new sumas())->columnas_suma(campos: $campos);

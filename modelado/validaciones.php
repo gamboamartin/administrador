@@ -441,7 +441,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida los parámetros necesarios para llevar a cabo operaciones de renombrado en consultas.
      *
      * @param string $campo_renombrado El campo que se desea renombrar.
@@ -456,30 +456,31 @@ class validaciones extends validacion{
                                      string $tabla, string $tabla_enlace): true|array
     {
         if($tabla === ''){
-            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
+            return$this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla, es_final: true);
         }
         if($join === ''){
-            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla);
+            return $this->error->error(mensaje:'El join no puede ir vacio', data:$tabla, es_final: true);
         }
         if($renombrada === ''){
-            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla);
+            return $this->error->error(mensaje:'El $renombrada no puede ir vacio', data:$tabla, es_final: true);
         }
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla);
+            return $this->error->error(mensaje:'El $tabla_enlace no puede ir vacio',data: $tabla, es_final: true);
         }
         if($campo_renombrado === ''){
-            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla);
+            return $this->error->error(mensaje:'El $campo_renombrado no puede ir vacio',data: $tabla, es_final: true);
         }
 
         if(trim($join) !=='LEFT' && trim($join) !=='RIGHT' && trim($join) !=='INNER'){
-            return $this->error->error(mensaje: 'Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join);
+            return $this->error->error(mensaje: 'Error join invalido debe ser INNER, LEFT O RIGTH ',data: $join,
+                es_final: true);
         }
 
         return true;
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida los parámetros de entrada de una junta de tablas (_table join_).
      *
      * @final
@@ -496,17 +497,18 @@ class validaciones extends validacion{
     {
         $key = trim($key);
         if(is_numeric($key)){
-            return $this->error->error(mensaje: 'Error el key no puede ser un numero', data: $key);
+            return $this->error->error(mensaje: 'Error el key no puede ser un numero', data: $key, es_final: true);
         }
         if($key === ''){
-            return $this->error->error(mensaje:'Error key esta vacio', data:$key);
+            return $this->error->error(mensaje:'Error key esta vacio', data:$key, es_final: true);
         }
         $tabla_join = trim($tabla_join);
         if(is_numeric($tabla_join)){
-            return $this->error->error(mensaje:'Error el $tabla_join no puede ser un numero',data: $tabla_join);
+            return $this->error->error(mensaje:'Error el $tabla_join no puede ser un numero',data: $tabla_join,
+                es_final: true);
         }
         if($tabla_join === ''){
-            return $this->error->error(mensaje:'Error $tabla_join esta vacio',data: $tabla_join);
+            return $this->error->error(mensaje:'Error $tabla_join esta vacio',data: $tabla_join, es_final: true);
         }
 
         return true;

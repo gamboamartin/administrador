@@ -14,7 +14,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Añade una columna en una consulta SQL.
      *
      * @param string $alias Identificador único para la columna a añadir.
@@ -30,11 +30,11 @@ class columnas{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error $campo no puede venir vacio', data: $campo, es_final: true);
         }
         $alias = trim($alias);
         if($alias === ''){
-            return $this->error->error(mensaje:'Error $alias no puede venir vacio', data: $alias);
+            return $this->error->error(mensaje:'Error $alias no puede venir vacio', data: $alias, es_final: true);
         }
         return 'IFNULL( SUM('. $campo .') ,0)AS ' . $alias;
     }

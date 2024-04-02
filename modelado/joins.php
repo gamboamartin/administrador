@@ -19,7 +19,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI REV
      * Ajusta el nombre del modelo.
      *
      * Este método recibe el nombre de una tabla y realiza dos operaciones:
@@ -53,7 +53,7 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla, es_final: true);
         }
 
         $tabla = str_replace('models\\','',$tabla);
@@ -66,7 +66,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función ajusta los nombres de los modelos de dos tablas dadas.
      *
      * @param string $tabla El nombre de la primera tabla.
@@ -87,11 +87,12 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,es_final: true);
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace);
+            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace,
+                es_final: true);
         }
 
         $data_model_tabla = $this->ajusta_name_model(tabla: $tabla);
@@ -111,7 +112,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Ajusta las tablas para las consultas SQL con JOINs.
      *
      * Esta función toma una cadena que representa una tabla primaria y un array de 'joins' para ajustar
@@ -140,7 +141,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Realiza la preparación de los datos para una operación de join (unión) de tablas.
      *
      * @param array $tabla_join Un arreglo que contiene las tablas que se van a unir.
@@ -214,7 +215,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera la información requerida para realizar un "JOIN" en una consulta SQL.
      *
      * @param string $id_renombrada El identificador de la tabla renombrada.
@@ -252,7 +253,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función obtiene los JOINs entre las tablas proporcionadas como array.
      * Valida la existencia de las claves necesarias en $tabla_join.
      * Si hay un error durante la validación, se retorna una cadena con el mensaje de error.
@@ -294,7 +295,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una estructura de JOIN a partir de una clave y una tabla.
      *
      * @param string $key La clave que será usada para el JOIN.
@@ -323,7 +324,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera datos para una operación JOIN en SQL desde varias tablas.
      *
      * Esta función permite unir varias tablas de una base de datos SQL.
@@ -404,7 +405,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función renombra un `id` en la tabla base de acuerdo al valor proporcionado.
      *
      * @param string $campo_tabla_base_id Es el nombre que se asignará al `id` de la tabla base.
@@ -439,7 +440,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una instrucción SQL JOIN.
      *
      * Esta función genera una instrucción SQL JOIN entre dos tablas, pudiendo además renombrar campos.
@@ -461,10 +462,11 @@ class joins{
         $tabla_enlace = str_replace('models\\','',$tabla_enlace);
 
         if($tabla === ''){
-            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla, es_final: true);
         }
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'El $tabla_enlace no puede ir vacio', data: $tabla_enlace);
+            return $this->error->error(mensaje: 'El $tabla_enlace no puede ir vacio', data: $tabla_enlace,
+                es_final: true);
         }
 
         $sql = $this->sql_join(campo_renombrado: $campo_renombrado, campo_tabla_base_id: $campo_tabla_base_id,
@@ -477,7 +479,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una cláusula JOIN personalizada en una consulta SQL.
      *
      * @param string $campo_renombrado El nombre del campo que se va a renombrar.
@@ -645,7 +647,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para inicializar y renombrar tablas y modelos en una operación join.
      *
      * Esta función toma como entrada cuatro argumentos los que corresponden a nombres de tablas y devolviéndolos en un
@@ -676,11 +678,12 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla);
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $tabla,es_final: true);
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace);
+            return $this->error->error(mensaje: 'Error $tabla_enlace no puede venir vacia', data: $tabla_enlace,
+                es_final: true);
         }
 
         $data_models = $this->ajusta_name_models(tabla: $tabla, tabla_enlace: $tabla_enlace);
@@ -715,7 +718,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para obtener las tablas completas.
      *
      * Esta función toma un array de columnas join y el nombre de una tabla, y devuelve un array que representa las tablas completas.
@@ -731,7 +734,7 @@ class joins{
     final public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
         $tabla = str_replace('models\\','',$tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla);
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia', data: $tabla, es_final: true);
         }
 
         $tablas = $tabla.' AS '.$tabla;
@@ -775,7 +778,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función se utiliza para generar una declaración de Join SQL.
      *
      * @param string $campo_renombrado  El campo a renombrar.
@@ -823,11 +826,11 @@ class joins{
         $join = 'LEFT';
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error $tabla esta vacia',data:  $tabla);
+            return $this->error->error(mensaje: 'Error $tabla esta vacia',data:  $tabla, es_final: true);
         }
         $tabla_enlace = trim($tabla_enlace);
         if($tabla_enlace === ''){
-            return $this->error->error(mensaje: 'Error $tabla_enlace esta vacia', data: $tabla_enlace);
+            return $this->error->error(mensaje: 'Error $tabla_enlace esta vacia', data: $tabla_enlace, es_final: true);
         }
 
         if($renombrada !==''){
@@ -986,7 +989,7 @@ class joins{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función tablas_join_base forma la base para realizar operaciones de unión entre tablas en una base de datos.
      *
      * @param array $tabla_join   Este parámetro es un arreglo que contiene información sobre las tablas
@@ -1024,7 +1027,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * tablas_join_esp Genera una string que representa una operación JOIN en SQL en español.
      *
      * @param string $key Clave que se utiliza para buscar y unir la tabla especificada.

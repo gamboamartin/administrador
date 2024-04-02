@@ -31,19 +31,21 @@ class sumas{
     public function columnas_suma(array $campos): array|string
     {
         if(count($campos)===0){
-            return $this->error->error(mensaje:'Error campos no puede venir vacio',data: $campos);
+            return $this->error->error(mensaje:'Error campos no puede venir vacio',data: $campos, es_final: true);
         }
         $columnas = '';
         foreach($campos as $alias =>$campo){
             if(is_numeric($alias)){
-                return $this->error->error(mensaje: 'Error $alias no es txt $campos[alias]=campo',data: $campos);
+                return $this->error->error(mensaje: 'Error $alias no es txt $campos[alias]=campo',data: $campos,
+                    es_final: true);
             }
             if($campo === ''){
-                return $this->error->error(mensaje: 'Error $campo esta vacio $campos[alias]=campo',data: $campos);
+                return $this->error->error(mensaje: 'Error $campo esta vacio $campos[alias]=campo',data: $campos,
+                    es_final: true);
             }
             $alias = trim($alias);
             if($alias === ''){
-                return $this->error->error(mensaje: 'Error $alias esta vacio',data: $alias);
+                return $this->error->error(mensaje: 'Error $alias esta vacio',data: $alias, es_final: true);
             }
 
             $data = $this->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
@@ -79,11 +81,11 @@ class sumas{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje:'Error $campo no puede venir vacio',data:  $campo);
+            return $this->error->error(mensaje:'Error $campo no puede venir vacio',data:  $campo, es_final: true);
         }
         $alias = trim($alias);
         if($alias === ''){
-            return $this->error->error(mensaje: 'Error $alias no puede venir vacio', data: $alias);
+            return $this->error->error(mensaje: 'Error $alias no puede venir vacio', data: $alias, es_final: true);
         }
 
         $column = (new columnas())->add_column(alias: $alias, campo: $campo);
