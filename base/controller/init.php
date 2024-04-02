@@ -1057,11 +1057,17 @@ class init{
     }
 
     /**
-     * Modela los inputs por type para frontend
-     * @param array $atributos Atributos a inicializar
-     * @param array $campos_view Campos a integrar provenientes de modelo
-     * @param stdClass $keys Parametros
-     * @return array
+     * POR DOCUMENTAR EN WIKI REV FINAL
+     * Modela los atributos de entrada y devuelve una vista de campos modificada.
+     *
+     * @param array    $atributos    Un array de atributos a modelar.
+     * @param array    $campos_view  Un array existente de campos de vista a modificar.
+     * @param stdClass $keys         Un objeto que contiene las claves.
+     *
+     * @return array   Devuelve la vista de campos modificada.
+     *
+     * @throws errores   En caso de que el atributo esté vacío o haya un error al inicializar el campo de vista.
+     * @version 18.28.0
      */
     private function modela_inputs_attr(array $atributos, array $campos_view, stdClass $keys): array
     {
@@ -1080,10 +1086,16 @@ class init{
     }
 
     /**
-     * Modela los elementos de front base
-     * @param array $campos_view Campos de modelo
-     * @param stdClass $keys Keys con parametros especiales
-     * @return array
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Modela los campos de entrada y devuelve una vista de campos modificada.
+     *
+     * @param array    $campos_view  Un array existente de campos de vista a modificar.
+     * @param stdClass $keys         Un objeto que contiene las claves.
+     *
+     * @return array   Devuelve la vista de campos modificada.
+     *
+     * @throws errores   En caso de que haya un error al inicializar el campo de vista.
+     * @version 18.28.0
      */
     private function modela_inputs_campos(array $campos_view, stdClass $keys): array
     {
