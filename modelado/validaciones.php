@@ -266,25 +266,25 @@ class validaciones extends validacion{
     final public function valida_keys_sql(array $data, string $tabla): true|array
     {
         if(!isset($data['key'])){
-            return $this->error->error(mensaje: 'Error data[key] debe existir en '.$tabla, data: $data);
+            return $this->error->error(mensaje: 'Error data[key] debe existir en '.$tabla, data: $data, es_final: true);
         }
         if(!isset($data['enlace'])){
-            return $this->error->error(mensaje:'Error data[enlace] debe existir',data: $data);
+            return $this->error->error(mensaje:'Error data[enlace] debe existir',data: $data, es_final: true);
         }
         if(!isset($data['key_enlace'])){
-            return $this->error->error(mensaje:'Error data[key_enlace] debe existir',data: $data);
+            return $this->error->error(mensaje:'Error data[key_enlace] debe existir',data: $data, es_final: true);
         }
         $data['key'] = trim($data['key']);
         $data['enlace'] = trim($data['enlace']);
         $data['key_enlace'] = trim($data['key_enlace']);
         if($data['key'] === ''){
-            return $this->error->error(mensaje:'Error data[key] esta vacio '.$tabla, data:$data);
+            return $this->error->error(mensaje:'Error data[key] esta vacio '.$tabla, data:$data, es_final: true);
         }
         if($data['enlace'] === ''){
-            return $this->error->error(mensaje:'Error data[enlace] esta vacio '.$tabla, data:$data);
+            return $this->error->error(mensaje:'Error data[enlace] esta vacio '.$tabla, data:$data, es_final: true);
         }
         if($data['key_enlace'] === ''){
-            return $this->error->error(mensaje:'Error data[key_enlace] esta vacio '.$tabla, data:$data);
+            return $this->error->error(mensaje:'Error data[key_enlace] esta vacio '.$tabla, data:$data, es_final: true);
         }
         return true;
     }

@@ -1634,6 +1634,25 @@ class _instalacion
 
     }
 
+    final public function get_tipo_dato_original(array $columna, PDO $link): array|string
+    {
+        $tipo_dato_original = $this->tipo_dato_original(columna: $columna);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener tipo_dato_original', data:  $tipo_dato_original);
+        }
+
+        $existe_tipo_dato = (new adm_tipo_dato(link: $link))->existe_by_codigo(codigo: $tipo_dato_original);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error existe_tipo_dato no se pudo obtener', data:  $existe_tipo_dato);
+        }
+        if(!$existe_tipo_dato){
+            return (new errores())->error(mensaje: 'Error no existe tipo datos no se pudo obtener', data:  $tipo_dato_original);
+        }
+
+        return $tipo_dato_original;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * La función index_unique se utiliza para crear un índice único en una tabla específica.
@@ -1960,8 +1979,21 @@ class _instalacion
 
     }
 
-    final public function tipo_dato_original(array $columna): string
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Obtiene el tipo de dato
+     * @param array $columna Columna para obtener type original de bd
+     * @return string|array
+     * @version 18.35.0
+     */
+    private function tipo_dato_original(array $columna): string|array
     {
+        $keys = array('Type');
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $columna);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos de entrada', data: $valida);
+        }
+
         $tipo_dato_original = strtoupper($columna['Type']);
 
         if($tipo_dato_original === 'VARCHAR(200)'){

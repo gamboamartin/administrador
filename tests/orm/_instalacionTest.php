@@ -1274,6 +1274,23 @@ class _instalacionTest extends test {
 
         errores::$error = false;
     }
+
+    public function test_tipo_dato_original(): void
+    {
+
+        errores::$error = false;
+        $ins = new _instalacion(link: $this->link);
+        $ins = new liberator($ins);
+
+        $columna = array();
+        $columna['Type'] = 'INT(11)';
+        $resultado = $ins->tipo_dato_original($columna);
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('INT', $resultado);
+
+        errores::$error = false;
+    }
     public function test_ver_indices(): void
     {
 

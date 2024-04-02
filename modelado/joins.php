@@ -385,7 +385,7 @@ class joins{
         $tablas_env = $tablas;
         foreach($extension_estructura as $tabla=>$data){
             if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data);
+                return $this->error->error(mensaje: 'Error data debe ser un array', data: $data, es_final: true);
             }
             $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo_tabla);
             if(errores::$error){
@@ -961,7 +961,7 @@ class joins{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'La tabla no puede ir vacia',data:  $tabla);
+            return $this->error->error(mensaje: 'La tabla no puede ir vacia',data:  $tabla, es_final: true);
         }
         $tablas = $this->obten_tablas_completas(columnas_join:  $columnas, tabla: $tabla);
         if(errores::$error){
