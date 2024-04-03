@@ -271,7 +271,7 @@ class estructuras{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Comprueba si existe una entidad en la base de datos
      *
      * Este método realiza una consulta SQL para verificar si existe una entidad con el nombre proporcionado
@@ -296,7 +296,7 @@ class estructuras{
     {
         $entidad = trim($entidad);
         if($entidad === ''){
-            return $this->error->error(mensaje: 'Error entidad vacia', data: $entidad);
+            return $this->error->error(mensaje: 'Error entidad vacia', data: $entidad, es_final: true);
         }
         $sql = (new sql())->show_tables(entidad: $entidad);
         if(errores::$error){

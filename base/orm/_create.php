@@ -16,7 +16,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función _create.atributo_codigo se encarga de modificar el objeto que se le pasa como parámetro,
      * específicamente añadiendo una nueva propiedad 'codigo' a este objeto.
      * Esta nueva propiedad es de tipo stdclass y se le asigna un valor boolean 'true'.
@@ -36,7 +36,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método se utiliza para establecer un atributo como un entero y añadirlo a un conjunto de campos.
      *
      * @param stdClass $campos El objeto que contiene todos los campos a los que se debe añadir el nuevo atributo.
@@ -48,7 +48,7 @@ class _create
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
         }
         $campos->$campo = new stdClass();
         $campos->$campo->tipo_dato = 'INT';
@@ -58,7 +58,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método establece el atributo 'status' en un objeto.
      *
      * Este método recibe un objeto, le añade la propiedad 'status' y le asigna el valor 'activo'.
@@ -85,7 +85,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función toma como argumento un objeto de la clase estándar de PHP (stdClass) que representa los atributos.
      * Luego, establece los atributos iniciales y se asegura de gestionar cualquier error que pueda ocurrir durante
      * este proceso con el método 'error' de 'this->error'.
@@ -126,7 +126,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Configura los atributos base del objeto proporcionado, si están presentes en el objeto atributos.
      *
      * @param stdClass $atributos Contiene los atributos a establecer, puede tener las propiedades tipo_dato, longitud y not_null.
@@ -162,7 +162,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función añade atributos de fecha a un objeto de campos proporcionado.
      *
      * @param stdClass $campos Objeto que representa los campos de una entidad.
@@ -191,7 +191,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR WIKI
+     * POR DOCUMENTAR WIKI FINAL REV
      * Define los atributos iniciales para el nuevo objeto que será creado.
      * Esta función crea un objeto estándar en PHP y le asigna tres atributos: tipo_dato, longitud y not_null,
      * los cuales son configurados con las cadenas "VARCHAR", "255" y "NOT NULL" respectivamente.
@@ -210,7 +210,7 @@ class _create
     }
 
     /**
-     * POD DOCUMENTAR EN WIKI
+     * POD DOCUMENTAR EN WIKI FINAL REV
      * La función atributos_integer procesa cada elemento de un array, verifica
      * si el campo está vacío y en caso de que no lo esté, invoca la función
      * atributo_integer para cada campo.
@@ -227,7 +227,7 @@ class _create
         foreach ($campos_integer as $campo){
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+                return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
             }
 
             $campos = $this->atributo_integer(campos: $campos,campo: $campo);
@@ -287,7 +287,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método se encarga de establecer y preparar los campos base de la base de datos de la aplicación.
      *
      * Primero, el método añade un atributo código único a los campos y se maneja cualquier error
@@ -361,7 +361,7 @@ class _create
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
         }
         $atributos_base = $this->atributos_sql(atributos: $atributos);
         if(errores::$error){
@@ -390,7 +390,8 @@ class _create
         $campos_sql = '';
         foreach ($campos as $campo=>$atributos){
             if(!is_object($atributos)){
-                return $this->error->error(mensaje: 'Error atributos debe ser un objeto',data: $atributos);
+                return $this->error->error(mensaje: 'Error atributos debe ser un objeto',data: $atributos,
+                    es_final: true);
             }
             $campo_sql = $this->campo_sql(atributos: $atributos, campo: $campo);
             if(errores::$error){
@@ -596,7 +597,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Calcula y retorna la longitud de un cierto atributo base en SQL.
      *
      * @param stdClass $atributos_base Un objeto stdClass que representa los atributos base de un campo de la base de datos.

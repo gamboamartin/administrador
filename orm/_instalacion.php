@@ -753,7 +753,7 @@ class _instalacion
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table, es_final: true);
         }
 
         $out = new stdClass();
@@ -1084,7 +1084,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Verifica si la entidad proporcionada existe en la base de datos.
      *
      * @param string $table El nombre de la tabla a verificar.
@@ -1106,7 +1106,7 @@ class _instalacion
     {
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table vacia', data: $table, es_final: true);
         }
         $existe = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
         if(errores::$error){

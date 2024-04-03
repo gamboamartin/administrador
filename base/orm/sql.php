@@ -132,11 +132,11 @@ class sql{
     final public function create_table(stdClass $campos, string $table): array|stdClass
     {
         if(count((array)$campos) === 0){
-            return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos);
+            return $this->error->error(mensaje: 'Error campos esta vacio',data: $campos, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table, es_final: true);
         }
 
         $datos_tabla = (new _create())->datos_tabla(campos: $campos);
