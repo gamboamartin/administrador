@@ -2,11 +2,15 @@
 namespace gamboamartin\administrador\tests\base\controller\orm;
 
 use base\orm\_base;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\models\_base_accion;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_grupo;
+use gamboamartin\administrador\models\adm_campo;
 use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_session;
+use gamboamartin\administrador\models\adm_tipo_dato;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -639,8 +643,9 @@ class _instalacionTest extends test {
         $datas_index->name_indice = 'a';
         $datas_index->indices = array();
         $datas_index->indices[0] = new stdClass();
-        $datas_index->indices[0]->CONSTRAINT_NAME = 'a';
+        $datas_index->indices[0]->nombre_indice = 'a';
         $resultado = $ins->existe_foreign_base($datas_index);
+        //print_r($resultado);exit;
 
         $this->assertIsBool($resultado);
         $this->assertNotTrue(errores::$error);
@@ -1056,21 +1061,45 @@ class _instalacionTest extends test {
 
         $table = 'adm_accion';
         $resultado = $ins->get_foraneas($table);
-
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals("def", $resultado[0]->CONSTRAINT_CATALOG);
-        $this->assertEquals("administrador", $resultado[0]->CONSTRAINT_SCHEMA);
-        $this->assertEquals("adm_accion_ibfk_1", $resultado[0]->CONSTRAINT_NAME);
-        $this->assertEquals("administrador", $resultado[0]->TABLE_SCHEMA);
-        $this->assertEquals("adm_accion", $resultado[0]->TABLE_NAME);
-        $this->assertEquals("FOREIGN KEY", $resultado[0]->CONSTRAINT_TYPE);
-        $this->assertEquals("YES", $resultado[0]->ENFORCED);
+        $this->assertEquals("administrador", $resultado[0]->nombre_database);
+        $this->assertEquals("adm_accion_ibfk_1", $resultado[0]->nombre_indice);
+        $this->assertEquals("adm_accion", $resultado[0]->nombre_tabla);
+        $this->assertEquals("YES", $resultado[0]->es_forzada);
+        $this->assertEquals("adm_seccion_id", $resultado[0]->columna_foranea);
+        $this->assertEquals("adm_seccion", $resultado[0]->nombre_tabla_relacion);
+        $this->assertEquals("id", $resultado[0]->nombre_columna_relacion);
 
         errores::$error = false;
 
     }
 
+    public function test_inserta_adm_campos(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+        $ins = new _instalacion(link: $this->link);
+
+        $exe = (new instalacion())->instala(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al instalar',data:  $exe);
+            print_r($error);
+            exit;
+        }
+
+        $modelo_integracion = new adm_session(link: $this->link);
+        $resultado = $ins->inserta_adm_campos($modelo_integracion);
+        //print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+
+
+    }
     public function test_integra_fc_no_conf(): void
     {
         $ins = new _instalacion(link: $this->link);

@@ -427,13 +427,14 @@ class _instalacion
 
     }
 
-    private function adm_campo_ins(int $adm_seccion_id, int $adm_tipo_dato_id, array $columna): array
+    private function adm_campo_ins(int $adm_seccion_id, int $adm_tipo_dato_id, array $columna, string $es_foranea): array
     {
         $add_campo_ins['descripcion'] = $columna['campo'];
         $add_campo_ins['adm_seccion_id'] = $adm_seccion_id;
         $add_campo_ins['sub_consulta'] = '';
         $add_campo_ins['adm_tipo_dato_id'] = $adm_tipo_dato_id;
         $add_campo_ins['codigo'] = $adm_seccion_id.'-'.$adm_tipo_dato_id.'-'.$columna['campo'];
+        $add_campo_ins['es_foranea'] = $es_foranea;
         return $add_campo_ins;
 
     }
@@ -1003,6 +1004,20 @@ class _instalacion
 
     }
 
+    private function es_fk(string $column_name, string $table)
+    {
+        $foraneas = $this->get_foraneas(table: $table,column_name: $column_name);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener foraneas', data: $foraneas);
+        }
+        $es_fk = false;
+        if(count($foraneas) > 0){
+            $es_fk = true;
+        }
+        return $es_fk;
+
+    }
+
     /**
      * POR DOCUMENTAR EN WIKI
      * Ejecuta una operación de clave extranjera
@@ -1184,7 +1199,7 @@ class _instalacion
                 if(!isset($datas_index->name_indice)){
                     continue;
                 }
-                if ($datas_index->name_indice === $indice->CONSTRAINT_NAME) {
+                if ($datas_index->name_indice === $indice->nombre_indice) {
                     $existe_indice = true;
                     break;
                 }
@@ -1583,7 +1598,7 @@ class _instalacion
 
     }
 
-    private function genera_adm_campo_ins(int $adm_seccion_id, array $columna): array
+    private function genera_adm_campo_ins(int $adm_seccion_id, array $columna, string $es_foranea): array
     {
         $adm_tipo_dato_id = $this->adm_tipo_dato_id(columna: $columna,link:  $this->link);
         if(errores::$error){
@@ -1591,7 +1606,7 @@ class _instalacion
         }
 
         $add_campo_ins = $this->adm_campo_ins(adm_seccion_id: $adm_seccion_id,
-            adm_tipo_dato_id:  $adm_tipo_dato_id,columna:  $columna);
+            adm_tipo_dato_id:  $adm_tipo_dato_id,columna:  $columna, es_foranea: $es_foranea);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error add_campo_ins no se pudo obtener', data:  $add_campo_ins);
         }
@@ -1658,18 +1673,17 @@ class _instalacion
      *
      * @version 16.90.0
      */
-    private function get_foraneas(string $table): array|stdClass
+    private function get_foraneas(string $table, string $column_name = ''): array|stdClass
     {
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table vacia',data:  $table);
+            return $this->error->error(mensaje: 'Error table vacia',data:  $table,es_final: true);
         }
 
-        $sql = (new sql())->get_foraneas(table: $table);
+        $sql = (new sql())->get_foraneas(table: $table,column_name: $column_name);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
-
         $result = $this->modelo->ejecuta_consulta(consulta: $sql);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
@@ -1792,7 +1806,7 @@ class _instalacion
 
     }
 
-    final public function inserta_adm_campos(modelo $modelo_integracion)
+    final public function inserta_adm_campos(modelo $modelo_integracion): array
     {
         $adm_seccion_id = (new adm_seccion(link: $this->link))->adm_seccion_id(descripcion: $modelo_integracion->tabla);
         if(errores::$error){
@@ -1801,21 +1815,33 @@ class _instalacion
 
         $columnas = $modelo_integracion->data_columnas->columnas_completas;
 
+        $inserciones = array();
         foreach ($columnas as $columna){
+            $name_column = trim($columna['campo']);
 
-            $inserta = $this->integra_adm_campo(adm_seccion_id: $adm_seccion_id,columna:  $columna);
+            $es_fk = $this->es_fk(column_name: $name_column,table:  $modelo_integracion->tabla);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al validar si es fk', data:  $es_fk);
+            }
+            $es_foranea = 'inactivo';
+            if($es_fk){
+                $es_foranea = 'activo';
+            }
+            $inserta = $this->integra_adm_campo(adm_seccion_id: $adm_seccion_id,columna:  $columna, es_foranea: $es_foranea);
             if(errores::$error){
                 return (new errores())->error(mensaje: 'Error al insertar adm campo', data:  $inserta);
             }
+            $inserciones[] = $inserta;
         }
 
-        return $columnas;
+        return $inserciones;
 
     }
 
-    private function integra_adm_campo(int $adm_seccion_id, array $columna): array|stdClass
+    private function integra_adm_campo(int $adm_seccion_id, array $columna, string $es_foranea): array|stdClass
     {
-        $add_campo_ins = $this->genera_adm_campo_ins(adm_seccion_id: $adm_seccion_id,columna: $columna);
+        $add_campo_ins = $this->genera_adm_campo_ins(adm_seccion_id: $adm_seccion_id,columna: $columna,
+            es_foranea: $es_foranea);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error add_campo_ins no se pudo obtener', data:  $add_campo_ins);
         }
@@ -2105,7 +2131,19 @@ class _instalacion
         if($tipo_dato_original === 'VARCHAR(255)'){
             $tipo_dato_original = 'VARCHAR';
         }
+        if($tipo_dato_original === 'VARCHAR(100)'){
+            $tipo_dato_original = 'VARCHAR';
+        }
+        if($tipo_dato_original === 'VARCHAR(50)'){
+            $tipo_dato_original = 'VARCHAR';
+        }
         if($tipo_dato_original === 'BIGINT(20)'){
+            $tipo_dato_original = 'BIGINT';
+        }
+        if($tipo_dato_original === 'BIGINT(10)'){
+            $tipo_dato_original = 'BIGINT';
+        }
+        if($tipo_dato_original === 'BIGINT(100)'){
             $tipo_dato_original = 'BIGINT';
         }
         if($tipo_dato_original === 'INT(11)'){

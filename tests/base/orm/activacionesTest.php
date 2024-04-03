@@ -113,6 +113,7 @@ class activacionesTest extends test {
         $registro['descripcion'] = 1;
         $registro['adm_seccion_id'] = 1;
         $registro['adm_tipo_dato_id'] = 1;
+        $registro['es_foranea'] = 'inactivo';
         $r_alta_campo = $modelo->alta_registro($registro);
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al insertar campo', data: $r_alta_campo);

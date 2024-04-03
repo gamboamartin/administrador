@@ -44,6 +44,10 @@ class instalacion
         $campos->predeterminado = new stdClass();
         $campos->predeterminado->default = 'inactivo';
 
+        $campos->es_foranea = new stdClass();
+        $campos->es_foranea = new stdClass();
+        $campos->es_foranea->default = 'inactivo';
+
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_campo');
 
         if(errores::$error){
@@ -481,6 +485,20 @@ class instalacion
         $adm_tipo_dato['id'] = 7;
         $adm_tipo_dato['descripcion'] = 'FLOAT';
         $adm_tipo_dato['codigo'] = 'FLOAT';
+
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+        $adm_tipo_dato['id'] = 8;
+        $adm_tipo_dato['descripcion'] = 'DATE';
+        $adm_tipo_dato['codigo'] = 'DATE';
+
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+        $adm_tipo_dato['id'] = 9;
+        $adm_tipo_dato['descripcion'] = 'DATETIME';
+        $adm_tipo_dato['codigo'] = 'DATETIME';
 
 
         $adm_tipos_datos[] = $adm_tipo_dato;

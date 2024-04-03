@@ -237,12 +237,15 @@ class sqlTest extends test {
 
         $table = 'a';
         $resultado = $sql->get_foraneas($table);
-       // print_r($resultado);exit;
+        //print_r($resultado);exit;
         $this->assertIsString( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsString("SELECT * FROM information_schema.TABLE_CONSTRAINTS 
-                WHERE information_schema.TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'FOREIGN KEY' 
-                AND information_schema.TABLE_CONSTRAINTS.TABLE_SCHEMA = ",$resultado);
+        $this->assertStringContainsString("fk.CONSTRAINT_SCHEMA AS nombre_database",$resultado);
+        $this->assertStringContainsString("fk.CONSTRAINT_NAME AS nombre_indice,",$resultado);
+        $this->assertStringContainsString(" cl.COLUMN_NAME AS columna_foranea,",$resultado);
+        $this->assertStringContainsString("LEFT JOIN information_schema.KEY_COLUMN_USAGE AS cl ON",$resultado);
+        $this->assertStringContainsString("AND fk.TABLE_NAME = 'a'",$resultado);
+        $this->assertStringContainsString("AND fk.CONSTRAINT_TYPE = 'FOREIGN KEY'",$resultado);
         errores::$error = false;
     }
     public function test_in(): void

@@ -974,9 +974,10 @@ class _instalacionTest extends test
         $relacion_table = 'adm_seccion';
         $table = 'adm_accion';
         $resultado = $ins->get_data_indices($name_indice_opt, $relacion_table, $table);
+        //print_r($resultado);exit;
         $this->assertNotTrue($resultado);
         $this->assertIsObject($resultado);
-        $this->assertEquals('adm_accion',$resultado->indices[0]->TABLE_NAME);
+        $this->assertEquals('adm_accion',$resultado->indices[0]->nombre_tabla);
         errores::$error = false;
 
     }

@@ -416,17 +416,41 @@ class sql{
      * }
      * @version 16.77.0
      */
-    final public function get_foraneas(string $table): string|array
+    final public function get_foraneas(string $table, string $column_name = ''): string|array
     {
         $table = trim($table);
         if($table === ''){
             return $this->error->error(mensaje: 'Error table vacia',data:  $table);
         }
         $db_name = (new database())->db_name;
-        $sql = "SELECT * FROM information_schema.TABLE_CONSTRAINTS 
-                WHERE information_schema.TABLE_CONSTRAINTS.CONSTRAINT_TYPE = 'FOREIGN KEY' 
-                AND information_schema.TABLE_CONSTRAINTS.TABLE_SCHEMA = '$db_name'
-                AND information_schema.TABLE_CONSTRAINTS.TABLE_NAME = '$table';";
+
+        $column_name = trim ($column_name);
+        $column_name_sql = '';
+        if($column_name !== ''){
+            $column_name_sql = "AND cl.COLUMN_NAME  = '$column_name'";
+        }
+
+        $sql = /** @lang MYSQL */
+            "SELECT 
+                    fk.CONSTRAINT_SCHEMA AS nombre_database,
+                    fk.CONSTRAINT_NAME AS nombre_indice,
+                    fk.TABLE_NAME AS nombre_tabla,
+                    fk.ENFORCED AS es_forzada,
+                    cl.COLUMN_NAME AS columna_foranea,
+                    cl.REFERENCED_TABLE_SCHEMA AS nombre_database_relacion,
+                    cl.REFERENCED_TABLE_NAME AS nombre_tabla_relacion,
+                    cl.REFERENCED_COLUMN_NAME AS nombre_columna_relacion
+                FROM information_schema.TABLE_CONSTRAINTS AS fk 
+                LEFT JOIN information_schema.KEY_COLUMN_USAGE AS cl ON
+	                fk.CONSTRAINT_SCHEMA = cl.CONSTRAINT_SCHEMA AND
+	                fk.TABLE_NAME = cl.TABLE_NAME AND
+	                fk.CONSTRAINT_NAME = cl.CONSTRAINT_NAME
+                
+	            WHERE fk.CONSTRAINT_SCHEMA = '$db_name'
+                    AND fk.TABLE_NAME = '$table'
+                    AND fk.CONSTRAINT_TYPE = 'FOREIGN KEY'
+                    $column_name_sql ;";
+
         return trim($sql);
 
     }
