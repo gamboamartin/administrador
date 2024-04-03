@@ -442,6 +442,21 @@ class instalacion
         $adm_tipo_dato['descripcion'] = 'TIMESTAMP';
         $adm_tipo_dato['codigo'] = 'TIMESTAMP';
 
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+        $adm_tipo_dato['id'] = 6;
+        $adm_tipo_dato['descripcion'] = 'DOUBLE';
+        $adm_tipo_dato['codigo'] = 'DOUBLE';
+
+
+        $adm_tipos_datos[] = $adm_tipo_dato;
+
+        $adm_tipo_dato['id'] = 7;
+        $adm_tipo_dato['descripcion'] = 'FLOAT';
+        $adm_tipo_dato['codigo'] = 'FLOAT';
+
+
         $adm_tipos_datos[] = $adm_tipo_dato;
 
 

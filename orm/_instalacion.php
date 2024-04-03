@@ -782,7 +782,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una nueva tabla si no existe y luego inicializa su AUTO_INCREMENT
      *
      * Esta función primero verifica si la tabla dada ya existe.
@@ -1243,10 +1243,10 @@ class _instalacion
     {
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia',data: $table, es_final: true);
         }
         if(is_numeric($table)){
-            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
+            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table, es_final: true);
         }
         $results = array();
         foreach ($foraneas as $campo=>$atributos){

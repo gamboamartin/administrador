@@ -13,7 +13,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una sentencia SQL para agregar una nueva columna a una tabla.
      *
      * @param string $campo El nombre de la nueva columna a agregar.
@@ -261,7 +261,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una declaración SQL para establecer un valor predeterminado en una columna.
      *
      * @param string $value El valor predeterminado a establecer.
@@ -301,7 +301,7 @@ class sql{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Elimina una columna de una tabla específica en la base de datos.
      *
      * @param string $campo La columna que se va a eliminar.
@@ -316,11 +316,11 @@ class sql{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
         return trim("ALTER TABLE $table DROP COLUMN $campo;");
 
@@ -825,22 +825,22 @@ class sql{
         $table = trim($table);
 
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo, es_final: true);
         }
         if($new_name === ''){
-            return $this->error->error(mensaje: 'Error new_name esta vacio', data: $new_name);
+            return $this->error->error(mensaje: 'Error new_name esta vacio', data: $new_name, es_final: true);
         }
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacio', data: $table, es_final: true);
         }
         if(is_numeric($campo)){
-            return $this->error->error(mensaje: 'Error campo es numerico', data: $campo);
+            return $this->error->error(mensaje: 'Error campo es numerico', data: $campo, es_final: true);
         }
         if(is_numeric($new_name)){
-            return $this->error->error(mensaje: 'Error new_name es numerico', data: $new_name);
+            return $this->error->error(mensaje: 'Error new_name es numerico', data: $new_name, es_final: true);
         }
         if(is_numeric($table)){
-            return $this->error->error(mensaje: 'Error table es numerico', data: $table);
+            return $this->error->error(mensaje: 'Error table es numerico', data: $table, es_final: true);
         }
 
         return "ALTER TABLE $table RENAME COLUMN $campo to $new_name;";
@@ -992,7 +992,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida los valores de los argumentos campo, tabla y tipo de dato. Si alguno de ellos es una cadena vacía, devuelve un error.
      *
      * @param string $campo El nombre de la columna a validar.
@@ -1010,10 +1010,10 @@ class sql{
 
         $tipo_dato = trim($tipo_dato);
         if($tipo_dato === ''){
-            return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato);
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacio',data: $tipo_dato, es_final: true);
         }
         if(is_numeric($tipo_dato)){
-            return $this->error->error(mensaje: 'Error tipo_dato debe ser un texto',data: $tipo_dato);
+            return $this->error->error(mensaje: 'Error tipo_dato debe ser un texto',data: $tipo_dato, es_final: true);
         }
 
         $longitud = trim($longitud);
@@ -1022,7 +1022,8 @@ class sql{
         if($tipo_dato === 'VARCHAR'){
             if($longitud === ''){
                 return $this->error->error(
-                    mensaje: 'Error tipo_dato esta VARCHAR entonces longitud debe ser u numero entero',data: $tipo_dato);
+                    mensaje: 'Error tipo_dato esta VARCHAR entonces longitud debe ser u numero entero',
+                    data: $tipo_dato, es_final: true);
             }
 
         }
@@ -1032,7 +1033,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función valida si el nombre del campo y la tabla proporcionados son válidos.
      *
      * @param string $campo El nombre del campo que se desea validar.
@@ -1048,18 +1049,18 @@ class sql{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
         }
         if(is_numeric($campo)){
-            return $this->error->error(mensaje: 'Error campo debe ser un texto',data: $campo);
+            return $this->error->error(mensaje: 'Error campo debe ser un texto',data: $campo, es_final: true);
         }
 
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia',data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia',data: $table, es_final: true);
         }
         if(is_numeric($table)){
-            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table);
+            return $this->error->error(mensaje: 'Error table debe ser un texto',data: $table, es_final: true);
         }
         return true;
 
