@@ -1790,7 +1790,28 @@ class _instalacion
 
     }
 
-    final public function integra_adm_campo(int $adm_seccion_id, array $columna): array|stdClass
+    final public function inserta_adm_campos(modelo $modelo_integracion)
+    {
+        $adm_seccion_id = (new adm_seccion(link: $this->link))->adm_seccion_id(descripcion: $modelo_integracion->tabla);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error adm_seccion_id no se pudo obtener', data:  $adm_seccion_id);
+        }
+
+        $columnas = $modelo_integracion->data_columnas->columnas_completas;
+
+        foreach ($columnas as $columna){
+
+            $inserta = $this->integra_adm_campo(adm_seccion_id: $adm_seccion_id,columna:  $columna);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al insertar adm campo', data:  $inserta);
+            }
+        }
+
+        return $columnas;
+
+    }
+
+    private function integra_adm_campo(int $adm_seccion_id, array $columna): array|stdClass
     {
         $add_campo_ins = $this->genera_adm_campo_ins(adm_seccion_id: $adm_seccion_id,columna: $columna);
         if(errores::$error){
