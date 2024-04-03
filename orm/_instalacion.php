@@ -59,7 +59,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método para agregar una columna a una tabla en la base de datos.
      *
      * @param stdClass $atributos Atributos de la columna para agregar.
@@ -117,11 +117,11 @@ class _instalacion
         }
         $campo = trim($campo);
         if($campo === ''){
-            return (new errores())->error(mensaje: 'Error campo esta vacio', data:  $campo);
+            return (new errores())->error(mensaje: 'Error campo esta vacio', data:  $campo, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return (new errores())->error(mensaje: 'Error table esta vacio', data:  $table);
+            return (new errores())->error(mensaje: 'Error table esta vacio', data:  $table, es_final: true);
         }
 
         $data_column = $this->data_column(atributos: $atributos,campo_origen_data:  $campo_origen_data);
@@ -186,7 +186,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Agrega una columna a una tabla dada.
      *
      * @param string $campo El nombre de la columna a agregar.
@@ -399,13 +399,14 @@ class _instalacion
     {
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
         $adds = array();
         foreach ($campos as $campo=>$atributos){
 
             if(!is_object($atributos)){
-                return $this->error->error(mensaje: 'Error atributos debe ser un objeto', data: $atributos);
+                return $this->error->error(mensaje: 'Error atributos debe ser un objeto', data: $atributos,
+                    es_final: true);
             }
             $valida = (new sql())->valida_column_base(campo: $campo,table:  $table);
             if(errores::$error){
@@ -453,7 +454,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Ajusta los atributos de un objeto data para su uso en funciones posteriores.
      *
      * @param stdClass $atributos Los atributos a ajustar.
@@ -491,7 +492,7 @@ class _instalacion
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método privado que ajusta el tipo de dato de los atributos recibidos.
      *
      * Este método se encarga de verificar que exista el atributo 'tipo_dato' y luego convertir este atributo a mayúsculas.
@@ -595,7 +596,7 @@ class _instalacion
 
     }
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Metodo campos_origen
      *
      * Este método se encarga de describir los campos de una tabla específica en la base de datos.
@@ -859,7 +860,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función prepara la estructura de datos para una columna de una tabla de base de datos.
      *
      * @param stdClass $atributos Un objeto que contiene atributos para una columna de base de datos.
@@ -903,7 +904,7 @@ class _instalacion
 
     }
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método 'default'
      *
      * Si el objeto $atributos tiene un atributo 'default', este método
@@ -930,7 +931,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Realiza una consulta para describir la estructura de una tabla.
      *
      * @param string $table El nombre de la tabla a describir.
@@ -1048,7 +1049,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Verifica si un campo específico existe en un conjunto de campos dado.
      *
      * @param string $campo_integrar El nombre del campo a buscar.
@@ -1060,7 +1061,8 @@ class _instalacion
     {
         $campo_integrar = trim($campo_integrar);
         if($campo_integrar === ''){
-            return $this->error->error(mensaje: 'Error campo_integrar esta vacio', data: $campo_integrar);
+            return $this->error->error(mensaje: 'Error campo_integrar esta vacio', data: $campo_integrar,
+                es_final: true);
         }
 
         $existe_campo = false;
@@ -1942,7 +1944,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método que determina la longitud del atributo basado en el tipo de dato.
      *
      * Este método establece la longitud por defecto de diferentes tipos de datos (por ejemplo, DOUBLE y TIMESTAMP).
@@ -2026,7 +2028,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función maneja el parámetro not_null dentro de los atributos de entrada.
      *
      * @param stdClass $atributos El objeto que contiene los atributos de entrada.
@@ -2045,7 +2047,7 @@ class _instalacion
     }
 
     /**
-     * POD DOCUMENTAR EN WIKI
+     * POD DOCUMENTAR EN WIKI FINAL REV
      * Esta función se encarga de ajustar el tipo de dato de una propiedad definida en un
      * objeto estándar de PHP (stdClass).
      *

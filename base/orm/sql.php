@@ -1088,15 +1088,15 @@ class sql{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacio', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacio', data: $table, es_final: true);
         }
         $tipo_dato = trim($tipo_dato);
         if($tipo_dato === ''){
-            return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato);
+            return $this->error->error(mensaje: 'Error tipo_dato esta vacio', data: $tipo_dato, es_final: true);
         }
         if($valida_pep_8) {
             $valida = $this->valida_pep_8(campo: $campo,table:  $table);
