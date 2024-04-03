@@ -862,7 +862,8 @@ class modelo extends modelo_base {
     public function elimina_full_childrens(): array
     {
         if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array(),
+                es_final: true);
         }
         $dels = array();
         foreach ($this->childrens as $modelo_children=>$namespace){
@@ -887,7 +888,8 @@ class modelo extends modelo_base {
     public function elimina_todo(): array
     {
         if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array(),
+                es_final: true);
         }
 
         $elimina_todo_children = $this->elimina_full_childrens();

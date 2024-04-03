@@ -109,7 +109,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una tabla en la base de datos SQL.
      *
      * @param stdClass $campos Un objeto con los campos y características de cada campo en la tabla
@@ -158,7 +158,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función data_index se utiliza para configurar un índice en una o varias columnas de una base de datos SQL.
      *
      * @param string $columna El nombre de la columna para la cual se creará el índice.
@@ -181,7 +181,7 @@ class sql{
     {
         $columna = trim($columna);
         if($columna === ''){
-            return $this->error->error(mensaje: 'Error columna esta vacia', data: $columna);
+            return $this->error->error(mensaje: 'Error columna esta vacia', data: $columna, es_final: true);
         }
         $coma = '';
         $guion = '';
@@ -202,7 +202,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR WIKI
+     * POR DOCUMENTAR WIKI FINAL REV
      * Esta función se utiliza para preparar los datos necesarios para la creación de un índice único en una tabla SQL.
      *
      * @param array $columnas Arreglo de columnas sobre las que se va a construir el índice único. No debe estar vacío.
@@ -232,11 +232,11 @@ class sql{
     private function data_index_unique(array $columnas, string $table, string $index_name = ''): array|stdClass
     {
         if(count($columnas) === 0){
-            return $this->error->error(mensaje: 'Error columnas esta vacio', data: $columnas);
+            return $this->error->error(mensaje: 'Error columnas esta vacio', data: $columnas, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
         $data = new stdClass();
         $data->columnas_index = '';
@@ -244,7 +244,7 @@ class sql{
         foreach ($columnas as $columna){
             $columna = trim($columna);
             if($columna === ''){
-                return $this->error->error(mensaje: 'Error columna esta vacia', data: $columna);
+                return $this->error->error(mensaje: 'Error columna esta vacia', data: $columna, es_final: true);
             }
             $data = $this->data_index(columna: $columna,columnas_index:  $data->columnas_index,
                 index_name:  $data->index_name);
@@ -462,7 +462,7 @@ class sql{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea un índice único en una tabla.
      *
      * @param array $columnas
@@ -496,11 +496,11 @@ class sql{
     final public function index_unique(array $columnas, string $table, string $index_name = ''): string|array
     {
         if(count($columnas ) === 0){
-            return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas);
+            return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
 
         $data = $this->data_index_unique(columnas: $columnas,table:  $table, index_name: $index_name);
@@ -545,7 +545,7 @@ class sql{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Inicializa el autoincremento de una tabla en una base de datos MySQL.
      *
      * Este método permite inicializar el autoincremento de una tabla específica en una base de datos MySQL.
@@ -562,7 +562,7 @@ class sql{
     {
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
 
         return /** @lang MYSQL */ "ALTER TABLE $table AUTO_INCREMENT=0;";

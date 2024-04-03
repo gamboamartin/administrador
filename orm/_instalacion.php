@@ -313,7 +313,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método para agregar un índice único a una columna en una tabla.
      *
      * @param string $campo Nombre de la columna a la que se agregará el índice.
@@ -326,11 +326,11 @@ class _instalacion
     {
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacia', data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacia', data: $campo, es_final: true);
         }
 
         $columnas_unique = array($campo);
@@ -343,7 +343,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método privado 'add_uniques_base' agrega índices únicos a la base en una tabla específica.
      *
      * @param stdClass $campos_por_integrar Un objeto cuyas propiedades son campos para integrar.
@@ -729,7 +729,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una tabla utilizando la información suministrada.
      *
      * @param stdClass $campos Objeto que contiene la información sobre los campos requeridos para la tabla
@@ -1697,7 +1697,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función index_unique se utiliza para crear un índice único en una tabla específica.
      *
      * @param array $columnas representa las columnas para las cuales se va a crear el índice único.
@@ -1711,11 +1711,11 @@ class _instalacion
     final public function index_unique(array $columnas,string $table, string $index_name = ''): array|stdClass
     {
         if(count($columnas ) === 0){
-            return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas);
+            return $this->error->error(mensaje: 'Error columnas esta vacia', data: $columnas, es_final: true);
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
         $sql = (new sql())->index_unique(columnas: $columnas,table:  $table, index_name: $index_name);
         if(errores::$error){
@@ -1730,7 +1730,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Inicializa el valor de AUTO_INCREMENT de la tabla dada
      *
      * Esta función llama a una función correspondiente en la clase sql para obtener la sentencia sql.
@@ -1751,7 +1751,7 @@ class _instalacion
 
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
 
         $sql = (new sql())->init_auto_increment(table: $table);

@@ -240,7 +240,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método genera el SQL necesario para la creación de atributos en base a un objeto atributos dado.
      *
      * @param stdClass $atributos El objeto de entrada que contiene los atributos para la generación de SQL.
@@ -347,7 +347,7 @@ class _create
 
     }
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una sentencia SQL para un campo específico de acuerdo a los atributos proporcionados
      *
      * @param stdClass $atributos Un objeto con los atributos del campo, incluyendo su tipo de dato y longitud.
@@ -376,7 +376,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método se utiliza para generar campos SQL para la operación de creación.
      *
      * @param stdClass $campos Una colección de campos para los cuales se debe generar el SQL.
@@ -404,7 +404,7 @@ class _create
 
     }
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función crea claves foráneas.
      *
      * Recibe como parámetro un objeto con los campos de la tabla.
@@ -422,7 +422,8 @@ class _create
         foreach ($campos as $campo=>$atributos){
 
             if(!is_object($atributos)){
-                return $this->error->error(mensaje: 'Error atributos debe ser un objeto',data: $atributos);
+                return $this->error->error(mensaje: 'Error atributos debe ser un objeto',data: $atributos,
+                    es_final: true);
             }
             $foreign_key = $this->genera_foreign_key(atributos: $atributos,campo: $campo);
             if(errores::$error){
@@ -435,7 +436,7 @@ class _create
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función procesa y agrupa los campos de una tabla y sus claves foráneas.
      *
      * El método `datos_tabla` es una función que recibe como parámetro un objeto que contiene todos los campos de una tabla.
@@ -473,7 +474,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una consulta SQL por defecto basada en un conjunto de atributos.
      *
      * @param stdClass $atributos_base Objeto que contiene los atributos para generar la consulta SQL.
@@ -508,7 +509,7 @@ class _create
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función es para crear una clave foránea en la base de datos.
      *
      * @param string $campo Es el nombre del campo en la tabla que queremos usar como clave foránea.
@@ -522,17 +523,17 @@ class _create
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio',data: $campo, es_final: true);
         }
         $references = trim($references);
         if($references === ''){
-            return $this->error->error(mensaje: 'Error references esta vacio',data: $references);
+            return $this->error->error(mensaje: 'Error references esta vacio',data: $references, es_final: true);
         }
         return   "FOREIGN KEY ($campo) REFERENCES $references(id) ON UPDATE RESTRICT ON DELETE RESTRICT";
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera SQL para las claves foráneas de la base de datos.
      *
      * Esta función toma el nombre de un campo y genera SQL para las claves foráneas.
@@ -550,7 +551,7 @@ class _create
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo vacio',data: $campo, es_final: true);
         }
 
         $references = $this->references(campo: $campo);
@@ -566,7 +567,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WEB
+     * POR DOCUMENTAR EN WEB FINAL REV
      * Genera la definición de una clave externa (Foreign Key) para una tabla de base de datos,
      * basándose en los atributos proporcionados.
      *
@@ -582,7 +583,7 @@ class _create
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo vacio',data: $campo, es_final: true);
         }
 
         $foreign_key = '';
@@ -635,7 +636,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR WN WIKI
+     * POR DOCUMENTAR WN WIKI FINAL REV
      * Función longitud_sql
      *
      * Esta función es privada y pertenece a la clase _create. Su propósito principal es generar una cadena que
@@ -678,7 +679,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función privada se encarga de procesar una referencia.
      *
      * @param string $campo Representa un string que se va a procesar.
@@ -692,7 +693,7 @@ class _create
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error campo vacio',data: $campo, es_final: true);
         }
         $explode_ref = explode('_id', $campo);
 
@@ -700,7 +701,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * El método `table` de la clase `_create`.
      * Este método genera una consulta para crear una nueva tabla con los parámetros especificados.
      *
@@ -732,7 +733,7 @@ class _create
         }
         $table = trim($table);
         if($table === ''){
-            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table);
+            return $this->error->error(mensaje: 'Error al table esta vacia',data: $table, es_final: true);
         }
 
         $coma_key = '';
