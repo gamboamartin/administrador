@@ -1400,7 +1400,7 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al validar si existe entidad',data:  $existe_table);
         }
         if(!$existe_table){
-            return $this->error->error(mensaje: 'Error no existe la entidad',data:  $table);
+            return $this->error->error(mensaje: 'Error no existe la entidad',data:  $table,es_final: true);
         }
 
         $datos = $this->describe_table(table: $table);
@@ -1559,11 +1559,11 @@ class _instalacion
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo,es_final: true);
         }
         $table = trim($table);
         if ($table === '') {
-            return $this->error->error(mensaje: 'Error table esta vacia', data: $table);
+            return $this->error->error(mensaje: 'Error table esta vacia', data: $table, es_final: true);
         }
         $valida = (new validacion())->key_id(txt: $campo);
         if(errores::$error){

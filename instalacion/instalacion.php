@@ -322,6 +322,27 @@ class instalacion
         $adm_acciones_basicas[5]['muestra_icono_btn'] = 'inactivo';
         $adm_acciones_basicas[5]['muestra_titulo_btn'] = 'inactivo';
 
+
+        $adm_acciones_basicas[6]['descripcion'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['visible'] = 'inactivo';
+        $adm_acciones_basicas[6]['seguridad'] = 'activo';
+        $adm_acciones_basicas[6]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[6]['lista'] = 'inactivo';
+        $adm_acciones_basicas[6]['status'] = 'activo';
+        $adm_acciones_basicas[6]['es_view'] = 'inactivo';
+        $adm_acciones_basicas[6]['codigo'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['codigo_bis'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['descripcion_select'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['etiqueta_label'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[6]['titulo'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['css'] = 'info';
+        $adm_acciones_basicas[6]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[6]['alias'] = 'descarga_layout';
+        $adm_acciones_basicas[6]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[6]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[6]['muestra_titulo_btn'] = 'inactivo';
+
         $altas = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica){
             $con_descripcion['adm_accion_basica.descripcion'] = $adm_accion_basica['descripcion'];
@@ -394,6 +415,11 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }
         $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'importa_result', adm_secciones: $adm_secciones,link:  $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
+        }
+
+        $r_acciones = $this->integra_accion_basica(accion_basica_descripcion: 'descarga_layout', adm_secciones: $adm_secciones,link:  $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar accion', data:  $r_acciones);
         }
