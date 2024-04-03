@@ -211,19 +211,29 @@ class columnas{
     }
 
     /**
-     * Asigna las columnas de una tabla al objeto de sesión y al modelo base.
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Asigna las columnas a la sesión y al modelo dado como parámetro.
      *
-     * Esta función toma un modelo y el nombre de una tabla de la base de datos como argumentos. Primero, realiza algunas validaciones en $tabla_bd
-     * para verificar que no esté vacío y que no sea un número.
+     * @param modelo_base $modelo El modelo base para el que se deben asignar las columnas.
+     * @param string $tabla_bd Es el nombre de la tabla en la base de datos del modelo.
      *
-     * Luego, genera las columnas field utilizando el modelo y la tabla de la base de datos y verifica si ocurrió algún error durante la generación.
+     * @return array|stdClass Regresa las columnas asignadas al modelo o un error si ocurre algo inesperado.
      *
-     * Si todo es correcto, asigna las columnas parseadas y las columnas completas a la sesión y las asigna al objeto modelo de la base. Finalmente,
-     * devuelve las columnas de la base de datos del modelo.
+     * @throws errores Si la tabla pasada está vacía o si es numérica, lanza una excepción.
      *
-     * @param modelo_base $modelo El modelo a verificar.
-     * @param string $tabla_bd El nombre de la tabla en la base de datos.
-     * @return array|stdClass Las columnas de la base de datos del modelo.
+     * @throws errores Si hay un error al obtener las columnas, lanza una excepción.
+     *
+     * @example
+     * $columnas = asigna_columnas_session_new($modelo, "mi_tabla");
+     *
+     * La función primero verifica que la tabla no está vacía y no es numérica.
+     * Luego, intenta generar las columnas para el modelo llamando a la función `genera_columnas_field`.
+     * Si hay un error al generar las columnas, lanza una excepción.
+     * A continuación, asigna las columnas generadas a las sesiones y al modelo.
+     *
+     * @see genera_columnas_field()
+     *
+     * @version 18.44.0
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
