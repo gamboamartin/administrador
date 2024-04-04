@@ -1,6 +1,7 @@
 <?php
 namespace base\orm;
 use config\database;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\modelado\params_sql;
 use gamboamartin\administrador\modelado\validaciones;
@@ -1555,6 +1556,22 @@ class modelo extends modelo_base {
             $id = (int)$r_filtro->registros_obj[0]->id;
         }
         return $id;
+
+    }
+
+    final public function get_foraneas()
+    {
+        $foraneas = (new _instalacion(link: $this->link))->get_foraneas(table: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener foraneas',data:  $foraneas);
+        }
+
+        $out = new stdClass();
+        foreach ($foraneas as $fk){
+            $key = $fk->columna_foranea;
+            $out->$key = $fk;
+        }
+        return $out;
 
     }
 

@@ -783,6 +783,28 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_get_foraneas(){
+        errores::$error = false;
+        $modelo = new adm_accion($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $_SESSION['usuario_id'] = 2;
+
+        $resultado = $modelo->get_foraneas();
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('administrador',$resultado->adm_seccion_id->nombre_database);
+        $this->assertEquals('adm_accion',$resultado->adm_seccion_id->nombre_tabla);
+        $this->assertEquals('YES',$resultado->adm_seccion_id->es_forzada);
+        $this->assertEquals('adm_seccion_id',$resultado->adm_seccion_id->columna_foranea);
+        $this->assertEquals('adm_seccion',$resultado->adm_seccion_id->nombre_tabla_relacion);
+
+
+        errores::$error = false;
+    }
+
     public function test_id_predeterminado(): void
     {
         errores::$error = false;

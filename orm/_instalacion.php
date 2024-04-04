@@ -1134,7 +1134,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Esta función verifica si existe un índice foreign en una tabla específica.
      *
      * @private
@@ -1147,7 +1146,6 @@ class _instalacion
      * retorna falso. Si ocurre un error, se devuelve un objeto de error.
      *
      * @throws errores Si surge algún error durante el proceso, se lanza una excepción.
-     * @version 16.158.0
      *
      */
     private function existe_foreign(string $name_indice_opt, string $relacion_table, string $table): bool|array
@@ -1304,7 +1302,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Este método realiza un conjunto de operaciones para generar una clave ajena completa en la base de datos.
      * Primero valida los datos de entrada, segundo añade una columna a la base de datos,
      * y por último genera una clave externa para dicha columna.
@@ -1316,7 +1313,6 @@ class _instalacion
      * @return array|stdClass Devuelve un array o un objeto estándar dependiendo de si se realiza la operación correctamente.
      *      En caso de error, se devuelve un objeto de error.
      *
-     * @version 16.196.0
      */
     final public function foreign_key_completo(string $campo, string $table, string $default = '',
                                                string $name_indice_opt =''): array|stdClass
@@ -1341,7 +1337,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Verifica si existe el atributo y agrega una clave foránea (FOREIGN KEY) en una tabla dada.
      *
      * @param string $table El nombre de la tabla en la cual se verificará la clave foránea.
@@ -1352,7 +1347,6 @@ class _instalacion
      * @return array|stdClass Devuelve un objeto de tipo stdClass con el resultado de la consulta SQL.
      * En caso de error, devuelve un array con información sobre el error.
      * @throws errores En caso de error, se lanza una excepción con información detallada sobre el mismo.
-     * @version 16.185.0
      */
     final public function foreign_key_existente(
         string $relacion_table, string $table, string $name_indice_opt = ''): array|stdClass
@@ -1382,7 +1376,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Este método se usa para asegurar la existencia e integración de una llave foránea en una tabla específica.
      *
      * @param string $campo Nombre del campo de la llave foránea.
@@ -1399,7 +1392,6 @@ class _instalacion
      * @throws errores Error al integrar foreign no conf si no es posible integrar la llave en caso de no confirmar.
      *
      * @return array|stdClass Resultado de la operación, puede ser un arreglo o un objeto dependiendo de la operación.
-     * @version 16.213.0
      */
     final public function foreign_key_seguro(
         string $campo, string $table, string $default = '', string $name_indice_opt = ''):array|stdClass
@@ -1545,7 +1537,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Este método se utiliza para crear la clave foránea de un campo existente de una tabla específica en función de un campo específico.
      * Realiza varias validaciones y devoluciones en caso de errores.
      *
@@ -1568,7 +1559,6 @@ class _instalacion
      * }
      * echo $result;
      * ```
-     * @version 16.190.0
      */
     private function foreign_por_campo(string $campo, string $table, string $name_indice_opt): array|stdClass
     {
@@ -1616,7 +1606,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Esta función se encarga de obtener los índices de los datos de una tabla determinada.
      *
      * @param string $name_indice_opt Nombre del índice opcional.
@@ -1626,7 +1615,6 @@ class _instalacion
      * @return array|stdClass Retorna un error en caso de que la tabla esté vacía, de que la tabla de relaciones esté vacía,
      *               de error al obtener índices o de error al obtener el nombre del índice. Si todo es correcto, retorna
      *               un objeto con los índices obtenidos y el nombre del índice.
-     * @version 16.147.0
      */
     private function get_data_indices(string $name_indice_opt, string $relacion_table,  string $table): array|stdClass
     {
@@ -1659,7 +1647,6 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
      * Obtiene las claves foráneas de una tabla especificada.
      *
      * @param string $table - Nombre de la tabla a consultar.
@@ -1671,9 +1658,8 @@ class _instalacion
      * Uso:
      *      $result = get_foraneas('users');
      *
-     * @version 16.90.0
      */
-    private function get_foraneas(string $table, string $column_name = ''): array|stdClass
+    final public function get_foraneas(string $table, string $column_name = ''): array|stdClass
     {
         $table = trim($table);
         if($table === ''){
