@@ -1802,6 +1802,28 @@ class _instalacion
                 return (new errores())->error(mensaje: 'Error al insertar campo', data:  $inserta);
             }
         }
+
+        else{
+            $filtro['adm_campo.es_foranea'] = $add_campo_ins['es_foranea'];
+            $existe = (new adm_campo(link: $this->link))->existe(filtro: $filtro);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al validar si existe adm campo', data:  $existe);
+            }
+            unset($filtro['adm_campo.es_foranea']);
+            $adm_campo = (new adm_campo(link: $this->link))->filtro_and(filtro: $filtro);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al obtener adm_campo', data:  $adm_campo);
+            }
+
+            if(!$existe){
+                $actualiza = (new adm_campo(link: $this->link))->modifica_bd(registro: $add_campo_ins,id: $adm_campo->registros[0]['adm_campo_id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al insertar campo', data:  $actualiza);
+                }
+            }
+
+        }
+
         return $inserta;
 
     }
