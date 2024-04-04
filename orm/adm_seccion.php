@@ -1,6 +1,7 @@
 <?php
 namespace gamboamartin\administrador\models;
 use base\orm\_modelo_children;
+use base\orm\modelo;
 use config\generales;
 use gamboamartin\errores\errores;
 
@@ -308,6 +309,24 @@ class adm_seccion extends _modelo_children {
             return $this->error->error(mensaje: 'Error a verificar si existe seccion',data:  $existe);
         }
         return $existe;
+
+    }
+
+    final public function crea_modelo(string $adm_seccion_descricpion)
+    {
+        $adm_namespace_name = (new adm_seccion(link: $this->link))->adm_namespace_name(
+            adm_seccion_descricpion: $adm_seccion_descricpion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener adm_namespace_name', data: $adm_namespace_name);
+        }
+
+        $modelo = modelo::modelo_new(link: $this->link,modelo:  $adm_seccion_descricpion,
+            namespace_model: $adm_namespace_name);
+
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener modelo', data: $modelo);
+        }
+        return $modelo;
 
     }
     private function inserta_accion(array $accion_basica, int $registro_id){

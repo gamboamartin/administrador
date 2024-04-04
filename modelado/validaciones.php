@@ -96,7 +96,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida los datos de una columna específica.
      *
      * @param array $data  Los datos que se van a validar.
@@ -117,7 +117,7 @@ class validaciones extends validacion{
         }
 
         if(is_numeric($tabla)){
-            return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla);
+            return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla, es_final: true);
         }
 
         return true;

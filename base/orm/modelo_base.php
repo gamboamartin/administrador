@@ -1629,7 +1629,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para obtener el nombre de una tabla.
      *
      * @param string $tabla_original      El nombre original de la tabla.
@@ -1644,7 +1644,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
         if(trim($tabla_original)==='' && trim($tabla_renombrada) === ''){
             return $this->error->error(mensaje: 'Error no pueden venir vacios todos los parametros',
-                data: $tabla_renombrada);
+                data: $tabla_renombrada, es_final: true);
         }
         if($tabla_renombrada!==''){
             $tabla_nombre = $tabla_renombrada;

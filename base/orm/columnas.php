@@ -40,7 +40,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método privado que permite ajustar las columnas completas para una consulta SQL.
      *
      * @param string $columnas Cadena de caracteres con el nombre de las columnas.
@@ -363,7 +363,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función responsable para cargar y renombrar las columnas en una tabla.
      *
      * @param string $columnas Cadena que representa las columnas en la tabla.
@@ -626,7 +626,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función maneja la combinación de columnas para una consulta SQL basada en las entradas $columnas_extra_sql y $columnas_sql.
      *
      * @param string $columnas_extra_sql Las columnas SQL extra. Pueden contener nombres de columnas adicionales para la consulta SQL.
@@ -659,7 +659,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Ajusta y extiende las columnas pasadas según la estructura proveída.
      *
      * Esta función recibe los nombres de las columnas, una arreglo asocativo con la estructura de
@@ -692,7 +692,7 @@ class columnas{
             $tabla = str_replace('models\\','',$tabla);
             if(is_numeric($tabla)){
                 return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
-                    data: $extension_estructura);
+                    data: $extension_estructura, es_final: true);
             }
 
             $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: false,
@@ -838,7 +838,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Renombra las columnas de la base de datos para su manipulación dentro del código.
      *
      * @param string      $columnas     Las columnas a las que se les aplicará el cambio de nombre.
@@ -854,7 +854,7 @@ class columnas{
     {
         foreach($renombres as $tabla=>$data){
             if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data);
+                return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data, es_final: true);
             }
             $r_columnas = $this->carga_columna_renombre(columnas: $columnas, columnas_sql: $columnas_sql,
                 data: $data, modelo: $modelo, tabla: $tabla);
@@ -868,7 +868,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método que genera una cadena SQL para columnas.
      *
      * Este método genera una cadena SQL para columnas dependiendo de varios parámetros de entrada proporcionados.
@@ -952,7 +952,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método columnas_sql_init
      *
      * Inicializa las columnas de SQL de acuerdo a los parámetros suministrados.
@@ -975,7 +975,8 @@ class columnas{
     private function columnas_sql_init(array $columnas, bool $columnas_en_bruto, array $columnas_parseadas,
                                        string $tabla_nombre):array|string{
         if($tabla_nombre === ''){
-            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia',data:  $tabla_nombre);
+            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia',data:  $tabla_nombre,
+                es_final: true);
         }
         $columnas_sql = '';
         foreach($columnas_parseadas as $columna_parseada){
@@ -995,7 +996,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función columnas_tablas_select elabora las columnas que se seleccionarán en una consulta SQL.
      *
      * @param bool $columnas_en_bruto Indica si las columnas se proporcionan en bruto. Si es true, la función establece
@@ -1047,7 +1048,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función maneja la adición de una coma en una consulta SQL.
      *
      * El propósito de esta función es agregar una coma al final de una lista de columnas SQL.
@@ -1071,7 +1072,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método privado prepara los datos para las columnas de envío.
      *
      * @param array $columnas Esto es una matriz de columnas.
@@ -1117,7 +1118,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método genera una nueva columna para la tabla.
      *
      * @param string $columnas Cadena de caracteres con los nombres de las columnas.
@@ -1149,7 +1150,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función genera las columnas para una consulta SQL de acuerdo a los parámetros de entrada.
      *
      * @param bool $columnas_en_bruto Determina si las columnas se pasarán en bruto.
@@ -1276,7 +1277,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función genera una tabla de columnas. Se encarga de validar los parámetros proporcionados,
      * obtener las columnas de la tabla y generar una lista de columnas SQL.
      *
@@ -1406,7 +1407,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función que integra columnas en una cadena.
      *
      * Esta función tiene la tarea de integrar los nombres de las columnas
@@ -1445,7 +1446,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método que integra las columnas por datos.
      *
      * La función se encargará de:
@@ -1674,7 +1675,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Valida las columnas SQL proporcionadas.
      *
      * Esta función privada toma tres parámetros: 'alias_columnas', 'columna_parseada', y 'tabla_nombre', y realiza varias
@@ -1696,13 +1697,16 @@ class columnas{
                                          string $tabla_nombre): true|array
     {
         if($tabla_nombre === ''){
-            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre);
+            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre,
+                es_final: true);
         }
         if($columna_parseada === ''){
-            return $this->error->error(mensaje:'Error $columna_parseada no puede venir vacia',data: $columna_parseada);
+            return $this->error->error(mensaje:'Error $columna_parseada no puede venir vacia',data: $columna_parseada,
+                es_final: true);
         }
         if($alias_columnas === ''){
-            return $this->error->error(mensaje:'Error $alias_columnas no puede venir vacia',data: $alias_columnas);
+            return $this->error->error(mensaje:'Error $alias_columnas no puede venir vacia',data: $alias_columnas,
+                es_final: true);
         }
         return true;
 
