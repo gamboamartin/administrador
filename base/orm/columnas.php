@@ -1473,19 +1473,25 @@ class columnas{
     }
 
     /**
-     * Obtiene columnas de una modelo de base de datos especificada
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Esta función se encarga de obtener las columnas de una tabla en la base de datos.
      *
-     * Esta función toma un modelo de base de datos y el nombre de una tabla.
-     * Primero, verifica si la tabla proporcionada es válida. Luego, trata de asignar las columnas de la tabla
-     * al modelo dado utilizando 'asigna_columnas_en_session'. Si esto no es exitoso, intenta obtener las columnas
-     * nuevamente utilizando 'asigna_columnas_session_new'. Finalmente, retorna las columnas del modelo.
+     * @param modelo_base $modelo Modelo base que se utilizará para obtener las columnas.
+     * @param string $tabla_original Nombre original de la tabla de la base de datos.
      *
-     * @param modelo_base $modelo instancia del modelo base desde donde se obtienen las columnas
-     * @param string $tabla_original Nombre original de la tabla en la BD
+     * @return array|stdClass Devuelve un array que contiene las columnas de la tabla
+     * o un objeto stdClass en caso de error.
      *
-     * @return array|stdClass las columnas del modelo en caso de éxito, en caso contrario, retorna un objeto de error
+     * Esta función realiza las siguientes acciones:
+     * 1. Verifica que la tabla original no esté vacía.
+     * 2. Verifica que la tabla original no sea un número.
+     * 3. Intenta asignar las columnas de la tabla a la sesión.
+     * 4. Si ocurre un error en el paso anterior, intenta obtener las columnas de una nueva sesión.
+     * 5. Devuelve las columnas de la tabla.
      *
-     * @throws errores si hay un error al asignar o obtener las columnas
+     * @throws errores Lanza una excepción en caso de que ocurra un problema al obtener las columnas.
+     *
+     * @version 19.3.0
      */
     private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
         $tabla_original = trim(str_replace('models\\','',$tabla_original));

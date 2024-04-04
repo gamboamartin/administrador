@@ -155,6 +155,18 @@ class adm_seccion extends _modelo_children {
 
     }
 
+    final public function adm_namespace_name(string $adm_seccion_descricpion)
+    {
+        $adm_seccion = $this->seccion_by_descripcion(descripcion: $adm_seccion_descricpion);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener seccion', data: $adm_seccion);
+        }
+        $adm_namespace_name = trim($adm_seccion->adm_namespace_name);
+        $adm_namespace_name_new = $adm_namespace_name.'/models';
+        return str_replace('/', '\\', $adm_namespace_name_new);
+
+    }
+
     final public function adm_seccion(string $descripcion)
     {
         $filtro['adm_seccion.descripcion'] = $descripcion;
