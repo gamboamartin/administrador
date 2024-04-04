@@ -401,7 +401,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función para manejar columnas en el modelo de base.
      *
      * Esta función procesa las columnas pasadas y las configura apropiadamente basándose en la condición de $aplica_columnas_by_table.
@@ -430,7 +430,7 @@ class columnas{
             if(count($columnas_by_table) > 0){
                 $fix = 'Si !$aplica_columnas_by_table $columnas_by_table debe ser vacio';
                 return $this->error->error(mensaje: 'Error columnas_by_table tiene datos en modelo '.$modelo->tabla,
-                    data: $columnas_by_table, fix: $fix);
+                    data: $columnas_by_table, es_final: true, fix: $fix);
             }
 
             $columnas = $this->columnas_base(columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql,
@@ -448,7 +448,7 @@ class columnas{
                 $fix .= ' columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = ';
                 $fix.= "nombre_tabla";
                 return $this->error->error(mensaje: 'Error columnas_by_table esta vacia en '.$modelo->tabla,
-                    data: $columnas_by_table, fix: $fix);
+                    data: $columnas_by_table, es_final: true, fix: $fix);
             }
             $columnas = $this->columnas_by_table(columnas_by_table: $columnas_by_table,
                 columnas_en_bruto: $columnas_en_bruto, modelo: $modelo);
@@ -501,7 +501,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función 'columnas_base' es una función privada que se utiliza para integrar columnas de varias partes del modelo de datos.
      *
      * @param bool $columnas_en_bruto Es una variable booleana que determina si se usarán o no las columnas en bruto.
@@ -595,7 +595,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Obtiene las columnas en sql de una entidad con sus relaciones
      * @param array $columnas_by_table Array de cadenas con los nombres de las tablas desde las cuales se desean extraer las columnas.
      * @param bool $columnas_en_bruto Dependiendo el valor booleano, se obtienen las columnas en bruto o no.
@@ -609,7 +609,7 @@ class columnas{
         if(count($columnas_by_table) === 0){
             $fix = 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"';
             return $this->error->error(mensaje: 'Error debe columnas_by_table esta vacia', data: $columnas_by_table,
-                fix: $fix);
+                es_final: true, fix: $fix);
         }
 
         $init = $this->init_columnas_by_table(columnas_by_table: $columnas_by_table);
@@ -706,7 +706,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función columnas_extra
      *
      * Esta función se utiliza para procesar las columnas extra en las consultas SQL.
@@ -728,11 +728,11 @@ class columnas{
 
             if(is_numeric($tabla)){
                 return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
-                    data: $extra_join);
+                    data: $extra_join, es_final: true);
             }
             if(!is_array($data)){
                 return $this->error->error(mensaje: 'Error data debe ser un array ',
-                    data: $data);
+                    data: $data, es_final: true);
             }
 
             $tabla_renombrada = $this->tabla_renombrada_extra(data: $data,tabla:  $tabla);
@@ -797,7 +797,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Obtiene las columnas para un SELECT
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
@@ -1188,7 +1188,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función es responsable de generar columnas adicionales para una consulta SQL en base a un conjunto de
      * columnas proporcionadas y un modelo específico.
      *
@@ -1222,13 +1222,15 @@ class columnas{
             }
             if(is_numeric($sub_query)){
                 return $this->error->error(mensaje: 'Error el key debe ser el nombre de la subquery',
-                    data: $columnas_extra);
+                    data: $columnas_extra, es_final: true);
             }
             if((string)$sub_query === ''){
-                return $this->error->error(mensaje:'Error el key no puede venir vacio', data: $columnas_extra);
+                return $this->error->error(mensaje:'Error el key no puede venir vacio', data: $columnas_extra,
+                    es_final: true);
             }
             if((string)$sql === ''){
-                return $this->error->error(mensaje:'Error el sql no puede venir vacio', data: $columnas_extra);
+                return $this->error->error(mensaje:'Error el sql no puede venir vacio', data: $columnas_extra,
+                    es_final: true);
             }
             $columnas_sql .= $columnas_sql === ''?"$sql AS $sub_query":",$sql AS $sub_query";
         }
@@ -1328,7 +1330,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Inicializa las columnas por tabla.
      *
      * @param array $columnas_by_table La matriz de nombres de columna por tabla.
@@ -1345,7 +1347,7 @@ class columnas{
         if(count($columnas_by_table) === 0){
             $fix = 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"';
             return $this->error->error(mensaje: 'Error debe columnas_by_table esta vacia', data: $columnas_by_table,
-                fix: $fix);
+                es_final: true, fix: $fix);
         }
         $columnas_sql = array();
         $tablas_select = array();
@@ -1522,7 +1524,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR WN WIKI
+     * POR DOCUMENTAR WN WIKI FINAL REV
      * Función para obtener las columnas completas de un modelo de base de datos.
      *
      * @param modelo_base $modelo - El modelo base a analizar.
@@ -1558,7 +1560,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea una consulta subalterna con su correspondiente alias.
      *
      * @param string $alias El alias para la consulta subalterna.
@@ -1572,18 +1574,18 @@ class columnas{
     {
         $sub_query = trim($sub_query);
         if($sub_query === ''){
-            return $this->error->error(mensaje: 'Error sub_query esta vacio ', data: $sub_query);
+            return $this->error->error(mensaje: 'Error sub_query esta vacio ', data: $sub_query, es_final: true);
         }
         $alias = trim($alias);
         if($alias === ''){
-            return $this->error->error(mensaje: 'Error alias esta vacio ', data: $alias);
+            return $this->error->error(mensaje: 'Error alias esta vacio ', data: $alias, es_final: true);
         }
         return $sub_query . ' AS ' . $alias;
 
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función que genera subqueries SQL a partir de un modelo.
      *
      * @param string $columnas Columnas para las que se generarán las subqueries.
@@ -1608,13 +1610,15 @@ class columnas{
         foreach($modelo->sub_querys as $alias => $sub_query){
             if($sub_query === ''){
                 return $this->error->error(mensaje: "Error el sub query no puede venir vacio",
-                    data: $modelo->sub_querys);
+                    data: $modelo->sub_querys, es_final: true);
             }
             if(trim($alias) === ''){
-                return $this->error->error(mensaje:"Error el alias no puede venir vacio", data:$modelo->sub_querys);
+                return $this->error->error(mensaje:"Error el alias no puede venir vacio", data:$modelo->sub_querys,
+                    es_final: true);
             }
             if(is_numeric($alias)){
-                return $this->error->error(mensaje:"Error el alias no puede ser un numero", data:$modelo->sub_querys);
+                return $this->error->error(mensaje:"Error el alias no puede ser un numero", data:$modelo->sub_querys,
+                    es_final: true);
             }
             if((count($columnas_seleccionables) > 0) && !in_array($alias, $columnas_seleccionables, true)) {
                 continue;
@@ -1636,7 +1640,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función privada que devuelve el nombre renombrado de una tabla con base en los datos proporcionados.
      *
      * @param array $data Conjunto de datos los cuales pueden contener el renombre asignado a la tabla.
@@ -1660,7 +1664,7 @@ class columnas{
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje:"Error tabla esta vacia", data:$tabla);
+            return $this->error->error(mensaje:"Error tabla esta vacia", data:$tabla, es_final: true);
         }
         $tabla_renombrada = $tabla;
         if(isset($data['renombre'])){

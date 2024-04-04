@@ -434,7 +434,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función columnas_data
      *
      * Esta función se encarga de crear un objeto con varias cadenas de consultas SQL necesarias
@@ -469,7 +469,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Calcula y aplica la cadena SQL final de columnas al consulta actual en ejecución.
      *
      * @param string $column_data Cadena SQL parcial para una columna
@@ -810,7 +810,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método extra_columns
      *
      * Este método se utiliza para agregar subqueries y columnas adicionales al SQL final.
@@ -885,7 +885,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una cadena que contiene las columnas finales basadas en los datos de las columnas proporcionados.
      *
      * @param stdClass $columns_data El objeto que contiene los datos de las columnas que se deben procesar.
@@ -1016,7 +1016,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Final public function genera_consulta_base() en la clase modelo_base.
      *
      * Este método facilita la construcción de consultas SQL básicas. Con base en
@@ -1307,7 +1307,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Integra la información final de las columnas, tras aplicar varias manipulaciones.
      *
      * @param array $columnas Lista de columnas.

@@ -156,7 +156,7 @@ class adm_seccion extends _modelo_children {
 
     }
 
-    final public function adm_namespace_name(string $adm_seccion_descricpion)
+    private function adm_namespace_name(string $adm_seccion_descricpion)
     {
         $adm_seccion = $this->seccion_by_descripcion(descripcion: $adm_seccion_descricpion);
         if(errores::$error){

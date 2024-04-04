@@ -627,7 +627,7 @@ class modelo extends modelo_base {
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, es_final: true);
         }
 
         if($where === ''){
@@ -1353,10 +1353,12 @@ class modelo extends modelo_base {
 
 
         if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit);
+            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit,
+                es_final: true);
         }
         if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset);
+            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
+                es_final: true);
 
         }
 
@@ -2677,7 +2679,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función privada que genera una sentencia OR en SQL.
      *
      * @param string $campo El nombre del campo en la base de datos.
@@ -2690,7 +2692,7 @@ class modelo extends modelo_base {
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, es_final: true);
         }
         $or = '';
         if($sentencia !== ''){
