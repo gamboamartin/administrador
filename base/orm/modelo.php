@@ -1666,7 +1666,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera una llave de tipo in para SQL
      * @param array $in IN precargada
      * @return array
@@ -1677,11 +1677,12 @@ class modelo extends modelo_base {
         if(count($in)>0) {
             if(isset($in['llave'])){
                 if(!is_string($in['llave'])){
-                    return $this->error->error(mensaje: 'Error in[llave] debe ser un string',data:  $in);
+                    return $this->error->error(mensaje: 'Error in[llave] debe ser un string',data:  $in,
+                        es_final: true);
                 }
                 $in['llave'] = trim($in['llave']);
                 if($in['llave'] === ''){
-                    return $this->error->error(mensaje: 'Error in[llave] esta vacia',data:  $in);
+                    return $this->error->error(mensaje: 'Error in[llave] esta vacia',data:  $in, es_final: true);
                 }
                 if(array_key_exists($in['llave'], $this->columnas_extra)){
                     $in['llave'] = $this->columnas_extra[$in['llave']];

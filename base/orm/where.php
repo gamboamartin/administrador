@@ -859,7 +859,8 @@ class where{
         $filtro_fecha_sql = '';
         foreach ($filtro_fecha as $fil_fecha){
             if(!is_array($fil_fecha)){
-                return $this->error->error(mensaje: 'Error $fil_fecha debe ser un array',data: $fil_fecha);
+                return $this->error->error(mensaje: 'Error $fil_fecha debe ser un array',data: $fil_fecha,
+                    es_final: true);
             }
 
             $valida = $this->valida_filtro_fecha(fil_fecha: $fil_fecha);
