@@ -59,6 +59,49 @@ class instalacion
 
     }
 
+    private function _add_adm_menu(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_menu');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $campos->etiqueta_label = new stdClass();
+        $campos->etiqueta_label->default = 'SE';
+
+        $campos->icono = new stdClass();
+        $campos->icono->default = 'SI';
+
+        $campos->titulo = new stdClass();
+        $campos->titulo->default = 'ST';
+
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_menu');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+        return $out;
+
+    }
+
     private function _add_adm_reporte(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -378,6 +421,35 @@ class instalacion
 
     }
 
+    private function adm_menu(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_menu(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Menus';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+        return $create;
+
+    }
+
+
     private function adm_reporte(PDO $link): array|stdClass
     {
         $create = $this->_add_adm_reporte(link: $link);
@@ -608,6 +680,12 @@ class instalacion
     {
 
         $out = new stdClass();
+
+        $adm_menu = $this->adm_menu(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_menu', data: $adm_menu);
+        }
+        $out->adm_menu = $adm_menu;
 
         $adm_tipo_dato = $this->adm_tipo_dato(link: $link);
         if (errores::$error) {
