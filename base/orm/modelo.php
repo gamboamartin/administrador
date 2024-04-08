@@ -611,7 +611,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Función que genera y retorna un objeto que contiene la sentencia SQL y la condición WHERE.
      *
      * @param string $campo     El nombre del campo a considerar en la sentencia SQL.
@@ -1255,24 +1255,30 @@ class modelo extends modelo_base {
 
 
     /**
-     * Genera un filtro aplicando OR
-     * @param bool $aplica_seguridad
-     * @param array $columnas columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto Genera las columnas tal y como vienen en la base de datos
-     * @param array $extra_join Genera un extra join a peticion
-     * @param array $filtro Filtro en forma filtro[campo] = 'value filtro'
-     * @param array $group_by
-     * @param array $hijo Arreglo con los datos para la obtencion de datos dependientes de la estructura o modelo
-     * @param int $limit Limit de datos a motrar
-     * @param int $offset
-     * @param array $order
-     * @return array|stdClass
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * Ejecuta una consulta SQL basada en múltiples parametros. Una consulta base se genera primero y luego
+     * se modificada con filtros, órdenes, limites y otros parámetros.
+     *
+     * @param bool $aplica_seguridad Determina si se aplicará seguridad a la consulta
+     * @param array $columnas Define las columnas que se buscarán en la consulta
+     * @param array $columnas_by_table Define las columnas que se buscarán en la consulta por tabla
+     * @param bool $columnas_en_bruto Determina si se devolverán columnas en bruto
+     * @param array $extra_join Define cualquier unión extra que se utilizará en la consulta
+     * @param array $filtro Define cualquier filtro que se añadirá a la consulta
+     * @param array $group_by Define cualquier agrupación que se utilizará en la consulta
+     * @param array $hijo Define cualquier relación de hijo que se utilizará en la consulta
+     * @param int $limit Define un límite en la cantidad de filas que se devolverán
+     * @param int $offset Define un offset para las filas que se devolverán
+     * @param array $order Define cualquier ordenamiento que se aplicará a las filas devueltas
+     * @return array|stdClass Regresa un arreglo o un objeto stdClass basado en el resultado de la consulta
+     * @throws errores si hay algún error al ejecutar la consulta
+     * @version 19.6.0
      */
     final public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
-                              array $columnas_by_table = array(), bool $columnas_en_bruto = false, array $extra_join = array(),
-                              array $filtro = array(), array $group_by = array(), array $hijo = array(),
-                              int $limit = 0, int $offset = 0, array $order = array()):array|stdClass{
+                                    array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+                                    array $extra_join = array(), array $filtro = array(), array $group_by = array(),
+                                    array $hijo = array(), int $limit = 0, int $offset = 0,
+                                    array $order = array()):array|stdClass{
 
         $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
             columnas_en_bruto: $columnas_en_bruto, extension_estructura: $this->extension_estructura,
@@ -1297,7 +1303,8 @@ class modelo extends modelo_base {
 
         $consulta .= $where . $sentencia.$params_sql->limit;
 
-        $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
+        $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados,
+            hijo: $hijo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
         }
