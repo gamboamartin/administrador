@@ -51,7 +51,7 @@ class activaciones{
     {
         if($modelo->registro_id <=0){
             return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
-                data: $modelo->registro_id);
+                data: $modelo->registro_id,es_final: true);
         }
 
         $name_model = $this->normaliza_name_model(modelo:$modelo);
@@ -82,7 +82,7 @@ class activaciones{
     {
         if($modelo->registro_id <=0){
             return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
-                data: $modelo->registro_id);
+                data: $modelo->registro_id, es_final: true);
         }
 
         $valida = $this->verifica_reactivacion(modelo:$modelo,reactiva:  $reactiva);
@@ -103,16 +103,28 @@ class activaciones{
     }
 
     /**
-     * Funcion que normaliza el nombre de un modelo de la forma namespace
-     * @param modelo $modelo Modelo a normalizar, debe ser una estructura de la base de datos
-     * @return array|string string con nombre de la tabla normalizada como la clase en forma de namespace
+     *  POR DOCUMENTAR EN WIKI FINAL REV
+     * Función `normaliza_name_model`
+     *
+     * Esta función normaliza el nombre del modelo que se le pasa como argumento.
+     *
+     * @param modelo $modelo Este parámetro acepta un objeto del tipo `modelo`.
+     * Este objeto `modelo` debe tener un atributo `tabla` que se normalizará en esta función.
+     *
+     * @return array|string Retorna el nombre normalizado del modelo. Si no se puede normalizar el nombre del modelo,
+     * por ejemplo, si el atributo `tabla` del modelo está vacío entonces retorna un error.
+     *
+     * @throws errores Si el atributo `tabla` del objeto `modelo` está vacío,
+     * esta función lanzará una excepción con el mensaje "Error el atributo tabla del modelo '.$modelo->tabla.' Esta vacio".
+     *
+     * @version 19.9.0
      */
     private function normaliza_name_model(modelo $modelo): array|string
     {
         $modelo->tabla = trim($modelo->tabla);
         if($modelo->tabla === ''){
             return $this->error->error(mensaje:'Error el atributo tabla del modelo '.$modelo->tabla.' Esta vacio',
-                data:$modelo->tabla);
+                data:$modelo->tabla, es_final: true);
         }
         $namespace = 'models\\';
         $modelo->tabla = str_replace($namespace,'',$modelo->tabla);
@@ -148,7 +160,7 @@ class activaciones{
     {
         if($modelo->registro_id <=0){
             return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
-                data: $modelo->registro_id);
+                data: $modelo->registro_id, es_final: true);
         }
 
         $registro = $modelo->registro(registro_id: $modelo->registro_id);
@@ -175,7 +187,7 @@ class activaciones{
     {
         if($modelo->registro_id <=0){
             return  $this->error->error(mensaje: 'Error  $modelo->registro_id debe ser mayor a 0',
-                data: $modelo->registro_id);
+                data: $modelo->registro_id, es_final: true);
         }
 
         $valida = true;

@@ -2104,7 +2104,7 @@ class modelo extends modelo_base {
         $this->row = new stdClass();
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
-                data: $this->registro_id);
+                data: $this->registro_id, es_final: true);
         }
         if(count($extension_estructura) === 0){
             $extension_estructura = $this->extension_estructura;
@@ -2182,7 +2182,8 @@ class modelo extends modelo_base {
                                   bool $columnas_en_bruto = false, array $extension_estructura= array(),
                                   array $extra_join = array (), array $hijo = array()):array|stdClass{
         if($this->registro_id < 0){
-            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id);
+            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id,
+                es_final: true);
         }
         if(count($extension_estructura)===0){
             $extension_estructura = $this->extension_estructura;
@@ -2405,7 +2406,7 @@ class modelo extends modelo_base {
                              bool $retorno_obj = false):array|stdClass{
         if($registro_id <=0){
             return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
-                data: $registro_id);
+                data: $registro_id, es_final: true);
         }
         $this->registro_id = $registro_id;
         $registro = $this->obten_data(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,

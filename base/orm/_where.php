@@ -124,7 +124,7 @@ class _where
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla, es_final: true);
         }
         return " WHERE $tabla".".id = $registro_id ";
     }
@@ -143,7 +143,7 @@ class _where
     {
         $tabla = trim($tabla);
         if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla);
+            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla, es_final: true);
         }
         $where_id_base = $this->where_id_base(registro_id: $registro_id,tabla:  $tabla);
         if(errores::$error){
