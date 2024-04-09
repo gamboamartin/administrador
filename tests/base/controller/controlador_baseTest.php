@@ -2,6 +2,7 @@
 namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\controlador_base;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\administrador\models\adm_year;
@@ -33,6 +34,14 @@ class controlador_baseTest extends test {
 
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
+
+        $instala = (new instalacion())->instala(link: $this->link);
+        if (errores::$error) {
+            $error = (new errores())->error('Error al instala', $instala);
+            print_r($error);
+            die('Error');
+        }
+
 
         $del = (new adm_usuario(link: $this->link))->elimina_todo();
         if (errores::$error) {

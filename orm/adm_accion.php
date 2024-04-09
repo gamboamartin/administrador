@@ -284,6 +284,10 @@ class adm_accion extends _modelo_children {
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
         }
 
+
+        $codigo = $registro['descripcion'].'.'.$registro['adm_seccion_id'];
+        $registro['codigo'] = $codigo;
+
         $this->registro = $registro;
 
 

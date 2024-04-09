@@ -2,6 +2,7 @@
 namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\controler;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\models\adm_atributo;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
@@ -20,7 +21,17 @@ class controllerTest extends test {
     public function test_asigna_inputs(): void
     {
 
+        $_SESSION['grupo_id'] = 2;
+        $_SESSION['usuario_id'] = 2;
+
         errores::$error = false;
+
+        $instala = (new instalacion())->instala(link: $this->link);
+        if(errores::$error){
+            $error =  (new errores())->error(mensaje: 'Error al instalar', data: $instala);
+            print_r($error);
+            exit;
+        }
 
         $ctl = new controler($this->link);
         //$ctl = new liberator($ctl);

@@ -167,12 +167,6 @@ class codigosTest extends test {
             exit;
         }
 
-        $del = (new adm_elemento_lista($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
 
         $del = (new adm_accion_grupo($this->link))->elimina_todo();
         if(errores::$error){

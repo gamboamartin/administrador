@@ -101,6 +101,32 @@ class instalacion
 
     }
 
+    private function _add_adm_atributo(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_atributo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['adm_tipo_dato_id'] = new stdClass();
+        $foraneas['adm_seccion_id'] = new stdClass();
+
+        $result = (new _instalacion(link: $link))->foraneas(foraneas: $foraneas,table:  'adm_atributo');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $result);
+        }
+
+
+
+
+        return $out;
+
+    }
+
     private function _add_adm_namespace(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -122,14 +148,77 @@ class instalacion
         $campos->predeterminado = new stdClass();
         $campos->predeterminado->default = 'inactivo';
 
-        $campos->etiqueta_label = new stdClass();
-        $campos->etiqueta_label->default = 'SE';
 
         $campos->name = new stdClass();
         $campos->name->default = 'SN';
 
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_namespace');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_bitacora(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_bitacora');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $foraneas = array();
+        $foraneas['adm_seccion_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_bitacora');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
+
+
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+
+        $campos->registro = new stdClass();
+        $campos->registro->tipo_dato = 'LONGBLOB';
+        //$campos->registro->default = 'SN';
+
+        $campos->sql_data = new stdClass();
+        $campos->sql_data->tipo_dato = 'LONGBLOB';
+        //$campos->sql_data->default = 'SN';
+
+        $campos->valor_id = new stdClass();
+        $campos->valor_id->tipo_dato = 'BIGINT';
+        $campos->valor_id->default = '-1';
+
+        $campos->adm_usuario_id = new stdClass();
+        $campos->adm_usuario_id->tipo_dato = 'BIGINT';
+        $campos->adm_usuario_id->default = '-1';
+
+        $campos->transaccion = new stdClass();
+        $campos->transaccion->tipo_dato = 'VARCHAR';
+
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_bitacora');
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
@@ -187,6 +276,132 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
         }
         $out->columnas = $result;
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_accion(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_accion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['adm_seccion_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_accion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
+
+        $campos = new stdClass();
+        $campos->etiqueta_label = new stdClass();
+        $campos->etiqueta_label->default = 'SIN ETIQUETA';
+
+        $campos->icono = new stdClass();
+        $campos->icono->default = 'SIN ICONO';
+
+        $campos->visible = new stdClass();
+        $campos->visible->default = 'activo';
+
+        $campos->inicio = new stdClass();
+        $campos->inicio->default = 'activo';
+
+        $campos->lista = new stdClass();
+        $campos->lista->default = 'activo';
+
+        $campos->seguridad = new stdClass();
+        $campos->seguridad->default = 'activo';
+
+        $campos->es_modal = new stdClass();
+        $campos->es_modal->default = 'inactivo';
+
+        $campos->es_view = new stdClass();
+        $campos->es_view->default = 'activo';
+
+        $campos->titulo = new stdClass();
+        $campos->titulo->default = 'SIN TITULO';
+
+        $campos->css = new stdClass();
+        $campos->css->default = 'info';
+
+        $campos->es_status = new stdClass();
+        $campos->es_status->default = 'inactivo';
+
+        $campos->es_lista = new stdClass();
+        $campos->es_lista->default = 'activo';
+
+        $campos->muestra_icono_btn = new stdClass();
+        $campos->muestra_icono_btn->default = 'activo';
+
+        $campos->muestra_titulo_btn = new stdClass();
+        $campos->muestra_titulo_btn->default = 'activo';
+
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_accion');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+        $out->columnas = $result;
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_seccion_pertenece(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_seccion_pertenece');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['adm_seccion_id'] = new stdClass();
+        $foraneas['adm_sistema_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_seccion_pertenece');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_accion_grupo(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_accion_grupo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $foraneas = array();
+        $foraneas['adm_accion_id'] = new stdClass();
+        $foraneas['adm_grupo_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_accion_grupo');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
 
 
         return $out;
@@ -447,6 +662,32 @@ class instalacion
 
     }
 
+    private function adm_atributo(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_atributo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'Control';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Atributos';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        return $create;
+
+    }
     private function adm_campo(PDO $link): array|stdClass
     {
         $create = $this->_add_adm_campo(link: $link);
@@ -464,6 +705,12 @@ class instalacion
         $create = $this->_add_adm_menu(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $create_seccion = $this->_add_adm_seccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_seccion', data:  $create_seccion);
         }
 
 
@@ -494,6 +741,21 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
         }
 
+        $create_seccion = $this->_add_adm_seccion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_seccion', data:  $create_seccion);
+        }
+
+        $create_accion = $this->_add_adm_accion(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_accion', data:  $create_accion);
+        }
+
+        $create_seccion_pertenece = $this->_add_adm_seccion_pertenece(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_seccion_pertenece', data:  $create_seccion_pertenece);
+        }
+
 
         $adm_menu_descripcion = 'ACL';
         $adm_sistema_descripcion = 'administrador';
@@ -515,6 +777,33 @@ class instalacion
 
     }
 
+    private function adm_bitacora(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_bitacora(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'Logs';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Bitacora';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+        return $create;
+
+    }
 
     private function adm_reporte(PDO $link): array|stdClass
     {
@@ -533,6 +822,12 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
         }
+
+        $create_accion_grupo = $this->_add_adm_accion_grupo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_accion_grupo', data:  $create_accion_grupo);
+        }
+
 
         $adm_secciones = (new adm_seccion(link: $link))->registros();
         if(errores::$error){
@@ -589,6 +884,62 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar adm campos', data:  $inserta_campos);
         }
 
+
+
+        return $create;
+
+    }
+
+    private function adm_seccion_pertenece(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_seccion_pertenece(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Secciones Sistema';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+        return $create;
+
+    }
+
+    private function adm_accion_grupo(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_accion_grupo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Permisos';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
 
 
         return $create;
@@ -747,17 +1098,17 @@ class instalacion
 
         $out = new stdClass();
 
-        $adm_menu = $this->adm_menu(link: $link);
-        if (errores::$error) {
-            return (new errores())->error(mensaje: 'Error al init adm_menu', data: $adm_menu);
-        }
-        $out->adm_menu = $adm_menu;
-
         $adm_namespace = $this->adm_namespace(link: $link);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al init adm_namespace', data: $adm_namespace);
         }
         $out->adm_namespace = $adm_namespace;
+
+        $adm_menu = $this->adm_menu(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_menu', data: $adm_menu);
+        }
+        $out->adm_menu = $adm_menu;
 
         $adm_tipo_dato = $this->adm_tipo_dato(link: $link);
         if (errores::$error) {
@@ -785,9 +1136,35 @@ class instalacion
         $out->adm_seccion = $adm_seccion;
 
 
+        $adm_seccion_pertenece = $this->adm_seccion_pertenece(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_seccion_pertenece', data: $adm_seccion_pertenece);
+        }
+        $out->adm_seccion_pertenece = $adm_seccion_pertenece;
+
+        $adm_atributo = $this->adm_atributo(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_atributo', data: $adm_atributo);
+        }
+        $out->adm_atributo = $adm_atributo;
+
+
+        $adm_bitacora = $this->adm_bitacora(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_bitacora', data: $adm_bitacora);
+        }
+        $out->adm_bitacora = $adm_bitacora;
+
+
         $adm_accion = $this->adm_accion(link: $link);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al init adm_accion', data: $adm_accion);
+        }
+        $out->adm_accion = $adm_accion;
+
+        $adm_accion_grupo = $this->adm_accion_grupo(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_accion_grupo', data: $adm_accion_grupo);
         }
         $out->adm_accion = $adm_accion;
 

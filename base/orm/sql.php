@@ -662,7 +662,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Calcula la longitud de un dato de tipo string|int|float dependiendo del tipo de dato que se le pase.
      *
      * @param string|int|float $longitud Longitud inicial del dato.
@@ -722,7 +722,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera el segmento de longitud para una declaración SQL a partir de un valor de longitud y tipo de dato.
      *
      * @param int|string|float $longitud Un valor que especifica la longitud que se desea configurar.
@@ -750,7 +750,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Devuelve una cadena de texto que representa la longitud en SQL.
      *
      * @param string|float|int $longitud La longitud del elemento SQL.
@@ -770,7 +770,7 @@ class sql{
     }
 
     /**
-     * POR MODIFICAR EN WIKI
+     * POR MODIFICAR EN WIKI FINAL REV
      * Modifica una columna en una tabla de la base de datos.
      *
      * @param string $campo     El nombre del campo de la tabla a modificar.
@@ -1090,7 +1090,7 @@ class sql{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Método para validar los datos antes de la modificación.
      *
      * Esta función toma como argumentos los datos proporcionados y realiza varias comprobaciones para
@@ -1164,7 +1164,19 @@ class sql{
         return true;
     }
 
-    private function valida_pep_8(string $campo, string $table)
+    /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
+     * La función 'valida_pep_8' realiza la validación de texto para cumplir con PEP 8 (Estándar de estilo de código para el lenguaje de programación Python).
+     * Sin embargo, está siendo utilizado aquí en el contexto de PHP, probablemente para asegurar un estilo de escritura consistente y limpio.
+     *
+     * @param string $campo Representa un campo específico que se quiere validar.
+     * @param string $table Representa el nombre de la tabla donde se encuentra el campo.
+     *
+     * @return true|array Retorna verdadero si ambos, el campo y el nombre de la tabla, pasan la validación PEP 8.
+     * En caso de que alguno de los dos no pase la validación, muestra un error.
+     * @version 19.15.0
+     */
+    private function valida_pep_8(string $campo, string $table): true|array
     {
         $campo = trim($campo);
         $table = trim($table);

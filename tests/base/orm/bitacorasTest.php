@@ -2,6 +2,7 @@
 namespace tests\base;
 
 use base\orm\bitacoras;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_accion_grupo;
@@ -170,9 +171,18 @@ class bitacorasTest extends test {
 
     public function test_genera_bitacora(){
 
+        $_SESSION['usuario_id'] = 2;
+        $_SESSION['grupo_id'] = 2;
         errores::$error = false;
 
-        $_SESSION['usuario_id'] = 2;
+        $instala = (new instalacion())->instala(link: $this->link);
+        if(errores::$error){
+            $error =  (new errores())->error(mensaje: 'Error al instalar',data:  $instala);
+            print_r($error);
+            exit;
+        }
+
+
 
         $filtro['adm_accion_basica.descripcion'] = 'a';
         $del = (new adm_accion_basica($this->link))->elimina_con_filtro_and($filtro);
@@ -189,12 +199,7 @@ class bitacorasTest extends test {
             exit;
         }
 
-        $del = (new adm_elemento_lista($this->link))->elimina_todo();
-        if(errores::$error){
-            $error = (new errores())->error('Error al eliminar', $del);
-            print_r($error);
-            exit;
-        }
+
 
         $del = (new adm_accion_grupo($this->link))->elimina_todo();
         if(errores::$error){

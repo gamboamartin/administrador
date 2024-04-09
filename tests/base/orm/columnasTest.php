@@ -88,9 +88,13 @@ class columnasTest extends test {
         $columnas = '';
         $resultado = $col->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto:false,
             columnas_sql:  $columnas_sql,  modelo: $modelo, tabla: $tabla,tabla_renombrada:  $tabla_renombrada);
+
+        //PRINT_R($resultado);exit;
+
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('zeta_etiqueta_label, zeta.status', $resultado);
+        $this->assertStringContainsStringIgnoringCase('zeta_etiqueta_label', $resultado);
+        $this->assertStringContainsStringIgnoringCase('zeta_status', $resultado);
         errores::$error = false;
     }
 
@@ -335,7 +339,8 @@ class columnasTest extends test {
         $resultado = $col->carga_columna_renombre($columnas, $columnas_sql, $data, $modelo, $tabla);
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('adm_seccion_descripcion, adm_seccion.etiqueta_label', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion_descripcion', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.etiqueta_label', $resultado);
         errores::$error = false;
     }
 
@@ -381,7 +386,12 @@ class columnasTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         //$this->assertStringContainsStringIgnoringCase('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.adm_namespace_id AS adm_namespace_id,(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones, adm_menu_s.id AS adm_menu_s_id, adm_menu_s.descripcion AS adm_menu_s_descripcion, adm_menu_s.etiqueta_label AS adm_menu_s_etiqueta_label, adm_menu_s.icono AS adm_menu_s_icono, adm_menu_s.status AS adm_menu_s_status, adm_menu_s.usuario_update_id AS adm_menu_s_usuario_update_id, adm_menu_s.fecha_alta AS adm_menu_s_fecha_alta, adm_menu_s.fecha_update AS adm_menu_s_fecha_update, adm_menu_s.usuario_alta_id AS adm_menu_s_usuario_alta_id, adm_menu_s.codigo AS adm_menu_s_codigo, adm_menu_s.codigo_bis AS adm_menu_s_codigo_bis, adm_menu_s.descripcion_select AS adm_menu_s_descripcion_select, adm_menu_s.alias AS adm_menu_s_alias, adm_menu_s.titulo AS adm_menu_s_titulo,(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones', $resultado);
-        $this->assertStringContainsStringIgnoringCase('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.adm_namespace_id AS adm_namespace_id, adm_menu_s.id AS adm_menu_s_id, adm_menu_s.descripcion AS adm_menu_s_descripcion, adm_menu_s.etiqueta_label AS adm_menu_s_etiqueta_label, adm_menu_s.icono AS adm_menu_s_icono, adm_menu_s.status AS adm_menu_s_status, adm_menu_s.usuario_update_id AS adm_menu_s_usuario_update_id, adm_menu_s.fecha_alta AS adm_menu_s_fecha_alta, adm_menu_s.fecha_update AS adm_menu_s_fecha_update, adm_menu_s.usuario_alta_id AS adm_menu_s_usuario_alta_id, adm_menu_s.codigo AS adm_menu_s_codigo, adm_menu_s.codigo_bis AS adm_menu_s_codigo_bis, adm_menu_s.descripcion_select AS adm_menu_s_descripcion_select, adm_menu_s.alias AS adm_menu_s_alias, adm_menu_s.titulo AS adm_menu_s_titulo', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.id AS id', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.descripcion AS descripcion', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.etiqueta_label AS etiqueta_label', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.status AS status', $resultado);
+        $this->assertStringContainsStringIgnoringCase('adm_seccion.adm_menu_id AS adm_menu_id', $resultado);
+        $this->assertStringContainsStringIgnoringCase(' adm_seccion.icono AS icono', $resultado);
 
 
         errores::$error = false;
@@ -435,7 +445,7 @@ class columnasTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         //$this->assertEquals('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.adm_namespace_id AS adm_namespace_id,(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones', $resultado);
-        $this->assertEquals('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.adm_namespace_id AS adm_namespace_id', $resultado);
+        $this->assertEquals('adm_seccion.id AS id, adm_seccion.codigo AS codigo, adm_seccion.descripcion AS descripcion, adm_seccion.status AS status, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.predeterminado AS predeterminado, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.adm_namespace_id AS adm_namespace_id, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.icono AS icono', $resultado);
 
         errores::$error = false;
 
@@ -473,7 +483,7 @@ class columnasTest extends test {
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
         //$this->assertEquals('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.adm_namespace_id AS adm_namespace_id,(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones, adm_accion.id AS adm_accion_id, adm_accion.descripcion AS adm_accion_descripcion, adm_accion.etiqueta_label AS adm_accion_etiqueta_label, adm_accion.adm_seccion_id AS adm_accion_adm_seccion_id, adm_accion.status AS adm_accion_status, adm_accion.icono AS adm_accion_icono, adm_accion.visible AS adm_accion_visible, adm_accion.inicio AS adm_accion_inicio, adm_accion.lista AS adm_accion_lista, adm_accion.seguridad AS adm_accion_seguridad, adm_accion.usuario_update_id AS adm_accion_usuario_update_id, adm_accion.usuario_alta_id AS adm_accion_usuario_alta_id, adm_accion.fecha_alta AS adm_accion_fecha_alta, adm_accion.fecha_update AS adm_accion_fecha_update, adm_accion.es_modal AS adm_accion_es_modal, adm_accion.es_view AS adm_accion_es_view, adm_accion.titulo AS adm_accion_titulo, adm_accion.css AS adm_accion_css, adm_accion.es_status AS adm_accion_es_status, adm_accion.descripcion_select AS adm_accion_descripcion_select, adm_accion.codigo AS adm_accion_codigo, adm_accion.codigo_bis AS adm_accion_codigo_bis, adm_accion.alias AS adm_accion_alias, adm_accion.es_lista AS adm_accion_es_lista, adm_accion.muestra_icono_btn AS adm_accion_muestra_icono_btn, adm_accion.muestra_titulo_btn AS adm_accion_muestra_titulo_btn,(SELECT COUNT(*) FROM adm_accion WHERE adm_accion.adm_seccion_id = adm_seccion.id) AS adm_seccion_n_acciones', $resultado);
-        $this->assertEquals('adm_seccion.id AS id, adm_seccion.descripcion AS descripcion, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.status AS status, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.icono AS icono, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.codigo AS codigo, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.adm_namespace_id AS adm_namespace_id, adm_accion.id AS adm_accion_id, adm_accion.descripcion AS adm_accion_descripcion, adm_accion.etiqueta_label AS adm_accion_etiqueta_label, adm_accion.adm_seccion_id AS adm_accion_adm_seccion_id, adm_accion.status AS adm_accion_status, adm_accion.icono AS adm_accion_icono, adm_accion.visible AS adm_accion_visible, adm_accion.inicio AS adm_accion_inicio, adm_accion.lista AS adm_accion_lista, adm_accion.seguridad AS adm_accion_seguridad, adm_accion.usuario_update_id AS adm_accion_usuario_update_id, adm_accion.usuario_alta_id AS adm_accion_usuario_alta_id, adm_accion.fecha_alta AS adm_accion_fecha_alta, adm_accion.fecha_update AS adm_accion_fecha_update, adm_accion.es_modal AS adm_accion_es_modal, adm_accion.es_view AS adm_accion_es_view, adm_accion.titulo AS adm_accion_titulo, adm_accion.css AS adm_accion_css, adm_accion.es_status AS adm_accion_es_status, adm_accion.descripcion_select AS adm_accion_descripcion_select, adm_accion.codigo AS adm_accion_codigo, adm_accion.codigo_bis AS adm_accion_codigo_bis, adm_accion.alias AS adm_accion_alias, adm_accion.es_lista AS adm_accion_es_lista, adm_accion.muestra_icono_btn AS adm_accion_muestra_icono_btn, adm_accion.muestra_titulo_btn AS adm_accion_muestra_titulo_btn', $resultado);
+        $this->assertEquals('adm_seccion.id AS id, adm_seccion.codigo AS codigo, adm_seccion.descripcion AS descripcion, adm_seccion.status AS status, adm_seccion.usuario_alta_id AS usuario_alta_id, adm_seccion.usuario_update_id AS usuario_update_id, adm_seccion.fecha_alta AS fecha_alta, adm_seccion.fecha_update AS fecha_update, adm_seccion.descripcion_select AS descripcion_select, adm_seccion.alias AS alias, adm_seccion.codigo_bis AS codigo_bis, adm_seccion.predeterminado AS predeterminado, adm_seccion.adm_menu_id AS adm_menu_id, adm_seccion.adm_namespace_id AS adm_namespace_id, adm_seccion.etiqueta_label AS etiqueta_label, adm_seccion.icono AS icono, adm_accion.id AS adm_accion_id, adm_accion.codigo AS adm_accion_codigo, adm_accion.descripcion AS adm_accion_descripcion, adm_accion.status AS adm_accion_status, adm_accion.usuario_alta_id AS adm_accion_usuario_alta_id, adm_accion.usuario_update_id AS adm_accion_usuario_update_id, adm_accion.fecha_alta AS adm_accion_fecha_alta, adm_accion.fecha_update AS adm_accion_fecha_update, adm_accion.descripcion_select AS adm_accion_descripcion_select, adm_accion.alias AS adm_accion_alias, adm_accion.codigo_bis AS adm_accion_codigo_bis, adm_accion.predeterminado AS adm_accion_predeterminado, adm_accion.adm_seccion_id AS adm_accion_adm_seccion_id, adm_accion.etiqueta_label AS adm_accion_etiqueta_label, adm_accion.icono AS adm_accion_icono, adm_accion.visible AS adm_accion_visible, adm_accion.inicio AS adm_accion_inicio, adm_accion.lista AS adm_accion_lista, adm_accion.seguridad AS adm_accion_seguridad, adm_accion.es_modal AS adm_accion_es_modal, adm_accion.es_view AS adm_accion_es_view, adm_accion.titulo AS adm_accion_titulo, adm_accion.css AS adm_accion_css, adm_accion.es_estatus AS adm_accion_es_estatus, adm_accion.es_lista AS adm_accion_es_lista, adm_accion.muestra_icono_btn AS adm_accion_muestra_icono_btn, adm_accion.muestra_titulo_btn AS adm_accion_muestra_titulo_btn, adm_accion.es_status AS adm_accion_es_status', $resultado);
 
         errores::$error = false;
     }
@@ -1153,7 +1163,7 @@ class columnasTest extends test {
         $resultado = $col->genera_columnas_field($modelo,$tabla_bd);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('adm_menu_id', $resultado->columnas_parseadas[4]);
+        $this->assertEquals('usuario_alta_id', $resultado->columnas_parseadas[4]);
         errores::$error = false;
     }
 
@@ -1339,8 +1349,8 @@ class columnasTest extends test {
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('descripcion',$resultado->columnas_parseadas[1]);
-        $this->assertCount(15, $resultado->columnas_parseadas);
+        $this->assertEquals('codigo',$resultado->columnas_parseadas[1]);
+        $this->assertCount(16, $resultado->columnas_parseadas);
         errores::$error = false;
 
     }

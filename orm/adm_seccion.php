@@ -37,7 +37,6 @@ class adm_seccion extends _modelo_children {
 
         $childrens['adm_accion'] = "gamboamartin\\administrador\\models";
         $childrens['adm_bitacora'] = "gamboamartin\\administrador\\models";
-        $childrens['adm_elemento_lista'] = "gamboamartin\\administrador\\models";
         $childrens['adm_seccion_pertenece'] = "gamboamartin\\administrador\\models";
         $childrens['adm_campo'] = "gamboamartin\\administrador\\models";
 
@@ -53,7 +52,6 @@ class adm_seccion extends _modelo_children {
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Seccion';
-
 
     }
 
@@ -281,10 +279,7 @@ class adm_seccion extends _modelo_children {
         if(errores::$error){
             return $this->error->error('Error al eliminar r_adm_seccion_pertenece', $r_adm_seccion_pertenece);
         }
-        $r_adm_elemento_lista = (new adm_elemento_lista(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error('Error al eliminar r_adm_accion', $r_adm_elemento_lista);
-        }
+
         $r_adm_campo = (new adm_campo(link: $this->link))->elimina_con_filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error('Error al eliminar r_adm_campo', $r_adm_campo);

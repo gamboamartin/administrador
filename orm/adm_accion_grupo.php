@@ -38,6 +38,35 @@ class adm_accion_grupo extends modelo{ //PRUEBAS COMPLETAS
 
     }
 
+    public function alta_bd(): array|stdClass
+    {
+        if(!isset($this->registro['codigo'])){
+            $codigo = $this->registro['adm_accion_id'].'.'.$this->registro['adm_grupo_id'];
+            $this->registro['codigo'] = $codigo;
+        }
+
+        if(!isset($this->registro['descripcion'])){
+            $adm_accion = (new adm_accion(link: $this->link))->registro(registro_id: $this->registro['adm_accion_id'],columnas_en_bruto: true,retorno_obj: true);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener adm_accion',data: $adm_accion);
+            }
+            $adm_grupo = (new adm_grupo(link: $this->link))->registro(registro_id: $this->registro['adm_grupo_id'],columnas_en_bruto: true,retorno_obj: true);
+            if(errores::$error){
+                return $this->error->error(mensaje: 'Error al obtener adm_grupo',data: $adm_grupo);
+            }
+
+            $descripcion = $adm_accion->descripcion.' '.$adm_grupo->descripcion;
+            $this->registro['descripcion'] = $descripcion;
+        }
+
+        $r_alta = parent::alta_bd();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar adm_grupo_accion',data: $r_alta);
+        }
+        return $r_alta;
+
+    }
+
     /**
      * Obtiene los grupos configurados por accion
      * @param int $adm_accion_id Identificador de accion
