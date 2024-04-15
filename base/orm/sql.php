@@ -400,9 +400,11 @@ class sql{
     }
 
     /**
+     *  POR DOCUMENTAR EN WIKI FINAL REV
      * La función get_foraneas busca todas las claves foráneas en una tabla específica.
      *
      * @param string $table Es el nombre de la tabla en la que se buscarán las claves foráneas.
+     * @param string $column_name Aplica si queremos obtener una sola columna.
      *
      * @return string|array Devuelve un array de registros que contienen la información de las claves foráneas.
      * Si no hay claves foráneas en la tabla o un error ocurre, la función puede retornar un array vacío o un objeto Error.
@@ -413,6 +415,8 @@ class sql{
      *     echo "Nombre de la clave foránea es " . $clave_foranea->nombre;
      *     echo "Tabla referenciada es " . $clave_foranea->tabla_referenciada;
      * }
+     *
+     * @version 20.6.0
      */
     final public function get_foraneas(string $table, string $column_name = ''): string|array
     {
