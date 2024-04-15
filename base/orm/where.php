@@ -37,7 +37,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función asigna una serie de filtros SQL a un objeto stdClass y retorna este objeto.
      * Cada filtro es una cadena de texto formateada como una sentencia SQL.
      *
@@ -274,7 +274,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Manipula y valida los datos de filtro para las fechas.
      *
      * Esta función acepta un arreglo asociativo con tres claves: 'campo_1', 'campo_2' y 'fecha'.
@@ -807,12 +807,13 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Este método procesa la fecha enviada y retorna una consulta SQL representando el filtro de la fecha.
      *
      * @param array $filtro_fecha Representa la fecha que se va a filtrar.
      *
-     * @return array|string Retorna una consulta SQL del filtro de fecha si es exitoso. Si ocurre un error, retorna una cadena con mensaje de error.
+     * @return array|string Retorna una consulta SQL del filtro de fecha si es exitoso. Si ocurre un error,
+     *  retorna una cadena con mensaje de error.
      *
      * @throws errores si no se pudo generar la consulta SQL del filtro de fecha.
      *
@@ -834,7 +835,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función se encarga de crear una cadena SQL para filtrar por fecha.
      *
      * @param array $filtro_fecha Un array que contiene los criterios de filtro de fecha.
@@ -1593,7 +1594,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función 'genera_sql_filtro_fecha' es privada y se encarga de generar un filtro de SQL para fechas.
      *
      * @param array $fil_fecha Es el filtro de fecha a validar y procesar.
@@ -1739,7 +1740,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * La función limpia_filtros limpia y organiza los filtros proveídos para la consulta SQL.
      *
      * @param stdClass $filtros El objeto que contiene los filtros a limpiar y organizar.
@@ -1756,7 +1757,7 @@ class where{
         foreach($keys_data_filter as $key){
             $key = trim($key);
             if($key === ''){
-                return $this->error->error(mensaje: 'Error el key esta vacio', data: $keys_data_filter);
+                return $this->error->error(mensaje: 'Error el key esta vacio', data: $keys_data_filter, es_final: true);
             }
             if(!isset($filtros->$key)){
                 $filtros->$key = '';
@@ -1995,7 +1996,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * El método sql_fecha genera un fragmento de consulta SQL basado en un rango de fechas.
      *
      * Este método toma dos parámetros: uno para la conjunción de SQL (AND / OR etc.) y otro
@@ -2023,10 +2024,10 @@ class where{
         $keys = array('fecha','campo_1','campo_2');
         foreach($keys as $key){
             if(!isset($data->$key)){
-                return $this->error->error(mensaje: 'error no existe $data->'.$key, data: $data);
+                return $this->error->error(mensaje: 'error no existe $data->'.$key, data: $data, es_final: true);
             }
             if(trim($data->$key) === ''){
-                return $this->error->error(mensaje:'error esta vacio $data->'.$key, data:$data);
+                return $this->error->error(mensaje:'error esta vacio $data->'.$key, data:$data, es_final: true);
             }
         }
         $keys = array('fecha');
@@ -2101,7 +2102,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función valida un filtro de fecha proporcionado en un array.
      *
      * Dentro del array proporcionado, la función busca la presencia de las claves 'campo_1', 'campo_2' y 'fecha'.
@@ -2133,7 +2134,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función valida un array de filtro de fecha.
      *
      * @param array $fil_fecha Array que contiene la información del filtro de fecha. Debería de contener los campos 'campo_1', 'campo_2' y 'fecha'.
@@ -2396,7 +2397,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función convierte a mayúsculas la cláusula WHERE de un objeto complemento.
      * Si el WHERE no está definido o es una cadena vacía, no se realizará ninguna conversión.
      * El método devolverá un error si la cláusula WHERE es distinta de una cadena vacía y de 'WHERE'.
@@ -2415,7 +2416,7 @@ class where{
             $complemento->where = strtoupper($complemento->where);
         }
         if($complemento->where!=='' && $complemento->where !=='WHERE'){
-            return $this->error->error(mensaje: 'Error where mal aplicado',data: $complemento->where);
+            return $this->error->error(mensaje: 'Error where mal aplicado',data: $complemento->where, es_final: true);
         }
         return $complemento;
     }

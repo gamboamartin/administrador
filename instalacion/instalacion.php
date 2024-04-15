@@ -1042,6 +1042,24 @@ class instalacion
 
 
         foreach ($adm_tipos_datos as $adm_tipo_dato){
+
+            $existe = $adm_tipo_dato_modelo->existe_by_id(registro_id: $adm_tipo_dato['id']);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error al validar adm_tipo_dato', data:  $existe);
+            }
+
+            if($existe){
+                $upd = $adm_tipo_dato_modelo->modifica_bd(registro: $adm_tipo_dato,id:  $adm_tipo_dato['id']);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error al actualizar adm_tipo_dato', data:  $upd);
+                }
+
+            }
+
+        }
+
+
+        foreach ($adm_tipos_datos as $adm_tipo_dato){
             $inserta = $adm_tipo_dato_modelo->inserta_registro_si_no_existe(registro: $adm_tipo_dato);
             if(errores::$error){
                 return (new errores())->error(mensaje: 'Error al insertar adm_tipo_dato', data:  $inserta);
