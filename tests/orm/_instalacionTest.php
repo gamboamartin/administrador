@@ -1067,7 +1067,6 @@ class _instalacionTest extends test {
         $this->assertEquals("administrador", $resultado[0]->nombre_database);
         $this->assertEquals("adm_accion_adm_seccion_id", $resultado[0]->nombre_indice);
         $this->assertEquals("adm_accion", $resultado[0]->nombre_tabla);
-        $this->assertEquals("YES", $resultado[0]->es_forzada);
         $this->assertEquals("adm_seccion_id", $resultado[0]->columna_foranea);
         $this->assertEquals("adm_seccion", $resultado[0]->nombre_tabla_relacion);
         $this->assertEquals("id", $resultado[0]->nombre_columna_relacion);

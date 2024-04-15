@@ -433,7 +433,6 @@ class sql{
                     fk.CONSTRAINT_SCHEMA AS nombre_database,
                     fk.CONSTRAINT_NAME AS nombre_indice,
                     fk.TABLE_NAME AS nombre_tabla,
-                    fk.ENFORCED AS es_forzada,
                     cl.COLUMN_NAME AS columna_foranea,
                     cl.REFERENCED_TABLE_SCHEMA AS nombre_database_relacion,
                     cl.REFERENCED_TABLE_NAME AS nombre_tabla_relacion,
