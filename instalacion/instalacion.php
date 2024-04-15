@@ -773,6 +773,11 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar create_seccion_pertenece', data:  $create_seccion_pertenece);
         }
 
+        $create = $this->_add_adm_accion_grupo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
 
         $adm_menu_descripcion = 'ACL';
         $adm_sistema_descripcion = 'administrador';
