@@ -397,6 +397,8 @@ class instalacion
         $campos->codigo = new stdClass();
         $campos->descripcion_select = new stdClass();
         $campos->descripcion_select->default = 'SIN DS';
+        $campos->descripcion = new stdClass();
+        $campos->descripcion->default = 'SIN DS';
 
         $campos->codigo_bis = new stdClass();
         $campos->predeterminado = new stdClass();
