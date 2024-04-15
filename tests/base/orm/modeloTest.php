@@ -1142,14 +1142,14 @@ class modeloTest extends test {
             exit;
         }
             $modelo = new adm_seccion(link: $this->link);
-        $codigo = 'adm_seccionagamboa.martin/administrador';
+        $codigo = 'adm_seccionaadministrador';
         $resultado = $modelo->registro_by_codigo($codigo);
         //print_r($resultado);exit;
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
 
-        $codigo = 'adm_seccionagamboa.martin/administrador';
+        $codigo = 'adm_seccionaadministrador';
         $resultado = $modelo->registro_by_codigo(codigo: $codigo,columnas_en_bruto: true);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -1157,7 +1157,7 @@ class modeloTest extends test {
 
         errores::$error = false;
 
-        $codigo = 'adm_seccionagamboa.martin/administrador';
+        $codigo = 'adm_seccionaadministrador';
         $resultado = $modelo->registro_by_codigo(codigo: $codigo, columnas: array('adm_seccion_id'), columnas_en_bruto: true);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
@@ -1165,7 +1165,7 @@ class modeloTest extends test {
 
         errores::$error = false;
 
-        $codigo = 'adm_seccionagamboa.martin/administrador';
+        $codigo = 'adm_seccionaadministrador';
         $resultado = $modelo->registro_by_codigo(codigo: $codigo, columnas: array('adm_seccion_id'), columnas_en_bruto: true,retorno_obj: true);
 
 

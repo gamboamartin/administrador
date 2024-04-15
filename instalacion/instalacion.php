@@ -392,6 +392,23 @@ class instalacion
         }
         $out->create = $create;
 
+
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_accion_grupo');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
         $foraneas = array();
         $foraneas['adm_accion_id'] = new stdClass();
         $foraneas['adm_grupo_id'] = new stdClass();
