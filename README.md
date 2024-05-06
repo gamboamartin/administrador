@@ -1,2 +1,1 @@
 # administrador
-Administracion de sistema

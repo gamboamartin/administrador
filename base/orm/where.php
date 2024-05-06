@@ -310,7 +310,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea los datos de los diferentes tipos de filtro en forma de SQL
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
@@ -944,7 +944,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Esta función realiza una serie de filtros completos dados los parámetros proporcionados.
      *
      * @param stdClass $filtros       - Objeto que contiene los filtros que se aplicarán.
@@ -976,6 +976,7 @@ class where{
 
 
     /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Inicializa los key del filtro como vacios
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $keys_data_filter Keys a limpiar o validar
@@ -1226,7 +1227,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera filtros iniciales para una consulta SQL.
      *
      * Este método genera filtros SQL iniciales a partir de varias entradas
@@ -1276,7 +1277,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera los filtros en forma de sql
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
@@ -1926,7 +1927,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Aplica el filtro de paréntesis a un conjunto de filtros proporcionados.
      *
      * @param stdClass $filtros El objeto de filtros a procesar.
@@ -2321,14 +2322,14 @@ class where{
             }
             if($filtros_vacios){
                 return $this->error->error(mensaje: 'Error si existe where debe haber al menos un filtro',
-                    data: $complemento);
+                    data: $complemento, es_final: true);
             }
         }
         return true;
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
@@ -2355,11 +2356,13 @@ class where{
     }
 
     /**
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera un where base aplicando un estilo correcto SQL
      * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
      * @fecha 2022-08-01 14:42
      * @author mgamboa
+     * @version 20.7.0
      */
     private function where_base(stdClass $complemento): array|stdClass
     {

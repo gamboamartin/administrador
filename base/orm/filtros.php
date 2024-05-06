@@ -41,7 +41,7 @@ class filtros{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera el complemento completo para la ejecucion de un SELECT en forma de SQL
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
@@ -166,7 +166,7 @@ class filtros{
 
         $consulta = trim($consulta);
         if($consulta === ''){
-            return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data: $consulta);
+            return $this->error->error(mensaje: 'Error $consulta no puede venir vacia',data: $consulta, es_final: true);
         }
 
         $complemento_r = $this->complemento(complemento: $complemento, modelo: $modelo);

@@ -20,6 +20,24 @@ class adm_sistema extends _modelo_parent_sin_codigo {
         $this->etiqueta = 'Sistema';
     }
 
+    final public function adm_sistema_id(string $descripcion)
+    {
+        $filtro['adm_sistema.descripcion'] = $descripcion;
+        $r_adm_sistema = $this->filtro_and(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener sistema',data:  $r_adm_sistema);
+        }
+        if($r_adm_sistema->n_registros === 0){
+            return $this->error->error(mensaje: 'Error no existe el sistema con la descripcion',data:  $r_adm_sistema);
+        }
+        if($r_adm_sistema->n_registros > 1){
+            return $this->error->error(mensaje: 'Error de integridad en sistema con la descripcion',
+                data:  $r_adm_sistema);
+        }
+        return (object)$r_adm_sistema->registros[0];
+
+    }
+
 
     /**
      * Obtiene las secciones filtradas por sistema
