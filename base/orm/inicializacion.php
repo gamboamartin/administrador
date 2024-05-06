@@ -70,6 +70,7 @@ class inicializacion{
      * @verfuncion 1.1.0
      * @fecha 2022-08-02 13:07
      * @author mgamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-inicializacion#funci%C3%B3n-ajusta_params
      */
     final public function ajusta_params(stdClass $complemento): array|stdClass
     {
@@ -636,6 +637,7 @@ class inicializacion{
      * @version 1.1.0
      * @fecha 2022-08-02 12:33
      * @author mgamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-inicializacion#funci%C3%B3n-init_params
      */
     private function init_params(stdClass $complemento): stdClass
     {

@@ -4,7 +4,6 @@ namespace base\orm;
 use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
 use gamboamartin\validacion\validacion;
-use JetBrains\PhpStorm\Pure;
 use stdClass;
 
 
@@ -18,106 +17,8 @@ class where{
         $this->validacion = new validacion();
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * La función 'and_filtro_fecha' agrega 'AND' al string dado si este no está vacío.
-     *
-     * @param string $txt Texto que se verificará si está vacío o no.
-     * @return string Devuelve el texto original con ' AND ' agregado si el texto original no estaba vacío,
-     * de lo contrario, devuelve el texto original.
-     * @version 16.215.0
-     */
-    private function and_filtro_fecha(string $txt): string
-    {
-        $and = '';
-        if($txt !== ''){
-            $and = ' AND ';
-        }
-        return $and;
-    }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función asigna una serie de filtros SQL a un objeto stdClass y retorna este objeto.
-     * Cada filtro es una cadena de texto formateada como una sentencia SQL.
-     *
-     * @param string $diferente_de_sql     La sentencia SQL para el filtro 'diferente_de'.
-     * @param string $filtro_especial_sql  La sentencia SQL para el filtro especial.
-     * @param string $filtro_extra_sql     La sentencia SQL para el filtro extra.
-     * @param string $filtro_fecha_sql     La sentencia SQL para el filtro de fecha.
-     * @param string $filtro_rango_sql     La sentencia SQL para el filtro de rango.
-     * @param string $in_sql               La sentencia SQL para el filtro 'IN'.
-     * @param string $not_in_sql           La sentencia SQL para el filtro 'NOT IN'.
-     * @param string $sentencia            La sentencia SQL completa.
-     * @param string $sql_extra            Cualquier sentencia SQL extra.
-     *
-     * @return stdClass El objeto que contiene todos los filtros SQL.
-     * @version 16.315.1
-     */
-    #[Pure] private function asigna_data_filtro(string $diferente_de_sql, string $filtro_especial_sql,
-                                                string $filtro_extra_sql, string $filtro_fecha_sql,
-                                                string $filtro_rango_sql, string $in_sql, string $not_in_sql,
-                                                string $sentencia, string $sql_extra): stdClass
-    {
-        $filtros = new stdClass();
-        $filtros->sentencia = $sentencia ;
-        $filtros->filtro_especial = $filtro_especial_sql;
-        $filtros->filtro_rango = $filtro_rango_sql;
-        $filtros->filtro_extra = $filtro_extra_sql;
-        $filtros->in = $in_sql;
-        $filtros->not_in = $not_in_sql;
-        $filtros->diferente_de = $diferente_de_sql;
-        $filtros->sql_extra = $sql_extra;
-        $filtros->filtro_fecha = $filtro_fecha_sql;
-        return $filtros;
-    }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función procesa las entradas proporcionadas y devuelve el "campo" apropiado.
-     *
-     * @param array|string|null $data los datos proporcionados para extraer el campo. Pueden ser de tipos array, string o null.
-     * @param string $key la clave proporcionada para extraer el campo del array.
-     * @return string|array Devuelve el "campo" después de ser procesado y garantiza que no contenga caracteres de escape.
-     *
-     * @throws errores si la clave proporcionada está vacía.
-     * @version 16.93.0
-     */
-    private function campo(array|string|null $data, string $key):string|array{
-        if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio",data:  $key, es_final: true);
-        }
-        $campo = $data['campo'] ?? $key;
-        return addslashes($campo);
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * La función campo_data_filtro se usa para aplicar ciertas validaciones en la clave del array $data_filtro.
-     *
-     * @param  array $data_filtro El array de entrada que se tiene que validar.
-     * @throws errores Si la clave del array está vacía o si la clave no es un string válido (no numérico).
-     * @return string|array Devuelve la clave del array $data_filtro después de apliar trim() si la validación es exitosa.
-     *                     En caso de error, se devuelve un array con los detalles del error.
-     *
-     * @version 16.244.0
-     */
-    private function campo_data_filtro(array $data_filtro): string|array
-    {
-        if(count($data_filtro) === 0){
-            return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro, es_final: true);
-        }
-        $campo = key($data_filtro);
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: "Error key vacio",data:  $campo, es_final: true);
-        }
-        if(is_numeric($campo )){
-            return $this->error->error(mensaje: "Error key debe ser un texto valido",data:  $campo, es_final: true);
-        }
-        return trim($campo);
-
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -140,7 +41,7 @@ class where{
             return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
         }
 
-        $es_subquery = $this->es_subquery(campo: $campo,columnas_extra:  $columnas_extra);
+        $es_subquery = (new \gamboamartin\src\where())->es_subquery(campo: $campo,columnas_extra:  $columnas_extra);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al subquery bool',  data:$es_subquery);
         }
@@ -214,7 +115,7 @@ class where{
             return $this->error->error(mensaje:"Error datos vacio",data: $data, es_final: true);
         }
         $datas = new stdClass();
-        $datas->campo = $this->campo(data: $data,key:  $key);
+        $datas->campo = (new \gamboamartin\src\where())->campo(data: $data,key:  $key);
         if(errores::$error){
             return $this->error->error(mensaje:"Error al maquetar campo",data: $datas->campo);
         }
@@ -531,7 +432,7 @@ class where{
         if(count($data_filtro) === 0){
             return $this->error->error(mensaje:'Error data_filtro esta vacio',  data:$data_filtro, es_final: true);
         }
-        $campo = $this->campo_data_filtro(data_filtro: $data_filtro);
+        $campo = (new \gamboamartin\src\where())->campo_data_filtro(data_filtro: $data_filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener campo',data:  $campo);
         }
@@ -574,29 +475,7 @@ class where{
 
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Determina si un campo es un subquery basado en la existencia del campo en las columnas extra.
-     *
-     * @param string $campo El campo a evaluar si es un subquery.
-     * @param array $columnas_extra Las columnas extra donde se va a buscar el campo.
-     * @return bool|array Retorna verdadero si el campo es un subquery, en caso contrario retorna falso.
-     *  En el caso de que el campo esté vacío, se retorna un error.
-     * @version 16.107.0
-     */
-    private function es_subquery(string $campo, array $columnas_extra): bool|array
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
-        }
-        $es_subquery = false;
-        if(isset($columnas_extra[$campo])){
-            $es_subquery = true;
-        }
-        return $es_subquery;
 
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -622,7 +501,7 @@ class where{
             return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
                 data: $campo, es_final: true);
         }
-        $and = $this->and_filtro_fecha(txt: $diferente_de_sql);
+        $and = (new \gamboamartin\src\where())->and_filtro_fecha(txt: $diferente_de_sql);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al integrar AND", data: $and);
         }
@@ -976,7 +855,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     *
      * Inicializa los key del filtro como vacios
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $keys_data_filter Keys a limpiar o validar
@@ -985,6 +864,7 @@ class where{
      * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-01 13:07
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-filtros_vacios
      */
     private function filtros_vacios(stdClass $complemento, array $keys_data_filter): bool
     {
@@ -1256,7 +1136,7 @@ class where{
                                               array $keys_data_filter, string $not_in_sql, string $sentencia,
                                               string $sql_extra, string $filtro_fecha_sql = ''): array|stdClass
     {
-        $filtros = $this->asigna_data_filtro(diferente_de_sql: $diferente_de_sql,
+        $filtros = (new \gamboamartin\src\where())->asigna_data_filtro(diferente_de_sql: $diferente_de_sql,
             filtro_especial_sql:  $filtro_especial_sql, filtro_extra_sql: $filtro_extra_sql,
             filtro_fecha_sql:  $filtro_fecha_sql, filtro_rango_sql:  $filtro_rango_sql, in_sql: $in_sql,
             not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
@@ -1625,7 +1505,7 @@ class where{
             return $this->error->error(mensaje:'Error al generar datos',data:$data);
         }
 
-        $and = $this->and_filtro_fecha(txt: $filtro_fecha_sql);
+        $and = (new \gamboamartin\src\where())->and_filtro_fecha(txt: $filtro_fecha_sql);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener and',data:$and);
         }
@@ -1691,7 +1571,7 @@ class where{
      * @author mgamboa
      * @fecha 2022-08-02 14:46
      */
-    public function init_params_sql(stdClass $complemento, array $keys_data_filter): array|stdClass
+    final public function init_params_sql(stdClass $complemento, array $keys_data_filter): array|stdClass
     {
         $complemento_w = $this->where_filtro(complemento: $complemento,key_data_filter:  $keys_data_filter);
         if(errores::$error){
@@ -1985,7 +1865,7 @@ class where{
                 data: $filtro_rango_sql, es_final: true);
         }
 
-        $and = $this->and_filtro_fecha(txt: $filtro_rango_sql);
+        $and = (new \gamboamartin\src\where())->and_filtro_fecha(txt: $filtro_rango_sql);
         if(errores::$error){
             return $this->error->error(mensaje:'error al integrar and ',data: $and);
         }
@@ -2162,8 +2042,6 @@ class where{
         return true;
     }
 
-
-
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
      * Verifica el tipo de filtro proporcionado.
@@ -2300,8 +2178,8 @@ class where{
     }
 
     /**
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-verifica_where
      * Verifica que la estructura de un complemento sql sea la correcta
-     *
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $key_data_filter Filtros a limpiar o validar
      * @return bool|array
@@ -2356,13 +2234,13 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
      * Genera un where base aplicando un estilo correcto SQL
      * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
      * @fecha 2022-08-01 14:42
      * @author mgamboa
      * @version 20.7.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-where_base
      */
     private function where_base(stdClass $complemento): array|stdClass
     {
@@ -2382,6 +2260,7 @@ class where{
      * @param array $key_data_filter Keys de filtros para where
      * @return array|stdClass
      * @fecha 2022-08-02 09:43
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-where_filtro
      */
     private function where_filtro(stdClass $complemento, array $key_data_filter): array|stdClass
     {
@@ -2400,7 +2279,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-where_mayus
      * Esta función convierte a mayúsculas la cláusula WHERE de un objeto complemento.
      * Si el WHERE no está definido o es una cadena vacía, no se realizará ninguna conversión.
      * El método devolverá un error si la cláusula WHERE es distinta de una cadena vacía y de 'WHERE'.
@@ -2439,8 +2318,5 @@ class where{
         return $where;
 
     }
-
-
-
 
 }

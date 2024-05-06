@@ -86,6 +86,7 @@ class inicializacionTest extends test {
 
         $complemento = new stdClass();
         $resultado = $modelo->ajusta_params($complemento);
+
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('',$resultado->params->offset);
@@ -93,6 +94,15 @@ class inicializacionTest extends test {
         $this->assertEquals('',$resultado->params->order);
         $this->assertEquals('',$resultado->params->limit);
         errores::$error = false;
+
+        $complemento = new stdClass();
+        $complemento->params = '';
+        $resultado = $modelo->ajusta_params($complemento);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->params);
+
+        errores::$error = false;
+
     }
 
     public function test_ajusta_registro_upd(){
@@ -505,6 +515,7 @@ class inicializacionTest extends test {
 
         $complemento = new stdClass();
         $resultado = $modelo->init_params($complemento);
+
         $this->assertIsObject( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('',$resultado->params->offset);

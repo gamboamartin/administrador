@@ -17,164 +17,11 @@ class whereTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_and_filtro_fecha(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $filtro_fecha_sql = '';
-        $resultado = $wh->and_filtro_fecha($filtro_fecha_sql);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('',$resultado);
-
-        errores::$error = false;
-
-
-        $filtro_fecha_sql = 'a';
-        $resultado = $wh->and_filtro_fecha($filtro_fecha_sql);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(' AND ',$resultado);
-        errores::$error = false;
-    }
-
-    public function test_asigna_data_filtro(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $filtro_especial_sql = '';
-        $filtro_extra_sql = '';
-        $filtro_rango_sql = '';
-        $filtro_fecha_sql = '';
-        $not_in_sql = '';
-        $sentencia = '';
-        $sql_extra = '';
-        $in = '';
-        $resultado = $wh->asigna_data_filtro('',$filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
-            $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $filtro_especial_sql = '';
-        $filtro_extra_sql = '';
-        $filtro_rango_sql = 'c';
-        $filtro_fecha_sql = '';
-        $not_in_sql = '';
-        $sentencia = '';
-        $sql_extra = '';
-        $in = 'a';
-        $resultado = $wh->asigna_data_filtro('',$filtro_especial_sql, $filtro_extra_sql, $filtro_fecha_sql,
-            $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
-
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->in);
-        $this->assertEquals('c', $resultado->filtro_rango);
-
-
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $filtro_especial_sql = '';
-        $filtro_extra_sql = '';
-        $filtro_rango_sql = 'c';
-        $filtro_fecha_sql = '';
-        $not_in_sql = '';
-        $sentencia = '';
-        $sql_extra = '';
-        $in = 'a';
-        $diferente_de_sql = 'dif';
-        $resultado = $wh->asigna_data_filtro($diferente_de_sql,$filtro_especial_sql, $filtro_extra_sql,
-            $filtro_fecha_sql, $filtro_rango_sql, $in, $not_in_sql, $sentencia, $sql_extra);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->in);
-        $this->assertEquals('c', $resultado->filtro_rango);
-        $this->assertEquals('dif', $resultado->diferente_de);
 
 
 
-        errores::$error = false;
-    }
-
-    public function test_campo(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $data = '';
-        $key = '';
-        $resultado = $wh->campo(data: $data,key:  $key);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error key vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $data = '';
-        $key = 'a';
-        $resultado = $wh->campo(data: $data,key:  $key);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a',$resultado);
-
-        errores::$error = false;
-
-        $data = array();
-        $key = 'a';
-        $data['b'] = '';
-
-        $resultado = $wh->campo(data: $data,key:  $key);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a',$resultado);
-
-        errores::$error = false;
-
-        $data = array();
-        $key = 'a';
-        $data['a'] = '';
-
-        $resultado = $wh->campo(data: $data,key:  $key);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a',$resultado);
-
-        $data = array();
-        $key = 'a';
-        $data['campo'] = 'x';
-
-        $resultado = $wh->campo(data: $data,key:  $key);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('x',$resultado);
-        errores::$error = false;
-    }
-
-    public function test_campo_data_filtro(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
 
-        $data_filtro = array();
-        $data_filtro['a'] = '';
-        $resultado = $wh->campo_data_filtro($data_filtro);
-        //print_r($resultado);exit;
-        $this->assertEquals('a', $resultado);
-        $this->assertNotTrue(errores::$error);
-        errores::$error = false;
-    }
 
     public function test_campo_filtro_especial(): void
     {
@@ -560,32 +407,7 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_es_subquery(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-        $campo = 'a';
-        $columnas_extra = array();
-        $resultado = $wh->es_subquery($campo, $columnas_extra);
-        //print_r($resultado);exit;
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertNotTrue($resultado);
-
-        errores::$error = false;
-
-        $campo = 'a';
-        $columnas_extra['a'] = '';
-        $resultado = $wh->es_subquery($campo, $columnas_extra);
-        //print_r($resultado);exit;
-        $this->assertIsBool($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-
-
-        errores::$error = false;
-    }
 
     public function test_filtro_especial_sql(){
         errores::$error = false;
@@ -826,6 +648,40 @@ class whereTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
         errores::$error = false;
+
+        $keys_data_filter = array();
+        $complemento = new stdClass();
+        $keys_data_filter[] = 'a';
+        $resultado = $wh->filtros_vacios($complemento, $keys_data_filter);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+
+        $keys_data_filter = array();
+        $complemento = new stdClass();
+        $keys_data_filter[] = 'a';
+        $complemento->a = '';
+        $resultado = $wh->filtros_vacios($complemento, $keys_data_filter);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+        $keys_data_filter = array();
+        $complemento = new stdClass();
+        $keys_data_filter[] = 'a';
+        $complemento->a = 'x';
+        $resultado = $wh->filtros_vacios($complemento, $keys_data_filter);
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotTrue($resultado);
+
+        errores::$error = false;
+
+
     }
 
     public function test_genera_and(){
@@ -1731,10 +1587,23 @@ class whereTest extends test {
         $complemento = new stdClass();
         $key_data_filter = array();
         $resultado = $wh->verifica_where($complemento, $key_data_filter);
+
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
         errores::$error = false;
+
+        $complemento = new stdClass();
+        $complemento->where = 'where';
+        $key_data_filter = array();
+        $key_data_filter[] = 'z';
+        $complemento->z = 'x';
+        $resultado = $wh->verifica_where($complemento, $key_data_filter);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
     }
 
     public function test_where(){
@@ -1772,6 +1641,31 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+
+        $complemento = new stdClass();
+        $resultado = $wh->where_base($complemento);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->where);
+        errores::$error = false;
+
+        $complemento = new stdClass();
+        $complemento->where = '';
+        $resultado = $wh->where_base($complemento);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado->where);
+        errores::$error = false;
+
+        $complemento = new stdClass();
+        $complemento->where = 'where';
+        $resultado = $wh->where_base($complemento);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('WHERE',$resultado->where);
+        errores::$error = false;
+
     }
 
     public function test_where_filtro(){
@@ -1785,6 +1679,19 @@ class whereTest extends test {
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
+
+        $complemento = new stdClass();
+        $key_data_filter = array();
+        $complemento->where = 'where';
+        $key_data_filter[] = 's';
+        $complemento->s = 'test';
+        $resultado = $wh->where_filtro($complemento, $key_data_filter);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' WHERE ',$resultado->where);
+        $this->assertEquals('test',$resultado->s);
+        errores::$error = false;
+
     }
 
     public function test_where_mayus(){
@@ -1806,6 +1713,27 @@ class whereTest extends test {
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
         $this->assertStringContainsStringIgnoringCase('Error where mal aplicado', $resultado['mensaje']);
+
+        errores::$error = false;
+
+        $complemento = new stdClass();
+        $resultado = $wh->where_mayus(complemento: $complemento);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->where);
+
+
+        errores::$error = false;
+
+        $complemento = new stdClass();
+        $complemento->where = 'where';
+        $resultado = $wh->where_mayus(complemento: $complemento);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('WHERE', $resultado->where);
+        errores::$error = false;
+
     }
 
     public function test_where_suma(){
