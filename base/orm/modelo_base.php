@@ -612,7 +612,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL ERROR
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-modelo_base#funci%C3%B3n-ejecuta_sql
      * Ejecuta una consulta SQL y devuelve un objeto con los resultados de la consulta,
      * el ID del registro recién insertado, y otros detalles sobre la operación realizada.
      *

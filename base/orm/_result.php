@@ -132,6 +132,7 @@ class _result
     }
 
     /**
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-_result#funci%C3%B3n-genera_modelos_hijos
      * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus
      * dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]
@@ -452,7 +453,8 @@ class _result
     {
         $consulta = trim($consulta);
         if($consulta === ''){
-            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$modelo->tabla);
+            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$modelo->tabla,
+                es_final: true);
         }
         $result = $modelo->ejecuta_sql(consulta: $consulta);
 

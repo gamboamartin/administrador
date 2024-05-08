@@ -872,7 +872,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     *
      * Muestra las tablas de la base de datos de acuerdo con el criterio proporcionado.
      *
      * @param string $entidad Nombre de la tabla que queremos consultar en la base de datos.
@@ -887,6 +887,7 @@ class sql{
      * $resultado = show_tables("");
      * Este ejemplo retornará: "SHOW TABLES"
      * @version 14.2.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-sql#funci%C3%B3n-show_tables
      */
     final public function show_tables(string $entidad = ''): string
     {
