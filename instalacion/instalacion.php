@@ -4,6 +4,7 @@ namespace gamboamartin\administrador\instalacion;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
+use gamboamartin\administrador\models\adm_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_tipo_dato;
 use gamboamartin\errores\errores;
@@ -154,6 +155,42 @@ class instalacion
 
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_namespace');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_grupo(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_grupo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $campos->root = new stdClass();
+        $campos->root->default = 'inactivo';
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_grupo');
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
@@ -801,6 +838,46 @@ class instalacion
 
     }
 
+    private function adm_grupo(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_grupo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Grupos de Usuario';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+        $adm_grupo_ins = array();
+        $adm_grupo_ins['id'] = 2;
+        $adm_grupo_ins['descripcion'] = 'Administrador Sistema';
+        $adm_grupo_ins['status'] = 'activo';
+        $adm_grupo_ins['root'] = 'activo';
+
+        $r_adm_grupo = (new adm_grupo(link: $link))->inserta_registro_si_no_existe(registro: $adm_grupo_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar grupo', data:  $r_adm_grupo);
+        }
+
+
+        return $create;
+
+    }
+
     private function adm_bitacora(PDO $link): array|stdClass
     {
         $create = $this->_add_adm_bitacora(link: $link);
@@ -1139,6 +1216,12 @@ class instalacion
     {
 
         $out = new stdClass();
+
+        $adm_grupo = $this->adm_grupo(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_grupo', data: $adm_grupo);
+        }
+        $out->adm_grupo = $adm_grupo;
 
         $adm_namespace = $this->adm_namespace(link: $link);
         if (errores::$error) {
