@@ -132,7 +132,8 @@ class _result
     }
 
     /**
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-_result#funci%C3%B3n-genera_modelos_hijos
+     * TOTAL
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.genera_modelos_hijos.21.6.0
      * Maqueta un arreglo para la generacion de modelos y sus registros asignados a un query para obtener sus
      * dependientes o dependencias
      * de la siguiente forma $registro['tabla']= $reg[0][campos de registro], $reg[n][campos de registro]

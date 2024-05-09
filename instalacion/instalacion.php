@@ -974,6 +974,29 @@ class instalacion
         }
 
 
+        if(!isset((new generales())->adm_usuario_user_init)){
+            return (new errores())->error(mensaje: 'Error integre el atributo adm_usuario_user_init en generales',
+                data:  '', es_final: true);
+        }
+        if(!isset((new generales())->adm_usuario_password_init)){
+            return (new errores())->error(mensaje: 'Error integre el atributo adm_usuario_password_init en generales',
+                data:  '', es_final: true);
+        }
+
+        $adm_usuario_user_init = trim((new generales())->adm_usuario_user_init);
+        $adm_usuario_password_init = trim((new generales())->adm_usuario_password_init);
+
+        if($adm_usuario_user_init === ''){
+            return (new errores())->error(
+                mensaje: 'Error esta vacio el atributo adm_usuario_password_init en generales', data:  '',
+                es_final: true);
+        }
+        if($adm_usuario_password_init === ''){
+            return (new errores())->error(
+                mensaje: 'Error esta vacio el atributo adm_usuario_password_init en generales', data:  '',
+                es_final: true);
+        }
+
         $adm_usuario_ins = array();
         $adm_usuario_ins['id'] = 2;
         $adm_usuario_ins['user'] = (new generales())->adm_usuario_user_init;
