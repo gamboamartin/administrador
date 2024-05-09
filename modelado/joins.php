@@ -257,7 +257,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función obtiene los JOINs entre las tablas proporcionadas como array.
      * Valida la existencia de las claves necesarias en $tabla_join.
      * Si hay un error durante la validación, se retorna una cadena con el mensaje de error.
@@ -275,6 +275,7 @@ class joins{
      * $instance->data_para_join(['tabla_base' => 'clientes', 'tabla_enlace' => 'pedidos']);
      *
      * @version v15.57.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_para_join.21.13.0
      */
     private function data_para_join(array $tabla_join): array|string
     {
@@ -445,7 +446,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una instrucción SQL JOIN.
      *
      * Esta función genera una instrucción SQL JOIN entre dos tablas, pudiendo además renombrar campos.
@@ -459,6 +460,7 @@ class joins{
      * @return string|array Retorna una cadena con la instrucción SQL JOIN en caso de éxito, y un arreglo con el error en caso contrario.
      * @throws errores Se lanza una excepción si alguno de los parámetros requeridos (tabla o tabla_enlace) está vacío.
      * @version 15.56.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.genera_join.21.12.0
      */
     private function genera_join(string $tabla, string $tabla_enlace, string $campo_renombrado = '',
                                  string $campo_tabla_base_id = '', string $renombrada = '' ):array|string{
