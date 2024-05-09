@@ -655,7 +655,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Verifica si un modelo cumple con una característica especial de nombres de espacio
      *
      * @param string $modelo Nombre del modelo a verificar
@@ -671,6 +671,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return bool|array Devuelve 'true' si el modelo contiene uno de los nombres de espacio, 'false' en caso contrario
      * @version 18.15.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.es_namespace_especial.21.8.0
      *
      */
     private function es_namespace_especial(string $modelo, array $namespaces): bool|array
@@ -1011,7 +1012,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera el nombre del modelo.
      *
      * Esta función se encarga de generar el nombre del modelo.
@@ -1024,6 +1025,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array|string El nombre del modelo generado.
      *
      * @version 18.22.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_name_modelo.21.8.0
      */
     private function genera_name_modelo(string $modelo, string $namespace_model): array|string
     {
@@ -1152,7 +1154,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera el nombre completo del modelo que se utilizará para las operaciones de base de datos.
      *
      * @param bool $es_namespace_especial Indica si el espacio de nombre del modelo es especial. Si es verdadero, el nombre del modelo no se manipulará más.
@@ -1164,6 +1166,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores Se lanza una excepción si el nombre del modelo está vacío después de quitar los espacios
      *                en blanco o si ocurrió un error durante la manipulación del nombre del modelo.
      * @version 18.20.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.name_modelo.21.8.0
      */
     private function name_modelo(bool $es_namespace_especial, string $modelo, string $namespace_model): string|array
     {
@@ -1187,7 +1190,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Ajusta el nombre del modelo dado su espacio de nombres.
      *
      * Este método se encarga de tomar el nombre del modelo junto con su espacio de nombres
@@ -1201,6 +1204,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @throws errores Si los parámetros de entrada están vacíos .
      * @version 18.19.0
+     * @ur https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.name_modelo_ajustado.21.8.0
      */
     private function name_modelo_ajustado(string $modelo, string $namespace_model): string|array
     {
@@ -1219,7 +1223,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      *  Método Privado name_modelo_base
      *
      * Este método se encarga de procesar el nombre del modelo proporcionado y rechazar cualquier valor vacío.
@@ -1231,6 +1235,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @throws errores Se generará una excepción si el nombre del modelo está vacío.
      * @version 18.18.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.name_modelo_base.21.8.0
      */
     private function name_modelo_base(string $modelo): string|array
     {
@@ -1244,10 +1249,11 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Obtiene los namespaces de paquetes par asu uso y normalizacion en modelos
      *
      * @return array
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.namespaces.21.8.0
      */
     private function namespaces(): array
     {

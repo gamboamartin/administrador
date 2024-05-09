@@ -17,7 +17,7 @@ class rows{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Filtro aplicado a los campos de las filas en una operación
      *
      * @param string $campo_filtro El campo específico para el filtrado
@@ -29,6 +29,7 @@ class rows{
      *
      * @throws errores Si el contenido de $campo_filtro o $campo_row no es válido o está vacío, se genera un error
      * @version 14.6.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.rows.filtro_hijo.21.8.0
      */
     private function filtro_hijo(string $campo_filtro, string $campo_row, array $filtro, array $row):array{
         if($campo_row===''){
@@ -46,7 +47,7 @@ class rows{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función filtro_para_hijo genera un array de filtros basándose en los filtros y la fila de datos proporcionados.
      *
      * @param array $filtros Los filtros a aplicar.
@@ -54,6 +55,7 @@ class rows{
      * @return array Los filtros generados.
      * @throws errores En caso de error al generar el filtro.
      * @version 14.7.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.rows.filtro_para_hijo.21.8.0
      */
     private function filtro_para_hijo(array $filtros, array $row):array{
         $filtro = array();
@@ -71,7 +73,7 @@ class rows{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Obtiene el filtro para un hijo a partir de los datos del modelo y de una fila específica.
      *
      * @param array $data_modelo Los datos del modelo, que deben incluir las claves 'filtros' y 'filtros_con_valor'.
@@ -81,6 +83,7 @@ class rows{
      * @return array Retorna el array de filtros. Si ocurre un error, se retorna un mensaje de error.
      *
      * @version 14.8.0
+     * @ur https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.rows.obten_filtro_para_hijo.21.8.0
      */
     final public function obten_filtro_para_hijo(array $data_modelo, array $row):array{
         if(!isset($data_modelo['filtros'])){
@@ -96,7 +99,8 @@ class rows{
             return $this->error->error(mensaje: "Error filtro", data: $data_modelo, es_final: true, fix: $fix);
         }
         if(!is_array($data_modelo['filtros_con_valor'])){
-            $fix = 'En data_modelo debe existir un key filtros_con_valor como array data_modelo[filtros_con_valor] = array()';
+            $fix = 'En data_modelo debe existir un key filtros_con_valor como array data_modelo[filtros_con_valor] 
+                        = array()';
             return $this->error->error(mensaje: "Error filtro", data: $data_modelo, es_final: true, fix: $fix);
         }
 
