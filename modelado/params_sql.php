@@ -47,13 +47,13 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * https://github.com/gamboamartin/administrador/wiki/admistrador.modelado.params_sql.group_by_sql.21.4.0
      * Genera la cadena SQL para la instrucción GROUP BY.
      *
      * @param array $group_by El arreglo que contiene los campos por los cuales agrupar.
      *
      * @return string|array La cadena SQL para la instrucción GROUP BY.
-     * @version 13.10.0
+     * @version 21.4.0
      */
     private function group_by_sql(array $group_by): string|array
     {
