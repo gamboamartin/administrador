@@ -218,7 +218,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera la información requerida para realizar un "JOIN" en una consulta SQL.
      *
      * @param string $id_renombrada El identificador de la tabla renombrada.
@@ -234,6 +234,7 @@ class joins{
      * - 'on_join': La condición bajo la cual se realizará el "JOIN".
      * - 'asignacion_tabla': La asignación de renombramiento de la tabla.
      * @version 15.40.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_for_rename.21.12.0
      */
     private function data_for_rename(string $id_renombrada, stdClass $init, string $join,
                                     string $renombrada): stdClass|array
@@ -408,7 +409,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función renombra un `id` en la tabla base de acuerdo al valor proporcionado.
      *
      * @param string $campo_tabla_base_id Es el nombre que se asignará al `id` de la tabla base.
@@ -431,6 +432,7 @@ class joins{
      * echo $id_renombrada2;
      * // Retorna: '.id'
      * @version 15.34.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.id_renombrada.21.12.0
      */
     private function id_renombrada(string $campo_tabla_base_id): string
     {
@@ -482,7 +484,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una cláusula JOIN personalizada en una consulta SQL.
      *
      * @param string $campo_renombrado El nombre del campo que se va a renombrar.
@@ -494,6 +496,7 @@ class joins{
      *
      * @return array|string Si se genera un error durante el proceso, se devuelve un mensaje de error. Si todo va bien, se devuelve la cláusula JOIN generada.
      * @version 15.41.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.genera_join_renombrado.21.12.0
      */
     private function genera_join_renombrado(string $campo_renombrado, string $campo_tabla_base_id, string $join,
                                             string $renombrada, string $tabla, string $tabla_enlace):array|string{
@@ -782,7 +785,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función se utiliza para generar una declaración de Join SQL.
      *
      * @param string $campo_renombrado  El campo a renombrar.
@@ -823,6 +826,7 @@ class joins{
      *       'data' => '   '
      *    ]
      * @version 15.42.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.sql_join.21.12.0
      */
     private function sql_join(string $campo_renombrado, string $campo_tabla_base_id, string $renombrada, string $tabla,
                               string $tabla_enlace): array|string
