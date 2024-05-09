@@ -191,7 +191,7 @@ class adm_seccion extends _modelo_children {
             return $this->error->error(mensaje: 'Error al validar si existe seccion',data: $existe);
         }
         if(!$existe){
-            return $this->error->error(mensaje: 'Error no existe la seccion',data: $existe);
+            return $this->error->error(mensaje: 'Error no existe la seccion',data: $descripcion);
         }
 
         $adm_seccion = $this->adm_seccion(descripcion: $descripcion);
