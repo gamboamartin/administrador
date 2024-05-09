@@ -19,7 +19,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI REV
+     * TOTAL
      * Ajusta el nombre del modelo.
      *
      * Este método recibe el nombre de una tabla y realiza dos operaciones:
@@ -48,6 +48,7 @@ class joins{
      *
      * @throws errores Si la tabla está vacía luego de ser eliminados los espacios en blanco, lanza una excepción con un mensaje de error.
      * @version 15.12.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.ajusta_name_model.21.10.0
      */
     private function ajusta_name_model(string $tabla): stdClass|array
     {
@@ -66,7 +67,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función ajusta los nombres de los modelos de dos tablas dadas.
      *
      * @param string $tabla El nombre de la primera tabla.
@@ -81,6 +82,7 @@ class joins{
      * echo $ajuste->tabla; // Muestra el nombre del modelo ajustado para la tabla 'usuarios'
      * echo $ajuste->tabla_enlace; // Muestra el nombre del modelo ajustado para la tabla 'roles'
      * @version 15.12.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.ajusta_name_models.21.11.0
      *
      */
     private function ajusta_name_models(string $tabla, string $tabla_enlace): array|stdClass
@@ -141,7 +143,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Realiza la preparación de los datos para una operación de join (unión) de tablas.
      *
      * @param array $tabla_join Un arreglo que contiene las tablas que se van a unir.
@@ -183,6 +185,7 @@ class joins{
      *
      * @throws errores Si 'tabla_base' y 'tabla_enlace' no están establecidos dentro del array $tabla_join.
      * @version 15.7.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_join.21.11.0
      *
      */
     private function data_join(array $tabla_join): stdClass|array
@@ -647,7 +650,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función para inicializar y renombrar tablas y modelos en una operación join.
      *
      * Esta función toma como entrada cuatro argumentos los que corresponden a nombres de tablas y devolviéndolos en un
@@ -673,6 +676,7 @@ class joins{
      * </code>
      *
      * @version 15.28.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.init_renombre.21.11.0
      */
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
     {

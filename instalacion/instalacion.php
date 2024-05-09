@@ -1152,6 +1152,20 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'denegado',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-arrow-up-short',
+            link:  $link, lista:  'inactivo',titulo:  'denegado', es_status: 'inactivo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'inicio',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-arrow-up-short',
+            link:  $link, lista:  'inactivo',titulo:  'inicio', es_status: 'inactivo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
         return $acl;
 
     }

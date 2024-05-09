@@ -446,7 +446,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida los parámetros necesarios para llevar a cabo operaciones de renombrado en consultas.
      *
      * @param string $campo_renombrado El campo que se desea renombrar.
@@ -456,6 +456,7 @@ class validaciones extends validacion{
      * @param string $tabla_enlace La tabla con la que se realiza el JOIN.
      * @return true|array Devuelve true si todas las validaciones son correctas, de lo contrario, devuelve un arreglo con un mensaje de error.
      * @version 15.33.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_renombres.21.11.0
      */
     final public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
                                      string $tabla, string $tabla_enlace): true|array
