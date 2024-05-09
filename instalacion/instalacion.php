@@ -203,6 +203,38 @@ class instalacion
 
     }
 
+    private function _add_adm_sistema(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_sistema');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_sistema');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+        return $out;
+
+    }
+
     private function _add_adm_usuario(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -950,6 +982,35 @@ class instalacion
 
     }
 
+    private function adm_sistema(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_sistema(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Sistemas';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+
+        return $create;
+
+    }
+
     private function adm_usuario(PDO $link): array|stdClass
     {
         $create = $this->_add_adm_usuario(link: $link);
@@ -1364,6 +1425,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_grupo', data: $adm_grupo);
         }
         $out->adm_grupo = $adm_grupo;
+
+        $adm_sistema = $this->adm_sistema(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_sistema', data: $adm_sistema);
+        }
+        $out->adm_sistema = $adm_sistema;
 
         $adm_usuario = $this->adm_usuario(link: $link);
         if (errores::$error) {

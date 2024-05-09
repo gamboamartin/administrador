@@ -230,7 +230,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función toma dos parámetros; una matriz de campos cifrados y una matriz de filas (row). Para cada valor
      * en la matriz fila, verifica si el campo es numérico. Si es así, retorna un mensaje de error.
      * En caso contrario, desencripta el valor usando la función `value_desencriptado`.
@@ -246,6 +246,7 @@ class inicializacion{
      * @throws errores Si el campo es numérico o si hay un error al desencriptar.
      *
      * @version 14.5.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.asigna_valor_desencriptado.21.7.0
      */
     final public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
     {
@@ -1056,7 +1057,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Desencripta el valor del campo proporcionado si está en la lista de campos encriptados.
      *
      * El método verifica si el nombre del campo está dentro de la lista de campos encriptados.
@@ -1073,6 +1074,7 @@ class inicializacion{
      *
      * @author Martin Gamboa
      * @version 14.4.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.value_desencriptado.21.7.0
      */
     private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
     {
