@@ -2043,7 +2043,7 @@ class where{
     }
 
     /**
-
+     * TOTAL
      * Verifica el tipo de filtro proporcionado.
      *
      * @param string $tipo_filtro El tipo de filtro a verificar.
@@ -2058,7 +2058,7 @@ class where{
      *    Si no es así, crea un nuevo objeto stdClass y establece la propiedad
      *    tipo_filtro con el valor ingresado y retorna un error con el mensaje y los datos correspondientes.
      * @version 13.8.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-verifica_tipo_filtro
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.verifica_tipo_filtro.21.10.0
      */
     final public function verifica_tipo_filtro(string $tipo_filtro): true|array
     {

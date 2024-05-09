@@ -418,11 +418,14 @@ class _adm
 
     }
 
-    final public function integra_acl(string $adm_menu_descripcion, string $adm_namespace_name,string $adm_namespace_descripcion, string $adm_seccion_descripcion ,string $adm_seccion_pertenece_descripcion,
-                                      string $adm_sistema_descripcion, string $etiqueta_label, PDO $link): array|stdClass
+    final public function integra_acl(string $adm_menu_descripcion, string $adm_namespace_name,
+                                      string $adm_namespace_descripcion, string $adm_seccion_descripcion ,
+                                      string $adm_seccion_pertenece_descripcion, string $adm_sistema_descripcion,
+                                      string $etiqueta_label, PDO $link): array|stdClass
     {
         $parents = $this->adm_parents(adm_menu_descripcion: $adm_menu_descripcion,
-            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion, adm_sistema_descripcion: $adm_sistema_descripcion, link: $link);
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener parents', data:  $parents);
         }

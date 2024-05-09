@@ -47,7 +47,8 @@ class params_sql{
     }
 
     /**
-     * https://github.com/gamboamartin/administrador/wiki/admistrador.modelado.params_sql.group_by_sql.21.4.0
+     * TOTAL
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.group_by_sql.21.4.0
      * Genera la cadena SQL para la instrucción GROUP BY.
      *
      * @param array $group_by El arreglo que contiene los campos por los cuales agrupar.
@@ -193,13 +194,14 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una consulta SQL para ordenar los resultados.
      *
      * @param array $order Un array asociativo donde las claves son los nombres de las columnas a ordenar y
      * los valores son los tipos de orden ('ASC' para ascendente, 'DESC' para descendente).
      * @return array|string Devuelve una consulta SQL que puede ser usada en una cláusula ORDER BY.
      * @version 13.11.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.order_sql.21.10.0
      */
     private function order_sql(array $order):array|string{
         $order_sql = '';
