@@ -58,6 +58,7 @@ class controlador_baseTest extends test {
         $usuario_ins['telefono'] = 1235487596;
         $usuario_ins['nombre'] = 1235487596;
         $usuario_ins['ap'] = 1235487596;
+        $usuario_ins['codigo'] = 1235487596;
         $r_alta_usuario = (new adm_usuario($this->link))->alta_registro($usuario_ins);
         if (errores::$error) {
             $error = (new errores())->error('Error al dar de alta usuario', $r_alta_usuario);

@@ -1,12 +1,14 @@
 <?php
 namespace gamboamartin\administrador\instalacion;
 
+use config\generales;
 use gamboamartin\administrador\models\_instalacion;
 use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_accion_basica;
 use gamboamartin\administrador\models\adm_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_tipo_dato;
+use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\errores\errores;
 use PDO;
 use stdClass;
@@ -195,6 +197,60 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
         }
+
+
+        return $out;
+
+    }
+
+    private function _add_adm_usuario(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_usuario');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $campos->user = new stdClass();
+        $campos->password = new stdClass();
+        $campos->email = new stdClass();
+        $campos->status = new stdClass();
+        $campos->status->default = 'activo';
+        $campos->session = new stdClass();
+        $campos->telefono = new stdClass();
+        $campos->nombre = new stdClass();
+        $campos->ap = new stdClass();
+        $campos->am = new stdClass();
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_usuario');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+        $foraneas = array();
+        $foraneas['adm_grupo_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_usuario');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
 
 
         return $out;
@@ -894,6 +950,53 @@ class instalacion
 
     }
 
+    private function adm_usuario(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_usuario(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Usuarios';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+
+        $adm_usuario_ins = array();
+        $adm_usuario_ins['id'] = 2;
+        $adm_usuario_ins['user'] = (new generales())->adm_usuario_user_init;
+        $adm_usuario_ins['password'] = (new generales())->adm_usuario_password_init;
+        $adm_usuario_ins['email'] = 'sinmail@mail.com';
+        $adm_usuario_ins['adm_grupo_id'] = 2;
+        $adm_usuario_ins['status'] = 'activo';
+        $adm_usuario_ins['telefono'] = '3333333333';
+        $adm_usuario_ins['nombre'] = 'admin';
+        $adm_usuario_ins['ap'] = 'admin';
+        $adm_usuario_ins['am'] = 'admin';
+        $adm_usuario_ins['codigo'] = '2';
+
+        $r_adm_usuario = (new adm_usuario(link: $link))->inserta_registro_si_no_existe(registro: $adm_usuario_ins);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar r_adm_usuario', data:  $r_adm_usuario);
+        }
+
+
+        return $create;
+
+    }
+
     private function adm_bitacora(PDO $link): array|stdClass
     {
         $create = $this->_add_adm_bitacora(link: $link);
@@ -1236,6 +1339,12 @@ class instalacion
         $adm_grupo = $this->adm_grupo(link: $link);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al init adm_grupo', data: $adm_grupo);
+        }
+        $out->adm_grupo = $adm_grupo;
+
+        $adm_usuario = $this->adm_usuario(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_usuario', data: $adm_usuario);
         }
         $out->adm_grupo = $adm_grupo;
 

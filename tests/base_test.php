@@ -221,9 +221,9 @@ class base_test{
     }
 
     public function alta_adm_usuario(PDO $link, int $adm_grupo_id = 1, string $ap = 'admin',
-                                     string $email = 'admin@test.com', int $id = 2, string $nombre = 'admin',
-                                     string $password = 'password', string $telefono = '3333333333',
-                                     string $user = 'admin'): array|stdClass
+                                     string $codigo = '3333333333', string $email = 'admin@test.com', int $id = 2,
+                                     string $nombre = 'admin', string $password = 'password',
+                                     string $telefono = '3333333333', string $user = 'admin'): array|stdClass
     {
 
         $existe = (new adm_grupo($link))->existe_by_id(registro_id: $adm_grupo_id);
@@ -245,6 +245,7 @@ class base_test{
         $registro['telefono'] = $telefono;
         $registro['nombre'] = $nombre;
         $registro['ap'] = $ap;
+        $registro['codigo'] = $codigo;
         $alta = (new adm_usuario($link))->alta_registro(registro: $registro);
         if(errores::$error){
             return (new errores())->error('Error al insertar', $alta);

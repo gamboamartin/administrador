@@ -612,7 +612,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-modelo_base#funci%C3%B3n-ejecuta_sql
+     * TOTAL
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.ejecuta_sql.21.5.0
      * Ejecuta una consulta SQL y devuelve un objeto con los resultados de la consulta,
      * el ID del registro recién insertado, y otros detalles sobre la operación realizada.
      *
@@ -621,7 +622,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *                        el registro, el ID del registro y la salida.
      *                        En caso de error, devuelve un array con el mensaje y los datos del error.
      *
-     * @version 13.21.0
+     * @version 21.5.0
      */
     final public function ejecuta_sql(string $consulta):array|stdClass{
         if($consulta === ''){
