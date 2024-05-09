@@ -1120,6 +1120,35 @@ class instalacion
 
     }
 
+    private function adm_session(PDO $link): array|stdClass
+    {
+
+        $adm_menu_descripcion = 'ACL';
+        $adm_sistema_descripcion = 'administrador';
+        $etiqueta_label = 'Sessiones';
+        $adm_seccion_pertenece_descripcion = 'administrador';
+        $adm_namespace_descripcion = 'gamboa.martin/administrador';
+        $adm_namespace_name = 'gamboamartin/administrador';
+
+        $acl = (new _adm())->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: __FUNCTION__, adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion, etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'login',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-arrow-up-short',
+            link:  $link, lista:  'inactivo',titulo:  'login', es_status: 'inactivo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
+        return $acl;
+
+    }
+
     private function adm_seccion(PDO $link): array|stdClass
     {
         $create = $this->_add_adm_seccion(link: $link);
@@ -1191,6 +1220,7 @@ class instalacion
 
 
         return $create;
+
 
     }
 
@@ -1513,6 +1543,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_reporte', data: $adm_reporte);
         }
         $out->adm_reporte = $adm_reporte;
+
+        $adm_session = $this->adm_session(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_session', data: $adm_session);
+        }
+        $out->adm_session = $adm_session;
 
 
         return $out;
