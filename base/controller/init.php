@@ -699,7 +699,7 @@ class init{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Configura un select txt basado en las claves proporcionadas.
      *
      * @param int $cols Número de columnas a mostrar css.
@@ -715,13 +715,14 @@ class init{
      * @version 15.2.0
      * @fecha 2023-03-22
      * @author Martin Gamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.key_select_txt.21.14.0
      */
-    public function key_select_txt(
+    final public function key_select_txt(
         int $cols, string $key, array $keys_selects, string $place_holder, bool $required = true): array
     {
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
         }
 
         if(!isset($keys_selects[$key])) {
