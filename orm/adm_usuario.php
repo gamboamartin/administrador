@@ -71,7 +71,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Maqueta en un objeto los elementos para validar un permiso
      *
      * Esta función recibe como argumentos el nombre de una acción y una sección. Luego, realiza una validación para cada una.
@@ -86,16 +86,17 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      *                              Retorna un array si ocurre algun error, con el mensaje de error y los datos con los que se llamó a la función.
      *
      * @version 16.297.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm.adm_usuario.data_permiso.21.15.0
      */
     private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
     {
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
-            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion, es_final: true);
         }
         $adm_accion = trim($adm_accion);
         if($adm_accion === ''){
-            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion);
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion, es_final: true);
         }
         $data = new stdClass();
         $data->adm_seccion = $adm_seccion;
@@ -129,7 +130,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Método para filtrar la acción y la sección del grupo.
      *
      * Este método acepta una acción, un grupo y una sección.
@@ -144,16 +145,17 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      * El método devuelve un array con los parámetros validados y preconfigurados.
      * Si algún parámetro no es válido, se devuelve un mensaje de error correspondiente.
      * @version 16.299.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm.adm_usuario.filtro.21.15.0
      */
     private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
     {
         $adm_accion = trim($adm_accion);
         if($adm_accion === ''){
-            return $this->error->error(mensaje: 'Error adm_accion esta vacia',data:  $adm_accion);
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia',data:  $adm_accion, es_final: true);
         }
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
-            return $this->error->error(mensaje: 'Error adm_seccion esta vacia',data:  $adm_seccion);
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia',data:  $adm_seccion, es_final: true);
         }
 
         if($adm_grupo_id <= 0){
@@ -275,7 +277,8 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         }
 
         if($adm_grupo_id <= 0){
-            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id,
+                es_final: true);
         }
 
         $filtro = $this->filtro(adm_accion: $data_permiso->adm_accion,adm_grupo_id: $adm_grupo_id,
@@ -443,7 +446,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     private function val_session_existe(array $filtro): array|stdClass
     {
         if(count($filtro) === 0){
-            return $this->error->error(mensaje: 'Error filtro esta vacio', data: $filtro);
+            return $this->error->error(mensaje: 'Error filtro esta vacio', data: $filtro, es_final: true);
         }
         $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
         if (errores::$error) {
@@ -461,7 +464,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Valida los datos del permiso sean correctos a nivel parametros.
      *
      * Esta función recibe los datos que representan a un permiso de un grupo de usuario y realiza validaciones
@@ -474,19 +477,21 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
      *
      * @return true|array Resultado de las validaciones. En caso de un error, se genera un error.
      * @version 16.31.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm.adm_usuario.valida_datos_permiso.24.15.0
      */
     private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): true|array
     {
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
-            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion);
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion, es_final: true);
         }
         $adm_accion = trim($adm_accion);
         if($adm_accion === ''){
-            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion);
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion, es_final: true);
         }
         if($adm_grupo_id <= 0){
-            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id,
+                es_final: true);
         }
         return true;
     }

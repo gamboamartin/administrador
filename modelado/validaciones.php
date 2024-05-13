@@ -486,7 +486,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida los parámetros de entrada de una junta de tablas (_table join_).
      *
      * @final
@@ -498,6 +498,7 @@ class validaciones extends validacion{
      *
      * @throws errores Si algún parámetro no cumple las condiciones, se lanza un error con la descripción del problema.
      * @version 15.68.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_tabla_join.21.15.0
      */
     final public function valida_tabla_join(string $key, string $tabla_join ): true|array
     {

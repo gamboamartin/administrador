@@ -1000,7 +1000,7 @@ class joins{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función tablas_join_base forma la base para realizar operaciones de unión entre tablas en una base de datos.
      *
      * @param array $tabla_join   Este parámetro es un arreglo que contiene información sobre las tablas
@@ -1020,6 +1020,7 @@ class joins{
      *
      * @return array|string   La función devuelve la cadena $tablas actualizada o un arreglo de error si se encuentra alguno.
      * @version 15.59.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tablas_join_base.21.15.0
      */
     private function tablas_join_base(array $tabla_join, string $tablas): array|string
     {
