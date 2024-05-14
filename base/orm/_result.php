@@ -503,6 +503,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Esta función acumula los totales en un campo específico.
      *
      * @param string $campo El nombre del campo en el que se acumulan los totales.
@@ -511,6 +512,7 @@ class _result
      *
      * @return stdClass|array Devuelve un objeto con los totales acumulados.
      * Si hay un error, devuelve un array con los detalles del error.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.total_rs_acumula.21.22.0
      */
     private function total_rs_acumula(string $campo, array $row, stdClass $totales_rs): stdClass|array
     {
