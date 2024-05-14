@@ -18,7 +18,7 @@ class sumas{
 
     /**
      *
-     *
+     * TOTAL
      * Funcion que recorre el arreglo de $campos para maquetar una cadena de texto. A su vez
      * verificando que no esté vacio y que sean validos los caracteres.
      *
@@ -27,8 +27,9 @@ class sumas{
      *
      * @function $data = $sumas->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
      * La funcion enlista y maqueta el nombre de $campo y $alias para completar una cadena de texto.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sumas.columnas_suma.21.16.0
      */
-    public function columnas_suma(array $campos): array|string
+    final public function columnas_suma(array $campos): array|string
     {
         if(count($campos)===0){
             return $this->error->error(mensaje:'Error campos no puede venir vacio',data: $campos, es_final: true);
@@ -60,7 +61,7 @@ class sumas{
 
     /**
      *
-     *
+     * TOTAL
      * Funcion que obtiene el nombre del campo y el alias de la columna a sumar, validando
      * que no vengan espacios vacios y retornando un objeto que continene 2 cadenas maquetadas
      * con el valor de esas variables.
@@ -76,6 +77,7 @@ class sumas{
      *
      * @function $coma = (new sql_bass())->coma_sql(columnas: $columnas); Funcion que hace llamado
      * al metodo "coma_sql" para maquetar una cadena de texto conforme a los valores de la variable $columnas
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sumas.data_campo_suma.21.16.0
      */
     private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
     {

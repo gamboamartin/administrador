@@ -14,7 +14,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Añade una columna en una consulta SQL.
      *
      * @param string $alias Identificador único para la columna a añadir.
@@ -25,6 +25,7 @@ class columnas{
      *
      * @throws errores En caso de que $alias o $campo esten vacios.
      * @version 16.30.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.add_column.21.16.0
      */
     final public function add_column(string $alias, string $campo): string|array
     {

@@ -2660,8 +2660,6 @@ class modelo extends modelo_base {
      */
     public function suma(array $campos, array $filtro = array()): array
     {
-
-
         $this->filtro = $filtro;
         if(count($campos)===0){
             return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos, es_final: true);

@@ -94,11 +94,13 @@ class sql_bass{
     }
 
     /**
+     * TOTAL
      * Anexa coma al SQL
      * @param string $columnas Columnas previas
      * @return string
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql_bass.coma_sql.21.16.0
      */
-    public function coma_sql(string $columnas): string
+    final public function coma_sql(string $columnas): string
     {
         $columnas = trim($columnas);
         $coma = '';

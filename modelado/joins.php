@@ -114,7 +114,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Ajusta las tablas para las consultas SQL con JOINs.
      *
      * Esta función toma una cadena que representa una tabla primaria y un array de 'joins' para ajustar
@@ -128,6 +128,7 @@ class joins{
      *
      * @throws errores Si se produjo un error al generar las tablas de unión.
      * @version 16.28.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.ajusta_tablas.21.16.0
      */
     private function ajusta_tablas( string $tablas, array $tablas_join): array|string
     {
@@ -300,7 +301,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una estructura de JOIN a partir de una clave y una tabla.
      *
      * @param string $key La clave que será usada para el JOIN.
@@ -310,6 +311,7 @@ class joins{
      * En caso de error durante la validación con `valida_tabla_join` o durante la generación del JOIN con `genera_join`,
      * devuelve un mensaje con la descripción del error.
      * @version 16.13.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_para_join_esp.21.16.0
      */
     private function data_para_join_esp(string $key, string $tabla_join): array|string
     {
@@ -329,7 +331,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera datos para una operación JOIN en SQL desde varias tablas.
      *
      * Esta función permite unir varias tablas de una base de datos SQL.
@@ -347,6 +349,7 @@ class joins{
      *
      * @throws errores En caso de que ocurra un error durante el proceso, este método lanzará una excepción.
      * @version 16.26.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_tabla_sql.21.16.0
      */
     private function data_tabla_sql(string $key, array|string $tabla_join, string $tablas): array|string
     {
@@ -727,7 +730,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función para obtener las tablas completas.
      *
      * Esta función toma un array de columnas join y el nombre de una tabla, y devuelve un array que representa las tablas completas.
@@ -739,6 +742,7 @@ class joins{
      *
      * @throws errores En caso de que la tabla enviada esté vacía o si hubo un error al generar las tablas.
      * @version 16.29.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.obten_tablas_completas.21.16.0
      */
     final public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
         $tabla = str_replace('models\\','',$tabla);
@@ -1039,7 +1043,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * tablas_join_esp Genera una string que representa una operación JOIN en SQL en español.
      *
      * @param string $key Clave que se utiliza para buscar y unir la tabla especificada.
@@ -1065,6 +1069,7 @@ class joins{
      *
      * @throws errores si ocurre un error durante la validación o la generación del JOIN.
      * @version 16.25.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tablas_join_esp.21.16.0
      */
     private function tablas_join_esp(string $key, string $tabla_join, string $tablas): array|string
     {
