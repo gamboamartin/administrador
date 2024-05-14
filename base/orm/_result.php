@@ -20,12 +20,14 @@ class _result
     }
 
     /**
+     * TOTAL
      * Ajusta el contenido de un registro asignando valores encriptados y elementos con dependencia basada en modelos
      * hijos
      * @param array $campos_encriptados Conjunto de campos a encriptar desencriptar declarados en el modelo en ejecucion
      * @param array $modelos_hijos Conjunto de modelos que dependen del modelo en ejecucion
      * @param array $row Registro a integrar elementos encriptados o con dependientes
      * @return array Registro con los datos ajustados tanto en la encriptacion como de sus dependientes
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.ajusta_row_select.21.18.0
      */
     private function ajusta_row_select(array $campos_encriptados, modelo_base $modelo_base, array $modelos_hijos,
                                        array $row): array
@@ -47,6 +49,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Asigna registros hijos al modelo dado según el filtro proporcionado.
      *
      * @param array  $filtro El filtro a aplicar al conjunto de registros.
@@ -56,6 +59,7 @@ class _result
      * @param array  $row El array al cual se asignarán los registros del modelo.
      *
      * @return array Retorna un array con los registros asignados, o un error si algo sale mal.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.asigna_registros_hijo.21.18.0
      */
     private function asigna_registros_hijo(array $filtro, modelo_base $modelo_base, string $name_modelo,
                                            string $namespace_model, string $nombre_estructura, array $row):array{
@@ -190,6 +194,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Genera un registro hijo.
      *
      * Este método se encarga de generar un registro hijo a partir de los datos proporcionados en
@@ -200,6 +205,7 @@ class _result
      * @param string $name_modelo Nombre del modelo.
      * @param array $row Registro actual.
      * @return array Resultado de proceso.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.genera_registro_hijo.21.18.0
      */
     private function genera_registro_hijo(array $data_modelo, modelo_base $modelo_base, string $name_modelo,
                                           array $row):array{
@@ -228,6 +234,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Funcion que asigna y genera los registros encontrados de hijos en un registro
      * @param array $modelos_hijos datos de parametrizacion de datos para la ejecucion de obtencion de los registros
      * @param array $row registro padre al que se le asignaran los hijos
@@ -236,6 +243,7 @@ class _result
      *      $row = $this->genera_registros_hijos($modelos_hijos,$row);
      * @return array registro del modelo con registros hijos asignados
      * @throws errores $data_modelo['nombre_estructura'] no existe
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.genera_registros_hijos.21.18.0
      */
     private function genera_registros_hijos(modelo_base $modelo_base, array $modelos_hijos, array $row):array{
         foreach($modelos_hijos as $name_modelo=>$data_modelo){
@@ -244,7 +252,7 @@ class _result
                 $fix.= ' $modelos_hijos[name_modelo][nombre_estructura] = nombre d ela tabla dependiente';
                 $fix.= ' $modelos_hijos[name_modelo][filtros] = array() con configuracion de filtros';
                 $fix.= ' $modelos_hijos[name_modelo][filtros_con_valor] = array() con configuracion de filtros';
-                return $this->error->error(mensaje: "Error en datos",data: $modelos_hijos, fix: $fix);
+                return $this->error->error(mensaje: "Error en datos", data: $modelos_hijos, es_final: true, fix: $fix);
             }
             $keys = array('nombre_estructura','namespace_model');
             $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $data_modelo);
@@ -304,6 +312,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Maqueta el arreglo de registros de un modelo de base de datos
      *
      * Este método recorre una lista de registros devueltos de una consulta SQL
@@ -315,6 +324,7 @@ class _result
      * @param array $campos_encriptados Lista de campos a encriptar
      * @return array Retorna un arreglo de registros ajustado
      * @throws errores Si hay un error, produce una excepción con los detalles del error
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.maqueta_arreglo_registros.21.18.0
      */
     private function maqueta_arreglo_registros(array $campos_encriptados, modelo_base $modelo_base,
                                                array $modelos_hijos, PDOStatement $r_sql):array{
@@ -374,6 +384,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Procesa los registros devueltos por una declaración SQL de PDO
      *
      * Esta función toma una declaración SQL de PDO y un arreglo de campos encriptados.
@@ -383,6 +394,7 @@ class _result
      * @param array $campos_encriptados Un arreglo de campos para encriptar.
      * @return array Un arreglo con los registros procesados.
      * @throws errores Si hay un error al generar modelos hijos o al generar el arreglo de registros.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.parsea_registros_envio.21.18.0
      */
     private function parsea_registros_envio(array $campos_encriptados, modelo_base $modelo_base,
                                             PDOStatement $r_sql):array{
@@ -612,6 +624,7 @@ class _result
 
 
     /**
+     * TOTAL
      * Valida si el valor correspondiente al campo proporcionado en la fila es numérico.
      *
      * @param string $campo El nombre del campo para verificar.
@@ -620,6 +633,7 @@ class _result
      * @return true|array Retorna verdadero si el valor es numérico, de lo contrario, un mensaje de error.
      *
      * @throws errores Si el campo está vacío o no existe en la fila.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.valida_totales.21.18.0
      */
     private function valida_totales(string $campo, array $row): true|array
     {

@@ -312,8 +312,6 @@ class _resultTest extends test {
         errores::$error = false;
     }
 
-
-
     public function test_maqueta_arreglo_registros(){
 
         errores::$error = false;
@@ -463,6 +461,28 @@ class _resultTest extends test {
         $resultado = $mb->result_sql(campos_encriptados: $campos_encriptados,columnas_totales:  array(),consulta:  $consulta,modelo: $modelo);
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+    public function test_total_rs_acumula()
+    {
+
+
+        errores::$error = false;
+        $mb = new _result($this->link);
+        $mb = new liberator($mb);
+
+
+        $row = array();
+        $row['a'] = '1';
+        $campo = 'a';
+        $totales_rs = new stdClass();
+        $resultado = $mb->total_rs_acumula($campo, $row, $totales_rs);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado->a);
 
         errores::$error = false;
     }
