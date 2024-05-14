@@ -43,6 +43,7 @@ class controlador_baseTest extends test {
         }
 
 
+
         $del = (new adm_usuario(link: $this->link))->elimina_todo();
         if (errores::$error) {
             $error = (new errores())->error('Error al eliminar usuario', $del);

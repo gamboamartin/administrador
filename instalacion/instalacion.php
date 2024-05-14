@@ -1646,6 +1646,12 @@ class instalacion
 
         $out = new stdClass();
 
+        $adm_namespace = $this->adm_namespace(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_namespace', data: $adm_namespace);
+        }
+        $out->adm_namespace = $adm_namespace;
+
         $adm_grupo = $this->adm_grupo(link: $link);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al init adm_grupo', data: $adm_grupo);
@@ -1664,11 +1670,6 @@ class instalacion
         }
         $out->adm_grupo = $adm_grupo;
 
-        $adm_namespace = $this->adm_namespace(link: $link);
-        if (errores::$error) {
-            return (new errores())->error(mensaje: 'Error al init adm_namespace', data: $adm_namespace);
-        }
-        $out->adm_namespace = $adm_namespace;
 
         $adm_menu = $this->adm_menu(link: $link);
         if (errores::$error) {
