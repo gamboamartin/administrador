@@ -451,6 +451,7 @@ class _result
 
 
     /**
+     * TOTAL
      * Ejecuta una consulta SQL y devuelve los registros obtenidos
      *
      * Esta función toma una consulta SQL y un arreglo de campos encriptados.
@@ -460,6 +461,7 @@ class _result
      * @param string $consulta La consulta SQL a ejecutar.
      * @return array|stdClass Un objeto con los datos y registros procesados, o un mensaje de error en caso de falla.
      * @throws errores Si la consulta está vacía, hay un error al ejecutar la consulta SQL, o hay un error al procesar los registros.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.result_sql.21.23.0
      */
     private function result_sql(array $campos_encriptados, array $columnas_totales, string $consulta,
                                 modelo_base $modelo): array|stdClass
@@ -532,6 +534,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Esta función calcula y acumula el total para un campo específico.
      *
      * @param string       $campo      El nombre del campo para el que se va a calcular el total.
@@ -541,6 +544,7 @@ class _result
      * @return stdClass|array    Devuelve el objeto $totales_rs que contiene el total acumulado para el campo especificado.
      *
      * @throws errores   Lanza una excepción si el campo específico está vacío o si ocurre un error al acumular el total.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.total_rs_campo.21.23.0
      */
     private function total_rs_campo(string $campo, array $new_array, stdClass $totales_rs): array|stdClass
     {
@@ -558,6 +562,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Esta función acumula total de respuestas por campo.
      *
      * A través del método se recorren las columnas totales y se acumula el total de
@@ -568,6 +573,7 @@ class _result
      *
      * @return stdClass|array Devuelve un objeto con los totales por campo,
      * o devuelve un error si uno ocurre durante la acumulación.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.totales_rs.21.23.0
      */
     private function totales_rs(array $columnas_totales, array $new_array): stdClass|array
     {
@@ -588,6 +594,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Acumula los totales de un conjunto de datos.
      *
      * Este método recorre un array y acumula los totales para un campo específico.
@@ -599,6 +606,7 @@ class _result
      *
      * @return array|stdClass Retorna el objeto totales_rs con los totales acumulados,
      *                  o retorna el error si surge algún problema durante el proceso.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.totales_rs_acumula.21.23.0
      *
      */
     private function totales_rs_acumula(string $campo, array $new_array, stdClass $totales_rs): array|stdClass
