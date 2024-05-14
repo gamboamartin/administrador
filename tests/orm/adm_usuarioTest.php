@@ -19,6 +19,30 @@ class adm_usuarioTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_alta_bd(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        //$inicializacion = new liberator($inicializacion);
+
+        $_SESSION['usuario_id'] = 2;
+
+        $modelo->registro['user'] = mt_rand(1000000000,9999999999);
+        $modelo->registro['password'] = mt_rand(1000000000,9999999999);
+        $modelo->registro['email'] = 'a@a.com';
+        $modelo->registro['adm_grupo_id'] = 2;
+        $modelo->registro['telefono'] = mt_rand(1000000000,9999999999);;
+        $modelo->registro['nombre'] = mt_rand(1000000000,9999999999);;
+        $modelo->registro['ap'] = mt_rand(1000000000,9999999999);;
+        $resultado = $modelo->alta_bd();
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_data_grupo(): void
     {
 

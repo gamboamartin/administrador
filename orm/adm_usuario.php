@@ -38,6 +38,26 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $this->etiqueta = 'Usuario';
     }
 
+    public function alta_bd(): array|stdClass
+    {
+        $keys = array('user');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $this->registro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
+        }
+
+        if(!isset($this->registro['codigo'])){
+            $this->registro['codigo'] = $this->registro['user'];
+        }
+
+        $r_alta_bd = parent::alta_bd();
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al insertar usuario',data: $r_alta_bd);
+        }
+        return $r_alta_bd;
+
+    }
+
 
     /**
      * Valida que el grupo que va a filtrar exista en la base de datos. En caso de que

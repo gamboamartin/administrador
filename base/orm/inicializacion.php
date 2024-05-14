@@ -979,7 +979,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Establece el estado de un registro.
      *
      * Este método ajusta el estado de un registro en base a diversas condiciones:
@@ -998,6 +998,7 @@ class inicializacion{
      * @version 15.6.0
      * @fecha 2022-11-02 10:20
      * @author Martin Gamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.status.21.18.0
      */
     private function status(bool $integra_datos_base, array $registro, string $status_default): array
     {
