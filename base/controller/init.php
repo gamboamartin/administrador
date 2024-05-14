@@ -1110,7 +1110,7 @@ class init{
      */
     private function modela_inputs_campos(array $campos_view, stdClass $keys): array
     {
-        $atributos = array('inputs','passwords','telefonos','emails','fechas');
+        $atributos = array('inputs','textareas','passwords','telefonos','emails','fechas');
 
         $campos_view = $this->modela_inputs_attr(atributos: $atributos,campos_view:  $campos_view,keys:  $keys);
         if(errores::$error){
