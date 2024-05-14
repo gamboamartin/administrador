@@ -768,7 +768,7 @@ class init{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función model_init_campos
      *
      * Esta función recibe un array de campos de vista, una clave y un tipo.
@@ -784,6 +784,7 @@ class init{
      *
      * @throws errores Si la clave o el tipo están vacíos.
      * @version 18.26.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos.21.17.0
      */
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
@@ -803,7 +804,7 @@ class init{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función model_init_campos_input
      *
      * Esta función es una variante de la función model_init_campos, que recibe un array de campos de vista,
@@ -819,6 +820,7 @@ class init{
      *
      * @throws errores Si la clave o el tipo están vacíos o si hay un error al inicializar el campo de vista.
      * @version 18.26.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_input.21.17.0
      */
     private function model_init_campos_input(array $campos_view, string $key, string $type): array
     {
@@ -840,7 +842,7 @@ class init{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función model_init_campos_inputs
      *
      * Esta función extiende la funcionalidad de la función model_init_campos_input, permitiendo la inicialización
@@ -859,6 +861,7 @@ class init{
      *                   si el tipo está vacío o si hay un error al inicializar algún campo de vista.
      *
      * @version 18.26.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_inputs.21.17.0
      */
     private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
@@ -1020,7 +1023,7 @@ class init{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función modela_input
      *
      * Esta función trabaja en conjunto con model_init_campos_inputs para inicializar
@@ -1039,6 +1042,7 @@ class init{
      * @throws errores Si el atributo está vacío, si la propiedad 'atributo' en el objeto 'keys'
      *                   no existe o no es un array, o si se produce un error al inicializar los campos de vista.
      * @version 18.26.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.modela_input.21.17.0
      */
     private function modela_input(string $atributo, array $campos_view, stdClass $keys): array
     {

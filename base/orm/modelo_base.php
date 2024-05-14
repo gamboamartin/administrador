@@ -965,7 +965,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTA EN WIKI FINAL REV
+     * TOTAL
      * Genera una instancia del modelo.
      *
      * Esta función se encarga de generar una instancia del modelo.
@@ -984,6 +984,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @throws errores Error al maquetar nombre del modelo.
      * @throws errores Error al validar modelo.
      * @version 18.22.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_modelo.21.17.0
      */
     final public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
 
