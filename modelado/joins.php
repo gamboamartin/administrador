@@ -601,7 +601,7 @@ class joins{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método para gestionar los joins de SQL en PHP.
      *
      * @param array $data Representa los datos para el join. Debe tener las claves 'nombre_original' y 'enlace'.
@@ -618,6 +618,7 @@ class joins{
      * @throws errores Si hay un error al generar el string SQL para el join
      * @throws errores Si hay un error al generar la consulta SQL completa
      * @version 16.83.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.join_renombres.21.25.0
      */
     private function join_renombres(array $data, string $modelo_tabla, string $tabla_renombrada,
                                     string $tablas): array|string
@@ -764,7 +765,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función se usa para renombrar múltiples tablas en una operación Join.
      *
      * @param string $modelo_tabla La tabla principal que se está uniendo.
@@ -774,6 +775,7 @@ class joins{
      * @return array|string Devuelve un string actualizado de tablas renombradas para el comando Join.
      *                      Si ocurre un error, devuelve un array que contiene información del error.
      * @version 16.87.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.renombres_join.21.25.0
      */
     private function renombres_join(string $modelo_tabla, array $renombradas, string $tablas): array|string
     {
@@ -952,7 +954,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método se utiliza para generar un conjunto de tablas para una consulta SQL JOIN.
      *
      * Acepta una serie de parámetros que definen la estructura de la consulta SQL y devuelve un array con las tablas resultantes.
@@ -975,6 +977,7 @@ class joins{
      * $res = $instance->tablas(['col1', 'col2'], [], [], 'tabla1', [], 'tabla2');
      * print_r($res);
      * @version 16.88.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tablas.21.25.0
      */
     final public function tablas(array $columnas, array $extension_estructura, array $extra_join, string $modelo_tabla,
                                  array $renombradas, string $tabla): array|string

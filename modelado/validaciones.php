@@ -213,7 +213,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función verifica y valida los campos clave en el proceso de renombramiento.
      *
      * @param array $data - Los datos proporcionados por el usuario que contienen 'enlace' y 'nombre_original'
@@ -233,6 +233,7 @@ class validaciones extends validacion{
      *      Si está vacío, genera un error y devuelve la respuesta del error.
      *
      * @version 16.81.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_keys_renombre.21.25.0
      */
     final public function valida_keys_renombre(array $data, string $tabla_renombrada): true|array
     {
