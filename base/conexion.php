@@ -110,7 +110,8 @@ class conexion{
     {
         $set_name = trim($set_name);
         if($set_name === ''){
-            return $this->error->error(mensaje: 'Error $set_name no puede venir vacio',data:$link);
+            return $this->error->error(mensaje: 'Error $set_name no puede venir vacio',data:$link,
+                es_final: true);
         }
         $link = $this->asigna_set_names(link: $link, set_name: $set_name);
         if(errores::$error){
@@ -131,10 +132,12 @@ class conexion{
     }
 
     /**
+     * TOTAL
      * Conecta con la base de datos seleccionada
      * @param database|stdClass $conf_database Configuraciones para conectividad
      * @param string $motor Motor puede ser MYSQL o MSSQL=>PARA SQL SERVER
      * @return PDO|array|false
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.conexion.conecta.21.25.0
      */
     private function conecta(database|stdClass $conf_database, string $motor): PDO|array|false
     {
@@ -184,7 +187,7 @@ class conexion{
             return $this->error->error(mensaje:  'Error al validar conf_database',data: $valida);
         }
         if(!in_array($motor, $this->motores_validos)){
-            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor);
+            return $this->error->error(mensaje:  'Error ingrese un motor valido',data: $motor, es_final: true);
         }
 
         $link = $this->conecta(conf_database: $conf_database, motor: $motor);

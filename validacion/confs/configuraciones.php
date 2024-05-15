@@ -9,19 +9,20 @@ class configuraciones extends validacion {
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función para validar una configuración especificada.
      *
      * @param stdClass $paths_conf - Ruta de la configuración a validar.
      * @param string $tipo_conf - El tipo de configuración a validar.
      * @return bool|array Devuelve true si la validación fue exitosa, o un error en caso contrario.
      * @version 16.24.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf.21.28.0
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
         $tipo_conf = trim($tipo_conf);
         if($tipo_conf === ''){
-            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf);
+            return $this->error->error(mensaje: 'Error $tipo_conf esta vacio',data: $tipo_conf, es_final: true);
         }
 
         $valida = $this->valida_conf_file(paths_conf:$paths_conf, tipo_conf:$tipo_conf);
@@ -36,7 +37,7 @@ class configuraciones extends validacion {
     }
 
     /**
-     * POR DOCUMENTAR WN WIKI FINAL REV
+     * TOTAL
      * Valida las configuraciones de la aplicación.
      *
      * Esta función verifica las configuraciones de `generales`, `database` y `views`.
@@ -64,6 +65,7 @@ class configuraciones extends validacion {
      * }
      * ```
      * @version 16.79.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_confs.21.28.0
      */
     final public function valida_confs(stdClass $paths_conf): bool|array
     {
@@ -82,7 +84,7 @@ class configuraciones extends validacion {
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función valida la configuración necesaria para un proyecto Composer.
      *
      * @param   string $tipo_conf El tipo de configuración que se desea validar.
@@ -93,6 +95,8 @@ class configuraciones extends validacion {
      *
      * @author  Martin Gamboa
      * @version 16.0.0
+     * @urhttps://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf_composer.21.28.0
+     *
      */
     private function valida_conf_composer(string $tipo_conf): true|array
     {
@@ -118,7 +122,7 @@ class configuraciones extends validacion {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Verifica la existencia y validez de un archivo de configuración específico.
      *
      * @param stdClass $paths_conf Contiene los paths de todos los archivos de configuración.
@@ -142,6 +146,7 @@ class configuraciones extends validacion {
      *       echo "El archivo de configuración no es válido.";
      *   }
      * @version 15.51.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf_file.21.28.0
      */
     private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): true|array
     {
