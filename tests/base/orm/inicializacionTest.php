@@ -390,11 +390,11 @@ class inicializacionTest extends test {
         $this->assertEquals('',$resultado->registros[0]['Default']);
         $this->assertEquals('auto_increment',$resultado->registros[0]['Extra']);
 
-        $this->assertEquals('etiqueta_label',$resultado->registros[14]['Field']);
-        $this->assertEquals('varchar(255)',$resultado->registros[14]['Type']);
+        $this->assertEquals('adm_namespace_id',$resultado->registros[14]['Field']);
+        $this->assertEquals('bigint',$resultado->registros[14]['Type']);
         $this->assertEquals('NO',$resultado->registros[14]['Null']);
-        $this->assertEquals('',$resultado->registros[14]['Key']);
-        $this->assertEquals('SIN ETIQUETA',$resultado->registros[14]['Default']);
+        $this->assertEquals('MUL',$resultado->registros[14]['Key']);
+        $this->assertEquals('1',$resultado->registros[14]['Default']);
         $this->assertEquals('',$resultado->registros[14]['Extra']);
 
         $this->assertCount(16,$resultado->registros);

@@ -32,6 +32,7 @@ class adm_sistemaTest extends test {
 
         $adm_sistema_id = 1;
         $resultado = $modelo->secciones_pertenece($adm_sistema_id);
+        //PRINT_R($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals('1',$resultado[0]['adm_seccion_pertenece_id']);

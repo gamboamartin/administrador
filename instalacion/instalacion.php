@@ -312,6 +312,7 @@ class instalacion
 
         $campos = new stdClass();
         $campos->codigo = new stdClass();
+        $campos->descripcion = new stdClass();
 
 
         $campos->descripcion_select = new stdClass();
@@ -363,6 +364,28 @@ class instalacion
         }
         $out->create = $create;
 
+        $campos = new stdClass();
+        $campos->codigo = new stdClass();
+        $campos->descripcion = new stdClass();
+
+
+        $campos->descripcion_select = new stdClass();
+        $campos->descripcion_select->default = 'SIN DS';
+
+        $campos->codigo_bis = new stdClass();
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
+
+        $campos->alias = new stdClass();
+        $campos->alias->default = 'SIN AL';
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_reporte');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
 
         return $out;
 
@@ -394,6 +417,9 @@ class instalacion
 
         $campos->icono = new stdClass();
         $campos->icono->default = 'SIN ICONO';
+
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'inactivo';
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_seccion');
 
@@ -504,6 +530,19 @@ class instalacion
         $out->foraneas_r = $foraneas_r;
 
 
+        $campos = new stdClass();
+
+
+        $campos->predeterminado = new stdClass();
+        $campos->predeterminado->default = 'activo';
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_seccion_pertenece');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
         return $out;
 
     }
@@ -580,6 +619,9 @@ class instalacion
         $campos->codigo_bis = new stdClass();
         $campos->predeterminado = new stdClass();
         $campos->predeterminado->default = 'inactivo';
+
+        $campos->sub_consulta = new stdClass();
+
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_tipo_dato');
 
@@ -1067,6 +1109,18 @@ class instalacion
         $create = $this->_add_adm_namespace(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+        $create_menu = $this->_add_adm_menu(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_menu', data:  $create_menu);
+        }
+        $create_sistema = $this->_add_adm_sistema(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_sistema', data:  $create_sistema);
+        }
+        $create_grupo = $this->_add_adm_grupo(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create_grupo', data:  $create_grupo);
         }
 
         $create_seccion = $this->_add_adm_seccion(link: $link);
@@ -1663,6 +1717,7 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_sistema', data: $adm_sistema);
         }
         $out->adm_sistema = $adm_sistema;
+
 
         $adm_usuario = $this->adm_usuario(link: $link);
         if (errores::$error) {

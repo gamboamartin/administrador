@@ -32,13 +32,15 @@ class instalacionTest extends test {
         $instalacion = new instalacion();
         $instalacion = new liberator($instalacion);
         $resultado = $instalacion->_add_adm_reporte(link: $this->link);
+        //print_r($resultado);exit;
         $this->assertFalse(errores::$error);
         $this->assertIsObject($resultado);
         errores::$error = false;
 
         $resultado = (new _instalacion(link: $this->link))->describe_table(table: 'adm_reporte');
+        //print_r($resultado);exit;
         $this->assertEquals('id', $resultado->registros[0]['Field']);
-        $this->assertEquals('predeterminado', $resultado->registros[11]['Field']);
+        $this->assertEquals('alias', $resultado->registros[11]['Field']);
         errores::$error = false;
 
 
@@ -76,7 +78,7 @@ class instalacionTest extends test {
         $instalacion = new instalacion();
        // $ctl = new liberator($ctl);
         $resultado = $instalacion->instala(link: $this->link);
-        //print_r($resultado);exit;
+
         $this->assertFalse(errores::$error);
         $this->assertIsObject($resultado);
         errores::$error = false;

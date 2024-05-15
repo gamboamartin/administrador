@@ -168,7 +168,7 @@ class estructurasTest extends test {
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
         $this->assertEquals('id',$resultado[0]['Field']);
-        $this->assertEquals('varchar(255)',$resultado[1]['Type']);
+        $this->assertEquals('varchar(200)',$resultado[1]['Type']);
         $this->assertEquals('NO',$resultado[2]['Null']);
         $this->assertEquals('',$resultado[3]['Key']);
         $this->assertEquals('',$resultado[4]['Default']);
