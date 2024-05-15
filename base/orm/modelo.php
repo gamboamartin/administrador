@@ -2321,7 +2321,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro, es_final: true);
         }
 
-        $sentencia = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);
+        $sentencia = (new \gamboamartin\src\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar and',data:$sentencia);
         }
@@ -2670,7 +2670,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al agregar columnas',data: $columnas);
         }
 
-        $filtro_sql = (new where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
+        $filtro_sql = (new \gamboamartin\src\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_sql);
         }

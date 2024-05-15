@@ -68,71 +68,6 @@ class where{
         return $coma;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Función que realiza una comparación.
-     *
-     * Esta función toma un array, cadena de texto, o valor null como datos de entrada,
-     * junto con una cadena de texto por defecto. Revisa si hay una llave 'comparacion'
-     * en los datos de entrada y, si la hay, retorna su valor. Si no hay tal llave,
-     * la función retorna la cadena de texto por defecto.
-     *
-     * @param array|string|null $data Los datos de entrada para la comparación.
-     * @param string $default La cadena de texto por defecto a retornar si la llave 'comparacion' no se encuentra.
-     * @return string El resultado de la comparación, o la cadena por defecto si no hay comparación.
-     * @version 16.96.0
-     */
-    private function comparacion(array|string|null $data, string $default):string{
-        return $data['comparacion'] ?? $default;
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * La función comparacion_pura compara los datos pasados con las columnas extra en base a una llave.
-     *
-     * @param array $columnas_extra Las columnas extra a considerar en la comparación.
-     * @param array|string|null $data Los datos que se van a comparar con las columnas extra, puede ser un array,
-     *  un string o nulo.
-     * @param string $key La llave que se usará en la comparación.
-     *
-     * @return array|stdClass Retorna un objeto con los resultados de la comparación, si se encuentra algún error
-     *  durante la comparación,
-     * se retornará un objeto con información del error.
-     *
-     * @throws errores Si la llave esta vacía.
-     * @throws errores Si los datos están vacíos.
-     * @throws errores Si hay un error al maquetar el campo con los datos y la llave.
-     * @throws errores Si hay un error al validar la maquetación.
-     * @version 16.99.0
-     *
-     */
-    private function comparacion_pura(array $columnas_extra, array|string|null $data, string $key):array|stdClass{
-
-        if($key === ''){
-            return $this->error->error(mensaje: "Error key vacio", data: $key, es_final: true);
-        }
-        if(is_array($data) && count($data) === 0){
-            return $this->error->error(mensaje:"Error datos vacio",data: $data, es_final: true);
-        }
-        $datas = new stdClass();
-        $datas->campo = (new \gamboamartin\src\where())->campo(data: $data,key:  $key);
-        if(errores::$error){
-            return $this->error->error(mensaje:"Error al maquetar campo",data: $datas->campo);
-        }
-        $datas->value = $this->value(data: $data);
-        if(errores::$error){
-            return $this->error->error(mensaje:"Error al validar maquetacion",data: $datas->value);
-        }
-        $es_sq = false;
-        if(isset($columnas_extra[$key])){
-            $es_sq = true;
-        }
-        if($es_sq){
-            $datas->campo = $columnas_extra[$key];
-        }
-
-        return $datas;
-    }
 
 
     /**
@@ -882,107 +817,6 @@ class where{
         return $filtros_vacios;
     }
 
-    /**
-     * POR DOCUMENTAR WIKI FINAL REV
-     * Esta función genera una cadena de declaración SQL AND basada en los filtros y columnas extras proporcionados.
-     *
-     * @param array $columnas_extra Las columnas adicionales que han de considerarse al generar la declaración SQL.
-     * @param array $filtro Los filtros que se utilizarán para la generación de la declaración SQL.
-     *
-     * @return string|array Retornará una cadena que es la declaración SQL AND generada. Si ocurre algún error al
-     * procesar, retornará un objeto de error.
-     *
-     * @throws errores si hay algún problema con los filtros o columnas proporcionados.
-     * @version 16.100.0
-     */
-    final public function genera_and(array $columnas_extra, array $filtro):array|string{
-        $sentencia = '';
-        foreach ($filtro as $key => $data) {
-            if(is_numeric($key)){
-                return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
-                    es_final: true);
-            }
-            $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data, key: $key);
-            if(errores::$error){
-                return $this->error->error(mensaje:"Error al maquetar campo",data:$data_comparacion);
-            }
-
-            $comparacion = $this->comparacion(data: $data,default: '=');
-            if(errores::$error){
-                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion);
-            }
-
-            $operador = $data['operador'] ?? ' AND ';
-            if(trim($operador) !=='AND' && trim($operador) !=='OR'){
-                return $this->error->error(mensaje:'El operador debe ser AND u OR',data:$operador, es_final: true);
-            }
-
-            $data_sql = "$data_comparacion->campo $comparacion '$data_comparacion->value'";
-
-            $sentencia .= $sentencia === ''? $data_sql :" $operador $data_sql";
-        }
-
-        return $sentencia;
-
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Genera y gestiona sentencias AND para operaciones SQL.
-     * La función procesa el filtro y las columnas adicionales proporcionadas para generar una sentencia SQL AND.
-     *
-     * @param array $columnas_extra Columnas adicionales para usar en la generación de sentencias.
-     * @param array $filtro Los filtros que se aplicarán a la sentencia SQL.
-     * @return array|string Devuelve una sentencia SQL estructurada como un string.
-     *
-     * @throws errores Si los filtros proporcionados tienen claves numéricas.
-     * Las claves deben hacer referencia a campo de una tabla en formato "tabla.campo".
-     *
-     * @throws errores Si se produce un error durante la construcción de la sentencia SQL.
-     *
-     * @example
-     * genera_and_textos(['columna1', 'columna2'], ['tabla.campo' => 'valor']);
-     * Esto generará una sentencia SQL AND que puede parecerse a "tabla.campo LIKE '%valor%'".
-     * Nota: El operador predeterminado es 'LIKE'.
-     * @version 16.101.0
-     */
-    private function genera_and_textos(array $columnas_extra, array $filtro):array|string{
-
-        $sentencia = '';
-        foreach ($filtro as $key => $data) {
-            if(is_numeric($key)){
-                return $this->error->error(
-                    mensaje: 'Los key deben de ser campos asociativos con referencia a tabla.campo',data: $filtro,
-                    es_final: true);
-            }
-
-            $data_comparacion = $this->comparacion_pura(columnas_extra: $columnas_extra, data: $data,key:  $key);
-            if(errores::$error){
-                return $this->error->error(mensaje: "Error al maquetar",data:$data_comparacion);
-            }
-
-            $comparacion = $this->comparacion(data: $data,default: 'LIKE');
-            if(errores::$error){
-                return $this->error->error(mensaje:"Error al maquetar",data:$comparacion);
-            }
-
-            $txt = '%';
-            $operador = 'AND';
-            if(isset($data['operador']) && $data['operador']!==''){
-                $operador = $data['operador'];
-                $txt= '';
-            }
-
-            $sentencia .= $sentencia === ""?"$data_comparacion->campo $comparacion '$txt$data_comparacion->value$txt'":
-                " $operador $data_comparacion->campo $comparacion '$txt$data_comparacion->value$txt'";
-        }
-
-
-        return $sentencia;
-
-    }
-
 
 
     /**
@@ -1454,19 +1288,19 @@ class where{
      * @version 16.102.0
      */
     private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
-        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
         $sentencia = '';
         if($tipo_filtro === 'numeros') {
-            $sentencia = $this->genera_and(columnas_extra: $columnas_extra, filtro: $filtro);
+            $sentencia = (new \gamboamartin\src\where())->genera_and(columnas_extra: $columnas_extra, filtro: $filtro);
             if(errores::$error){
                 return $this->error->error(mensaje: "Error en and",data:$sentencia);
             }
         }
         elseif ($tipo_filtro==='textos'){
-            $sentencia = $this->genera_and_textos(columnas_extra: $columnas_extra,filtro: $filtro);
+            $sentencia = (new \gamboamartin\src\where())->genera_and_textos(columnas_extra: $columnas_extra,filtro: $filtro);
             if(errores::$error){
                 return $this->error->error(mensaje: "Error en texto",data:$sentencia);
             }
@@ -2079,34 +1913,7 @@ class where{
         return true;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Función privada que procesa los datos de entrada y los limpia para su posterior uso.
-     *
-     * @param array|string|null $data Datos de entrada para ser procesados.
-     *
-     * @return string|array En caso de error, retorna un array con detalles del error. De lo contrario,
-     * retorna los datos de entrada procesados y limpios en forma de string.
-     *
-     * @throws errores en caso de que haya algún error durante el proceso.
-     * @version 16.98.0
-     */
-    private function value(array|string|null $data):string|array{
-        $value = $data;
-        if(is_array($data) && isset($data['value'])){
-            $value = trim($data['value']);
-        }
-        if(is_array($data) && count($data) === 0){
-            return $this->error->error(mensaje: "Error datos vacio",data: $data, es_final: true);
-        }
-        if(is_array($data) && !isset($data['value'])){
-            return $this->error->error(mensaje:"Error no existe valor",data: $data,es_final: true);
-        }
-        if(is_null($value)){
-            $value = '';
-        }
-        return addslashes($value);
-    }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
