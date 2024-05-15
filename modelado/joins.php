@@ -370,7 +370,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método se utiliza para unir extensiones de estructura en una tabla base.
      *
      * Este método recorre cada extensión en la estructura proporcionada, llamando al método join_base()
@@ -387,6 +387,7 @@ class joins{
      * al validar los datos o generar la unión.
      *
      * @version 16.76.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.extensiones_join.21.24.0
      */
     private function extensiones_join(array $extension_estructura, string $modelo_tabla, string $tablas): array|string
     {
@@ -536,7 +537,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método genera una cadena SQL JOIN.
      *
      * @param array $data Los datos que se utilizarán en la cláusula SQL JOIN.
@@ -563,6 +564,7 @@ class joins{
      * // Ahora, $tablas contiene una cadena SQL JOIN completa con los datos proporcionados
      *
      * @version 16.75.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.join_base.21.24.0
      */
     private function join_base(array $data, string $modelo_tabla, string $tabla, string $tablas): array|string
     {
@@ -712,13 +714,14 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Crea una cadena de texto para realizar un LEFT JOIN en una consulta SQL, si la cadena $tablas no está vacía.
      *
      * @param string $tablas Una cadena que contiene el nombre de las tablas a unir.
      *
      * @return string La cadena ' LEFT JOIN ' si $tablas no está vacía, de lo contrario devuelve una cadena vacía.
      * @version 16.63.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.left_join_str.21.24.0
      */
     private function left_join_str(string $tablas): string
     {
@@ -865,7 +868,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una cadena SQL para una operación JOIN con las condiciones especificadas.
      *
      * @param array  $data          Los datos utilizados para generar la cláusula JOIN. Esta es una matriz asociativa
@@ -888,6 +891,7 @@ class joins{
      * Ejemplo de uso:
      * -> string_sql_join(['key' => 'id', 'enlace' => 'usuarios', 'key_enlace' => 'usuario_id'], 'usuarios', 'pedidos', 'p')
      * @version 16.65.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.string_sql_join.21.24.0
      */
     private function string_sql_join( array $data, string $modelo_tabla, string $tabla,
                                       string $tabla_renombrada): string|array
@@ -918,7 +922,7 @@ class joins{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función sirve para renombrar una tabla si recibe el parámetro de 'renombre'.
      *
      * @param array $data Contiene la información sobre el renombramiento.
@@ -927,6 +931,7 @@ class joins{
      * @return string|array Retorna el nombre renombrado de la tabla si se proporciona 'renombre'.
      *                      Retorna un error si el nombre de la tabla proporcionado está vacío.
      * @version 16.69.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tabla_renombrada.21.24.0
      */
     private function tabla_renombrada(array $data, string $tabla): string|array
     {

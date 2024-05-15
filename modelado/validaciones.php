@@ -256,7 +256,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función valida_keys_sql
      *
      * Esta función valida los parámetros entregados para una consulta SQL.
@@ -267,6 +267,7 @@ class validaciones extends validacion{
      *
      * @return true|array    Retorna verdadero si los datos son válidos. En caso contrario retorna un array con el error.
      * @version 16.55.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_keys_sql.21.24.0
      */
     final public function valida_keys_sql(array $data, string $tabla): true|array
     {
