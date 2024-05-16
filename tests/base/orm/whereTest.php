@@ -117,34 +117,6 @@ class whereTest extends test {
     }
 
 
-
-
-
-
-
-    public function test_datos_filtro_especial(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $data_filtro = array();
-        $data_filtro['a']['operador'] = 'operador';
-        $data_filtro['a']['valor'] = 'valor';
-        $data_filtro['a']['comparacion'] = 'comparacion';
-        $resultado = $wh->datos_filtro_especial($data_filtro);
-
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("a", $resultado->campo);
-        $this->assertEquals("operador", $resultado->operador);
-        $this->assertEquals("valor", $resultado->valor);
-        $this->assertEquals("comparacion", $resultado->comparacion);
-        $this->assertEquals("aoperador'valor'", $resultado->condicion);
-
-        errores::$error = false;
-    }
-
     public function test_diferente_de(){
         errores::$error = false;
         $wh = new where();
@@ -252,100 +224,6 @@ class whereTest extends test {
 
     }
 
-    public function test_filtro_extra_sql(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $filtro_extra = array();
-        $resultado = $wh->filtro_extra_sql($filtro_extra);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-        $filtro_extra = array();
-        $filtro_extra[] = '';
-        $resultado = $wh->filtro_extra_sql($filtro_extra);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $data_filtro debe ser un array', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $filtro_extra = array();
-        $filtro_extra[] = array();
-        $resultado = $wh->filtro_extra_sql($filtro_extra);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar filtro', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $filtro_extra = array();
-        $filtro_extra[]['operador'] = 'a';
-        $resultado = $wh->filtro_extra_sql($filtro_extra);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al generar filtro', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $filtro_extra = array();
-        $filtro_extra[0]['a']['operador'] = '=';
-        $filtro_extra[0]['a']['valor'] = '1';
-        $filtro_extra[0]['a']['comparacion'] = 'AND';
-        $resultado = $wh->filtro_extra_sql($filtro_extra);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("a='1'", $resultado);
-        errores::$error = false;
-    }
-
-    public function test_filtro_extra_sql_genera(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $comparacion = '';
-        $condicion = '';
-        $filtro_extra_sql = '';
-        $resultado = $wh->filtro_extra_sql_genera($comparacion, $condicion, $filtro_extra_sql);
-        //print_r($resultado);exit;
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('', $resultado);
-
-        errores::$error = false;
-
-        $comparacion = 'comparacion';
-        $condicion = 'condicion';
-        $filtro_extra_sql = '';
-        $resultado = $wh->filtro_extra_sql_genera($comparacion, $condicion, $filtro_extra_sql);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('condicion', $resultado);
-
-        errores::$error = false;
-
-        errores::$error = false;
-
-        $comparacion = 'comparacion';
-        $condicion = 'condicion';
-        $filtro_extra_sql = 'fes';
-        $resultado = $wh->filtro_extra_sql_genera($comparacion, $condicion, $filtro_extra_sql);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('fescomparacioncondicion', $resultado);
-
-        errores::$error = false;
-    }
-
-
-
 
     public function test_filtros_full(){
         errores::$error = false;
@@ -413,34 +291,7 @@ class whereTest extends test {
 
 
 
-    public function test_genera_filtro_especial(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-        $campo = '';
-        $data_sql = '';
-        $filtro_esp = array();
-        $filtro_especial_sql = '';
-        $resultado = $wh->genera_filtro_especial($campo, $data_sql, $filtro_esp, $filtro_especial_sql);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals( "", $resultado);
-
-        errores::$error = false;
-
-        $campo = 'a';
-        $data_sql = 'z';
-        $filtro_esp = array();
-        $filtro_especial_sql = 'a';
-        $filtro_esp['a']['comparacion'] = 'b';
-        $resultado = $wh->genera_filtro_especial($campo, $data_sql, $filtro_esp, $filtro_especial_sql);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals( "a b z", $resultado);
-        errores::$error = false;
-    }
 
 
 
@@ -703,23 +554,7 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_integra_filtro_extra(){
-        errores::$error = false;
-        $wh = new where();
-         $wh = new liberator($wh);
 
-        $data_filtro = array();
-        $data_filtro['z']['operador'] = 'operador';
-        $data_filtro['z']['valor'] = 'valor';
-        $data_filtro['z']['comparacion'] = 'comparacion';
-        $filtro_extra_sql = '';
-        $resultado = $wh->integra_filtro_extra($data_filtro, $filtro_extra_sql);
-       // print_r($resultado);exit;
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("zoperador'valor'",$resultado);
-        errores::$error = false;
-    }
 
     public function test_limpia_filtros(){
         errores::$error = false;
