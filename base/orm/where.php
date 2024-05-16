@@ -20,94 +20,6 @@ class where{
 
 
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función valida el campo proporcionado para ser filtrado y verifica si el campo es parte de una subconsulta.
-     * Si el campo proporcionado está vacío, se retorna un error.
-     * Una verificación adicional se realiza para garantizar si el campo proporcionado pertenece a una subconsulta.
-     *
-     * @param string $campo Representa el campo en el que se aplicará el filtro especial.
-     * @param array $columnas_extra Un array de columnas adicionales que pueden estar presentes en la tabla objetivo.
-     *
-     * @return string|array Retorna el campo de filtro si la validación es exitosa o un objeto de error si hay algún problema.
-     *
-     * @throws errores Puede lanzar una excepción si el campo proporcionado es una subconsulta incorrecta.
-     * @version 16.145.0
-     */
-    private function campo_filtro_especial(string $campo, array $columnas_extra): array|string
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
-        }
-
-        $es_subquery = (new \gamboamartin\src\where())->es_subquery(campo: $campo,columnas_extra:  $columnas_extra);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al subquery bool',  data:$es_subquery);
-        }
-
-        if($es_subquery){
-            $campo = $columnas_extra[$campo];
-        }
-        return $campo;
-
-    }
-
-    /**
-     * si existe txt integra coma
-     * @param string $txt Texto previo
-     * @return string
-     * @version 1.571.51
-     */
-    private function coma(string $txt): string
-    {
-        $coma = '';
-        if($txt === ''){
-            $coma = ',';
-        }
-        return $coma;
-    }
-
-
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Función privada que genera una condición BETWEEN para una consulta SQL.
-     *
-     * @param string $campo El nombre del campo en el que se aplicará la condición.
-     * @param array $filtro Un array asociativo que debe contener los elementos 'valor1' y 'valor2'
-     * los cuales delimitarán el rango de la condición BETWEEN.
-     * @param bool $valor_campo Indica si el valor de $campo debe ser tratado como un string
-     *        (si $valor_campo es true, se añaden comillas simples alrededor del nombre del campo).
-     *
-     * @return string|array Retorna la condición BETWEEN como un string si todo está correcto.
-     *        En caso contrario, si $campo está vacío o $filtro no contiene los elementos 'valor1' y 'valor2',
-     * retorna un error.
-     * @version 16.232.0
-     */
-    private function condicion_entre(string $campo, array $filtro, bool $valor_campo): string|array
-    {
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacío', data: $campo, es_final: true);
-        }
-        if(!isset($filtro['valor1'])){
-            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor1]', data: $campo, es_final: true);
-        }
-        if(!isset($filtro['valor2'])){
-            return $this->error->error(mensaje: 'Error campo vacío $filtro[valor2]', data: $campo, es_final: true);
-        }
-        $condicion = $campo . ' BETWEEN ' ."'" .$filtro['valor1'] . "'"." AND "."'".$filtro['valor2'] . "'";
-
-        if($valor_campo){
-            $condicion = "'".$campo."'" . ' BETWEEN '  .$filtro['valor1'] ." AND ".$filtro['valor2'];
-        }
-
-        return $condicion;
-
-    }
-
-
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -245,87 +157,6 @@ class where{
         return $data;
     }
 
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Genera una consulta SQL a partir de los parámetros proporcionados.
-     *
-     * @param string $campo Campo de la consulta SQL.
-     * @param string $campo_filtro Campo para el filtrado de la consulta.
-     * @param array $filtro Filtro a aplicar en la consulta.
-     *
-     * @return string|array Retorna el resultado de la consulta SQL o un error si algo va mal.
-     *
-     * @throws errores Error al validar datos o generar la consulta SQL.
-     * @version 16.163.0
-     */
-    private function data_sql(string $campo, string $campo_filtro, array $filtro): array|string
-    {
-        $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar datos',  data:$valida);
-        }
-
-        $data_sql = $this->data_sql_base(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
-        }
-
-        if(isset($filtro[$campo_filtro]['valor_es_campo']) && $filtro[$campo_filtro]['valor_es_campo']){
-            $data_sql = $this->data_sql_campo(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
-            }
-        }
-        return $data_sql;
-
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Método para generar una cadena SQL para un filtro base.
-     *
-     * @param string $campo Nombre del campo en la base de datos.
-     * @param string $campo_filtro Nombre del campo del filtro.
-     * @param array $filtro El filtro a aplicar en la sentencia SQL.
-     * @return string|array Retorna una cadena con la sentencia SQL en caso de que se haya generado correctamente,
-     *                      en caso contrario retorna un array con los detalles del error.
-     *
-     * @throws errores Lanza una excepción en caso de errores.
-     * @version 16.152.0
-     */
-    private function data_sql_base(string $campo, string $campo_filtro, array $filtro): string|array
-    {
-        $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar datos',  data:$valida);
-        }
-
-        return " ".$campo." " . $filtro[$campo_filtro]['operador'] . " '" . $filtro[$campo_filtro]['valor'] . "' ";
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Valida el campo del filtro y retorna un string para la consulta SQL o un mensaje de error.
-     *
-     * @param string $campo El campo a validar.
-     * @param string $campo_filtro El campo del filtro a utilizar.
-     * @param array $filtro El array del filtro a aplicar.
-     *
-     * @return string|array Retorna un string formateado para la consulta SQL o un mensaje de error.
-     * @version 16.161.0
-     */
-    private function data_sql_campo(string $campo, string $campo_filtro, array $filtro): string|array
-    {
-
-        $valida = $this->valida_campo_filtro(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar datos',  data:$valida);
-        }
-
-        return "'".$campo."'".$filtro[$campo_filtro]['operador'].$filtro[$campo_filtro]['valor'];
-
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -694,68 +525,7 @@ class where{
         return $filtro_fecha_sql;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     *
-     * Devuelve un conjunto de condiciones de tipo BETWEEN en forma de sql
-     *
-     * @param array $filtro_rango
-     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     *                  Opcion2.-
-     *                      Debe ser un array con la siguiente forma
-     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
-     * @example
-     *      $entrada = array();
-     *      $resultado = filtro_rango_sql($entrada)
-     *      //return = string ''
-     *      $entrada['x'] = array('''valor1'=>'1','valor2=>2);
-     *      $resultado = filtro_rango_sql($entrada)
-     *      //return string x = BETWEEN '1' AND '2'
-     *      $entrada['x'] = array('''valor1'=>'1','valor2=>2,'valor_campo'=>true);
-     *      $resultado = filtro_rango_sql($entrada)
-     *      //return string 'x' = BETWEEN 1 AND 2
-     *      $entrada['x'] = array('''valor1'=>'1','valor2=>2,'valor_campo'=>true);
-     *      $entrada['y'] = array('''valor1'=>'2','valor2=>3,'valor_campo'=>false);
-     *      $entrada['z'] = array('''valor1'=>'4','valor2=>5);
-     *      $resultado = filtro_rango_sql($entrada)
-     *      //return string 'x' = BETWEEN 1 AND 2 AND y BETWEEN 2 AND 3 AND z BETWEEN 4 AND 5
-     * @return array|string
-     * @throws errores Si $filtro_rango[0] != array
-     * @throws errores Si filtro[0] = array('valor1'=>'1') Debe existir valor2
-     * @throws errores Si filtro[0] = array('valor2'=>'1') Debe existir valor1
-     * @throws errores Si filtro[0] = array('valor1'=>'1','valor2'=>'2') key debe ser tabla.campo error sql
-     * @version 16.236.0
-     */
-    private function filtro_rango_sql(array $filtro_rango):array|string{
-        $filtro_rango_sql = '';
-        foreach ($filtro_rango as $campo=>$filtro){
-            if(!is_array($filtro)){
-                return  $this->error->error(mensaje: 'Error $filtro debe ser un array',data: $filtro, es_final: true);
-            }
-            if(!isset($filtro['valor1'])){
-                return  $this->error->error(mensaje:'Error $filtro[valor1] debe existir',data:$filtro, es_final: true);
-            }
-            if(!isset($filtro['valor2'])){
-                return  $this->error->error(mensaje:'Error $filtro[valor2] debe existir',data:$filtro, es_final: true);
-            }
-            $campo = trim($campo);
-            if(is_numeric($campo)){
-                return  $this->error->error(mensaje:'Error campo debe ser un string',data:$campo, es_final: true);
-            }
-            $valor_campo = false;
 
-            if(isset($filtro['valor_campo']) && $filtro['valor_campo']){
-                $valor_campo = true;
-            }
-            $filtro_rango_sql = $this->genera_filtro_rango_base(campo: $campo,filtro: $filtro,
-                filtro_rango_sql: $filtro_rango_sql,valor_campo: $valor_campo);
-            if(errores::$error){
-                return  $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql);
-            }
-        }
-
-        return $filtro_rango_sql;
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -884,61 +654,7 @@ class where{
         return $filtro_especial_sql;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
-     * @param string $campo
-     *                  Opcion 1.-Si valor_es_campo = false,
-     *                      El valor definido debe ser un campo de la base de datos con la siguiente forma tabla.campo
-     *                  Opcion 2.-Si valor_es_campo = true,
-     *                      El valor definido debe ser un valor del registro del rango a buscar
-     *
-     * @param array $filtro Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     * @param string $filtro_rango_sql debe ser un sql con una condicion
-     * @param bool $valor_campo
-     *                  Opcion1.- true, Es utilizado para definir el campo para una comparacion como valor
-     *                  Opcion2.- false, Es utilizado para definir el campo a comparar el rango de valores
-     * @example
-     *      $resultado = genera_filtro_rango_base('',array(),'');
-     *      //return = array errores
-     *      $resultado = genera_filtro_rango_base('x',array(),'');
-     *      //return = array errores
-     *      $resultado = genera_filtro_rango_base('x',array('valor1'=>x,'valor2'=>'y'),'');
-     *      //return = string 'x BETWEEN 'x' AND 'y' ;
-     *      $resultado = genera_filtro_rango_base('x',array('valor1'=>x,'valor2'=>'y'),'tabla.campo = 1');
-     *      //return = string tabla.campo = 1 AND  x BETWEEN 'x' AND 'y' ;
-     *      $resultado = genera_filtro_rango_base('x',array('valor1'=>x,'valor2'=>'y'),'tabla.campo = 1',true);
-     *      //return = string tabla.campo = 1 AND  'x' BETWEEN x AND y ;
-     * @return array|string
-     * @throws errores Si $campo = vacio
-     * @throws errores Si filtro[valor1] = vacio
-     * @throws errores Si filtro[valor2] = vacio
-     * @version 16.233.0
-     */
-    private function genera_filtro_rango_base(string $campo, array $filtro, string $filtro_rango_sql,
-                                              bool $valor_campo = false):array|string{
-        $campo = trim($campo);
-        if($campo === ''){
-            return  $this->error->error(mensaje: 'Error $campo no puede venir vacio',data: $campo, es_final: true);
-        }
-        $keys = array('valor1','valor2');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $filtro);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
 
-        $condicion = $this->condicion_entre(campo: $campo,filtro:  $filtro,valor_campo:  $valor_campo);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al generar condicion',data: $condicion);
-        }
-
-        $filtro_rango_sql_r = $this->setea_filtro_rango(condicion: $condicion, filtro_rango_sql: $filtro_rango_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error $filtro_rango_sql al setear',data: $filtro_rango_sql_r);
-        }
-
-        return $filtro_rango_sql_r;
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -1045,7 +761,7 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql);
         }
-        $filtro_rango_sql = $this->filtro_rango_sql(filtro_rango: $filtro_rango);
+        $filtro_rango_sql = (new \gamboamartin\src\where())->filtro_rango_sql(filtro_rango: $filtro_rango);
         if(errores::$error){
             return $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql);
         }
@@ -1528,12 +1244,12 @@ class where{
 
         $campo_filtro = $campo;
 
-        $campo = $this->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
+        $campo = (new \gamboamartin\src\where())->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener campo',  data:$campo);
         }
 
-        $data_sql = $this->data_sql(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        $data_sql = (new \gamboamartin\src\where())->data_sql(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
         }
@@ -1670,45 +1386,7 @@ class where{
         return $filtros_;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Devuelve una condicion en forma de sql validando si se tiene que precragar un AND o solo la sentencia
-     * @access public
-     * @param string $filtro_rango_sql debe ser un sql con una condicion
-     * @param string $condicion debe ser un sql con una condicion
-     * @example
-     *      $filtro = setea_filtro_rango('','');
-     *      //return = string ''
-     *      $filtro = setea_filtro_rango('var1 = 1','');
-     *      //return = array errores
-     *      $filtro = setea_filtro_rango('var1 = 1','var2 = 2');
-     *      //return = string 'var1 = 1 AND var2 = 2'
-     *      $filtro = setea_filtro_rango('','var2 = 2');
-     *      //return = string 'var2 = 2'
-     * @return array|string
-     * @throws errores Si $filtro_rango_sql es diferente de vacio y condicion es igual a vacio
-     * @version 16.226.0
-     */
-    private function setea_filtro_rango(string $condicion, string $filtro_rango_sql):array|string{
-        $filtro_rango_sql = trim($filtro_rango_sql);
-        $condicion = trim($condicion);
 
-        if(trim($filtro_rango_sql) !=='' && trim($condicion) === ''){
-
-            return  $this->error->error(mensaje: 'Error if filtro_rango tiene info $condicion no puede venir vacio',
-                data: $filtro_rango_sql, es_final: true);
-        }
-
-        $and = (new \gamboamartin\src\where())->and_filtro_fecha(txt: $filtro_rango_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje:'error al integrar and ',data: $and);
-        }
-
-
-        $filtro_rango_sql.= $and.$condicion;
-
-        return $filtro_rango_sql;
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -1756,65 +1434,7 @@ class where{
         return "$and('$data->fecha' >= $data->campo_1 AND '$data->fecha' <= $data->campo_2)";
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Comprueba y valida los valores de un campo y un campo de filtro.
-     *
-     * @param string $campo Representa el nombre del campo a validar.
-     * @param string $campo_filtro Es el nombre del campo de filtro.
-     * @param array $filtro Es un array que contiene los filtros a aplicar.
-     *
-     * @return true|array Si la validación es successful, retorna true.
-     *                    En caso contrario, se retorna un array con detalles del error producido.
-     *
-     * @throws errores si algún parámetro no es del tipo esperado.
-     *
-     * Ejemplo de uso:
-     *
-     *      valida_campo_filtro("nombre", "nombre_filtro", array("nombre_filtro" => array("operador" => "igual", "valor" => "Juan")))
-     *
-     * Los posibles errores que retorna son:
-     * - Error campo_filtro esta vacio.
-     * - Error campo esta vacio.
-     * - Error no existe $filtro[campo_filtro].
-     * - Error no es un array $filtro[campo_filtro].
-     * - Error no existe $filtro[campo_filtro][operador].
-     * - Error no existe $filtro[campo_filtro][valor].
-     * - Error esta vacio $filtro[campo_filtro][operador].
-     * @version 16.160.0
-     */
-    private function valida_campo_filtro(string $campo, string $campo_filtro, array $filtro): true|array
-    {
-        $campo_filtro = trim($campo_filtro);
-        if($campo_filtro === ''){
-            return $this->error->error(mensaje:'Error campo_filtro esta vacio',  data:$campo_filtro, es_final: true);
-        }
-        $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje:'Error campo esta vacio',  data:$campo, es_final: true);
-        }
-        if(!isset($filtro[$campo_filtro])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.']',  data:$campo,
-                es_final: true);
-        }
-        if(!is_array($filtro[$campo_filtro])){
-            return $this->error->error(mensaje:'Error no es un array $filtro['.$campo_filtro.']',  data:$campo,
-                es_final: true);
-        }
-        if(!isset($filtro[$campo_filtro]['operador'])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][operador]',  data:$campo,
-                es_final: true);
-        }
-        if(!isset($filtro[$campo_filtro]['valor'])){
-            return $this->error->error(mensaje:'Error no existe $filtro['.$campo_filtro.'][valor]',  data:$campo,
-                es_final: true);
-        }
-        if(trim(($filtro[$campo_filtro]['operador'])) === ''){
-            return $this->error->error(mensaje:'Error esta vacio $filtro['.$campo_filtro.'][operador]',  data:$campo,
-                es_final: true);
-        }
-        return true;
-    }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
