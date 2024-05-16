@@ -92,29 +92,7 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_data_in(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-
-        $in = array();
-        $resultado = $wh->data_in($in);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar not_in', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $in = array();
-        $in['llave'] = 'a';
-        $in['values'] = array();
-        $resultado = $wh->data_in($in);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->llave);
-        errores::$error = false;
-    }
 
 
     public function test_diferente_de(){
@@ -486,41 +464,9 @@ class whereTest extends test {
 
     }
 
-    public function test_genera_not_in(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
 
-        $not_in = array();
-        $not_in['llave'] = 'a';
-        $not_in['values'] = array('z','f');
-        $resultado = $wh->genera_not_in($not_in);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals( "a NOT IN ('z' ,'f')", $resultado);
-        errores::$error = false;
-    }
 
-    public function test_genera_not_in_sql(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $not_in = array();
-        $not_in['llave'] = 'a';
-        $not_in['values'] = array('z','f','d');
-        $resultado = $wh->genera_not_in_sql($not_in);
-
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "a NOT IN ('z' ,'f' ,'d')", $resultado);
-        errores::$error = false;
-    }
 
 
     public function test_in_sql(){
@@ -659,40 +605,7 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_not_in_sql(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-
-        $llave = '';
-        $values[] = '';
-        $resultado = $wh->not_in_sql($llave, $values);
-        $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "Error la llave esta vacia", $resultado['mensaje']);
-
-        errores::$error = false;
-        $values = array();
-        $llave = 'z';
-        $values[] = 'a';
-        $resultado = $wh->not_in_sql($llave, $values);
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "z NOT IN ('a')", $resultado);
-
-        errores::$error = false;
-        $values = array();
-        $llave = 'z';
-        $values[] = 'a';
-        $values[] = 'b';
-        $resultado = $wh->not_in_sql($llave, $values);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase( "z NOT IN ('a' ,'b')", $resultado);
-        errores::$error = false;
-    }
 
     public function test_obten_filtro_especial(){
         errores::$error = false;
@@ -742,74 +655,6 @@ class whereTest extends test {
     }
 
 
-
-    public function test_value_coma(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $value = '';
-        $values_sql = '';
-        $resultado = $wh->value_coma($value, $values_sql);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error value esta vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $value = ' z   ';
-        $values_sql = '';
-        $resultado = $wh->value_coma($value, $values_sql);
-        $this->assertIsObject( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('z', $resultado->value);
-        $this->assertEquals('', $resultado->coma);
-
-        errores::$error = false;
-
-        $value = ' z   ';
-        $values_sql = 'x';
-        $resultado = $wh->value_coma($value, $values_sql);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('z', $resultado->value);
-        $this->assertEquals(' ,', $resultado->coma);
-        errores::$error = false;
-    }
-
-    public function test_values_sql_in(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $values = array();
-        $values[] = '';
-        $resultado = $wh->values_sql_in($values);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error value esta vacio', $resultado['mensaje']);
-
-        errores::$error = false;
-
-        $values = array();
-        $values[] = 'a';
-        $resultado = $wh->values_sql_in($values);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("'a'", $resultado);
-
-        errores::$error = false;
-
-        $values = array();
-        $values[] = 'a';
-        $values[] = 'b';
-        $resultado = $wh->values_sql_in($values);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("'a' ,'b'", $resultado);
-        errores::$error = false;
-    }
 
 
 

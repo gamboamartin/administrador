@@ -71,7 +71,6 @@ class where{
             return $this->error->error(mensaje:'Error al generar filtros', data:$filtros);
         }
 
-
         $where = $this->where(filtros: $filtros, keys_data_filter: $keys_data_filter);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar where',data:$where);
@@ -84,41 +83,6 @@ class where{
         $filtros->where = $where;
         return $filtros;
     }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función se utiliza para procesar los datos entrantes ($in) y los organiza en un formato específico.
-     *
-     * @param array $in Datos entrantes que se deben procesar.
-     *                  Debe contener las claves 'llave' y 'values'.
-     * @return array|stdClass Devuelve un objeto que contiene los datos procesados.
-     *                        Si hay un error durante la validación, devuelve un array con detalles del error.
-     *
-     * @throws errores Si los datos entrantes no contienen las claves requeridas,
-     *               o si 'values' no es un array. En caso de error, se devuelve un array con detalles del error.
-     *
-     * @version 16.259.1
-     */
-    private function data_in(array $in): array|stdClass
-    {
-        $keys = array('llave','values');
-        $valida = $this->validacion->valida_existencia_keys( keys:$keys, registro: $in);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
-        }
-
-        $values = $in['values'];
-
-        if(!is_array($values)){
-            return $this->error->error(mensaje: 'Error values debe ser un array',data: $values, es_final: true);
-        }
-        $data = new stdClass();
-        $data->llave = $in['llave'];
-        $data->values = $in['values'];
-        return $data;
-    }
-
-
 
 
 
@@ -440,7 +404,7 @@ class where{
             return $this->error->error(mensaje:'Error al generar filtro extra',data:$filtro_extra_sql);
         }
 
-        $not_in_sql = $this->genera_not_in_sql(not_in: $not_in);
+        $not_in_sql = (new \gamboamartin\src\where())->genera_not_in_sql(not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql);
         }
@@ -510,7 +474,7 @@ class where{
             return $this->error->error(mensaje: 'Error values debe ser un array',data: $values, es_final: true);
         }
 
-        $data_in = $this->data_in(in: $in);
+        $data_in = (new \gamboamartin\src\where())->data_in(in: $in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
@@ -596,69 +560,6 @@ class where{
         return str_replace('( (', '((', $in_sql);
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Método privado que genera una cláusula NOT IN SQL a partir de un arreglo proporcionado.
-     *
-     * @param array $not_in Arreglo de elementos a ser excluidos en la consulta SQL.
-     *
-     * @return array|string Regresa la cláusula NOT IN SQL generada o un mensaje de error en caso de un error
-     * detectado en la generación de la cláusula.
-     *
-     * @throws errores Lanza una excepción de tipo Error en caso de error en la generación de la cláusula SQL.
-     * @version 16.276.1
-     */
-    private function genera_not_in(array $not_in): array|string
-    {
-        $data_in = $this->data_in(in: $not_in);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
-        }
-
-        $not_in_sql = $this->not_in_sql(llave:  $data_in->llave, values:$data_in->values);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql);
-        }
-        return $not_in_sql;
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Genera la cláusula SQL NOT IN basada en los valores proporcionados.
-     *
-     * Esta función toma una matriz asociativa como parámetro, donde `llave` es el nombre del campo y `values` es una
-     * matriz de valores que se utilizarán en la cláusula NOT IN en una sentencia SQL. Luego, genera la cláusula SQL
-     * NOT IN correspondiente.
-     *
-     * Si ocurre algún error durante la validación de los parámetros o la generación de la cláusula SQL NOT IN,
-     * la función devolverá un mensaje de error.
-     *
-     * @param array $not_in Matriz asociativa con los claves 'llave' y 'values'.
-     *        Ejemplo: ['llave' => 'miCampo', 'values' => [1, 2, 3]]
-     *
-     * @return string|array Devuelve la cláusula SQL NOT IN como una cadena si la función se ejecuta correctamente.
-     *                      En caso de error, devuelve una matriz con los detalles del error.
-     *
-     * @version 16.278.1
-     */
-    private function genera_not_in_sql(array $not_in): array|string
-    {
-        $not_in_sql = '';
-        if(count($not_in)>0){
-            $keys = array('llave','values');
-            $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $not_in);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar not_in',data: $valida);
-            }
-            $not_in_sql = $this->genera_not_in(not_in: $not_in);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar sql',data: $not_in_sql);
-            }
-
-        }
-        return $not_in_sql;
-    }
-
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -689,7 +590,7 @@ class where{
             return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, es_final: true);
         }
 
-        $values_sql = $this->values_sql_in(values:$values);
+        $values_sql = (new \gamboamartin\src\where())->values_sql_in(values:$values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
         }
@@ -818,54 +719,6 @@ class where{
         return $data_sql;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Genera una cláusula SQL NOT IN a partir de una llave y valores proporcionados.
-     *
-     * @param string $llave Clave que será usada en la cláusula NOT IN.
-     * @param array $values Valores que serán incorporados en la cláusula NOT IN.
-     *
-     * @return string|array Devuelve una cadena que contiene una cláusula SQL NOT IN si la operación es exitosa.
-     * Si ocurre un error, devuelve un array conteniendo detalles sobre el error.
-     *
-     * ## Uso:
-     * ```php
-     * not_in_sql("id", [1, 2, 3])
-     * ```
-     *
-     * ## Ejemplo de respuesta en caso de éxito:
-     * ```sql
-     * "id NOT IN (1, 2, 3)"
-     * ```
-     *
-     * ## Ejemplo de respuesta en caso de error:
-     * ```php
-     * [
-     *     "codigo" => "ERR_CODE",
-     *     "mensaje" => "Descripción detallada del error"
-     * ]
-     * ```
-     * @version 16.272.1
-     */
-    private function not_in_sql(string $llave, array $values): array|string
-    {
-        $llave = trim($llave);
-        if($llave === ''){
-            return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, es_final: true);
-        }
-
-        $values_sql = $this->values_sql_in(values:$values);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
-        }
-
-        $not_in_sql = '';
-        if($values_sql!==''){
-            $not_in_sql.="$llave NOT IN ($values_sql)";
-        }
-
-        return $not_in_sql;
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -946,76 +799,6 @@ class where{
         return $filtros_;
     }
 
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Este método comprueba si el valor proporcionado está vacío y, en caso de que no lo esté,
-     * añade una coma al final de la cadena de valores SQL existente.
-     *
-     * @param string $value El valor para comprobar y añadir a la cadena SQL.
-     * @param string $values_sql La cadena SQL existente que se actualizará.
-     *
-     * @return array|stdClass Devuelve un objeto con el valor y la coma si todo está bien,
-     *                        de lo contrario retorna un mensaje de error.
-     *
-     * @throws errores Si el valor está vacío.
-     * @version 16.261.1
-     */
-    private function value_coma(string $value, string $values_sql): array|stdClass
-    {
-        $values_sql = trim($values_sql);
-        $value = trim($value);
-        if($value === ''){
-            return $this->error->error(mensaje: 'Error value esta vacio',data: $value, es_final: true);
-        }
-
-        $coma = '';
-        if($values_sql !== ''){
-            $coma = ' ,';
-        }
-
-        $data = new stdClass();
-        $data->value = $value;
-        $data->coma = $coma;
-        return $data;
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función privada toma un array de valores y los procesa para formar una parte de una consulta SQL.
-     *
-     * Recorre cada valor en el conjunto de valores proporcionado para escapar y formatear correctamente el valor en
-     * una representación de cadena que puede ser utilizada en una consulta SQL.
-     * Los valores son escapados para seguridad y entre comillas para representarlos como cadenas en SQL.
-     * Finalmente, cada valor procesado se concatena a la cadena $values_sql con una coma y el valor.
-     *
-     * Si ocurre algún error durante este proceso, se devolverá un mensaje de error.
-     *
-     * @param array $values Un conjunto de valores que se deben formatear y escapar para su uso en una consulta SQL.
-     * @return string|array Una cadena que representa la parte de una consulta SQL con valores formateados y escapados,
-     * o un mensaje de error si se encuentra algún problema.
-     * @version 16.262.1
-     */
-    private function values_sql_in(array $values): string|array
-    {
-        $values_sql = '';
-        foreach ($values as $value){
-            $value = trim($value);
-            if($value === ''){
-                return $this->error->error(mensaje: 'Error value esta vacio',data: $value, es_final: true);
-            }
-            $data = $this->value_coma(value:$value, values_sql: $values_sql);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error obtener datos de value',data: $data);
-            }
-
-            $value = addslashes($value);
-            $value = "'$value'";
-
-            $values_sql.="$data->coma$value";
-        }
-        return $values_sql;
-    }
 
     /**
      * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-verifica_where
