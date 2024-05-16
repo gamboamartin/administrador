@@ -532,7 +532,7 @@ class modelo extends modelo_base {
                                  array $filtro_rango = array(), array $filtro_fecha = array(),
                                  array $in = array(), array $not_in = array()):array|int{
 
-        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -581,7 +581,7 @@ class modelo extends modelo_base {
 
 
 
-        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -1219,7 +1219,7 @@ class modelo extends modelo_base {
 
 
 
-        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -1368,7 +1368,7 @@ class modelo extends modelo_base {
 
         }
 
-        $verifica_tf = (new where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }

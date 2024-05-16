@@ -671,23 +671,6 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_genera_sentencia_base(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $columnas_extra = array();
-        $filtro = array();
-        $tipo_filtro = 'numeros';
-        $resultado = $wh->genera_sentencia_base($columnas_extra, $filtro, $tipo_filtro);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals( "", $resultado);
-
-    }
-
-
 
     public function test_in_sql(){
         errores::$error = false;
@@ -993,33 +976,7 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_verifica_tipo_filtro(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-        $tipo_filtro = '';
-        $resultado = $wh->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        $this->assertIsBool( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-
-        errores::$error = false;
-        $tipo_filtro = 'a';
-        $resultado = $wh->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el tipo filtro no es correcto', $resultado['mensaje']);
-
-        errores::$error = false;
-        $tipo_filtro = 'textos';
-        $resultado = $wh->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        $this->assertIsBool( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-        errores::$error = false;
-
-    }
 
     public function test_verifica_where(){
         errores::$error = false;

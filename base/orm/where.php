@@ -59,7 +59,7 @@ class where{
                                       string $sql_extra, string $tipo_filtro): array|stdClass
     {
 
-        $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -631,11 +631,11 @@ class where{
                                         array $keys_data_filter, array $not_in, string $sql_extra, string $tipo_filtro,
                                         array $filtro_fecha = array()): array|stdClass
     {
-        $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $sentencia = $this->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
+        $sentencia = (new \gamboamartin\src\where())->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
             tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia);
@@ -873,42 +873,6 @@ class where{
         }
         return $not_in_sql;
     }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Genera la sentencia SQL base de filtro según el tipo de filtro
-     * proporcionado (numeros o textos).
-     *
-     * @param array $columnas_extra Array de columnas adicionales para incluir en la consulta.
-     * @param array $filtro Array de condiciones para ser incluidos en la cláusula WHERE de la sentencia.
-     * @param string $tipo_filtro Define el tipo del filtro. Puede ser "numeros" o "textos".
-     *
-     * @return array|string Retorna la sentencia generada o un string describiendo un error si sucede alguno.
-     *
-     * @throws errores si el tipo de filtro no es válido.
-     * @version 16.102.0
-     */
-    private function genera_sentencia_base(array $columnas_extra,  array $filtro, string $tipo_filtro):array|string{
-        $verifica_tf = $this->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
-        }
-        $sentencia = '';
-        if($tipo_filtro === 'numeros') {
-            $sentencia = (new \gamboamartin\src\where())->genera_and(columnas_extra: $columnas_extra, filtro: $filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje: "Error en and",data:$sentencia);
-            }
-        }
-        elseif ($tipo_filtro==='textos'){
-            $sentencia = (new \gamboamartin\src\where())->genera_and_textos(columnas_extra: $columnas_extra,filtro: $filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje: "Error en texto",data:$sentencia);
-            }
-        }
-        return $sentencia;
-    }
-
 
 
     /**
@@ -1229,46 +1193,6 @@ class where{
 
         return $filtros_;
     }
-
-
-
-    /**
-     * TOTAL
-     * Verifica el tipo de filtro proporcionado.
-     *
-     * @param string $tipo_filtro El tipo de filtro a verificar.
-     * @return true|array Devuelve true si el tipo de filtro es correcto,
-     *         si no, devuelve un array con un error.
-     *
-     * La función realiza las siguientes acciones:
-     * 1. Limpia el tipo de filtro ingresado.
-     * 2. Si el tipo de filtro es una cadena vacía, se establece como 'numeros'.
-     * 3. Define los tipos permitidos de filtro como 'numeros' y 'textos'.
-     * 4. Verifica si el tipo de filtro ingresado pertenece a los tipos permitidos.
-     *    Si no es así, crea un nuevo objeto stdClass y establece la propiedad
-     *    tipo_filtro con el valor ingresado y retorna un error con el mensaje y los datos correspondientes.
-     * @version 13.8.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.verifica_tipo_filtro.21.10.0
-     */
-    final public function verifica_tipo_filtro(string $tipo_filtro): true|array
-    {
-        $tipo_filtro = trim($tipo_filtro);
-        if($tipo_filtro === ''){
-            $tipo_filtro = 'numeros';
-        }
-        $tipos_permitidos = array('numeros','textos');
-        if(!in_array($tipo_filtro,$tipos_permitidos)){
-
-            $params = new stdClass();
-            $params->tipo_filtro = $tipo_filtro;
-
-            return $this->error->error(
-                mensaje: 'Error el tipo filtro no es correcto los filtros pueden ser o numeros o textos',
-                data: $params, es_final: true);
-        }
-        return true;
-    }
-
 
 
     /**
