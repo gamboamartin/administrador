@@ -18,45 +18,6 @@ class where{
     }
 
 
-
-
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Manipula y valida los datos de filtro para las fechas.
-     *
-     * Esta función acepta un arreglo asociativo con tres claves: 'campo_1', 'campo_2' y 'fecha'.
-     * Primero, realiza una validación de los elementos del arreglo.
-     * Si la validación falla, se notifica el error y se detiene la ejecución de la función.
-     * Si la validación es correcta, cada valor se asigna a un nuevo objeto $data como una propiedad separada.
-     * Finalmente, se devuelve el objeto $data.
-     *
-     * @param array $fil_fecha El arreglo que contiene los campos de fecha para filtrar.
-     *        Debe tener las claves 'campo_1', 'campo_2' y 'fecha'.
-     * @return stdClass|array Retorna un objeto con los campos validados si todo es correcto.
-     *         Si hay un error, se devuelve un arreglo con información sobre el error.
-     * @throws errores Si ocurre un error durante la validación, se lanza una excepción.
-     *
-     * @version 16.307.1
-     */
-    private function data_filtro_fecha(array $fil_fecha): stdClass|array
-    {
-
-        $valida = $this->valida_data_filtro_fecha(fil_fecha: $fil_fecha);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida);
-        }
-
-        $campo_1 = $fil_fecha['campo_1'];
-        $campo_2 = $fil_fecha['campo_2'];
-        $fecha = $fil_fecha['fecha'];
-        $data = new stdClass();
-        $data->campo_1 = $campo_1;
-        $data->campo_2 = $campo_2;
-        $data->fecha = $fecha;
-        return $data;
-    }
-
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
      * Crea los datos de los diferentes tipos de filtro en forma de SQL
@@ -240,7 +201,6 @@ class where{
         return $datos;
 
     }
-
 
 
     /**
@@ -450,81 +410,6 @@ class where{
         return $filtro_extra_sql;
 
     }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Este método procesa la fecha enviada y retorna una consulta SQL representando el filtro de la fecha.
-     *
-     * @param array $filtro_fecha Representa la fecha que se va a filtrar.
-     *
-     * @return array|string Retorna una consulta SQL del filtro de fecha si es exitoso. Si ocurre un error,
-     *  retorna una cadena con mensaje de error.
-     *
-     * @throws errores si no se pudo generar la consulta SQL del filtro de fecha.
-     *
-     * @version 16.313.1
-     */
-    private function filtro_fecha(array $filtro_fecha):array|string{
-
-
-        $filtro_fecha_sql = $this->filtro_fecha_base(filtro_fecha: $filtro_fecha);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener sql',data: $filtro_fecha_sql);
-        }
-
-        if($filtro_fecha_sql !==''){
-            $filtro_fecha_sql = "($filtro_fecha_sql)";
-        }
-
-        return $filtro_fecha_sql;
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función se encarga de crear una cadena SQL para filtrar por fecha.
-     *
-     * @param array $filtro_fecha Un array que contiene los criterios de filtro de fecha.
-     *
-     * @return array|string Retorna una cadena SQL si todo fue exitoso, o un array de errores si hubo algún problema.
-     *
-     * @throws errores Si $fil_fecha no es un array.
-     *
-     * La función itera sobre cada $fil_fecha en $filtro_fecha.
-     * Para cada $fil_fecha, valida el filtrado de la fecha utilizando $this->valida_filtro_fecha(fil_fecha: $fil_fecha).
-     * Si hay algun error de validación, retorna un error con datos relacionados al error.
-     *
-     * Luego, genera la cadena SQL utilizando $this->genera_sql_filtro_fecha(fil_fecha: $fil_fecha, filtro_fecha_sql: $filtro_fecha_sql)
-     * Si hay algun error al generar la cadena SQL, retorna un error con datos relacionados al error.
-     *
-     * Finalmente, agrega la cadena SQL al $filtro_fecha_sql y al final del ciclo retorna $filtro_fecha_sql
-     *
-     * @version 16.312.1
-     */
-    private function filtro_fecha_base(array $filtro_fecha): array|string
-    {
-        $filtro_fecha_sql = '';
-        foreach ($filtro_fecha as $fil_fecha){
-            if(!is_array($fil_fecha)){
-                return $this->error->error(mensaje: 'Error $fil_fecha debe ser un array',data: $fil_fecha,
-                    es_final: true);
-            }
-
-            $valida = $this->valida_filtro_fecha(fil_fecha: $fil_fecha);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
-            }
-
-            $sql = $this->genera_sql_filtro_fecha(fil_fecha: $fil_fecha, filtro_fecha_sql: $filtro_fecha_sql);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener sql',data: $sql);
-            }
-
-            $filtro_fecha_sql.= $sql;
-
-        }
-        return $filtro_fecha_sql;
-    }
-
 
 
     /**
@@ -781,7 +666,7 @@ class where{
             return $this->error->error(mensaje:'Error al generar in_sql',data:$in_sql);
         }
 
-        $filtro_fecha_sql = $this->filtro_fecha(filtro_fecha: $filtro_fecha);
+        $filtro_fecha_sql = (new \gamboamartin\src\where())->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql);
         }
@@ -1024,48 +909,7 @@ class where{
         return $sentencia;
     }
 
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * La función 'genera_sql_filtro_fecha' es privada y se encarga de generar un filtro de SQL para fechas.
-     *
-     * @param array $fil_fecha Es el filtro de fecha a validar y procesar.
-     * @param string $filtro_fecha_sql Es un string que contiene la sentencia SQL para el filtro de fecha.
-     * @return array|string Retorna un string con la sentencia SQL generada o un arreglo en caso de error.
-     *
-     * @throws errores Se puede lanzar una excepción en caso de que haya un error al validar la fecha, generar datos, obtener el 'and' o al obtener el sql.
-     *
-     * La función sigue estos pasos:
-     * 1. Valida el filtro de fechas. Si hay un error, retorna un mensaje de error relatando un problema al validar la fecha.
-     * 2. Genera datos a partir del filtro de fechas. Si hay un error, retorna un mensaje de error relatando un problema al generar datos.
-     * 3. Obtiene el 'and' necesario para el filtro de fechas SQL. Si hay un error, retorna un mensaje de error relatando un problema al obtener el 'and'.
-     * 4. Genera la sentencia SQL de fecha. Si hay un error, retorna un mensaje de error relatando un problema al generar la sentencia SQL.
-     * 5. Si todo ha ido bien, retorna la sentencia SQL generada.
-     *
-     * @version 16.311.1
-     */
-    private function genera_sql_filtro_fecha(array $fil_fecha, string $filtro_fecha_sql): array|string
-    {
-        $valida = $this->valida_data_filtro_fecha(fil_fecha: $fil_fecha);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar fecha',data: $valida);
-        }
 
-        $data = $this->data_filtro_fecha(fil_fecha: $fil_fecha);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar datos',data:$data);
-        }
-
-        $and = (new \gamboamartin\src\where())->and_filtro_fecha(txt: $filtro_fecha_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener and',data:$and);
-        }
-
-        $sql = $this->sql_fecha(and:$and,data:  $data);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener sql',data:$sql);
-        }
-        return $sql;
-    }
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -1389,114 +1233,6 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * El método sql_fecha genera un fragmento de consulta SQL basado en un rango de fechas.
-     *
-     * Este método toma dos parámetros: uno para la conjunción de SQL (AND / OR etc.) y otro
-     * para un objeto de datos que contiene las fechas. Las fechas ingresadas se validan y luego
-     * se utilizan para construir una consulta SQL que puede usarse para filtrar registros entre dos fechas.
-     *
-     * @param string $and La conjunción de SQL (AND, OR, etc.).
-     * @param stdClass $data Objeto de datos que debe contener `fecha`, `campo_1`, y `campo_2`.
-     *                       `fecha` es la columna de la fecha, `campo_1` es la fecha de inicio
-     *                       y `campo_2` es la fecha de fin para el filtro de la consulta SQL.
-     *
-     * @throws errores En caso de que el objeto de datos no contenga alguna clave requerida o
-     *                   si algún valor está vacío o si la fecha proporcionada no es válida.
-     *
-     * @return string|array Consulta SQL generada como string. En caso de error, devuelve un array
-     *                      con datos de error.
-     *
-     * @example sql_fecha('AND', (object)['fecha' => 'created_at', 'campo_1' => '2023-01-01', 'campo_2' => '2023-12-31']);
-     *          Esto generaría: "(created_at >= '2023-01-01' AND created_at <= '2023-12-31')"
-     *
-     * @version 16.309.1
-     */
-    private function sql_fecha(string $and, stdClass $data): string|array
-    {
-        $keys = array('fecha','campo_1','campo_2');
-        foreach($keys as $key){
-            if(!isset($data->$key)){
-                return $this->error->error(mensaje: 'error no existe $data->'.$key, data: $data, es_final: true);
-            }
-            if(trim($data->$key) === ''){
-                return $this->error->error(mensaje:'error esta vacio $data->'.$key, data:$data, es_final: true);
-            }
-        }
-        $keys = array('fecha');
-        foreach($keys as $key){
-            $valida = $this->validacion->valida_fecha(fecha: $data->$key);
-            if(errores::$error){
-                return $this->error->error(mensaje:'error al validar '.$key,data: $valida);
-            }
-        }
-
-        return "$and('$data->fecha' >= $data->campo_1 AND '$data->fecha' <= $data->campo_2)";
-    }
-
-
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función valida un filtro de fecha proporcionado en un array.
-     *
-     * Dentro del array proporcionado, la función busca la presencia de las claves 'campo_1', 'campo_2' y 'fecha'.
-     * En caso de que estas claves no existan dentro del array, la función devuelve un error
-     * describiendo la ausencia de las claves requeridas.
-     *
-     * Si las claves requeridas están presentes, la función procede a validar si el valor correspondiente
-     * a la clave 'fecha' es una fecha válida. Si el valor no es una fecha válida, la función devuelve un error.
-     *
-     * En caso de que tanto las claves requeridas estén presentas y 'fecha' sea una fecha valida, la función devuelve true.
-     *
-     * @param array $fil_fecha El array que contiene el filtro de fechas. Este debe contener las claves 'campo_1', 'campo_2' y 'fecha'.
-     * @return bool|array Retorna true si las validaciones son exitosas. Retorna un array de errores si alguna validación falla.
-     *
-     * @version 16.306.1
-     */
-    private function valida_data_filtro_fecha(array $fil_fecha): true|array
-    {
-        $keys = array('campo_1','campo_2','fecha');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        $valida = $this->validacion->valida_fecha(fecha: $fil_fecha['fecha']);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar fecha',data:$valida);
-        }
-        return true;
-    }
-
-    /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función valida un array de filtro de fecha.
-     *
-     * @param array $fil_fecha Array que contiene la información del filtro de fecha. Debería de contener los campos 'campo_1', 'campo_2' y 'fecha'.
-     *
-     * @return bool|array Retorna verdadero si el filtro de fecha es válido. De lo contrario, retorna un Error.
-     *
-     * @throws errores Posibles errores que pueden ocurrir durante la validación.
-     * @version 16.305.1
-     */
-    private function valida_filtro_fecha(array $fil_fecha): bool|array
-    {
-
-        $keys = array('campo_1','campo_2','fecha');
-        $valida = $this->validacion->valida_existencia_keys(keys:$keys, registro: $fil_fecha);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-
-        $keys = array('fecha');
-        $valida = $this->validacion->fechas_in_array(data:  $fil_fecha, keys: $keys);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar filtro',data: $valida);
-        }
-        return true;
-    }
-
-    /**
      * TOTAL
      * Verifica el tipo de filtro proporcionado.
      *
@@ -1737,7 +1473,7 @@ class where{
      * @return string filtro enviado por parametros anteponiendo la palabra WHERE
      * @version 1.489.49
      */
-    public function where_suma(string $filtro_sql): string
+    final public function where_suma(string $filtro_sql): string
     {
         $where = '';
         if(trim($filtro_sql) !== '' ){

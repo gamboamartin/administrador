@@ -17,20 +17,7 @@ class whereTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_data_filtro_fecha(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-        $fil_fecha = array('campo_1'=>'a','campo_2'=>2, 'fecha'=>'2020-01-01');
-        $resultado = $wh->data_filtro_fecha($fil_fecha);
-        $this->assertIsObject($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('a', $resultado->campo_1);
-        $this->assertEquals(2, $resultado->campo_2);
-        $this->assertEquals('2020-01-01', $resultado->fecha);
-        errores::$error = false;
-    }
 
     public function test_data_filtros_full(){
         errores::$error = false;
@@ -357,40 +344,6 @@ class whereTest extends test {
         errores::$error = false;
     }
 
-    public function test_filtro_fecha(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-        $filtro_fecha = array();
-        $filtro_fecha[0]['campo_1'] = 'a';
-        $filtro_fecha[0]['campo_2'] = 'a';
-        $filtro_fecha[0]['fecha'] = '2020-01-01';
-        $resultado = $wh->filtro_fecha($filtro_fecha);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("(('2020-01-01' >= a AND '2020-01-01' <= a))", $resultado);
-        errores::$error = false;
-    }
-
-    public function test_filtro_fecha_base(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $filtro_fecha = array();
-        $filtro_fecha[0]['campo_1'] = 'a';
-        $filtro_fecha[0]['campo_2'] = 'a';
-        $filtro_fecha[0]['fecha'] = '2020-01-01';
-        $resultado = $wh->filtro_fecha_base($filtro_fecha);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("('2020-01-01' >= a AND '2020-01-01' <= a)", $resultado);
-        errores::$error = false;
-    }
 
 
 
@@ -734,37 +687,7 @@ class whereTest extends test {
 
     }
 
-    public function test_genera_sql_filtro_fecha(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
 
-
-
-        $filtro_fecha_sql = '';
-        $fil_fecha = array();
-        $fil_fecha['campo_1'] = 'a';
-        $fil_fecha['campo_2'] = 'b';
-        $fil_fecha['fecha'] = '2020-01-01';
-        $resultado = $wh->genera_sql_filtro_fecha($fil_fecha, $filtro_fecha_sql);
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("('2020-01-01' >= a AND '2020-01-01' <= b)",$resultado);
-        errores::$error = false;
-
-        $filtro_fecha_sql = 's';
-        $fil_fecha = array();
-        $fil_fecha['campo_1'] = 'a';
-        $fil_fecha['campo_2'] = 'b';
-        $fil_fecha['fecha'] = '2020-01-01';
-        $resultado = $wh->genera_sql_filtro_fecha($fil_fecha, $filtro_fecha_sql);
-
-        $this->assertIsString($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals(" AND ('2020-01-01' >= a AND '2020-01-01' <= b)",$resultado);
-        errores::$error = false;
-
-    }
 
     public function test_in_sql(){
         errores::$error = false;
@@ -997,66 +920,6 @@ class whereTest extends test {
         $this->assertEquals('', $resultado->a);
         $this->assertEquals('z', $resultado->b);
         $this->assertEquals(' (k) ', $resultado->c);
-        errores::$error = false;
-    }
-
-
-
-    public function test_sql_fecha(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $and = '';
-        $data = new stdClass();
-        $data->fecha = '2020-01-01';
-        $data->campo_1 = 'a';
-        $data->campo_2 = 'a';
-        $resultado = $wh->sql_fecha($and, $data);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals("('2020-01-01' >= a AND '2020-01-01' <= a)",$resultado);
-        errores::$error = false;
-    }
-
-
-
-    public function test_valida_data_filtro_fecha(){
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $fil_fecha = array();
-        $fil_fecha['campo_1'] = 'a';
-        $fil_fecha['campo_2'] = array('z','f');
-        $fil_fecha['fecha'] = '2019-01-01';
-        $resultado = $wh->valida_data_filtro_fecha($fil_fecha);
-        $this->assertIsBool( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-        errores::$error = false;
-
-    }
-
-    public function test_valida_filtro_fecha(): void
-    {
-        errores::$error = false;
-        $wh = new where();
-        $wh = new liberator($wh);
-
-
-        $fil_fecha = array();
-        $fil_fecha['campo_1'] = 'a';
-        $fil_fecha['campo_2'] = array('z','f');
-        $fil_fecha['fecha'] = '2020-01-01';
-        $resultado = $wh->valida_filtro_fecha($fil_fecha);
-        $this->assertIsBool( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertTrue($resultado);
-
-
         errores::$error = false;
     }
 
