@@ -50,6 +50,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             $this->registro['codigo'] = $this->registro['user'];
         }
 
+        if(!isset($this->registro['descripcion'])){
+            $this->registro['descripcion'] = $this->registro['codigo'].' - '.$this->registro['nombre'];
+        }
+
         $r_alta_bd = parent::alta_bd();
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al insertar usuario',data: $r_alta_bd);
