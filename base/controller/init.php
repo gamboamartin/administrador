@@ -1141,6 +1141,9 @@ class init{
         /**
          * REFCATORIZAR SIMPLICAR REGISTRO DE PAQUETES
          */
+        if($sistema === 'direccion_postal'){
+            $namespace = 'gamboamartin\\direccion_postal\\';
+        }
         if($sistema === 'organigrama'){
             $namespace = 'gamboamartin\\organigrama\\';
         }
