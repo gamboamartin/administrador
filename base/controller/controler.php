@@ -392,13 +392,17 @@ class controler{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
-     * This function is used to handle and output errors in a web
-     * service context. It accepts a parameter which can be an instance
-     * of stdClass or an array representing the error details.
-     * @param stdClass|array $error Error de resultado
+     * FINAL
+     * Maneja y muestra errores en formato JSON.
+     *
+     * Esta función limpia el búfer de salida, establece el encabezado de tipo de contenido a JSON
+     * y luego intenta codificar el error proporcionado como JSON y lo muestra.
+     * Si ocurre un error durante la codificación, captura la excepción y maneja el error.
+     *
+     * @param stdClass|array $error El error que se va a mostrar en formato JSON.
+     *
      * @return void
-     * @version 16.138.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.controler.out_ws_error
      */
     private function out_ws_error(stdClass|array $error): void
     {

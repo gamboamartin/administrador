@@ -137,7 +137,7 @@ class conexion{
      * @param database|stdClass $conf_database Configuraciones para conectividad
      * @param string $motor Motor puede ser MYSQL o MSSQL=>PARA SQL SERVER
      * @return PDO|array|false
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.conexion.conecta.21.25.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.conexion.conecta
      */
     private function conecta(database|stdClass $conf_database, string $motor): PDO|array|false
     {
