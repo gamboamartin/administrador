@@ -58,6 +58,7 @@ class controlador_adm_sessionTest extends test {
         $datos_usuario['adm_usuario_id'] = '2';
         $datos_usuario['adm_grupo_id'] = '2';
         $resultado = $ctl->alta_session($datos_usuario);
+
         $this->assertFalse(errores::$error);
         $this->assertIsObject($resultado);
 

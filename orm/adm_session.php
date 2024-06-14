@@ -1,8 +1,10 @@
 <?php
 namespace gamboamartin\administrador\models;
 
+use base\orm\estructuras;
 use base\orm\modelo;
 use config\generales;
+use gamboamartin\administrador\instalacion\instalacion;
 use gamboamartin\calculo\calculo;
 use gamboamartin\errores\errores;
 
@@ -24,6 +26,59 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $this->NAMESPACE = __NAMESPACE__;
 
         $this->etiqueta = 'Session';
+
+    }
+
+    final public function alta_bd(): array|stdClass
+    {
+        if(!isset($this->registro['codigo'])){
+            $this->registro['codigo'] = time().mt_rand(100,999);
+        }
+        if(!isset($this->registro['descripcion'])){
+            $this->registro['descripcion'] = time().mt_rand(100,999);
+        }
+        if(!isset($this->registro['descripcion_select'])){
+            $this->registro['descripcion_select'] = time().mt_rand(100,999);
+        }
+        if(!isset($this->registro['alias'])){
+            $this->registro['alias'] = time().mt_rand(100,999);
+        }
+        if(!isset($this->registro['codigo_bis'])){
+            $this->registro['codigo_bis'] = time().mt_rand(100,999);
+        }
+        if(!isset($this->registro['predeterminado'])){
+            $this->registro['predeterminado'] = 'inactivo';
+        }
+
+        $entidad = (new _instalacion(link: $this->link))->describe_table(table: $this->tabla);
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al obtener campos",data:  $entidad);
+        }
+
+
+        $campos_val = array('codigo','descripcion','descripcion_select','alias','codigo_bis','predeterminado');
+
+
+        foreach ($campos_val as $campo){
+            $existe = false;
+            foreach ($entidad->registros as $campo_rev) {
+                if ($campo_rev['Field'] === $campo) {
+                    $existe = true;
+                    break;
+                }
+            }
+            if(!$existe){
+                if(isset($this->registro[$campo])){
+                    unset($this->registro[$campo]);
+                }
+            }
+        }
+
+        $r_alta_bd = parent::alta_bd();
+        if(errores::$error){
+            return $this->error->error(mensaje: "Error al inserta session",data:  $r_alta_bd);
+        }
+        return $r_alta_bd;
 
     }
 
