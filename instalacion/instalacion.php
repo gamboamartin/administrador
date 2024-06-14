@@ -1444,6 +1444,13 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
         }
 
+        $foraneas = array();
+        $foraneas['adm_usuario_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_session');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foraneas_r', data:  $foraneas_r);
+        }
 
         return $out;
 
