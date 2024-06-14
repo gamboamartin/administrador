@@ -1415,8 +1415,46 @@ class instalacion
 
     }
 
+    private function _add_adm_session(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_session');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        $campos = new stdClass();
+        $campos->name = new stdClass();
+        $campos->numero_empresa = new stdClass();
+        $campos->fecha = new stdClass();
+        $campos->fecha->tipo_dato = 'DATE';
+
+        $campos->fecha_ultima_ejecucion = new stdClass();
+        $campos->fecha->fecha_ultima_ejecucion = 'TIMESTAMP';
+        $campos->ip_publica = new stdClass();
+        $campos->permanente = new stdClass();
+        $campos->permanente->default = 'inactivo';
+
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_session');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+
+
+        return $out;
+
+    }
     private function adm_session(PDO $link): array|stdClass
     {
+
+        $create = $this->_add_adm_session(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
 
         $adm_menu_descripcion = 'ACL';
         $adm_sistema_descripcion = 'administrador';
