@@ -392,6 +392,19 @@ class instalacion
 
     }
 
+    private function _add_adm_categoria_usuario(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_categoria_usuario');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        return $out;
+
+    }
+
     private function _add_adm_categoria_secciones(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1438,6 +1451,17 @@ class instalacion
         return $create;
 
     }
+    private function adm_categoria_usuario(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_categoria_usuario(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        return $create;
+
+    }
+
 
     private function _add_adm_session(PDO $link): array|stdClass
     {
@@ -1949,6 +1973,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_categoria_secciones', data: $adm_categoria_secciones);
         }
         $out->adm_session = $adm_session;
+
+        $adm_categoria_usuario = $this->adm_categoria_usuario(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_categoria_usuario', data: $adm_categoria_usuario);
+        }
+        $out->adm_categoria_usuario = $adm_categoria_usuario;
 
 
         return $out;
