@@ -418,6 +418,19 @@ class instalacion
 
     }
 
+    private function _add_adm_categoria(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_categoria');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+        return $out;
+
+    }
+
     private function _add_adm_categoria_secciones(PDO $link): array|stdClass
     {
         $out = new stdClass();
@@ -1486,6 +1499,17 @@ class instalacion
 
     }
 
+    private function adm_categoria(PDO $link): array|stdClass
+    {
+        $create = $this->_add_adm_categoria(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        return $create;
+
+    }
+
 
     private function _add_adm_session(PDO $link): array|stdClass
     {
@@ -2009,6 +2033,12 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al init adm_categoria_sistema', data: $adm_categoria_sistema);
         }
         $out->adm_categoria_sistema = $adm_categoria_sistema;
+
+        $adm_categoria = $this->adm_categoria(link: $link);
+        if (errores::$error) {
+            return (new errores())->error(mensaje: 'Error al init adm_categoria', data: $adm_categoria);
+        }
+        $out->adm_categoria = $adm_categoria;
 
 
         return $out;
