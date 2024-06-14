@@ -145,6 +145,20 @@ class _instalacionTest extends test
         $ins = new _instalacion(link: $this->link);
         $ins = new liberator($ins);
 
+        $drop = $ins->drop_table_segura('test');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
+        $drop = $ins->drop_table_segura('a');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al drop',data: $drop);
+            print_r($error);
+            exit;
+        }
+
         $table = 'b';
 
         $drop = $ins->drop_table_segura($table);

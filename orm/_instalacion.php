@@ -1327,7 +1327,8 @@ class _instalacion
             return $this->error->error(mensaje: 'Error al ejecutar add_column', data: $exe);
         }
 
-        $fk = $this->foreign_por_campo(campo: $campo, table: $table, name_indice_opt: $name_indice_opt);
+        $fk = $this->foreign_por_campo(campo: $campo, es_renombrada: false, key_renombrada: '', referencia: '',
+            table: $table, name_indice_opt: $name_indice_opt);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $fk);
         }
@@ -1477,7 +1478,8 @@ class _instalacion
         }
         $fk = 'Campo asignado '.$campo;
         if($campo_origen['Key'] !== 'MUL'){
-            $fk = $this->foreign_por_campo(campo: $campo,table:  $table, name_indice_opt: $name_indice_opt);
+            $fk = $this->foreign_por_campo(campo: $campo, es_renombrada: false, key_renombrada: '', referencia: '',
+                table: $table, name_indice_opt: $name_indice_opt);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar foreign', data: $fk);
             }
@@ -1536,31 +1538,19 @@ class _instalacion
 
     }
 
+
     /**
-     * Este método se utiliza para crear la clave foránea de un campo existente de una tabla específica en función de un campo específico.
-     * Realiza varias validaciones y devoluciones en caso de errores.
-     *
-     * @param string $campo El campo del que se quiere obtener la clave foránea.
-     * @param string $table La tabla en la que se va a buscar la clave foránea.
-     *
-     * @return stdClass|array Devuelve la clave foránea si la operación tuvo éxito, de lo contrario devuelve un error.
-     *
-     * @throws errores en caso de que ocurra un error al generar SQL.
-     *
-     * ### Ejemplo de uso - Supongamos que tenemos la tabla 'usuarios' con campo 'ciudad_id':
-     *
-     * ```php
-     * $instalacion = new _instalacion();
-     * $result = $instalacion->foreign_por_campo('ciudad_id', 'usuarios');
-     *
-     * if (errores::$error) {
-     *     echo 'Error!';
-     *     die;
-     * }
-     * echo $result;
-     * ```
+     * falta integracion de entidades renombradas
+     * @param string $campo
+     * @param bool $es_renombrada
+     * @param string $key_renombrada
+     * @param string $referencia
+     * @param string $table
+     * @param string $name_indice_opt
+     * @return array|stdClass
      */
-    private function foreign_por_campo(string $campo, string $table, string $name_indice_opt): array|stdClass
+    private function foreign_por_campo(string $campo, bool $es_renombrada, string $key_renombrada, string $referencia,
+                                       string $table, string $name_indice_opt): array|stdClass
     {
         $campo = trim($campo);
         if($campo === ''){
@@ -1577,6 +1567,11 @@ class _instalacion
 
         $explode_campo = explode('_id', $campo);
         $relacion_table = $explode_campo[0];
+
+        if($es_renombrada){
+            $relacion_table = $referencia;
+        }
+
 
         $fk = $this->foreign_key_existente(relacion_table: $relacion_table, table: $table,
             name_indice_opt: $name_indice_opt);

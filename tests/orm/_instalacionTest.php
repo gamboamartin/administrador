@@ -520,7 +520,6 @@ class _instalacionTest extends test {
             exit;
         }
     }
-
     public function test_exe_foreign_key(): void
     {
 
@@ -609,7 +608,6 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
-
     public function test_existe_foreign(): void
     {
 
@@ -631,7 +629,6 @@ class _instalacionTest extends test {
 
 
     }
-
     public function test_existe_foreign_base(): void
     {
 
@@ -694,6 +691,13 @@ class _instalacionTest extends test {
             exit;
         }
 
+        $create = $ins->create_table_new('origen');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al crear create',data:  $create);
+            print_r($error);
+            exit;
+        }
+
         $create = $ins->create_table_new('b');
         if(errores::$error){
             $error = (new errores())->error(mensaje: 'Error al crear entidad',data:  $create);
@@ -726,6 +730,8 @@ class _instalacionTest extends test {
         $this->assertEquals("ALTER TABLE a ADD CONSTRAINT a_b_id FOREIGN KEY (b_id) REFERENCES b(id);", $resultado[0]->sql);
 
         errores::$error = false;
+
+
     }
     public function test_foreign_key_completo(): void
     {
@@ -1011,7 +1017,8 @@ class _instalacionTest extends test {
         }
 
 
-        $resultado = $ins->foreign_por_campo(campo: $campo,table:  $table, name_indice_opt: '');
+        $resultado = $ins->foreign_por_campo(campo: $campo, es_renombrada: false, key_renombrada: '', referencia: '',
+            table: $table, name_indice_opt: '');
 
         $this->assertIsObject($resultado);
         $this->assertNotTrue(errores::$error);
@@ -1032,7 +1039,6 @@ class _instalacionTest extends test {
             exit;
         }
     }
-
     public function test_get_data_indices(): void
     {
 
@@ -1074,7 +1080,6 @@ class _instalacionTest extends test {
         errores::$error = false;
 
     }
-
     public function test_inserta_adm_campos(): void
     {
         $_SESSION['usuario_id'] = 2;

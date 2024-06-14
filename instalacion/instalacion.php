@@ -635,6 +635,72 @@ class instalacion
 
     }
 
+    private function _add_adm_accion_basica(PDO $link): array|stdClass
+    {
+        $out = new stdClass();
+        $create = (new _instalacion(link: $link))->create_table_new(table: 'adm_accion_basica');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al create table', data:  $create);
+        }
+        $out->create = $create;
+
+
+        $campos = new stdClass();
+        $campos->etiqueta_label = new stdClass();
+        $campos->etiqueta_label->default = 'SIN ETIQUETA';
+
+        $campos->icono = new stdClass();
+        $campos->icono->default = 'SIN ICONO';
+
+        $campos->visible = new stdClass();
+        $campos->visible->default = 'activo';
+
+        $campos->inicio = new stdClass();
+        $campos->inicio->default = 'activo';
+
+        $campos->lista = new stdClass();
+        $campos->lista->default = 'activo';
+
+        $campos->seguridad = new stdClass();
+        $campos->seguridad->default = 'activo';
+
+        $campos->es_modal = new stdClass();
+        $campos->es_modal->default = 'inactivo';
+
+        $campos->es_view = new stdClass();
+        $campos->es_view->default = 'activo';
+
+        $campos->titulo = new stdClass();
+        $campos->titulo->default = 'SIN TITULO';
+
+        $campos->css = new stdClass();
+        $campos->css->default = 'info';
+
+        $campos->es_status = new stdClass();
+        $campos->es_status->default = 'inactivo';
+
+        $campos->es_lista = new stdClass();
+        $campos->es_lista->default = 'activo';
+
+        $campos->muestra_icono_btn = new stdClass();
+        $campos->muestra_icono_btn->default = 'activo';
+
+        $campos->muestra_titulo_btn = new stdClass();
+        $campos->muestra_titulo_btn->default = 'activo';
+
+
+        $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_accion_basica');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar campos', data:  $result);
+        }
+        $out->columnas = $result;
+
+
+        return $out;
+
+    }
+
     private function accion_basica_importa(string $accion_basica_descripcion, PDO $link)
     {
         $accion_basica_importa = (new adm_accion_basica(link: $link))->accion_basica(descripcion:$accion_basica_descripcion);
@@ -699,6 +765,12 @@ class instalacion
     }
     private function adm_accion_basica(PDO $link): array|stdClass
     {
+
+        $create = $this->_add_adm_accion_basica(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
         $out = new stdClass();
 
         $adm_acciones_basicas = array();
