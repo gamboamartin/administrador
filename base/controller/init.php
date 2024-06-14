@@ -1269,6 +1269,9 @@ class init{
         if($sistema === 'inmuebles'){
             $namespace = 'gamboamartin\\inmuebles\\';
         }
+        if($sistema === 'ks_ops'){
+            $namespace = 'gamboamartin\\ks_ops\\';
+        }
 
         $name_ctl = 'controlador_'.$seccion;
         $name_ctl = str_replace($namespace.'controllers\\','',$name_ctl);
