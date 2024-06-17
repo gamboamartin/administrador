@@ -416,6 +416,7 @@ class instalacion
 
         $foraneas = array();
         $foraneas['adm_sistema_id'] = new stdClass();
+        $foraneas['adm_categoria_id'] = new stdClass();
 
         $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_categoria_sistema');
 
