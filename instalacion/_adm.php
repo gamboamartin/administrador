@@ -23,6 +23,32 @@ class _adm
 
     }
 
+    final public function acl_base(string $adm_menu_descripcion, string $adm_namespace_descripcion,
+                                   string $adm_namespace_name, string $adm_seccion_descripcion,
+                                   string $adm_seccion_pertenece_descripcion, string $adm_sistema_descripcion,
+                                   string $etiqueta_label, PDO $link)
+    {
+        $acl = $this->integra_acl(adm_menu_descripcion: $adm_menu_descripcion,
+            adm_namespace_name: $adm_namespace_name, adm_namespace_descripcion: $adm_namespace_descripcion,
+            adm_seccion_descripcion: $adm_seccion_descripcion,
+            adm_seccion_pertenece_descripcion: $adm_seccion_pertenece_descripcion,
+            adm_sistema_descripcion: $adm_sistema_descripcion,
+            etiqueta_label: $etiqueta_label, link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acl', data:  $acl);
+        }
+
+        $adm_accion_modelo = (new adm_accion(link: $link));
+
+        $adm_acciones_basicas = $adm_accion_modelo->inserta_acciones_basicas(adm_seccion: $adm_seccion_descripcion);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acciones basicas', data:  $adm_acciones_basicas);
+        }
+
+        return $adm_acciones_basicas;
+
+    }
+
     private function adm_accion_ins(int $adm_seccion_id, string $css, string $descripcion, string $es_status,
                                     string $es_view, string $icono, string $lista, string $muestra_icono_btn,
                                     string $muestra_titulo_btn, string $titulo): array
