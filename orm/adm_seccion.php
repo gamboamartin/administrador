@@ -324,7 +324,7 @@ class adm_seccion extends _modelo_children {
         return $modelo;
 
     }
-    private function inserta_accion(array $accion_basica, int $registro_id){
+    final public function inserta_accion(array $accion_basica, int $registro_id){
         $accion = $this->accion_maqueta(accion_basica: $accion_basica, registro_id: $registro_id);
         if (errores::$error){
             return  $this->error->error(mensaje: 'Error al maquetar accion',data: $accion);
