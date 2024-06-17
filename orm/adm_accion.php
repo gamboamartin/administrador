@@ -541,7 +541,7 @@ class adm_accion extends _modelo_children {
         return $registro;
     }
 
-    final public function inserta_acciones_basicas(string $adm_seccion)
+    final public function inserta_acciones_basicas(string $adm_seccion): array
     {
         $adm_accion_basica_modelo = new adm_accion_basica(link: $this->link);
         $adm_accion_modelo = (new adm_accion(link: $this->link));
@@ -556,7 +556,7 @@ class adm_accion extends _modelo_children {
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener acciones basicas', data:  $adm_acciones_basicas);
         }
-
+        $insersiones = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica) {
             $existe = $adm_accion_modelo->existe_accion(
                 adm_accion: $adm_accion_basica['adm_accion_basica_descripcion'],adm_seccion: $adm_seccion);
@@ -569,8 +569,10 @@ class adm_accion extends _modelo_children {
                 if(errores::$error){
                     return (new errores())->error(mensaje: 'Error INSERTAR ACCION', data:  $inserta);
                 }
+                $insersiones[] = $inserta;
             }
         }
+        return $insersiones;
 
 
     }
