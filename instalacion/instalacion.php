@@ -414,6 +414,16 @@ class instalacion
         }
         $out->create = $create;
 
+        $foraneas = array();
+        $foraneas['adm_sistema_id'] = new stdClass();
+
+        $foraneas_r = (new _instalacion(link:$link))->foraneas(foraneas: $foraneas,table:  'adm_categoria_sistema');
+
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar foranea', data:  $foraneas_r);
+        }
+        $out->foraneas_r = $foraneas_r;
+
         return $out;
 
     }
