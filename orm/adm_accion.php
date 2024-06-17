@@ -541,6 +541,40 @@ class adm_accion extends _modelo_children {
         return $registro;
     }
 
+    final public function inserta_acciones_basicas(string $adm_seccion)
+    {
+        $adm_accion_basica_modelo = new adm_accion_basica(link: $this->link);
+        $adm_accion_modelo = (new adm_accion(link: $this->link));
+        $adm_seccion_modelo = (new adm_seccion(link: $this->link));
+
+        $adm_seccion_id = $adm_seccion_modelo->adm_seccion_id(descripcion: $adm_seccion);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener adm_seccion_id', data:  $adm_seccion_id);
+        }
+
+        $adm_acciones_basicas = $adm_accion_basica_modelo->registros_activos();
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al obtener acciones basicas', data:  $adm_acciones_basicas);
+        }
+
+        foreach ($adm_acciones_basicas as $adm_accion_basica) {
+            $existe = $adm_accion_modelo->existe_accion(
+                adm_accion: $adm_accion_basica['adm_accion_basica_descripcion'],adm_seccion: $adm_seccion);
+            if(errores::$error){
+                return (new errores())->error(mensaje: 'Error AL VERIFICAR SI EXISTE', data:  $existe);
+            }
+            if(!$existe){
+                $inserta = $adm_seccion_modelo->inserta_accion(
+                    accion_basica: $adm_accion_basica,registro_id:  $adm_seccion_id);
+                if(errores::$error){
+                    return (new errores())->error(mensaje: 'Error INSERTAR ACCION', data:  $inserta);
+                }
+            }
+        }
+
+
+    }
+
     private function inserta_accion_grupo(adm_accion_grupo $accion_grupo_modelo, int $adm_accion_id, int $adm_grupo_id): array|stdClass
     {
         $accion_grupo_row = $this->maqueta_row_accion_grupo(accion_grupo_modelo: $accion_grupo_modelo,
