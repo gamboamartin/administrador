@@ -1356,7 +1356,7 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar grupo', data:  $r_adm_grupo);
         }
-        
+
         $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'asigna_permiso',
             adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-database-lock',
             link:  $link, lista:  'activo',titulo:  'Asigna Permiso');
@@ -1699,6 +1699,8 @@ class instalacion
         }
 
 
+
+
         $adm_menu_descripcion = 'ACL';
         $adm_sistema_descripcion = 'administrador';
         $etiqueta_label = 'Secciones';
@@ -1719,6 +1721,14 @@ class instalacion
             modelo_integracion: (new adm_seccion(link: $link)));
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al insertar adm campos', data:  $inserta_campos);
+        }
+
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'get_adm_seccion',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-arrow-up-short',
+            link:  $link, lista:  'inactivo',titulo:  'Get Adm Seccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
 
 

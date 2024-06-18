@@ -32,8 +32,6 @@ class controlador_adm_seccion extends controlador_base{
     }
 
 
-
-
     /**
      * @param bool $header Si header muestra resultado en front
      * @param bool $ws
