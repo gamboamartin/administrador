@@ -87,6 +87,7 @@ class _result
     }
 
     /**
+     *  TOTAL
      * Método data_result de la clase modelo_base
      *
      * Este método procesa los resultados obtenidos de una consulta SQL, a partir de
@@ -111,7 +112,7 @@ class _result
      * 5. Se obtienen y maquetan los resultados de la consulta SQL
      * 6. Si hay errores al parsear los registros, se devuelve un mensaje de error
      * 7. Si no hay errores, se retornan los datos obtenidos
-     *
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.data_result
      */
     final public function data_result(array $campos_encriptados,array $columnas_totales, string $consulta,
                                  modelo_base $modelo): array|stdClass
@@ -285,6 +286,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Inicializa la base del resultado a partir de la consulta, el número de registros y los registros obtenidos.
      *
      * @param string $consulta       La consulta SQL que se ejecutó para obtener los registros
@@ -293,7 +295,7 @@ class _result
      *
      * @return stdClass              Retorna un objeto que contiene los registros, el número de registros y la consulta SQL
      *
-     *
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.init_result_base
      */
     private function init_result_base(string $consulta, modelo_base $modelo, int $n_registros, array $new_array,
                                       stdClass $totales_rs): stdClass
@@ -345,6 +347,7 @@ class _result
     }
 
     /**
+     * TOTAL
      * Método maqueta_result de la clase modelo_base
      *
      * Este método recibe una consulta SQL, el número de registros obtenidos,
@@ -366,8 +369,10 @@ class _result
      * 3. Se obtienen los nuevos resultados con los parámetros recibidos
      * 4. Si hay errores al obtener los nuevos resultados, se devuelve un mensaje de error
      * 5. Si no hay errores, se devuelven los nuevos datos obtenidos
+     * @ur https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.maqueta_result
      */
-    private function maqueta_result(string $consulta, modelo_base $modelo, int $n_registros, array $new_array, stdClass $totales_rs ): array|stdClass
+    private function maqueta_result(string $consulta, modelo_base $modelo, int $n_registros, array $new_array,
+                                    stdClass $totales_rs ): array|stdClass
     {
         $init = $this->init_result_base(consulta: $consulta, modelo: $modelo, n_registros: $n_registros,
             new_array: $new_array, totales_rs: $totales_rs);
@@ -413,6 +418,7 @@ class _result
     }
 
     /**
+     *  TOTAL
      * La función "result" ajusta el resultado de una consulta y lo devuelve en un formato específico.
      *
      * @param string $consulta La consulta SQL que se ejecutó.
@@ -427,8 +433,11 @@ class _result
      * registros_obj: array de registros devueltos por la consulta en formato de objeto.
      *
      * La función convierte cada fila de $new_array de un array asociativo a un objeto y lo almacena en $data->registros_obj.
+     *
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._result.result
      */
-    private function result(string $consulta, modelo_base $modelo, int $n_registros, array $new_array, stdClass $totales_rs): stdClass
+    private function result(string $consulta, modelo_base $modelo, int $n_registros, array $new_array,
+                            stdClass $totales_rs): stdClass
     {
 
         $campos_entidad = $modelo->campos_entidad;
