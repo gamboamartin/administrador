@@ -111,7 +111,7 @@ class filtros{
                 es_final: true);
 
         }
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data:$verifica_tf);
         }

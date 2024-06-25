@@ -532,7 +532,7 @@ class modelo extends modelo_base {
                                  array $filtro_rango = array(), array $filtro_fecha = array(),
                                  array $in = array(), array $not_in = array()):array|int{
 
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -581,7 +581,7 @@ class modelo extends modelo_base {
 
 
 
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -1219,7 +1219,7 @@ class modelo extends modelo_base {
 
 
 
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -1368,7 +1368,7 @@ class modelo extends modelo_base {
 
         }
 
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -2321,7 +2321,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro, es_final: true);
         }
 
-        $sentencia = (new \gamboamartin\src\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);
+        $sentencia = (new \gamboamartin\where\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar and',data:$sentencia);
         }
@@ -2670,7 +2670,7 @@ class modelo extends modelo_base {
             return $this->error->error(mensaje: 'Error al agregar columnas',data: $columnas);
         }
 
-        $filtro_sql = (new \gamboamartin\src\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
+        $filtro_sql = (new \gamboamartin\where\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_sql);
         }

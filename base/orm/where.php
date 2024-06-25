@@ -59,7 +59,7 @@ class where{
                                       string $sql_extra, string $tipo_filtro): array|stdClass
     {
 
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
@@ -110,7 +110,7 @@ class where{
             return $this->error->error(mensaje: "Error campo debe ser un atributo del modelo no un numero",
                 data: $campo, es_final: true);
         }
-        $and = (new \gamboamartin\src\where())->and_filtro_fecha(txt: $diferente_de_sql);
+        $and = (new \gamboamartin\where\where())->and_filtro_fecha(txt: $diferente_de_sql);
         if(errores::$error){
             return $this->error->error(mensaje: "Error al integrar AND", data: $and);
         }
@@ -320,7 +320,7 @@ class where{
                                               array $keys_data_filter, string $not_in_sql, string $sentencia,
                                               string $sql_extra, string $filtro_fecha_sql = ''): array|stdClass
     {
-        $filtros = (new \gamboamartin\src\where())->asigna_data_filtro(diferente_de_sql: $diferente_de_sql,
+        $filtros = (new \gamboamartin\where\where())->asigna_data_filtro(diferente_de_sql: $diferente_de_sql,
             filtro_especial_sql:  $filtro_especial_sql, filtro_extra_sql: $filtro_extra_sql,
             filtro_fecha_sql:  $filtro_fecha_sql, filtro_rango_sql:  $filtro_rango_sql, in_sql: $in_sql,
             not_in_sql: $not_in_sql,sentencia: $sentencia, sql_extra:  $sql_extra);
@@ -380,11 +380,11 @@ class where{
                                         array $keys_data_filter, array $not_in, string $sql_extra, string $tipo_filtro,
                                         array $filtro_fecha = array()): array|stdClass
     {
-        $verifica_tf = (new \gamboamartin\src\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
+        $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $sentencia = (new \gamboamartin\src\where())->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
+        $sentencia = (new \gamboamartin\where\where())->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
             tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia);
@@ -395,16 +395,16 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro',data: $filtro_especial_sql);
         }
-        $filtro_rango_sql = (new \gamboamartin\src\where())->filtro_rango_sql(filtro_rango: $filtro_rango);
+        $filtro_rango_sql = (new \gamboamartin\where\where())->filtro_rango_sql(filtro_rango: $filtro_rango);
         if(errores::$error){
             return $this->error->error(mensaje:'Error $filtro_rango_sql al generar',data:$filtro_rango_sql);
         }
-        $filtro_extra_sql = (new \gamboamartin\src\where())->filtro_extra_sql(filtro_extra: $filtro_extra);
+        $filtro_extra_sql = (new \gamboamartin\where\where())->filtro_extra_sql(filtro_extra: $filtro_extra);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro extra',data:$filtro_extra_sql);
         }
 
-        $not_in_sql = (new \gamboamartin\src\where())->genera_not_in_sql(not_in: $not_in);
+        $not_in_sql = (new \gamboamartin\where\where())->genera_not_in_sql(not_in: $not_in);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql);
         }
@@ -415,7 +415,7 @@ class where{
             return $this->error->error(mensaje:'Error al generar in_sql',data:$in_sql);
         }
 
-        $filtro_fecha_sql = (new \gamboamartin\src\where())->filtro_fecha(filtro_fecha: $filtro_fecha);
+        $filtro_fecha_sql = (new \gamboamartin\where\where())->filtro_fecha(filtro_fecha: $filtro_fecha);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar filtro_fecha',data:$filtro_fecha_sql);
         }
@@ -474,7 +474,7 @@ class where{
             return $this->error->error(mensaje: 'Error values debe ser un array',data: $values, es_final: true);
         }
 
-        $data_in = (new \gamboamartin\src\where())->data_in(in: $in);
+        $data_in = (new \gamboamartin\where\where())->data_in(in: $in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
@@ -590,7 +590,7 @@ class where{
             return $this->error->error(mensaje: 'Error la llave esta vacia',data: $llave, es_final: true);
         }
 
-        $values_sql = (new \gamboamartin\src\where())->values_sql_in(values:$values);
+        $values_sql = (new \gamboamartin\where\where())->values_sql_in(values:$values);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar sql',data: $values_sql);
         }
@@ -705,12 +705,12 @@ class where{
 
         $campo_filtro = $campo;
 
-        $campo = (new \gamboamartin\src\where())->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
+        $campo = (new \gamboamartin\where\where())->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener campo',  data:$campo);
         }
 
-        $data_sql = (new \gamboamartin\src\where())->data_sql(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        $data_sql = (new \gamboamartin\where\where())->data_sql(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
         }
@@ -760,7 +760,7 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:"Error filtro", data:$data_sql);
         }
-        $filtro_especial_sql_r = (new \gamboamartin\src\where())->genera_filtro_especial(campo:  $campo, data_sql: $data_sql,
+        $filtro_especial_sql_r = (new \gamboamartin\where\where())->genera_filtro_especial(campo:  $campo, data_sql: $data_sql,
             filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
         if(errores::$error){
             return $this->error->error(mensaje:"Error filtro",data: $filtro_especial_sql_r);
