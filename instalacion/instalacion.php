@@ -851,6 +851,13 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'asigna_permiso',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-database-lock',
+            link:  $link, lista:  'activo',titulo:  'Asigna Permiso');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
         return $upds;
 
     }
