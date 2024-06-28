@@ -1370,6 +1370,20 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'asigna_permiso_seccion',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-file-earmark-lock2',
+            link:  $link, lista:  'activo',titulo:  'Asigna Permiso Por Seccion');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'usuarios',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'activo', icono: 'bi bi-file-earmark-person-fill',
+            link:  $link, lista:  'activo',titulo:  'Usuarios');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
 
         return $create;
 
@@ -1529,7 +1543,7 @@ class instalacion
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
         }
-        
+
         $create = $this->_add_adm_categoria_usuario(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
