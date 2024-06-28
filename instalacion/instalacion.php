@@ -1515,6 +1515,21 @@ class instalacion
 
     private function adm_categoria_secciones(PDO $link): array|stdClass
     {
+        $create = $this->_add_adm_categoria(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        $create = $this->_add_adm_categoria_sistema(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+
+        $create = $this->_add_adm_categoria_usuario(link: $link);
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
+        }
+        
         $create = $this->_add_adm_categoria_usuario(link: $link);
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al ajustar create', data:  $create);
