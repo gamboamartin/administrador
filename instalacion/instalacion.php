@@ -581,6 +581,9 @@ class instalacion
         $campos->muestra_titulo_btn = new stdClass();
         $campos->muestra_titulo_btn->default = 'activo';
 
+        $campos->id_css = new stdClass();
+        $campos->id_css->default = '';
+
 
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_accion');
@@ -773,6 +776,9 @@ class instalacion
         $campos->muestra_titulo_btn = new stdClass();
         $campos->muestra_titulo_btn->default = 'activo';
 
+        $campos->id_css = new stdClass();
+        $campos->id_css->default = '';
+
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_accion_basica');
 
@@ -817,6 +823,11 @@ class instalacion
             if($adm_accion['descripcion'] === 'lista'){
                 if($adm_accion['visible'] === 'inactivo') {
                     $upd['visible'] = 'activo';
+                }
+            }
+            if($adm_accion['descripcion'] === 'elimina_bd'){
+                if($adm_accion['id_css'] === '') {
+                    $upd['id_css'] = 'elimina_bd';
                 }
             }
 
@@ -1099,6 +1110,7 @@ class instalacion
         $adm_acciones_basicas[10]['muestra_icono_btn'] = 'activo';
         $adm_acciones_basicas[10]['muestra_titulo_btn'] = 'inactivo';
         $adm_acciones_basicas[10]['icono'] = 'bi bi-trash';
+        $adm_acciones_basicas[10]['id_css'] = 'elimina_bd';
 
         $adm_acciones_basicas[11]['descripcion'] = 'status';
         $adm_acciones_basicas[11]['visible'] = 'inactivo';
