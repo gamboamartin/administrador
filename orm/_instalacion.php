@@ -2158,6 +2158,9 @@ class _instalacion
         if($tipo_dato_original === 'DOUBLE(100,4)'){
             $tipo_dato_original = 'DOUBLE';
         }
+        if($tipo_dato_original === 'INT(255)'){
+            $tipo_dato_original = 'INT';
+        }
 
         return $tipo_dato_original;
 
