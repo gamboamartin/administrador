@@ -929,7 +929,7 @@ class controlador_base extends controler
         $clase = $this->modelo->NAMESPACE . '\\' . $this->seccion;
 
         if ($this->seccion === '') {
-            $error = $this->errores->error(mensaje: 'Error seccion no puede venir vacia', data: $_GET);
+            $error = $this->errores->error(mensaje: 'Error seccion no puede venir vacia', data: $_GET,es_final: true);
             if (!$header) {
                 return $error;
             }
@@ -943,7 +943,7 @@ class controlador_base extends controler
             exit;
         }
         if (!class_exists($clase)) {
-            $error = $this->errores->error(mensaje: 'Error no existe la clase', data: $clase);
+            $error = $this->errores->error(mensaje: 'Error no existe la clase', data: $clase,es_final: true);
             if (!$header) {
                 return $error;
             }
