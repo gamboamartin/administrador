@@ -124,7 +124,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida la data del filtro especial proporcionado.
      *
      * Esta función recibe dos parámetros, un string que representa el campo y un array que representa el filtro.
@@ -138,6 +138,7 @@ class validaciones extends validacion{
      *
      * @throws errores Si el campo está vacío, si el valor del filtro no es un campo, si no existe un operador o si el valor es un array.
      * @version 16.104.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_data_filtro_especial
      */
     final public function valida_data_filtro_especial(string $campo, array $filtro): true|array
     {

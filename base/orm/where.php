@@ -663,7 +663,6 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
      *
      * Genera la condicion sql de un filtro especial
      *
