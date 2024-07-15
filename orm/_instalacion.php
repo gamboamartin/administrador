@@ -2075,6 +2075,23 @@ class _instalacion
 
     }
 
+    final public function row_ins_base(array|stdClass $row)
+    {
+        if(is_object($row)) {
+            $row = (array)$row;
+        }
+        $ins['id'] = trim($row['id']);
+        $ins['descripcion'] = trim($row['descripcion']);
+        $ins['codigo'] = trim($row['codigo']);
+        $ins['status'] = trim($row['status']);
+        $ins['descripcion_select'] = trim($row['descripcion_select']);
+        $ins['alias'] = trim($row['alias']);
+        $ins['codigo_bis'] = trim($row['codigo_bis']);
+        $ins['predeterminado'] = trim($row['predeterminado']);
+
+        return $ins;
+    }
+
     /**
      * POD DOCUMENTAR EN WIKI FINAL REV
      * Esta función se encarga de ajustar el tipo de dato de una propiedad definida en un
