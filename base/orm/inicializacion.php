@@ -1017,7 +1017,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR WIKI FINAL REV
+     * TOTAL
      * Recupera las columnas de la tabla especificada en el modelo dado.
      *
      * Esta función está diseñada para tomar un objeto modelo_base, obtener el nombre de la tabla del modelo y
@@ -1033,27 +1033,23 @@ class inicializacion{
      *                Si la tabla no tiene columnas, devuelve un error.
      *
      * @version 13.5.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.tablas_select
      */
     final public function tablas_select(modelo_base $modelo): array
     {
-        // Quita el NAMESPACE del nombre de la tabla
         $tabla_sin_namespace = str_replace($modelo->NAMESPACE, '', $modelo->tabla);
         $modelo->tabla = $tabla_sin_namespace;
 
-        // Crea una nueva instancia de consulta SQL
         $consulta_base = new sql_bass();
 
-        // Asigna las columnas del modelo a la estructura de la consulta SQL
         $consulta_base->estructura_bd[$modelo->tabla]['columnas'] = $modelo->columnas;
 
         $columnas_tabla = $consulta_base->estructura_bd[$modelo->tabla]['columnas'];
 
-        // Si no hay columnas para la tabla, devuelve un error
         if (!isset($columnas_tabla)) {
             return $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla,
                 data: $modelo->tabla, es_final: true);
         }
-        // Si las columnas están presentes, las devuelve
         return $columnas_tabla;
     }
 

@@ -86,7 +86,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función verifica si el arreglo de entrada $columnas_by_table contiene algún elemento. Si el conteo
      * del arreglo es más de cero, la función devolverá true, de lo contrario, devolverá false.
      * En otras palabras, verifica si hay alguna columna en el arreglo dado que necesite ser aplicada a la tabla.
@@ -96,6 +96,7 @@ class columnas{
      * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
      * @return bool
      * @version 13.16.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.aplica_columnas_by_table
      */
     private function aplica_columnas_by_table(array $columnas_by_table): bool
     {
