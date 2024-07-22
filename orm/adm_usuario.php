@@ -153,6 +153,17 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $r_elimina_bd;
     }
 
+    final public function existe_user(string $user)
+    {
+        $filtro['adm_usuario.user'] = $user;
+        $existe = $this->existe(filtro: $filtro);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar si existe usuario',data:  $existe);
+        }
+        return $existe;
+
+    }
+
     /**
      * TOTAL
      * Método para filtrar la acción y la sección del grupo.
@@ -332,7 +343,6 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
         return $_SESSION['permite'][$adm_grupo_id];
     }
-
 
     /**
      * Verifica si el usuario en ejecucion tiene permiso
