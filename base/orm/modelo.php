@@ -668,6 +668,8 @@ class modelo extends modelo_base {
         $data->registro_puro = $registro_puro;
         $data->campos = $this->campos_tabla;
         $data->registro_original = $registro_original;
+        $key_id = $this->tabla.'_id';
+        $data->$key_id = $registro_id;
         return $data;
     }
 
