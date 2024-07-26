@@ -69,7 +69,7 @@ class data_format{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función asigna un formato a un campo de moneda en un registro.
      * Remueve el caracter de moneda($) y las comas que son comúnmente usadas
      * en formatos de moneda.
@@ -80,6 +80,7 @@ class data_format{
      * @return array Retorna el registro con el campo de moneda formateado.
      * @throws errores Se lanza si el campo está vacío o si el campo no existe en el registro.
      * @version 15.9.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.data_format.asigna_campo_moneda
      */
     private function asigna_campo_moneda(string $campo, array $registro): array
     {

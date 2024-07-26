@@ -40,7 +40,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
     public function alta_bd(): array|stdClass
     {
-        $keys = array('user');
+        $keys = array('user','adm_grupo_id');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $this->registro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar registro',data: $valida);
