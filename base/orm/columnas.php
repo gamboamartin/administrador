@@ -159,7 +159,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Asigna las columnas correspondientes a una tabla específica a un modelo y las almacena en la sesión.
      *
      * Esta función se encuentra en el archivo 'base/orm/columnas.php'.
@@ -172,6 +172,7 @@ class columnas{
      * @return bool|array Devuelve true en caso de éxito. Si ocurre un error, devuelve un array con la información del error.
      * Si las columnas para la tabla especificada no están definidas en la sesión, devuelve false.
      * @version 13.16.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columnas_en_session
      */
     private function asigna_columnas_en_session(modelo_base $modelo, string $tabla_bd): bool|array
     {
@@ -260,7 +261,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Asigna los datos de las columnas de una tabla especificada a la variable de sesión correspondiente y las devuelve.
      *
      * La función se encuentra en el archivo 'base/orm/columnas.php'. El objetivo de esta función es asignar la data
@@ -273,6 +274,7 @@ class columnas{
      * @return stdClass|array Devuelve el objeto $data modificado en caso de éxito, de otro modo,
      * devuelve un arreglo con información de error.
      * @version 13.14.0
+     * @version https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_data_columnas
      */
     private function asigna_data_columnas(stdClass $data, string $tabla_bd): stdClass|array
     {
@@ -552,7 +554,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función, columnas_bd_native, se utiliza para obtener detalles de las columnas de una tabla de base de
      * datos a partir del nombre de la tabla proporcionado como argumento.
      *
@@ -568,6 +570,7 @@ class columnas{
      * @throws errores Si ocurre un error al ejecutar la consulta SQL, se lanza un error.
      * @throws errores Si la tabla de base de datos especificada no tiene columnas, se lanza un error.
      * @version 18.32.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_bd_native
      */
     final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {

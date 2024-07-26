@@ -279,7 +279,7 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR WIKI FINAL REV
+     * TOTAL
      * Descripción: Este método genera la consulta SQL para obtener la descripción (estructura) de una tabla en específico.
      *
      * @param string $tabla Nombre de la tabla cuya descripción (estructura) se desea obtener.
@@ -287,6 +287,7 @@ class sql{
      *                      Si ocurre un error durante la validación del nombre de la tabla,
      *                      se retorna un array con detalles del error.
      * @version 13.19.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.describe_table
      *
      */
     final public function describe_table(string $tabla): string|array

@@ -564,7 +564,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método ejecuta_consulta de la clase modelo_base
      *
      * Este método se encarga de ejecutar una consulta SQL. Recibe como parámetros la consulta,
@@ -590,6 +590,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * 7. Si no hay errores, se retornan los datos de la consulta
      *
      * @version 18.31.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.ejecuta_consulta
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
                                            array $columnas_totales = array(), array $hijo = array()): array|stdClass{
