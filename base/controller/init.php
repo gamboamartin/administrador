@@ -637,7 +637,7 @@ class init{
     }
 
     /**
-     * ṔOR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Inicializa los datos del controlador con ciertos objetos necesarios para su funcionamiento.
      *
      * @param controler $controler - La instancia del controlador a inicializar
@@ -660,6 +660,7 @@ class init{
      * La función retorna la instancia del controlador con todos estos datos inicializados.
      *
      * @version 15.29.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.init_data_controler
      */
     final public function init_data_controler(controler $controler): controler
     {

@@ -126,7 +126,7 @@ class controler{
             }
         }
 
-        $init = (new init())->init_data_controler(controler: $this);
+        (new init())->init_data_controler(controler: $this);
         if(errores::$error){
             $out = array_reverse(errores::$out);
             foreach ($out as $msj){
