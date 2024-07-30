@@ -271,7 +271,7 @@ class estructuras{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Comprueba si existe una entidad en la base de datos
      *
      * Este método realiza una consulta SQL para verificar si existe una entidad con el nombre proporcionado
@@ -290,6 +290,7 @@ class estructuras{
      * }
      *
      * @version 15.4.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.estructuras.existe_entidad
      *
      */
     final public function existe_entidad(string $entidad): bool|array

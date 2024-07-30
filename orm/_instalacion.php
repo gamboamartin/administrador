@@ -1101,7 +1101,7 @@ class _instalacion
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     *TOTAL
      * Verifica si la entidad proporcionada existe en la base de datos.
      *
      * @param string $table El nombre de la tabla a verificar.
@@ -1118,6 +1118,7 @@ class _instalacion
      *    // La tabla no existe
      * }
      * @version 15.15.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm._instalacion.existe_entidad
      */
     final public function existe_entidad(string $table): bool|array
     {

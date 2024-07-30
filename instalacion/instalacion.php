@@ -191,6 +191,8 @@ class instalacion
         $campos->root = new stdClass();
         $campos->root->default = 'inactivo';
 
+        $campos->solo_mi_info = new stdClass();
+        $campos->solo_mi_info->default = 'inactivo';
 
         $result = (new _instalacion(link: $link))->add_columns(campos: $campos,table:  'adm_grupo');
 

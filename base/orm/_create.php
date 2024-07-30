@@ -16,7 +16,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función _create.atributo_codigo se encarga de modificar el objeto que se le pasa como parámetro,
      * específicamente añadiendo una nueva propiedad 'codigo' a este objeto.
      * Esta nueva propiedad es de tipo stdclass y se le asigna un valor boolean 'true'.
@@ -27,6 +27,7 @@ class _create
      *                  que es de tipo stdclass y tiene un valor boolean 'true'.
      *
      * @version 15.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._create.atributo_codigo
      */
     private function atributo_codigo(stdClass $campos): stdClass
     {
