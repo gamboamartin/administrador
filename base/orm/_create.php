@@ -59,7 +59,7 @@ class _create
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método establece el atributo 'status' en un objeto.
      *
      * Este método recibe un objeto, le añade la propiedad 'status' y le asigna el valor 'activo'.
@@ -76,6 +76,7 @@ class _create
      * ```
      * @author Martin Gamboa
      * @version 15.18.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._create.atributo_status
      */
     private function atributo_status(stdClass $campos): stdClass
     {

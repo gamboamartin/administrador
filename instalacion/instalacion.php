@@ -1412,6 +1412,20 @@ class instalacion
             return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
         }
 
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'root',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-database-fill-up',
+            link:  $link, lista:  'activo',titulo:  'Root',es_status: 'activo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
+        $alta_accion = (new _adm())->inserta_accion_base(adm_accion_descripcion: 'solo_mi_info',
+            adm_seccion_descripcion:  __FUNCTION__, es_view: 'inactivo', icono: 'bi bi-database-lock',
+            link:  $link, lista:  'activo',titulo:  'Ver Solo mi Info',es_status: 'activo');
+        if(errores::$error){
+            return (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta_accion);
+        }
+
 
         return $create;
 
