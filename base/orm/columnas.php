@@ -193,7 +193,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * FIN
      * Función que asigna columnas parseadas, añade nuevos atributos a la colección de columnas parseadas.
      *
      * @param string $atributo Nombre del atributo a añadir
@@ -202,6 +202,7 @@ class columnas{
      * @return array Retorna la colección de columnas parseadas añadidas con el nuevo atributo. En caso de error,
      * devuelve un mensaje de error indicando que el atributo no puede estar vacío.
      * @version 15.30.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columnas_parseadas
      */
     private function asigna_columnas_parseadas(string $atributo, array $columnas_parseadas): array
     {
