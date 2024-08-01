@@ -158,6 +158,15 @@ class params_inputs{
         return $required_html;
     }
 
+    public function multiple_html(bool $multiple): string
+    {
+        $multiple_html = '';
+        if($multiple){
+            $multiple_html = 'multiple';
+        }
+        return $multiple_html;
+    }
+
     /**
      * @param string $place_holder
      * @param string $title
