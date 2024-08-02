@@ -269,7 +269,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida la seguridad de los datos de entrada comprobando la existencia de ciertas claves en el arreglo
      * proporcionado y en la variable de sesión.
      *
@@ -281,6 +281,7 @@ class params_sql{
      *
      * @return true|array Devuelve true en caso de éxito, de lo contrario, devuelve un arreglo con información del error.
      * @version 15.1.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.valida_seguridad
      */
     private function valida_seguridad(array $modelo_columnas_extra): true|array
     {
@@ -303,12 +304,13 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función integra la sentencia WHERE de una consulta SQL.
      *
      * @param string $sql_where_previo La condición WHERE previa.
      * @return string Devuelve la sentencia WHERE.
      * @version 15.5.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.where
      */
     private function where(string $sql_where_previo): string
     {

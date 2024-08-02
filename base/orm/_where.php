@@ -80,7 +80,7 @@ class _where
 
         $consulta = $this->integra_where_seguridad(consulta: $consulta, modelo: $modelo, where: $where);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar where', data: $where);
+            return $this->error->error(mensaje: 'Error al generar where', data: $consulta);
         }
 
         return $consulta;
