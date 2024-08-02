@@ -2121,6 +2121,11 @@ class modelo extends modelo_base {
         if((int)$resultado->n_registros === 0){
             return $this->error->error(mensaje: 'Error no existe registro de '.$this->tabla,data:  $resultado);
         }
+        if((int)$resultado->n_registros > 1){
+            return $this->error->error(
+                mensaje: 'Error de integridad existe mas de un registro con el mismo id'.$this->tabla,
+                data:  $resultado);
+        }
         foreach($resultado->registros[0] as $campo=>$value){
             $this->row->$campo = $value;
         }

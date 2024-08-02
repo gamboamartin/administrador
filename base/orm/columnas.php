@@ -109,7 +109,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función asigna_columna_completa
      *
      * Esta función asigna los valores de una columna obtenidos mediante un DESCRIBE
@@ -135,6 +135,7 @@ class columnas{
      * - Un error si el $atributo es una cadena vacía
      * - Un error si hay problemas al validar la $columna
      * @version 15.38.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columna_completa
      */
     private function  asigna_columna_completa(string $atributo, array $columna, array $columnas_completas): array
     {
