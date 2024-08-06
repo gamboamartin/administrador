@@ -921,7 +921,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método privado columnas_sql_array realiza el parseo de las columnas proporcionadas.
      *
      * @param array $columnas Las columnas que se van a parsear.
@@ -935,6 +935,7 @@ class columnas{
      *
      * @throws errores Lanza un error si $columna no es un array o si hay un error al obtener las columnas.
      * @version 15.44.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_sql_array
      */
     private function columnas_sql_array(array $columnas): array|stdClass
     {
