@@ -759,7 +759,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función 'columnas_field' recibe cinco parámetros: $atributo, $campo, $columna, $columnas_completas y
      * $columnas_parseadas.
      *
@@ -777,6 +777,7 @@ class columnas{
      *
      * @throws errores - Lanza una excepción si ocurre un error durante el procesamiento
      * @version
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_field
      */
     private function columnas_field(string|null $atributo, string $campo, array $columna, array $columnas_completas,
                                     array $columnas_parseadas): array|stdClass
