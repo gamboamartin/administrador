@@ -473,7 +473,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Procesa los detalles de una columna y prepara una lista completa de columnas analizadas y no analizadas.
      *
      * Esta función analiza en profundidad los detalles de una columna proporcionada y los prepara para ser utilizados
@@ -487,6 +487,7 @@ class columnas{
      *
      * @return array|stdClass Un objeto que contiene las columnas parseadas y las columnas completas.
      * @version 15.43.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_attr
      */
     private function columnas_attr(array $columna, array $columnas_completas, array $columnas_parseadas): array|stdClass
     {
