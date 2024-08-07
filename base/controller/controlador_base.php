@@ -60,6 +60,8 @@ class controlador_base extends controler
     public string $html_acciones_menu = "";
     public string $html_categorias = "";
 
+    public array $acciones_visibles_permitidas = array();
+
     /**
      * Debe ser utilizado para inputs de tipo hidden
      * @var stdClass
@@ -159,6 +161,16 @@ class controlador_base extends controler
                 die('Error');
             }
             $this->datos_session_usuario = $datos_session_usuario;
+
+
+            $acciones_visibles_permitidas = (new adm_seccion(link: $this->link))->acciones_visibles_permitidas(
+                $datos_session_usuario['adm_grupo_id'], $this->tabla);
+            if (errores::$error) {
+                $error = $this->errores->error(mensaje: 'Error al obtener acciones', data: $acciones_visibles_permitidas);
+                print_r($error);
+                exit;
+            }
+
         }
 
         if (isset($_GET['adm_menu_id'])) {
@@ -189,13 +201,6 @@ class controlador_base extends controler
             }
             $this->categorias = $menu_secciones;
 
-            /*$html_categorias = (new sidebar())->print_categorias(registros: $this->categorias,
-                titulo_categoria: 'adm_categoria_categoria', session_id: $this->session_id);
-            if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al generar html para menu categorias', data: $html_categorias);
-                print_r($error);
-                exit;
-            }*/
 
             $html_categorias = (new sidebar())->print_categorias2(registros: $this->menu_permitido,
                 titulo_categoria: 'adm_menu_titulo', session_id: $this->session_id);
@@ -211,6 +216,9 @@ class controlador_base extends controler
         if (isset((new views())->titulo_modulo)) {
             $this->titulo_modulo = (new views())->titulo_modulo;
         }
+
+
+
 
     }
 
