@@ -141,16 +141,46 @@ class adm_seccion extends _modelo_children {
         }
         return $r_adm_accion->registros;
     }
-    final public function acciones_permitidas(int $grupo_id, string $seccion): array
+    final public function acciones_permitidas(int $grupo_id, string $seccion, array $filtro_extra = array()): array
     {
+        if($grupo_id <= 0){
+            return $this->error->error(mensaje: 'Error grupo_id es menor a 0',data:  $grupo_id);
+        }
+        $seccion = trim($seccion);
+        if($seccion === ''){
+            return $this->error->error(mensaje: 'Error seccion esta vacia',data:  $seccion);
+        }
         $filtro['adm_grupo.id'] = $grupo_id;
         $filtro['adm_seccion.descripcion'] = $seccion;
+
+        foreach ($filtro_extra as $campo=>$value){
+            $filtro[$campo] = $value;
+        }
 
         $r_accion_grupo = (new adm_accion_grupo(link: $this->link))->filtro_and(filtro: $filtro);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener accion',data:  $r_accion_grupo);
         }
         return $r_accion_grupo->registros;
+
+    }
+
+    final public function acciones_visibles_permitidas(int $grupo_id, string $seccion)
+    {
+        $filtro_extra['adm_accion.visible'] = 'activo';
+        $filtro_extra['adm_accion.status'] = 'activo';
+        $filtro_extra['adm_seccion.status'] = 'activo';
+        $acciones = $this->acciones_permitidas(grupo_id: $grupo_id,seccion:  $seccion,
+            filtro_extra: $filtro_extra);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al obtener acciones',data:  $acciones);
+        }
+        $datos = array();
+        foreach ($acciones as $accion){
+            $datos[] = (object)$accion;
+        }
+
+        return $datos;
 
     }
 
@@ -381,7 +411,7 @@ class adm_seccion extends _modelo_children {
      * @return array
      */
     public function obten_submenu_permitido(int $menu_id): array
-    { //FIN PROT
+    {
         $valida = $this->validacion->valida_estructura_menu($menu_id);
         if(errores::$error){
             return $this->error->error('Error al validar ',$valida);

@@ -21,6 +21,40 @@ class adm_seccionTest extends test {
         $this->errores = new errores();
     }
 
+    public function test_acciones_visibles_permitidas(){
+
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+
+
+        $del = (new base_test())->del_adm_seccion(link: $this->link);
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al eliminar',data:  $del);
+            print_r($error);
+            exit;
+        }
+
+        $alta = (new base_test())->alta_adm_accion(link: $this->link, adm_seccion_descripcion: 'adm_accion',
+            descripcion: 'lista', visible: 'activo');
+        if(errores::$error){
+            $error = (new errores())->error(mensaje: 'Error al insertar accion',data:  $alta);
+            print_r($error);
+            exit;
+        }
+
+        $grupo_id = 2;
+        $seccion = 'adm_accion';
+        $resultado = $modelo->acciones_visibles_permitidas($grupo_id,$seccion);
+       // print_r($resultado);exit;
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('adm_accion',$resultado[0]->adm_seccion_descripcion);
+        errores::$error = false;
+    }
+
     public function test_accion_maqueta_campo(){
 
         errores::$error = false;
