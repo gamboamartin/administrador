@@ -166,10 +166,12 @@ class controlador_base extends controler
             $acciones_visibles_permitidas = (new adm_seccion(link: $this->link))->acciones_visibles_permitidas(
                 $datos_session_usuario['adm_grupo_id'], $this->tabla);
             if (errores::$error) {
-                $error = $this->errores->error(mensaje: 'Error al obtener acciones', data: $acciones_visibles_permitidas);
+                $error = $this->errores->error(mensaje: 'Error al obtener acciones',
+                    data: $acciones_visibles_permitidas);
                 print_r($error);
                 exit;
             }
+            $this->acciones_visibles_permitidas = $acciones_visibles_permitidas;
 
         }
 
@@ -216,7 +218,6 @@ class controlador_base extends controler
         if (isset((new views())->titulo_modulo)) {
             $this->titulo_modulo = (new views())->titulo_modulo;
         }
-
 
 
 
