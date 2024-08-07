@@ -827,6 +827,21 @@ class instalacion
                     $upd['visible'] = 'activo';
                 }
             }
+            if($adm_accion['descripcion'] === 'descarga_excel'){
+                if($adm_accion['visible'] === 'inactivo') {
+                    $upd['visible'] = 'activo';
+                }
+            }
+            if($adm_accion['descripcion'] === 'alta'){
+                if($adm_accion['visible'] === 'inactivo') {
+                    $upd['visible'] = 'activo';
+                }
+            }
+            if($adm_accion['descripcion'] === 'importa'){
+                if($adm_accion['visible'] === 'inactivo') {
+                    $upd['visible'] = 'activo';
+                }
+            }
             if($adm_accion['descripcion'] === 'elimina_bd'){
                 if($adm_accion['id_css'] === '') {
                     $upd['id_css'] = 'elimina_bd';
@@ -906,7 +921,7 @@ class instalacion
         $adm_acciones_basicas[0]['muestra_titulo_btn'] = 'inactivo';
 
         $adm_acciones_basicas[1]['descripcion'] = 'importa';
-        $adm_acciones_basicas[1]['visible'] = 'inactivo';
+        $adm_acciones_basicas[1]['visible'] = 'activo';
         $adm_acciones_basicas[1]['seguridad'] = 'activo';
         $adm_acciones_basicas[1]['inicio'] = 'inactivo';
         $adm_acciones_basicas[1]['lista'] = 'inactivo';
@@ -1010,7 +1025,7 @@ class instalacion
 
 
         $adm_acciones_basicas[6]['descripcion'] = 'descarga_layout';
-        $adm_acciones_basicas[6]['visible'] = 'inactivo';
+        $adm_acciones_basicas[6]['visible'] = 'activo';
         $adm_acciones_basicas[6]['seguridad'] = 'activo';
         $adm_acciones_basicas[6]['inicio'] = 'inactivo';
         $adm_acciones_basicas[6]['lista'] = 'inactivo';
@@ -1031,7 +1046,7 @@ class instalacion
 
 
         $adm_acciones_basicas[7]['descripcion'] = 'lista';
-        $adm_acciones_basicas[7]['visible'] = 'inactivo';
+        $adm_acciones_basicas[7]['visible'] = 'activo';
         $adm_acciones_basicas[7]['seguridad'] = 'activo';
         $adm_acciones_basicas[7]['inicio'] = 'inactivo';
         $adm_acciones_basicas[7]['lista'] = 'inactivo';
@@ -1136,7 +1151,7 @@ class instalacion
         $adm_acciones_basicas[11]['icono'] = 'bi bi-plus-slash-minus';
 
         $adm_acciones_basicas[12]['descripcion'] = 'alta';
-        $adm_acciones_basicas[12]['visible'] = 'inactivo';
+        $adm_acciones_basicas[12]['visible'] = 'activo';
         $adm_acciones_basicas[12]['seguridad'] = 'activo';
         $adm_acciones_basicas[12]['inicio'] = 'inactivo';
         $adm_acciones_basicas[12]['lista'] = 'inactivo';
@@ -1197,6 +1212,28 @@ class instalacion
         $adm_acciones_basicas[14]['muestra_icono_btn'] = 'inactivo';
         $adm_acciones_basicas[14]['muestra_titulo_btn'] = 'inactivo';
         $adm_acciones_basicas[14]['icono'] = 'bi bi-pencil';
+
+
+        $adm_acciones_basicas[15]['descripcion'] = 'descarga_excel';
+        $adm_acciones_basicas[15]['visible'] = 'activo';
+        $adm_acciones_basicas[15]['seguridad'] = 'activo';
+        $adm_acciones_basicas[15]['inicio'] = 'inactivo';
+        $adm_acciones_basicas[15]['lista'] = 'inactivo';
+        $adm_acciones_basicas[15]['status'] = 'activo';
+        $adm_acciones_basicas[15]['es_view'] = 'inactivo';
+        $adm_acciones_basicas[15]['codigo'] = 'descarga_excel';
+        $adm_acciones_basicas[15]['codigo_bis'] = 'descarga_excel';
+        $adm_acciones_basicas[15]['descripcion_select'] = 'descarga_excel';
+        $adm_acciones_basicas[15]['etiqueta_label'] = 'descarga_excel';
+        $adm_acciones_basicas[15]['es_modal'] = 'inactivo';
+        $adm_acciones_basicas[15]['titulo'] = 'Descarga XLS';
+        $adm_acciones_basicas[15]['css'] = 'success';
+        $adm_acciones_basicas[15]['es_status'] = 'inactivo';
+        $adm_acciones_basicas[15]['alias'] = 'descarga_excel';
+        $adm_acciones_basicas[15]['es_lista'] = 'inactivo';
+        $adm_acciones_basicas[15]['muestra_icono_btn'] = 'inactivo';
+        $adm_acciones_basicas[15]['muestra_titulo_btn'] = 'inactivo';
+        $adm_acciones_basicas[15]['icono'] = 'bi bi-pencil';
 
         $altas = array();
         foreach ($adm_acciones_basicas as $adm_accion_basica){
