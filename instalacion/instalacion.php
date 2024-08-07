@@ -842,6 +842,11 @@ class instalacion
                     $upd['visible'] = 'activo';
                 }
             }
+            if($adm_accion['descripcion'] === 'modifica'){
+                if($adm_accion['visible'] === 'activo') {
+                    $upd['visible'] = 'inactivo';
+                }
+            }
             if($adm_accion['descripcion'] === 'elimina_bd'){
                 if($adm_accion['id_css'] === '') {
                     $upd['id_css'] = 'elimina_bd';
