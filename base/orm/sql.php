@@ -1060,17 +1060,16 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función valida si el nombre del campo y la tabla proporcionados son válidos.
      *
-     * @param string $campo El nombre del campo que se desea validar.
-     * @param string $table El nombre de la tabla que contiene el campo.
+     * Valida los nombres de una columna y una tabla para asegurar que sean cadenas de texto no vacías.
      *
-     * @return true|array Devuelve verdadero si el campo y la tabla son válidos. Si no, devuelve un arreglo con información de error.
+     * @param string $campo Nombre de la columna de la base de datos que se desea validar.
+     *                      Este valor debe ser una cadena no vacía y no debe ser numérico.
+     * @param string $table Nombre de la tabla de la base de datos que se desea validar.
+     *                      Este valor debe ser una cadena no vacía y no debe ser numérico.
      *
-     * @final
-     * @public
-     * @version 14.25.0
+     * @return true|array Retorna true si ambos parámetros son válidos. Si algún parámetro no es válido,
+     *                    retorna un array que contiene un mensaje de error y el dato problemático.
      */
     final public function valida_column_base(string $campo, string $table): true|array
     {
