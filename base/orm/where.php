@@ -701,7 +701,6 @@ class where{
             return $this->error->error(mensaje:'Error al validar filtro',  data:$valida);
         }
 
-
         $campo_filtro = $campo;
 
         $campo = (new \gamboamartin\where\where())->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
@@ -709,7 +708,8 @@ class where{
             return $this->error->error(mensaje:'Error al obtener campo',  data:$campo);
         }
 
-        $data_sql = (new \gamboamartin\where\where())->data_sql(campo: $campo,campo_filtro:  $campo_filtro,filtro:  $filtro);
+        $data_sql = (new \gamboamartin\where\where())->data_sql(campo: $campo,campo_filtro:  $campo_filtro,
+            filtro:  $filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al genera sql',  data:$data_sql);
         }
