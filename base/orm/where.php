@@ -663,7 +663,7 @@ class where{
     }
 
     /**
-     *
+     * TOTAL
      * Genera la condicion sql de un filtro especial
      *
      * @param string $campo campo de una tabla tabla.campo
@@ -686,6 +686,7 @@ class where{
      *      $resultado = 'x'> x
      *
      * @version 16.164.0
+     * @url https://github.com/gamboamartin/where/wiki/administrador.base.orm.where.maqueta_filtro_especial
      */
     private function maqueta_filtro_especial(string $campo, array $columnas_extra, array $filtro):array|string{
         $campo = trim($campo);
@@ -703,7 +704,8 @@ class where{
 
         $campo_filtro = $campo;
 
-        $campo = (new \gamboamartin\where\where())->campo_filtro_especial(campo: $campo,columnas_extra:  $columnas_extra);
+        $campo = (new \gamboamartin\where\where())->campo_filtro_especial(campo: $campo,
+            columnas_extra:  $columnas_extra);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al obtener campo',  data:$campo);
         }
@@ -759,8 +761,8 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:"Error filtro", data:$data_sql);
         }
-        $filtro_especial_sql_r = (new \gamboamartin\where\where())->genera_filtro_especial(campo:  $campo, data_sql: $data_sql,
-            filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
+        $filtro_especial_sql_r = (new \gamboamartin\where\where())->genera_filtro_especial(campo:  $campo,
+            data_sql: $data_sql, filtro_esp: $filtro_esp, filtro_especial_sql: $filtro_especial_sql);
         if(errores::$error){
             return $this->error->error(mensaje:"Error filtro",data: $filtro_especial_sql_r);
         }

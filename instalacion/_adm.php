@@ -51,12 +51,12 @@ class _adm
 
     private function adm_accion_ins(int $adm_seccion_id, string $css, string $descripcion, string $es_status,
                                     string $es_view, string $icono, string $lista, string $muestra_icono_btn,
-                                    string $muestra_titulo_btn, string $titulo): array
+                                    string $muestra_titulo_btn, string $titulo, string $visible): array
     {
         $adm_accion_ins['descripcion'] = $descripcion;
         $adm_accion_ins['adm_seccion_id'] = $adm_seccion_id;
         $adm_accion_ins['icono'] = $icono;
-        $adm_accion_ins['visible'] = 'inactivo';
+        $adm_accion_ins['visible'] = $visible;
         $adm_accion_ins['inicio'] = 'inactivo';
         $adm_accion_ins['lista'] = $lista;
         $adm_accion_ins['seguridad'] = 'activo';
@@ -308,11 +308,10 @@ class _adm
 
     }
 
-    final public function inserta_accion_base(string $adm_accion_descripcion,string $adm_seccion_descripcion,
-                                              string $es_view, string $icono, PDO $link, string $lista, string $titulo,
-                                              string $css = 'warning', string $es_status = 'inactivo',
-                                              string $muestra_icono_btn = 'activo',
-                                              string $muestra_titulo_btn = 'inactivo')
+    final public function inserta_accion_base(
+        string $adm_accion_descripcion,string $adm_seccion_descripcion, string $es_view, string $icono, PDO $link,
+        string $lista, string $titulo, string $css = 'warning', string $es_status = 'inactivo',
+        string $muestra_icono_btn = 'activo', string $muestra_titulo_btn = 'inactivo', string $visible = 'inactivo')
     {
         $adm_seccion_id = (new adm_seccion(link: $link))->adm_seccion_id(descripcion: $adm_seccion_descripcion);
         if(errores::$error){
@@ -322,7 +321,7 @@ class _adm
         $adm_accion_ins = $this->adm_accion_ins(adm_seccion_id: $adm_seccion_id, css: $css,
             descripcion: $adm_accion_descripcion, es_status: $es_status, es_view: $es_view, icono: $icono,
             lista: $lista, muestra_icono_btn: $muestra_icono_btn, muestra_titulo_btn: $muestra_titulo_btn,
-            titulo: $titulo);
+            titulo: $titulo, visible: $visible);
 
         if(errores::$error){
             return (new errores())->error(mensaje: 'Error al obtener accion ins',data:  $adm_accion_ins);
