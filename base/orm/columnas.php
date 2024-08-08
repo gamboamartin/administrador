@@ -1248,7 +1248,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método encargado de generar información de las columnas para los campos del modelo en la base de datos.
      *
      * Este método realiza las siguientes operaciones:
@@ -1265,6 +1265,7 @@ class columnas{
      *                         objeto de error si hay un problema.
      * @throws errores: Se lanza una excepción si hay un error en la obtención o gestión de las columnas.
      * @version 18.33.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.genera_columnas_field
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
