@@ -2636,7 +2636,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función privada que genera una sentencia OR en SQL.
      *
      * @param string $campo El nombre del campo en la base de datos.
@@ -2644,6 +2644,7 @@ class modelo extends modelo_base {
      * @param string $value El valor que está siendo comparado en la cláusula OR.
      * @return string|array Retorna la sentencia actualizada. Si hay un error, retorna un array con detalles del error.
      * @version 16.169.0
+     * @url https://github.com/gamboamartin/where/wiki/administrador.base.orm.modelo.sentencia_or
      */
     private function sentencia_or(string $campo,  string $sentencia, string $value): string|array
     {
