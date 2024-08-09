@@ -216,7 +216,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Asigna las columnas a la sesión y al modelo dado como parámetro.
      *
      * @param modelo_base $modelo El modelo base para el que se deben asignar las columnas.
@@ -239,6 +239,7 @@ class columnas{
      * @see genera_columnas_field()
      *
      * @version 18.44.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columnas_session_new
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
@@ -346,6 +347,7 @@ class columnas{
     }
 
     /**
+     * TOTAL
      * Esta función obtiene las columnas (campos) de una tabla dada y las asigna a una instancia de un modelo dado.
      *
      * @param modelo $modelo Es la instancia del modelo a la que se le asignarán los campos de la tabla.
@@ -353,6 +355,7 @@ class columnas{
      *
      * @return array Retorna un array de campos (columnas) de la tabla asignados al modelo.
      * En caso de error, devuelve un mensaje de error.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.campos_tabla
      */
     final public function campos_tabla(modelo $modelo, string $tabla): array
     {
@@ -1487,7 +1490,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función se encarga de obtener las columnas de una tabla en la base de datos.
      *
      * @param modelo_base $modelo Modelo base que se utilizará para obtener las columnas.
@@ -1506,8 +1509,10 @@ class columnas{
      * @throws errores Lanza una excepción en caso de que ocurra un problema al obtener las columnas.
      *
      * @version 19.3.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.obten_columnas
      */
-    private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass{
+    private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass
+    {
         $tabla_original = trim(str_replace('models\\','',$tabla_original));
         $tabla_bd = $tabla_original;
 
