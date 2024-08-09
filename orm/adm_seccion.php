@@ -188,7 +188,8 @@ class adm_seccion extends _modelo_children {
     {
         $adm_seccion = $this->seccion_by_descripcion(descripcion: $adm_seccion_descricpion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener seccion', data: $adm_seccion);
+            return $this->error->error(mensaje: 'Error al obtener seccion con descripcion: '.$adm_seccion_descricpion,
+                data: $adm_seccion);
         }
         $adm_namespace_name = trim($adm_seccion->adm_namespace_name);
         $adm_namespace_name_new = $adm_namespace_name.'/models';
@@ -342,14 +343,18 @@ class adm_seccion extends _modelo_children {
         $adm_namespace_name = (new adm_seccion(link: $this->link))->adm_namespace_name(
             adm_seccion_descricpion: $adm_seccion_descricpion);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener adm_namespace_name', data: $adm_namespace_name);
+            return $this->error->error(
+                mensaje: 'Error al obtener adm_namespace_name con adm_seccion_descricpion: '.$adm_seccion_descricpion,
+                data: $adm_namespace_name);
         }
 
         $modelo = modelo::modelo_new(link: $this->link,modelo:  $adm_seccion_descricpion,
             namespace_model: $adm_namespace_name);
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener modelo', data: $modelo);
+            return $this->error->error(
+                mensaje: 'Error al obtener modelo con adm_seccion_descricpion: '.$adm_seccion_descricpion,
+                data: $modelo);
         }
         return $modelo;
 
@@ -459,13 +464,16 @@ class adm_seccion extends _modelo_children {
 
         $r_adm_seccion = $this->registro_by_descripcion(descripcion: $descripcion);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener seccion', data: $r_adm_seccion);
+            return $this->error->error(mensaje: 'Error al obtener seccion con descripcion: '.$descripcion,
+                data: $r_adm_seccion);
         }
         if($r_adm_seccion->n_registros === 0){
-            return $this->error->error(mensaje: 'Error no existe la seccion', data: $r_adm_seccion);
+            return $this->error->error(mensaje: 'Error no existe la seccion con descripcion: '.$descripcion,
+                data: $r_adm_seccion);
         }
         if($r_adm_seccion->n_registros > 1){
-            return $this->error->error(mensaje: 'Error existe mas de una seccion', data: $r_adm_seccion);
+            return $this->error->error(mensaje: 'Error existe mas de una seccion con descripcion: '.$descripcion,
+                data: $r_adm_seccion);
         }
         return (object)$r_adm_seccion->registros[0];
 

@@ -847,7 +847,7 @@ class modelo_baseTest extends test {
 
         errores::$error = false;
         $mb = new modelo_base($this->link);
-        $mb = new liberator($mb);
+        //$mb = new liberator($mb);
         $tabla_renombrada = '';
         $tabla_original = '';
         $resultado = $mb->obten_nombre_tabla($tabla_renombrada, $tabla_original);

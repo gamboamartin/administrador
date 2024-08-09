@@ -2456,13 +2456,14 @@ class modelo extends modelo_base {
         $registros = $this->filtro_and(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
             extra_join: $extra_join, filtro: $filtro, hijo: $hijo);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registros',data: $registros);
+            return  $this->error->error(mensaje: 'Error al obtener registros con codigo: '.$codigo,data: $registros);
         }
         if($registros->n_registros === 0){
-            return  $this->error->error(mensaje: 'Error no existe registro',data: $registros);
+            return  $this->error->error(mensaje: 'Error no existe registro con codigo: '.$codigo,data: $registros);
         }
         if($registros->n_registros > 1){
-            return  $this->error->error(mensaje: 'Error existe mas de un registro',data: $registros);
+            return  $this->error->error(mensaje: 'Error existe mas de un registro con codigo: '.$codigo,
+                data: $registros);
         }
 
         $registro = $registros->registros[0];
@@ -2485,7 +2486,8 @@ class modelo extends modelo_base {
         $filtro[$key_descripcion] = $descripcion;
         $result = $this->filtro_and(filtro: $filtro);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registros',data: $result);
+            return  $this->error->error(mensaje: 'Error al obtener registros con descripcion: '.$descripcion,
+                data: $result);
         }
         return $result;
 
