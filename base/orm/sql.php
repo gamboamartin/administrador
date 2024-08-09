@@ -1019,13 +1019,14 @@ class sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida los valores de los argumentos campo, tabla y tipo de dato. Si alguno de ellos es una cadena vacía, devuelve un error.
      *
      * @param string $campo El nombre de la columna a validar.
      * @param string $table El nombre de la tabla a validar.
      * @param string $tipo_dato El tipo de dato a validar.
      * @return true|array Retorna verdadero si los argumentos son válidos, o un array con un mensaje de error si no lo son.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.valida_column
      */
     final function valida_column(string $campo, string $table, string $tipo_dato, string $longitud = ''): true|array
     {
@@ -1060,7 +1061,7 @@ class sql{
     }
 
     /**
-     *
+     * TOTAL
      * Valida los nombres de una columna y una tabla para asegurar que sean cadenas de texto no vacías.
      *
      * @param string $campo Nombre de la columna de la base de datos que se desea validar.
@@ -1070,6 +1071,7 @@ class sql{
      *
      * @return true|array Retorna true si ambos parámetros son válidos. Si algún parámetro no es válido,
      *                    retorna un array que contiene un mensaje de error y el dato problemático.
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.valida_column_base
      */
     final public function valida_column_base(string $campo, string $table): true|array
     {
