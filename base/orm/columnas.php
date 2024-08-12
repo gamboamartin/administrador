@@ -1061,7 +1061,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función maneja la adición de una coma en una consulta SQL.
      *
      * El propósito de esta función es agregar una coma al final de una lista de columnas SQL.
@@ -1072,6 +1072,7 @@ class columnas{
      *
      * @return string Retorna una coma como un string. Si $columnas_sql es un string vacío, se retorna un string vacío.
      * @version 15.60.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.coma
      */
     private function coma(string $columnas_sql): string
     {
@@ -1695,7 +1696,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida las columnas SQL proporcionadas.
      *
      * Esta función privada toma tres parámetros: 'alias_columnas', 'columna_parseada', y 'tabla_nombre', y realiza varias
@@ -1712,9 +1713,10 @@ class columnas{
      *
      * @internal
      * @version 15.55.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.valida_columnas_sql
      */
-    private function valida_columnas_sql(string $alias_columnas, string $columna_parseada,
-                                         string $tabla_nombre): true|array
+    private function valida_columnas_sql(
+        string $alias_columnas, string $columna_parseada, string $tabla_nombre): true|array
     {
         if($tabla_nombre === ''){
             return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre,

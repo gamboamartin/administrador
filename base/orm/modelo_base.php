@@ -1283,7 +1283,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función para obtener el nombre de una tabla.
      *
      * @param string $tabla_original      El nombre original de la tabla.
@@ -1293,8 +1293,10 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @throws errores                      Lanza una excepción si ambos parámetros están vacíos.
      * @version 15.52.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.obten_nombre_tabla
      */
-    final public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada):array|string{
+    final public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada):array|string
+    {
 
         if(trim($tabla_original)==='' && trim($tabla_renombrada) === ''){
             return $this->error->error(mensaje: 'Error no pueden venir vacios todos los parametros',
