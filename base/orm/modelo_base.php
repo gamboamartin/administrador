@@ -166,8 +166,30 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             2025=>$_2025,2026=>$_2026,2027=>$_2027,2028=>$_2028,2029=>$_2029,2030=>$_2030);
 
 
-        $this->letras = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S',
+        $letras = array('A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S',
             'T','U','V','W','X','Y','Z');
+
+        foreach ($letras as $letra){
+            $this->letras[] = $letra;
+        }
+
+        foreach ($letras as $letra){
+            $this->letras[] = 'A'.$letra;
+        }
+        foreach ($letras as $letra){
+            $this->letras[] = 'B'.$letra;
+        }
+        foreach ($letras as $letra){
+            $this->letras[] = 'C'.$letra;
+        }
+        foreach ($letras as $letra){
+            $this->letras[] = 'D'.$letra;
+        }
+        foreach ($letras as $letra){
+            $this->letras[] = 'E'.$letra;
+        }
+
+
 
 
     }
