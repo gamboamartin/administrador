@@ -880,7 +880,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método que genera una cadena SQL para columnas.
      *
      * Este método genera una cadena SQL para columnas dependiendo de varios parámetros de entrada proporcionados.
@@ -899,9 +899,11 @@ class columnas{
      *
      * @return array|string Devuelve la cadena SQL generada con las columnas o un array con información de cualquier error que pueda haber ocurrido.
      * @version 15.61.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_sql
      */
     private function columnas_sql(string $alias_columnas, string $columna_parseada, bool $columnas_en_bruto,
-                                  string $columnas_sql, string $tabla_nombre):array|string{
+                                  string $columnas_sql, string $tabla_nombre):array|string
+    {
 
 
         $valida = $this->valida_columnas_sql(alias_columnas: $alias_columnas,columna_parseada:  $columna_parseada,
@@ -965,7 +967,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método columnas_sql_init
      *
      * Inicializa las columnas de SQL de acuerdo a los parámetros suministrados.
@@ -984,9 +986,11 @@ class columnas{
      *
      * @internal Este método es privado y sólo debe ser utilizado por la clase contenedora.
      * @version 15.62.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_sql_init
      */
     private function columnas_sql_init(array $columnas, bool $columnas_en_bruto, array $columnas_parseadas,
-                                       string $tabla_nombre):array|string{
+                                       string $tabla_nombre):array|string
+    {
         if($tabla_nombre === ''){
             return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia',data:  $tabla_nombre,
                 es_final: true);
@@ -1086,7 +1090,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método privado prepara los datos para las columnas de envío.
      *
      * @param array $columnas Esto es una matriz de columnas.
@@ -1101,6 +1105,7 @@ class columnas{
      *     - 'columnas_extra_sql' almacena cualquier consulta SQL adicional.
      *     En caso de error, se devolverá un objeto de error con información sobre el mismo.
      * @version 15.67.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.data_for_columnas_envio
      */
     private function data_for_columnas_envio(array $columnas, bool $columnas_en_bruto, modelo_base $modelo,
                                              string $tabla_original, string $tabla_renombrada): array|stdClass
@@ -1294,7 +1299,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función genera una tabla de columnas. Se encarga de validar los parámetros proporcionados,
      * obtener las columnas de la tabla y generar una lista de columnas SQL.
      *
@@ -1309,10 +1314,12 @@ class columnas{
      * @throws errores Si el nombre de la tabla original está vacío o es numérico, lanza una excepción.
      * También hay excepciones para errores al obtener columnas y al obtener el nombre de la tabla.
      * @version 15.63.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columnas_tabla
      */
 
     private function genera_columnas_tabla(bool $columnas_en_bruto,modelo_base $modelo, string $tabla_original,
-                                           string $tabla_renombrada, array $columnas = array()):array|string{
+                                           string $tabla_renombrada, array $columnas = array()):array|string
+    {
         $tabla_original = str_replace('models\\','',$tabla_original);
 
         if($tabla_original === ''){
