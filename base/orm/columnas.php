@@ -637,7 +637,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función maneja la combinación de columnas para una consulta SQL basada en las entradas $columnas_extra_sql y $columnas_sql.
      *
      * @param string $columnas_extra_sql Las columnas SQL extra. Pueden contener nombres de columnas adicionales para la consulta SQL.
@@ -654,6 +654,7 @@ class columnas{
      * $resultado = columnas_envio($columnas_extra_sql, $columnas_sql);
      * // $resultado ahora contiene 'id, nombre, direccion, telefono'
      * @version 15.69.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas_envio
      */
     private function columnas_envio(string $columnas_extra_sql, string $columnas_sql): string
     {
@@ -1169,7 +1170,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función genera las columnas para una consulta SQL de acuerdo a los parámetros de entrada.
      *
      * @param bool $columnas_en_bruto Determina si las columnas se pasarán en bruto.
@@ -1180,9 +1181,11 @@ class columnas{
      *
      * @return array|string Devuelve un array con las columnas para llevar a cabo la consulta o una cadena en caso de error.
      * @version 15.70.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columnas_consulta
      */
     private function genera_columnas_consulta(bool $columnas_en_bruto,  modelo_base $modelo, string $tabla_original,
-                                              string $tabla_renombrada, array $columnas = array()):array|string{
+                                              string $tabla_renombrada, array $columnas = array()):array|string
+    {
         $tabla_original = str_replace('models\\','',$tabla_original);
 
         if(is_numeric($tabla_original)){
