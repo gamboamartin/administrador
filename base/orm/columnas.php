@@ -41,7 +41,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método privado que permite ajustar las columnas completas para una consulta SQL.
      *
      * @param string $columnas Cadena de caracteres con el nombre de las columnas.
@@ -61,9 +61,11 @@ class columnas{
      *
      * En caso de no haber errores, se devuelve las columnas generadas.
      * @version 15.73.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.ajusta_columnas_completas
      */
     private function ajusta_columnas_completas(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
-                                               modelo_base $modelo, string $tabla, string $tabla_renombrada): array|string
+                                               modelo_base $modelo, string $tabla,
+                                               string $tabla_renombrada): array|string
     {
         $tabla = str_replace('models\\','',$tabla);
         if(is_numeric($tabla)){
@@ -1434,7 +1436,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función que integra columnas en una cadena.
      *
      * Esta función tiene la tarea de integrar los nombres de las columnas
@@ -1448,7 +1450,7 @@ class columnas{
      *         - continue (boolean): Indica si se debe continuar la operación. Se vuelve verdadero si la entrada $resultado_columnas está vacía.
      *
      * @version 15.71.1
-     *
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.integra_columnas
      */
     private function integra_columnas(string $columnas, string $resultado_columnas): stdClass
     {
@@ -1473,7 +1475,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método que integra las columnas por datos.
      *
      * La función se encargará de:
@@ -1490,6 +1492,7 @@ class columnas{
      *
      * @access private
      * @version 15.72.1
+     * @@url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.integra_columnas_por_data
      */
     private function integra_columnas_por_data(string $columnas, string $resultado_columnas):array|string
     {
