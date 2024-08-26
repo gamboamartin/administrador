@@ -1411,7 +1411,7 @@ class modelo extends modelo_base {
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Este método genera un código aleatorio con longitud especificada.
      *
      * @param int $longitud La longitud deseada para el código aleatorio. Por defecto es 6.
@@ -1422,6 +1422,7 @@ class modelo extends modelo_base {
      * @return string|array Devuelve una cadena aleatoria con la longitud especificada.
      * Si se produce un error, devuelve un array con información del error.
      * @version 16.174.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.get_codigo_aleatorio
      */
     final public function get_codigo_aleatorio(int $longitud = 6): string|array
     {

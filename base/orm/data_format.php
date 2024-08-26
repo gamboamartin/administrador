@@ -18,7 +18,7 @@ class data_format{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función ajusta los campos de tipo moneda en un arreglo.
      *
      * @param array $registro Es el registro donde se van a buscar y ajustar los campos.
@@ -37,6 +37,7 @@ class data_format{
      *
      * @final
      * @version 16.237.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.data_format.ajusta_campos_moneda
      */
     final public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
     {
@@ -98,7 +99,7 @@ class data_format{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método se utiliza para asignar un valor de tipo moneda a un campo especificado en un registro.
      *
      * @param string $campo Es el nombre del campo al que se le asignará el valor.
@@ -109,6 +110,7 @@ class data_format{
      *
      * @throws errores Si el campo o el tipo de dato están vacíos o no existen, se lanza una excepción.
      * @version 16.222.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.data_format.asignacion_campo_moneda
      */
     private function asignacion_campo_moneda(string $campo, array $registro, string $tipo_dato): array
     {

@@ -753,7 +753,7 @@ class inicializacion{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método limpia los valores entregados y los agrupa en un objeto de tipo stdClass.
      *
      * @param string $campo El nombre del campo a procesar.
@@ -764,6 +764,8 @@ class inicializacion{
      *
      * @throws errores En caso de que el campo de entrada esté vacío.
      * @version 16.266.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.limpia_valores
+     *
      */
     private function limpia_valores(string $campo, string $valor): stdClass|array
     {
