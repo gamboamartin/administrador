@@ -53,7 +53,7 @@ class normalizacion_ctl{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Asigna el valor del modo del namespace a 'models\\' para controler en ejecución.
      * Esta función transforma el valor de la sección del controler quitando namespaces previos y añadiendo 'models\\'.
      * Regresa el nombre de la clase del modelo con su namespace completo en caso de éxito,
@@ -63,6 +63,7 @@ class normalizacion_ctl{
      * @return string|array El nombre de la clase del modelo con su namespace completo o un arreglo con el error.
      * @throws errores Cuando la sección del controler está vacía.
      * @version 16.189.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.ctl.nomalizacion_ctl.clase_model
      */
     final public function clase_model(controler $controler): string|array
     {

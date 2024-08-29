@@ -610,7 +610,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función que genera y retorna un objeto que contiene la sentencia SQL y la condición WHERE.
      *
      * @param string $campo     El nombre del campo a considerar en la sentencia SQL.
@@ -621,6 +621,7 @@ class modelo extends modelo_base {
      * @return array|stdClass   Retorna un objeto con las propiedades 'where' y 'sentencia' si todo va bien,
      *                          de lo contrario, retorna un array con el detalle del error.
      * @version 16.170.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.data_sentencia
      */
     private function data_sentencia(string $campo, string $sentencia, string $value, string $where): array|stdClass
     {
@@ -1916,7 +1917,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTA EN WIKI
+     * TOTAL
      * Limpia el array de registro proporcionado, eliminando los campos que no existen en el array de atributos.
      *
      * @param array $registro El array a limpiar.
@@ -1925,13 +1926,14 @@ class modelo extends modelo_base {
      *
      * @throws errores Si algún campo es una cadena vacía, se generará un error con el mensaje "Error campo está vacio".
      * @version 16.121.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.limpia_campos_sin_bd
      */
     private function limpia_campos_sin_bd(array $registro): array
     {
         foreach ($registro as $campo=>$value){
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error(mensaje: "Error campo esta vacio", data: $registro);
+                return $this->error->error(mensaje: "Error campo esta vacio", data: $registro, es_final: true);
             }
             $attrs = (array)$this->atributos;
             if(!array_key_exists($campo, $attrs)){
@@ -1980,13 +1982,15 @@ class modelo extends modelo_base {
     final public function modifica_bd_base(array $registro, int $id, bool $reactiva = false, bool $valida_row_vacio = true)
     {
         $registro_original = $registro;
-        $registro_original = serialize($registro_original);
+        $registro_original = serialize(value: $registro_original);
         if($this->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id,
+                es_final: true);
         }
 
         if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro,
+                es_final: true);
         }
 
         $registro = $this->limpia_campos_sin_bd(registro: $registro);
@@ -2088,7 +2092,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Obtiene los datos de un registro dado su identificador.
      *
      * @param array $columnas Opcional. Vector de columnas a recuperar. Si está vacío, se devolverán todas las columnas.
@@ -2102,9 +2106,12 @@ class modelo extends modelo_base {
      * @throws errores Si hay un error al recuperar el registro por su id.
      * @throws errores Si no existe registro con el id proporcionado.
      * @version 16.193.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.obten_data
      */
-    final public function obten_data(array $columnas = array(), bool $columnas_en_bruto = false,
-                               array $extension_estructura = array(), array $hijo= array()): array{
+    final public function obten_data(
+        array $columnas = array(), bool $columnas_en_bruto = false, array $extension_estructura = array(),
+        array $hijo= array()): array
+    {
         $this->row = new stdClass();
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
@@ -2173,7 +2180,7 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Este método se encarga de obtener un registro de la base de datos según el ID del registro.
      *
      * @param array $columnas Array de columnas a devolver en la consulta de SQL.
@@ -2186,10 +2193,12 @@ class modelo extends modelo_base {
      * @return array|stdClass Retorna un arreglo o un objeto stdClass con el resultado de la consulta,
      * en caso de error se devuelve un objeto con el error.
      * @version 16.192.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.obten_por_id
      */
-    private function obten_por_id(array $columnas = array(),array $columnas_by_table = array(),
-                                  bool $columnas_en_bruto = false, array $extension_estructura= array(),
-                                  array $extra_join = array (), array $hijo = array()):array|stdClass{
+    private function obten_por_id(
+        array $columnas = array(),array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+        array $extension_estructura= array(), array $extra_join = array (), array $hijo = array()):array|stdClass
+    {
         if($this->registro_id < 0){
             return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id,
                 es_final: true);

@@ -36,7 +36,7 @@ class inicializacion{
     {
         if($id <=0){
             return  $this->error->error(mensaje: 'Error al obtener registro $id debe ser mayor a 0',
-                data: $id);
+                data: $id, es_final: true);
         }
 
         $registro_previo = $modelo->registro(registro_id: $id,columnas_en_bruto: true,retorno_obj: true);
@@ -47,10 +47,10 @@ class inicializacion{
         foreach ($modelo->registro_upd as $campo=>$value_upd){
             $campo = trim($campo);
             if($campo === ''){
-                return $this->error->error(mensaje:'Error el campo del row esta vacio',data:$campo);
+                return $this->error->error(mensaje:'Error el campo del row esta vacio',data:$campo, es_final: true);
             }
             if(is_numeric($campo)){
-                return $this->error->error(mensaje:'Error el campo no puede ser un numero',data:$campo);
+                return $this->error->error(mensaje:'Error el campo no puede ser un numero',data:$campo, es_final: true);
             }
 
             $ajusta = $this->ajusta_registro_upd(campo: $campo,modelo:  $modelo,
@@ -110,7 +110,7 @@ class inicializacion{
         $campo = trim($campo);
 
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio', data:$campo);
+            return $this->error->error(mensaje: 'Error el campo esta vacio', data:$campo, es_final: true);
         }
 
         $registro_previo = $this->registro_previo_null(campo: $campo,registro_previo:  $registro_previo);
@@ -651,7 +651,7 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Método para inicializar los datos que serán actualizados en un modelo.
      *
      * @param int $id El identificador único del registro.
@@ -661,6 +661,7 @@ class inicializacion{
      *
      * @return array|stdClass Devuelve un objeto con los datos de actualización o un array en caso de error.
      * @version 16.267.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.init_upd
      */
     final public function init_upd(
         int $id, modelo $modelo, array $registro, bool $valida_row_vacio = true): array|stdClass
@@ -935,7 +936,7 @@ class inicializacion{
     {
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo);
+            return $this->error->error(mensaje: 'Error campo esta vacio', data: $campo, es_final: true);
         }
         if(!isset($registro_previo->$campo)){
             $registro_previo->$campo = '';

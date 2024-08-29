@@ -392,7 +392,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función columnas_data
      *
      * Esta función se encarga de crear un objeto con varias cadenas de consultas SQL necesarias
@@ -409,6 +409,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * - sub_querys_sql: Contiene la cadena SQL para las subconsultas.
      * - columnas_extra_sql: Contiene las cadenas SQL extras para las columnas.
      * @version 16.135.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.columnas_data
      */
     private function columnas_data(string $columnas_extra_sql, string $columnas_sql, string $sub_querys_sql): stdClass
     {
@@ -427,7 +428,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Calcula y aplica la cadena SQL final de columnas al consulta actual en ejecución.
      *
      * @param string $column_data Cadena SQL parcial para una columna
@@ -435,6 +436,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return string Cadena SQL final después de agregar $column_data
      * @version 16.143.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.columns_final
      */
     private function columns_final(string $column_data, string $columns_final): string
     {
@@ -723,7 +725,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Método extra_columns
      *
      * Este método se utiliza para agregar subqueries y columnas adicionales al SQL final.
@@ -736,6 +738,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @return stdClass|array Objeto que contiene las sentencias SQL finales para subquerys y columnas extras.
      * @version 16.130.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.extra_columns
      *
      */
     private function extra_columns(
@@ -747,7 +750,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
             $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
                 columnas_seleccionables: $columnas_seleccionables);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla, data: $sub_querys_sql);
+                return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla,
+                    data: $sub_querys_sql);
             }
 
             $columnas_extra_sql = (new columnas())->genera_columnas_extra(columnas: $columnas, modelo: $this);
@@ -798,7 +802,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una cadena que contiene las columnas finales basadas en los datos de las columnas proporcionados.
      *
      * @param stdClass $columns_data El objeto que contiene los datos de las columnas que se deben procesar.
@@ -806,6 +810,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return string|array Un string que representa las columnas finales obtenidas de los datos de entrada de las columnas.
      *
      * @version 16.151.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_columns_final
      */
     private function genera_columns_final(stdClass $columns_data): string|array
     {
@@ -929,7 +934,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Final public function genera_consulta_base() en la clase modelo_base.
      *
      * Este método facilita la construcción de consultas SQL básicas. Con base en
@@ -948,15 +953,14 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      * @return array|string Devuelve una cadena que representa la consulta SQL generada o un array de errores si se
      * produce algún problema.
      * @version 16.167.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_consulta_base
      */
 
-    final public function genera_consulta_base( array $columnas = array(), array $columnas_by_table = array(),
-                                                bool $columnas_en_bruto = false, bool $con_sq = true,
-                                                bool $count = false, array $extension_estructura = array(),
-                                                array $extra_join = array(),
-                                                array $renombradas = array()):array|string{
-
-
+    final public function genera_consulta_base(
+        array $columnas = array(), array $columnas_by_table = array(), bool $columnas_en_bruto = false,
+        bool $con_sq = true, bool $count = false, array $extension_estructura = array(), array $extra_join = array(),
+        array $renombradas = array()):array|string
+    {
         $this->tabla = str_replace('models\\','',$this->tabla);
 
         $columnas_seleccionables = $columnas;
@@ -1080,7 +1084,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Integra la información final de las columnas, tras aplicar varias manipulaciones.
      *
      * @param array $columnas Lista de columnas.
@@ -1094,6 +1098,7 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
      *
      * @throws errores Retorna error si falla alguna de las etapas de generación de columnas.
      * @version 16.165.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.integra_columns_final
      */
     private function integra_columns_final(array $columnas, array $columnas_seleccionables, string $columnas_sql,
                                            bool $con_sq, bool $count): array|string

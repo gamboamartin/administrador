@@ -12,7 +12,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Asigna seguridad a los datos.
      *
      * Esta función recibe como parámetros un array con las columnas extra del modelo y una cadena con la
@@ -29,6 +29,7 @@ class params_sql{
      * @throws errores En caso de que ocurra un error durante la validación de seguridad o la generación de la
      *                   la cláusula WHERE, esta función lanzará un error.
      * @version 15.24.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.asigna_seguridad_data
      */
     private function asigna_seguridad_data(array $modelo_columnas_extra, string $sql_where_previo): array|string
     {
@@ -79,7 +80,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función se utiliza para limitar las consultas SQL.
      *
      * @param int $limit El límite de la consulta SQL.
@@ -87,6 +88,7 @@ class params_sql{
      * @return string|array Devuelve la consulta SQL limitada como cadena si $limit es positivo.
      * Devuelve una matriz con un error si $limit es negativo.
      * @version 13.12.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.limit_sql
      *
      */
     private function limit_sql(int $limit): string|array
@@ -102,7 +104,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función genera una cadena SQL para un desplazamiento (OFFSET) dado
      * un parámetro específico. Esto se usa para definir el número de registros
      * que se van a omitir antes de empezar a devolver los registros en una consulta SQL.
@@ -113,6 +115,7 @@ class params_sql{
      * devuelve una cadena con la sentencia SQL 'OFFSET' concatenada con el valor de $offset.
      * Si $offset es menor que 0, se devuelve un array con un mensaje de error.
      * @version 13.13.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.offset_sql
      */
     private function offset_sql(int $offset): string|array
     {
@@ -220,7 +223,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función genera instrucciones de seguridad SQL en base al modelo y condiciones previas proporcionadas.
      *
      * @param bool $aplica_seguridad Indica si se aplica seguridad en la consulta SQL.
@@ -247,6 +250,7 @@ class params_sql{
      * array("mensaje" => "Error al generar sql de seguridad", "data" => error detalles)
      * ?>
      * @version 15.37.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.seguridad
      */
     final public function seguridad(bool $aplica_seguridad, array $modelo_columnas_extra,
                                     string $sql_where_previo): array|string

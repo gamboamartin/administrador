@@ -2,13 +2,12 @@
 namespace base\orm;
 use gamboamartin\administrador\modelado\validaciones;
 use gamboamartin\errores\errores;
-use JetBrains\PhpStorm\Pure;
 use stdClass;
 
 class columnas{
     private errores $error;
     private validaciones $validacion;
-    #[Pure] public function __construct(){
+    public function __construct(){
         $this->error = new errores();
         $this->validacion = new validaciones();
     }
@@ -25,7 +24,7 @@ class columnas{
      *
      * @throws errores En caso de que $alias o $campo esten vacios.
      * @version 16.30.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.add_column.21.16.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.add_column
      */
     final public function add_column(string $alias, string $campo): string|array
     {
@@ -312,7 +311,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Este método recibe dos arrays $campos_no_upd y $registro y devuelve un array $registro después de eliminar
      * elementos que existen en ambos arrays.
      * El propósito principal de este método es filtrar ciertos campos de un registro que no se deben actualizar.
@@ -326,6 +325,7 @@ class columnas{
      * @throws errores
      *       Se arroja una excepción con un mensaje de error si el $campo_no_upd está vacío o si es numérico.
      * @version 16.119.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.campos_no_upd
      */
     final public function campos_no_upd(array $campos_no_upd, array $registro): array
     {
@@ -334,12 +334,14 @@ class columnas{
             if($campo_no_upd === ''){
                 $fix = 'Se tiene que mandar un campo del modelo indicado';
                 $fix .= ' $campo_no_upd[] debe ser un campo ejemplo $campo_no_upd[] = status';
-                return $this->error->error(mensaje: 'Error $campo_no_upd esta vacio', data: $campo_no_upd, fix: $fix);
+                return $this->error->error(mensaje: 'Error $campo_no_upd esta vacio', data: $campo_no_upd,
+                    es_final: true, fix: $fix);
             }
             if(is_numeric($campo_no_upd)){
                 $fix = 'Se tiene que mandar un campo del modelo indicado';
                 $fix .= ' $campo_no_upd[] debe ser un campo ejemplo $campo_no_upd[] = status';
-                return $this->error->error(mensaje: 'Error $campo_no_upd debe ser un texto', data: $campo_no_upd, fix: $fix);
+                return $this->error->error(mensaje: 'Error $campo_no_upd debe ser un texto', data: $campo_no_upd,
+                    es_final: true, fix: $fix);
             }
             if(array_key_exists($campo_no_upd, $registro)){
                 unset($registro[$campo_no_upd]);
@@ -374,7 +376,7 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función responsable para cargar y renombrar las columnas en una tabla.
      *
      * @param string $columnas Cadena que representa las columnas en la tabla.
@@ -390,6 +392,7 @@ class columnas{
      *
      * @example cargo_columna_renombre('$columnas', ['$columna1', 'columna2'], ['$data1', '$data2'], $modelo, 'mi_tabla')
      * @version 16.3.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.carga_columna_renombre
      */
     private function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
                                             string $tabla): array|string
@@ -412,7 +415,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función para manejar columnas en el modelo de base.
      *
      * Esta función procesa las columnas pasadas y las configura apropiadamente basándose en la condición de $aplica_columnas_by_table.
@@ -431,6 +434,7 @@ class columnas{
      *
      * @return array|string Retorna un array o string. Si hay error en el formato de columnas, retorna una cadena de error.
      * @version 16.18.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas
      */
     private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
                               array $columnas_sql, array $extension_estructura, array $extra_join, modelo_base $modelo,
@@ -513,7 +517,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función 'columnas_base' es una función privada que se utiliza para integrar columnas de varias partes del modelo de datos.
      *
      * @param bool $columnas_en_bruto Es una variable booleana que determina si se usarán o no las columnas en bruto.
@@ -528,6 +532,7 @@ class columnas{
      *
      * @throw errores Puede arrojar excepciones si ocurre algún error durante la integración de columnas.
      * @version 16.6.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_base
      */
     private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, array $extension_estructura,
                                    array $extra_join, modelo_base $modelo, array $renombres,
@@ -608,13 +613,14 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Obtiene las columnas en sql de una entidad con sus relaciones
      * @param array $columnas_by_table Array de cadenas con los nombres de las tablas desde las cuales se desean extraer las columnas.
      * @param bool $columnas_en_bruto Dependiendo el valor booleano, se obtienen las columnas en bruto o no.
      * @param modelo_base $modelo Modelo base desde el cual se obtendrán las columnas.
      * @return array|string Dependiendo del proceso, retorna un array con las columnas de salida o un string con un mensaje de error.
      * @version 16.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_by_table
      */
     private function columnas_by_table(array $columnas_by_table, bool $columnas_en_bruto,
                                        modelo_base $modelo): array|string
@@ -673,7 +679,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Ajusta y extiende las columnas pasadas según la estructura proveída.
      *
      * Esta función recibe los nombres de las columnas, una arreglo asocativo con la estructura de
@@ -696,6 +702,7 @@ class columnas{
      * $modelo = new modelo_base();
      * $columnas_extension = columnas_extension($columnas, $columnas_sql, $extension_estructura, $modelo);
      * @version 15.80.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_extension
      *
      */
     private function columnas_extension(string $columnas, array $columnas_sql, array $extension_estructura,
@@ -720,7 +727,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función columnas_extra
      *
      * Esta función se utiliza para procesar las columnas extra en las consultas SQL.
@@ -732,8 +739,9 @@ class columnas{
      *
      * @return array|string Devuelve las columnas procesadas si no hubo errores. En caso de errores, devuelve un mensaje de error.
      * @version 15.83.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_extra
      */
-    PUBLIC function columnas_extra(string $columnas, array $columnas_sql,  array $extra_join,
+    private function columnas_extra(string $columnas, array $columnas_sql,  array $extra_join,
                                     modelo_base $modelo): array|string
     {
         $columnas_env = $columnas;
@@ -812,7 +820,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Obtiene las columnas para un SELECT
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
      * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
@@ -825,6 +833,7 @@ class columnas{
      * @param array $tablas_select Tablas ligadas al modelo en ejecucion
      * @return array|string
      * @version 16.19.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_full
      */
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
@@ -853,7 +862,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Renombra las columnas de la base de datos para su manipulación dentro del código.
      *
      * @param string      $columnas     Las columnas a las que se les aplicará el cambio de nombre.
@@ -863,6 +872,7 @@ class columnas{
      *
      * @return array|string Regresa las columnas con los nombres modificados en formato de string o array según sea el caso.
      * @version 16.4.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_renombre
      */
     private function columnas_renombre(string $columnas, array $columnas_sql, modelo_base $modelo,
                                        array $renombres): array|string
@@ -1016,7 +1026,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función columnas_tablas_select elabora las columnas que se seleccionarán en una consulta SQL.
      *
      * @param bool $columnas_en_bruto Indica si las columnas se proporcionan en bruto. Si es true, la función establece
@@ -1040,6 +1050,7 @@ class columnas{
      * Si todo va bien, actualiza el valor de $columnas y continúa hasta que no queden más elementos en $tablas_select.
      * Finalmente, retorna $columnas que ahora son la consulta SQL finalizada.
      * @version 15.79.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_tablas_select
      */
     private function columnas_tablas_select(bool $columnas_en_bruto, array $columnas_sql,  modelo_base $modelo,
                                             array $tablas_select): array|string
@@ -1140,7 +1151,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Este método genera una nueva columna para la tabla.
      *
      * @param string $columnas Cadena de caracteres con los nombres de las columnas.
@@ -1154,6 +1165,7 @@ class columnas{
      *
      * @throws errores Si la clave es un número, se lanza un error.
      * @version 15.77.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columna_tabla
      **/
     private function genera_columna_tabla(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
                                           string $key, modelo_base $modelo): array|string
@@ -1236,8 +1248,10 @@ class columnas{
      * columnas proporcionadas y el modelo dado,
      * o imprimirá un mensaje de error con los datos relacionados, si alguna de las condiciones no se cumple.
      * @version
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columnas_extra
      */
-    final public function genera_columnas_extra(array $columnas, modelo_base $modelo):array|string{//FIN
+    final public function genera_columnas_extra(array $columnas, modelo_base $modelo):array|string
+    {
         $columnas_sql = '';
         $columnas_extra = $modelo->columnas_extra;
         foreach ($columnas_extra as $sub_query => $sql) {
@@ -1357,7 +1371,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Inicializa las columnas por tabla.
      *
      * @param array $columnas_by_table La matriz de nombres de columna por tabla.
@@ -1368,6 +1382,7 @@ class columnas{
      *                                 - tablas_select: una matriz que asocia cada nombre de tabla con el valor false.
      * @throws errores               Lanza una excepción si $columnas_by_table está vacío.
      * @version 16.14.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.init_columnas_by_table
      */
     private function init_columnas_by_table(array $columnas_by_table): stdClass|array
     {
@@ -1486,7 +1501,8 @@ class columnas{
      * @param string $columnas Columnas para integrar.
      * @param string $resultado_columnas Resultado de las columnas.
      *
-     * @return array|string Devuelve las columnas integradas si no hay errores, si surge algún error, devolverá una cadena describiendo el error.
+     * @return array|string Devuelve las columnas integradas si no hay errores, si surge algún error, devolverá una
+     * cadena describiendo el error.
      *
      * @throws errores "Error al integrar columnas" si surge algún error en el proceso.
      *
@@ -1554,7 +1570,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR WN WIKI FINAL REV
+     * TOTAL
      * Función para obtener las columnas completas de un modelo de base de datos.
      *
      * @param modelo_base $modelo - El modelo base a analizar.
@@ -1566,6 +1582,7 @@ class columnas{
      * @param array $renombres - Permite cambiar el nombre de las columnas.
      * @return array|string - Devuelve las columnas completas como un array o string en caso de error.
      * @version 16.21.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.obten_columnas_completas
      */
     final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                                    bool $columnas_en_bruto = false, array $columnas_sql = array(),
@@ -1590,7 +1607,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Crea una consulta subalterna con su correspondiente alias.
      *
      * @param string $alias El alias para la consulta subalterna.
@@ -1599,6 +1616,7 @@ class columnas{
      * @return string|array Devuelve la consulta subalterna con su alias, en caso de que los parámetros sean válidos,
      * de lo contrario arroja un error.
      * @version 16.112.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.sub_query_str
      */
     private function sub_query_str(string $alias, string $sub_query): string|array
     {
@@ -1615,7 +1633,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función que genera subqueries SQL a partir de un modelo.
      *
      * @param string $columnas Columnas para las que se generarán las subqueries.
@@ -1633,9 +1651,11 @@ class columnas{
      * - Error al generar subquery con alias.
      *
      * @version 16.113.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.sub_querys
      */
-    final public function sub_querys(string $columnas, modelo_base $modelo,
-                               array $columnas_seleccionables = array()):array|string{
+    final public function sub_querys(
+        string $columnas, modelo_base $modelo, array $columnas_seleccionables = array()):array|string
+    {
         $sub_querys_sql = '';
         foreach($modelo->sub_querys as $alias => $sub_query){
             if($sub_query === ''){
@@ -1670,7 +1690,7 @@ class columnas{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función privada que devuelve el nombre renombrado de una tabla con base en los datos proporcionados.
      *
      * @param array $data Conjunto de datos los cuales pueden contener el renombre asignado a la tabla.
@@ -1689,6 +1709,7 @@ class columnas{
      * la función lo devolverá como el nuevo nombre de la tabla.
      *
      * @version 15.82.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.tabla_renombrada_extra
      */
     private function tabla_renombrada_extra(array $data, string $tabla): string|array
     {

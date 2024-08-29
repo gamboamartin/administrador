@@ -15,7 +15,7 @@ class upd{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Este método asigna datos para modificar utilizando un objeto de controlador proporcionado.
      *
      * Primero, intenta limpiar el espacio de nombres de la sección del controlador objetivo.
@@ -32,17 +32,21 @@ class upd{
      * @throws errores - Si la sección del controlador está vacía, o el registro_id es igual o menor que 0,
      * o si ocurre un error durante la obtención de data.
      * @version 16.194.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.upd.asigna_datos_modifica
      */
 
-    final public function asigna_datos_modifica(controler $controler):array{
+    final public function asigna_datos_modifica(controler $controler):array
+    {
         $namespace = 'models\\';
         $controler->seccion = str_replace($namespace,'', $controler->seccion);
 
         if($controler->seccion === ''){
-            return$this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $controler->seccion);
+            return$this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $controler->seccion,
+                es_final: true);
         }
         if($controler->registro_id<=0){
-            return  $this->error->error(mensaje:'Error registro_id debe sr mayor a 0', data:$controler->registro_id);
+            return  $this->error->error(mensaje:'Error registro_id debe sr mayor a 0', data:$controler->registro_id,
+                es_final: true);
         }
 
         $controler->modelo->registro_id = $controler->registro_id;

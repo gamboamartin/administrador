@@ -879,16 +879,19 @@ class controlador_base extends controler
 
         if ($this->seccion === '') {
             return $this->retorno_error(
-                mensaje: 'Error seccion no puede venir vacio', data: $this->seccion, header: $header, ws: $ws);
+                mensaje: 'Error seccion no puede venir vacio', data: $this->seccion, header: $header, ws: $ws,
+                class: __CLASS__,file: __FILE__,function: __FUNCTION__,line: __LINE__);
         }
         if ($this->registro_id <= 0) {
             return $this->retorno_error(
-                mensaje: 'Error registro_id debe sr mayor a 0', data: $this->registro_id, header: $header, ws: $ws);
+                mensaje: 'Error registro_id debe sr mayor a 0', data: $this->registro_id, header: $header, ws: $ws,
+                class: __CLASS__,file: __FILE__,function: __FUNCTION__,line: __LINE__);
         }
 
         $resultado = (new upd())->asigna_datos_modifica(controler: $this);
         if (errores::$error) {
-            return $this->retorno_error(mensaje: 'Error al asignar datos', data: $resultado, header: $header, ws: $ws);
+            return $this->retorno_error(mensaje: 'Error al asignar datos', data: $resultado, header: $header, ws: $ws,
+                class: __CLASS__,file: __FILE__,function: __FUNCTION__,line: __LINE__);
         }
         $this->registro = $resultado;
 
@@ -896,7 +899,7 @@ class controlador_base extends controler
             retorno_obj: true);
         if (errores::$error) {
             return $this->retorno_error(mensaje: 'Error al obtener registro', data: $registro_puro,
-                header: $header, ws: $ws);
+                header: $header, ws: $ws,class: __CLASS__,file: __FILE__,function: __FUNCTION__,line: __LINE__);
         }
 
         $this->row_upd = $registro_puro;
@@ -1105,8 +1108,10 @@ class controlador_base extends controler
     }
 
     /**
+     * TOTAL
      * Verifica si esta en transaccion previa
      * @return bool
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.controlador_base.transaccion_previa
      */
     final protected function transaccion_previa(): bool
     {

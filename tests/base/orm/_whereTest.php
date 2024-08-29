@@ -87,6 +87,45 @@ class _whereTest extends test {
         errores::$error = false;
     }
 
+    public function test_sql_where(): void
+    {
+        errores::$error = false;
+        $wh = new _where();
+        //$wh = new liberator($wh);
+
+
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_id = 1;
+        $consulta = 'x';
+        $resultado = $wh->sql_where($consulta, $modelo);
+
+        // print_r($resultado);exit;
+        //print_r($resultado);exit;
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("x WHERE adm_seccion.id = 1 ",$resultado);
+        errores::$error = false;
+    }
+
+    public function test_where_id_base(): void
+    {
+        errores::$error = false;
+        $wh = new _where($this->link);
+        $wh = new liberator($wh);
+
+
+        $tabla = 'a';
+        $registro_id = 1;
+        $resultado = $wh->where_id_base($registro_id, $tabla);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(' WHERE a.id = 1 ',$resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_where_inicial(): void
     {
         errores::$error = false;

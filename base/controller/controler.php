@@ -423,7 +423,7 @@ class controler{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Retorna un error.
      *
      * Esta función se encarga de gestionar errores dentro de la aplicación. Recibe un mensaje de error,
@@ -438,6 +438,7 @@ class controler{
      *
      * @return array Array con informacion del error.
      * @version 16.138.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.controler.retorno_error
      *
      */
     final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, string $class = '',

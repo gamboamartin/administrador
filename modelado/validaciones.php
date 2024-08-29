@@ -96,7 +96,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Valida los datos de una columna específica.
      *
      * @param array $data  Los datos que se van a validar.
@@ -106,6 +106,7 @@ class validaciones extends validacion{
      *
      * @throws errores  Se lanza una excepción si encuentra un error durante la validación.
      * @version 16.1.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.valida_data_columna
      */
     final public function valida_data_columna(array $data, string $tabla): true|array
     {
@@ -374,7 +375,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Valida cada campo de entrada contra una expresión regular.
      *
      * Esta función recorre cada campo en $tipo_campos y les aplica una validación.
@@ -390,6 +391,7 @@ class validaciones extends validacion{
      * @return true|array Regresa un valor verdadero (TRUE) si todas las validaciones son exitosas, de lo
      * contrario se devuelve un array de errores.
      * @version 16.123.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_regex
      */
     private function valida_regex(array $tipo_campos, array $registro_upd): true|array
     {
@@ -409,7 +411,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Valida un campo especificado en el arreglo de registros proporcionado según un patrón especificado en $tipo_campo.
      *
      * @param string $campo Nombre del campo del registro a validar.
@@ -423,6 +425,7 @@ class validaciones extends validacion{
      *               si ocurre un error durante la validación.
      *
      * @version 16.120.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_regex_campo
      */
     private function valida_regex_campo(string $campo, array $registro_upd, string $tipo_campo): true|array
     {
@@ -525,7 +528,7 @@ class validaciones extends validacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
+     * TOTAL
      * Esta función valida los datos del registro que se va a actualizar.
      *
      * @param int $id Id del registro que se va a actualizar. Debe ser mayor que 0.
@@ -540,6 +543,7 @@ class validaciones extends validacion{
      *
      * @throws errores Si ocurre algún error durante la validación.
      * @version 16.124.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_upd_base
      */
     final public function valida_upd_base(int $id, array $registro_upd, array $tipo_campos = array(),
                                           bool $valida_row_vacio = true): bool|array
