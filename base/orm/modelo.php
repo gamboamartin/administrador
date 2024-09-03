@@ -1670,11 +1670,12 @@ class modelo extends modelo_base {
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una llave de tipo in para SQL
      * @param array $in IN precargada
      * @return array
      * @version 16.205.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.in_llave
      */
     private function in_llave(array $in): array
     {

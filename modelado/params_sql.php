@@ -132,7 +132,7 @@ class params_sql{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Prepara y asegura las cláusulas SQL para su ejecución segura.
      *
      * @param bool $aplica_seguridad Si es true, entonces aplica los procedimientos de seguridad a la consulta SQL.
@@ -146,6 +146,7 @@ class params_sql{
      * @return array|stdClass Devuelve un objeto stdClass o un array que contienen los componentes SQL preparados.
      *                        Si se encuentra un error durante el proceso, devuelve un mensaje de error.
      * @version 15.58.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.params_sql
      */
     final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,
                                      int $offset, array $order, string $sql_where_previo): array|stdClass
