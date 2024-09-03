@@ -175,7 +175,7 @@ class where{
 
     /**
      *
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera las condiciones sql de un filtro especial
      * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_especial //arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
@@ -208,8 +208,10 @@ class where{
      *      $resultado =  tabla.campo < 'x' OR tabla.campo2  >= x
      *
      * @version 16.204.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.filtro_especial_sql
      */
-    private function filtro_especial_sql(array $columnas_extra, array $filtro_especial):array|string{ //DEBUG
+    private function filtro_especial_sql(array $columnas_extra, array $filtro_especial):array|string
+    {
 
         $filtro_especial_sql = '';
         foreach ($filtro_especial as $campo=>$filtro_esp){
@@ -722,7 +724,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera la condicion sql de un filtro especial
      * @param array $columnas_extra Conjunto de columnas en forma de subquery
      * @param array $filtro_esp //array con datos del filtro $filtro_esp[tabla.campo]= array('operador'=>'AND','valor'=>'x');
@@ -745,11 +747,13 @@ class where{
      *      $resultado = obten_filtro_especial($filtro_esp, $filtro_especial_sql);
      *      $resultado =  tabla.campo > 'x' AND tabla.campo2 = 1
      * @version 16.195.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.obten_filtro_especial
      *
      */
 
     private function obten_filtro_especial(
-        array $columnas_extra, array $filtro_esp, string $filtro_especial_sql):array|string{
+        array $columnas_extra, array $filtro_esp, string $filtro_especial_sql):array|string
+    {
         $campo = key($filtro_esp);
         $campo = trim($campo);
 
