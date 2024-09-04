@@ -443,7 +443,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una cadena SQL para la cláusula IN en una consulta SQL.
      *
      * Esta función toma un array asociativo $in que debe tener las claves:
@@ -462,6 +462,7 @@ class where{
      * @example genera_in(['llave' => 'id', 'values' => [1, 2, 3]]) retorna 'id IN (1,2,3)'
      *
      * @version 16.293.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.genera_in
      */
     private function genera_in(array $in): array|string
     {
@@ -480,7 +481,6 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar data in',data: $data_in);
         }
-
 
         $in_sql = $this->in_sql(llave:  $data_in->llave, values:$data_in->values);
         if(errores::$error){
@@ -564,7 +564,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función in_sql genera y valida una instrucción SQL IN.
      *
      * @param string $llave El nombre del campo que se utilizará en la instrucción IN.
@@ -584,6 +584,7 @@ class where{
      * - Cada paso de generación y validación puede disparar un error, así que se comprueba después de cada paso.
      *
      * @version 16.291.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.in_sql
      */
     private function in_sql(string $llave, array $values): array|string
     {
