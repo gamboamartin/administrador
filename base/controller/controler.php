@@ -76,6 +76,8 @@ class controler{
     public string $link_importa_previo_muestra = '';
     public string $link_importa_previo_muestra_bd = '';
 
+    public string $link_google_calendar_redirect = '';
+
     public array $subtitulos_menu = array();
 
     public int $number_active = -1;
@@ -242,6 +244,7 @@ class controler{
 
         $this->url_base = (new generales())->url_base;
 
+        $this->link_google_calendar_redirect = "./index.php?seccion=adm_sistema&accion=google_calendar_redirect&session_id=$this->session_id";
 
     }
 
