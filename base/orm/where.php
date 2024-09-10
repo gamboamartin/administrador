@@ -386,8 +386,8 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
         }
-        $sentencia = (new \gamboamartin\where\where())->genera_sentencia_base(columnas_extra: $columnas_extra, filtro: $filtro,
-            tipo_filtro: $tipo_filtro);
+        $sentencia = (new \gamboamartin\where\where())->genera_sentencia_base(columnas_extra: $columnas_extra,
+            filtro: $filtro, tipo_filtro: $tipo_filtro);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sentencia', data:$sentencia);
         }
@@ -410,7 +410,6 @@ class where{
         if(errores::$error){
             return $this->error->error(mensaje:'Error al generar sql',data:$not_in_sql);
         }
-
 
         $in_sql = $this->genera_in_sql_normalizado(in: $in);
         if(errores::$error){
@@ -490,7 +489,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera una cadena SQL basada en los datos proporcionados.
      *
      * Este método toma como entrada un arreglo que especifica los datos a incluir
@@ -505,6 +504,7 @@ class where{
      *   requeridas en la matriz de entrada o cuando hay un problema al generar la secuencia SQL.
      *
      * @version 16.300.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.genera_in_sql
      */
     private function genera_in_sql(array $in): array|string
     {
@@ -541,12 +541,13 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Función que genera una instrucción SQL normalizada a partir de un arreglo
      *
      * @param array $in Arreglo de elementos con los que se va a generar la instrucción SQL
      * @return string|array $in_sql devuelve la instrucción SQL normalizada
      * @version 17.6.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.genera_in_sql_normalizado
      */
     private function genera_in_sql_normalizado(array $in): string|array
     {

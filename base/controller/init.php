@@ -785,7 +785,7 @@ class init{
      *
      * @throws errores Si la clave o el tipo están vacíos.
      * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos.21.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos
      */
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
@@ -821,7 +821,7 @@ class init{
      *
      * @throws errores Si la clave o el tipo están vacíos o si hay un error al inicializar el campo de vista.
      * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_input.21.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_input
      */
     private function model_init_campos_input(array $campos_view, string $key, string $type): array
     {
@@ -862,7 +862,7 @@ class init{
      *                   si el tipo está vacío o si hay un error al inicializar algún campo de vista.
      *
      * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_inputs.21.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_inputs
      */
     private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
@@ -1043,7 +1043,7 @@ class init{
      * @throws errores Si el atributo está vacío, si la propiedad 'atributo' en el objeto 'keys'
      *                   no existe o no es un array, o si se produce un error al inicializar los campos de vista.
      * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.modela_input.21.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.modela_input
      */
     private function modela_input(string $atributo, array $campos_view, stdClass $keys): array
     {
