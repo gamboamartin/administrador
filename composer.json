@@ -53,7 +53,7 @@
         "gamboa.martin/plugins": "^6.0.0",
         "gamboa.martin/validacion": "^5.0.0",
         "gamboa.martin/test": "^5.0.0",
-        "gamboa.martin/where": "^2.0.0",
+        "gamboa.martin/where": "^3.0.0",
         "phpunit/phpunit": "^10.0.0"
     },
     "require-dev": {

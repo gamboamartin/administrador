@@ -87,7 +87,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función genera una declaración SQL para verificar si un campo es
      * diferente de un valor dado.
      *
@@ -99,6 +99,7 @@ class where{
      *                                   o un array que representa un mensaje de error.
      *
      * @version 16.219.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.diferente_de
      */
     private function diferente_de(string $campo, string $diferente_de_sql, string $value): string|array
     {
@@ -122,7 +123,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Crea una declaración SQL para la condición WHERE en una consulta, basándose en un array de términos que deben ser diferentes.
      *
      * @param array $diferente_de Un array asociativo donde las claves son los nombres de las columnas en la base de datos, y los
@@ -144,6 +145,7 @@ class where{
      * ```
      *
      * @version 16.314.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.diferente_de_sql
      */
     private function diferente_de_sql(array $diferente_de): array|string
     {
