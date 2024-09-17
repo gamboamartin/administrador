@@ -24,7 +24,7 @@ class adm_calendario extends _modelo_parent
         $this->etiqueta = 'Calendario';
     }
 
-    public function alta_bd(array $keys_integra_ds = array('codigo', 'descripcion')): array|stdClass
+    public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
     {
         $this->registro = $this->inicializa_campos($this->registro);
         if (errores::$error) {
