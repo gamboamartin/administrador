@@ -8,12 +8,12 @@ use PDO;
 use stdClass;
 use validacion\accion;
 
-class adm_calendario extends _modelo_parent
+class adm_evento extends _modelo_parent
 {
     public function __construct(PDO $link)
     {
-        $tabla = 'adm_calendario';
-        $columnas = array($tabla => false, 'adm_usuario' => $tabla, 'adm_seccion' => $tabla);
+        $tabla = 'adm_evento';
+        $columnas = array($tabla => false, 'adm_calendario' => $tabla);
 
         $campos_obligatorios = array('titulo');
 
@@ -21,7 +21,7 @@ class adm_calendario extends _modelo_parent
         $this->NAMESPACE = __NAMESPACE__;
         $this->validacion = new accion();
 
-        $this->etiqueta = 'Calendario';
+        $this->etiqueta = 'Evento';
     }
 
     public function alta_bd(array  $keys_integra_ds = array('codigo','descripcion')): array|stdClass
