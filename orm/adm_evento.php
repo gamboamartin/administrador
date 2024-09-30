@@ -13,7 +13,7 @@ class adm_evento extends _modelo_parent
     public function __construct(PDO $link)
     {
         $tabla = 'adm_evento';
-        $columnas = array($tabla => false, 'adm_calendario' => $tabla);
+        $columnas = array($tabla => false, 'adm_calendario' => $tabla, 'adm_tipo_evento' => $tabla);
 
         $campos_obligatorios = array('titulo');
 
