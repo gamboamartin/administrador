@@ -3,7 +3,9 @@
 namespace gamboamartin\administrador\models;
 
 use base\orm\_modelo_parent;
+use config\telegram;
 use gamboamartin\errores\errores;
+use gamboamartin\plugins\telegram_api;
 use PDO;
 use stdClass;
 use validacion\accion;
@@ -36,7 +38,37 @@ class adm_calendario extends _modelo_parent
             return $this->error->error(mensaje: 'Error al dar de alta calendario', data: $r_alta_bd);
         }
 
+        $mensaje = "Se ha creado el calendario: <b>" . htmlspecialchars($_POST['titulo']) . "</b>\n";
+        $notificacion = $this->enviar_notificacion(mensaje: $mensaje);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al enviar notificación', data: $notificacion);
+        }
+
         return $r_alta_bd;
+    }
+
+    public function enviar_notificacion(string $mensaje)
+    {
+        $usuario = (new adm_usuario($this->link))->registro(registro_id: $_SESSION['usuario_id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener usuario', data: $usuario);
+        }
+
+        if (!isset($usuario['adm_usuario_id_chat_telegram'])) {
+            return "";
+        }
+
+        $opciones = [
+            'parse_mode' => 'HTML'
+        ];
+
+        $enviar_notificacion = (new telegram_api())->enviar_mensaje(bot_token: telegram::TELEGRAM_BOT_TOKEN,
+            chat_id: $usuario['adm_usuario_id_chat_telegram'], mensaje: $mensaje, opciones: $opciones);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al enviar notificación', data: $enviar_notificacion);
+        }
+
+        return $enviar_notificacion;
     }
 
     protected function inicializa_campos(array $registros): array

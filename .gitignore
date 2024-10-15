@@ -66,6 +66,7 @@ unit_test/prueba.zip
 /config/views.php
 /config/generales.php
 /config/google.php
+/config/telegram.php
 /vendor/
 /templates/generals/error_previo.php
 /composer.lock

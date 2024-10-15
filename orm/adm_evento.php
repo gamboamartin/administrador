@@ -36,6 +36,14 @@ class adm_evento extends _modelo_parent
             return $this->error->error(mensaje: 'Error al dar de alta calendario', data: $r_alta_bd);
         }
 
+        $mensaje = "Se ha creado el evento: <b>" . htmlspecialchars($_POST['titulo']) . "</b>\n";
+        $mensaje .= "Fecha y hora de inicio: <b>" . htmlspecialchars($_POST['fecha_inicio']) . "</b>\n";
+        $mensaje .= "Fecha y hora de finalización: <b>" . htmlspecialchars($_POST['fecha_fin']) . "</b>";
+        $notificacion = (new adm_calendario($this->link))->enviar_notificacion(mensaje: $mensaje);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al enviar notificación', data: $notificacion);
+        }
+
         return $r_alta_bd;
     }
 
