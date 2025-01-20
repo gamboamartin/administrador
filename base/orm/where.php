@@ -19,7 +19,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Crea los datos de los diferentes tipos de filtro en forma de SQL
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
@@ -52,6 +52,7 @@ class where{
      * @fecha 2022-07-25 16:41
      * @return array|stdClass
      * @version 17.20.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.data_filtros_full
      */
     final public function data_filtros_full(array $columnas_extra, array $diferente_de, array $filtro,
                                       array $filtro_especial, array $filtro_extra, array $filtro_fecha,
@@ -234,7 +235,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Esta función realiza una serie de filtros completos dados los parámetros proporcionados.
      *
      * @param stdClass $filtros       - Objeto que contiene los filtros que se aplicarán.
@@ -244,6 +245,7 @@ class where{
      *
      * @throws errores Si hay un error al limpiar los filtros.
      * @version 17.17.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.filtros_full
      */
     private function filtros_full(stdClass $filtros, array $keys_data_filter): stdClass
     {
@@ -266,7 +268,7 @@ class where{
 
 
     /**
-     *
+     * TOTAL
      * Inicializa los key del filtro como vacios
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $keys_data_filter Keys a limpiar o validar
@@ -275,7 +277,7 @@ class where{
      * @verfuncion 1.1.0
      * @author mgamboa
      * @fecha 2022-08-01 13:07
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-filtros_vacios
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.filtros_vacios
      */
     private function filtros_vacios(stdClass $complemento, array $keys_data_filter): bool
     {
@@ -295,7 +297,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera filtros iniciales para una consulta SQL.
      *
      * Este método genera filtros SQL iniciales a partir de varias entradas
@@ -318,6 +320,7 @@ class where{
      * @throws errores                     Este método puede lanzar una excepción si ocurre un error durante la generación de los filtros.
      *
      * @version 16.320.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.genera_filtros_iniciales
      */
     private function genera_filtros_iniciales(string $diferente_de_sql, string $filtro_especial_sql,
                                               string $filtro_extra_sql, string $filtro_rango_sql, string $in_sql,
@@ -345,7 +348,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera los filtros en forma de sql
      * @param array $columnas_extra Columnas para subquerys declarados en el modelo
      * @param array $keys_data_filter Keys de los filtros
@@ -378,6 +381,7 @@ class where{
      * @fecha 2022-25-07 12:22
      * @return array|stdClass
      * @version 17.6.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.genera_filtros_sql
      */
     private function genera_filtros_sql(array $columnas_extra, array $diferente_de, array $filtro,
                                         array $filtro_especial, array $filtro_extra, array $filtro_rango, array $in,
@@ -614,12 +618,14 @@ class where{
     }
 
     /**
+     * TOTAL
      * Inicializa los parametros de un complemento para where
      * @param stdClass $complemento Complemento de datos sql
      * @param array $keys_data_filter Keys para filtros
      * @return array|stdClass
      * @author mgamboa
      * @fecha 2022-08-02 14:46
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.init_params_sql
      */
     final public function init_params_sql(stdClass $complemento, array $keys_data_filter): array|stdClass
     {
@@ -638,7 +644,7 @@ class where{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * La función limpia_filtros limpia y organiza los filtros proveídos para la consulta SQL.
      *
      * @param stdClass $filtros El objeto que contiene los filtros a limpiar y organizar.
@@ -649,6 +655,7 @@ class where{
      * @throws errores Si alguna llave del filtro está vacía, se lanza una excepción con el mensaje de error y el arreglo de datos del filtro.
      *
      * @version 16.316.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.limpia_filtros
      */
     final public function limpia_filtros(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
@@ -779,7 +786,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Aplica el filtro de paréntesis a un conjunto de filtros proporcionados.
      *
      * @param stdClass $filtros El objeto de filtros a procesar.
@@ -789,6 +796,7 @@ class where{
      *  o un arreglo en caso de que ocurra un error.
      *
      * @version 16.318.1
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.parentesis_filtro
      */
     private function parentesis_filtro(stdClass $filtros, array $keys_data_filter): stdClass|array
     {
@@ -810,7 +818,7 @@ class where{
 
 
     /**
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-verifica_where
+     * TOTAL
      * Verifica que la estructura de un complemento sql sea la correcta
      * @param stdClass $complemento Complemento de datos SQL a incializar
      * @param array $key_data_filter Filtros a limpiar o validar
@@ -819,6 +827,7 @@ class where{
      * @verfuncion 1.1.0
      * @fecha 2022-08-01 16:47
      * @author mgamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.verifica_where
      */
     private function verifica_where(stdClass $complemento, array $key_data_filter): bool|array
     {
@@ -839,7 +848,7 @@ class where{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera un WHERE validado por el numero de parametros
      * @param stdClass $filtros Filtros a utilizar enb un WHERE
      * @param array $keys_data_filter Key de los filtros a limpiar o validar para convertir en obj
@@ -847,6 +856,7 @@ class where{
      * @fecha 2022-07-25 12:33
      * @return string|array
      * @version 17.7.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.where
      */
     private function where(stdClass $filtros, array $keys_data_filter): string|array
     {
@@ -866,13 +876,14 @@ class where{
     }
 
     /**
+     * TOTAL
      * Genera un where base aplicando un estilo correcto SQL
      * @param stdClass $complemento Complemento de datos sql
      * @return array|stdClass
      * @fecha 2022-08-01 14:42
      * @author mgamboa
      * @version 20.7.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-where_base
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.where_base
      */
     private function where_base(stdClass $complemento): array|stdClass
     {
@@ -887,12 +898,13 @@ class where{
     }
 
     /**
+     * TOTAL
      * Genera un filtro de tipo where valido
      * @param stdClass $complemento Complemento de datos sql
      * @param array $key_data_filter Keys de filtros para where
      * @return array|stdClass
      * @fecha 2022-08-02 09:43
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-where_filtro
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.where_filtro
      */
     private function where_filtro(stdClass $complemento, array $key_data_filter): array|stdClass
     {
@@ -911,7 +923,8 @@ class where{
     }
 
     /**
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-where#funci%C3%B3n-where_mayus
+     * TOTAL
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.where.where_mayus
      * Esta función convierte a mayúsculas la cláusula WHERE de un objeto complemento.
      * Si el WHERE no está definido o es una cadena vacía, no se realizará ninguna conversión.
      * El método devolverá un error si la cláusula WHERE es distinta de una cadena vacía y de 'WHERE'.

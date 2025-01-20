@@ -211,25 +211,56 @@ class val_sql extends validaciones {
     }
 
     /**
-     * TOTAL
-     * Valida el nombre de una tabla.
+     * REG
+     * Valida que el nombre de una tabla no esté vacío.
      *
-     * Esta función se asegura de que el nombre de la tabla proporcionada no esté vacío.
+     * Este método verifica que el parámetro `$tabla` contenga un valor válido (no vacío).
+     * Si `$tabla` está vacío, se genera un error utilizando `$this->error->error()`.
+     * En caso contrario, retorna `true`, indicando que la validación fue exitosa.
      *
-     * @param string $tabla El nombre de la tabla que se va a validar.
+     * @param string $tabla Nombre de la tabla a validar.
      *
-     * @return true|array Devuelve true si la validación pasa o un array con los detalles del error si la validación falla.
-     * @version 13.18.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.val_sql.tabla
+     * @return true|array Retorna:
+     *  - `true` si `$tabla` contiene un valor no vacío.
+     *  - Un `array` con detalles del error si `$tabla` está vacío.
+     *
+     * @example
+     *  Ejemplo 1: Validación exitosa
+     *  -----------------------------
+     *  $tabla = "usuarios";
+     *  $resultado = $this->tabla($tabla);
+     *  // $resultado => true
+     *
+     * @example
+     *  Ejemplo 2: Error por tabla vacía
+     *  ---------------------------------
+     *  $tabla = "";
+     *  $resultado = $this->tabla($tabla);
+     *  // $resultado =>
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error tabla esta vacia',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
      */
     final public function tabla(string $tabla): true|array
     {
+        // Elimina espacios en blanco del inicio y fin de la cadena
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla, es_final: true);
+
+        // Valida que la tabla no esté vacía
+        if ($tabla === '') {
+            return $this->error->error(
+                mensaje: 'Error tabla esta vacia',
+                data: $tabla,
+                es_final: true
+            );
         }
+
         return true;
     }
+
 
     /**
      * Valida que los campos esten bien aplicados conforme el tipo de dato asignado

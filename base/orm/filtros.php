@@ -15,10 +15,12 @@ class filtros{
     }
 
     /**
+     * TOTAL
      * Genera un complemento con datos para filtro
      * @param stdClass $complemento Complemento previo
      * @param modelo $modelo Modelo en ejecucion
      * @return array|stdClass
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.complemento
      */
     private function complemento(stdClass $complemento, modelo $modelo): array|stdClass
     {
@@ -41,7 +43,7 @@ class filtros{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
+     * TOTAL
      * Genera el complemento completo para la ejecucion de un SELECT en forma de SQL
      * @param bool $aplica_seguridad si aplica seguridad verifica que el usuario tenga acceso
      * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
@@ -76,6 +78,7 @@ class filtros{
      * @param array $diferente_de Arreglo con los elementos para integrar un diferente de en SQL
      * @return array|stdClass
      * @version 17.20.0
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.complemento_sql
      */
     final public function complemento_sql(bool $aplica_seguridad, array $diferente_de, array $filtro,
                                           array $filtro_especial, array $filtro_extra, array $filtro_rango,
@@ -153,6 +156,7 @@ class filtros{
     }
 
     /**
+     * TOTAL
      * Genera el sql completo para una sentencia select con wheres
      * @param stdClass $complemento Complemento de filtros a integrar en un select
      * @param string $consulta SQL PREVIO
@@ -160,6 +164,7 @@ class filtros{
      * @return string|array
      * @fecha 2022-08-02 15:53
      * @author mgamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.consulta_full_and
      */
     final public function consulta_full_and(stdClass $complemento, string $consulta, modelo $modelo): string|array
     {
@@ -278,10 +283,12 @@ class filtros{
 
 
     /**
+     * TOTAL
      * Inicializa los datos de un complemento
      * @param stdClass $complemento Complemento previamente cargado
      * @return array|stdClass
      * @version 1.555.51
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.inicializa_complemento
      */
     private function inicializa_complemento(stdClass $complemento): array|stdClass
     {
@@ -298,21 +305,24 @@ class filtros{
     }
 
     /**
+     * TOTAL
      * Inicializa los keys de un complemento para filtro
      * @param stdClass $complemento complemento previo
      * @param array $keys Keys a incializar
      * @return stdClass|array
      * @version 1.554.51
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.init_complemento
      */
     private function init_complemento(stdClass $complemento, array $keys): stdClass|array
     {
         if(count($keys) === 0){
-            return $this->error->error(mensaje:'Error los keys de un complemento esta vacio',data:$keys);
+            return $this->error->error(mensaje:'Error los keys de un complemento esta vacio',data:$keys,
+                es_final: true);
         }
         foreach ($keys as $key){
             $key = trim($key);
             if($key === ''){
-                return $this->error->error(mensaje:'Error el key esta vacio',data:$key);
+                return $this->error->error(mensaje:'Error el key esta vacio',data:$key, es_final: true);
             }
             if(!isset($complemento->$key)){
                 $complemento->$key = '';
@@ -367,21 +377,26 @@ class filtros{
     }
 
     /**
+     * TOTAL
      * Obtiene los keys de un complemento de filtros para AND
      * @return string[]
      * @version 1.553.51
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.keys_complemento
      */
     private function keys_complemento(): array
     {
-        return array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra');
+        return array('filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia',
+            'sql_extra');
     }
 
     /**
+     * TOTAL
      * Integra el resultado de complemento para un SQL
      * @param stdClass $complemento Complemento
      * @param string $consulta_previa Sql previo
      * @return string
      * @version 1.561.51
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.filtros.sql
      */
     private function sql(stdClass $complemento, string $consulta_previa): string
     {
@@ -407,12 +422,9 @@ class filtros{
         }
 
         $sql = $consulta_previa.$complemento->where.$complemento->sentencia.' '. $complemento->filtro_especial.' ';
-
         $sql.= $complemento->filtro_rango.' '.$complemento->filtro_fecha.' ';
-
-        $sql.= $complemento->filtro_extra.' '.$complemento->in.' '.$complemento->not_in.' '.$complemento->diferente_de.' '.
-            $complemento->sql_extra.' ';
-
+        $sql.= $complemento->filtro_extra.' '.$complemento->in.' '.$complemento->not_in.' ';
+        $sql.= $complemento->diferente_de.' '.$complemento->sql_extra.' ';
         $sql.= $complemento->params->group_by.' '.$complemento->params->order.' ';
         $sql.= $complemento->params->limit.' '.$complemento->params->offset;
 

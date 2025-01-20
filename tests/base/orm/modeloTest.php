@@ -164,6 +164,22 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_cuenta_bis(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        //$modelo = new liberator($modelo);
+
+
+        $resultado = $modelo->cuenta_bis();
+
+        $this->assertIsInt( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1, $resultado);
+
+        errores::$error = false;
+    }
+
     public function test_data_result_transaccion(): void
     {
         errores::$error = false;

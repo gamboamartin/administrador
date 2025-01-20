@@ -87,71 +87,146 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Esta función verifica si el arreglo de entrada $columnas_by_table contiene algún elemento. Si el conteo
-     * del arreglo es más de cero, la función devolverá true, de lo contrario, devolverá false.
-     * En otras palabras, verifica si hay alguna columna en el arreglo dado que necesite ser aplicada a la tabla.
-     * Si la hay, devolverá true, indicando que la operación de aplicar columnas a la tabla puede realizarse.
-     * De lo contrario, devuelve false.
+     * REG
+     * Determina si se deben aplicar columnas basadas en la tabla proporcionada.
      *
-     * @param array $columnas_by_table conjunto de columnas si es vacio aplica la sentencia SQL completa
-     * @return bool
-     * @version 13.16.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.aplica_columnas_by_table
+     * Este método verifica si el array `$columnas_by_table` contiene elementos, indicando
+     * que se deben aplicar columnas específicas para la tabla. Si el array está vacío,
+     * retorna `false`, de lo contrario, retorna `true`.
+     *
+     * @param array $columnas_by_table Arreglo que contiene las columnas definidas para una tabla específica.
+     *                                 Puede ser un array vacío si no hay columnas asignadas.
+     *
+     * @return bool Retorna:
+     *  - `true` si `$columnas_by_table` contiene al menos un elemento.
+     *  - `false` si `$columnas_by_table` está vacío.
+     *
+     * @example
+     *  Ejemplo 1: Array con columnas
+     *  -----------------------------------------------
+     *  $columnas_by_table = ['id', 'nombre', 'email'];
+     *  $resultado = $this->aplica_columnas_by_table($columnas_by_table);
+     *  // $resultado será true, ya que el array contiene elementos.
+     *
+     * @example
+     *  Ejemplo 2: Array vacío
+     *  -----------------------------------------------
+     *  $columnas_by_table = [];
+     *  $resultado = $this->aplica_columnas_by_table($columnas_by_table);
+     *  // $resultado será false, ya que el array está vacío.
      */
     private function aplica_columnas_by_table(array $columnas_by_table): bool
     {
         $aplica_columnas_by_table = false;
 
-        if(count($columnas_by_table)>0){
+        // Verifica si hay elementos en el array
+        if (count($columnas_by_table) > 0) {
             $aplica_columnas_by_table = true;
         }
+
         return $aplica_columnas_by_table;
     }
 
+
     /**
-     * TOTAL
-     * Función asigna_columna_completa
+     * REG
+     * Asigna los detalles de una columna a un arreglo de columnas completas.
      *
-     * Esta función asigna los valores de una columna obtenidos mediante un DESCRIBE
-     * para su uso en la creación de una consulta SQL SELECT.
+     * Este método:
+     * 1. Valida que el atributo no esté vacío.
+     * 2. Verifica que las claves esenciales (`Type`, `Null`) existan en el arreglo `$columna`.
+     * 3. Completa la información de la columna en el arreglo `$columnas_completas`, incluyendo el nombre del atributo,
+     *    el tipo, la clave (`Key`), y si permite valores nulos (`Null`).
      *
-     * @param string $atributo El nombre del atributo a asignar.
-     * @param array $columna Un array asociativo con los datos de la columna obtenidos a partir de un DESCRIBE.
-     * @param array $columnas_completas Un array asociativo que contiene el estado actual de las columnas completas.
+     * @param string $atributo Nombre de la columna que se desea agregar.
+     * @param array $columna Arreglo con los detalles de la columna, incluyendo las claves `Type` y `Null`.
+     * @param array $columnas_completas Arreglo que contiene las columnas completas previamente definidas.
      *
-     * @return array Retorna las columnas completas con el nuevo atributo asignado.
-     *
-     * @throws errores Se lanza esta excepción si el $atributo es una cadena vacía
-     * @throws errores Se lanza esta excepción si hay un error al validar la $columna
+     * @return array
+     *   - Retorna el arreglo `$columnas_completas` actualizado con los detalles de la columna.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
      *
      * @example
-     * ```php
-     * $resultado = asigna_columna_completa('nombre', ['Type' => 'int', 'Null' => 'NO', 'Key' => 'PRI'], []);
-     * echo $resultado; // ['nombre' => ['campo' => 'nombre', 'Type' => 'int', 'Key' => 'PRI', 'Null' => 'NO']]
-     * ```
+     *  Ejemplo 1: Asignación de una columna completa
+     *  ---------------------------------------------
+     *  $atributo = 'nombre';
+     *  $columna = [
+     *      'Type' => 'varchar(255)',
+     *      'Null' => 'YES',
+     *      'Key' => 'PRI'
+     *  ];
+     *  $columnas_completas = [];
      *
-     * Posibles Resultados:
-     * - Un array asociativo con las columnas completas y el nuevo atributo asignado.
-     * - Un error si el $atributo es una cadena vacía
-     * - Un error si hay problemas al validar la $columna
-     * @version 15.38.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columna_completa
+     *  $resultado = $this->asigna_columna_completa($atributo, $columna, $columnas_completas);
+     *  // $resultado será:
+     *  // [
+     *  //   'nombre' => [
+     *  //       'campo' => 'nombre',
+     *  //       'Type' => 'varchar(255)',
+     *  //       'Key' => 'PRI',
+     *  //       'Null' => 'YES'
+     *  //   ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por atributo vacío
+     *  -----------------------------------
+     *  $atributo = '';
+     *  $columna = [
+     *      'Type' => 'varchar(255)',
+     *      'Null' => 'YES'
+     *  ];
+     *  $columnas_completas = [];
+     *
+     *  $resultado = $this->asigna_columna_completa($atributo, $columna, $columnas_completas);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error atributo no puede venir vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error por claves faltantes en `$columna`
+     *  ---------------------------------------------------
+     *  $atributo = 'nombre';
+     *  $columna = ['Type' => 'varchar(255)']; // Falta la clave 'Null'
+     *  $columnas_completas = [];
+     *
+     *  $resultado = $this->asigna_columna_completa($atributo, $columna, $columnas_completas);
+     *  // Retorna un error indicando que falta la clave 'Null'.
+     *
+     * @throws array Retorna un arreglo con detalles del error si ocurre algún problema durante la validación.
      */
-    private function  asigna_columna_completa(string $atributo, array $columna, array $columnas_completas): array
+    private function asigna_columna_completa(string $atributo, array $columna, array $columnas_completas): array
     {
+        // Validar que el atributo no esté vacío
         $atributo = trim($atributo);
-        if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo no puede venir vacio', data: $atributo, es_final: true);
+        if ($atributo === '') {
+            return $this->error->error(
+                mensaje: 'Error atributo no puede venir vacio',
+                data: $atributo,
+                es_final: true
+            );
         }
-        $keys = array('Type','Null');
+
+        // Validar que las claves esenciales existan en la columna
+        $keys = array('Type', 'Null');
         $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $columna);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar $columna', data: $valida);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al validar $columna',
+                data: $valida
+            );
         }
-        if(!isset($columna['Key']) ){
+
+        // Asignar valores predeterminados si la clave 'Key' no está definida
+        if (!isset($columna['Key'])) {
             $columna['Key'] = '';
         }
+
+        // Completar los detalles de la columna en el arreglo de columnas completas
         $columnas_completas[$atributo]['campo'] = $atributo;
         $columnas_completas[$atributo]['Type'] = $columna['Type'];
         $columnas_completas[$atributo]['Key'] = $columna['Key'];
@@ -160,61 +235,168 @@ class columnas{
         return $columnas_completas;
     }
 
+
     /**
-     * TOTAL
-     * Asigna las columnas correspondientes a una tabla específica a un modelo y las almacena en la sesión.
+     * REG
+     * Asigna las columnas de una tabla desde la sesión al modelo proporcionado.
      *
-     * Esta función se encuentra en el archivo 'base/orm/columnas.php'.
-     * Su objetivo es asignar las columnas detalladas en la sesión ($_SESSION) para una tabla específica a un modelo,
-     * y si las columnas ya están definidas en la sesión, asigna los datos de columna al modelo.
+     * Este método verifica si las columnas de una tabla específica están disponibles en la sesión
+     * (`$_SESSION`). Si existen, utiliza el método `asigna_data_columnas` para asignarlas al modelo.
+     * De lo contrario, retorna `false`.
      *
-     * @param modelo_base $modelo El modelo al que se le asignarán las columnas de la tabla.
-     * @param string $tabla_bd El nombre de la tabla en la base de datos.
+     * @param modelo_base $modelo   Instancia del modelo donde se asignarán las columnas.
+     *                              El modelo debe tener una propiedad `data_columnas` para almacenar
+     *                              los datos de las columnas.
+     * @param string      $tabla_bd Nombre de la tabla para la cual se buscarán y asignarán las columnas.
      *
-     * @return bool|array Devuelve true en caso de éxito. Si ocurre un error, devuelve un array con la información del error.
-     * Si las columnas para la tabla especificada no están definidas en la sesión, devuelve false.
-     * @version 13.16.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columnas_en_session
+     * @return bool|array Retorna:
+     *   - `true` si las columnas se asignan exitosamente al modelo.
+     *   - `false` si las columnas no existen en la sesión.
+     *   - Un `array` con detalles del error si ocurre una validación fallida.
+     *
+     * @throws array Si:
+     *   - `$tabla_bd` está vacío.
+     *   - Ocurre un error al intentar asignar las columnas mediante `asigna_data_columnas`.
+     *
+     * @example
+     *  Ejemplo 1: Asignación exitosa de columnas desde la sesión
+     *  ---------------------------------------------------------
+     *  $_SESSION['campos_tabla']['usuarios'] = ['id', 'nombre', 'email'];
+     *  $_SESSION['columnas_completas']['usuarios'] = ['id', 'nombre', 'email', 'fecha_creacion'];
+     *
+     *  $modelo = new modelo_base();
+     *  $tabla_bd = "usuarios";
+     *
+     *  $resultado = $this->asigna_columnas_en_session($modelo, $tabla_bd);
+     *
+     *  // Resultado:
+     *  // $resultado => true
+     *  // $modelo->data_columnas->columnas_parseadas => ['id', 'nombre', 'email']
+     *  // $modelo->data_columnas->columnas_completas => ['id', 'nombre', 'email', 'fecha_creacion']
+     *
+     * @example
+     *  Ejemplo 2: Error al no encontrar columnas en la sesión
+     *  -------------------------------------------------------
+     *  $_SESSION['campos_tabla']['usuarios'] = null;
+     *  $_SESSION['columnas_completas']['usuarios'] = null;
+     *
+     *  $modelo = new modelo_base();
+     *  $tabla_bd = "usuarios";
+     *
+     *  $resultado = $this->asigna_columnas_en_session($modelo, $tabla_bd);
+     *
+     *  // Resultado:
+     *  // $resultado => false
+     *
+     * @example
+     *  Ejemplo 3: Error al pasar una tabla vacía
+     *  -----------------------------------------
+     *  $modelo = new modelo_base();
+     *  $tabla_bd = "";
+     *
+     *  $resultado = $this->asigna_columnas_en_session($modelo, $tabla_bd);
+     *
+     *  // Resultado:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error tabla_bd no puede venir vacia',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
      */
     private function asigna_columnas_en_session(modelo_base $modelo, string $tabla_bd): bool|array
     {
+        // Validación: tabla_bd no puede estar vacía
         $tabla_bd = trim($tabla_bd);
-        if($tabla_bd===''){
-            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd, es_final: true);
+        if ($tabla_bd === '') {
+            return $this->error->error(
+                mensaje: 'Error tabla_bd no puede venir vacia',
+                data: $tabla_bd,
+                es_final: true
+            );
         }
+
         $data = new stdClass();
-        if(isset($_SESSION['campos_tabla'][$tabla_bd], $_SESSION['columnas_completas'][$tabla_bd])){
-            $data = $this->asigna_data_columnas(data: $data,tabla_bd: $tabla_bd);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar columnas', data: $data);
+
+        // Verifica si las columnas existen en la sesión
+        if (isset($_SESSION['campos_tabla'][$tabla_bd], $_SESSION['columnas_completas'][$tabla_bd])) {
+            // Asigna las columnas al objeto data
+            $data = $this->asigna_data_columnas(data: $data, tabla_bd: $tabla_bd);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al generar columnas',
+                    data: $data
+                );
             }
+
+            // Asigna el objeto data al modelo
             $modelo->data_columnas = $data;
             return true;
         }
+
         return false;
     }
 
+
     /**
-     * FIN
-     * Función que asigna columnas parseadas, añade nuevos atributos a la colección de columnas parseadas.
+     * REG
+     * Agrega un atributo a la lista de columnas parseadas.
      *
-     * @param string $atributo Nombre del atributo a añadir
-     * @param array $columnas_parseadas Colección existente de columnas parseadas
+     * Este método:
+     * 1. Valida que el nombre del atributo no esté vacío.
+     * 2. Agrega el atributo proporcionado al arreglo de columnas parseadas.
      *
-     * @return array Retorna la colección de columnas parseadas añadidas con el nuevo atributo. En caso de error,
-     * devuelve un mensaje de error indicando que el atributo no puede estar vacío.
-     * @version 15.30.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columnas_parseadas
+     * @param string $atributo Nombre del atributo que se desea agregar a las columnas parseadas.
+     * @param array $columnas_parseadas Arreglo que contiene las columnas parseadas previamente.
+     *
+     * @return array
+     *   - Retorna el arreglo actualizado con el nuevo atributo incluido.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Agregar un atributo válido
+     *  -------------------------------------
+     *  $atributo = 'nombre';
+     *  $columnas_parseadas = ['id', 'descripcion'];
+     *
+     *  $resultado = $this->asigna_columnas_parseadas($atributo, $columnas_parseadas);
+     *  // $resultado será:
+     *  // ['id', 'descripcion', 'nombre']
+     *
+     * @example
+     *  Ejemplo 2: Error por atributo vacío
+     *  ------------------------------------
+     *  $atributo = '';
+     *  $columnas_parseadas = ['id', 'descripcion'];
+     *
+     *  $resultado = $this->asigna_columnas_parseadas($atributo, $columnas_parseadas);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error atributo no puede venir vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
+     *
+     * @throws array Retorna un arreglo con el error si ocurre algún problema durante la validación.
      */
     private function asigna_columnas_parseadas(string $atributo, array $columnas_parseadas): array
     {
+        // Validar que el atributo no esté vacío
         $atributo = trim($atributo);
-        if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo no puede venir vacio',data:  $atributo, es_final: true);
+        if ($atributo === '') {
+            return $this->error->error(
+                mensaje: 'Error atributo no puede venir vacio',
+                data: $atributo,
+                es_final: true
+            );
         }
+
+        // Agregar el atributo al arreglo de columnas parseadas
         $columnas_parseadas[] = $atributo;
         return $columnas_parseadas;
     }
+
 
     /**
      * TOTAL
@@ -265,50 +447,113 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Asigna los datos de las columnas de una tabla especificada a la variable de sesión correspondiente y las devuelve.
+     * REG
+     * Asigna datos de columnas parseadas y completas desde la sesión a un objeto proporcionado.
      *
-     * La función se encuentra en el archivo 'base/orm/columnas.php'. El objetivo de esta función es asignar la data
-     * de las columnas para una tabla específica almacenada en la variable de sesión a la variable de data pasada como
-     * parámetro y retornarla.
+     * Este método utiliza datos almacenados en la sesión (`$_SESSION`) para asignar información
+     * de columnas parseadas y completas a las propiedades de un objeto `stdClass`. Valida
+     * que las claves necesarias existan y que la tabla no esté vacía antes de realizar la asignación.
      *
-     * @param stdClass $data El objeto al que se le asignarán las columnas parseadas y completas.
-     * @param string $tabla_bd Nombre de la tabla en la base de datos.
+     * @param stdClass $data     Objeto donde se asignarán las columnas parseadas y completas.
+     *                           Las siguientes propiedades se agregarán al objeto:
+     *                           - `columnas_parseadas`: Columnas parseadas de la tabla.
+     *                           - `columnas_completas`: Columnas completas de la tabla.
+     * @param string   $tabla_bd Nombre de la tabla para la cual se buscan las columnas.
      *
-     * @return stdClass|array Devuelve el objeto $data modificado en caso de éxito, de otro modo,
-     * devuelve un arreglo con información de error.
-     * @version 13.14.0
-     * @version https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_data_columnas
+     * @return stdClass|array Retorna:
+     *   - Un objeto `stdClass` con las propiedades `columnas_parseadas` y `columnas_completas` asignadas.
+     *   - Un array con detalles del error si ocurre alguna validación fallida.
+     *
+     * @throws array Si alguna de las validaciones falla:
+     *   - Si `$tabla_bd` está vacío.
+     *   - Si no existe `$_SESSION['campos_tabla']`.
+     *   - Si no existe `$_SESSION['campos_tabla'][$tabla_bd]`.
+     *   - Si no existe `$_SESSION['columnas_completas']`.
+     *   - Si no existe `$_SESSION['columnas_completas'][$tabla_bd]`.
+     *
+     * @example
+     *  Ejemplo 1: Asignar columnas de una tabla válida
+     *  ------------------------------------------------
+     *  // Supongamos que la sesión tiene los siguientes datos:
+     *  $_SESSION['campos_tabla']['usuarios'] = ['id', 'nombre', 'email'];
+     *  $_SESSION['columnas_completas']['usuarios'] = ['id', 'nombre', 'email', 'fecha_creacion'];
+     *
+     *  $data = new stdClass();
+     *  $tabla_bd = "usuarios";
+     *
+     *  $resultado = $this->asigna_data_columnas($data, $tabla_bd);
+     *
+     *  // Resultado:
+     *  // $resultado->columnas_parseadas = ['id', 'nombre', 'email'];
+     *  // $resultado->columnas_completas = ['id', 'nombre', 'email', 'fecha_creacion'];
+     *
+     * @example
+     *  Ejemplo 2: Error al no encontrar la tabla en la sesión
+     *  --------------------------------------------------------
+     *  $data = new stdClass();
+     *  $tabla_bd = "productos";
+     *
+     *  // Supongamos que la sesión no tiene datos para 'productos':
+     *  $resultado = $this->asigna_data_columnas($data, $tabla_bd);
+     *
+     *  // Resultado:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error debe existir SESSION[campos_tabla][productos]',
+     *  //     'data' => $_SESSION,
+     *  //     ...
+     *  // ]
      */
     private function asigna_data_columnas(stdClass $data, string $tabla_bd): stdClass|array
     {
         $tabla_bd = trim($tabla_bd);
-        if($tabla_bd===''){
-            return $this->error->error(mensaje: 'Error tabla_bd no puede venir vacia', data: $tabla_bd,
-                es_final: true);
-        }
-        if(!isset($_SESSION['campos_tabla'])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]',data: $_SESSION,
-                es_final: true);
-        }
-        if(!isset($_SESSION['campos_tabla'][$tabla_bd])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[campos_tabla]['.$tabla_bd.']',
-                data: $_SESSION, es_final: true);
-        }
-        if(!isset($_SESSION['columnas_completas'])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]',data: $_SESSION,
-                es_final: true);
-        }
-        if(!isset($_SESSION['columnas_completas'][$tabla_bd])){
-            return $this->error->error(mensaje: 'Error debe existir SESSION[columnas_completas]['.$tabla_bd.']',
-                data:$_SESSION, es_final: true);
+
+        // Validación: tabla_bd no puede estar vacía
+        if ($tabla_bd === '') {
+            return $this->error->error(
+                mensaje: 'Error tabla_bd no puede venir vacia',
+                data: $tabla_bd,
+                es_final: true
+            );
         }
 
+        // Validaciones: existencia de datos en la sesión
+        if (!isset($_SESSION['campos_tabla'])) {
+            return $this->error->error(
+                mensaje: 'Error debe existir SESSION[campos_tabla]',
+                data: $_SESSION,
+                es_final: true
+            );
+        }
+        if (!isset($_SESSION['campos_tabla'][$tabla_bd])) {
+            return $this->error->error(
+                mensaje: 'Error debe existir SESSION[campos_tabla][' . $tabla_bd . ']',
+                data: $_SESSION,
+                es_final: true
+            );
+        }
+        if (!isset($_SESSION['columnas_completas'])) {
+            return $this->error->error(
+                mensaje: 'Error debe existir SESSION[columnas_completas]',
+                data: $_SESSION,
+                es_final: true
+            );
+        }
+        if (!isset($_SESSION['columnas_completas'][$tabla_bd])) {
+            return $this->error->error(
+                mensaje: 'Error debe existir SESSION[columnas_completas][' . $tabla_bd . ']',
+                data: $_SESSION,
+                es_final: true
+            );
+        }
+
+        // Asignación de columnas desde la sesión
         $data->columnas_parseadas = $_SESSION['campos_tabla'][$tabla_bd];
         $data->columnas_completas = $_SESSION['columnas_completas'][$tabla_bd];
 
         return $data;
     }
+
 
     /**
      * TOTAL
@@ -567,50 +812,99 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Esta función, columnas_bd_native, se utiliza para obtener detalles de las columnas de una tabla de base de
-     * datos a partir del nombre de la tabla proporcionado como argumento.
+     * REG
+     * Obtiene las columnas de una tabla en la base de datos utilizando la consulta `DESCRIBE`.
      *
-     * @param modelo_base $modelo Una instancia del modelo base, que se usa para ejecutar consultas de base de datos.
-     * @param string $tabla_bd El nombre de la tabla de base de datos de la que se obtienen los detalles de las columnas.
+     * Este método:
+     * 1. Valida que el nombre de la tabla no esté vacío y no sea numérico.
+     * 2. Genera una consulta SQL para describir la tabla proporcionada.
+     * 3. Ejecuta la consulta en el modelo dado para obtener las columnas de la tabla.
      *
-     * @return array Regresa una matriz de registros que representa los detalles de las columnas de la tabla de base
-     * de datos especificada.
+     * @param modelo_base $modelo Instancia del modelo base utilizado para ejecutar la consulta.
+     * @param string $tabla_bd Nombre de la tabla en la base de datos que se desea describir.
      *
-     * @throws errores Si el nombre de la tabla está vacío, se lanza un error.
-     * @throws errores Si el nombre de la tabla es numérico, se lanza un error.
-     * @throws errores Si ocurre un error al obtener la consulta SQL para describir la tabla, se lanza un error.
-     * @throws errores Si ocurre un error al ejecutar la consulta SQL, se lanza un error.
-     * @throws errores Si la tabla de base de datos especificada no tiene columnas, se lanza un error.
-     * @version 18.32.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_bd_native
+     * @return array
+     *   - Retorna un arreglo con las columnas de la tabla si la operación es exitosa.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Obtener columnas de una tabla válida
+     *  -----------------------------------------------
+     *  $modelo = new modelo_base($link);
+     *  $tabla_bd = 'productos';
+     *
+     *  $resultado = $this->columnas_bd_native($modelo, $tabla_bd);
+     *  // $resultado contendrá un arreglo con las columnas de la tabla 'productos':
+     *  // [
+     *  //   ['Field' => 'id', 'Type' => 'int(11)', 'Null' => 'NO', ...],
+     *  //   ['Field' => 'nombre', 'Type' => 'varchar(255)', 'Null' => 'YES', ...],
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por tabla vacía
+     *  --------------------------------
+     *  $modelo = new modelo_base($link);
+     *  $tabla_bd = '';
+     *
+     *  $resultado = $this->columnas_bd_native($modelo, $tabla_bd);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $tabla_bd esta vacia',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error por tabla no existente
+     *  ---------------------------------------
+     *  $modelo = new modelo_base($link);
+     *  $tabla_bd = 'tabla_inexistente';
+     *
+     *  $resultado = $this->columnas_bd_native($modelo, $tabla_bd);
+     *  // Retorna un error indicando que no existen columnas en la tabla:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error no existen columnas',
+     *  //   'data' => [...],
+     *  //   ...
+     *  // ]
+     *
+     * @throws array Retorna un arreglo con el error si ocurre algún problema durante la validación, ejecución de la consulta o procesamiento del resultado.
      */
     final public function columnas_bd_native(modelo_base $modelo, string $tabla_bd): array
     {
+        // Validar que el nombre de la tabla no esté vacío y no sea numérico
         $tabla_bd = trim($tabla_bd);
-        if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd,es_final: true);
+        if ($tabla_bd === '') {
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia', data: $tabla_bd, es_final: true);
         }
-        if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
-                es_final: true);
+        if (is_numeric($tabla_bd)) {
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero', data: $tabla_bd, es_final: true);
         }
 
+        // Generar consulta SQL para describir la tabla
         $sql = (new sql())->describe_table(tabla: $tabla_bd);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
+        // Ejecutar la consulta en el modelo proporcionado
         $result = $modelo->ejecuta_consulta(consulta: $sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
-        if((int)$result->n_registros === 0){
+
+        // Validar que existan columnas en la tabla
+        if ((int)$result->n_registros === 0) {
             return $this->error->error(mensaje: 'Error no existen columnas', data: $result, es_final: true);
         }
 
+        // Retornar las columnas de la tabla
         return $result->registros;
     }
+
 
     /**
      * TOTAL

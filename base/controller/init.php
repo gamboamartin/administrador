@@ -215,7 +215,7 @@ class init{
      * Aqui se determina que view se va a utilizar para el frontend
      * v1.18.9
      * @param bool $aplica_view Si view es activo se buscara un archivo valido
-     * @param seguridad $seguridad se utiliza la seccion y accion para l asignacion de la vista
+     * @param seguridad $seguridad se utiliza la seccion y accion para la asignacion de la vista
      * @param controler $controlador Controlador en ejecucion
      * @return string|array retorna el path para include
      *
@@ -769,356 +769,1056 @@ class init{
     }
 
     /**
-     * TOTAL
-     * Función model_init_campos
+     * REG
+     * Inicializa un campo dentro de la estructura de `campos_view` con un tipo especificado.
      *
-     * Esta función recibe un array de campos de vista, una clave y un tipo.
-     * Identifica si la clave y el tipo no están vacíos. Si alguno de ellos está vacío, la función
-     * retornará un mensaje de error. En caso contrario, agregará el tipo correspondiente a la clave
-     * en el array de campos de vista y lo retornará.
+     * Este método:
+     * 1. Valida que los parámetros `$key` y `$type` no estén vacíos.
+     * 2. Asigna el tipo de dato (`$type`) al campo identificado por `$key` dentro del arreglo `$campos_view`.
+     * 3. Retorna el arreglo actualizado con la configuración del campo.
      *
-     * @param array $campos_view  Array de campos de vista.
-     * @param string $key         Clave para ser utilizada en el array de campos.
-     * @param string $type        Tipo de dato que será asignado al campo de vista.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param string $key Clave que identifica el campo dentro de `$campos_view`.
+     * @param string $type Tipo de dato que se asignará al campo (por ejemplo, `text`, `number`, etc.).
      *
-     * @return array Retorna el array de campos de vista con el nuevo campo agregado.
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con la configuración del campo.
+     *   - Retorna un arreglo de error si los parámetros `$key` o `$type` están vacíos.
      *
-     * @throws errores Si la clave o el tipo están vacíos.
-     * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos
+     * @example
+     *  Ejemplo 1: Configurar un campo con tipo `text`
+     *  ----------------------------------------------
+     *  $campos_view = [];
+     *  $key = 'nombre';
+     *  $type = 'text';
+     *
+     *  $resultado = $this->model_init_campos($campos_view, $key, $type);
+     *  // $resultado será:
+     *  // [
+     *  //     'nombre' => [
+     *  //         'type' => 'text'
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Configurar un campo con tipo `number`
+     *  ------------------------------------------------
+     *  $campos_view = [
+     *      'edad' => ['type' => 'text']
+     *  ];
+     *  $key = 'edad';
+     *  $type = 'number';
+     *
+     *  $resultado = $this->model_init_campos($campos_view, $key, $type);
+     *  // $resultado será:
+     *  // [
+     *  //     'edad' => [
+     *  //         'type' => 'number'
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error por clave vacía
+     *  ---------------------------------
+     *  $campos_view = [];
+     *  $key = '';
+     *  $type = 'text';
+     *
+     *  $resultado = $this->model_init_campos($campos_view, $key, $type);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error key esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error por tipo vacío
+     *  --------------------------------
+     *  $campos_view = [];
+     *  $key = 'nombre';
+     *  $type = '';
+     *
+     *  $resultado = $this->model_init_campos($campos_view, $key, $type);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error type esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
      */
     private function model_init_campos(array $campos_view, string $key, string $type): array
     {
+        // Valida que la clave no esté vacía
         $key = trim($key);
-        if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
+        if ($key === '') {
+            return $this->error->error(
+                mensaje: 'Error key esta vacio',
+                data: $key,
+                es_final: true
+            );
         }
 
+        // Valida que el tipo no esté vacío
         $type = trim($type);
-        if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, es_final: true);
+        if ($type === '') {
+            return $this->error->error(
+                mensaje: 'Error type esta vacio',
+                data: $type,
+                es_final: true
+            );
         }
 
+        // Asigna el tipo al campo correspondiente
         $campos_view[$key]['type'] = $type;
-        return $campos_view;
 
+        // Retorna el arreglo actualizado
+        return $campos_view;
     }
 
+
     /**
-     * TOTAL
-     * Función model_init_campos_input
+     * REG
+     * Inicializa un campo dentro del arreglo de `campos_view` con un tipo de entrada específico.
      *
-     * Esta función es una variante de la función model_init_campos, que recibe un array de campos de vista,
-     * una clave y un tipo. Inicializa estos valores y los asigna al array campos_view.
-     * Además, realiza una verificación de errores después de la inicialización.
-     * Si se encuentra un error, se retorna un error que indica que hubo un problema al inicializar el campo de vista.
+     * Este método:
+     * 1. Valida que los parámetros `$key` y `$type` no estén vacíos.
+     * 2. Utiliza el método `model_init_campos` para asignar el tipo de entrada (`$type`) al campo identificado por `$key`.
+     * 3. Retorna el arreglo actualizado con la configuración del campo.
      *
-     * @param array $campos_view  Array de campos de vista.
-     * @param string $key         Clave para ser utilizada en el array de campos.
-     * @param string $type        Tipo de dato que será asignado al campo de vista.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param string $key Clave que identifica el campo dentro de `$campos_view`.
+     * @param string $type Tipo de entrada que se asignará al campo (por ejemplo, `text`, `number`, etc.).
      *
-     * @return array Retorna el array de campos de vista con la nueva asignación.
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con la configuración del campo.
+     *   - Retorna un arreglo de error si los parámetros `$key` o `$type` están vacíos o si ocurre algún problema al inicializar el campo.
      *
-     * @throws errores Si la clave o el tipo están vacíos o si hay un error al inicializar el campo de vista.
-     * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_input
+     * @example
+     *  Ejemplo 1: Configurar un campo con tipo `text`
+     *  ----------------------------------------------
+     *  $campos_view = [];
+     *  $key = 'nombre';
+     *  $type = 'text';
+     *
+     *  $resultado = $this->model_init_campos_input($campos_view, $key, $type);
+     *  // $resultado será:
+     *  // [
+     *  //     'nombre' => [
+     *  //         'type' => 'text'
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Configurar un campo con tipo `number`
+     *  ------------------------------------------------
+     *  $campos_view = [
+     *      'edad' => ['type' => 'text']
+     *  ];
+     *  $key = 'edad';
+     *  $type = 'number';
+     *
+     *  $resultado = $this->model_init_campos_input($campos_view, $key, $type);
+     *  // $resultado será:
+     *  // [
+     *  //     'edad' => [
+     *  //         'type' => 'number'
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error por clave vacía
+     *  ---------------------------------
+     *  $campos_view = [];
+     *  $key = '';
+     *  $type = 'text';
+     *
+     *  $resultado = $this->model_init_campos_input($campos_view, $key, $type);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error key esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error por tipo vacío
+     *  --------------------------------
+     *  $campos_view = [];
+     *  $key = 'nombre';
+     *  $type = '';
+     *
+     *  $resultado = $this->model_init_campos_input($campos_view, $key, $type);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error type esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
      */
     private function model_init_campos_input(array $campos_view, string $key, string $type): array
     {
-
+        // Valida que la clave no esté vacía
         $key = trim($key);
-        if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
-        }
-        $type = trim($type);
-        if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, es_final: true);
+        if ($key === '') {
+            return $this->error->error(
+                mensaje: 'Error key esta vacio',
+                data: $key,
+                es_final: true
+            );
         }
 
-        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  $type);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        // Valida que el tipo no esté vacío
+        $type = trim($type);
+        if ($type === '') {
+            return $this->error->error(
+                mensaje: 'Error type esta vacio',
+                data: $type,
+                es_final: true
+            );
         }
+
+        // Inicializa el campo utilizando el método `model_init_campos`
+        $campos_view = $this->model_init_campos(campos_view: $campos_view, key: $key, type: $type);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar campo view',
+                data: $campos_view
+            );
+        }
+
+        // Retorna el arreglo actualizado
         return $campos_view;
     }
 
+
     /**
-     * TOTAL
-     * Función model_init_campos_inputs
+     * REG
+     * Inicializa múltiples campos dentro del arreglo `campos_view` con un tipo de entrada específico.
      *
-     * Esta función extiende la funcionalidad de la función model_init_campos_input, permitiendo la inicialización
-     * de varios campos en una única llamada. La función recibe un array de campos de vista, un array de claves y
-     * un tipo. Para cada clave en el array de claves, inicializa el campo de vista correspondiente
-     * utilizando la función model_init_campos_input. Si se encuentra un error durante este proceso,
-     * se retorna un error que indica que hubo un problema al inicializar el campo de vista.
+     * Este método:
+     * 1. Valida que el tipo de entrada (`$type`) no esté vacío.
+     * 2. Itera sobre el arreglo de claves (`$keys`) y valida cada clave.
+     * 3. Utiliza el método `model_init_campos_input` para asignar el tipo de entrada (`$type`) a cada clave.
+     * 4. Retorna el arreglo actualizado con la configuración de los campos.
      *
-     * @param array $campos_view  Array de campos de vista.
-     * @param array $keys         Array de claves para ser utilizadas en el array de campos.
-     * @param string $type        Tipo de dato que será asignado a los campos de vista.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param array $keys Arreglo de claves que identifican los campos dentro de `$campos_view`.
+     *                    Cada elemento debe ser un string.
+     * @param string $type Tipo de entrada que se asignará a cada campo (por ejemplo, `text`, `number`, etc.).
      *
-     * @return array Retorna el array de campos de vista con los nuevos campos asignados.
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con la configuración de los campos.
+     *   - Retorna un arreglo de error si `$type` está vacío, alguna clave no es válida o si ocurre un problema al inicializar los campos.
      *
-     * @throws errores Si alguna de las claves no es de tipo string, si alguna de las claves está vacía,
-     *                   si el tipo está vacío o si hay un error al inicializar algún campo de vista.
+     * @example
+     *  Ejemplo 1: Configurar múltiples campos con tipo `text`
+     *  ------------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = ['nombre', 'apellido', 'email'];
+     *  $type = 'text';
      *
-     * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.model_init_campos_inputs
+     *  $resultado = $this->model_init_campos_inputs($campos_view, $keys, $type);
+     *  // $resultado será:
+     *  // [
+     *  //     'nombre' => ['type' => 'text'],
+     *  //     'apellido' => ['type' => 'text'],
+     *  //     'email' => ['type' => 'text']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Configurar múltiples campos con tipo `number`
+     *  --------------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = ['edad', 'telefono'];
+     *  $type = 'number';
+     *
+     *  $resultado = $this->model_init_campos_inputs($campos_view, $keys, $type);
+     *  // $resultado será:
+     *  // [
+     *  //     'edad' => ['type' => 'number'],
+     *  //     'telefono' => ['type' => 'number']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error por tipo vacío
+     *  --------------------------------
+     *  $campos_view = [];
+     *  $keys = ['nombre'];
+     *  $type = '';
+     *
+     *  $resultado = $this->model_init_campos_inputs($campos_view, $keys, $type);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error type esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error por clave no válida
+     *  -------------------------------------
+     *  $campos_view = [];
+     *  $keys = ['nombre', 123];
+     *  $type = 'text';
+     *
+     *  $resultado = $this->model_init_campos_inputs($campos_view, $keys, $type);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error key debe ser string',
+     *  //     'data' => 123,
+     *  //     ...
+     *  // ]
      */
     private function model_init_campos_inputs(array $campos_view, array $keys, string $type): array
     {
+        // Valida que el tipo de entrada no esté vacío
         $type = trim($type);
-        if($type === ''){
-            return $this->error->error(mensaje: 'Error type esta vacio',data:  $type, es_final: true);
+        if ($type === '') {
+            return $this->error->error(
+                mensaje: 'Error type esta vacio',
+                data: $type,
+                es_final: true
+            );
         }
 
-
-        foreach ($keys as $key){
-
-            if(!is_string($key)){
-                return $this->error->error(mensaje: 'Error key debe ser string',data:  $key, es_final: true);
+        // Itera sobre las claves y las valida
+        foreach ($keys as $key) {
+            if (!is_string($key)) {
+                return $this->error->error(
+                    mensaje: 'Error key debe ser string',
+                    data: $key,
+                    es_final: true
+                );
             }
+
             $key = trim($key);
-            if($key === ''){
-                return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
+            if ($key === '') {
+                return $this->error->error(
+                    mensaje: 'Error key esta vacio',
+                    data: $key,
+                    es_final: true
+                );
             }
 
+            // Inicializa el campo utilizando `model_init_campos_input`
             $campos_view = $this->model_init_campos_input(campos_view: $campos_view, key: $key, type: $type);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al inicializar campo view',
+                    data: $campos_view
+                );
             }
         }
 
+        // Retorna el arreglo actualizado
         return $campos_view;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * El método model_init_campos_selects inicializa múltiples campos Select en la vista y genera los respectivos modelos.
+     * REG
+     * Inicializa múltiples campos de tipo `select` en el arreglo de campos de vista (`campos_view`).
      *
-     * @param array $campos_view Array con la información de los campos de la vista.
-     * @param array $keys Array asociativo donde la clave es el nombre del campo y el valor es un objeto con el nombre y el namespace del modelo.
-     * @param PDO $link Enlace a la conexión con la base de datos.
+     * Este método:
+     * 1. Valida que los elementos de `$keys` sean objetos con las claves `name_model` y `namespace_model`.
+     * 2. Valida que las claves en `$keys` sean nombres de campos válidos (no vacíos, no numéricos).
+     * 3. Configura cada campo como un tipo `select` en el arreglo `campos_view`.
+     * 4. Genera el modelo asociado a cada `select` y lo asigna al campo correspondiente.
      *
-     * @return array Retorna el array de campos de la vista con los campos Select inicializados y los modelos generados.
-     * En caso de error, el método retorna un array con un mensaje de error y los detalles del mismo.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param array $keys Arreglo asociativo donde:
+     *                    - La clave es el nombre del campo.
+     *                    - El valor es un objeto que contiene las propiedades `name_model` y `namespace_model`.
+     * @param PDO $link Conexión PDO para interactuar con la base de datos.
      *
-     * @throws errores Se lanza una excepción si la clave del campo es un número, si está vacío o si el valor asociado a la clave no es un objeto.
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con los campos configurados.
+     *   - Retorna un arreglo de error si ocurre algún problema durante el proceso.
      *
-     * @version 18.27.0
+     * @example
+     *  Ejemplo 1: Inicializar múltiples campos de tipo `select`
+     *  ---------------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = [
+     *      "categoria" => (object) ["name_model" => "categoria", "namespace_model" => "gamboamartin\\catalogos\\models"],
+     *      "producto" => (object) ["name_model" => "producto", "namespace_model" => "gamboamartin\\catalogos\\models"]
+     *  ];
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *
+     *  $resultado = $this->model_init_campos_selects($campos_view, $keys, $link);
+     *  // $resultado contendrá:
+     *  // [
+     *  //     "categoria" => [
+     *  //         "type" => "selects",
+     *  //         "model" => instancia_de_modelo_categoria
+     *  //     ],
+     *  //     "producto" => [
+     *  //         "type" => "selects",
+     *  //         "model" => instancia_de_modelo_producto
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por falta de propiedades en un objeto de `$keys`
+     *  -----------------------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = [
+     *      "categoria" => (object) ["name_model" => "categoria"], // Falta `namespace_model`
+     *      "producto" => (object) ["name_model" => "producto", "namespace_model" => "gamboamartin\\catalogos\\models"]
+     *  ];
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *
+     *  $resultado = $this->model_init_campos_selects($campos_view, $keys, $link);
+     *  // Retorna un error indicando que falta la clave `namespace_model` en el objeto correspondiente.
+     *
+     * @example
+     *  Ejemplo 3: Error por clave numérica en `$keys`
+     *  ----------------------------------------------
+     *  $campos_view = [];
+     *  $keys = [
+     *      1 => (object) ["name_model" => "categoria", "namespace_model" => "gamboamartin\\catalogos\\models"]
+     *  ];
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *
+     *  $resultado = $this->model_init_campos_selects($campos_view, $keys, $link);
+     *  // Retorna un error indicando que las claves de `$keys` deben ser nombres de campos válidos.
      */
     private function model_init_campos_selects(array $campos_view, array $keys, PDO $link): array
     {
-
-        foreach ($keys as $campo =>$data){
-            if(!is_object($data)){
-                return $this->error->error(mensaje: 'Error al data de ser un obj',data:  $data, es_final: true);
+        foreach ($keys as $campo => $data) {
+            // Verificar que $data sea un objeto
+            if (!is_object($data)) {
+                return $this->error->error(
+                    mensaje: 'Error al data debe ser un objeto',
+                    data: $data,
+                    es_final: true
+                );
             }
+
+            // Validar que $campo sea una clave válida
             $campo = trim($campo);
-            if($campo === ''){
-                return $this->error->error(mensaje: 'Error campo esta vacio',data:  $campo, es_final: true);
+            if ($campo === '') {
+                return $this->error->error(
+                    mensaje: 'Error campo está vacío',
+                    data: $campo,
+                    es_final: true
+                );
             }
-            if(is_numeric($campo)){
-                return $this->error->error(mensaje: 'Error campo es un numero debe ser un texto',
-                    data:  $campo, es_final: true);
-            }
-            $keys_val = array('name_model','namespace_model');
-            $valida = (new validacion())->valida_existencia_keys(keys:$keys_val, registro: $data);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al validar data',data:  $valida);
-            }
-
-            $campos_view = $this->model_init_campos_select(campos_view: $campos_view, key: $campo, link: $link,
-                name_model: $data->name_model, namespace_model: $data->namespace_model);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            if (is_numeric($campo)) {
+                return $this->error->error(
+                    mensaje: 'Error campo es un número, debe ser un texto',
+                    data: $campo,
+                    es_final: true
+                );
             }
 
+            // Validar existencia de claves en $data
+            $keys_val = ['name_model', 'namespace_model'];
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys_val, registro: $data);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al validar data',
+                    data: $valida
+                );
+            }
+
+            // Inicializar el campo como tipo `select`
+            $campos_view = $this->model_init_campos_select(
+                campos_view: $campos_view,
+                key: $campo,
+                link: $link,
+                name_model: $data->name_model,
+                namespace_model: $data->namespace_model
+            );
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al inicializar campo view',
+                    data: $campos_view
+                );
+            }
         }
 
         return $campos_view;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * El método model_init_campos_select inicializa los campos de la vista para un Elemento Select y genera el modelo asociado.
+     * REG
+     * Inicializa la configuración de un campo de tipo `select` en el arreglo de campos de vista (`campos_view`).
      *
-     * @param array $campos_view Array con la información de los campos de la vista.
-     * @param string $key Clave única de identificación del campo en la vista.
-     * @param PDO $link Enlace a la conexión de la base de datos.
-     * @param string $name_model Nombre del modelo que se va a generar.
-     * @param string $namespace_model Espacio de nombres asociado con el modelo a generar.
+     * Este método:
+     * 1. Valida los parámetros proporcionados, incluyendo el `key`, `namespace_model`, y `name_model`.
+     * 2. Configura el campo como un tipo `select` en el arreglo `campos_view`.
+     * 3. Genera el modelo asociado al `select` utilizando el `name_model` y `namespace_model`.
+     * 4. Asocia el modelo generado al campo dentro de `campos_view`.
      *
-     * @return array Retorna el arreglo de campos de vista con el campo Select inicializado y el modelo generado.
-     * En caso de error, este método retorna un array con detalles del error ocurrido.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param string $key Nombre clave del campo que se desea inicializar.
+     * @param PDO $link Conexión PDO para interactuar con la base de datos.
+     * @param string $name_model Nombre del modelo asociado al campo.
+     * @param string $namespace_model Espacio de nombres del modelo asociado al campo.
      *
-     * @throws errores Se lanza una excepción si la clave única, el nombre del modelo o el espacio de nombres del modelo están vacíos.
-     * @version 18.27.0
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con el campo configurado.
+     *   - Retorna un arreglo de error si ocurre algún problema durante el proceso.
+     *
+     * @example
+     *  Ejemplo 1: Inicializar un campo de tipo `select` con un modelo válido
+     *  ---------------------------------------------------------------------
+     *  $campos_view = [];
+     *  $key = "categoria";
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *  $name_model = "categoria";
+     *  $namespace_model = "gamboamartin\\catalogos\\models";
+     *
+     *  $resultado = $this->model_init_campos_select($campos_view, $key, $link, $name_model, $namespace_model);
+     *  // $resultado contendrá:
+     *  // [
+     *  //     "categoria" => [
+     *  //         "type" => "selects",
+     *  //         "model" => instancia_de_modelo_categoria
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por nombre de modelo vacío
+     *  -------------------------------------------
+     *  $campos_view = [];
+     *  $key = "categoria";
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *  $name_model = ""; // Nombre del modelo vacío
+     *  $namespace_model = "gamboamartin\\catalogos\\models";
+     *
+     *  $resultado = $this->model_init_campos_select($campos_view, $key, $link, $name_model, $namespace_model);
+     *  // Retorna un error:
+     *  // [
+     *  //     "error" => 1,
+     *  //     "mensaje" => "Error name_model esta vacio",
+     *  //     "data" => ""
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error al generar el modelo
+     *  -------------------------------------
+     *  $campos_view = [];
+     *  $key = "categoria";
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *  $name_model = "modelo_inexistente";
+     *  $namespace_model = "gamboamartin\\catalogos\\models";
+     *
+     *  $resultado = $this->model_init_campos_select($campos_view, $key, $link, $name_model, $namespace_model);
+     *  // Retorna un error indicando que el modelo no pudo ser generado.
      */
     private function model_init_campos_select(
-        array $campos_view, string $key, PDO $link, string $name_model, string $namespace_model): array
-    {
-
+        array $campos_view,
+        string $key,
+        PDO $link,
+        string $name_model,
+        string $namespace_model
+    ): array {
+        // Validación de parámetros
         $key = trim($key);
-        if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio',data:  $key, es_final: true);
+        if ($key === '') {
+            return $this->error->error(
+                mensaje: 'Error key esta vacio',
+                data: $key,
+                es_final: true
+            );
         }
+
         $namespace_model = trim($namespace_model);
-        if($namespace_model === ''){
-            return $this->error->error(mensaje: 'Error namespace_model esta vacio',data:  $namespace_model, es_final: true);
+        if ($namespace_model === '') {
+            return $this->error->error(
+                mensaje: 'Error namespace_model esta vacio',
+                data: $namespace_model,
+                es_final: true
+            );
         }
+
         $name_model = trim($name_model);
-        if($name_model === ''){
-            return $this->error->error(mensaje: 'Error name_model esta vacio',data:  $name_model, es_final: true);
+        if ($name_model === '') {
+            return $this->error->error(
+                mensaje: 'Error name_model esta vacio',
+                data: $name_model,
+                es_final: true
+            );
         }
 
-        $campos_view = $this->model_init_campos(campos_view: $campos_view,key:  $key,type:  'selects');
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        // Inicializa el campo como tipo `selects`
+        $campos_view = $this->model_init_campos(
+            campos_view: $campos_view,
+            key: $key,
+            type: 'selects'
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar campo view',
+                data: $campos_view
+            );
         }
 
-        $modelo = (new modelo_base($link))->genera_modelo(modelo: $name_model,namespace_model: $namespace_model);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al genera modelo',data:  $modelo);
+        // Genera el modelo asociado al `select`
+        $modelo = (new modelo_base($link))->genera_modelo(
+            modelo: $name_model,
+            namespace_model: $namespace_model
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al genera modelo',
+                data: $modelo
+            );
         }
+
+        // Asocia el modelo al campo
         $campos_view[$key]['model'] = $modelo;
 
         return $campos_view;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Función para inicializar los campos de vistas en el modelo.
+     * REG
+     * Inicializa los campos de vista de un template basado en un conjunto de claves proporcionadas.
      *
-     * @param array $campos_view Un array que contiene las vistas de campo a inicializar.
-     * @param stdClass $keys Un objeto stdClass que contiene las claves para las vistas.
-     * @param PDO $link Un objeto PDO que se usa como enlace a la base de datos.
+     * Este método:
+     * 1. Configura campos de tipo `input`, `textarea`, `password`, `telefono`, `email` y `fecha` a través de
+     *    `modela_inputs_campos`.
+     * 2. Valida y configura los campos de tipo `select` definidos en `$keys->selects`.
+     * 3. Retorna un arreglo de configuración actualizado con los campos inicializados.
      *
-     * @return array Devuelve las vistas de campo.
+     * @param array $campos_view Arreglo asociativo que representa la configuración de los campos de vista.
+     * @param stdClass $keys Objeto que contiene las claves necesarias para la configuración:
+     *                       - `inputs`: Array de claves para campos de tipo `input`.
+     *                       - `textareas`: Array de claves para campos de tipo `textarea`.
+     *                       - `passwords`: Array de claves para campos de tipo `password`.
+     *                       - `telefonos`: Array de claves para campos de tipo `telefono`.
+     *                       - `emails`: Array de claves para campos de tipo `email`.
+     *                       - `fechas`: Array de claves para campos de tipo `fecha`.
+     *                       - `selects`: Array de objetos donde cada objeto define `name_model` y `namespace_model`
+     *                         para un campo de tipo `select`.
+     * @param PDO $link Conexión PDO utilizada para inicializar los modelos asociados a campos de tipo `select`.
      *
-     * @throws errores Si `selects` no es un array.
-     * @version 18.30.0
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con todos los campos inicializados.
+     *   - Si ocurre un error en cualquier paso, retorna un arreglo de error con los detalles correspondientes.
+     *
+     * @example
+     *  Ejemplo 1: Inicializar campos de un template
+     *  --------------------------------------------
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->inputs = ['nombre', 'apellido'];
+     *  $keys->textareas = ['descripcion'];
+     *  $keys->selects = [
+     *      'categoria' => (object) ['name_model' => 'categoria', 'namespace_model' => 'gamboamartin\\catalogos\\models'],
+     *      'producto' => (object) ['name_model' => 'producto', 'namespace_model' => 'gamboamartin\\catalogos\\models']
+     *  ];
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *
+     *  $resultado = $this->model_init_campos_template($campos_view, $keys, $link);
+     *  // $resultado contendrá:
+     *  // [
+     *  //     "nombre" => ["type" => "inputs"],
+     *  //     "apellido" => ["type" => "inputs"],
+     *  //     "descripcion" => ["type" => "textareas"],
+     *  //     "categoria" => [
+     *  //         "type" => "selects",
+     *  //         "model" => instancia_de_modelo_categoria
+     *  //     ],
+     *  //     "producto" => [
+     *  //         "type" => "selects",
+     *  //         "model" => instancia_de_modelo_producto
+     *  //     ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error en la inicialización de un campo
+     *  -------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->inputs = ['nombre', 'apellido'];
+     *  $keys->selects = [
+     *      'categoria' => (object) ['name_model' => '', 'namespace_model' => 'gamboamartin\\catalogos\\models']
+     *  ];
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *
+     *  $resultado = $this->model_init_campos_template($campos_view, $keys, $link);
+     *  // Retorna un arreglo de error indicando que `name_model` está vacío.
+     *
+     * @example
+     *  Ejemplo 3: Inicialización sin campos de tipo `select`
+     *  -----------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->inputs = ['nombre'];
+     *  $keys->selects = [];
+     *  $link = new PDO('mysql:host=localhost;dbname=mi_base_datos', 'usuario', 'contrasena');
+     *
+     *  $resultado = $this->model_init_campos_template($campos_view, $keys, $link);
+     *  // $resultado contendrá:
+     *  // [
+     *  //     "nombre" => ["type" => "inputs"]
+     *  // ]
      */
     final public function model_init_campos_template(array $campos_view, stdClass $keys, PDO $link): array
     {
-        $campos_view = $this->modela_inputs_campos(campos_view: $campos_view,keys:  $keys);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        // Inicializar campos básicos como inputs, textareas, etc.
+        $campos_view = $this->modela_inputs_campos(campos_view: $campos_view, keys: $keys);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar campo view',
+                data: $campos_view
+            );
         }
 
-        if(!isset($keys->selects)){
+        // Validar y configurar campos de tipo select
+        if (!isset($keys->selects)) {
             $keys->selects = array();
         }
 
-        if(!is_array($keys->selects)){
-            return $this->error->error(mensaje: 'Error keys->selects debe ser un array',data:  $keys, es_final: true);
+        if (!is_array($keys->selects)) {
+            return $this->error->error(
+                mensaje: 'Error keys->selects debe ser un array',
+                data: $keys,
+                es_final: true
+            );
         }
 
         $campos_view = $this->model_init_campos_selects(
-            campos_view: $campos_view, keys: $keys->selects, link: $link);
+            campos_view: $campos_view,
+            keys: $keys->selects,
+            link: $link
+        );
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar campo view',
+                data: $campos_view
+            );
         }
-        return $campos_view;
 
+        return $campos_view;
     }
 
+
     /**
-     * TOTAL
-     * Función modela_input
+     * REG
+     * Modela un conjunto de entradas (`inputs`) en el arreglo `campos_view` basándose en un atributo y claves proporcionadas.
      *
-     * Esta función trabaja en conjunto con model_init_campos_inputs para inicializar
-     * múltiples campos de una sola vez. Primero, valida que el atributo proporcionado
-     * no esté vacío, y luego verifica que la propiedad 'atributo' en el objeto 'keys'
-     * exista y sea del tipo array. Posteriormente, model_init_campos_inputs es llamado
-     * con los parámetros adecuados para inicializar los campos de vista.
-     * Si se produce un error durante el proceso, éste retorna un mensaje de error.
+     * Este método:
+     * 1. Valida que el atributo proporcionado no esté vacío.
+     * 2. Asegura que el atributo esté definido en el objeto `$keys` y que sea un arreglo.
+     * 3. Inicializa los campos dentro de `campos_view` para las claves asociadas al atributo con el tipo correspondiente.
      *
-     * @param string $atributo     Atributo para validar y usar para inicializar los campos de vista.
-     * @param array $campos_view   Array de campos de vista para inicializar.
-     * @param stdClass $keys       Objeto conteniendo claves para ser usadas en los campos de vista.
+     * @param string $atributo Nombre del atributo que se utilizará como tipo de entrada.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param stdClass $keys Objeto que contiene las claves asociadas a cada atributo.
+     *                       Cada atributo debe ser un arreglo de claves.
      *
-     * @return array Retorna el array de campos de vista con los nuevos campos asignados.
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con la configuración de los campos.
+     *   - Retorna un arreglo de error si el atributo está vacío, no existe en `$keys`, o si ocurre un problema al inicializar los campos.
      *
-     * @throws errores Si el atributo está vacío, si la propiedad 'atributo' en el objeto 'keys'
-     *                   no existe o no es un array, o si se produce un error al inicializar los campos de vista.
-     * @version 18.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.init.modela_input
+     * @example
+     *  Ejemplo 1: Inicializar campos de tipo `text`
+     *  --------------------------------------------
+     *  $atributo = 'text';
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->text = ['nombre', 'apellido', 'email'];
+     *
+     *  $resultado = $this->modela_input($atributo, $campos_view, $keys);
+     *  // $resultado será:
+     *  // [
+     *  //     'nombre' => ['type' => 'text'],
+     *  //     'apellido' => ['type' => 'text'],
+     *  //     'email' => ['type' => 'text']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Inicializar campos de tipo `number`
+     *  ----------------------------------------------
+     *  $atributo = 'number';
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->number = ['edad', 'telefono'];
+     *
+     *  $resultado = $this->modela_input($atributo, $campos_view, $keys);
+     *  // $resultado será:
+     *  // [
+     *  //     'edad' => ['type' => 'number'],
+     *  //     'telefono' => ['type' => 'number']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error por atributo vacío
+     *  -----------------------------------
+     *  $atributo = '';
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->text = ['nombre'];
+     *
+     *  $resultado = $this->modela_input($atributo, $campos_view, $keys);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error atributo esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error por `$keys->atributo` no definido como arreglo
+     *  ----------------------------------------------------------------
+     *  $atributo = 'text';
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->text = 'no_es_un_array';
+     *
+     *  $resultado = $this->modela_input($atributo, $campos_view, $keys);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error $keys->text debe ser un array',
+     *  //     'data' => $keys,
+     *  //     ...
+     *  // ]
      */
     private function modela_input(string $atributo, array $campos_view, stdClass $keys): array
     {
+        // Valida que el atributo no esté vacío
         $atributo = trim($atributo);
-        if($atributo === ''){
-            return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo, es_final: true);
+        if ($atributo === '') {
+            return $this->error->error(
+                mensaje: 'Error atributo esta vacio',
+                data: $atributo,
+                es_final: true
+            );
         }
 
-        if(!isset($keys->$atributo)){
+        // Asegura que el atributo esté definido en $keys y sea un arreglo
+        if (!isset($keys->$atributo)) {
             $keys->$atributo = array();
         }
-        if(!is_array($keys->$atributo)){
-            return $this->error->error(mensaje: 'Error $keys->'.$atributo.' debe ser un array',data:  $keys,
-                es_final: true);
+        if (!is_array($keys->$atributo)) {
+            return $this->error->error(
+                mensaje: 'Error $keys->' . $atributo . ' debe ser un array',
+                data: $keys,
+                es_final: true
+            );
         }
 
-        $campos_view = $this->model_init_campos_inputs(campos_view: $campos_view, keys: $keys->$atributo,
-            type: $atributo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        // Inicializa los campos en $campos_view
+        $campos_view = $this->model_init_campos_inputs(
+            campos_view: $campos_view,
+            keys: $keys->$atributo,
+            type: $atributo
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar campo view',
+                data: $campos_view
+            );
         }
+
         return $campos_view;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI REV FINAL
-     * Modela los atributos de entrada y devuelve una vista de campos modificada.
+     * REG
+     * Modela múltiples atributos y los asigna a los campos de vista (`campos_view`).
      *
-     * @param array    $atributos    Un array de atributos a modelar.
-     * @param array    $campos_view  Un array existente de campos de vista a modificar.
-     * @param stdClass $keys         Un objeto que contiene las claves.
+     * Este método:
+     * 1. Itera sobre una lista de atributos y valida que cada uno no esté vacío.
+     * 2. Llama al método `modela_input` para inicializar y asignar cada atributo en el arreglo `campos_view`.
+     * 3. Devuelve el arreglo `campos_view` actualizado con los atributos modelados.
      *
-     * @return array   Devuelve la vista de campos modificada.
+     * @param array $atributos Lista de atributos que se desean modelar (por ejemplo, `text`, `number`, etc.).
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param stdClass $keys Objeto que contiene las claves asociadas a cada atributo.
+     *                       Cada atributo debe estar definido como un arreglo dentro de `$keys`.
      *
-     * @throws errores   En caso de que el atributo esté vacío o haya un error al inicializar el campo de vista.
-     * @version 18.28.0
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con los atributos modelados.
+     *   - Retorna un arreglo de error si algún atributo está vacío o si ocurre un problema al inicializar un campo.
+     *
+     * @example
+     *  Ejemplo 1: Modelar múltiples atributos en `campos_view`
+     *  -------------------------------------------------------
+     *  $atributos = ['text', 'number'];
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->text = ['nombre', 'apellido'];
+     *  $keys->number = ['edad', 'telefono'];
+     *
+     *  $resultado = $this->modela_inputs_attr($atributos, $campos_view, $keys);
+     *  // $resultado será:
+     *  // [
+     *  //     'nombre' => ['type' => 'text'],
+     *  //     'apellido' => ['type' => 'text'],
+     *  //     'edad' => ['type' => 'number'],
+     *  //     'telefono' => ['type' => 'number']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por atributo vacío
+     *  -----------------------------------
+     *  $atributos = ['text', ''];
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->text = ['nombre'];
+     *
+     *  $resultado = $this->modela_inputs_attr($atributos, $campos_view, $keys);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error atributo esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error al inicializar un atributo
+     *  -------------------------------------------
+     *  $atributos = ['text'];
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->text = [''];
+     *
+     *  $resultado = $this->modela_inputs_attr($atributos, $campos_view, $keys);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error al inicializar campo view',
+     *  //     'data' => [...],
+     *  //     ...
+     *  // ]
      */
     private function modela_inputs_attr(array $atributos, array $campos_view, stdClass $keys): array
     {
-        foreach ($atributos as $atributo){
+        foreach ($atributos as $atributo) {
+            // Valida que el atributo no esté vacío
             $atributo = trim($atributo);
-            if($atributo === ''){
-                return $this->error->error(mensaje: 'Error atributo esta vacio',data:  $atributo, es_final: true);
+            if ($atributo === '') {
+                return $this->error->error(
+                    mensaje: 'Error atributo esta vacio',
+                    data: $atributo,
+                    es_final: true
+                );
             }
 
-            $campos_view = $this->modela_input(atributo: $atributo,campos_view:  $campos_view,keys:  $keys);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+            // Modela el atributo y lo asigna a los campos de vista
+            $campos_view = $this->modela_input(
+                atributo: $atributo,
+                campos_view: $campos_view,
+                keys: $keys
+            );
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al inicializar campo view',
+                    data: $campos_view
+                );
             }
         }
+
         return $campos_view;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Modela los campos de entrada y devuelve una vista de campos modificada.
+     * REG
+     * Modela múltiples tipos de entradas (`inputs`, `textareas`, `passwords`, `telefonos`, `emails`, `fechas`)
+     * y las asigna al arreglo de campos de vista (`campos_view`).
      *
-     * @param array    $campos_view  Un array existente de campos de vista a modificar.
-     * @param stdClass $keys         Un objeto que contiene las claves.
+     * Este método:
+     * 1. Define una lista preestablecida de tipos de atributos (`inputs`, `textareas`, etc.).
+     * 2. Llama al método `modela_inputs_attr` para procesar y asignar estos atributos al arreglo `campos_view`.
+     * 3. Devuelve el arreglo actualizado con los atributos procesados.
      *
-     * @return array   Devuelve la vista de campos modificada.
+     * @param array $campos_view Arreglo asociativo que contiene la configuración de los campos de vista.
+     * @param stdClass $keys Objeto que contiene las claves asociadas a cada tipo de atributo.
+     *                       Cada tipo de atributo (como `inputs` o `textareas`) debe estar definido como un arreglo dentro de `$keys`.
      *
-     * @throws errores   En caso de que haya un error al inicializar el campo de vista.
-     * @version 18.28.0
+     * @return array
+     *   - Retorna el arreglo `$campos_view` actualizado con los atributos modelados.
+     *   - Retorna un arreglo de error si ocurre algún problema al inicializar un campo o procesar un atributo.
+     *
+     * @example
+     *  Ejemplo 1: Modelar campos básicos en `campos_view`
+     *  ---------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->inputs = ['nombre', 'apellido'];
+     *  $keys->textareas = ['descripcion'];
+     *  $keys->passwords = ['contrasena'];
+     *  $keys->telefonos = ['telefono'];
+     *  $keys->emails = ['correo'];
+     *  $keys->fechas = ['fecha_nacimiento'];
+     *
+     *  $resultado = $this->modela_inputs_campos($campos_view, $keys);
+     *  // $resultado será:
+     *  // [
+     *  //     'nombre' => ['type' => 'inputs'],
+     *  //     'apellido' => ['type' => 'inputs'],
+     *  //     'descripcion' => ['type' => 'textareas'],
+     *  //     'contrasena' => ['type' => 'passwords'],
+     *  //     'telefono' => ['type' => 'telefonos'],
+     *  //     'correo' => ['type' => 'emails'],
+     *  //     'fecha_nacimiento' => ['type' => 'fechas']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por tipo de atributo no definido en `$keys`
+     *  ------------------------------------------------------------
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->inputs = ['nombre'];
+     *  // Faltan otros atributos, como `textareas`, `passwords`, etc.
+     *
+     *  $resultado = $this->modela_inputs_campos($campos_view, $keys);
+     *  // Retorna un arreglo de error indicando que falta una clave esperada en `$keys`.
+     *
+     * @example
+     *  Ejemplo 3: Error al inicializar un campo vacío
+     *  ----------------------------------------------
+     *  $campos_view = [];
+     *  $keys = new stdClass();
+     *  $keys->inputs = [''];
+     *
+     *  $resultado = $this->modela_inputs_campos($campos_view, $keys);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error atributo esta vacio',
+     *  //     'data' => '',
+     *  //     ...
+     *  // ]
      */
     private function modela_inputs_campos(array $campos_view, stdClass $keys): array
     {
-        $atributos = array('inputs','textareas','passwords','telefonos','emails','fechas');
+        // Lista de atributos que se procesarán
+        $atributos = array('inputs', 'textareas', 'passwords', 'telefonos', 'emails', 'fechas');
 
-        $campos_view = $this->modela_inputs_attr(atributos: $atributos,campos_view:  $campos_view,keys:  $keys);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar campo view',data:  $campos_view);
+        // Modela y asigna los atributos a los campos de vista
+        $campos_view = $this->modela_inputs_attr(atributos: $atributos, campos_view: $campos_view, keys: $keys);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al inicializar campo view',
+                data: $campos_view
+            );
         }
+
         return $campos_view;
     }
+
 
     /**
      *
@@ -1378,7 +2078,7 @@ class init{
             $seguridad = $this->get_acciones_permitidas(modelo_accion: $modelo_accion,seguridad:  $seguridad);
             if(errores::$error){
                 session_destroy();
-                return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $n_acciones);
+                return $modelo_accion->error->error(mensaje: 'Error al contar acciones permitidas',data: $seguridad);
             }
         }
         return $seguridad;

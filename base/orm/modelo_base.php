@@ -588,87 +588,213 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * TOTAL
-     * Método ejecuta_consulta de la clase modelo_base
+     * REG
+     * Ejecuta una consulta SQL, procesa los resultados y los retorna en un formato estructurado.
      *
-     * Este método se encarga de ejecutar una consulta SQL. Recibe como parámetros la consulta,
-     * una lista de campos encriptados, una lista de columnas con totales y otra lista relacionada con el "hijo".
+     * Este método:
+     * 1. Valida que la consulta SQL no esté vacía.
+     * 2. Configura los modelos hijos, en caso de ser necesarios, para procesar registros relacionados.
+     * 3. Ejecuta la consulta utilizando el método `data_result` de `_result`.
+     * 4. Retorna los registros procesados con información adicional como totales, número de registros, y registros en formato objeto.
      *
-     * @param string $consulta La consulta SQL a ejecutar
-     * @param array $campos_encriptados Lista de campos que han sido encriptados
-     * @param array $columnas_totales Lista de columnas que contienen totales
-     * @param array $hijo Lista relacionada con el "hijo"
+     * @param string $consulta Consulta SQL a ejecutar.
+     * @param array $campos_encriptados Campos que requieren desencriptarse en los registros resultantes.
+     * @param array $columnas_totales Columnas para las cuales se deben calcular los totales acumulados.
+     * @param array $hijo Modelos hijos para procesar registros relacionados.
      *
-     * @throws errores Si la consulta está vacía o si hay errores al parsear los registros
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con los datos procesados si la ejecución es exitosa:
+     *     - `registros`: Array con los registros procesados.
+     *     - `n_registros`: Número total de registros procesados.
+     *     - `sql`: La consulta SQL ejecutada.
+     *     - `campos_entidad`: Los campos de la entidad del modelo.
+     *     - `totales`: Objeto con los totales acumulados.
+     *     - `registros_obj`: Array con los registros procesados como objetos.
+     *   - Retorna un arreglo con el error si ocurre algún problema durante el proceso.
      *
-     * @return array|stdClass Si no hay errores, retorna los datos de la consulta.
-     * Si hay errores, retorna los mensajes de error correspondientes
+     * @example
+     *  Ejemplo 1: Ejecución exitosa de una consulta
+     *  --------------------------------------------
+     *  $consulta = "SELECT id, nombre, precio FROM productos";
+     *  $campos_encriptados = ['nombre'];
+     *  $columnas_totales = ['precio'];
+     *  $hijo = [];
      *
-     * Algoritmo:
-     * 1. Se asigna la lista "hijo" a la propiedad $hijo de la clase
-     * 2. Se verifica que la consulta no esté vacía
-     * 3. Si la consulta está vacía, se devuelve un mensaje de error
-     * 4. Se asigna el valor 'SELECT' a la propiedad $transaccion de la clase
-     * 5. Se llama al método data_result, pasando la consulta y las listas como parámetros
-     * 6. Si hay errores al parsear los registros, se devuelve un mensaje de error
-     * 7. Si no hay errores, se retornan los datos de la consulta
+     *  $resultado = $this->ejecuta_consulta(
+     *      consulta: $consulta,
+     *      campos_encriptados: $campos_encriptados,
+     *      columnas_totales: $columnas_totales,
+     *      hijo: $hijo
+     *  );
+     *  // $resultado contendrá un objeto `stdClass` con los datos procesados.
      *
-     * @version 18.31.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.ejecuta_consulta
+     * @example
+     *  Ejemplo 2: Error en consulta vacía
+     *  -----------------------------------
+     *  $consulta = "";
+     *  $resultado = $this->ejecuta_consulta($consulta);
+     *  // Retorna un arreglo con el error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'La consulta no puede venir vacia',
+     *  //   'data' => [...],
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Procesamiento de modelos hijos
+     *  ------------------------------------------
+     *  $consulta = "SELECT id, nombre, categoria_id FROM productos";
+     *  $campos_encriptados = [];
+     *  $columnas_totales = ['precio'];
+     *  $hijo = [
+     *      'categorias' => [
+     *          'nombre_estructura' => 'categoria',
+     *          'namespace_model' => 'gamboamartin\\categorias\\models',
+     *          'filtros' => ['categoria_id' => 'id'],
+     *          'filtros_con_valor' => []
+     *      ]
+     *  ];
+     *
+     *  $resultado = $this->ejecuta_consulta(
+     *      consulta: $consulta,
+     *      campos_encriptados: $campos_encriptados,
+     *      columnas_totales: $columnas_totales,
+     *      hijo: $hijo
+     *  );
+     *  // $resultado incluirá los registros con los datos de los modelos hijos relacionados.
+     *
+     * @throws array Retorna un arreglo con el error en caso de que ocurra un problema durante la ejecución.
      */
     final public function ejecuta_consulta(string $consulta, array $campos_encriptados = array(),
-                                           array $columnas_totales = array(), array $hijo = array()): array|stdClass{
+                                           array $columnas_totales = array(), array $hijo = array()): array|stdClass
+    {
         $this->hijo = $hijo;
-        if(trim($consulta) === ''){
-            return $this->error->error(mensaje: 'La consulta no puede venir vacia', data: array(
-                $this->link->errorInfo(),$consulta),es_final: true);
+
+        // Validación inicial de la consulta
+        if (trim($consulta) === '') {
+            return $this->error->error(
+                mensaje: 'La consulta no puede venir vacia',
+                data: [$this->link->errorInfo(), $consulta],
+                es_final: true
+            );
         }
+
+        // Configura la transacción como SELECT
         $this->transaccion = 'SELECT';
 
-        $data = (new _result())->data_result(campos_encriptados: $campos_encriptados,
-            columnas_totales: $columnas_totales, consulta: $consulta,modelo: $this);
-        if (errores::$error) {
-            return $this->error->error(mensaje: "Error al parsear registros", data: $data);
-        }
+        // Ejecuta la consulta y procesa los resultados
+        $data = (new _result())->data_result(
+            campos_encriptados: $campos_encriptados,
+            columnas_totales: $columnas_totales,
+            consulta: $consulta,
+            modelo: $this
+        );
 
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: "Error al parsear registros",
+                data: $data
+            );
+        }
 
         return $data;
-
     }
 
+
     /**
-     * TOTAL
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.ejecuta_sql.21.5.0
-     * Ejecuta una consulta SQL y devuelve un objeto con los resultados de la consulta,
-     * el ID del registro recién insertado, y otros detalles sobre la operación realizada.
+     * REG
+     * Ejecuta una consulta SQL en la base de datos y maneja el resultado.
      *
-     * @param string $consulta La consulta SQL que se va a ejecutar.
-     * @return array|stdClass Devuelve un objeto con datos como el mensaje, la consulta, el resultado,
-     *                        el registro, el ID del registro y la salida.
-     *                        En caso de error, devuelve un array con el mensaje y los datos del error.
+     * Este método valida y ejecuta una consulta SQL utilizando el enlace (`link`) a la base de datos.
+     * Maneja errores durante la ejecución y puede registrar la transacción dependiendo del tipo (INSERT).
      *
-     * @version 21.5.0
+     * @param string $consulta Consulta SQL que se desea ejecutar.
+     *
+     * @return array|stdClass Retorna:
+     *   - Un objeto `stdClass` con los datos del resultado de la consulta si es exitosa.
+     *   - Un arreglo de error si la consulta está vacía o si ocurre una excepción al ejecutarla.
+     *
+     * @throws array Si:
+     *   - La consulta está vacía.
+     *   - Ocurre una excepción al ejecutar la consulta.
+     *
+     * @example
+     *  Ejemplo 1: Ejecución exitosa de una consulta SELECT
+     *  ---------------------------------------------------
+     *  $consulta = "SELECT * FROM usuarios";
+     *  $resultado = $this->ejecuta_sql($consulta);
+     *  // $resultado contiene:
+     *  // $resultado->mensaje => "Exito al ejecutar sql del modelo usuarios transaccion SELECT"
+     *  // $resultado->sql => "SELECT * FROM usuarios"
+     *  // $resultado->result => PDOStatement (resultado del query)
+     *  // $resultado->salida => "exito"
+     *
+     * @example
+     *  Ejemplo 2: Ejecución de una consulta INSERT
+     *  -------------------------------------------
+     *  $this->transaccion = 'INSERT';
+     *  $this->link = new PDO(...); // Conexión a la base de datos
+     *  $this->tabla = "usuarios";
+     *  $this->campo_llave = "id";
+     *  $this->registro = ['nombre' => 'Juan', 'email' => 'juan@example.com'];
+     *
+     *  $consulta = "INSERT INTO usuarios (nombre, email) VALUES ('Juan', 'juan@example.com')";
+     *  $resultado = $this->ejecuta_sql($consulta);
+     *  // $resultado->registro_id contiene el ID del último registro insertado.
+     *
+     * @example
+     *  Ejemplo 3: Error al pasar una consulta vacía
+     *  --------------------------------------------
+     *  $consulta = "";
+     *  $resultado = $this->ejecuta_sql($consulta);
+     *  // $resultado contiene:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => "Error consulta vacia",
+     *  //     'data' => " tabla: usuarios",
+     *  //     ...
+     *  // ]
      */
-    final public function ejecuta_sql(string $consulta):array|stdClass{
-        if($consulta === ''){
-            return $this->error->error(mensaje: "Error consulta vacia", data: $consulta.' tabla: '.$this->tabla,
-                aplica_bitacora: true, es_final: true);
+    final public function ejecuta_sql(string $consulta): array|stdClass
+    {
+        // Validar que la consulta no esté vacía
+        if ($consulta === '') {
+            return $this->error->error(
+                mensaje: "Error consulta vacia",
+                data: $consulta . ' tabla: ' . $this->tabla,
+                aplica_bitacora: true,
+                es_final: true
+            );
         }
+
         try {
-            $result = $this->link->query( $consulta);
-        }
-        catch (Throwable $e){
-            return $this->error->error(mensaje: 'Error al ejecutar sql '. $e->getMessage(),
-                data: array($e->getCode().' '.$this->tabla.' '.$consulta.' '.$this->tabla,
-                    'registro'=>$this->registro),aplica_bitacora: true,es_final: true);
-        }
-        if($this->transaccion ==='INSERT'){
-            $this->campo_llave === "" ? $this->registro_id = $this->link->lastInsertId() :
-                $this->registro_id = $this->registro[$this->campo_llave];
+            // Ejecutar la consulta
+            $result = $this->link->query($consulta);
+        } catch (Throwable $e) {
+            // Manejar errores durante la ejecución de la consulta
+            return $this->error->error(
+                mensaje: 'Error al ejecutar sql ' . $e->getMessage(),
+                data: array(
+                    $e->getCode() . ' ' . $this->tabla . ' ' . $consulta . ' ' . $this->tabla,
+                    'registro' => $this->registro
+                ),
+                aplica_bitacora: true,
+                es_final: true
+            );
         }
 
-        $mensaje = 'Exito al ejecutar sql del modelo '.$this->tabla. ' transaccion '.$this->transaccion;
+        // Manejar transacción INSERT
+        if ($this->transaccion === 'INSERT') {
+            $this->registro_id = $this->campo_llave === ""
+                ? $this->link->lastInsertId()
+                : $this->registro[$this->campo_llave];
+        }
 
+        // Crear mensaje de éxito
+        $mensaje = 'Exito al ejecutar sql del modelo ' . $this->tabla . ' transaccion ' . $this->transaccion;
+
+        // Crear objeto de datos de respuesta
         $data = new stdClass();
         $data->mensaje = $mensaje;
         $data->sql = $consulta;
@@ -676,52 +802,120 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->registro = $this->registro;
         $data->registro_id = $this->registro_id;
         $data->salida = 'exito';
+
         return $data;
     }
 
+
     /**
-     * TOTAL
-     * Verifica si un modelo cumple con una característica especial de nombres de espacio
+     * REG
+     * Verifica si un modelo pertenece a uno de los namespaces especiales.
      *
-     * @param string $modelo Nombre del modelo a verificar
-     * @param array $namespaces Lista de nombres de espacio a verificar en el modelo
+     * Este método evalúa si el nombre completo de un modelo contiene alguno de los namespaces
+     * especiales proporcionados. Si el modelo pertenece a un namespace especial, devuelve `true`;
+     * de lo contrario, devuelve `false`. También maneja errores relacionados con datos vacíos.
      *
-     * Esta función verifica si el nombre del modelo contiene uno de los nombres de espacio
-     * proporcionados.
+     * @param string $modelo Nombre completo del modelo (incluyendo namespace).
+     * @param array $namespaces Lista de namespaces especiales a verificar.
      *
-     * Si el modelo o alguno de los nombres de espacio está vacío, la función retorna un error.
+     * @return bool|array
+     *   - Retorna `true` si el modelo pertenece a uno de los namespaces especiales.
+     *   - Retorna `false` si no pertenece a ninguno de los namespaces.
+     *   - Retorna un arreglo de error si el modelo o un namespace están vacíos.
      *
-     * Si se encuentra alguna coincidencia, interrumpe la verificación y devuelve 'true'.
-     * En caso contrario, devuelve 'false'.
+     * @example
+     *  Ejemplo 1: Modelo pertenece a un namespace especial
+     *  ----------------------------------------------------
+     *  $modelo = 'gamboamartin\\facturacion\\models\\factura';
+     *  $namespaces = [
+     *      'gamboamartin\\facturacion\\models\\',
+     *      'gamboamartin\\empleado\\models\\'
+     *  ];
      *
-     * @return bool|array Devuelve 'true' si el modelo contiene uno de los nombres de espacio, 'false' en caso contrario
-     * @version 18.15.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.es_namespace_especial.21.8.0
+     *  $resultado = $this->es_namespace_especial($modelo, $namespaces);
+     *  // $resultado será `true` porque el modelo contiene el namespace `gamboamartin\\facturacion\\models\\`.
      *
+     * @example
+     *  Ejemplo 2: Modelo no pertenece a un namespace especial
+     *  -------------------------------------------------------
+     *  $modelo = 'gamboamartin\\organigrama\\models\\departamento';
+     *  $namespaces = [
+     *      'gamboamartin\\facturacion\\models\\',
+     *      'gamboamartin\\empleado\\models\\'
+     *  ];
+     *
+     *  $resultado = $this->es_namespace_especial($modelo, $namespaces);
+     *  // $resultado será `false` porque el modelo no pertenece a los namespaces proporcionados.
+     *
+     * @example
+     *  Ejemplo 3: Error por modelo vacío
+     *  ----------------------------------
+     *  $modelo = '';
+     *  $namespaces = [
+     *      'gamboamartin\\facturacion\\models\\',
+     *      'gamboamartin\\empleado\\models\\'
+     *  ];
+     *
+     *  $resultado = $this->es_namespace_especial($modelo, $namespaces);
+     *  // $resultado será un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error modelo vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error por namespace vacío
+     *  -------------------------------------
+     *  $modelo = 'gamboamartin\\facturacion\\models\\factura';
+     *  $namespaces = [
+     *      'gamboamartin\\facturacion\\models\\',
+     *      ''
+     *  ];
+     *
+     *  $resultado = $this->es_namespace_especial($modelo, $namespaces);
+     *  // $resultado será un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error namespace vacio',
+     *  //   'data' => [...],
+     *  //   ...
+     *  // ]
      */
     private function es_namespace_especial(string $modelo, array $namespaces): bool|array
     {
-        if($modelo === ''){
-            return $this->error->error(mensaje: "Error modelo vacio", data: $modelo, es_final: true);
+        if ($modelo === '') {
+            return $this->error->error(
+                mensaje: "Error modelo vacio",
+                data: $modelo,
+                es_final: true
+            );
         }
 
         $es_namespace_especial_como_mis_inges = false;
+
         foreach ($namespaces as $namespace) {
             $namespace = trim($namespace);
-            if($namespace === ''){
-                return $this->error->error(mensaje: "Error namespace vacio", data: $namespaces, es_final: true);
+            if ($namespace === '') {
+                return $this->error->error(
+                    mensaje: "Error namespace vacio",
+                    data: $namespaces,
+                    es_final: true
+                );
             }
 
             $namespaces_explode = explode($namespace, $modelo);
 
-            if (is_array($namespaces_explode) && count($namespaces_explode)>1) {
+            if (is_array($namespaces_explode) && count($namespaces_explode) > 1) {
                 $es_namespace_especial_como_mis_inges = true;
                 break;
             }
-
         }
+
         return $es_namespace_especial_como_mis_inges;
     }
+
 
 
     /**
@@ -992,39 +1186,93 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * TOTAL
-     * Genera una instancia del modelo.
+     * REG
+     * Genera una instancia de un modelo basado en su nombre y namespace proporcionados.
      *
-     * Esta función se encarga de generar una instancia del modelo.
+     * Este método:
+     * 1. Genera el nombre completo del modelo ajustado utilizando el método `genera_name_modelo`.
+     * 2. Valida que el nombre del modelo generado sea válido mediante el método `valida_data_modelo`.
+     * 3. Retorna una nueva instancia del modelo si todo es correcto.
      *
-     * Primero, genera el nombre del modelo utilizando la función `genera_name_modelo`.
-     * Si se encuentra un error durante este paso, se lanza un error con el mensaje "Error al maquetar name modelo".
+     * @param string $modelo Nombre del modelo que se desea generar.
+     * @param string $namespace_model Namespace del modelo (opcional). Si está vacío, se utiliza el nombre del modelo tal cual.
      *
-     * Luego, valida el modelo generado utilizando la función `valida_data_modelo`.
-     * Si se encuentra un error durante la validación, se lanza un error con el mensaje "Error al validar modelo".
+     * @return array|modelo
+     *   - Retorna una instancia del modelo generado si todo es correcto.
+     *   - Retorna un arreglo de error si ocurre algún problema durante la generación o validación del modelo.
      *
-     * Finalmente, si todos los pasos previos son exitosos, se genera y se devuelve una nueva instancia del modelo.
+     * @example
+     *  Ejemplo 1: Generar un modelo con un namespace especificado
+     *  -----------------------------------------------------------
+     *  $modelo = 'usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
      *
-     * @param string $modelo El nombre del modelo para generar.
-     * @param string $namespace_model El namespace del modelo. Valor predeterminado es una cadena vacía.
-     * @return array|modelo Nueva instancia del modelo o un array con información del error.
-     * @throws errores Error al maquetar nombre del modelo.
-     * @throws errores Error al validar modelo.
-     * @version 18.22.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_modelo.21.17.0
+     *  $resultado = $this->genera_modelo($modelo, $namespace_model);
+     *  // Retorna una instancia del modelo: gamboamartin\administrador\usuario
+     *
+     * @example
+     *  Ejemplo 2: Generar un modelo sin namespace
+     *  ------------------------------------------
+     *  $modelo = 'models\\usuario';
+     *  $namespace_model = '';
+     *
+     *  $resultado = $this->genera_modelo($modelo, $namespace_model);
+     *  // Retorna una instancia del modelo: models\usuario
+     *
+     * @example
+     *  Ejemplo 3: Error al generar el nombre del modelo
+     *  ------------------------------------------------
+     *  $modelo = '';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->genera_modelo($modelo, $namespace_model);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al maquetar name modelo',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error al validar el modelo
+     *  -------------------------------------
+     *  $modelo = 'gamboamartin\\inexistente';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->genera_modelo($modelo, $namespace_model);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al validar modelo',
+     *  //   'data' => 'gamboamartin\\inexistente',
+     *  //   ...
+     *  // ]
      */
-    final public function genera_modelo(string $modelo, string $namespace_model = ''):array|modelo{
+    final public function genera_modelo(string $modelo, string $namespace_model = ''): array|modelo
+    {
+        // Genera el nombre ajustado del modelo
+        $modelo = $this->genera_name_modelo(modelo: $modelo, namespace_model: $namespace_model);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: "Error al maquetar name modelo",
+                data: $modelo
+            );
+        }
 
-        $modelo = $this->genera_name_modelo(modelo: $modelo,namespace_model:  $namespace_model);
-        if(errores::$error){
-            return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
-        }
+        // Valida que el nombre del modelo sea válido
         $valida = $this->validacion->valida_data_modelo(name_modelo: $modelo);
-        if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar modelo",data: $valida);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: "Error al validar modelo",
+                data: $valida
+            );
         }
+
+        // Retorna una nueva instancia del modelo
         return new $modelo($this->link);
     }
+
 
     public static function modelo_new(PDO $link,string $modelo, string $namespace_model): modelo|array
     {
@@ -1040,43 +1288,105 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * TOTAL
-     * Genera el nombre del modelo.
+     * REG
+     * Genera el nombre completo de un modelo ajustado a su namespace correspondiente.
      *
-     * Esta función se encarga de generar el nombre del modelo.
-     * Inicialmente, obtiene todos los namespaces disponibles.
-     * Luego, verifica si el modelo pertenece a un namespace especial.
-     * Finalmente, devuelve el nombre del modelo o lanza un error en caso de que lo haya.
+     * Este método:
+     * 1. Obtiene la lista de namespaces válidos mediante el método `namespaces()`.
+     * 2. Valida si el modelo pertenece a un namespace especial utilizando el método `es_namespace_especial()`.
+     * 3. Ajusta el nombre del modelo según si pertenece a un namespace especial o no, aplicando el namespace proporcionado.
+     * 4. Retorna el nombre completo del modelo ajustado.
      *
-     * @param string $modelo El nombre del modelo a generar.
-     * @param string $namespace_model El namespace del modelo.
-     * @return array|string El nombre del modelo generado.
+     * @param string $modelo Nombre del modelo a ajustar.
+     * @param string $namespace_model Namespace del modelo que se debe aplicar si corresponde.
      *
-     * @version 18.22.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_name_modelo.21.8.0
+     * @return array|string
+     *   - Retorna el nombre del modelo ajustado al formato correspondiente.
+     *   - Retorna un arreglo de error si ocurre algún problema durante el ajuste.
+     *
+     * @example
+     *  Ejemplo 1: Modelo con namespace especial
+     *  ----------------------------------------
+     *  $modelo = 'gamboamartin\\administrador\\usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->genera_name_modelo($modelo, $namespace_model);
+     *  // $resultado será: 'gamboamartin\\administrador\\usuario'
+     *
+     * @example
+     *  Ejemplo 2: Modelo sin namespace especial
+     *  ----------------------------------------
+     *  $modelo = 'usuario';
+     *  $namespace_model = '';
+     *
+     *  $resultado = $this->genera_name_modelo($modelo, $namespace_model);
+     *  // $resultado será: 'models\\usuario'
+     *
+     * @example
+     *  Ejemplo 3: Modelo con namespace ajustado
+     *  ----------------------------------------
+     *  $modelo = 'usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->genera_name_modelo($modelo, $namespace_model);
+     *  // $resultado será: 'gamboamartin\\administrador\\usuario'
+     *
+     * @example
+     *  Ejemplo 4: Error al obtener namespaces
+     *  --------------------------------------
+     *  // Simulando un error en `namespaces()`.
+     *  $namespaces = null; // Error simulado
+     *  $modelo = 'usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->genera_name_modelo($modelo, $namespace_model);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al obtener namespaces',
+     *  //   'data' => null,
+     *  //   ...
+     *  // ]
      */
     private function genera_name_modelo(string $modelo, string $namespace_model): array|string
     {
+        // Obtiene los namespaces disponibles
         $namespaces = $this->namespaces();
-        if(errores::$error){
-            return  $this->error->error(mensaje: "Error al obtener namespaces",data: $namespaces);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: "Error al obtener namespaces",
+                data: $namespaces
+            );
         }
 
+        // Valida si el modelo pertenece a un namespace especial
         $es_namespace_especial = $this->es_namespace_especial(
-            modelo: $modelo,namespaces:  $namespaces);
-        if(errores::$error){
-            return  $this->error->error(mensaje: "Error al validar namespaces",data: $es_namespace_especial);
+            modelo: $modelo,
+            namespaces: $namespaces
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: "Error al validar namespaces",
+                data: $es_namespace_especial
+            );
         }
 
-        $modelo = $this->name_modelo(es_namespace_especial: $es_namespace_especial,
-            modelo:  $modelo,namespace_model:  $namespace_model);
-        if(errores::$error){
-            return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
+        // Genera el nombre del modelo ajustado
+        $modelo = $this->name_modelo(
+            es_namespace_especial: $es_namespace_especial,
+            modelo: $modelo,
+            namespace_model: $namespace_model
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: "Error al maquetar name modelo",
+                data: $modelo
+            );
         }
 
         return $modelo;
-
     }
+
 
 
 
@@ -1183,131 +1493,335 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * TOTAL
-     * Genera el nombre completo del modelo que se utilizará para las operaciones de base de datos.
+     * REG
+     * Genera el nombre completo de un modelo, ajustando su formato según el namespace y si es un namespace especial.
      *
-     * @param bool $es_namespace_especial Indica si el espacio de nombre del modelo es especial. Si es verdadero, el nombre del modelo no se manipulará más.
-     * @param string $modelo El nombre del modelo para el que se está generando el nombre.
-     * @param string $namespace_model El espacio de nombres del modelo.
+     * Este método:
+     * 1. Valida que el nombre del modelo no esté vacío.
+     * 2. Si el modelo no pertenece a un namespace especial, ajusta el nombre del modelo al formato base.
+     * 3. Si se proporciona un namespace, ajusta el nombre del modelo al formato adecuado para ese namespace.
+     * 4. Retorna el nombre del modelo ajustado al formato esperado.
      *
-     * @return string|array El nombre completo del modelo después de la manipulación, o un objeto Error si ocurrió un error durante el proceso.
+     * @param bool $es_namespace_especial Indica si el modelo pertenece a un namespace especial.
+     * @param string $modelo Nombre original del modelo.
+     * @param string $namespace_model Namespace que se debe aplicar al modelo, si corresponde.
      *
-     * @throws errores Se lanza una excepción si el nombre del modelo está vacío después de quitar los espacios
-     *                en blanco o si ocurrió un error durante la manipulación del nombre del modelo.
-     * @version 18.20.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.name_modelo.21.8.0
+     * @return string|array
+     *   - Retorna el nombre del modelo ajustado al formato correspondiente.
+     *   - Retorna un arreglo de error si el nombre del modelo está vacío o si ocurre un problema durante el ajuste.
+     *
+     * @example
+     *  Ejemplo 1: Modelo con namespace especial
+     *  ----------------------------------------
+     *  $es_namespace_especial = true;
+     *  $modelo = 'gamboamartin\\administrador\\usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+     *  // $resultado será: 'gamboamartin\\administrador\\usuario'
+     *
+     * @example
+     *  Ejemplo 2: Modelo sin namespace especial
+     *  ----------------------------------------
+     *  $es_namespace_especial = false;
+     *  $modelo = 'usuario';
+     *  $namespace_model = '';
+     *
+     *  $resultado = $this->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+     *  // $resultado será: 'models\\usuario'
+     *
+     * @example
+     *  Ejemplo 3: Modelo con namespace ajustado
+     *  ----------------------------------------
+     *  $es_namespace_especial = false;
+     *  $modelo = 'usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+     *  // $resultado será: 'gamboamartin\\administrador\\usuario'
+     *
+     * @example
+     *  Ejemplo 4: Error por modelo vacío
+     *  ---------------------------------
+     *  $es_namespace_especial = false;
+     *  $modelo = '';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->name_modelo($es_namespace_especial, $modelo, $namespace_model);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error modelo esta vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
      */
     private function name_modelo(bool $es_namespace_especial, string $modelo, string $namespace_model): string|array
     {
+        // Valida que el modelo no esté vacío
         $modelo = trim($modelo);
-        if($modelo === ''){
-            return  $this->error->error(mensaje: "Error modelo esta vacio",data: $modelo, es_final: true);
+        if ($modelo === '') {
+            return $this->error->error(
+                mensaje: "Error modelo esta vacio",
+                data: $modelo,
+                es_final: true
+            );
         }
-        if(!$es_namespace_especial) {
+
+        // Si no es un namespace especial, ajusta al formato base
+        if (!$es_namespace_especial) {
             $modelo = $this->name_modelo_base(modelo: $modelo);
-            if(errores::$error){
-                return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: "Error al maquetar name modelo",
+                    data: $modelo
+                );
             }
         }
-        if($namespace_model !==''){
+
+        // Si se proporciona un namespace, ajusta el modelo al formato adecuado
+        if ($namespace_model !== '') {
             $modelo = $this->name_modelo_ajustado(modelo: $modelo, namespace_model: $namespace_model);
-            if(errores::$error){
-                return  $this->error->error(mensaje: "Error al maquetar name modelo",data: $modelo);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: "Error al maquetar name modelo",
+                    data: $modelo
+                );
             }
         }
+
+        // Retorna el modelo ajustado
         return trim($modelo);
     }
 
+
     /**
-     * TOTAL
-     * Ajusta el nombre del modelo dado su espacio de nombres.
+     * REG
+     * Ajusta el nombre de un modelo al formato adecuado con su namespace correspondiente.
      *
-     * Este método se encarga de tomar el nombre del modelo junto con su espacio de nombres
-     * y procede a realizar ajustes para obtener una representación limpia del nombre del modelo.
-     * El espacio de nombres y el modelo son validados antes de realizar cualquier operación.
-     * En caso de error, se devuelve un mensaje de error con detalle del problema.
+     * Este método:
+     * 1. Valida que el namespace y el nombre del modelo no estén vacíos.
+     * 2. Elimina el prefijo del namespace proporcionado del nombre del modelo.
+     * 3. Elimina el prefijo `models\\` si está presente en el nombre del modelo.
+     * 4. Retorna el modelo con el namespace ajustado al formato `{namespace_model}\\{nombre_modelo}`.
      *
-     * @param string $modelo El nombre del modelo a ajustar.
-     * @param string $namespace_model El espacio de nombres del modelo.
-     * @return string|array Retorna el nombre del modelo ajustado si es exitoso, y un error si ocurre una excepción.
+     * @param string $modelo Nombre del modelo a ajustar.
+     * @param string $namespace_model Namespace que se debe aplicar al modelo.
      *
-     * @throws errores Si los parámetros de entrada están vacíos .
-     * @version 18.19.0
-     * @ur https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.name_modelo_ajustado.21.8.0
+     * @return string|array
+     *   - Retorna el nombre del modelo ajustado al formato `{namespace_model}\\{nombre_modelo}`.
+     *   - Retorna un arreglo de error si el namespace o el nombre del modelo están vacíos.
+     *
+     * @example
+     *  Ejemplo 1: Ajuste de un modelo con namespace y prefijo
+     *  ------------------------------------------------------
+     *  $modelo = 'gamboamartin\\administrador\\models\\usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->name_modelo_ajustado($modelo, $namespace_model);
+     *  // $resultado será: 'gamboamartin\\administrador\\usuario'
+     *
+     * @example
+     *  Ejemplo 2: Ajuste de un modelo sin prefijo `models\\`
+     *  -----------------------------------------------------
+     *  $modelo = 'usuario';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->name_modelo_ajustado($modelo, $namespace_model);
+     *  // $resultado será: 'gamboamartin\\administrador\\usuario'
+     *
+     * @example
+     *  Ejemplo 3: Error por namespace vacío
+     *  ------------------------------------
+     *  $modelo = 'usuario';
+     *  $namespace_model = '';
+     *
+     *  $resultado = $this->name_modelo_ajustado($modelo, $namespace_model);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error namespace_model esta vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 4: Error por modelo vacío
+     *  ---------------------------------
+     *  $modelo = '';
+     *  $namespace_model = 'gamboamartin\\administrador';
+     *
+     *  $resultado = $this->name_modelo_ajustado($modelo, $namespace_model);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error modelo esta vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
      */
     private function name_modelo_ajustado(string $modelo, string $namespace_model): string|array
     {
+        // Elimina espacios en blanco al inicio y al final del namespace
         $namespace_model = trim($namespace_model);
-        if($namespace_model === ''){
-            return  $this->error->error(mensaje: "Error namespace_model esta vacio",data: $namespace_model);
+
+        // Valida que el namespace no esté vacío
+        if ($namespace_model === '') {
+            return $this->error->error(
+                mensaje: "Error namespace_model esta vacio",
+                data: $namespace_model
+            );
         }
-        if($modelo === ''){
-            return  $this->error->error(mensaje: "Error modelo esta vacio",data: $modelo);
+
+        // Valida que el modelo no esté vacío
+        $modelo = trim($modelo);
+        if ($modelo === '') {
+            return $this->error->error(
+                mensaje: "Error modelo esta vacio",
+                data: $modelo
+            );
         }
+
+        // Elimina el namespace del modelo y ajusta al formato adecuado
         $modelo = str_replace($namespace_model, '', $modelo);
         $modelo = str_replace('models\\', '', $modelo);
-        return $namespace_model.'\\'.$modelo;
-
-
+        return $namespace_model . '\\' . $modelo;
     }
 
+
     /**
-     * TOTAL
-     *  Método Privado name_modelo_base
+     * REG
+     * Ajusta el nombre de un modelo al formato base esperado.
      *
-     * Este método se encarga de procesar el nombre del modelo proporcionado y rechazar cualquier valor vacío.
-     * Reemplaza el prefijo 'models\' en el nombre del modelo y devuelve el nombre del modelo con el prefijo 'models\' añadido.
+     * Este método:
+     * 1. Elimina cualquier exceso de espacios en el nombre del modelo proporcionado.
+     * 2. Verifica que el nombre del modelo no esté vacío.
+     * 3. Asegura que el modelo esté en el formato base (`models\\{nombre_modelo}`), agregando el prefijo si es necesario.
      *
-     * @param string $modelo El nombre del modelo a procesar.
+     * @param string $modelo El nombre del modelo que se desea ajustar.
      *
-     * @return string|array Retorna el nombre del modelo procesado, o un error si el nombre del modelo está vacío.
+     * @return string|array
+     *   - Retorna el nombre del modelo ajustado al formato base (`models\\{nombre_modelo}`).
+     *   - Retorna un arreglo de error si el nombre del modelo está vacío.
      *
-     * @throws errores Se generará una excepción si el nombre del modelo está vacío.
-     * @version 18.18.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.name_modelo_base.21.8.0
+     * @example
+     *  Ejemplo 1: Modelo en formato base
+     *  ---------------------------------
+     *  $modelo = 'models\\factura';
+     *
+     *  $resultado = $this->name_modelo_base($modelo);
+     *  // $resultado será: 'models\\factura'
+     *
+     * @example
+     *  Ejemplo 2: Modelo sin prefijo
+     *  ------------------------------
+     *  $modelo = 'factura';
+     *
+     *  $resultado = $this->name_modelo_base($modelo);
+     *  // $resultado será: 'models\\factura'
+     *
+     * @example
+     *  Ejemplo 3: Modelo con espacios en blanco
+     *  ----------------------------------------
+     *  $modelo = '   models\\factura   ';
+     *
+     *  $resultado = $this->name_modelo_base($modelo);
+     *  // $resultado será: 'models\\factura'
+     *
+     * @example
+     *  Ejemplo 4: Error por modelo vacío
+     *  ---------------------------------
+     *  $modelo = '';
+     *
+     *  $resultado = $this->name_modelo_base($modelo);
+     *  // $resultado será un arreglo de error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error modelo esta vacio',
+     *  //   'data' => '',
+     *  //   ...
+     *  // ]
      */
     private function name_modelo_base(string $modelo): string|array
     {
+        // Elimina espacios en blanco al inicio y al final del modelo
         $modelo = trim($modelo);
-        if($modelo === ''){
-            return  $this->error->error(mensaje: "Error modelo esta vacio",data: $modelo, es_final: true);
+
+        // Valida que el modelo no esté vacío
+        if ($modelo === '') {
+            return $this->error->error(
+                mensaje: "Error modelo esta vacio",
+                data: $modelo,
+                es_final: true
+            );
         }
+
+        // Asegura que el modelo esté en el formato base esperado
         $modelo = str_replace('models\\', '', $modelo);
         return 'models\\' . $modelo;
-
     }
 
+
     /**
-     * TOTAL
-     * Obtiene los namespaces de paquetes par asu uso y normalizacion en modelos
+     * REG
+     * Obtiene un arreglo de namespaces para los modelos utilizados en la aplicación.
      *
-     * @return array
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.namespaces.21.8.0
+     * Este método define una lista de namespaces que corresponden a diferentes módulos
+     * o componentes del sistema. Los namespaces proporcionados son utilizados para
+     * buscar y cargar clases de modelos en sus respectivos directorios.
+     *
+     * @return array Lista de namespaces como strings.
+     *
+     * @example
+     *  Ejemplo: Obtener namespaces disponibles
+     *  ----------------------------------------
+     *  $namespaces = $this->namespaces();
+     *
+     *  // $namespaces contendrá:
+     *  // [
+     *  //   'gamboamartin\\administrador\\models\\',
+     *  //   'gamboamartin\\empleado\\models\\',
+     *  //   'gamboamartin\\facturacion\\models\\',
+     *  //   ...
+     *  // ]
+     *
+     * @example
+     *  Uso en carga de modelos dinámicos
+     *  -----------------------------------
+     *  $namespaces = $this->namespaces();
+     *  $modelo = null;
+     *  foreach ($namespaces as $namespace) {
+     *      $class = $namespace . 'mi_modelo';
+     *      if (class_exists($class)) {
+     *          $modelo = new $class();
+     *          break;
+     *      }
+     *  }
+     *  // Si existe la clase `mi_modelo` en alguno de los namespaces, será instanciada.
      */
     private function namespaces(): array
     {
-
-        $namespaces[]  = 'gamboamartin\\administrador\\models\\';
-        $namespaces[]  = 'gamboamartin\\empleado\\models\\';
-        $namespaces[]  = 'gamboamartin\\facturacion\\models\\';
-        $namespaces[]  = 'gamboamartin\\organigrama\\models\\';
-        $namespaces[]  = 'gamboamartin\\direccion_postal\\models\\';
-        $namespaces[]  = 'gamboamartin\\cat_sat\\models\\';
-        $namespaces[]  = 'gamboamartin\\comercial\\models\\';
-        $namespaces[]  = 'gamboamartin\\boletaje\\models\\';
-        $namespaces[]  = 'gamboamartin\\banco\\models\\';
-        $namespaces[]  = 'gamboamartin\\gastos\\models\\';
-        $namespaces[]  = 'gamboamartin\\nomina\\models\\';
-        $namespaces[]  = 'gamboamartin\\im_registro_patronal\\models\\';
-        $namespaces[]  = 'gamboamartin\\importador\\models\\';
-        $namespaces[]  = 'gamboamartin\\importador_cva\\models\\';
-        $namespaces[]  = 'gamboamartin\\proceso\\models\\';
-        $namespaces[]  = 'gamboamartin\\notificaciones\\models\\';
-        $namespaces[]  = 'gamboamartin\\inmuebles\\models\\';
+        $namespaces[] = 'gamboamartin\\administrador\\models\\';
+        $namespaces[] = 'gamboamartin\\empleado\\models\\';
+        $namespaces[] = 'gamboamartin\\facturacion\\models\\';
+        $namespaces[] = 'gamboamartin\\organigrama\\models\\';
+        $namespaces[] = 'gamboamartin\\direccion_postal\\models\\';
+        $namespaces[] = 'gamboamartin\\cat_sat\\models\\';
+        $namespaces[] = 'gamboamartin\\comercial\\models\\';
+        $namespaces[] = 'gamboamartin\\boletaje\\models\\';
+        $namespaces[] = 'gamboamartin\\banco\\models\\';
+        $namespaces[] = 'gamboamartin\\gastos\\models\\';
+        $namespaces[] = 'gamboamartin\\nomina\\models\\';
+        $namespaces[] = 'gamboamartin\\im_registro_patronal\\models\\';
+        $namespaces[] = 'gamboamartin\\importador\\models\\';
+        $namespaces[] = 'gamboamartin\\importador_cva\\models\\';
+        $namespaces[] = 'gamboamartin\\proceso\\models\\';
+        $namespaces[] = 'gamboamartin\\notificaciones\\models\\';
+        $namespaces[] = 'gamboamartin\\inmuebles\\models\\';
 
         return $namespaces;
-
     }
+
 
     /**
      * TOTAL

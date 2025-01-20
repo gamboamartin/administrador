@@ -279,26 +279,63 @@ class sql{
     }
 
     /**
-     * TOTAL
-     * Descripción: Este método genera la consulta SQL para obtener la descripción (estructura) de una tabla en específico.
+     * REG
+     * Genera una sentencia SQL para describir la estructura de una tabla.
      *
-     * @param string $tabla Nombre de la tabla cuya descripción (estructura) se desea obtener.
-     * @return string|array Retorna una cadena con la consulta SQL en caso de éxito.
-     *                      Si ocurre un error durante la validación del nombre de la tabla,
-     *                      se retorna un array con detalles del error.
-     * @version 13.19.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.describe_table
+     * Este método valida el nombre de la tabla utilizando el método `tabla` de la clase `val_sql`.
+     * Si la validación es exitosa, genera y retorna la sentencia SQL para describir la tabla.
+     * En caso de error, utiliza `$this->error->error()` para retornar detalles del error.
      *
+     * @param string $tabla Nombre de la tabla a describir.
+     *
+     * @return string|array Retorna:
+     *   - Una cadena SQL con la sentencia `DESCRIBE $tabla` si la validación es exitosa.
+     *   - Un arreglo de error si la validación falla.
+     *
+     * @throws array Si:
+     *   - El nombre de la tabla es inválido o está vacío.
+     *   - Ocurre un error en la validación realizada por `val_sql::tabla`.
+     *
+     * @example
+     *  Ejemplo 1: Generar la sentencia `DESCRIBE` para una tabla válida
+     *  ---------------------------------------------------------------
+     *  $tabla = "usuarios";
+     *  $resultado = $this->describe_table($tabla);
+     *  // $resultado => "DESCRIBE usuarios"
+     *
+     * @example
+     *  Ejemplo 2: Error al pasar una tabla vacía
+     *  -----------------------------------------
+     *  $tabla = "";
+     *  $resultado = $this->describe_table($tabla);
+     *  // $resultado =>
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'Error al validar tabla',
+     *  //     'data' => [
+     *  //         'error' => 1,
+     *  //         'mensaje' => 'Error tabla esta vacia',
+     *  //         'data' => '',
+     *  //         ...
+     *  //     ],
+     *  //     ...
+     *  // ]
      */
     final public function describe_table(string $tabla): string|array
     {
+        // Valida que el nombre de la tabla sea válido
         $valida = (new val_sql())->tabla(tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tabla', data: $valida);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al validar tabla',
+                data: $valida
+            );
         }
 
+        // Retorna la sentencia SQL para describir la tabla
         return "DESCRIBE $tabla";
     }
+
 
 
     /**

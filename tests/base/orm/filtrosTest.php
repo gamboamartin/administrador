@@ -270,8 +270,14 @@ class filtrosTest extends test {
 
         $complemento = new stdClass();
         $consulta_previa = '';
+        $complemento->sentencia = 'a';
+        $complemento->filtro_especial = 'b';
+        $complemento->diferente_de = 'c';
         $resultado = $filtros->sql($complemento, $consulta_previa);
+
+
         $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a b c ",$resultado);
 
         errores::$error = false;
     }

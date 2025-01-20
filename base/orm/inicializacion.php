@@ -63,6 +63,7 @@ class inicializacion{
     }
 
     /**
+     * TOTAL
      * Ajusta los parametros si no existen en el complemento
      * @param stdClass $complemento Complemento con datos para maquetacion de sql
      * @return array|stdClass
@@ -70,7 +71,7 @@ class inicializacion{
      * @verfuncion 1.1.0
      * @fecha 2022-08-02 13:07
      * @author mgamboa
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-inicializacion#funci%C3%B3n-ajusta_params
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.ajusta_params
      */
     final public function ajusta_params(stdClass $complemento): array|stdClass
     {
@@ -230,45 +231,98 @@ class inicializacion{
     }
 
     /**
-     * TOTAL
-     * Esta función toma dos parámetros; una matriz de campos cifrados y una matriz de filas (row). Para cada valor
-     * en la matriz fila, verifica si el campo es numérico. Si es así, retorna un mensaje de error.
-     * En caso contrario, desencripta el valor usando la función `value_desencriptado`.
-     * Si hay un error durante el proceso de desencriptación, retorna un mensaje de error.
-     * Si el proceso es exitoso, asigna el valor desencriptado de vuelta a la matriz de fila (row) y procede con el siguiente valor.
-     * La función finalmente retorna la matriz de fila (row) con todos los valores desencriptados.
+     * REG
+     * Desencripta los valores de un array asociativo basado en los campos definidos como encriptados.
      *
-     * @param array $campos_encriptados Una matriz de campos que necesitan ser desencriptados.
-     * @param array $row Una matriz de filas que contienen los campos cifrados.
+     * Este método:
+     * 1. Itera sobre los elementos de `$row` (nombre del campo y su valor asociado).
+     * 2. Valida que el nombre del campo (`$campo`) no sea numérico.
+     * 3. Si el campo está en la lista de `$campos_encriptados`, desencripta su valor utilizando el método `value_desencriptado`.
+     * 4. Reemplaza el valor original en `$row` con su valor desencriptado (si aplica).
      *
-     * @return array Retorna la matriz de filas con los campos desencriptados.
+     * @param array $campos_encriptados Lista de nombres de campos que están definidos como encriptados.
+     * @param array $row Array asociativo con los campos y valores a procesar.
      *
-     * @throws errores Si el campo es numérico o si hay un error al desencriptar.
+     * @return array
+     *   - Retorna el array `$row` con los valores desencriptados en los campos especificados.
+     *   - Si no hay campos encriptados en `$row`, devuelve el array sin modificaciones.
+     *   - Si ocurre un error, retorna un arreglo con los detalles del error.
      *
-     * @version 14.5.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.asigna_valor_desencriptado.21.7.0
+     * @example
+     *  Ejemplo 1: Desencriptar valores de un array
+     *  --------------------------------------------
+     *  $campos_encriptados = ['clave', 'token'];
+     *  $row = [
+     *      'id' => 1,
+     *      'nombre' => 'Juan Perez',
+     *      'clave' => 'ValorEncriptado123',
+     *      'token' => 'OtroValorEncriptado456'
+     *  ];
+     *
+     *  $resultado = $this->asigna_valor_desencriptado($campos_encriptados, $row);
+     *  // $resultado será:
+     *  // [
+     *  //     'id' => 1,
+     *  //     'nombre' => 'Juan Perez',
+     *  //     'clave' => 'ValorDesencriptado1',
+     *  //     'token' => 'ValorDesencriptado2'
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error en la clave del campo
+     *  --------------------------------------
+     *  $campos_encriptados = ['clave', 'token'];
+     *  $row = [
+     *      0 => 'ValorIncorrecto'
+     *  ];
+     *
+     *  $resultado = $this->asigna_valor_desencriptado($campos_encriptados, $row);
+     *  // Retorna un arreglo con el error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error el campo debe ser un texto',
+     *  //   'data' => 0,
+     *  //   'fix' => 'El campo dentro de row debe ser un texto no numérico...'
+     *  // ]
+     *
+     * @throws array Si ocurre un error durante el desencriptado o el nombre del campo es numérico, retorna un arreglo de error.
      */
     final public function asigna_valor_desencriptado(array $campos_encriptados, array $row): array
     {
-        foreach ($row as $campo=>$value){
-            if(is_numeric($campo)){
-                $fix = ' El campo dentro de row debe ser un texto no numerico puede ser id, registro etc, no puede ';
-                $fix .= ' ser 0 o 1 o cualquier numero, ejemplo de envio de row puede ser $row[x] o';
-                $fix.= ' $row[cualquier texto no numerico] no puede ser row[0] o row[cualquier numero]';
-                return $this->error->error(mensaje: 'Error el campo debe ser un texto', data: $campo,
-                    es_final: true, fix: $fix);
+        // Itera sobre los campos del array
+        foreach ($row as $campo => $value) {
+            // Valida que el nombre del campo no sea numérico
+            if (is_numeric($campo)) {
+                $fix = 'El campo dentro de row debe ser un texto no numérico, puede ser id, registro, etc. No puede ';
+                $fix .= 'ser 0, 1 o cualquier número. Ejemplo de row: $row["id"] o $row["campo"], no $row[0].';
+                return $this->error->error(
+                    mensaje: 'Error el campo debe ser un texto',
+                    data: $campo,
+                    es_final: true,
+                    fix: $fix
+                );
             }
 
-            $value_enc = $this->value_desencriptado(campo:$campo,
-                campos_encriptados: $campos_encriptados, value: $value);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al desencriptar', data:$value_enc);
+            // Desencripta el valor si el campo está en la lista de campos encriptados
+            $value_enc = $this->value_desencriptado(
+                campo: $campo,
+                campos_encriptados: $campos_encriptados,
+                value: $value
+            );
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al desencriptar',
+                    data: $value_enc
+                );
             }
 
+            // Reemplaza el valor original con el desencriptado
             $row[$campo] = $value_enc;
         }
+
         return $row;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -631,6 +685,7 @@ class inicializacion{
     }
 
     /**
+     * TOTAL
      * Inicializacion de parametros a vacio
      * @param stdClass $complemento Complemento con datos para maquetacion de sql
      * @return stdClass
@@ -638,7 +693,7 @@ class inicializacion{
      * @version 1.1.0
      * @fecha 2022-08-02 12:33
      * @author mgamboa
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador-base-orm-inicializacion#funci%C3%B3n-init_params
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.init_params
      */
     private function init_params(stdClass $complemento): stdClass
     {
@@ -1020,80 +1075,174 @@ class inicializacion{
     }
 
     /**
-     * TOTAL
-     * Recupera las columnas de la tabla especificada en el modelo dado.
+     * REG
+     * Obtiene las columnas de una tabla específica para realizar consultas SQL.
      *
-     * Esta función está diseñada para tomar un objeto modelo_base, obtener el nombre de la tabla del modelo y
-     * luego obtener la estructura de columnas de esa tabla especificada en la consulta SQL base. Si no se
-     * encuentran columnas para la tabla, la función devuelve un error. En caso contrario, devuelve las columnas
+     * Este método:
+     * 1. Elimina el namespace del nombre de la tabla proporcionada en el modelo.
+     * 2. Establece las columnas de la tabla en la estructura de base de datos del objeto `sql_bass`.
+     * 3. Valida la existencia de las columnas asociadas a la tabla.
+     * 4. Retorna las columnas de la tabla si existen.
      *
-     * @final
+     * @param modelo_base $modelo Instancia del modelo que contiene información de la tabla y sus columnas.
+     *                            El modelo debe tener las siguientes propiedades:
+     *                            - `NAMESPACE`: Namespace del modelo.
+     *                            - `tabla`: Nombre completo de la tabla (incluyendo namespace si aplica).
+     *                            - `columnas`: Array con las columnas definidas para la tabla.
      *
-     * @param modelo_base $modelo Un objeto de la clase modelo_base. Se esperaría que el objeto tenga una propiedad
-     *  'tabla', que contenga el nombre de la tabla.
+     * @return array Retorna un array con las columnas de la tabla si existen.
      *
-     * @return array - Devuelve un array con las columnas de la tabla.
-     *                Si la tabla no tiene columnas, devuelve un error.
+     * @throws array Si no existen columnas asociadas a la tabla, retorna un arreglo de error
+     *               generado por `$this->error->error()`.
      *
-     * @version 13.5.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.tablas_select
+     * @example
+     *  Ejemplo 1: Obtención de columnas para una tabla
+     *  ------------------------------------------------
+     *  $modelo = new modelo_base();
+     *  $modelo->NAMESPACE = "gamboamartin\\modelos\\";
+     *  $modelo->tabla = "gamboamartin\\modelos\\usuarios";
+     *  $modelo->columnas = [
+     *      "id", "nombre", "email"
+     *  ];
+     *
+     *  $resultado = $this->tablas_select($modelo);
+     *  // $resultado será:
+     *  // [
+     *  //     "id",
+     *  //     "nombre",
+     *  //     "email"
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error al no definir columnas en la tabla
+     *  ----------------------------------------------------
+     *  $modelo = new modelo_base();
+     *  $modelo->NAMESPACE = "gamboamartin\\modelos\\";
+     *  $modelo->tabla = "gamboamartin\\modelos\\usuarios";
+     *
+     *  $resultado = $this->tablas_select($modelo);
+     *  // Retorna un arreglo de error:
+     *  // [
+     *  //     'error' => 1,
+     *  //     'mensaje' => 'No existen columnas para la tabla usuarios',
+     *  //     'data' => 'usuarios',
+     *  //     ...
+     *  // ]
      */
     final public function tablas_select(modelo_base $modelo): array
     {
+        // Elimina el namespace del nombre de la tabla
         $tabla_sin_namespace = str_replace($modelo->NAMESPACE, '', $modelo->tabla);
         $modelo->tabla = $tabla_sin_namespace;
 
+        // Inicializa la estructura de la base de datos
         $consulta_base = new sql_bass();
-
         $consulta_base->estructura_bd[$modelo->tabla]['columnas'] = $modelo->columnas;
 
+        // Obtiene las columnas asociadas a la tabla
         $columnas_tabla = $consulta_base->estructura_bd[$modelo->tabla]['columnas'];
 
+        // Valida la existencia de columnas en la tabla
         if (!isset($columnas_tabla)) {
-            return $this->error->error(mensaje: 'No existen columnas para la tabla ' . $modelo->tabla,
-                data: $modelo->tabla, es_final: true);
+            return $this->error->error(
+                mensaje: 'No existen columnas para la tabla ' . $modelo->tabla,
+                data: $modelo->tabla,
+                es_final: true
+            );
         }
+
         return $columnas_tabla;
     }
 
+
     /**
-     * TOTAL
-     * Desencripta el valor del campo proporcionado si está en la lista de campos encriptados.
+     * REG
+     * Obtiene el valor desencriptado de un campo si está definido como encriptado.
      *
-     * El método verifica si el nombre del campo está dentro de la lista de campos encriptados.
-     * Si el campo está en la lista, el valor se desencripta utilizando el método desencripta de la clase encriptador.
+     * Este método:
+     * 1. Valida que el nombre del campo (`$campo`) no sea un valor numérico.
+     * 2. Verifica si el campo está listado en `$campos_encriptados`.
+     * 3. Si el campo está encriptado, intenta desencriptar el valor proporcionado utilizando la clase `encriptador`.
+     * 4. Si el campo no está encriptado, retorna el valor original sin modificaciones.
      *
-     * @param string $campo El nombre del campo a verificar y desencriptar si corresponde.
-     * @param array $campos_encriptados Lista de nombres de campos que están encriptados.
-     * @param mixed $value El valor a desencriptar.
+     * @param string $campo Nombre del campo a verificar (por ejemplo, `id`, `nombre`, etc.).
+     * @param array $campos_encriptados Lista de campos que están definidos como encriptados.
+     * @param mixed $value Valor asociado al campo que podría estar encriptado.
      *
-     * @return string|null|array El valor desencriptado si el campo está dentro de la lista de campos encriptados,
-     * o el propio valor si no lo está. En caso de error, devuelve un array con la información del error.
+     * @return array|string|null
+     *   - Retorna el valor desencriptado si el campo está en `$campos_encriptados`.
+     *   - Retorna el valor original si el campo no está en `$campos_encriptados`.
+     *   - Si ocurre un error, retorna un arreglo con los detalles del error.
      *
-     * @throws errores Si el valor no se puede desencriptar.
+     * @example
+     *  Ejemplo 1: Campo desencriptado exitosamente
+     *  --------------------------------------------
+     *  $campo = 'clave';
+     *  $campos_encriptados = ['clave', 'token'];
+     *  $value = 'ValorEncriptado123';
      *
-     * @author Martin Gamboa
-     * @version 14.4.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.value_desencriptado.21.7.0
+     *  $resultado = $this->value_desencriptado($campo, $campos_encriptados, $value);
+     *  // Retorna el valor desencriptado del campo "clave".
+     *
+     * @example
+     *  Ejemplo 2: Campo no encriptado
+     *  -------------------------------
+     *  $campo = 'nombre';
+     *  $campos_encriptados = ['clave', 'token'];
+     *  $value = 'Juan Perez';
+     *
+     *  $resultado = $this->value_desencriptado($campo, $campos_encriptados, $value);
+     *  // Retorna el valor original: "Juan Perez".
+     *
+     * @example
+     *  Ejemplo 3: Error en el nombre del campo
+     *  ----------------------------------------
+     *  $campo = 123; // Nombre del campo no válido
+     *  $campos_encriptados = ['clave', 'token'];
+     *  $value = 'ValorEncriptado123';
+     *
+     *  $resultado = $this->value_desencriptado($campo, $campos_encriptados, $value);
+     *  // Retorna un arreglo con el error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error el campo debe ser un texto',
+     *  //   'data' => 123,
+     *  //   'fix' => 'El campo debe ser un texto no numérico, como id, registro, etc. No puede ser un número.',
+     *  //   ...
+     *  // ]
+     *
+     * @throws array Si el desencriptado falla o el nombre del campo no es válido, genera un arreglo con detalles del error.
      */
     private function value_desencriptado(string $campo, array $campos_encriptados, mixed $value): array|string|null
     {
-        if(is_numeric($campo)){
-            $fix = ' El campo debe ser un texto no numerico puede ser id, registro etc, no puede ser 0 o 1 o cualquier 
-            numero';
-            return $this->error->error(mensaje: 'Error el campo debe ser un texto', data: $campo,
-                es_final: true, fix: $fix);
+        // Valida que el nombre del campo no sea numérico
+        if (is_numeric($campo)) {
+            $fix = 'El campo debe ser un texto no numérico, puede ser id, registro, etc. No puede ser 0, 1 u otro número.';
+            return $this->error->error(
+                mensaje: 'Error el campo debe ser un texto',
+                data: $campo,
+                es_final: true,
+                fix: $fix
+            );
         }
+
         $value_enc = $value;
 
-        if(in_array($campo, $campos_encriptados, true)){
+        // Verifica si el campo está definido como encriptado
+        if (in_array($campo, $campos_encriptados, true)) {
+            // Intenta desencriptar el valor
             $value_enc = (new encriptador())->desencripta(valor: $value);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al desencriptar', data:$value_enc);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al desencriptar',
+                    data: $value_enc
+                );
             }
         }
+
         return $value_enc;
     }
+
 
     private function values_in(string $key_value, array $rows): array
     {

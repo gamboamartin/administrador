@@ -570,6 +570,38 @@ class modelo extends modelo_base {
 
     }
 
+    /**
+     * TOTAL
+     * Genera y ejecuta una consulta SQL para contar el número de registros según los filtros proporcionados.
+     *
+     * Esta función construye una consulta SQL basada en varios parámetros, incluidos filtros personalizados,
+     * columnas, joins adicionales, y agrupaciones. Luego, ejecuta la consulta y devuelve el número de registros encontrados.
+     * Si ocurre un error en cualquier paso, devuelve un array con los detalles del error; en caso de éxito, retorna el total de registros.
+     *
+     * @param bool $aplica_seguridad Indica si se deben aplicar los filtros de seguridad.
+     * @param array $columnas Las columnas a incluir en la consulta.
+     * @param array $columnas_by_table Las columnas a incluir, agrupadas por tabla.
+     * @param bool $columnas_en_bruto Indica si se deben usar las columnas en su formato bruto.
+     * @param bool $con_sq Indica si se debe incluir un subquery.
+     * @param array $diferente_de Filtros para excluir valores.
+     * @param array $extra_join Joins adicionales para la consulta.
+     * @param array $filtro Filtros de búsqueda.
+     * @param array $filtro_especial Filtros especiales adicionales.
+     * @param array $filtro_extra Filtros extra.
+     * @param array $filtro_fecha Filtros basados en fechas.
+     * @param array $filtro_rango Filtros de rango.
+     * @param array $group_by Columnas para la agrupación.
+     * @param array $hijo Parámetros relacionados con entidades hijas.
+     * @param array $in Filtros para incluir valores específicos.
+     * @param array $not_in Filtros para excluir valores específicos.
+     * @param string $sql_extra SQL adicional para agregar a la consulta.
+     * @param string $tipo_filtro El tipo de filtro a aplicar (por defecto: 'numeros').
+     *
+     * @return array|int Retorna un entero con el número total de registros. En caso de error, retorna un array con detalles del error.
+     *
+     *
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.cuenta_bis
+     */
     final public function cuenta_bis(bool $aplica_seguridad = true, array $columnas =array(),
                                      array $columnas_by_table = array(), bool $columnas_en_bruto = false,
                                      bool $con_sq = true, array $diferente_de = array(), array $extra_join = array(),
@@ -577,7 +609,8 @@ class modelo extends modelo_base {
                                      array $filtro_extra = array(), array $filtro_fecha = array(),
                                      array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
                                      array $in = array(),  array $not_in = array(), string $sql_extra = '',
-                                     string $tipo_filtro='numeros'): array|int{
+                                     string $tipo_filtro='numeros'): array|int
+    {
 
 
 
@@ -1315,6 +1348,7 @@ class modelo extends modelo_base {
     }
 
     /**
+     * TOTAL
      * Genera los filtros para una sentencia select
      * @param array $columnas Columnas para muestra si vacio muestra todas
      * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
@@ -1352,6 +1386,7 @@ class modelo extends modelo_base {
      *
      *      $resultado = filtro_extra_sql($filtro_extra);
      *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.genera_sql_filtro
      */
     private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
                                        array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
