@@ -399,52 +399,89 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Asigna las columnas a la sesión y al modelo dado como parámetro.
+     * REG
+     * Asigna las columnas de una tabla a la sesión para su uso posterior en el modelo.
      *
-     * @param modelo_base $modelo El modelo base para el que se deben asignar las columnas.
-     * @param string $tabla_bd Es el nombre de la tabla en la base de datos del modelo.
+     * Este método:
+     * 1. Verifica que el nombre de la tabla no esté vacío ni sea numérico.
+     * 2. Obtiene las columnas de la tabla utilizando el método `genera_columnas_field`.
+     * 3. Asigna las columnas parseadas y completas a la sesión bajo las claves `campos_tabla` y `columnas_completas`, respectivamente.
+     * 4. Retorna las columnas de la tabla en un objeto `stdClass` que contiene las columnas parseadas y completas.
      *
-     * @return array|stdClass Regresa las columnas asignadas al modelo o un error si ocurre algo inesperado.
+     * @param modelo_base $modelo El modelo que contiene la lógica para interactuar con la base de datos.
+     * @param string $tabla_bd El nombre de la tabla en la base de datos.
      *
-     * @throws errores Si la tabla pasada está vacía o si es numérica, lanza una excepción.
-     *
-     * @throws errores Si hay un error al obtener las columnas, lanza una excepción.
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con las propiedades `columnas_parseadas` y `columnas_completas` que contienen las columnas procesadas.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
      *
      * @example
-     * $columnas = asigna_columnas_session_new($modelo, "mi_tabla");
+     *  Ejemplo 1: Asignando columnas de una tabla a la sesión
+     *  -----------------------------------------------------
+     *  $tabla_bd = 'usuarios';
+     *  $modelo = new modelo_base();
      *
-     * La función primero verifica que la tabla no está vacía y no es numérica.
-     * Luego, intenta generar las columnas para el modelo llamando a la función `genera_columnas_field`.
-     * Si hay un error al generar las columnas, lanza una excepción.
-     * A continuación, asigna las columnas generadas a las sesiones y al modelo.
+     *  $resultado = $this->asigna_columnas_session_new($modelo, $tabla_bd);
+     *  // $resultado->columnas_parseadas contendrá los nombres de las columnas
+     *  // $resultado->columnas_completas tendrá los detalles de cada columna (tipo, nulidad, etc.)
+     *  // Las columnas también estarán disponibles en $_SESSION['campos_tabla']['usuarios'] y $_SESSION['columnas_completas']['usuarios'].
      *
-     * @see genera_columnas_field()
+     * @example
+     *  Ejemplo 2: Error debido a una tabla vacía
+     *  -----------------------------------------
+     *  $tabla_bd = '';
+     *  $modelo = new modelo_base();
      *
-     * @version 18.44.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.asigna_columnas_session_new
+     *  $resultado = $this->asigna_columnas_session_new($modelo, $tabla_bd);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $tabla_bd esta vacia',
+     *  //   'data' => ''
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error debido a que el nombre de la tabla es numérico
+     *  --------------------------------------------------------------
+     *  $tabla_bd = '123';
+     *  $modelo = new modelo_base();
+     *
+     *  $resultado = $this->asigna_columnas_session_new($modelo, $tabla_bd);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $tabla_bd no puede ser un numero',
+     *  //   'data' => '123'
+     *  // ]
      */
     private function asigna_columnas_session_new(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
+        // Verifica que el nombre de la tabla no esté vacío ni sea numérico
         $tabla_bd = trim($tabla_bd);
-        if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd, es_final: true);
+        if ($tabla_bd === '') {
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia', data: $tabla_bd, es_final: true);
         }
-        if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+
+        if (is_numeric($tabla_bd)) {
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero', data: $tabla_bd,
                 es_final: true);
         }
 
-        $columnas_field = $this->genera_columnas_field(modelo:$modelo, tabla_bd: $tabla_bd);
-        if(errores::$error){
+        // Obtiene las columnas de la tabla de base de datos
+        $columnas_field = $this->genera_columnas_field(modelo: $modelo, tabla_bd: $tabla_bd);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
         }
+
+        // Asigna las columnas parseadas y completas a la sesión
         $_SESSION['campos_tabla'][$tabla_bd] = $columnas_field->columnas_parseadas;
         $_SESSION['columnas_completas'][$tabla_bd] = $columnas_field->columnas_completas;
 
+        // Asigna las columnas al modelo y retorna el objeto
         $modelo->data_columnas = $columnas_field;
         return $modelo->data_columnas;
     }
+
 
     /**
      * REG
@@ -596,28 +633,63 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Esta función obtiene las columnas (campos) de una tabla dada y las asigna a una instancia de un modelo dado.
+     * REG
+     * Obtiene los campos de una tabla y los asigna al modelo.
      *
-     * @param modelo $modelo Es la instancia del modelo a la que se le asignarán los campos de la tabla.
-     * @param string $tabla Es el nombre de la tabla de la que se extraerán los campos
+     * Este método:
+     * 1. Valida que el nombre de la tabla no esté vacío.
+     * 2. Obtiene las columnas de la tabla utilizando el método `obten_columnas`.
+     * 3. Asigna los campos parseados de la tabla al modelo.
+     * 4. Retorna los campos de la tabla asignados al modelo.
      *
-     * @return array Retorna un array de campos (columnas) de la tabla asignados al modelo.
-     * En caso de error, devuelve un mensaje de error.
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.campos_tabla
+     * @param modelo $modelo El modelo que contiene la lógica para interactuar con la base de datos.
+     * @param string $tabla El nombre de la tabla de la cual se desean obtener los campos.
+     *
+     * @return array
+     *   - Retorna un arreglo con los nombres de los campos parseados de la tabla.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Obtener campos de una tabla
+     *  --------------------------------------
+     *  $modelo = new modelo_base();
+     *  $tabla = 'usuarios';
+     *
+     *  $resultado = $this->campos_tabla($modelo, $tabla);
+     *  // $resultado contendrá un arreglo con los nombres de los campos de la tabla "usuarios".
+     *
+     * @example
+     *  Ejemplo 2: Tabla vacía
+     *  -----------------------
+     *  $modelo = new modelo_base();
+     *  $tabla = '';
+     *
+     *  $resultado = $this->campos_tabla($modelo, $tabla);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al obtener columnas de ',
+     *  //   'data' => 'Error tabla original no puede venir vacia'
+     *  // ]
      */
     final public function campos_tabla(modelo $modelo, string $tabla): array
     {
-        if($tabla !=='') {
-
-            $data = $this->obten_columnas(modelo:$modelo, tabla_original: $tabla);
+        // Valida que el nombre de la tabla no esté vacío
+        if ($tabla !== '') {
+            // Obtiene las columnas de la tabla
+            $data = $this->obten_columnas(modelo: $modelo, tabla_original: $tabla);
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al obtener columnas de '.$tabla, data: $data);
+                return $this->error->error(mensaje: 'Error al obtener columnas de ' . $tabla, data: $data);
             }
+
+            // Asigna los campos parseados al modelo
             $modelo->campos_tabla = $data->columnas_parseadas;
         }
+
+        // Retorna los campos de la tabla asignados al modelo
         return $modelo->campos_tabla;
     }
+
 
 
     /**
@@ -727,39 +799,88 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Procesa los detalles de una columna y prepara una lista completa de columnas analizadas y no analizadas.
+     * REG
+     * Procesa un conjunto de columnas y atributos, asignando las columnas a las listas correspondientes (parseadas y completas).
      *
-     * Esta función analiza en profundidad los detalles de una columna proporcionada y los prepara para ser utilizados
-     * en consultas de base de datos. Espera un arreglo de columnas y dos arreglos para las columnas completas
-     * y las columnas parseadas respectivamente.
-     * Durante el procesamiento, esta función puede devolver un mensaje de error si encuentra algún problema.
+     * Este método:
+     * 1. Itera sobre las columnas y atributos proporcionados.
+     * 2. Si el atributo pertenece a un campo 'Field', lo agrega a las listas de columnas parseadas y completas.
+     * 3. Retorna un objeto con las columnas parseadas y completas actualizadas.
      *
-     * @param array $columna Arreglo con detalles de una columna. Debe tener una estructura clave/valor.
-     * @param array $columnas_completas Arreglo con las columnas completas.
-     * @param array $columnas_parseadas Arreglo para almacenar columnas que han sido analizadas.
+     * @param array $columna Un array que contiene las columnas y sus atributos.
+     *                       Las claves son los nombres de los campos y los valores son los atributos correspondientes.
+     * @param array $columnas_completas Un array donde se almacenan las columnas completas (con información adicional como el tipo, nulo, etc.).
+     * @param array $columnas_parseadas Un array donde se almacenan las columnas parseadas (los nombres de las columnas).
      *
-     * @return array|stdClass Un objeto que contiene las columnas parseadas y las columnas completas.
-     * @version 15.43.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_attr
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con las propiedades `columnas_parseadas` y `columnas_completas`.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Procesando columnas con atributos
+     *  -------------------------------------------
+     *  $columna = [
+     *      'campo1' => 'varchar(255)',
+     *      'campo2' => 'int(11)'
+     *  ];
+     *  $columnas_completas = [];
+     *  $columnas_parseadas = [];
+     *
+     *  $resultado = $this->columnas_attr($columna, $columnas_completas, $columnas_parseadas);
+     *  // $resultado será un objeto con las propiedades:
+     *  // $resultado->columnas_parseadas => ['campo1', 'campo2']
+     *  // $resultado->columnas_completas => [
+     *  //     'campo1' => ['campo' => 'campo1', 'Type' => 'varchar(255)', 'Key' => '', 'Null' => 'YES'],
+     *  //     'campo2' => ['campo' => 'campo2', 'Type' => 'int(11)', 'Key' => '', 'Null' => 'YES']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error al procesar las columnas
+     *  -----------------------------------------
+     *  $columna = [
+     *      'campo1' => 'varchar(255)',
+     *      'campo2' => ''
+     *  ];
+     *  $columnas_completas = [];
+     *  $columnas_parseadas = [];
+     *
+     *  $resultado = $this->columnas_attr($columna, $columnas_completas, $columnas_parseadas);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al obtener columnas',
+     *  //   'data' => ...
+     *  // ]
      */
     private function columnas_attr(array $columna, array $columnas_completas, array $columnas_parseadas): array|stdClass
     {
-        foreach($columna as $campo=>$atributo){
-            $columnas_field = $this->columnas_field(atributo: $atributo, campo: $campo, columna: $columna,
-                columnas_completas: $columnas_completas, columnas_parseadas:  $columnas_parseadas);
+        foreach($columna as $campo => $atributo){
+            // Procesa cada columna y atributo
+            $columnas_field = $this->columnas_field(
+                atributo: $atributo,
+                campo: $campo,
+                columna: $columna,
+                columnas_completas: $columnas_completas,
+                columnas_parseadas: $columnas_parseadas
+            );
+
+            // Verifica si hubo un error al procesar las columnas
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
             }
+
+            // Actualiza las listas de columnas parseadas y completas
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
         }
 
+        // Retorna las columnas parseadas y completas
         $data = new stdClass();
         $data->columnas_parseadas = $columnas_parseadas;
         $data->columnas_completas = $columnas_completas;
         return $data;
     }
+
 
     /**
      * TOTAL
@@ -1068,50 +1189,116 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Esta función 'columnas_field' recibe cinco parámetros: $atributo, $campo, $columna, $columnas_completas y
-     * $columnas_parseadas.
+     * REG
+     * Procesa las columnas de una tabla, asignando valores a las columnas parseadas y completas cuando el campo es 'Field'.
      *
-     * @param string|null $atributo - El primer parámetro que es la entidad de la cual se intenta obtener información.
-     * puede ser null.
-     * @param string $campo - El nombre del campo de la entidad que se está procesando.
-     * @param array $columna - La columna de la entidad.
-     * @param array $columnas_completas - Una lista que contiene todas las columnas completas que deben ser procesadas.
-     * @param array $columnas_parseadas - Una lista de columnas que ya han sido procesadas.
+     * Este método:
+     * 1. Verifica si el campo es 'Field' y si es así, asigna la columna al arreglo de columnas parseadas y completas.
+     * 2. Si hay errores durante el proceso, los captura y retorna un mensaje de error.
+     * 3. Retorna un objeto con las columnas parseadas y completas.
      *
-     * @return array|stdClass - Si el proceso es exitoso, este método retorna un objeto con atributos
-     * 'columnas_parseadas' y 'columnas_completas'.
-     * Si ocurre un error durante el procesamiento de 'columnas_parseadas' o 'columnas_completas',
-     * este método retornará una descripción del error a través del método $this->error->error().
+     * @param string|null $atributo El nombre del atributo que se desea asignar a las columnas parseadas y completas.
+     * @param string $campo El nombre del campo que se va a procesar. Si es 'Field', se realiza el procesamiento.
+     * @param array $columna Los detalles de la columna que se están procesando.
+     * @param array $columnas_completas El arreglo donde se almacenan las columnas completas.
+     * @param array $columnas_parseadas El arreglo donde se almacenan las columnas parseadas.
      *
-     * @throws errores - Lanza una excepción si ocurre un error durante el procesamiento
-     * @version
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_field
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con las propiedades `columnas_parseadas` y `columnas_completas`.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Procesando una columna de tipo 'Field'
+     *  -------------------------------------------------
+     *  $atributo = 'nombre';
+     *  $campo = 'Field';
+     *  $columna = [
+     *      'Type' => 'varchar(255)',
+     *      'Null' => 'YES',
+     *      'Key' => 'PRI'
+     *  ];
+     *  $columnas_completas = [];
+     *  $columnas_parseadas = [];
+     *
+     *  $resultado = $this->columnas_field($atributo, $campo, $columna, $columnas_completas, $columnas_parseadas);
+     *  // $resultado será un objeto con las columnas parseadas y completas actualizadas:
+     *  // $resultado->columnas_parseadas => ['nombre']
+     *  // $resultado->columnas_completas => [
+     *  //   'nombre' => [
+     *  //       'campo' => 'nombre',
+     *  //       'Type' => 'varchar(255)',
+     *  //       'Key' => 'PRI',
+     *  //       'Null' => 'YES'
+     *  //   ]
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error en columnas parseadas
+     *  --------------------------------------
+     *  $atributo = 'nombre';
+     *  $campo = 'Field';
+     *  $columna = [
+     *      'Type' => 'varchar(255)',
+     *      'Null' => 'YES'
+     *  ];
+     *  $columnas_completas = [];
+     *  $columnas_parseadas = 'no es un array';
+     *
+     *  $resultado = $this->columnas_field($atributo, $campo, $columna, $columnas_completas, $columnas_parseadas);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al obtener columnas parseadas',
+     *  //   'data' => 'no es un array'
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error al obtener columnas completas
+     *  ---------------------------------------------
+     *  $atributo = 'nombre';
+     *  $campo = 'Field';
+     *  $columna = [
+     *      'Type' => 'varchar(255)',
+     *      'Null' => 'YES',
+     *  ];
+     *  $columnas_completas = [];
+     *  $columnas_parseadas = [];
+     *
+     *  $resultado = $this->columnas_field($atributo, $campo, $columna, $columnas_completas, $columnas_parseadas);
+     *  // Retorna un error indicando que hay un problema al obtener las columnas completas:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error al obtener columnas completas',
+     *  //   'data' => ...
+     *  // ]
      */
     private function columnas_field(string|null $atributo, string $campo, array $columna, array $columnas_completas,
                                     array $columnas_parseadas): array|stdClass
     {
-        if($campo === 'Field'){
-            $columnas_parseadas = $this->asigna_columnas_parseadas( atributo: $atributo,
+        // Si el campo es 'Field', procesa la columna
+        if ($campo === 'Field') {
+            // Asigna la columna al arreglo de columnas parseadas
+            $columnas_parseadas = $this->asigna_columnas_parseadas(atributo: $atributo,
                 columnas_parseadas: $columnas_parseadas);
-            if(errores::$error){
-
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener columnas parseadas', data: $columnas_parseadas);
             }
 
-            $columnas_completas = $this->asigna_columna_completa(atributo: $atributo,columna:
-                $columna,columnas_completas:  $columnas_completas);
-            if(errores::$error){
-
+            // Asigna la columna completa al arreglo de columnas completas
+            $columnas_completas = $this->asigna_columna_completa(atributo: $atributo, columna: $columna,
+                columnas_completas: $columnas_completas);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener columnas completas', data: $columnas_completas);
             }
         }
 
+        // Devuelve las columnas parseadas y completas
         $data = new stdClass();
         $data->columnas_parseadas = $columnas_parseadas;
         $data->columnas_completas = $columnas_completas;
         return $data;
     }
+
 
     /**
      * TOTAL
@@ -1233,45 +1420,92 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Método privado columnas_sql_array realiza el parseo de las columnas proporcionadas.
+     * REG
+     * Procesa un array de columnas y las organiza en dos categorías: columnas parseadas y columnas completas.
      *
-     * @param array $columnas Las columnas que se van a parsear.
+     * Este método:
+     * 1. Itera sobre un conjunto de columnas que se espera sea un array de arrays.
+     * 2. Para cada columna, se valida y organiza en dos arrays: uno para las columnas parseadas (solo nombres) y otro para las columnas completas (información detallada como tipo, clave, nulidad, etc.).
+     * 3. Retorna un objeto con las columnas parseadas y completas.
      *
-     * @return array|stdClass Retorna un objeto stdClass si se produce un error durante el procesamiento de las columnas.
-     *                         En este caso, el objeto contiene información de error.
-     *                         Si el procesamiento es exitoso, se retorna un array asociativo con las columnas parseadas y completas.
-     *                         El array tiene los siguientes elementos:
-     *                           - 'columnas_parseadas': Un array con las columnas parseadas.
-     *                           - 'columnas_completas': Un array con todas las columnas procesadas.
+     * @param array $columnas Un array que contiene arrays con información sobre las columnas (por ejemplo, nombre, tipo, etc.).
      *
-     * @throws errores Lanza un error si $columna no es un array o si hay un error al obtener las columnas.
-     * @version 15.44.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_sql_array
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con las propiedades `columnas_parseadas` (nombres de las columnas) y `columnas_completas` (información detallada de las columnas).
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Procesando un conjunto de columnas
+     *  -------------------------------------------
+     *  $columnas = [
+     *      ['Field' => 'id', 'Type' => 'int', 'Null' => 'NO', 'Key' => 'PRI'],
+     *      ['Field' => 'nombre', 'Type' => 'varchar(255)', 'Null' => 'YES', 'Key' => '']
+     *  ];
+     *
+     *  $resultado = $this->columnas_sql_array($columnas);
+     *  // $resultado->columnas_parseadas será ['id', 'nombre']
+     *  // $resultado->columnas_completas será [
+     *  //     'id' => ['Field' => 'id', 'Type' => 'int', 'Null' => 'NO', 'Key' => 'PRI'],
+     *  //     'nombre' => ['Field' => 'nombre', 'Type' => 'varchar(255)', 'Null' => 'YES', 'Key' => '']
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 2: Error por tipo de columna no válido
+     *  ---------------------------------------------
+     *  $columnas = [
+     *      'id' => ['Field' => 'id', 'Type' => 'int', 'Null' => 'NO', 'Key' => 'PRI']  // Error: debe ser un array
+     *  ];
+     *
+     *  $resultado = $this->columnas_sql_array($columnas);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $columna debe ser un array',
+     *  //   'data' => $columnas
+     *  // ]
      */
     private function columnas_sql_array(array $columnas): array|stdClass
     {
+        // Inicializa los arrays de columnas parseadas y completas
         $columnas_parseadas = array();
         $columnas_completas = array();
-        foreach($columnas as $columna ){
+
+        // Itera sobre cada columna
+        foreach($columnas as $columna){
+            // Verifica que cada columna sea un array
             if(!is_array($columna)){
-                return $this->error->error(mensaje: 'Error $columna debe ser un array', data: $columnas,
-                    es_final: true);
+                return $this->error->error(
+                    mensaje: 'Error $columna debe ser un array',
+                    data: $columnas,
+                    es_final: true
+                );
             }
-            $columnas_field = $this->columnas_attr(columna: $columna, columnas_completas:  $columnas_completas,
-                columnas_parseadas:  $columnas_parseadas);
+
+            // Procesa la columna y obtiene las columnas parseadas y completas
+            $columnas_field = $this->columnas_attr(
+                columna: $columna,
+                columnas_completas: $columnas_completas,
+                columnas_parseadas: $columnas_parseadas
+            );
+
+            // Verifica si hubo un error al obtener las columnas
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
             }
+
+            // Actualiza las listas de columnas parseadas y completas
             $columnas_parseadas = $columnas_field->columnas_parseadas;
             $columnas_completas = $columnas_field->columnas_completas;
         }
 
+        // Crea un objeto con las propiedades de columnas parseadas y completas
         $data = new stdClass();
         $data->columnas_parseadas = $columnas_parseadas;
         $data->columnas_completas = $columnas_completas;
+
         return $data;
     }
+
 
     /**
      * TOTAL
@@ -1570,46 +1804,89 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Método encargado de generar información de las columnas para los campos del modelo en la base de datos.
+     * REG
+     * Genera las columnas de una tabla de base de datos en un formato adecuado para su uso en un modelo.
      *
-     * Este método realiza las siguientes operaciones:
-     * 1. Recibe como parámetros un objeto del tipo modelo_base y un string que representa la tabla en la base de datos.
-     * 2. Verifica que el nombre de la tabla no esté vacío y no sea un número.
-     * 3. Obtiene las columnas nativas de la base de datos para el modelo proporcionado y la tabla especificada.
-     * 4. Crea un array con las columnas obtenidas y las retornar.
+     * Este método:
+     * 1. Verifica que el nombre de la tabla no esté vacío ni sea un número.
+     * 2. Obtiene las columnas de la tabla mediante una consulta a la base de datos utilizando la función `columnas_bd_native`.
+     * 3. Procesa las columnas obtenidas, convirtiéndolas en un formato adecuado mediante la función `columnas_sql_array`.
+     * 4. Retorna un objeto con las columnas parseadas y completas.
      *
-     * Los errores se manejan devolviendo un objeto de errores si alguna verificación o proceso falla.
+     * @param modelo_base $modelo El modelo que contiene la lógica para ejecutar consultas en la base de datos.
+     * @param string $tabla_bd El nombre de la tabla en la base de datos.
      *
-     * @param modelo_base $modelo: Modelo con funcionalidad de ORM.
-     * @param string $tabla_bd: Nombre de la tabla en la base de datos.
-     * @return array|stdClass: Array con información de las columnas si todo sale bien,
-     *                         objeto de error si hay un problema.
-     * @throws errores: Se lanza una excepción si hay un error en la obtención o gestión de las columnas.
-     * @version 18.33.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.genera_columnas_field
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con las propiedades `columnas_parseadas` (nombres de las columnas) y `columnas_completas` (información detallada de las columnas).
+     *   - En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     *  Ejemplo 1: Generando columnas para una tabla
+     *  ---------------------------------------------
+     *  $tabla_bd = 'usuarios';
+     *  $modelo = new modelo_base();
+     *
+     *  $resultado = $this->genera_columnas_field($modelo, $tabla_bd);
+     *  // $resultado->columnas_parseadas será el array con los nombres de las columnas
+     *  // $resultado->columnas_completas tendrá los detalles de cada columna (tipo, nulidad, etc.)
+     *
+     * @example
+     *  Ejemplo 2: Error debido a una tabla vacía
+     *  -----------------------------------------
+     *  $tabla_bd = '';
+     *  $modelo = new modelo_base();
+     *
+     *  $resultado = $this->genera_columnas_field($modelo, $tabla_bd);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $tabla_bd esta vacia',
+     *  //   'data' => ''
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error debido a que el nombre de la tabla es numérico
+     *  --------------------------------------------------------------
+     *  $tabla_bd = '123';
+     *  $modelo = new modelo_base();
+     *
+     *  $resultado = $this->genera_columnas_field($modelo, $tabla_bd);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $tabla_bd no puede ser un numero',
+     *  //   'data' => '123'
+     *  // ]
      */
     private function genera_columnas_field(modelo_base $modelo, string $tabla_bd): array|stdClass
     {
         $tabla_bd = trim($tabla_bd);
-        if($tabla_bd === ''){
-            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia',data:  $tabla_bd, es_final: true);
+
+        // Verifica que el nombre de la tabla no esté vacío ni sea numérico
+        if ($tabla_bd === '') {
+            return $this->error->error(mensaje: 'Error $tabla_bd esta vacia', data: $tabla_bd, es_final: true);
         }
-        if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+
+        if (is_numeric($tabla_bd)) {
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero', data: $tabla_bd,
                 es_final: true);
         }
-        $columnas = $this->columnas_bd_native(modelo:$modelo, tabla_bd: $tabla_bd);
-        if(errores::$error){
+
+        // Obtiene las columnas de la tabla de base de datos
+        $columnas = $this->columnas_bd_native(modelo: $modelo, tabla_bd: $tabla_bd);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas);
         }
 
+        // Procesa las columnas obtenidas en el formato adecuado
         $columnas_field = $this->columnas_sql_array(columnas: $columnas);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas',data:  $columnas_field);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
         }
+
         return $columnas_field;
     }
+
 
     /**
      * TOTAL
@@ -1814,54 +2091,96 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Esta función se encarga de obtener las columnas de una tabla en la base de datos.
+     * REG
+     * Obtiene las columnas de una tabla y las asigna al modelo, verificando si ya están almacenadas en la sesión.
      *
-     * @param modelo_base $modelo Modelo base que se utilizará para obtener las columnas.
-     * @param string $tabla_original Nombre original de la tabla de la base de datos.
+     * Este método:
+     * 1. Normaliza el nombre de la tabla, eliminando prefijos como `models\`.
+     * 2. Valida que el nombre de la tabla no esté vacío ni sea numérico.
+     * 3. Comprueba si las columnas de la tabla ya están almacenadas en la sesión mediante `asigna_columnas_en_session`.
+     * 4. Si no están en la sesión, las asigna utilizando `asigna_columnas_session_new`.
+     * 5. Retorna las columnas de la tabla en el modelo.
      *
-     * @return array|stdClass Devuelve un array que contiene las columnas de la tabla
-     * o un objeto stdClass en caso de error.
+     * @param modelo_base $modelo El modelo que contiene la lógica para interactuar con la base de datos.
+     * @param string $tabla_original El nombre original de la tabla en la base de datos (puede incluir prefijos).
      *
-     * Esta función realiza las siguientes acciones:
-     * 1. Verifica que la tabla original no esté vacía.
-     * 2. Verifica que la tabla original no sea un número.
-     * 3. Intenta asignar las columnas de la tabla a la sesión.
-     * 4. Si ocurre un error en el paso anterior, intenta obtener las columnas de una nueva sesión.
-     * 5. Devuelve las columnas de la tabla.
+     * @return array|stdClass
+     *   - Retorna un objeto `stdClass` con las propiedades `columnas_parseadas` y `columnas_completas` que contienen las columnas procesadas.
+     *   - En caso de error, retorna un arreglo con los detalles del error.
      *
-     * @throws errores Lanza una excepción en caso de que ocurra un problema al obtener las columnas.
+     * @example
+     *  Ejemplo 1: Obtener columnas de una tabla
+     *  ----------------------------------------
+     *  $tabla_original = 'models\usuarios';
+     *  $modelo = new modelo_base();
      *
-     * @version 19.3.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.obten_columnas
+     *  $resultado = $this->obten_columnas($modelo, $tabla_original);
+     *  // $resultado->columnas_parseadas contendrá los nombres de las columnas.
+     *  // $resultado->columnas_completas tendrá los detalles de cada columna (tipo, nulidad, etc.).
+     *
+     * @example
+     *  Ejemplo 2: Error debido a tabla vacía
+     *  -------------------------------------
+     *  $tabla_original = '';
+     *  $modelo = new modelo_base();
+     *
+     *  $resultado = $this->obten_columnas($modelo, $tabla_original);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error tabla original no puede venir vacia',
+     *  //   'data' => ''
+     *  // ]
+     *
+     * @example
+     *  Ejemplo 3: Error debido a nombre de tabla numérico
+     *  --------------------------------------------------
+     *  $tabla_original = '123';
+     *  $modelo = new modelo_base();
+     *
+     *  $resultado = $this->obten_columnas($modelo, $tabla_original);
+     *  // Retorna un error:
+     *  // [
+     *  //   'error' => 1,
+     *  //   'mensaje' => 'Error $tabla_bd no puede ser un numero',
+     *  //   'data' => '123'
+     *  // ]
      */
-    private function obten_columnas(modelo_base $modelo, string $tabla_original):array|stdClass
+    private function obten_columnas(modelo_base $modelo, string $tabla_original): array|stdClass
     {
-        $tabla_original = trim(str_replace('models\\','',$tabla_original));
+        // Normaliza el nombre de la tabla
+        $tabla_original = trim(str_replace('models\\', '', $tabla_original));
         $tabla_bd = $tabla_original;
 
-        if($tabla_bd === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_bd,
-                es_final: true);
-        }
-        if(is_numeric($tabla_bd)){
-            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero',data:  $tabla_bd,
+        // Validación de la tabla
+        if ($tabla_bd === '') {
+            return $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_bd,
                 es_final: true);
         }
 
+        if (is_numeric($tabla_bd)) {
+            return $this->error->error(mensaje: 'Error $tabla_bd no puede ser un numero', data: $tabla_bd,
+                es_final: true);
+        }
+
+        // Comprueba si las columnas ya están asignadas en la sesión
         $se_asignaron_columnas = $this->asigna_columnas_en_session(modelo: $modelo, tabla_bd: $tabla_bd);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar columnas', data: $se_asignaron_columnas);
         }
-        if(!$se_asignaron_columnas){
-            $columnas_field = $this->asigna_columnas_session_new(modelo:$modelo, tabla_bd: $tabla_bd);
-            if(errores::$error){
+
+        // Si no están asignadas, las asigna a la sesión
+        if (!$se_asignaron_columnas) {
+            $columnas_field = $this->asigna_columnas_session_new(modelo: $modelo, tabla_bd: $tabla_bd);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al obtener columnas', data: $columnas_field);
             }
         }
 
+        // Retorna las columnas asignadas al modelo
         return $modelo->data_columnas;
     }
+
 
     /**
      * TOTAL

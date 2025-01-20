@@ -1101,38 +1101,67 @@ class _instalacion
     }
 
     /**
-     *TOTAL
-     * Verifica si la entidad proporcionada existe en la base de datos.
+     * REG
+     * Verifica si una tabla (entidad) existe en la base de datos.
      *
-     * @param string $table El nombre de la tabla a verificar.
+     * Este método:
+     * 1. Valida que el nombre de la tabla no esté vacío.
+     * 2. Llama al método `existe_entidad` de la clase `estructuras` para realizar la verificación.
      *
-     * @return bool|array Devuelve un error si la tabla está vacía o si hay un error al validar.
-     *               De lo contrario, devuelve verdadero o falso dependiendo de si la entidad existe.
+     * @param string $table El nombre de la tabla que se desea verificar.
      *
-     * Ejemplo de uso:
+     * @return bool|array
+     *   - `true`: Si la tabla existe en la base de datos.
+     *   - `false`: Si la tabla no existe en la base de datos.
+     *   - `array`: Si ocurre un error durante el proceso, retorna un arreglo con los detalles del error.
      *
-     * $instalacion = new _instalacion();
-     * if($instalacion->existe_entidad("nombre_tabla")) {
-     *    // La tabla existe
-     * } else {
-     *    // La tabla no existe
-     * }
-     * @version 15.15.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm._instalacion.existe_entidad
+     * @example
+     *  Ejemplo 1: Verificar la existencia de una tabla existente
+     *  ---------------------------------------------------------
+     *  $table = 'usuarios';
+     *  $existe = $this->existe_entidad($table);
+     *  // Resultado:
+     *  // true (si la tabla "usuarios" existe)
+     *
+     * @example
+     *  Ejemplo 2: Verificar una tabla inexistente
+     *  ------------------------------------------
+     *  $table = 'tabla_inexistente';
+     *  $existe = $this->existe_entidad($table);
+     *  // Resultado:
+     *  // false (si la tabla no existe)
+     *
+     * @example
+     *  Ejemplo 3: Error por tabla vacía
+     *  --------------------------------
+     *  $table = '';
+     *  $existe = $this->existe_entidad($table);
+     *  // Resultado:
+     *  // [
+     *  //   'error' => true,
+     *  //   'mensaje' => 'Error table vacia',
+     *  //   'data' => ''
+     *  // ]
      */
     final public function existe_entidad(string $table): bool|array
     {
+        // Limpia el nombre de la tabla
         $table = trim($table);
-        if($table === ''){
+
+        // Valida que el nombre de la tabla no esté vacío
+        if ($table === '') {
             return $this->error->error(mensaje: 'Error table vacia', data: $table, es_final: true);
         }
-        $existe = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si existe entidad',data: $existe);
-        }
-        return $existe;
 
+        // Verifica la existencia de la tabla utilizando la clase `estructuras`
+        $existe = (new estructuras(link: $this->link))->existe_entidad(entidad: $table);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe entidad', data: $existe);
+        }
+
+        return $existe;
     }
+
 
     /**
      * Esta función verifica si existe un índice foreign en una tabla específica.

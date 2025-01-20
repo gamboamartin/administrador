@@ -271,50 +271,80 @@ class estructuras{
     }
 
     /**
-     * TOTAL
-     * Comprueba si existe una entidad en la base de datos
+     * REG
+     * Verifica si una entidad (tabla) existe en la base de datos.
      *
-     * Este método realiza una consulta SQL para verificar si existe una entidad con el nombre proporcionado
-     * en la base de datos. Si la entidad existe, el método devuelve `true`, de lo contrario, devuelve `false`.
+     * Este método:
+     * 1. Valida que el nombre de la entidad no esté vacío.
+     * 2. Genera una consulta `SHOW TABLES LIKE` para buscar la entidad en la base de datos.
+     * 3. Ejecuta la consulta y verifica si se encuentran registros.
      *
-     * @param string $entidad El nombre de la entidad que se va a comprobar.
-     * @return bool|array Devuelve `true` si la entidad existe, `false` si no existe.
+     * @param string $entidad El nombre de la entidad (tabla) que se desea verificar.
+     *
+     * @return bool|array
+     *   - `true`: Si la entidad existe en la base de datos.
+     *   - `false`: Si la entidad no existe en la base de datos.
+     *   - `array`: Si ocurre un error durante el proceso, retorna un arreglo con los detalles del error.
      *
      * @example
-     * $estructuras = new estructuras();
-     * $existe = $estructuras->existe_entidad('nombre_entidad');
-     * if ($existe) {
-     *     echo 'La entidad existe.';
-     * } else {
-     *     echo 'La entidad no existe.';
-     * }
+     *  Ejemplo 1: Verificar la existencia de una tabla existente
+     *  ---------------------------------------------------------
+     *  $entidad = 'usuarios';
+     *  $existe = $this->existe_entidad($entidad);
+     *  // Resultado:
+     *  // true (si la tabla "usuarios" existe)
      *
-     * @version 15.4.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.estructuras.existe_entidad
+     * @example
+     *  Ejemplo 2: Verificar una tabla inexistente
+     *  ------------------------------------------
+     *  $entidad = 'tabla_inexistente';
+     *  $existe = $this->existe_entidad($entidad);
+     *  // Resultado:
+     *  // false (si la tabla no existe)
      *
+     * @example
+     *  Ejemplo 3: Error por entidad vacía
+     *  -----------------------------------
+     *  $entidad = '';
+     *  $existe = $this->existe_entidad($entidad);
+     *  // Resultado:
+     *  // [
+     *  //   'error' => true,
+     *  //   'mensaje' => 'Error entidad vacia',
+     *  //   'data' => ''
+     *  // ]
      */
     final public function existe_entidad(string $entidad): bool|array
     {
+        // Limpia el nombre de la entidad
         $entidad = trim($entidad);
-        if($entidad === ''){
+
+        // Valida que la entidad no esté vacía
+        if ($entidad === '') {
             return $this->error->error(mensaje: 'Error entidad vacia', data: $entidad, es_final: true);
         }
+
+        // Genera la consulta SQL para buscar la entidad
         $sql = (new sql())->show_tables(entidad: $entidad);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener sql', data: $sql);
         }
 
+        // Ejecuta la consulta
         $result = (new modelo_base($this->link))->ejecuta_consulta(consulta: $sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
+
+        // Verifica si la consulta devolvió resultados
         $existe_entidad = false;
-        if($result->n_registros > 0){
+        if ($result->n_registros > 0) {
             $existe_entidad = true;
         }
 
         return $existe_entidad;
     }
+
 
     /**
      * @param array $keys_no_foraneas

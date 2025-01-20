@@ -16,25 +16,46 @@ class _create
     }
 
     /**
-     * TOTAL
-     * La función _create.atributo_codigo se encarga de modificar el objeto que se le pasa como parámetro,
-     * específicamente añadiendo una nueva propiedad 'codigo' a este objeto.
-     * Esta nueva propiedad es de tipo stdclass y se le asigna un valor boolean 'true'.
+     * REG
+     * Configura el atributo `codigo` como un campo único en el conjunto de campos proporcionados.
      *
-     * @param stdClass $campos Un objeto stdClass. Este objeto se modifica dentro de la función.
+     * Este método agrega una propiedad `codigo` al objeto `$campos` con la configuración de unicidad.
+     * Es útil para definir propiedades específicas de los atributos utilizados en el modelo o la base de datos.
      *
-     * @return stdClass Devuelve el objeto stdClass modificado. Este objeto ahora contendrá una nueva propiedad 'codigo',
-     *                  que es de tipo stdclass y tiene un valor boolean 'true'.
+     * @param stdClass $campos Objeto que representa los campos de un modelo o tabla.
      *
-     * @version 15.17.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._create.atributo_codigo
+     * @return stdClass
+     *   - El objeto `$campos` actualizado con el atributo `codigo` configurado como único.
+     *
+     * @example
+     *  Ejemplo 1: Agregar la propiedad `codigo` con la configuración de unicidad
+     *  -------------------------------------------------------------------------
+     *  $campos = new stdClass();
+     *  $campos = $this->atributo_codigo($campos);
+     *  // Resultado:
+     *  // $campos->codigo->unique => true
+     *
+     * @example
+     *  Ejemplo 2: Aplicar el método a un objeto con otros atributos
+     *  ------------------------------------------------------------
+     *  $campos = new stdClass();
+     *  $campos->nombre = new stdClass();
+     *  $campos->nombre->unique = false;
+     *
+     *  $campos = $this->atributo_codigo($campos);
+     *  // Resultado:
+     *  // $campos->nombre->unique => false
+     *  // $campos->codigo->unique => true
      */
     private function atributo_codigo(stdClass $campos): stdClass
     {
+        // Configura el atributo `codigo` como único
         $campos->codigo = new stdClass();
         $campos->codigo->unique = true;
+
         return $campos;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV

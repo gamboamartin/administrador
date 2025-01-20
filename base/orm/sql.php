@@ -912,33 +912,61 @@ class sql{
     }
 
     /**
-     * TOTAL
-     * Muestra las tablas de la base de datos de acuerdo con el criterio proporcionado.
+     * REG
+     * Genera una consulta SQL para mostrar las tablas de la base de datos.
      *
-     * @param string $entidad Nombre de la tabla que queremos consultar en la base de datos.
-     * @return string Consulta SQL construida para mostrar la(o las) tabla(s)
-     * que corresponden al criterio proporcionado en `$entidad`.
-     * Si $entidad está vacío, el resultado será una consulta SQL para mostrar todas las tablas.
+     * Este método:
+     * 1. Permite filtrar las tablas por un patrón de búsqueda opcional.
+     * 2. Genera una consulta `SHOW TABLES` con o sin filtro basado en el parámetro `$entidad`.
      *
-     * Uso:
-     * $resultado = show_tables("miTabla");
-     * Este ejemplo retornará: "SHOW TABLES LIKE 'miTabla'"
+     * @param string $entidad (Opcional) Un patrón para filtrar las tablas. Si se proporciona,
+     *                        se genera una consulta con la cláusula `LIKE`.
      *
-     * $resultado = show_tables("");
-     * Este ejemplo retornará: "SHOW TABLES"
-     * @version 14.2.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.show_tables.21.5.0
+     * @return string
+     *   - Retorna una cadena con la consulta SQL generada.
+     *   - La consulta puede incluir un filtro `LIKE` si `$entidad` no está vacío.
+     *
+     * @example
+     *  Ejemplo 1: Mostrar todas las tablas
+     *  -----------------------------------
+     *  $sql = $this->show_tables();
+     *  // Resultado:
+     *  // "SHOW TABLES"
+     *
+     * @example
+     *  Ejemplo 2: Filtrar tablas por un patrón
+     *  ---------------------------------------
+     *  $entidad = 'usuarios%';
+     *  $sql = $this->show_tables($entidad);
+     *  // Resultado:
+     *  // "SHOW TABLES LIKE 'usuarios%'"
+     *
+     * @example
+     *  Ejemplo 3: Filtrar tablas con nombre específico
+     *  -----------------------------------------------
+     *  $entidad = 'clientes';
+     *  $sql = $this->show_tables($entidad);
+     *  // Resultado:
+     *  // "SHOW TABLES LIKE 'clientes'"
      */
     final public function show_tables(string $entidad = ''): string
     {
+        // Limpia el parámetro para evitar inyecciones SQL
         $entidad = trim($entidad);
+
+        // Inicializa la cláusula WHERE como vacía
         $where = '';
-        if($entidad !==''){
+
+        // Si se proporciona una entidad, agrega un filtro LIKE
+        if ($entidad !== '') {
             $where = "LIKE '$entidad'";
         }
+
+        // Construye y retorna la consulta SQL
         $sql = "SHOW TABLES $where";
         return trim($sql);
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI
