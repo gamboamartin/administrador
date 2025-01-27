@@ -1824,29 +1824,54 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * TOTAL
-     * Función para obtener el nombre de una tabla.
+     * REG
+     * Obtiene el nombre de una tabla a partir de dos posibles valores.
      *
-     * @param string $tabla_original      El nombre original de la tabla.
-     * @param string $tabla_renombrada    El nombre renombrado de la tabla.
+     * Esta función valida y selecciona el nombre de la tabla a utilizar según los parámetros recibidos.
+     * Si se proporciona un nombre renombrado, este tendrá prioridad sobre el nombre original.
+     * En caso de que ambos estén vacíos, se devuelve un error.
      *
-     * @return array|string               Retorna el nombre de la tabla si los parámetros son válidos, en otro caso retorna un mensaje de error.
+     * @param string $tabla_original Nombre original de la tabla.
+     * @param string $tabla_renombrada Nombre renombrado de la tabla.
      *
-     * @throws errores                      Lanza una excepción si ambos parámetros están vacíos.
-     * @version 15.52.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.obten_nombre_tabla
+     * @return array|string Devuelve el nombre de la tabla seleccionada. Si ocurre un error, retorna un array con el detalle.
+     *
+     * @example
+     * // Caso 1: Ambos parámetros son válidos
+     * $tabla = $this->obten_nombre_tabla('usuarios', 'clientes');
+     * // Resultado: 'clientes'
+     *
+     * @example
+     * // Caso 2: Solo se proporciona tabla original
+     * $tabla = $this->obten_nombre_tabla('usuarios', '');
+     * // Resultado: 'usuarios'
+     *
+     * @example
+     * // Caso 3: Ambos parámetros están vacíos
+     * $tabla = $this->obten_nombre_tabla('', '');
+     * // Resultado: [
+     * //     'mensaje' => 'Error no pueden venir vacios todos los parametros',
+     * //     'data' => '',
+     * //     'es_final' => true
+     * // ]
+     *
+     * @example
+     * // Caso 4: Solo se proporciona tabla renombrada
+     * $tabla = $this->obten_nombre_tabla('', 'clientes');
+     * // Resultado: 'clientes'
      */
-    final public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada):array|string
+    final public function obten_nombre_tabla(string $tabla_original, string $tabla_renombrada): array|string
     {
-
-        if(trim($tabla_original)==='' && trim($tabla_renombrada) === ''){
-            return $this->error->error(mensaje: 'Error no pueden venir vacios todos los parametros',
-                data: $tabla_renombrada, es_final: true);
+        if (trim($tabla_original) === '' && trim($tabla_renombrada) === '') {
+            return $this->error->error(
+                mensaje: 'Error no pueden venir vacios todos los parametros',
+                data: $tabla_renombrada,
+                es_final: true
+            );
         }
-        if($tabla_renombrada!==''){
+        if ($tabla_renombrada !== '') {
             $tabla_nombre = $tabla_renombrada;
-        }
-        else{
+        } else {
             $tabla_nombre = $tabla_original;
         }
         return $tabla_nombre;

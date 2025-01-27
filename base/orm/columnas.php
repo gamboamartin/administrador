@@ -40,50 +40,114 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Método privado que permite ajustar las columnas completas para una consulta SQL.
+     * REG
+     * Ajusta y combina columnas completas para consultas SQL.
      *
-     * @param string $columnas Cadena de caracteres con el nombre de las columnas.
-     * @param bool $columnas_en_bruto Bandera para indicar si las columnas están en bruto.
-     * @param array $columnas_sql Memoria de las columnas SQL en un array.
-     * @param modelo_base $modelo Instancia del modelo base.
-     * @param string $tabla Nombre de la tabla.
-     * @param string $tabla_renombrada Nombre de la tabla renombrada.
+     * Esta función genera columnas completas para una tabla SQL, renombrando las tablas si es necesario y
+     * permite combinar columnas ya existentes con columnas generadas en bruto o procesadas.
      *
-     * @return array|string El resultado puede ser una matriz de columnas o una cadena de error.
+     * @param string $columnas Columnas existentes en la consulta SQL.
+     * @param bool $columnas_en_bruto Indica si las columnas deben generarse sin alias o formato adicional.
+     * @param array $columnas_sql Array con las columnas específicas a incluir en la consulta.
+     * @param modelo_base $modelo Instancia del modelo base que contiene la lógica de la tabla.
+     * @param string $tabla Nombre de la tabla original.
+     * @param string $tabla_renombrada Nombre alternativo para renombrar la tabla en la consulta.
      *
-     * Un paso del método es verificar que el nombre de la tabla no sea numérico. De serlo, se genera un error.
+     * @return array|string Devuelve la cadena final de columnas ajustadas para la consulta SQL en caso de éxito.
+     *                      Devuelve un array con detalles del error en caso de fallas.
      *
-     * Después se genera las columnas de la consulta, en caso de error en la generación de las columnas, se genera un error.
+     * @example
+     * // Caso 1: Generar columnas de una tabla con alias renombrado.
+     * $columnas = '';
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['id', 'nombre', 'fecha_creacion'];
+     * $modelo = new modelo_base($link);
+     * $tabla = 'usuarios';
+     * $tabla_renombrada = 'u';
+     * $resultado = $this->ajusta_columnas_completas(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     tabla: $tabla,
+     *     tabla_renombrada: $tabla_renombrada
+     * );
+     * // Resultado esperado:
+     * // $resultado = 'u.id AS usuarios_id, u.nombre AS usuarios_nombre, u.fecha_creacion AS usuarios_fecha_creacion';
      *
-     * Posteriormente se integran las columnas por data. Si ocurre un error en la integración de columnas, se genera un error.
+     * @example
+     * // Caso 2: Generar columnas en bruto sin alias para una tabla.
+     * $columnas = '';
+     * $columnas_en_bruto = true;
+     * $columnas_sql = ['id', 'nombre'];
+     * $modelo = new modelo_base($link);
+     * $tabla = 'productos';
+     * $tabla_renombrada = '';
+     * $resultado = $this->ajusta_columnas_completas(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     tabla: $tabla,
+     *     tabla_renombrada: $tabla_renombrada
+     * );
+     * // Resultado esperado:
+     * // $resultado = 'productos.id, productos.nombre';
      *
-     * En caso de no haber errores, se devuelve las columnas generadas.
-     * @version 15.73.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.ajusta_columnas_completas
+     * @example
+     * // Caso 3: Manejo de errores al pasar un número como tabla.
+     * $columnas = '';
+     * $columnas_en_bruto = false;
+     * $columnas_sql = [];
+     * $modelo = new modelo_base($link);
+     * $tabla = '123'; // Valor inválido
+     * $tabla_renombrada = '';
+     * $resultado = $this->ajusta_columnas_completas(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     tabla: $tabla,
+     *     tabla_renombrada: $tabla_renombrada
+     * );
+     * // Resultado esperado:
+     * // $resultado = ['error' => true, 'mensaje' => 'Error $tabla no puede ser un numero', 'data' => '123'];
      */
-    private function ajusta_columnas_completas(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
-                                               modelo_base $modelo, string $tabla,
-                                               string $tabla_renombrada): array|string
-    {
-        $tabla = str_replace('models\\','',$tabla);
-        if(is_numeric($tabla)){
-            return $this->error->error(mensaje: 'Error $tabla no puede ser un numero',data:  $tabla, es_final: true);
+    private function ajusta_columnas_completas(
+        string $columnas,
+        bool $columnas_en_bruto,
+        array $columnas_sql,
+        modelo_base $modelo,
+        string $tabla,
+        string $tabla_renombrada
+    ): array|string {
+        $tabla = str_replace('models\\', '', $tabla);
+        if (is_numeric($tabla)) {
+            return $this->error->error(mensaje: 'Error $tabla no puede ser un numero', data: $tabla, es_final: true);
         }
 
-        $resultado_columnas = $this->genera_columnas_consulta(columnas_en_bruto: $columnas_en_bruto,
-            modelo: $modelo, tabla_original: $tabla, tabla_renombrada: $tabla_renombrada, columnas: $columnas_sql);
-        if(errores::$error){
+        $resultado_columnas = $this->genera_columnas_consulta(
+            columnas_en_bruto: $columnas_en_bruto,
+            modelo: $modelo,
+            tabla_original: $tabla,
+            tabla_renombrada: $tabla_renombrada,
+            columnas: $columnas_sql
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar columnas', data: $resultado_columnas);
         }
 
-        $columnas_env = $this->integra_columnas_por_data(columnas: $columnas,resultado_columnas:  $resultado_columnas);
-        if(errores::$error){
+        $columnas_env = $this->integra_columnas_por_data(
+            columnas: $columnas,
+            resultado_columnas: $resultado_columnas
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas_env);
         }
 
         return $columnas_env;
     }
+
 
 
     /**
@@ -693,66 +757,220 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * La función responsable para cargar y renombrar las columnas en una tabla.
+     * REG
+     * Carga y ajusta columnas SQL, permitiendo renombrar las tablas si es necesario.
      *
-     * @param string $columnas Cadena que representa las columnas en la tabla.
-     * @param array $columnas_sql Array que contiene la información / esquema de las columnas SQL.
-     * @param array $data Array de los datos a validar e integrar.
-     * @param modelo_base $modelo Un objeto de la clase modelo_base que maneja la interacción con la base de datos.
-     * @param string $tabla Nombre de la tabla que se está procesando.
+     * Esta función valida los datos proporcionados, genera las columnas SQL ajustadas
+     * y permite renombrar las tablas utilizando la información proporcionada.
      *
-     * @return array|string Devuelve un array con los datos de las columnas ajustadas.
-     *                      En caso de error, devuelve una cadena con el mensaje de error.
+     * @param string $columnas Columnas iniciales en formato SQL.
+     *                         Puede ser una cadena vacía si no hay columnas iniciales.
+     * @param array $columnas_sql Lista de columnas a procesar.
+     *                            Contiene los nombres de las columnas que se deben incluir en la consulta SQL.
+     * @param array $data Datos de configuración que incluyen el nombre original de la tabla.
+     *                    Debe contener la clave 'nombre_original'.
+     * @param modelo_base $modelo Instancia del modelo base que se utiliza para las operaciones.
+     *                            Proporciona las funcionalidades de interacción con la base de datos.
+     * @param string $tabla Nombre de la tabla renombrada. Si no se proporciona, se utiliza el nombre original.
      *
-     * @throws errores Si hay un error durante la validación de los datos o la integración de las columnas, se lanza una excepción.
+     * @return array|string Retorna una cadena con las columnas SQL ajustadas. En caso de error,
+     *                      devuelve un array con detalles del error.
      *
-     * @example cargo_columna_renombre('$columnas', ['$columna1', 'columna2'], ['$data1', '$data2'], $modelo, 'mi_tabla')
-     * @version 16.3.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.carga_columna_renombre
+     * @throws errores Si los datos proporcionados no son válidos o si ocurre un error en el proceso.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $data = [
+     *     'nombre_original' => 'usuarios'
+     * ];
+     * $tabla = 'usuarios_activos';
+     *
+     * $modelo = new modelo_base($link); // Instancia del modelo base
+     *
+     * $resultado = $miClase->carga_columna_renombre(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     data: $data,
+     *     modelo: $modelo,
+     *     tabla: $tabla
+     * );
+     *
+     * if (is_string($resultado)) {
+     *     echo "Columnas SQL ajustadas: " . $resultado;
+     * } else {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo de uso con error en los datos:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $data = []; // Falta la clave 'nombre_original'
+     * $tabla = 'usuarios_activos';
+     *
+     * $resultado = $miClase->carga_columna_renombre(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     data: $data,
+     *     modelo: $modelo,
+     *     tabla: $tabla
+     * );
+     *
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
      */
-    private function carga_columna_renombre(string $columnas, array $columnas_sql, array $data, modelo_base $modelo,
-                                            string $tabla): array|string
+    private function carga_columna_renombre(
+        string $columnas, array $columnas_sql, array $data, modelo_base $modelo, string $tabla): array|string
     {
-
-        $valida = $this->validacion->valida_data_columna(data: $data,tabla:  $tabla);
-        if(errores::$error){
+        $valida = $this->validacion->valida_data_columna(data: $data, tabla: $tabla);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
-
-        $r_columnas = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: false,
-            columnas_sql: $columnas_sql,  modelo: $modelo, tabla: $data['nombre_original'],
-            tabla_renombrada: $tabla);
-        if(errores::$error){
+        $r_columnas = $this->ajusta_columnas_completas(
+            columnas: $columnas,
+            columnas_en_bruto: false,
+            columnas_sql: $columnas_sql,
+            modelo: $modelo,
+            tabla: $data['nombre_original'],
+            tabla_renombrada: $tabla
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $r_columnas);
         }
 
         return (string)$r_columnas;
     }
 
+
     /**
-     * TOTAL
-     * Función para manejar columnas en el modelo de base.
+     * REG
+     * Genera columnas SQL dinámicas basadas en las configuraciones de tablas, modelo y estructura de datos.
      *
-     * Esta función procesa las columnas pasadas y las configura apropiadamente basándose en la condición de $aplica_columnas_by_table.
-     * Si $aplica_columnas_by_table es falsa, entonces las columnas se formatean usando el método 'columnas_base'.
-     * En caso contrario, las columnas se formatean utilizando el método 'columnas_by_table'.
+     * Esta función permite generar una cadena de columnas SQL dependiendo de si se aplica `columnas_by_table` o
+     * si se utilizan columnas base. Valida las configuraciones de entrada y construye la salida acorde al modelo y las estructuras proporcionadas.
      *
-     * @param bool $aplica_columnas_by_table Booleano para decidir el formato de las columnas.
-     * @param array $columnas_by_table Conjunto de columnas. Si $aplica_columnas_by_table es verdadero, debería contener datos.
-     * @param bool $columnas_en_bruto Booleano que indica si las columnas están en formato bruto.
-     * @param array $columnas_sql Array de columnas SQL.
-     * @param array $extension_estructura Estructura de extensión para las columnas.
-     * @param array $extra_join Información adicional para el JOIN en SQL.
-     * @param modelo_base $modelo La instancia del modelo base para maniobrar los datos.
-     * @param array $renombres Array de renombres para las tablas.
-     * @param array $tablas_select Array de tablas seleccionadas.
+     * @param bool $aplica_columnas_by_table Indica si se deben utilizar las columnas de `columnas_by_table`.
+     *                                        - `true`: Se utiliza `columnas_by_table` para generar columnas.
+     *                                        - `false`: Se generan columnas base según las estructuras y el modelo.
+     * @param array $columnas_by_table Lista de tablas para generar columnas específicas.
+     *                                  Ejemplo: `['usuarios', 'ordenes']`.
+     * @param bool $columnas_en_bruto Indica si las columnas se procesan en su forma original (sin alias o transformaciones).
+     * @param array $columnas_sql Lista de columnas SQL predefinidas.
+     *                             Ejemplo: `['usuarios.id', 'usuarios.nombre']`.
+     * @param array $extension_estructura Estructura adicional para generar columnas extendidas.
+     * @param array $extra_join Configuración adicional para generar columnas relacionadas con uniones (`JOIN`).
+     * @param modelo_base $modelo Instancia del modelo base que representa la entidad principal de la consulta SQL.
+     * @param array $renombres Reglas para renombrar columnas o tablas en la consulta.
+     * @param array $tablas_select Tablas seleccionadas para generar las columnas base.
+     *                              Ejemplo: `['usuarios' => false, 'ordenes' => true]`.
      *
-     * @return array|string Retorna un array o string. Si hay error en el formato de columnas, retorna una cadena de error.
-     * @version 16.18.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas
+     * @return array|string Una cadena de columnas SQL generada o, en caso de error, un array con detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $aplica_columnas_by_table = false;
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['usuarios.id', 'usuarios.nombre'];
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $modelo = new modelo_base($link);
+     * $modelo->tabla = 'usuarios';
+     * $renombres = [];
+     * $tablas_select = ['usuarios' => false];
+     *
+     * $resultado = $miClase->columnas(
+     *     aplica_columnas_by_table: $aplica_columnas_by_table,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo,
+     *     renombres: $renombres,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * echo $resultado;
+     *
+     * // Salida esperada:
+     * // "usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre"
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: `$aplica_columnas_by_table` es `true`, pero `$columnas_by_table` está vacío.
+     *
+     * ```php
+     * $aplica_columnas_by_table = true;
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $columnas_sql = [];
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $modelo = new modelo_base($link);
+     * $modelo->tabla = 'usuarios';
+     * $renombres = [];
+     * $tablas_select = [];
+     *
+     * $resultado = $miClase->columnas(
+     *     aplica_columnas_by_table: $aplica_columnas_by_table,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo,
+     *     renombres: $renombres,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * print_r($resultado);
+     *
+     * // Salida esperada:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error columnas_by_table esta vacia en usuarios',
+     * //     'data' => [],
+     * //     'es_final' => true,
+     * //     'fix' => 'Si $aplica_columnas_by_table es true debe haber columnas_by_table con datos columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = nombre_tabla'
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$aplica_columnas_by_table`**:
+     *   Indica si se utiliza `columnas_by_table` para generar columnas específicas.
+     *
+     * - **`$columnas_by_table`**:
+     *   Lista de tablas para columnas específicas.
+     *   **Ejemplo válido**: `['usuarios', 'ordenes']`.
+     *   **Ejemplo inválido**: `[]` (si `$aplica_columnas_by_table` es `true`).
+     *
+     * - **`$columnas_en_bruto`**:
+     *   Si es `true`, las columnas no tendrán alias ni transformaciones.
+     *
+     * - **`$modelo`**:
+     *   Instancia del modelo base que representa la entidad principal.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve una cadena de columnas SQL generada según las configuraciones.
+     *
+     * - **Error**:
+     *   Devuelve un array con detalles si los parámetros de entrada no son válidos.
      */
+
     private function columnas(bool $aplica_columnas_by_table, array $columnas_by_table, bool $columnas_en_bruto,
                               array $columnas_sql, array $extension_estructura, array $extra_join, modelo_base $modelo,
                               array $renombres, array $tablas_select): array|string
@@ -883,29 +1101,136 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * La función 'columnas_base' es una función privada que se utiliza para integrar columnas de varias partes del modelo de datos.
+     * REG
+     * Genera las columnas base para una consulta SQL, integrando las tablas seleccionadas, extensiones,
+     * uniones adicionales y renombres según las configuraciones proporcionadas.
      *
-     * @param bool $columnas_en_bruto Es una variable booleana que determina si se usarán o no las columnas en bruto.
-     * @param array $columnas_sql Es una matriz de columnas SQL que deben integrarse en el modelo de datos.
-     * @param array $extension_estructura Es una matriz que contiene la estructura de extensión que se utilizará para el modelo de datos.
-     * @param array $extra_join  Es una matriz de joins extra que debe aplicarse al modelo de datos.
-     * @param modelo_base $modelo Es el modelo base que se utilizará para crear el modelo de datos.
-     * @param array $renombres Es una matriz de columnas que deben renombrarse en el modelo de datos.
-     * @param array $tablas_select Es una matriz de tablas seleccionadas que deben incluirse en el modelo de datos.
+     * Esta función combina múltiples componentes relacionados con las columnas para construir
+     * una representación completa de las mismas en una consulta SQL.
      *
-     * @return array|string Devuelve un array de columnas si la operación fue exitosa, en caso de error devuelve un mensaje de error.
+     * @param bool $columnas_en_bruto Indica si las columnas deben procesarse sin alias o directamente
+     *                                en bruto. Si es verdadero, se omiten alias y ajustes complejos.
+     * @param array $columnas_sql Array de columnas SQL previamente parseadas.
+     *                            Ejemplo: ['id', 'nombre', 'email'].
+     * @param array $extension_estructura Configuración de las tablas que se deben extender.
+     *                                    Ejemplo: ['usuarios' => ['nombre', 'email']].
+     * @param array $extra_join Configuración de uniones adicionales. Cada tabla puede incluir un
+     *                          renombre u opciones específicas.
+     *                          Ejemplo: ['usuarios' => ['renombre' => 'clientes']].
+     * @param modelo_base $modelo Instancia del modelo base utilizada para generar las columnas.
+     * @param array $renombres Configuración de las tablas renombradas.
+     *                         Ejemplo: ['usuarios' => ['nombre_original' => 'clientes']].
+     * @param array $tablas_select Configuración de las tablas seleccionadas.
+     *                             Ejemplo: ['usuarios', 'ordenes'].
      *
-     * @throw errores Puede arrojar excepciones si ocurre algún error durante la integración de columnas.
-     * @version 16.6.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_base
+     * @return array|string Retorna las columnas generadas como una cadena lista para la consulta SQL.
+     *                      Si ocurre un error, retorna un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas_sql = ['id', 'nombre', 'email'];
+     * $extension_estructura = ['usuarios' => ['nombre', 'email']];
+     * $extra_join = ['ordenes' => ['renombre' => 'pedidos']];
+     * $renombres = ['usuarios' => ['nombre_original' => 'clientes']];
+     * $tablas_select = ['usuarios', 'ordenes'];
+     *
+     * $modelo = new modelo_base($link);
+     *
+     * $resultado = $miClase->columnas_base(
+     *     columnas_en_bruto: false,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo,
+     *     renombres: $renombres,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * echo $resultado;
+     * // Salida esperada:
+     * // "usuarios.id AS clientes_id, usuarios.nombre AS clientes_nombre, usuarios.email AS clientes_email,
+     * //  ordenes.id AS pedidos_id, ordenes.nombre AS pedidos_nombre"
+     * ```
+     *
+     * ### Ejemplo de uso con error:
+     *
+     * - Caso: `$tablas_select` contiene un índice numérico.
+     * ```php
+     * $tablas_select = [0 => 'usuarios', 1 => 'ordenes'];
+     *
+     * $resultado = $miClase->columnas_base(
+     *     columnas_en_bruto: false,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo,
+     *     renombres: $renombres,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error $key no puede ser un numero',
+     * //     'data' => 0,
+     * //     'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$columnas_en_bruto`** (bool):
+     *   Si es verdadero, las columnas no se procesan con alias. Se genera una lista de columnas básicas.
+     *   **Ejemplo válido**: `true` o `false`.
+     *
+     * - **`$columnas_sql`** (array):
+     *   Lista de columnas que serán utilizadas en la consulta.
+     *   **Ejemplo válido**: `['id', 'nombre', 'email']`.
+     *
+     * - **`$extension_estructura`** (array):
+     *   Define las tablas que deben extenderse con columnas adicionales.
+     *   **Ejemplo válido**: `['usuarios' => ['nombre', 'email']]`.
+     *
+     * - **`$extra_join`** (array):
+     *   Configuración para tablas adicionales y sus opciones de unión.
+     *   **Ejemplo válido**: `['ordenes' => ['renombre' => 'pedidos']]`.
+     *
+     * - **`$modelo`** (modelo_base):
+     *   Instancia de la clase `modelo_base` utilizada para manejar las operaciones de base de datos.
+     *
+     * - **`$renombres`** (array):
+     *   Configuración para renombrar tablas en las consultas SQL.
+     *   **Ejemplo válido**: `['usuarios' => ['nombre_original' => 'clientes']]`.
+     *
+     * - **`$tablas_select`** (array):
+     *   Lista de tablas que deben incluirse en la consulta SQL.
+     *   **Ejemplo válido**: `['usuarios', 'ordenes']`.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Una cadena con las columnas generadas para la consulta SQL.
+     *   **Ejemplo**: `"usuarios.id AS clientes_id, usuarios.nombre AS clientes_nombre"`.
+     *
+     * - **Error**:
+     *   Un array con los detalles del error, como:
+     *   ```php
+     *   [
+     *       'error' => 1,
+     *       'mensaje' => 'Error $key no puede ser un numero',
+     *       'data' => 0,
+     *       'es_final' => true
+     *   ]
+     *   ```
      */
     private function columnas_base(bool $columnas_en_bruto, array $columnas_sql, array $extension_estructura,
                                    array $extra_join, modelo_base $modelo, array $renombres,
                                    array $tablas_select): array|string
     {
         $columnas = $this->columnas_tablas_select(columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_sql,  modelo: $modelo, tablas_select: $tablas_select);
+            columnas_sql: $columnas_sql, modelo: $modelo, tablas_select: $tablas_select);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
@@ -928,9 +1253,9 @@ class columnas{
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
         }
 
-
         return $columnas;
     }
+
 
     /**
      * REG
@@ -1028,164 +1353,481 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Obtiene las columnas en sql de una entidad con sus relaciones
-     * @param array $columnas_by_table Array de cadenas con los nombres de las tablas desde las cuales se desean extraer las columnas.
-     * @param bool $columnas_en_bruto Dependiendo el valor booleano, se obtienen las columnas en bruto o no.
-     * @param modelo_base $modelo Modelo base desde el cual se obtendrán las columnas.
-     * @return array|string Dependiendo del proceso, retorna un array con las columnas de salida o un string con un mensaje de error.
-     * @version 16.17.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_by_table
+     * REG
+     * Genera columnas SQL basadas en una lista de tablas y un modelo proporcionado.
+     *
+     * Esta función permite construir una cadena de columnas SQL basada en las tablas especificadas en
+     * `$columnas_by_table` y el modelo indicado. Verifica que las tablas sean válidas y genera las columnas correspondientes,
+     * teniendo en cuenta si deben ser procesadas en bruto o no.
+     *
+     * @param array $columnas_by_table Lista de nombres de tablas que se utilizarán para generar las columnas SQL.
+     *                                 Ejemplo: `['usuarios', 'ordenes']`.
+     * @param bool $columnas_en_bruto Indica si las columnas deben procesarse en su forma original sin alias o transformaciones.
+     *                                - `true`: Procesa las columnas en su forma original.
+     *                                - `false`: Genera columnas con alias y transformaciones.
+     * @param modelo_base $modelo Instancia del modelo base que representa la entidad sobre la cual se genera la consulta SQL.
+     *
+     * @return array|string Una cadena de columnas SQL generadas. En caso de error, devuelve un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas_by_table = ['usuarios', 'ordenes'];
+     * $columnas_en_bruto = false;
+     * $modelo = new modelo_base($link);
+     *
+     * $resultado = $miClase->columnas_by_table(
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     modelo: $modelo
+     * );
+     *
+     * echo $resultado;
+     *
+     * // Salida esperada (ejemplo):
+     * // "usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre, ordenes.id AS ordenes_id, ordenes.total AS ordenes_total"
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: `$columnas_by_table` está vacío.
+     *
+     * ```php
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $modelo = new modelo_base($link);
+     *
+     * $resultado = $miClase->columnas_by_table(
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     modelo: $modelo
+     * );
+     *
+     * print_r($resultado);
+     *
+     * // Salida esperada:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error debe columnas_by_table esta vacia',
+     * //     'data' => [],
+     * //     'es_final' => true,
+     * //     'fix' => 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"'
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$columnas_by_table`** (array):
+     *   Una lista de nombres de tablas para generar columnas SQL.
+     *   **Ejemplo válido**: `['usuarios', 'ordenes']`.
+     *   **Ejemplo inválido**: `[]` (genera un error).
+     *
+     * - **`$columnas_en_bruto`** (bool):
+     *   Si es `true`, las columnas se procesan en su forma original. Si es `false`, se agregan alias y transformaciones.
+     *
+     * - **`$modelo`** (modelo_base):
+     *   Una instancia del modelo base que contiene la lógica para interactuar con la base de datos.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve una cadena de columnas SQL generadas con alias y transformaciones según la configuración.
+     *
+     * - **Error**:
+     *   Devuelve un array detallando el error si la entrada no es válida.
      */
-    private function columnas_by_table(array $columnas_by_table, bool $columnas_en_bruto,
-                                       modelo_base $modelo): array|string
+    private function columnas_by_table(
+        array $columnas_by_table, bool $columnas_en_bruto, modelo_base $modelo): array|string
     {
-        if(count($columnas_by_table) === 0){
+        if (count($columnas_by_table) === 0) {
             $fix = 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"';
-            return $this->error->error(mensaje: 'Error debe columnas_by_table esta vacia', data: $columnas_by_table,
-                es_final: true, fix: $fix);
+            return $this->error->error(
+                mensaje: 'Error debe columnas_by_table esta vacia',
+                data: $columnas_by_table,
+                es_final: true,
+                fix: $fix
+            );
         }
 
         $init = $this->init_columnas_by_table(columnas_by_table: $columnas_by_table);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al inicializa datos de columnas by table', data: $init);
+            return $this->error->error(
+                mensaje: 'Error al inicializa datos de columnas by table',
+                data: $init
+            );
         }
 
-        $columnas = $this->columnas_tablas_select(columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $init->columnas_sql,  modelo: $modelo, tablas_select: $init->tablas_select);
+        $columnas = $this->columnas_tablas_select(
+            columnas_en_bruto: $columnas_en_bruto,
+            columnas_sql: $init->columnas_sql,
+            modelo: $modelo,
+            tablas_select: $init->tablas_select
+        );
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas);
+            return $this->error->error(
+                mensaje: 'Error al integrar columnas',
+                data: $columnas
+            );
         }
+
         return $columnas;
     }
 
     /**
-     * TOTAL
-     * Esta función maneja la combinación de columnas para una consulta SQL basada en las entradas $columnas_extra_sql y $columnas_sql.
+     * REG
+     * Combina las columnas principales y adicionales en una cadena SQL.
      *
-     * @param string $columnas_extra_sql Las columnas SQL extra. Pueden contener nombres de columnas adicionales para la consulta SQL.
-     * @param string $columnas_sql Las columnas SQL principales. Contienen los nombres de las columnas principales para la consulta.
+     * Esta función se encarga de gestionar la combinación de las columnas principales de una consulta SQL
+     * con las columnas adicionales, formateando correctamente la salida para su uso en una sentencia SQL.
      *
-     * @return string Devuelve un string que contiene las columnas para la consulta SQL. Si $columnas_sql está vacío,
-     *                se devuelve $columnas_extra_sql. Si ambas no están vacías, se devolverá una cadena que contiene ambas,
-     *                estos estarán separados por una coma.
+     * @param string $columnas_extra_sql Columnas adicionales que se deben agregar a la consulta SQL.
+     *                                   Estas columnas pueden ser cálculos o valores adicionales.
+     * @param string $columnas_sql Columnas principales generadas previamente para la consulta SQL.
+     *
+     * @return string Cadena de texto que combina las columnas principales y adicionales separadas por comas.
      *
      * @example
-     * // Ejemplo de uso:
-     * $columnas_sql = 'id, nombre';
-     * $columnas_extra_sql = 'direccion, telefono';
-     * $resultado = columnas_envio($columnas_extra_sql, $columnas_sql);
-     * // $resultado ahora contiene 'id, nombre, direccion, telefono'
-     * @version 15.69.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas_envio
+     * // Caso 1: Solo columnas principales
+     * $columnas_sql = 'tabla.id, tabla.nombre';
+     * $columnas_extra_sql = '';
+     * $resultado = $this->columnas_envio(columnas_extra_sql: $columnas_extra_sql, columnas_sql: $columnas_sql);
+     * // Resultado: 'tabla.id, tabla.nombre'
+     *
+     * @example
+     * // Caso 2: Solo columnas adicionales
+     * $columnas_sql = '';
+     * $columnas_extra_sql = 'SUM(tabla.total) AS total_sumado';
+     * $resultado = $this->columnas_envio(columnas_extra_sql: $columnas_extra_sql, columnas_sql: $columnas_sql);
+     * // Resultado: 'SUM(tabla.total) AS total_sumado'
+     *
+     * @example
+     * // Caso 3: Combinación de columnas principales y adicionales
+     * $columnas_sql = 'tabla.id, tabla.nombre';
+     * $columnas_extra_sql = 'SUM(tabla.total) AS total_sumado';
+     * $resultado = $this->columnas_envio(columnas_extra_sql: $columnas_extra_sql, columnas_sql: $columnas_sql);
+     * // Resultado: 'tabla.id, tabla.nombre, SUM(tabla.total) AS total_sumado'
+     *
+     * @example
+     * // Caso 4: Ambas cadenas vacías
+     * $columnas_sql = '';
+     * $columnas_extra_sql = '';
+     * $resultado = $this->columnas_envio(columnas_extra_sql: $columnas_extra_sql, columnas_sql: $columnas_sql);
+     * // Resultado: ''
      */
     private function columnas_envio(string $columnas_extra_sql, string $columnas_sql): string
     {
-        if(trim($columnas_sql) === '' &&  trim($columnas_extra_sql) !==''){
+        if (trim($columnas_sql) === '' && trim($columnas_extra_sql) !== '') {
             $columnas_envio = $columnas_extra_sql;
-        }
-        else{
+        } else {
             $columnas_envio = $columnas_sql;
-            if($columnas_extra_sql!==''){
-                $columnas_envio.=','.$columnas_extra_sql;
+            if ($columnas_extra_sql !== '') {
+                $columnas_envio .= ',' . $columnas_extra_sql;
             }
         }
         return $columnas_envio;
     }
 
+
     /**
-     * TOTAL
-     * Ajusta y extiende las columnas pasadas según la estructura proveída.
+     * REG
+     * Genera y ajusta las columnas SQL para una estructura de extensión basada en múltiples tablas.
      *
-     * Esta función recibe los nombres de las columnas, una arreglo asocativo con la estructura de
-     * columnas SQL, una estrucura extra para las columnas y un modelo donde se realizarán los cambios.
-     * La función ajusta las columnas segun la estructura pasada y las reglas internas.
+     * Este método procesa las tablas de una estructura de extensión para generar las columnas SQL correspondientes.
+     * Permite ajustar las columnas de múltiples tablas relacionadas utilizando un modelo base.
      *
-     * @param string $columnas Nombres de las columnas que serán extendidas.
-     * @param array $columnas_sql Proporciona la estructura de las columnas SQL.
-     * @param array $extension_estructura Estructura extra a agregar a las columnas.
-     * @param modelo_base $modelo Modelo donde se aplicarán las extensiones de columnas.
+     * @param string $columnas Cadena inicial de columnas SQL a ajustar o expandir.
+     *                         Puede estar vacía o contener columnas previamente definidas.
+     * @param array $columnas_sql Lista de nombres de columnas que se deben procesar.
+     *                            Cada elemento del array representa una columna específica a incluir.
+     * @param array $extension_estructura Estructura de extensión que contiene las tablas adicionales a procesar.
+     *                                    El array debe tener los nombres de las tablas como claves, con datos asociados como valores.
+     * @param modelo_base $modelo Instancia del modelo base que se utiliza para interactuar con la base de datos.
      *
-     * @throws errores Cuando la estructura pasada es inválida.
+     * @return array|string Una cadena con las columnas SQL ajustadas si el proceso es exitoso.
+     *                      En caso de error, devuelve un array con los detalles del error.
      *
-     * @return string|array Retorna las columnas extendidas ajustadas o un mensaje de error.
+     * @throws errores Si alguno de los parámetros es inválido o se produce un error durante el ajuste de columnas.
      *
-     * @example
-     * $columnas = 'nombre,apellido';
-     * $columnas_sql = ['nombre' => 'VARCHAR', 'apellido' => 'VARCHAR'];
-     * $extension_estructura = ['nombre' => ['extension' => 'sortable']];
-     * $modelo = new modelo_base();
-     * $columnas_extension = columnas_extension($columnas, $columnas_sql, $extension_estructura, $modelo);
-     * @version 15.80.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_extension
+     * ### Ejemplo de uso exitoso:
      *
+     * ```php
+     * $columnas = ''; // Cadena inicial de columnas
+     * $columnas_sql = ['id', 'nombre', 'estatus']; // Columnas a procesar
+     * $extension_estructura = [
+     *     'usuarios' => ['campo_adicional' => 'valor'],
+     *     'perfiles' => ['campo_adicional' => 'valor']
+     * ];
+     * $modelo = new modelo_base($link); // Instancia del modelo base
+     *
+     * $resultado = $miClase->columnas_extension(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     modelo: $modelo
+     * );
+     *
+     * if (is_string($resultado)) {
+     *     echo "Columnas SQL generadas: " . $resultado;
+     * } else {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo con datos inválidos:
+     *
+     * ```php
+     * $columnas = ''; // Cadena inicial de columnas
+     * $columnas_sql = ['id', 'nombre']; // Columnas a procesar
+     * $extension_estructura = [
+     *     123 => ['campo_adicional' => 'valor'] // Error: La clave del array no puede ser un número.
+     * ];
+     * $modelo = new modelo_base($link);
+     *
+     * $resultado = $miClase->columnas_extension(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     modelo: $modelo
+     * );
+     *
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Muestra el detalle del error
+     * }
+     * ```
+     *
+     * ### Detalle de parámetros:
+     *
+     * - **`$columnas`** (string):
+     *   Cadena inicial de columnas SQL. Puede estar vacía o contener columnas ya generadas.
+     *
+     *   **Ejemplo**: `'usuarios.id, usuarios.nombre'`.
+     *
+     * - **`$columnas_sql`** (array):
+     *   Lista de columnas específicas a incluir en la consulta SQL. Cada elemento es el nombre de una columna.
+     *
+     *   **Ejemplo**: `['id', 'nombre', 'estatus']`.
+     *
+     * - **`$extension_estructura`** (array):
+     *   Estructura que define las tablas adicionales para procesar columnas.
+     *   Las claves del array representan los nombres de las tablas, y los valores son arrays con datos adicionales.
+     *
+     *   **Ejemplo**:
+     *   ```php
+     *   [
+     *       'usuarios' => ['campo_adicional' => 'valor'],
+     *       'perfiles' => ['campo_adicional' => 'valor']
+     *   ]
+     *   ```
+     *
+     * - **`$modelo`** (modelo_base):
+     *   Instancia del modelo base que interactúa con la base de datos.
+     *
+     *   **Ejemplo**: `$modelo = new modelo_base($link);`.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve una cadena SQL como:
+     *   ```sql
+     *   usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre, perfiles.id AS perfiles_id
+     *   ```
+     *
+     * - **Error**:
+     *   Devuelve un array detallando el problema, como:
+     *   ```php
+     *   [
+     *       'error' => 1,
+     *       'mensaje' => 'Error ingrese un array valido usuarios',
+     *       'data' => [
+     *           'usuarios' => ['campo_adicional' => 'valor']
+     *       ]
+     *   ]
+     *   ```
      */
-    private function columnas_extension(string $columnas, array $columnas_sql, array $extension_estructura,
-                                        modelo_base $modelo): array|string
+    private function columnas_extension(
+        string $columnas, array $columnas_sql, array $extension_estructura, modelo_base $modelo): array|string
     {
         $columnas_env = $columnas;
-        foreach($extension_estructura as $tabla=>$data){
-            $tabla = str_replace('models\\','',$tabla);
-            if(is_numeric($tabla)){
-                return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
-                    data: $extension_estructura, es_final: true);
+        foreach ($extension_estructura as $tabla => $data) {
+            $tabla = str_replace('models\\', '', $tabla);
+            if (is_numeric($tabla)) {
+                return $this->error->error(
+                    mensaje: 'Error ingrese un array valido ' . $tabla,
+                    data: $extension_estructura,
+                    es_final: true
+                );
             }
 
-            $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas_env, columnas_en_bruto: false,
-                columnas_sql: $columnas_sql,  modelo: $modelo, tabla: $tabla, tabla_renombrada: '');
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al integrar envio', data:$columnas_env);
+            $columnas_env = $this->ajusta_columnas_completas(
+                columnas: $columnas_env,
+                columnas_en_bruto: false,
+                columnas_sql: $columnas_sql,
+                modelo: $modelo,
+                tabla: $tabla,
+                tabla_renombrada: ''
+            );
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al integrar envio',
+                    data: $columnas_env
+                );
             }
-
         }
         return $columnas_env;
     }
 
+
     /**
-     * TOTAL
-     * Función columnas_extra
+     * REG
+     * Genera y ajusta las columnas adicionales para una consulta SQL basándose en un conjunto de tablas
+     * y configuraciones de unión adicionales.
      *
-     * Esta función se utiliza para procesar las columnas extra en las consultas SQL.
+     * Esta función recorre un array de uniones (`extra_join`) y ajusta las columnas para cada tabla especificada.
+     * Valida que las tablas y los datos asociados sean válidos antes de integrarlas en la consulta SQL.
      *
-     * @param string $columnas El nombre de las columnas a procesar.
-     * @param array $columnas_sql El array de columnas SQL.
-     * @param array $extra_join El array de tablas extra para hacer un JOIN.
-     * @param modelo_base $modelo El modelo base que se utilizará para el procesamiento.
+     * @param string $columnas Columnas iniciales de la consulta. Puede ser una cadena vacía si no hay columnas iniciales.
+     * @param array $columnas_sql Array de columnas SQL parseadas previamente.
+     * @param array $extra_join Array asociativo que contiene las tablas adicionales y sus configuraciones.
+     *                          Cada tabla debe tener un array con sus configuraciones específicas.
+     * @param modelo_base $modelo Instancia del modelo base que se utiliza para ajustar las columnas.
      *
-     * @return array|string Devuelve las columnas procesadas si no hubo errores. En caso de errores, devuelve un mensaje de error.
-     * @version 15.83.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_extra
+     * @return array|string Retorna las columnas ajustadas como una cadena. En caso de error, retorna un array con
+     *                      los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_sql = ['id', 'nombre', 'email'];
+     * $extra_join = [
+     *     'usuarios' => ['renombre' => 'clientes'],
+     *     'ordenes' => []
+     * ];
+     * $modelo = new modelo_base($link);
+     *
+     * $resultado = $miClase->columnas_extra(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo
+     * );
+     * echo $resultado;
+     * // Salida esperada: "usuarios.id AS clientes_id, usuarios.nombre AS clientes_nombre, usuarios.email AS clientes_email, ordenes.id AS ordenes_id, ordenes.nombre AS ordenes_nombre, ordenes.email AS ordenes_email"
+     * ```
+     *
+     * ### Ejemplo de datos inválidos:
+     *
+     * ```php
+     * // Caso: La tabla es numérica
+     * $extra_join = [
+     *     123 => ['renombre' => 'clientes']
+     * ];
+     * $resultado = $miClase->columnas_extra(
+     *     columnas: '',
+     *     columnas_sql: ['id', 'nombre'],
+     *     extra_join: $extra_join,
+     *     modelo: $modelo
+     * );
+     * print_r($resultado);
+     * // Salida:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error ingrese un array valido 123',
+     * //     'data' => $extra_join,
+     * //     'es_final' => true
+     * // ]
+     *
+     * // Caso: El dato asociado a la tabla no es un array
+     * $extra_join = [
+     *     'usuarios' => 'clientes'
+     * ];
+     * $resultado = $miClase->columnas_extra(
+     *     columnas: '',
+     *     columnas_sql: ['id', 'nombre'],
+     *     extra_join: $extra_join,
+     *     modelo: $modelo
+     * );
+     * print_r($resultado);
+     * // Salida:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error data debe ser un array',
+     * //     'data' => 'clientes',
+     * //     'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$columnas`** (string):
+     *   Las columnas iniciales en la consulta. Si no hay columnas iniciales, puede ser una cadena vacía.
+     *   **Ejemplo válido**: `''` o `'id, nombre'`.
+     *
+     * - **`$columnas_sql`** (array):
+     *   Un array que contiene las columnas parseadas previamente.
+     *   **Ejemplo válido**: `['id', 'nombre', 'email']`.
+     *
+     * - **`$extra_join`** (array):
+     *   Array asociativo que define las tablas adicionales y sus configuraciones.
+     *   Cada clave representa el nombre de la tabla, y su valor debe ser un array con las configuraciones opcionales, como `renombre`.
+     *   **Ejemplo válido**:
+     *   ```php
+     *   [
+     *       'usuarios' => ['renombre' => 'clientes'],
+     *       'ordenes' => []
+     *   ]
+     *   ```
+     *
+     * - **`$modelo`** (modelo_base):
+     *   Instancia de la clase modelo base utilizada para generar las columnas.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Una cadena con las columnas ajustadas para la consulta SQL.
+     *   **Ejemplo**: `'usuarios.id AS clientes_id, usuarios.nombre AS clientes_nombre'`.
+     *
+     * - **Error**:
+     *   Un array con los detalles del error, como:
+     *   ```php
+     *   [
+     *       'error' => 1,
+     *       'mensaje' => 'Error data debe ser un array',
+     *       'data' => 'clientes',
+     *       'es_final' => true
+     *   ]
+     *   ```
      */
-    private function columnas_extra(string $columnas, array $columnas_sql,  array $extra_join,
-                                    modelo_base $modelo): array|string
+    private function columnas_extra(
+        string $columnas, array $columnas_sql, array $extra_join, modelo_base $modelo): array|string
     {
         $columnas_env = $columnas;
-        foreach($extra_join as $tabla=>$data){
-            $tabla = str_replace('models\\','',$tabla);
+        foreach ($extra_join as $tabla => $data) {
+            $tabla = str_replace('models\\', '', $tabla);
 
-            if(is_numeric($tabla)){
-                return $this->error->error(mensaje: 'Error ingrese un array valido '.$tabla,
+            if (is_numeric($tabla)) {
+                return $this->error->error(mensaje: 'Error ingrese un array valido ' . $tabla,
                     data: $extra_join, es_final: true);
             }
-            if(!is_array($data)){
+            if (!is_array($data)) {
                 return $this->error->error(mensaje: 'Error data debe ser un array ',
                     data: $data, es_final: true);
             }
 
-            $tabla_renombrada = $this->tabla_renombrada_extra(data: $data,tabla:  $tabla);
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al integrar tabla_renombrada', data:$tabla_renombrada);
+            $tabla_renombrada = $this->tabla_renombrada_extra(data: $data, tabla: $tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar tabla_renombrada', data: $tabla_renombrada);
             }
 
             $columnas_env = $this->ajusta_columnas_completas(columnas: $columnas_env, columnas_en_bruto: false,
-                columnas_sql: $columnas_sql,  modelo: $modelo, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
-            if(errores::$error){
-                return $this->error->error(mensaje:'Error al integrar columnas', data:$columnas_env);
+                columnas_sql: $columnas_sql, modelo: $modelo, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $columnas_env);
             }
-
         }
         return $columnas_env;
     }
+
 
 
     /**
@@ -1301,21 +1943,114 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Obtiene las columnas para un SELECT
-     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto Envia columnas tal como estan en base de datos
-     * @param array $columnas_sql columnas inicializadas a mostrar a peticion en resultado SQL
-     * @param array $extension_estructura Datos para la extension de una estructura que va fuera de la
-     * logica natural de dependencias
-     * @param array $extra_join integra joins extra a peticion de funcion no usar en modelo
-     * @param modelo_base $modelo Modelo con funcionalidad de ORM
-     * @param array $renombres Conjunto de tablas para renombrar
-     * @param array $tablas_select Tablas ligadas al modelo en ejecucion
-     * @return array|string
-     * @version 16.19.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_full
+     * REG
+     * Genera columnas completas para una consulta SQL, basándose en diferentes configuraciones y estructuras de datos.
+     *
+     * Esta función evalúa si se deben aplicar columnas específicas por tabla (`columnas_by_table`) o si se deben utilizar
+     * columnas generales, y construye la cadena de columnas SQL según las reglas establecidas.
+     *
+     * @param array $columnas_by_table Listado de tablas para las cuales se generarán columnas específicas.
+     *                                  Ejemplo: `['usuarios', 'ordenes']`.
+     * @param bool $columnas_en_bruto Indica si las columnas deben procesarse en su forma original sin alias ni modificaciones.
+     * @param array $columnas_sql Columnas SQL predefinidas para construir la consulta.
+     *                             Ejemplo: `['usuarios.id', 'usuarios.nombre']`.
+     * @param array $extension_estructura Estructuras adicionales para extender las columnas de la consulta.
+     * @param array $extra_join Configuración para unir columnas adicionales provenientes de otras tablas relacionadas.
+     * @param modelo_base $modelo Instancia del modelo base que representa la entidad principal de la consulta.
+     *                            Ejemplo: `$modelo->tabla = 'usuarios';`.
+     * @param array $renombres Reglas para renombrar tablas o columnas en la consulta.
+     * @param array $tablas_select Listado de tablas que serán seleccionadas en la consulta.
+     *                              Ejemplo: `['usuarios' => false, 'ordenes' => true]`.
+     *
+     * @return array|string Una cadena de columnas SQL generada o, en caso de error, un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas_by_table = ['usuarios'];
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['usuarios.id', 'usuarios.nombre'];
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $modelo = new modelo_base($link);
+     * $modelo->tabla = 'usuarios';
+     * $renombres = [];
+     * $tablas_select = ['usuarios' => false];
+     *
+     * $resultado = $miClase->columnas_full(
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo,
+     *     renombres: $renombres,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * echo $resultado;
+     * // Salida esperada:
+     * // "usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre"
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: `$columnas_by_table` está vacío pero debería contener datos.
+     *
+     * ```php
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $columnas_sql = [];
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $modelo = new modelo_base($link);
+     * $modelo->tabla = 'usuarios';
+     * $renombres = [];
+     * $tablas_select = [];
+     *
+     * $resultado = $miClase->columnas_full(
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     modelo: $modelo,
+     *     renombres: $renombres,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error al verificar aplicacion de columnas en modelo usuarios',
+     * //     'data' => null
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$columnas_by_table`**:
+     *   Lista de tablas para columnas específicas. Ejemplo: `['usuarios', 'ordenes']`.
+     *
+     * - **`$columnas_en_bruto`**:
+     *   Si es `true`, las columnas no tendrán alias ni transformaciones.
+     *
+     * - **`$modelo`**:
+     *   Instancia del modelo base que representa la entidad principal. Ejemplo: `$modelo->tabla = 'usuarios';`.
+     *
+     * - **`$renombres`**:
+     *   Reglas de renombramiento para tablas o columnas. Ejemplo: `['usuarios' => 'usuarios_renombrados']`.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve una cadena de columnas SQL generada según las configuraciones.
+     *
+     * - **Error**:
+     *   Devuelve un array con detalles del error si los parámetros de entrada no son válidos.
      */
+
     private function columnas_full(array $columnas_by_table, bool $columnas_en_bruto, array $columnas_sql,
                                    array $extension_estructura, array $extra_join, modelo_base $modelo,
                                    array $renombres, array $tablas_select): array|string
@@ -1343,28 +2078,91 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Renombra las columnas de la base de datos para su manipulación dentro del código.
+     * REG
+     * Genera las columnas SQL ajustadas para un conjunto de tablas renombradas.
      *
-     * @param string      $columnas     Las columnas a las que se les aplicará el cambio de nombre.
-     * @param array       $columnas_sql Las columnas obtenidas de la consulta SQL.
-     * @param modelo_base $modelo       El modelo base del que se obtendrán las columnas.
-     * @param array       $renombres    Array asociativo con los nombres de las columnas y los nombres deseados.
+     * Esta función procesa un conjunto de tablas renombradas y sus configuraciones asociadas
+     * para generar una cadena de columnas SQL ajustadas, asegurándose de que los datos de entrada sean válidos.
      *
-     * @return array|string Regresa las columnas con los nombres modificados en formato de string o array según sea el caso.
-     * @version 16.4.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_renombre
+     * @param string $columnas Columnas iniciales en formato SQL. Puede ser una cadena vacía.
+     * @param array $columnas_sql Lista de columnas a procesar, especificadas por nombre.
+     *                            Cada elemento representa un nombre de columna a incluir.
+     * @param modelo_base $modelo Instancia del modelo base que gestiona la interacción con la base de datos.
+     * @param array $renombres Conjunto de tablas renombradas con sus configuraciones asociadas.
+     *                         Cada clave representa el nombre de la tabla y el valor debe ser un array que
+     *                         incluya la clave `nombre_original`.
+     *
+     * @return array|string Una cadena con las columnas SQL ajustadas si el proceso es exitoso.
+     *                      En caso de error, devuelve un array con detalles del error.
+     *
+     * @throws errores Si algún dato de entrada es inválido o ocurre un problema durante la generación.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $modelo = new modelo_base($link); // Instancia del modelo base
+     * $renombres = [
+     *     'usuarios_activos' => ['nombre_original' => 'usuarios'],
+     *     'productos_disponibles' => ['nombre_original' => 'productos']
+     * ];
+     *
+     * $resultado = $miClase->columnas_renombre(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     renombres: $renombres
+     * );
+     *
+     * if (is_string($resultado)) {
+     *     echo "Columnas SQL generadas: " . $resultado;
+     * } else {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo de uso con datos inválidos:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $modelo = new modelo_base($link);
+     * $renombres = [
+     *     'usuarios_activos' => 'usuarios' // Error: el valor debe ser un array
+     * ];
+     *
+     * $resultado = $miClase->columnas_renombre(
+     *     columnas: $columnas,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     renombres: $renombres
+     * );
+     *
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Muestra el detalle del error
+     * }
+     * ```
      */
-    private function columnas_renombre(string $columnas, array $columnas_sql, modelo_base $modelo,
-                                       array $renombres): array|string
+    private function columnas_renombre(
+        string $columnas, array $columnas_sql, modelo_base $modelo, array $renombres): array|string
     {
-        foreach($renombres as $tabla=>$data){
-            if(!is_array($data)){
-                return $this->error->error(mensaje: 'Error data debe ser array '.$tabla,data:  $data, es_final: true);
+        foreach ($renombres as $tabla => $data) {
+            if (!is_array($data)) {
+                return $this->error->error(
+                    mensaje: 'Error data debe ser array ' . $tabla,
+                    data: $data,
+                    es_final: true
+                );
             }
-            $r_columnas = $this->carga_columna_renombre(columnas: $columnas, columnas_sql: $columnas_sql,
-                data: $data, modelo: $modelo, tabla: $tabla);
-            if(errores::$error){
+            $r_columnas = $this->carga_columna_renombre(
+                columnas: $columnas,
+                columnas_sql: $columnas_sql,
+                data: $data,
+                modelo: $modelo,
+                tabla: $tabla
+            );
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar columnas', data: $r_columnas);
             }
             $columnas = (string)$r_columnas;
@@ -1373,51 +2171,86 @@ class columnas{
         return $columnas;
     }
 
+
     /**
-     * TOTAL
-     * Método que genera una cadena SQL para columnas.
+     * REG
+     * Construye una cadena SQL para columnas con alias y formato opcional en bruto.
      *
-     * Este método genera una cadena SQL para columnas dependiendo de varios parámetros de entrada proporcionados.
-     * La cadena generada es útil para consultas SQL donde se pueden necesitar alias para las columnas nombradas en SQL.
+     * Esta función genera una cadena SQL para columnas, permitiendo la inclusión de alias y el uso de
+     * formato "en bruto" si se requiere. Se asegura de validar las entradas y agregar las columnas de forma adecuada
+     * con sus correspondientes alias y tabla de origen.
+     *
+     * @param string $alias_columnas Alias para la columna en la consulta SQL.
+     * @param string $columna_parseada Nombre de la columna que se procesará.
+     * @param bool $columnas_en_bruto Indica si se deben usar las columnas sin alias (en bruto).
+     * @param string $columnas_sql Cadena acumulativa que contiene las columnas SQL generadas previamente.
+     * @param string $tabla_nombre Nombre de la tabla de donde proviene la columna.
+     *
+     * @return array|string Devuelve la cadena SQL actualizada con las nuevas columnas procesadas.
+     *                      En caso de error, devuelve un array con los detalles del problema.
      *
      * @example
-     * Supongamos que tienes una tabla "usuarios" con la columna "nombre"
-     * Usar este método así: columnas_sql('nombre_completo', 'nombre', false, '', 'usuarios')
-     * Devolverá: "usuarios.nombre AS nombre_completo"
+     * // Caso 1: Agregar una columna con alias
+     * $resultado = $this->columnas_sql(
+     *     alias_columnas: 'alias_id',
+     *     columna_parseada: 'id',
+     *     columnas_en_bruto: false,
+     *     columnas_sql: '',
+     *     tabla_nombre: 'usuarios'
+     * );
+     * // Resultado: 'usuarios.id AS alias_id'
      *
-     * @param string $alias_columnas Alias para la columna parseada que se incluirá en la consulta SQL final.
-     * @param string $columna_parseada Nombre de la columna extraído que se considerará para generar la consulta SQL.
-     * @param bool $columnas_en_bruto Si se establece como verdadero, el alias de la columna será igual a la columna parseada.
-     * @param string $columnas_sql Cadena de columnas SQL existente a la que se añadirá el nuevo segmento de columna.
-     * @param string $tabla_nombre Nombre de la tabla en la que se encuentra la columna.
+     * @example
+     * // Caso 2: Agregar múltiples columnas en una cadena acumulativa
+     * $resultado = $this->columnas_sql(
+     *     alias_columnas: 'alias_nombre',
+     *     columna_parseada: 'nombre',
+     *     columnas_en_bruto: false,
+     *     columnas_sql: 'usuarios.id AS alias_id',
+     *     tabla_nombre: 'usuarios'
+     * );
+     * // Resultado: 'usuarios.id AS alias_id, usuarios.nombre AS alias_nombre'
      *
-     * @return array|string Devuelve la cadena SQL generada con las columnas o un array con información de cualquier error que pueda haber ocurrido.
-     * @version 15.61.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_sql
+     * @example
+     * // Caso 3: Uso de columnas en bruto (sin alias)
+     * $resultado = $this->columnas_sql(
+     *     alias_columnas: '',
+     *     columna_parseada: 'nombre',
+     *     columnas_en_bruto: true,
+     *     columnas_sql: '',
+     *     tabla_nombre: 'usuarios'
+     * );
+     * // Resultado: 'usuarios.nombre AS nombre'
+     *
+     * @throws array En caso de que alguno de los parámetros no sea válido o esté vacío, se retorna un array
+     *               con los detalles del error.
      */
     private function columnas_sql(string $alias_columnas, string $columna_parseada, bool $columnas_en_bruto,
-                                  string $columnas_sql, string $tabla_nombre):array|string
+                                  string $columnas_sql, string $tabla_nombre): array|string
     {
-
-
-        $valida = $this->valida_columnas_sql(alias_columnas: $alias_columnas,columna_parseada:  $columna_parseada,
-            tabla_nombre:  $tabla_nombre);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar datos de entrada',data: $valida);
+        $valida = $this->valida_columnas_sql(
+            alias_columnas: $alias_columnas,
+            columna_parseada: $columna_parseada,
+            tabla_nombre: $tabla_nombre
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos de entrada', data: $valida);
         }
+
         $coma = $this->coma(columnas_sql: $columnas_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al integrar coma',data: $coma);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al integrar coma', data: $coma);
         }
 
-        if($columnas_en_bruto){
+        if ($columnas_en_bruto) {
             $alias_columnas = $columna_parseada;
         }
 
-        $columnas_sql.= $coma.$tabla_nombre.'.'.$columna_parseada.' AS '.$alias_columnas;
+        $columnas_sql .= $coma . $tabla_nombre . '.' . $columna_parseada . ' AS ' . $alias_columnas;
 
         return $columnas_sql;
     }
+
 
     /**
      * REG
@@ -1508,166 +2341,395 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Método columnas_sql_init
+     * REG
+     * Inicializa y genera una cadena SQL con columnas de una tabla, aplicando alias y validaciones según los parámetros.
      *
-     * Inicializa las columnas de SQL de acuerdo a los parámetros suministrados.
+     * Esta función recorre un conjunto de columnas parseadas y genera una cadena SQL con las columnas seleccionadas,
+     * asignando alias y aplicando filtros si es necesario. También permite manejar columnas en formato en bruto.
      *
-     * @param array  $columnas           Las columnas a procesar
-     * @param bool   $columnas_en_bruto  Indica si las columnas se encuentran en bruto
-     * @param array  $columnas_parseadas Las columnas que ya han sido parseadas
-     * @param string $tabla_nombre       El nombre de la tabla
+     * @param array $columnas Lista de columnas permitidas para incluir en la consulta SQL. Si está vacío, se incluirán todas.
+     * @param bool $columnas_en_bruto Indica si se deben usar columnas en formato en bruto, sin alias personalizados.
+     * @param array $columnas_parseadas Columnas procesadas que se incluirán en la cadena SQL.
+     * @param string $tabla_nombre Nombre de la tabla que contiene las columnas.
      *
-     * @return array|string  Las columnas de SQL inicializadas, o un mensaje de error.
+     * @return array|string Devuelve una cadena SQL con las columnas generadas o un array con detalles de error en caso de fallo.
      *
-     * @throws errores Si $?tabla_nombre? está vacío.
-     * @throws errores Si ocurre un error al obtener las columnas de SQL.
+     * @example
+     * // Caso 1: Generar columnas SQL con alias
+     * $columnas = ['usuarios_id', 'usuarios_nombre'];
+     * $columnas_parseadas = ['id', 'nombre'];
+     * $tabla_nombre = 'usuarios';
+     * $resultado = $this->columnas_sql_init(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: false,
+     *     columnas_parseadas: $columnas_parseadas,
+     *     tabla_nombre: $tabla_nombre
+     * );
+     * // Resultado: 'usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre'
      *
-     * @example columnas_sql_init(['id', 'nombre'], false, ['id', 'nombre'], 'mi_tabla') Inicializa columnas de SQL
+     * @example
+     * // Caso 2: Generar columnas SQL sin restricciones específicas (todas las columnas)
+     * $columnas = [];
+     * $columnas_parseadas = ['id', 'nombre', 'email'];
+     * $tabla_nombre = 'usuarios';
+     * $resultado = $this->columnas_sql_init(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: false,
+     *     columnas_parseadas: $columnas_parseadas,
+     *     tabla_nombre: $tabla_nombre
+     * );
+     * // Resultado: 'usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre, usuarios.email AS usuarios_email'
      *
-     * @internal Este método es privado y sólo debe ser utilizado por la clase contenedora.
-     * @version 15.62.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_sql_init
+     * @example
+     * // Caso 3: Generar columnas SQL en formato en bruto
+     * $columnas = [];
+     * $columnas_parseadas = ['id', 'nombre'];
+     * $tabla_nombre = 'usuarios';
+     * $resultado = $this->columnas_sql_init(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: true,
+     *     columnas_parseadas: $columnas_parseadas,
+     *     tabla_nombre: $tabla_nombre
+     * );
+     * // Resultado: 'usuarios.id AS id, usuarios.nombre AS nombre'
+     *
+     * @throws array Devuelve un array con los detalles del error si $tabla_nombre está vacío
+     *               o si ocurre un error al generar la cadena SQL.
      */
     private function columnas_sql_init(array $columnas, bool $columnas_en_bruto, array $columnas_parseadas,
-                                       string $tabla_nombre):array|string
+                                       string $tabla_nombre): array|string
     {
-        if($tabla_nombre === ''){
-            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia',data:  $tabla_nombre,
-                es_final: true);
+        if ($tabla_nombre === '') {
+            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre, es_final: true);
         }
         $columnas_sql = '';
-        foreach($columnas_parseadas as $columna_parseada){
-            $alias_columnas = $tabla_nombre.'_'.$columna_parseada;
-            if((count($columnas) > 0) && !in_array($alias_columnas, $columnas, true)) {
+        foreach ($columnas_parseadas as $columna_parseada) {
+            $alias_columnas = $tabla_nombre . '_' . $columna_parseada;
+            if ((count($columnas) > 0) && !in_array($alias_columnas, $columnas, true)) {
                 continue;
             }
-            $columnas_sql = $this->columnas_sql(alias_columnas: $alias_columnas, columna_parseada: $columna_parseada,
-                columnas_en_bruto: $columnas_en_bruto, columnas_sql: $columnas_sql, tabla_nombre: $tabla_nombre);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener columnas sql',data:  $columnas_sql);
+            $columnas_sql = $this->columnas_sql(
+                alias_columnas: $alias_columnas,
+                columna_parseada: $columna_parseada,
+                columnas_en_bruto: $columnas_en_bruto,
+                columnas_sql: $columnas_sql,
+                tabla_nombre: $tabla_nombre
+            );
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener columnas sql', data: $columnas_sql);
             }
         }
-
-
         return $columnas_sql;
     }
 
+
     /**
-     * TOTAL
-     * La función columnas_tablas_select elabora las columnas que se seleccionarán en una consulta SQL.
+     * REG
+     * Genera una cadena SQL con las columnas seleccionadas de múltiples tablas.
      *
-     * @param bool $columnas_en_bruto Indica si las columnas se proporcionan en bruto. Si es true, la función establece
-     *                                $tablas_select para ser un arreglo vacío y $modelo->tabla como valor.
+     * Este método construye una cadena SQL que incluye las columnas de las tablas indicadas en `$tablas_select`.
+     * Las columnas se procesan de acuerdo con las configuraciones de `$columnas_en_bruto` y `$columnas_sql`.
      *
-     * @param array $columnas_sql Representa las columnas SQL que se usarán en la consulta.
+     * @param bool $columnas_en_bruto Determina si las columnas deben incluirse en su formato bruto o con alias.
+     *                                - `true`: Incluye las columnas sin alias.
+     *                                - `false`: Incluye las columnas con alias.
+     * @param array $columnas_sql Lista de nombres de columnas que se deben procesar.
+     *                            Cada elemento representa una columna a incluir.
+     * @param modelo_base $modelo Instancia del modelo base que se utiliza para interactuar con la base de datos.
+     * @param array $tablas_select Lista de tablas de las cuales se seleccionarán las columnas.
+     *                             El array debe tener el nombre de las tablas como claves y valores.
      *
-     * @param modelo_base $modelo Instancia del modelo base utilizado para configurar la tabla.
-     *                            Se utiliza el valor de $modelo->tabla.
+     * @return array|string Una cadena con las columnas SQL generadas si el proceso es exitoso.
+     *                      En caso de error, devuelve un array con los detalles del error.
      *
-     * @param array $tablas_select Define las tablas que se seleccionarán en la consulta.
+     * @throws errores Si alguno de los parámetros es inválido o se produce un error durante la generación.
      *
-     * @return array|string Si hay algún error durante la ejecución, retorna un mensaje de error con los detalles.
-     *                      Si todo va bien, retorna las columnas formuladas como una cadena.
+     * ### Ejemplo de uso exitoso:
      *
-     * @throws errores Si $key es un número, se lanza una excepción con un mensaje de error.
-     *                   Si hay un error al integrar las columnas, se lanza una excepción con un mensaje de error.
+     * ```php
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $modelo = new modelo_base($link); // Instancia del modelo base
+     * $tablas_select = [
+     *     'usuarios' => 'usuarios',
+     *     'perfiles' => 'perfiles'
+     * ];
      *
-     * La función recorre cada elemento en $tablas_select, por cada tabla llama a la función genera_columna_tabla con
-     * los parámetros necesarios. Si encuentra algún error, retorna el mensaje de error con los detalles.
-     * Si todo va bien, actualiza el valor de $columnas y continúa hasta que no queden más elementos en $tablas_select.
-     * Finalmente, retorna $columnas que ahora son la consulta SQL finalizada.
-     * @version 15.79.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.columnas_tablas_select
+     * $resultado = $miClase->columnas_tablas_select(
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * if (is_string($resultado)) {
+     *     echo "Columnas SQL generadas: " . $resultado;
+     * } else {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo de uso con columnas en bruto:
+     *
+     * ```php
+     * $columnas_en_bruto = true;
+     * $columnas_sql = [];
+     * $modelo = new modelo_base($link); // Instancia del modelo base
+     * $tablas_select = []; // No es necesario especificar tablas en este caso.
+     *
+     * $resultado = $miClase->columnas_tablas_select(
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * if (is_string($resultado)) {
+     *     echo "Columnas SQL generadas: " . $resultado;
+     * } else {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo con datos inválidos:
+     *
+     * ```php
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['id', 'nombre'];
+     * $modelo = new modelo_base($link);
+     * $tablas_select = [
+     *     123 => 'usuarios' // Error: La clave del array no puede ser un número.
+     * ];
+     *
+     * $resultado = $miClase->columnas_tablas_select(
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     modelo: $modelo,
+     *     tablas_select: $tablas_select
+     * );
+     *
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Muestra el detalle del error
+     * }
+     * ```
+     *
+     * ### Detalle de parámetros:
+     *
+     * - **`$columnas_en_bruto`** (bool):
+     *   Indica si las columnas deben generarse en su formato original o incluir alias.
+     *   - `true`: Genera las columnas sin alias, tomando como referencia solo el nombre bruto.
+     *   - `false`: Genera las columnas con alias formateados.
+     *
+     * - **`$columnas_sql`** (array):
+     *   Lista de nombres de columnas a incluir en la consulta SQL.
+     *
+     *   **Ejemplo**: `['id', 'nombre', 'estatus']`.
+     *
+     * - **`$modelo`** (modelo_base):
+     *   Instancia del modelo base que interactúa con la base de datos.
+     *
+     *   **Ejemplo**: `$modelo = new modelo_base($link);`.
+     *
+     * - **`$tablas_select`** (array):
+     *   Lista de tablas de las cuales se generarán las columnas.
+     *   Las claves y los valores del array deben ser nombres de tablas.
+     *
+     *   **Ejemplo**:
+     *   ```php
+     *   [
+     *       'usuarios' => 'usuarios',
+     *       'perfiles' => 'perfiles'
+     *   ]
+     *   ```
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve una cadena SQL como:
+     *   ```sql
+     *   usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre, perfiles.id AS perfiles_id
+     *   ```
+     *
+     * - **Error**:
+     *   Devuelve un array detallando el problema, como:
+     *   ```php
+     *   [
+     *       'error' => 1,
+     *       'mensaje' => 'Error $key no puede ser un numero',
+     *       'data' => 123
+     *   ]
+     *   ```
      */
-    private function columnas_tablas_select(bool $columnas_en_bruto, array $columnas_sql,  modelo_base $modelo,
-                                            array $tablas_select): array|string
+    private function columnas_tablas_select(
+        bool $columnas_en_bruto, array $columnas_sql, modelo_base $modelo, array $tablas_select): array|string
     {
-        if($columnas_en_bruto){
-            $tablas_select = array();
+        if ($columnas_en_bruto) {
+            $tablas_select = [];
             $tablas_select[$modelo->tabla] = $modelo->tabla;
         }
 
         $columnas = '';
 
-        foreach ($tablas_select as $key=>$tabla_select){
-
-            if(is_numeric($key)){
-                return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key, es_final: true);
+        foreach ($tablas_select as $key => $tabla_select) {
+            if (is_numeric($key)) {
+                return $this->error->error(
+                    mensaje: 'Error $key no puede ser un numero',
+                    data: $key,
+                    es_final: true
+                );
             }
 
-            $result = $this->genera_columna_tabla(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-                columnas_sql: $columnas_sql, key: $key, modelo: $modelo);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al integrar columnas',data:  $result);
+            $result = $this->genera_columna_tabla(
+                columnas: $columnas,
+                columnas_en_bruto: $columnas_en_bruto,
+                columnas_sql: $columnas_sql,
+                key: $key,
+                modelo: $modelo
+            );
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al integrar columnas', data: $result);
             }
             $columnas = (string)$result;
         }
+
         return $columnas;
     }
 
+
     /**
-     * TOTAL
-     * Esta función maneja la adición de una coma en una consulta SQL.
+     * REG
+     * Determina si se debe agregar una coma al construir una lista de columnas SQL.
      *
-     * El propósito de esta función es agregar una coma al final de una lista de columnas SQL.
-     * Solo se agrega la coma si el parámetro de entrada no es un string vacío.
+     * Esta función verifica si la cadena proporcionada contiene columnas SQL. Si la cadena no está vacía,
+     * devuelve una coma seguida de un espacio (`, `). Si está vacía, devuelve una cadena vacía.
      *
-     * @param string $columnas_sql El string que contiene las columnas SQL que ya se han construido en la consulta.
-     *                             Este parámetro puede ser un string vacío, en cuyo caso la función no hará nada.
+     * @param string $columnas_sql Cadena que representa las columnas SQL procesadas.
      *
-     * @return string Retorna una coma como un string. Si $columnas_sql es un string vacío, se retorna un string vacío.
-     * @version 15.60.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.coma
+     * @return string Devuelve `", "` si `$columnas_sql` no está vacío, de lo contrario devuelve una cadena vacía.
+     *
+     * @example
+     * // Caso 1: La cadena contiene columnas
+     * $resultado = $this->coma('id, nombre, correo');
+     * // Resultado: ', '
+     *
+     * @example
+     * // Caso 2: La cadena está vacía
+     * $resultado = $this->coma('');
+     * // Resultado: ''
+     *
+     * @example
+     * // Caso 3: La cadena tiene espacios en blanco al inicio y final
+     * $resultado = $this->coma('   id, nombre   ');
+     * // Resultado: ', '
      */
     private function coma(string $columnas_sql): string
     {
         $columnas_sql = trim($columnas_sql);
         $coma = '';
-        if($columnas_sql !== ''){
+        if ($columnas_sql !== '') {
             $coma = ', ';
         }
         return $coma;
-
     }
 
+
     /**
-     * TOTAL
-     * Este método privado prepara los datos para las columnas de envío.
+     * REG
+     * Genera datos necesarios para construir columnas SQL en una consulta.
      *
-     * @param array $columnas Esto es una matriz de columnas.
-     * @param bool $columnas_en_bruto Esta es una indicación de si las columnas están en bruto.
-     * @param modelo_base $modelo Este es el modelo base utilizado.
-     * @param string $tabla_original Este es el nombre original de la tabla.
-     * @param string $tabla_renombrada Este es el nombre nuevo de la tabla después de ser renombrada.
+     * Esta función se encarga de generar las columnas SQL a partir de los parámetros proporcionados, validando los datos
+     * de entrada y retornando una estructura que incluye las columnas principales y columnas adicionales si aplica.
      *
-     * @return array|stdClass
-     *     Retorna un array o un objeto con dos propiedades: 'columnas_sql' y 'columnas_extra_sql'
-     *     - 'columnas_sql' contiene la consulta de SQL de las columnas.
-     *     - 'columnas_extra_sql' almacena cualquier consulta SQL adicional.
-     *     En caso de error, se devolverá un objeto de error con información sobre el mismo.
-     * @version 15.67.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.data_for_columnas_envio
+     * @param array $columnas Lista de columnas específicas a incluir en la consulta. Si está vacío, se incluirán todas.
+     * @param bool $columnas_en_bruto Indica si las columnas deben generarse en formato sin alias.
+     * @param modelo_base $modelo Instancia del modelo base que interactúa con la tabla.
+     * @param string $tabla_original Nombre original de la tabla en la base de datos.
+     * @param string $tabla_renombrada Alias o nombre renombrado de la tabla para uso en SQL.
+     *
+     * @return array|stdClass Devuelve un objeto con las columnas generadas y cualquier columna adicional, o un array de error.
+     *
+     * @example
+     * // Caso 1: Generar columnas SQL con alias personalizados
+     * $columnas = ['id', 'nombre'];
+     * $modelo = new modelo_base($link);
+     * $tabla_original = 'usuarios';
+     * $tabla_renombrada = '';
+     * $resultado = $this->data_for_columnas_envio(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada
+     * );
+     * // Resultado esperado:
+     * // $resultado->columnas_sql = 'usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre';
+     * // $resultado->columnas_extra_sql = '';
+     *
+     * @example
+     * // Caso 2: Generar columnas SQL en bruto sin alias
+     * $columnas = [];
+     * $modelo = new modelo_base($link);
+     * $tabla_original = 'productos';
+     * $tabla_renombrada = '';
+     * $resultado = $this->data_for_columnas_envio(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: true,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada
+     * );
+     * // Resultado esperado:
+     * // $resultado->columnas_sql = 'productos.id AS id, productos.nombre AS nombre';
+     * // $resultado->columnas_extra_sql = '';
+     *
+     * @example
+     * // Caso 3: Generar columnas SQL con alias de tabla renombrada
+     * $columnas = ['id', 'nombre'];
+     * $modelo = new modelo_base($link);
+     * $tabla_original = 'clientes';
+     * $tabla_renombrada = 'cli';
+     * $resultado = $this->data_for_columnas_envio(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada
+     * );
+     * // Resultado esperado:
+     * // $resultado->columnas_sql = 'cli.id AS clientes_id, cli.nombre AS clientes_nombre';
+     * // $resultado->columnas_extra_sql = '';
+     *
+     * @throws array Devuelve un array con los detalles del error si:
+     *  - `$tabla_original` está vacío o es numérico.
+     *  - Ocurre un error al generar las columnas SQL.
      */
-    private function data_for_columnas_envio(array $columnas, bool $columnas_en_bruto, modelo_base $modelo,
-                                             string $tabla_original, string $tabla_renombrada): array|stdClass
-    {
-        $tabla_original = str_replace('models\\','',$tabla_original);
+    private function data_for_columnas_envio(
+        array $columnas,
+        bool $columnas_en_bruto,
+        modelo_base $modelo,
+        string $tabla_original,
+        string $tabla_renombrada
+    ): array|stdClass {
+        $tabla_original = str_replace('models\\', '', $tabla_original);
 
-        if($tabla_original === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia',data: $tabla_original,
+        if ($tabla_original === '') {
+            return $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original,
                 es_final: true);
         }
-        if(is_numeric($tabla_original)){
-            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original,
+        if (is_numeric($tabla_original)) {
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero', data: $tabla_original,
                 es_final: true);
         }
 
-        $columnas_sql = $this->genera_columnas_tabla( columnas_en_bruto: $columnas_en_bruto, modelo: $modelo,
-            tabla_original: $tabla_original, tabla_renombrada: $tabla_renombrada, columnas:  $columnas);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar columnas',data:  $columnas_sql);
-
+        $columnas_sql = $this->genera_columnas_tabla(
+            columnas_en_bruto: $columnas_en_bruto,
+            modelo: $modelo,
+            tabla_original: $tabla_original,
+            tabla_renombrada: $tabla_renombrada,
+            columnas: $columnas
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_sql);
         }
 
         $columnas_extra_sql = '';
@@ -1678,78 +2740,257 @@ class columnas{
         return $data;
     }
 
+
     /**
-     * TOTAL
-     * Este método genera una nueva columna para la tabla.
+     * REG
+     * Genera una cadena SQL con las columnas de una tabla específica.
      *
-     * @param string $columnas Cadena de caracteres con los nombres de las columnas.
-     * @param bool $columnas_en_bruto Indica si las columnas están en bruto (true) o no (false).
-     * @param array $columnas_sql Array con las columnas SQL.
-     * @param string $key Clave única para la columna.
-     * @param modelo_base $modelo Modelo base para generar la columna.
+     * Este método ajusta y compone una cadena SQL que incluye las columnas de una tabla específica.
+     * Se asegura de que los datos de entrada sean válidos y procesa las columnas según las configuraciones indicadas.
      *
-     * @return array|string Si ocurre un error, se devuelve un array con información sobre el error. De lo contrario,
-     * se devuelve una cadena de caracteres con la columna generada.
+     * @param string $columnas Columnas iniciales en formato SQL. Puede ser una cadena vacía si no hay columnas previas.
+     * @param bool $columnas_en_bruto Determina si las columnas deben incluirse en su formato bruto o con alias.
+     *                                - `true`: Incluye las columnas sin alias.
+     *                                - `false`: Incluye las columnas con alias.
+     * @param array $columnas_sql Lista de nombres de columnas que se deben procesar.
+     *                            Cada elemento representa una columna a incluir.
+     * @param string $key Nombre de la tabla a procesar. Se asegura de limpiar prefijos no necesarios como `models\`.
+     * @param modelo_base $modelo Instancia del modelo base que se utiliza para interactuar con la base de datos.
      *
-     * @throws errores Si la clave es un número, se lanza un error.
-     * @version 15.77.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columna_tabla
-     **/
-    private function genera_columna_tabla(string $columnas, bool $columnas_en_bruto, array $columnas_sql,
-                                          string $key, modelo_base $modelo): array|string
+     * @return array|string Una cadena con las columnas SQL ajustadas si el proceso es exitoso.
+     *                      En caso de error, devuelve un array con los detalles del error.
+     *
+     * @throws errores Si alguno de los parámetros es inválido o se produce un error durante la generación.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $key = 'usuarios';
+     * $modelo = new modelo_base($link); // Instancia del modelo base
+     *
+     * $resultado = $miClase->genera_columna_tabla(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     key: $key,
+     *     modelo: $modelo
+     * );
+     *
+     * if (is_string($resultado)) {
+     *     echo "Columnas SQL generadas: " . $resultado;
+     * } else {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo de uso con datos inválidos:
+     *
+     * ```php
+     * $columnas = '';
+     * $columnas_en_bruto = false;
+     * $columnas_sql = ['id', 'nombre', 'estatus'];
+     * $key = '123'; // Error: el key no puede ser un número.
+     * $modelo = new modelo_base($link);
+     *
+     * $resultado = $miClase->genera_columna_tabla(
+     *     columnas: $columnas,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     columnas_sql: $columnas_sql,
+     *     key: $key,
+     *     modelo: $modelo
+     * );
+     *
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Muestra el detalle del error
+     * }
+     * ```
+     *
+     * ### Detalle de parámetros:
+     *
+     * - **`$columnas`** (string):
+     *   Contiene las columnas iniciales en formato SQL. Puede ser una cadena vacía.
+     *
+     *   **Ejemplo**: `'id, nombre'`.
+     *
+     * - **`$columnas_en_bruto`** (bool):
+     *   Indica si las columnas deben generarse en su formato original o incluir alias.
+     *
+     *   **Ejemplo**:
+     *   - `true`: `'usuarios.id, usuarios.nombre'`.
+     *   - `false`: `'usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre'`.
+     *
+     * - **`$columnas_sql`** (array):
+     *   Lista de nombres de columnas a incluir en la consulta SQL.
+     *
+     *   **Ejemplo**: `['id', 'nombre', 'estatus']`.
+     *
+     * - **`$key`** (string):
+     *   Nombre de la tabla que se procesará. Elimina prefijos como `models\`.
+     *
+     *   **Ejemplo**: `'usuarios'`.
+     *
+     * - **`$modelo`** (modelo_base):
+     *   Instancia del modelo base para gestionar las operaciones en la base de datos.
+     *
+     *   **Ejemplo**: `$modelo = new modelo_base($link);`.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**: Devuelve una cadena SQL como:
+     *   ```sql
+     *   usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre, usuarios.estatus AS usuarios_estatus
+     *   ```
+     *
+     * - **Error**: Devuelve un array detallando el problema, como:
+     *   ```php
+     *   [
+     *       'error' => 1,
+     *       'mensaje' => 'Error $key no puede ser un numero',
+     *       'data' => '123'
+     *   ]
+     *   ```
+     */
+    private function genera_columna_tabla(
+        string $columnas, bool $columnas_en_bruto, array $columnas_sql, string $key, modelo_base $modelo): array|string
     {
-        $key = str_replace('models\\','',$key);
-        if(is_numeric($key)){
-            return $this->error->error(mensaje: 'Error $key no puede ser un numero',data:  $key, es_final: true);
+        $key = str_replace('models\\', '', $key);
+        if (is_numeric($key)) {
+            return $this->error->error(
+                mensaje: 'Error $key no puede ser un numero',
+                data: $key,
+                es_final: true
+            );
         }
 
-        $result = $this->ajusta_columnas_completas(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_sql,  modelo: $modelo, tabla: $key, tabla_renombrada: '');
-        if(errores::$error){
+        $result = $this->ajusta_columnas_completas(
+            columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto,
+            columnas_sql: $columnas_sql,
+            modelo: $modelo,
+            tabla: $key,
+            tabla_renombrada: ''
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $result);
         }
+
         return (string)$result;
     }
 
+
     /**
-     * TOTAL
-     * Esta función genera las columnas para una consulta SQL de acuerdo a los parámetros de entrada.
+     * REG
+     * Genera una cadena SQL con las columnas necesarias para una consulta.
      *
-     * @param bool $columnas_en_bruto Determina si las columnas se pasarán en bruto.
-     * @param modelo_base $modelo El modelo base que se utilizará para la consulta.
-     * @param string $tabla_original El nombre original de la tabla en la que se llevará a cabo la consulta.
-     * @param string $tabla_renombrada El nombre nuevo de la tabla en caso de que haya sido renombrada.
-     * @param array $columnas Un array con los nombres de las columnas para la consulta.
+     * Esta función combina las columnas principales y adicionales de una tabla, ya sea en su formato bruto
+     * o con nombres renombrados, para formar una cadena SQL que puede ser usada en consultas.
      *
-     * @return array|string Devuelve un array con las columnas para llevar a cabo la consulta o una cadena en caso de error.
-     * @version 15.70.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columnas_consulta
+     * @param bool $columnas_en_bruto Indica si las columnas deben mantenerse en su formato original
+     *                                (sin alias) o deben ser renombradas.
+     * @param modelo_base $modelo Instancia del modelo base que contiene la lógica para manejar la base de datos.
+     * @param string $tabla_original Nombre original de la tabla de la que se obtendrán las columnas.
+     * @param string $tabla_renombrada Nombre renombrado de la tabla para las consultas, si aplica.
+     * @param array $columnas Lista de columnas específicas que se desean incluir en la consulta. Si está vacío,
+     *                        se incluyen todas las columnas parseadas.
+     *
+     * @return array|string Devuelve una cadena con las columnas formateadas para una consulta SQL.
+     *                      En caso de error, devuelve un array con los detalles del mismo.
+     *
+     * @example
+     * // Caso 1: Generar columnas con formato bruto para la tabla "usuarios".
+     * $columnas = array();
+     * $tabla_original = "usuarios";
+     * $tabla_renombrada = "";
+     * $resultado = $this->genera_columnas_consulta(
+     *     columnas_en_bruto: true,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada,
+     *     columnas: $columnas
+     * );
+     * // Resultado esperado: "usuarios.id, usuarios.nombre, usuarios.email"
+     *
+     * @example
+     * // Caso 2: Generar columnas con alias personalizados para la tabla "productos".
+     * $columnas = array('productos_id', 'productos_nombre');
+     * $tabla_original = "productos";
+     * $tabla_renombrada = "prod";
+     * $resultado = $this->genera_columnas_consulta(
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada,
+     *     columnas: $columnas
+     * );
+     * // Resultado esperado: "prod.id AS productos_id, prod.nombre AS productos_nombre"
+     *
+     * @example
+     * // Caso 3: Error por tabla original vacía.
+     * $tabla_original = "";
+     * $resultado = $this->genera_columnas_consulta(
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada,
+     *     columnas: $columnas
+     * );
+     * // Resultado esperado: Array con error: "Error $tabla_original no puede venir vacía".
+     *
+     * @example
+     * // Caso 4: Combinación de columnas principales y adicionales.
+     * $columnas = array('usuarios_id', 'usuarios_nombre');
+     * $columnas_extra_sql = 'SUM(usuarios.saldo) AS saldo_total';
+     * $tabla_original = "usuarios";
+     * $tabla_renombrada = "";
+     * $resultado = $this->genera_columnas_consulta(
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: $tabla_original,
+     *     tabla_renombrada: $tabla_renombrada,
+     *     columnas: $columnas
+     * );
+     * // Resultado esperado: "usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre, SUM(usuarios.saldo) AS saldo_total"
      */
-    private function genera_columnas_consulta(bool $columnas_en_bruto,  modelo_base $modelo, string $tabla_original,
-                                              string $tabla_renombrada, array $columnas = array()):array|string
-    {
-        $tabla_original = str_replace('models\\','',$tabla_original);
+    private function genera_columnas_consulta(
+        bool $columnas_en_bruto,
+        modelo_base $modelo,
+        string $tabla_original,
+        string $tabla_renombrada,
+        array $columnas = array()
+    ): array|string {
+        $tabla_original = str_replace('models\\', '', $tabla_original);
 
-        if(is_numeric($tabla_original)){
-            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original,
-                es_final: true);
+        if (is_numeric($tabla_original)) {
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un número', data: $tabla_original, es_final: true);
         }
 
-        $data = $this->data_for_columnas_envio(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-            modelo: $modelo, tabla_original: $tabla_original, tabla_renombrada: $tabla_renombrada);
+        $data = $this->data_for_columnas_envio(
+            columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto,
+            modelo: $modelo,
+            tabla_original: $tabla_original,
+            tabla_renombrada: $tabla_renombrada
+        );
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al datos para columnas', data: $data);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener datos para columnas', data: $data);
         }
 
-        $columnas_envio = $this->columnas_envio(columnas_extra_sql: $data->columnas_extra_sql,
-            columnas_sql: $data->columnas_sql);
-        if(errores::$error){
+        $columnas_envio = $this->columnas_envio(
+            columnas_extra_sql: $data->columnas_extra_sql,
+            columnas_sql: $data->columnas_sql
+        );
+
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar columnas', data: $columnas_envio);
         }
 
         return $columnas_envio;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -1889,82 +3130,200 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Esta función genera una tabla de columnas. Se encarga de validar los parámetros proporcionados,
-     * obtener las columnas de la tabla y generar una lista de columnas SQL.
+     * REG
+     * Genera una cadena SQL con columnas de una tabla, aplicando alias y validaciones según los parámetros.
      *
-     * @param bool $columnas_en_bruto Define si las columnas se entregan en bruto o no.
-     * @param modelo_base $modelo Es la clase modelo que encapsula los datos y la funcionalidad de un registro de la tabla.
-     * @param string $tabla_original Es el nombre original de la tabla en la base de datos.
-     * @param string $tabla_renombrada Es el nombre con el cual la tabla será renombrada.
-     * @param array $columnas Es un array que contiene los nombres de las columnas de la tabla.
+     * Esta función permite generar una cadena SQL con las columnas de una tabla específica, utilizando alias para
+     * renombrar columnas si es necesario. También valida los datos de entrada y maneja casos como tablas renombradas.
      *
-     * @return array|string Devuelve un array de columnas SQL si todo va bien. Si surge algún error, devuelve un mensaje de error.
+     * @param bool $columnas_en_bruto Indica si se deben usar las columnas en formato en bruto, sin alias personalizados.
+     * @param modelo_base $modelo Instancia del modelo base para interactuar con la tabla.
+     * @param string $tabla_original Nombre original de la tabla en la base de datos.
+     * @param string $tabla_renombrada Nombre renombrado de la tabla (puede ser un alias SQL).
+     * @param array $columnas Lista de columnas permitidas para incluir en la consulta SQL. Si está vacío, se incluirán todas.
      *
-     * @throws errores Si el nombre de la tabla original está vacío o es numérico, lanza una excepción.
-     * También hay excepciones para errores al obtener columnas y al obtener el nombre de la tabla.
-     * @version 15.63.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columnas_tabla
+     * @return array|string Devuelve una cadena SQL con las columnas generadas o un array con detalles de error en caso de fallo.
+     *
+     * @example
+     * // Caso 1: Generar columnas SQL con alias personalizados
+     * $columnas = ['usuarios_id', 'usuarios_nombre'];
+     * $modelo = new modelo_base($link);
+     * $resultado = $this->genera_columnas_tabla(
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: 'usuarios',
+     *     tabla_renombrada: '',
+     *     columnas: $columnas
+     * );
+     * // Resultado: 'usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre'
+     *
+     * @example
+     * // Caso 2: Generar columnas SQL sin alias (en bruto)
+     * $columnas = [];
+     * $modelo = new modelo_base($link);
+     * $resultado = $this->genera_columnas_tabla(
+     *     columnas_en_bruto: true,
+     *     modelo: $modelo,
+     *     tabla_original: 'usuarios',
+     *     tabla_renombrada: '',
+     *     columnas: $columnas
+     * );
+     * // Resultado: 'usuarios.id AS id, usuarios.nombre AS nombre'
+     *
+     * @example
+     * // Caso 3: Usar una tabla renombrada con columnas específicas
+     * $columnas = ['clientes_id', 'clientes_nombre'];
+     * $modelo = new modelo_base($link);
+     * $resultado = $this->genera_columnas_tabla(
+     *     columnas_en_bruto: false,
+     *     modelo: $modelo,
+     *     tabla_original: 'clientes',
+     *     tabla_renombrada: 'cli',
+     *     columnas: $columnas
+     * );
+     * // Resultado: 'cli.id AS clientes_id, cli.nombre AS clientes_nombre'
+     *
+     * @throws array Devuelve un array con los detalles del error si alguno de los parámetros es inválido
+     *               o si ocurre un error al obtener las columnas SQL.
      */
+    private function genera_columnas_tabla(
+        bool $columnas_en_bruto,
+        modelo_base $modelo,
+        string $tabla_original,
+        string $tabla_renombrada,
+        array $columnas = array()
+    ): array|string {
+        $tabla_original = str_replace('models\\', '', $tabla_original);
 
-    private function genera_columnas_tabla(bool $columnas_en_bruto,modelo_base $modelo, string $tabla_original,
-                                           string $tabla_renombrada, array $columnas = array()):array|string
-    {
-        $tabla_original = str_replace('models\\','',$tabla_original);
-
-        if($tabla_original === ''){
-            return  $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original,
+        if ($tabla_original === '') {
+            return $this->error->error(mensaje: 'Error tabla original no puede venir vacia', data: $tabla_original,
                 es_final: true);
         }
 
-        if(is_numeric($tabla_original)){
-            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero',data:  $tabla_original,
+        if (is_numeric($tabla_original)) {
+            return $this->error->error(mensaje: 'Error $tabla_original no puede ser un numero', data: $tabla_original,
                 es_final: true);
         }
 
-        $data = $this->obten_columnas( modelo: $modelo, tabla_original: $tabla_original);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas',data:  $data);
+        $data = $this->obten_columnas(modelo: $modelo, tabla_original: $tabla_original);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener columnas', data: $data);
         }
         $columnas_parseadas = $data->columnas_parseadas;
-        $tabla_nombre = $modelo->obten_nombre_tabla(tabla_original: $tabla_original,
-            tabla_renombrada: $tabla_renombrada);
-        if(errores::$error){
+
+        $tabla_nombre = $modelo->obten_nombre_tabla(
+            tabla_original: $tabla_original, tabla_renombrada: $tabla_renombrada);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener nombre de tabla', data: $tabla_nombre);
         }
 
-        $columnas_sql = $this->columnas_sql_init(columnas: $columnas, columnas_en_bruto:$columnas_en_bruto,
-            columnas_parseadas: $columnas_parseadas, tabla_nombre: $tabla_nombre);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener columnas sql',data:  $columnas_sql);
+        $columnas_sql = $this->columnas_sql_init(
+            columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto,
+            columnas_parseadas: $columnas_parseadas,
+            tabla_nombre: $tabla_nombre
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener columnas sql', data: $columnas_sql);
         }
+
         return $columnas_sql;
     }
 
+
     /**
-     * TOTAL
-     * Inicializa las columnas por tabla.
+     * REG
+     * Inicializa la estructura de columnas y tablas seleccionadas para su uso en consultas SQL.
      *
-     * @param array $columnas_by_table La matriz de nombres de columna por tabla.
-     *                                 Debe estar estructurada de la siguiente forma $columnas_by_table[] = "nombre_tabla".
-     * @return stdClass|array          Si $columnas_by_table es vacío, retorna un objeto de error.
-     *                                 De lo contrario, retorna un objeto que contiene dos propiedades:
-     *                                 - columnas_sql: una matriz vacía que posteriormente puede ser llenada con las columnas SQL.
-     *                                 - tablas_select: una matriz que asocia cada nombre de tabla con el valor false.
-     * @throws errores               Lanza una excepción si $columnas_by_table está vacío.
-     * @version 16.14.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.init_columnas_by_table
+     * Esta función procesa una lista de nombres de tablas, asignando una configuración inicial para las columnas
+     * y las tablas seleccionadas. Si no se proporciona ninguna tabla, genera un error indicando la estructura esperada.
+     *
+     * @param array $columnas_by_table Lista de nombres de tablas que se utilizarán en la consulta SQL.
+     *                                 Ejemplo: `['usuarios', 'ordenes']`.
+     *
+     * @return stdClass|array Retorna un objeto `stdClass` con las propiedades:
+     *                        - `columnas_sql`: Un array inicializado vacío para las columnas SQL.
+     *                        - `tablas_select`: Un array asociativo donde las claves son los nombres de las tablas
+     *                          y los valores están inicializados en `false`.
+     *                        En caso de error, retorna un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas_by_table = ['usuarios', 'ordenes'];
+     *
+     * $resultado = $miClase->init_columnas_by_table(columnas_by_table: $columnas_by_table);
+     *
+     * echo '<pre>';
+     * print_r($resultado);
+     * echo '</pre>';
+     *
+     * // Salida esperada:
+     * // stdClass Object
+     * // (
+     * //     [columnas_sql] => Array
+     * //         (
+     * //         )
+     * //
+     * //     [tablas_select] => Array
+     * //         (
+     * //             [usuarios] => false
+     * //             [ordenes] => false
+     * //         )
+     * // )
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: `$columnas_by_table` está vacío.
+     * ```php
+     * $columnas_by_table = [];
+     *
+     * $resultado = $miClase->init_columnas_by_table(columnas_by_table: $columnas_by_table);
+     *
+     * print_r($resultado);
+     *
+     * // Salida esperada:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error debe columnas_by_table esta vacia',
+     * //     'data' => [],
+     * //     'es_final' => true,
+     * //     'fix' => 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"'
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$columnas_by_table`** (array):
+     *   Lista de tablas que serán utilizadas en la configuración inicial.
+     *   **Ejemplo válido**: `['usuarios', 'ordenes']`.
+     *   **Ejemplo inválido**: `[]` (genera un error).
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Un objeto `stdClass` con las propiedades `columnas_sql` y `tablas_select`.
+     *   `columnas_sql` es un array vacío listo para llenarse con columnas.
+     *   `tablas_select` contiene cada tabla con un valor inicial de `false`.
+     *
+     * - **Error**:
+     *   Un array detallando el error si la entrada no es válida.
      */
     private function init_columnas_by_table(array $columnas_by_table): stdClass|array
     {
-        if(count($columnas_by_table) === 0){
+        if (count($columnas_by_table) === 0) {
             $fix = 'columnas_by_table debe estar maquetado de la siguiente forma $columnas_by_table[] = "nombre_tabla"';
-            return $this->error->error(mensaje: 'Error debe columnas_by_table esta vacia', data: $columnas_by_table,
-                es_final: true, fix: $fix);
+            return $this->error->error(
+                mensaje: 'Error debe columnas_by_table esta vacia',
+                data: $columnas_by_table,
+                es_final: true,
+                fix: $fix
+            );
         }
         $columnas_sql = array();
         $tablas_select = array();
-        foreach($columnas_by_table as $tabla){
+        foreach ($columnas_by_table as $tabla) {
             $tablas_select[$tabla] = false;
         }
 
@@ -1974,8 +3333,9 @@ class columnas{
         return $data;
     }
 
+
     /**
-     * Intega un campo obligatorio para validacion
+     * Integra un campo obligatorio para validacion
      * @param string $campo Campo a integrar
      * @param array $campos_obligatorios Campos obligatorios precargados
      * @return array
@@ -2022,34 +3382,68 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Función que integra columnas en una cadena.
+     * REG
+     * Integra columnas SQL en una cadena de columnas para una consulta.
      *
-     * Esta función tiene la tarea de integrar los nombres de las columnas
-     * en formato de cadena que serán utilizados para construir las consultas SQL.
+     * Esta función combina las columnas existentes con un nuevo conjunto de columnas resultado,
+     * verificando si están vacías para determinar cómo proceder. Devuelve un objeto con las
+     * columnas resultantes y un indicador de si se debe continuar procesando.
      *
-     * @param string $columnas Cadena con los nombres de las columnas actuales.
-     * @param string $resultado_columnas Cadena con los nombres de las columnas a añadir.
+     * @param string $columnas Cadena que representa las columnas actuales en la consulta SQL.
+     * @param string $resultado_columnas Cadena que contiene nuevas columnas a integrar.
      *
-     * @return stdClass Retorna un objeto que contiene las columnas integradas y una señal de continuación.
-     *         - columnas (string): Representa los nombres de las columnas ya integradas.
-     *         - continue (boolean): Indica si se debe continuar la operación. Se vuelve verdadero si la entrada $resultado_columnas está vacía.
+     * @return stdClass Objeto que contiene:
+     *                  - `columnas` (string): La cadena de columnas integrada.
+     *                  - `continue` (bool): Indicador de si se debe continuar procesando.
      *
-     * @version 15.71.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.integra_columnas
+     * @example
+     * // Caso 1: Integra columnas en una cadena vacía.
+     * $columnas = '';
+     * $resultado_columnas = 'id, nombre';
+     * $resultado = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado->columnas = 'id, nombre';
+     * // $resultado->continue = false;
+     *
+     * @example
+     * // Caso 2: Integra columnas adicionales a una cadena existente.
+     * $columnas = 'id';
+     * $resultado_columnas = 'nombre';
+     * $resultado = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado->columnas = 'id, nombre';
+     * // $resultado->continue = false;
+     *
+     * @example
+     * // Caso 3: No integra columnas si las columnas resultado están vacías.
+     * $columnas = 'id, nombre';
+     * $resultado_columnas = '';
+     * $resultado = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado->columnas = 'id, nombre';
+     * // $resultado->continue = true;
+     *
+     * @example
+     * // Caso 4: Agrega columnas cuando la cadena inicial está vacía.
+     * $columnas = '';
+     * $resultado_columnas = 'nombre, edad';
+     * $resultado = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado->columnas = 'nombre, edad';
+     * // $resultado->continue = false;
      */
     private function integra_columnas(string $columnas, string $resultado_columnas): stdClass
     {
         $data = new stdClass();
         $continue = false;
-        if($columnas === ''){
-            $columnas.=$resultado_columnas;
-        }
-        else{
-            if($resultado_columnas === ''){
+
+        if ($columnas === '') {
+            $columnas .= $resultado_columnas;
+        } else {
+            if ($resultado_columnas === '') {
                 $continue = true;
             }
-            if(!$continue) {
+            if (!$continue) {
                 $columnas .= ', ' . $resultado_columnas;
             }
         }
@@ -2060,35 +3454,61 @@ class columnas{
         return $data;
     }
 
+
     /**
-     * TOTAL
-     * Método que integra las columnas por datos.
+     * REG
+     * Integra columnas de consulta SQL a partir de dos cadenas de columnas.
      *
-     * La función se encargará de:
-     * - Invocar a la función `integra_columnas` con las columnas y los resultados de columnas dados como parámetros.
-     * - Manejar cualquier error que pueda surgir en el proceso anterior.
-     * - Si no hay errores, devolverá las columnas integradas.
+     * Esta función combina columnas existentes con nuevas columnas resultado, asegurándose de
+     * manejar errores durante la integración y devolviendo la cadena de columnas resultante.
      *
-     * @param string $columnas Columnas para integrar.
-     * @param string $resultado_columnas Resultado de las columnas.
+     * @param string $columnas Cadena que representa las columnas actuales en una consulta SQL.
+     * @param string $resultado_columnas Cadena que contiene las nuevas columnas a integrar.
      *
-     * @return array|string Devuelve las columnas integradas si no hay errores, si surge algún error, devolverá una
-     * cadena describiendo el error.
+     * @return array|string Devuelve una cadena con las columnas integradas si el proceso es exitoso.
+     *                      En caso de error, retorna un array con los detalles del error.
      *
-     * @throws errores "Error al integrar columnas" si surge algún error en el proceso.
+     * @example
+     * // Caso 1: Integra columnas en una cadena vacía.
+     * $columnas = '';
+     * $resultado_columnas = 'id, nombre';
+     * $resultado = $this->integra_columnas_por_data(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado = 'id, nombre';
      *
-     * @access private
-     * @version 15.72.1
-     * @@url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.integra_columnas_por_data
+     * @example
+     * // Caso 2: Integra columnas adicionales a una cadena existente.
+     * $columnas = 'id';
+     * $resultado_columnas = 'nombre';
+     * $resultado = $this->integra_columnas_por_data(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado = 'id, nombre';
+     *
+     * @example
+     * // Caso 3: No agrega nada si las columnas resultado están vacías.
+     * $columnas = 'id, nombre';
+     * $resultado_columnas = '';
+     * $resultado = $this->integra_columnas_por_data(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado = 'id, nombre';
+     *
+     * @example
+     * // Caso 4: Manejo de errores durante la integración.
+     * $columnas = '';
+     * $resultado_columnas = null; // Valor inválido
+     * $resultado = $this->integra_columnas_por_data(columnas: $columnas, resultado_columnas: $resultado_columnas);
+     * // Resultado esperado:
+     * // $resultado = ['error' => true, 'mensaje' => 'Error al integrar columnas', 'data' => ...];
      */
-    private function integra_columnas_por_data(string $columnas, string $resultado_columnas):array|string
+    private function integra_columnas_por_data(string $columnas, string $resultado_columnas): array|string
     {
         $data = $this->integra_columnas(columnas: $columnas, resultado_columnas: $resultado_columnas);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columnas', data: $data);
         }
         return $data->columnas;
     }
+
 
     /**
      * REG
@@ -2183,20 +3603,116 @@ class columnas{
 
 
     /**
-     * TOTAL
-     * Función para obtener las columnas completas de un modelo de base de datos.
+     * REG
+     * Genera las columnas completas para una consulta SQL basándose en configuraciones y estructuras definidas.
      *
-     * @param modelo_base $modelo - El modelo base a analizar.
-     * @param array $columnas_by_table - Especifica las columnas por tabla.
-     * @param bool $columnas_en_bruto - Especifica si se deben obtener las columnas en bruto (sin procesar).
-     * @param array $columnas_sql - Permite definir columnas de SQL adicionales.
-     * @param array $extension_estructura - Permite definir una estructura de extensión para las columnas.
-     * @param array $extra_join - Define uniones adicionales para las consultas.
-     * @param array $renombres - Permite cambiar el nombre de las columnas.
-     * @return array|string - Devuelve las columnas completas como un array o string en caso de error.
-     * @version 16.21.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.obten_columnas_completas
+     * Esta función combina columnas específicas por tabla, columnas adicionales, extensiones de estructura,
+     * uniones adicionales y reglas de renombramiento para producir una cadena de columnas SQL final.
+     *
+     * @param modelo_base $modelo Instancia del modelo base que representa la tabla principal de la consulta.
+     *                            Ejemplo: `$modelo->tabla = 'usuarios';`.
+     * @param array $columnas_by_table Listado de tablas para las cuales se generarán columnas específicas.
+     *                                  Ejemplo: `['usuarios', 'ordenes']`.
+     * @param bool $columnas_en_bruto Indica si las columnas deben procesarse en su forma original sin alias ni modificaciones.
+     *                                Valor por defecto: `false`.
+     * @param array $columnas_sql Columnas SQL predefinidas para construir la consulta.
+     *                             Ejemplo: `['usuarios.id', 'usuarios.nombre']`.
+     * @param array $extension_estructura Estructuras adicionales para extender las columnas de la consulta.
+     * @param array $extra_join Configuración para unir columnas adicionales provenientes de otras tablas relacionadas.
+     * @param array $renombres Reglas para renombrar tablas o columnas en la consulta.
+     *
+     * @return array|string Devuelve una cadena de columnas SQL generada o, en caso de error, un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $modelo = new modelo_base($link);
+     * $modelo->tabla = 'usuarios';
+     * $columnas_by_table = ['usuarios'];
+     * $columnas_sql = ['usuarios.id', 'usuarios.nombre'];
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $renombres = [];
+     *
+     * $resultado = $miClase->obten_columnas_completas(
+     *     modelo: $modelo,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: false,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     renombres: $renombres
+     * );
+     *
+     * echo $resultado;
+     * // Salida esperada:
+     * // "usuarios.id AS usuarios_id, usuarios.nombre AS usuarios_nombre "
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: `$columnas_by_table` está vacío pero las columnas específicas son requeridas.
+     *
+     * ```php
+     * $modelo = new modelo_base($link);
+     * $modelo->tabla = 'usuarios';
+     * $columnas_by_table = [];
+     * $columnas_sql = [];
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $renombres = [];
+     *
+     * $resultado = $miClase->obten_columnas_completas(
+     *     modelo: $modelo,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: false,
+     *     columnas_sql: $columnas_sql,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     renombres: $renombres
+     * );
+     *
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error al integrar columnas en usuarios',
+     * //     'data' => null
+     * // ]
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$modelo`**:
+     *   Instancia del modelo base que representa la tabla principal. Ejemplo: `$modelo->tabla = 'usuarios';`.
+     *
+     * - **`$columnas_by_table`**:
+     *   Lista de tablas para generar columnas específicas. Ejemplo: `['usuarios', 'ordenes']`.
+     *
+     * - **`$columnas_en_bruto`**:
+     *   Si es `true`, las columnas no tendrán alias ni transformaciones.
+     *
+     * - **`$columnas_sql`**:
+     *   Columnas SQL predefinidas para incluir en la consulta.
+     *
+     * - **`$extension_estructura`**:
+     *   Columnas adicionales provenientes de estructuras relacionadas.
+     *
+     * - **`$extra_join`**:
+     *   Configuración para unir tablas adicionales con columnas relacionadas.
+     *
+     * - **`$renombres`**:
+     *   Reglas para renombrar tablas o columnas.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve una cadena de columnas SQL generada según las configuraciones proporcionadas.
+     *
+     * - **Error**:
+     *   Devuelve un array con detalles del error si los parámetros de entrada no son válidos.
      */
+
     final public function obten_columnas_completas(modelo_base $modelo, array $columnas_by_table = array(),
                                                    bool $columnas_en_bruto = false, array $columnas_sql = array(),
                                                    array $extension_estructura = array(), array $extra_join = array(),
@@ -2303,82 +3819,200 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Función privada que devuelve el nombre renombrado de una tabla con base en los datos proporcionados.
+     * REG
+     * Obtiene el nombre de una tabla renombrada a partir de los datos proporcionados.
      *
-     * @param array $data Conjunto de datos los cuales pueden contener el renombre asignado a la tabla.
-     * @param string $tabla Nombre de la tabla que se necesita renombrar.
+     * Esta función permite verificar si existe un valor de renombramiento para una tabla dentro del array `$data`.
+     * Si el valor existe y no está vacío, devuelve el nombre renombrado. De lo contrario, devuelve el nombre original.
      *
-     * @return string|array Devuelve el nombre renombrado de la tabla o un mensaje de error.
+     * @param array $data Datos que pueden contener el nombre renombrado de la tabla.
+     *                    Debe incluir la clave opcional `renombre`.
+     * @param string $tabla Nombre original de la tabla. No puede estar vacío.
      *
-     * La función comienza por limpiar los espacios en blanco en el nombre de la tabla proporcionado.
-     * Si después de este proceso el nombre de la tabla está vacío, la función devuelve un error indicando que
-     * la tabla está vacía.
+     * @return string|array El nombre renombrado de la tabla, o un array con los detalles del error si ocurre algún problema.
      *
-     * A continuación, la función comprueba si en el conjunto de datos proporcionado se incluye un nombre alternativo
-     * ('renombre') para la tabla. Si no es así, se devuelve el nombre original de la tabla.
+     * @throws errores Si `$tabla` está vacío.
      *
-     * Si se proporciona un nombre alternativo y este no está vacío luego de limpiar los espacios en blanco,
-     * la función lo devolverá como el nuevo nombre de la tabla.
+     * ### Ejemplo de uso exitoso:
      *
-     * @version 15.82.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.tabla_renombrada_extra
+     * ```php
+     * // Caso donde no existe renombramiento
+     * $data = [];
+     * $tabla = 'usuarios';
+     * $resultado = $miClase->tabla_renombrada_extra(data: $data, tabla: $tabla);
+     * echo $resultado; // Salida: 'usuarios'
+     *
+     * // Caso donde se proporciona un renombramiento
+     * $data = ['renombre' => 'clientes'];
+     * $tabla = 'usuarios';
+     * $resultado = $miClase->tabla_renombrada_extra(data: $data, tabla: $tabla);
+     * echo $resultado; // Salida: 'clientes'
+     * ```
+     *
+     * ### Ejemplo de datos inválidos:
+     *
+     * ```php
+     * // Caso donde la tabla está vacía
+     * $data = [];
+     * $tabla = '';
+     * $resultado = $miClase->tabla_renombrada_extra(data: $data, tabla: $tabla);
+     * print_r($resultado);
+     * // Salida:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error tabla esta vacia',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Detalle de parámetros:
+     *
+     * - **`$data`** (array):
+     *   Array asociativo que puede incluir la clave `renombre` para especificar un nuevo nombre de tabla.
+     *   Si `renombre` no está presente o está vacío, se devuelve el nombre original.
+     *
+     *   **Ejemplo válido**:
+     *   ```php
+     *   ['renombre' => 'clientes']
+     *   ```
+     *
+     * - **`$tabla`** (string):
+     *   Nombre original de la tabla. Debe ser un string no vacío.
+     *
+     *   **Ejemplo válido**: `'usuarios'`
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Devuelve el nombre de la tabla, ya sea renombrado o el original.
+     *   **Ejemplo**: `'clientes'` o `'usuarios'`
+     *
+     * - **Error**:
+     *   Devuelve un array con los detalles del error, como:
+     *   ```php
+     *   [
+     *       'error' => 1,
+     *       'mensaje' => 'Error tabla esta vacia',
+     *       'data' => ''
+     *   ]
+     *   ```
      */
     private function tabla_renombrada_extra(array $data, string $tabla): string|array
     {
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje:"Error tabla esta vacia", data:$tabla, es_final: true);
+        if ($tabla === '') {
+            return $this->error->error(
+                mensaje: "Error tabla esta vacia",
+                data: $tabla,
+                es_final: true
+            );
         }
         $tabla_renombrada = $tabla;
-        if(isset($data['renombre'])){
+        if (isset($data['renombre'])) {
             $data['renombre'] = trim($data['renombre']);
-            if($data['renombre'] !== ''){
+            if ($data['renombre'] !== '') {
                 $tabla_renombrada = $data['renombre'];
             }
         }
         return $tabla_renombrada;
-
     }
+
 
 
     /**
-     * TOTAL
-     * Valida las columnas SQL proporcionadas.
+     * REG
+     * Valida los parámetros requeridos para construir una consulta SQL.
      *
-     * Esta función privada toma tres parámetros: 'alias_columnas', 'columna_parseada', y 'tabla_nombre', y realiza varias
-     * comprobaciones para confirmar que son válidos para el procesamiento adicional.
-     * Retorna true si todos los parámetros pasan las validaciones o un error si alguno de los parámetros es vacío.
+     * Esta función se encarga de verificar que los valores proporcionados para el nombre de la tabla,
+     * la columna parseada y el alias de las columnas no estén vacíos. Si alguno de estos valores está vacío,
+     * devuelve un error detallado. En caso contrario, devuelve `true` indicando que los valores son válidos.
      *
-     * @param string $alias_columnas Representa alias de las columnas
-     * @param string $columna_parseada Representa la columna parseada
-     * @param string $tabla_nombre Representa el nombre de la tabla
+     * @param string $alias_columnas Alias utilizado para las columnas en la consulta SQL.
+     * @param string $columna_parseada Nombre de la columna procesada o parseada.
+     * @param string $tabla_nombre Nombre de la tabla asociada.
      *
-     * @return array|true Retorna true si todos los parámetros son validos. De otra manera, retorna un error.
+     * @return true|array Devuelve `true` si todos los parámetros son válidos. Si algún parámetro no es válido, retorna
+     * un array con detalles del error.
      *
-     * @throws errores
+     * @example
+     * // Caso 1: Todos los parámetros son válidos
+     * $resultado = $this->valida_columnas_sql(
+     *     alias_columnas: 'c',
+     *     columna_parseada: 'nombre',
+     *     tabla_nombre: 'usuarios'
+     * );
+     * // Resultado: true
      *
-     * @internal
-     * @version 15.55.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.valida_columnas_sql
+     * @example
+     * // Caso 2: Parámetro $tabla_nombre vacío
+     * $resultado = $this->valida_columnas_sql(
+     *     alias_columnas: 'c',
+     *     columna_parseada: 'nombre',
+     *     tabla_nombre: ''
+     * );
+     * // Resultado:
+     * // [
+     * //     'mensaje' => 'Error $tabla_nombre no puede venir vacia',
+     * //     'data' => '',
+     * //     'es_final' => true
+     * // ]
+     *
+     * @example
+     * // Caso 3: Parámetro $columna_parseada vacío
+     * $resultado = $this->valida_columnas_sql(
+     *     alias_columnas: 'c',
+     *     columna_parseada: '',
+     *     tabla_nombre: 'usuarios'
+     * );
+     * // Resultado:
+     * // [
+     * //     'mensaje' => 'Error $columna_parseada no puede venir vacia',
+     * //     'data' => '',
+     * //     'es_final' => true
+     * // ]
+     *
+     * @example
+     * // Caso 4: Parámetro $alias_columnas vacío
+     * $resultado = $this->valida_columnas_sql(
+     *     alias_columnas: '',
+     *     columna_parseada: 'nombre',
+     *     tabla_nombre: 'usuarios'
+     * );
+     * // Resultado:
+     * // [
+     * //     'mensaje' => 'Error $alias_columnas no puede venir vacia',
+     * //     'data' => '',
+     * //     'es_final' => true
+     * // ]
      */
     private function valida_columnas_sql(
-        string $alias_columnas, string $columna_parseada, string $tabla_nombre): true|array
-    {
-        if($tabla_nombre === ''){
-            return $this->error->error(mensaje: 'Error $tabla_nombre no puede venir vacia', data: $tabla_nombre,
-                es_final: true);
+        string $alias_columnas,
+        string $columna_parseada,
+        string $tabla_nombre
+    ): true|array {
+        if ($tabla_nombre === '') {
+            return $this->error->error(
+                mensaje: 'Error $tabla_nombre no puede venir vacia',
+                data: $tabla_nombre,
+                es_final: true
+            );
         }
-        if($columna_parseada === ''){
-            return $this->error->error(mensaje:'Error $columna_parseada no puede venir vacia',data: $columna_parseada,
-                es_final: true);
+        if ($columna_parseada === '') {
+            return $this->error->error(
+                mensaje: 'Error $columna_parseada no puede venir vacia',
+                data: $columna_parseada,
+                es_final: true
+            );
         }
-        if($alias_columnas === ''){
-            return $this->error->error(mensaje:'Error $alias_columnas no puede venir vacia',data: $alias_columnas,
-                es_final: true);
+        if ($alias_columnas === '') {
+            return $this->error->error(
+                mensaje: 'Error $alias_columnas no puede venir vacia',
+                data: $alias_columnas,
+                es_final: true
+            );
         }
         return true;
-
     }
+
 
 }

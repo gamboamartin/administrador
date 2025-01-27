@@ -19,37 +19,79 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Ajusta el nombre del modelo.
+     * REG
+     * Ajusta el nombre del modelo basado en una tabla dada, formateando la cadena
+     * y generando el nombre completo de la clase para el modelo.
      *
-     * Este método recibe el nombre de una tabla y realiza dos operaciones:
-     * primero, elimina el prefijo 'models\\\\' del nombre de la tabla si existe,
-     * y segundo, genera el nombre completo de la clase para esa tabla, agregándole el prefijo 'models\\\\'.
+     * @param string $tabla Nombre de la tabla que se desea ajustar y convertir en el nombre del modelo.
+     *                      Este parámetro no puede estar vacío.
      *
-     * Retorna un objeto de la clase stdClass con dos propiedades: 'tabla', que contiene el nombre de la tabla ya ajustado,
-     * y 'name_model', que contiene el nombre completo de la clase para esa tabla.
+     * @return stdClass|array Retorna un objeto `stdClass` con dos propiedades:
+     *                        - `tabla`: El nombre ajustado de la tabla.
+     *                        - `name_model`: El nombre completo de la clase modelo (incluyendo su namespace).
+     *                        En caso de error, retorna un array con los detalles del mismo.
      *
-     * @param string $tabla El nombre original de la tabla. Debe venir con el prefijo 'models\\\\' para ser ajustado.
+     * ### Ejemplo de uso exitoso:
      *
-     * @return stdClass|array Retorna un objeto de la clase stdClass con las propiedades 'tabla' y 'name_model'.
-     * Si la tabla está vacía luego de ser eliminados los espacios en blanco, retorna un array con un mensaje de error.
+     * ```php
+     * $tabla = 'usuarios';
      *
-     * @example
-     * // Crear una instancia de la clase en la que se encuentra el método
-     * $joins = new Joins();
+     * $resultado = $miClase->ajusta_name_model($tabla);
      *
-     * // Llamar al método con un nombre de tabla válido
-     * $nombreTabla = "models\\\\Usuario";
-     * $resultado = $joins->ajusta_name_model($nombreTabla);
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // stdClass Object
+     * // (
+     * //     [tabla] => usuarios
+     * //     [name_model] => models\usuarios
+     * // )
+     * ```
      *
-     * // $resultado es ahora un objeto con las propiedades 'tabla' y 'name_model'
-     * // $resultado->tabla es 'Usuario'
-     * // $resultado->name_model es 'models\\\\Usuario'
+     * ### Ejemplo de error:
      *
-     * @throws errores Si la tabla está vacía luego de ser eliminados los espacios en blanco, lanza una excepción con un mensaje de error.
-     * @version 15.12.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.ajusta_name_model.21.10.0
+     * - Caso: La tabla viene como una cadena vacía.
+     *
+     * ```php
+     * $tabla = '';
+     *
+     * $resultado = $miClase->ajusta_name_model($tabla);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error tabla no puede venir vacia
+     * //     [data] =>
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla a procesar. Este valor será ajustado y usado para generar
+     *   el nombre del modelo.
+     *   Ejemplo válido: `'usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Retorna un objeto `stdClass` con las siguientes claves:
+     *   - `tabla`: Nombre ajustado de la tabla (se eliminan referencias a `models\\`).
+     *   - `name_model`: Nombre completo del modelo con el namespace prefijado (`models\\`).
+     *
+     * - **Error**:
+     *   Si la tabla está vacía, retorna un array con los detalles del error, incluyendo
+     *   el mensaje descriptivo y los datos proporcionados.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función asegura que el nombre del modelo siempre tenga el prefijo `models\\`.
+     * - Es útil para casos en los que se necesita mapear dinámicamente nombres de tablas
+     *   a nombres de clases modelo en un contexto estructurado.
      */
+
     private function ajusta_name_model(string $tabla): stdClass|array
     {
         $tabla = trim($tabla);
@@ -67,24 +109,95 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Esta función ajusta los nombres de los modelos de dos tablas dadas.
+     * REG
+     * Ajusta los nombres de los modelos para dos tablas específicas, generando los nombres
+     * completos de las clases de modelo para ambas tablas.
      *
-     * @param string $tabla El nombre de la primera tabla.
-     * @param string $tabla_enlace El nombre de la segunda tabla.
-     * @return array|stdClass Devuelve un objeto con los nombres de los modelos ajustados de ambas tablas o un error si ocurre alguna excepción.
+     * @param string $tabla Nombre de la tabla base que se desea ajustar y convertir en el nombre del modelo.
+     *                      Este parámetro no puede estar vacío.
+     * @param string $tabla_enlace Nombre de la tabla de enlace que se desea ajustar y convertir en el nombre del modelo.
+     *                             Este parámetro no puede estar vacío.
      *
-     * @throws errores Si alguna de las tablas proporcionadas viene vacía, o si hay un error al ajustar los nombres de los modelos.
+     * @return stdClass|array Retorna un objeto `stdClass` con las siguientes propiedades:
+     *                        - `tabla`: Objeto `stdClass` resultante de ajustar el nombre del modelo para `$tabla`.
+     *                        - `tabla_enlace`: Objeto `stdClass` resultante de ajustar el nombre del modelo para `$tabla_enlace`.
+     *                        En caso de error, retorna un array con los detalles del error.
      *
-     * @example
-     * // Ejemplo de uso:
-     * $ajuste = $instance->ajusta_name_models('usuarios', 'roles');
-     * echo $ajuste->tabla; // Muestra el nombre del modelo ajustado para la tabla 'usuarios'
-     * echo $ajuste->tabla_enlace; // Muestra el nombre del modelo ajustado para la tabla 'roles'
-     * @version 15.12.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.ajusta_name_models.21.11.0
+     * ### Ejemplo de uso exitoso:
      *
+     * ```php
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles_usuarios';
+     *
+     * $resultado = $miClase->ajusta_name_models($tabla, $tabla_enlace);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // stdClass Object
+     * // (
+     * //     [tabla] => stdClass Object
+     * //         (
+     * //             [tabla] => usuarios
+     * //             [name_model] => models\usuarios
+     * //         )
+     * //
+     * //     [tabla_enlace] => stdClass Object
+     * //         (
+     * //             [tabla] => roles_usuarios
+     * //             [name_model] => models\roles_usuarios
+     * //         )
+     * // )
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: Uno de los nombres de las tablas está vacío.
+     *
+     * ```php
+     * $tabla = '';
+     * $tabla_enlace = 'roles_usuarios';
+     *
+     * $resultado = $miClase->ajusta_name_models($tabla, $tabla_enlace);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error tabla no puede venir vacia
+     * //     [data] =>
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla base. Este valor será ajustado para generar el nombre del modelo.
+     *   Ejemplo válido: `'usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla de enlace. Este valor será ajustado para generar el nombre del modelo.
+     *   Ejemplo válido: `'roles_usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Retorna un objeto `stdClass` con las siguientes claves:
+     *   - `tabla`: Resultado de ajustar el nombre del modelo para `$tabla`.
+     *   - `tabla_enlace`: Resultado de ajustar el nombre del modelo para `$tabla_enlace`.
+     *
+     * - **Error**:
+     *   Si alguno de los parámetros está vacío, retorna un array con los detalles del error, incluyendo
+     *   el mensaje descriptivo y los datos proporcionados.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función es útil para mapear dinámicamente los nombres de tablas a nombres de modelos en un entorno estructurado.
+     * - Utiliza la función interna `ajusta_name_model` para realizar los ajustes individuales de cada tabla.
      */
+
     private function ajusta_name_models(string $tabla, string $tabla_enlace): array|stdClass
     {
         $tabla = trim($tabla);
@@ -144,51 +257,109 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Realiza la preparación de los datos para una operación de join (unión) de tablas.
+     * REG
+     * Procesa y valida los datos necesarios para construir una estructura de unión (join) en una consulta SQL.
      *
-     * @param array $tabla_join Un arreglo que contiene las tablas que se van a unir.
+     * Esta función toma un array que describe los parámetros de una unión y lo valida. También normaliza valores
+     * faltantes en los datos de entrada, retornando un objeto con la estructura lista para usar.
      *
-     * Los elementos del arreglo son:
-     * 'tabla_base'         - La tabla principal con la que se realizará la unión.
-     * 'tabla_enlace'       - La tabla secundaria con la que se unirá la tabla principal.
-     * 'tabla_renombrada'   - (Opcional) El nuevo nombre que tendrá 'tabla_enlace' después de la unión.
-     * 'campo_tabla_base_id'- (Opcional) Nombre del campo de 'tabla_base' que se usará para la unión.
-     * 'campo_renombrado'   - (Opcional) Nuevo nombre que se le asignará al campo de 'tabla_enlace' después de la unión.
+     * @param array $tabla_join Array asociativo con los datos de la unión. Debe incluir las claves:
+     *                          - `tabla_base` (string): Nombre de la tabla principal.
+     *                          - `tabla_enlace` (string): Nombre de la tabla que se enlaza.
+     *                          Opcionalmente puede incluir:
+     *                          - `tabla_renombrada` (string): Alias para renombrar la tabla enlazada.
+     *                          - `campo_tabla_base_id` (string): Nombre del campo en la tabla base que actúa como ID.
+     *                          - `campo_renombrado` (string): Alias del campo renombrado en la unión.
      *
-     * @return stdClass|array Retorna un objeto con la información para la operación de unión de tablas.
-     * En caso de error, devuelve un arreglo con la información del error.
+     * @return stdClass|array Retorna un objeto `stdClass` con los datos procesados de la unión si todo es correcto.
+     *                        En caso de error, retorna un array con detalles del error.
      *
-     * @example
+     * ### Ejemplo de uso exitoso:
      *
-     * $datosJoin = [
+     * ```php
+     * $tabla_join = [
      *     'tabla_base' => 'usuarios',
-     *     'tabla_enlace' => 'pedidos',
-     *     'tabla_renombrada' => 'ped',
-     *     'campo_tabla_base_id' => 'id',
-     *     'campo_renombrado' => 'id_pedido'
+     *     'tabla_enlace' => 'roles',
+     *     'tabla_renombrada' => 'roles_usuario',
+     *     'campo_tabla_base_id' => 'usuario_id',
+     *     'campo_renombrado' => 'id_rol'
      * ];
      *
-     * $resultado = joins.data_join($datosJoin);
+     * $resultado = $miClase->data_join($tabla_join);
      *
-     * // $resultado será un objeto stdClass con la información para realizar la operación de unión de tablas.
-     * // En el caso de que la tabla sea renombrada y los campos sean renombrados, el resultado sería algo como:
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // stdClass Object
+     * // (
+     * //     [tabla_base] => usuarios
+     * //     [tabla_enlace] => roles
+     * //     [tabla_renombre] => roles_usuario
+     * //     [campo_renombrado] => id_rol
+     * //     [campo_tabla_base_id] => usuario_id
+     * // )
+     * ```
      *
-     * var_dump($resultado);
+     * ### Ejemplo de error:
      *
-     * // object(stdClass)#1 (5) {
-     * //   ["tabla_base"]=> string(8) "usuarios"
-     * //   ["tabla_enlace"]=> string(7) "pedidos"
-     * //   ["tabla_renombre"]=> string(3) "ped"
-     * //   ["campo_renombrado"]=> string(9) "id_pedido"
-     * //   ["campo_tabla_base_id"]=> string(2) "id"
-     * // }
+     * - Caso: Faltan claves requeridas en `$tabla_join`.
      *
-     * @throws errores Si 'tabla_base' y 'tabla_enlace' no están establecidos dentro del array $tabla_join.
-     * @version 15.7.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_join.21.11.0
+     * ```php
+     * $tabla_join = [
+     *     'tabla_enlace' => 'roles'
+     * ];
      *
+     * $resultado = $miClase->data_join($tabla_join);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error al validar $tabla_join
+     * //     [data] => Array
+     * //         (
+     * //             [error] => 1
+     * //             [mensaje] => Falta la clave requerida 'tabla_base'
+     * //         )
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla_join['tabla_base']`**:
+     *   Tabla principal sobre la que se realizará la unión. Este parámetro es obligatorio.
+     *   Ejemplo: `'usuarios'`.
+     *
+     * - **`$tabla_join['tabla_enlace']`**:
+     *   Tabla que se enlaza con la tabla base. Este parámetro es obligatorio.
+     *   Ejemplo: `'roles'`.
+     *
+     * - **`$tabla_join['tabla_renombrada']`**:
+     *   Alias opcional para la tabla enlazada. Valor por defecto: `''`.
+     *   Ejemplo: `'roles_usuario'`.
+     *
+     * - **`$tabla_join['campo_tabla_base_id']`**:
+     *   Campo ID en la tabla base utilizado en la unión. Este parámetro es opcional.
+     *   Ejemplo: `'usuario_id'`.
+     *
+     * - **`$tabla_join['campo_renombrado']`**:
+     *   Alias opcional para el campo renombrado en la unión. Valor por defecto: `''`.
+     *   Ejemplo: `'id_rol'`.
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Un objeto `stdClass` con las claves procesadas:
+     *   - `tabla_base`: Nombre de la tabla base.
+     *   - `tabla_enlace`: Nombre de la tabla enlazada.
+     *   - `tabla_renombre`: Alias de la tabla enlazada.
+     *   - `campo_tabla_base_id`: Campo ID de la tabla base.
+     *   - `campo_renombrado`: Alias del campo renombrado.
+     *
+     * - **Error**:
+     *   Un array con detalles del error si no se cumplen las validaciones.
      */
+
     private function data_join(array $tabla_join): stdClass|array
     {
         $keys = array('tabla_base','tabla_enlace');

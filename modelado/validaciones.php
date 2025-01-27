@@ -96,33 +96,77 @@ class validaciones extends validacion{
     }
 
     /**
-     * TOTAL
-     * Valida los datos de una columna específica.
+     * REG
+     * Valida los datos de una columna específica en un conjunto de datos.
      *
-     * @param array $data  Los datos que se van a validar.
-     * @param string $tabla  El nombre de la tabla que contiene la columna a validar.
+     * Esta función verifica la existencia de ciertas claves requeridas en un array de datos
+     * y valida que el nombre de la tabla proporcionada sea una cadena válida no numérica.
      *
-     * @return true|array  Devuelve verdadero si los datos son válidos, de lo contrario devuelve un array de errores.
+     * @param array $data Array de datos a validar. Debe contener al menos la clave 'nombre_original'.
+     * @param string $tabla Nombre de la tabla asociada a los datos. No puede ser numérica ni vacía.
      *
-     * @throws errores  Se lanza una excepción si encuentra un error durante la validación.
-     * @version 16.1.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.valida_data_columna
+     * @return true|array Retorna `true` si la validación es exitosa. En caso de error, retorna un array
+     *                    con información detallada del error.
+     *
+     * @throws errores::$error Si alguno de los parámetros no cumple con los criterios de validación.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $data = [
+     *     'nombre_original' => 'columna_ejemplo'
+     * ];
+     * $tabla = 'mi_tabla';
+     *
+     * $resultado = $miClase->valida_data_columna($data, $tabla);
+     * if ($resultado === true) {
+     *     echo "Validación exitosa.";
+     * } else {
+     *     print_r($resultado); // En caso de error
+     * }
+     * ```
+     *
+     * ### Ejemplo de uso con error en el array de datos:
+     *
+     * ```php
+     * $data = []; // Falta la clave 'nombre_original'
+     * $tabla = 'mi_tabla';
+     *
+     * $resultado = $miClase->valida_data_columna($data, $tabla);
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
+     *
+     * ### Ejemplo de uso con error en el nombre de la tabla:
+     *
+     * ```php
+     * $data = [
+     *     'nombre_original' => 'columna_ejemplo'
+     * ];
+     * $tabla = 12345; // Nombre de tabla inválido
+     *
+     * $resultado = $miClase->valida_data_columna($data, $tabla);
+     * if (is_array($resultado)) {
+     *     print_r($resultado); // Detalle del error
+     * }
+     * ```
      */
     final public function valida_data_columna(array $data, string $tabla): true|array
     {
-
         $keys = array('nombre_original');
-        $valida = $this->valida_existencia_keys(keys:$keys, registro: $data);
-        if(errores::$error){
+        $valida = $this->valida_existencia_keys(keys: $keys, registro: $data);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar data', data: $valida);
         }
 
-        if(is_numeric($tabla)){
-            return $this->error->error(mensaje:'Error ingrese un array valido '.$tabla, data: $tabla, es_final: true);
+        if (is_numeric($tabla)) {
+            return $this->error->error(mensaje: 'Error ingrese un array valido ' . $tabla, data: $tabla, es_final: true);
         }
 
         return true;
     }
+
 
     /**
      * TOTAL

@@ -1114,17 +1114,19 @@ class columnasTest extends test {
         $tabla_original = '';
         $tabla_renombrada = '';
         $resultado = $col->genera_columnas_consulta(false,$modelo,$tabla_original, $tabla_renombrada);
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al datos para columnas', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error al obtener datos para columnas', $resultado['mensaje']);
 
         errores::$error = false;
         $tabla_original = 'x';
         $tabla_renombrada = '';
         $resultado = $col->genera_columnas_consulta(false,$modelo,$tabla_original, $tabla_renombrada);
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al datos para columnas', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('rror al obtener datos para columnas', $resultado['mensaje']);
 
         errores::$error = false;
         $tabla_original = 'adm_seccion';
