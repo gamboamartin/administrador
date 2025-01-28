@@ -122,32 +122,94 @@ class configuraciones extends validacion {
     }
 
     /**
-     * TOTAL
-     * Verifica la existencia y validez de un archivo de configuración específico.
+     * REG
+     * Valida la existencia de un archivo de configuración según un tipo de configuración especificado.
      *
-     * @param stdClass $paths_conf Contiene los paths de todos los archivos de configuración.
-     * @param string   $tipo_conf  Representa el tipo de archivo de configuración que se va a verificar.
+     * Esta función verifica si un archivo de configuración existe en la ruta especificada. Si el archivo no se encuentra,
+     * intenta buscar un archivo de ejemplo en una ubicación predeterminada. En caso de no encontrarlo, genera un mensaje
+     * de error detallado que incluye un ejemplo del contenido del archivo esperado.
      *
-     * @return bool|array Retorna `true` si el archivo de configuración es válido.
-     *                    En caso contrario, retorna un array con la información del error.
+     * @param stdClass $paths_conf Objeto con las rutas configuradas para los archivos de configuración.
+     *                             - Las propiedades del objeto corresponden a diferentes tipos de configuración.
+     *                             - Ejemplo: `{"database": "config/database.php", "cache": "config/cache.php"}`
+     * @param string $tipo_conf Nombre del tipo de configuración a validar.
+     *                          - No puede estar vacío.
+     *                          - Ejemplo: 'database'.
      *
-     * @throws errores Lanza una excepción si `$tipo_conf` es una cadena vacía
-     *                   o si el archivo de configuración no existe.
+     * @return true|array Devuelve `true` si el archivo de configuración existe. Si ocurre un error, devuelve un array con los
+     *                    detalles del problema, incluyendo un ejemplo del archivo esperado si es posible.
      *
-     * @example
-     *   $configPath = new stdClass();
-     *   $configPath->myConfig = "myConfigPath/myConfig.php";
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $paths_conf = (object)[
+     *     'database' => 'config/database.php',
+     *     'cache' => 'config/cache.php'
+     * ];
+     * $tipo_conf = 'database';
      *
-     *   $isValid = $this->valida_conf_file($configPath, "myConfig");
+     * $resultado = $this->valida_conf_file(paths_conf: $paths_conf, tipo_conf: $tipo_conf);
      *
-     *   if ($isValid) {
-     *       echo "El archivo de configuración es válido.";
-     *   } else {
-     *       echo "El archivo de configuración no es válido.";
-     *   }
-     * @version 15.51.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf_file.21.28.0
+     * // Resultado esperado:
+     * // true (Si el archivo 'config/database.php' existe)
+     * ```
+     *
+     * ### Ejemplo de errores:
+     * ```php
+     * // Caso 1: Archivo no encontrado
+     * $paths_conf = (object)[
+     *     'database' => 'config/database.php'
+     * ];
+     * $tipo_conf = 'database';
+     *
+     * $resultado = $this->valida_conf_file(paths_conf: $paths_conf, tipo_conf: $tipo_conf);
+     *
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error no existe el archivo config/database.php favor de generar la ruta
+     * //                 config/database.php basado en la estructura del ejemplo vendor/gamboa.martin/configuraciones/config/database.php.example',
+     * //   'data' => 'Contenido del archivo de ejemplo codificado en HTML'
+     * // ]
+     *
+     * // Caso 2: Tipo de configuración vacío
+     * $paths_conf = (object)[
+     *     'database' => 'config/database.php'
+     * ];
+     * $tipo_conf = '';
+     *
+     * $resultado = $this->valida_conf_file(paths_conf: $paths_conf, tipo_conf: $tipo_conf);
+     *
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $tipo_conf esta vacio',
+     * //   'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación de parámetros:**
+     *    - Verifica que `$tipo_conf` no esté vacío.
+     * 2. **Resolución de la ruta del archivo:**
+     *    - Obtiene la ruta del archivo desde `$paths_conf->$tipo_conf` o usa una ruta predeterminada.
+     * 3. **Verificación de la existencia del archivo:**
+     *    - Comprueba si el archivo existe en la ruta especificada.
+     * 4. **Búsqueda del archivo de ejemplo:**
+     *    - Si el archivo no existe, intenta localizar un archivo de ejemplo en `vendor/gamboa.martin/configuraciones/`.
+     * 5. **Generación del mensaje de error:**
+     *    - Si el archivo y su ejemplo no existen, se genera un mensaje de error detallado con sugerencias.
+     * 6. **Retorno del resultado:**
+     *    - Devuelve `true` si el archivo existe, o un array con los detalles del error.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validar la existencia de archivos de configuración antes de inicializar una aplicación.
+     * - **Ejemplo real:** Verificar la existencia de `config/database.php` antes de establecer la conexión a la base de datos.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$tipo_conf` contenga un valor válido que corresponda a una propiedad de `$paths_conf`.
+     * - La función maneja errores mediante la clase `errores`, proporcionando mensajes claros y detallados.
      */
+
     private function valida_conf_file(stdClass $paths_conf, string $tipo_conf): true|array
     {
         $tipo_conf = trim($tipo_conf);
