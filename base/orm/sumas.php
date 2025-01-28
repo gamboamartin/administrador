@@ -17,18 +17,93 @@ class sumas{
     }
 
     /**
+     * REG
+     * Genera una cadena SQL que contiene columnas con sumas agregadas basadas en un array de campos y alias.
      *
-     * TOTAL
-     * Funcion que recorre el arreglo de $campos para maquetar una cadena de texto. A su vez
-     * verificando que no esté vacio y que sean validos los caracteres.
+     * Esta función recorre un array de campos, valida los datos de entrada y genera una definición de columnas SQL
+     * en formato de suma (`SUM`) con sus respectivos alias. Maneja automáticamente la separación de las columnas
+     * con comas para concatenarlas correctamente.
      *
-     * @param array $campos Campos a verificar
-     * @return array|string
+     * @param array $campos Un array asociativo donde las claves son los alias de las columnas y los valores
+     *                      son los nombres de los campos a sumar.
+     *                      Ejemplo:
+     *                      ```php
+     *                      [
+     *                          'suma_montos' => 'monto',
+     *                          'suma_cantidades' => 'cantidad'
+     *                      ]
+     *                      ```
      *
-     * @function $data = $sumas->data_campo_suma(alias: $alias, campo:$campo, columnas:  $columnas);
-     * La funcion enlista y maqueta el nombre de $campo y $alias para completar una cadena de texto.
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sumas.columnas_suma.21.16.0
+     * @return array|string Devuelve una cadena que representa las columnas de suma en SQL.
+     *                      Ejemplo: `'IFNULL( SUM(monto) ,0) AS suma_montos , IFNULL( SUM(cantidad) ,0) AS suma_cantidades'`.
+     *
+     *                      En caso de error, devuelve un array con los detalles del error.
+     *
+     * @throws array Si alguno de los parámetros no cumple con los requisitos de validación.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * 1. **Generar columnas de suma a partir de campos**:
+     *    ```php
+     *    $campos = [
+     *        'suma_montos' => 'monto',
+     *        'suma_cantidades' => 'cantidad'
+     *    ];
+     *
+     *    $resultado = $this->columnas_suma(campos: $campos);
+     *
+     *    // Resultado esperado:
+     *    // 'IFNULL( SUM(monto) ,0) AS suma_montos , IFNULL( SUM(cantidad) ,0) AS suma_cantidades'
+     *    ```
+     *
+     * 2. **Generar una columna de suma única**:
+     *    ```php
+     *    $campos = [
+     *        'suma_precios' => 'precio'
+     *    ];
+     *
+     *    $resultado = $this->columnas_suma(campos: $campos);
+     *
+     *    // Resultado esperado:
+     *    // 'IFNULL( SUM(precio) ,0) AS suma_precios'
+     *    ```
+     *
+     * ### Casos de validación:
+     *
+     * - Si `$campos` está vacío:
+     *    ```php
+     *    $campos = [];
+     *    $resultado = $this->columnas_suma(campos: $campos);
+     *    // Resultado esperado: Error indicando que `$campos` no puede estar vacío.
+     *    ```
+     *
+     * - Si un alias es numérico:
+     *    ```php
+     *    $campos = [
+     *        123 => 'monto' // Alias no válido
+     *    ];
+     *    $resultado = $this->columnas_suma(campos: $campos);
+     *    // Resultado esperado: Error indicando que `$alias` debe ser texto.
+     *    ```
+     *
+     * - Si un campo está vacío:
+     *    ```php
+     *    $campos = [
+     *        'suma_montos' => '' // Campo vacío
+     *    ];
+     *    $resultado = $this->columnas_suma(campos: $campos);
+     *    // Resultado esperado: Error indicando que `$campo` no puede estar vacío.
+     *    ```
+     *
+     * ### Dependencias:
+     * - `data_campo_suma`: Genera las definiciones individuales de las columnas con sus alias.
+     * - `coma_sql`: Determina si se necesita una coma separadora al concatenar columnas.
+     *
+     * ### Resultado esperado:
+     * - Una cadena SQL que representa las columnas de suma.
+     * - Un array de error si alguna validación falla o si ocurre un problema durante el procesamiento.
      */
+
     final public function columnas_suma(array $campos): array|string
     {
         if(count($campos)===0){
@@ -60,25 +135,91 @@ class sumas{
     }
 
     /**
+     * REG
+     * Genera y estructura los datos necesarios para agregar una columna de suma con alias a una consulta SQL.
      *
-     * TOTAL
-     * Funcion que obtiene el nombre del campo y el alias de la columna a sumar, validando
-     * que no vengan espacios vacios y retornando un objeto que continene 2 cadenas maquetadas
-     * con el valor de esas variables.
+     * Esta función valida y procesa un campo y su alias para integrarlo en una consulta SQL como una
+     * columna de suma. También calcula la coma separadora necesaria para concatenar el campo con
+     * otras columnas en la consulta.
      *
-     * @param string $campo Campo a verificar
-     * @param string $alias Alias a verificar
-     * @param string $columnas Columna a verificar
-     * @return array|stdClass
+     * @param string $alias El alias que se asignará a la columna en la consulta SQL.
+     *                      Ejemplo: `'suma_total'`.
      *
-     * @function $column = (new columnas())->add_column(alias: $alias, campo: $campo); Funcion que
-     * hace llamado a la funcion "add_column" para maquetar una cadena de texto con los valores de
-     * $campo y $alias
+     * @param string $campo El nombre del campo que se utilizará para realizar la suma en la consulta SQL.
+     *                      Ejemplo: `'monto'`.
      *
-     * @function $coma = (new sql_bass())->coma_sql(columnas: $columnas); Funcion que hace llamado
-     * al metodo "coma_sql" para maquetar una cadena de texto conforme a los valores de la variable $columnas
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sumas.data_campo_suma.21.16.0
+     * @param string $columnas Las columnas existentes en la consulta SQL, utilizadas para determinar si
+     *                         se necesita una coma separadora. Ejemplo: `'columna1, columna2'`.
+     *
+     * @return array|stdClass Devuelve un objeto con las siguientes propiedades:
+     *                        - **column**: La cadena SQL que representa la columna con la función de suma
+     *                          y el alias asignado. Ejemplo: `'IFNULL( SUM(monto) ,0) AS suma_total'`.
+     *                        - **coma**: La coma separadora necesaria, si corresponde. Ejemplo: `' , '`.
+     *
+     *                        En caso de error, devuelve un array con los detalles del error.
+     *
+     * @throws array Si alguno de los parámetros requeridos está vacío o ocurre un error en las
+     *                   dependencias utilizadas.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * 1. **Agregar una nueva columna con suma**:
+     *    ```php
+     *    $alias = 'suma_total';
+     *    $campo = 'monto';
+     *    $columnas = 'columna1, columna2';
+     *
+     *    $resultado = $this->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
+     *
+     *    // Resultado esperado:
+     *    // $resultado->column => 'IFNULL( SUM(monto) ,0) AS suma_total'
+     *    // $resultado->coma => ' , '
+     *    ```
+     *
+     * 2. **Agregar una columna como primera entrada**:
+     *    ```php
+     *    $alias = 'suma_total';
+     *    $campo = 'monto';
+     *    $columnas = ''; // No hay columnas previas.
+     *
+     *    $resultado = $this->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
+     *
+     *    // Resultado esperado:
+     *    // $resultado->column => 'IFNULL( SUM(monto) ,0) AS suma_total'
+     *    // $resultado->coma => '' (no se agrega coma ya que no hay columnas previas)
+     *    ```
+     *
+     * ### Casos de validación:
+     *
+     * - Si `$campo` está vacío:
+     *    ```php
+     *    $alias = 'suma_total';
+     *    $campo = ''; // Campo vacío.
+     *    $columnas = 'columna1';
+     *
+     *    $resultado = $this->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
+     *    // Resultado esperado: Error indicando que `$campo` no puede estar vacío.
+     *    ```
+     *
+     * - Si `$alias` está vacío:
+     *    ```php
+     *    $alias = ''; // Alias vacío.
+     *    $campo = 'monto';
+     *    $columnas = 'columna1';
+     *
+     *    $resultado = $this->data_campo_suma(alias: $alias, campo: $campo, columnas: $columnas);
+     *    // Resultado esperado: Error indicando que `$alias` no puede estar vacío.
+     *    ```
+     *
+     * ### Dependencias:
+     * - `columnas::add_column`: Genera la definición de la columna con función de suma.
+     * - `sql_bass::coma_sql`: Calcula si se debe agregar una coma a la consulta SQL.
+     *
+     * ### Resultado esperado:
+     * - Un objeto `stdClass` con las propiedades `column` y `coma` si no hay errores.
+     * - Un array con detalles del error si alguna validación falla o las dependencias generan un error.
      */
+
     private function data_campo_suma(string $alias, string $campo, string $columnas): array|stdClass
     {
         $campo = trim($campo);

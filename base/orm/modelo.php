@@ -2709,12 +2709,90 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Suma sql
-     * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
-     * @param array $filtro Filtro para suma
-     * @return array con la suma de los elementos seleccionados y filtrados
+     * REG
+     * Calcula una suma total basada en los campos especificados y un conjunto opcional de filtros.
+     *
+     * Esta función genera una consulta SQL dinámica para calcular sumas totales de los campos indicados,
+     * aplicando los filtros proporcionados. La consulta se ejecuta y devuelve los resultados procesados.
+     *
+     * @param array $campos Campos a sumar en la consulta SQL. Debe ser un array asociativo donde las claves
+     *                      representan los alias y los valores los nombres de los campos. Ejemplo:
+     *                      `['total_monto' => 'monto', 'total_iva' => 'iva']`.
+     * @param array $filtro Opcional. Filtros para aplicar en la cláusula `WHERE`. Debe ser un array asociativo.
+     *                      Ejemplo: `['estatus' => 'activo', 'fecha >=' => '2023-01-01']`.
+     *
+     * @return array Retorna un array con los resultados de la suma.
+     *               Si ocurre algún error, devuelve un array de error estructurado.
+     *
+     * @throws array Si se presenta un error en la validación de parámetros, generación de columnas, filtros
+     *                   o ejecución de la consulta SQL.
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Calcular sumas con filtros aplicados**:
+     *    ```php
+     *    $campos = [
+     *        'total_monto' => 'monto',
+     *        'total_iva' => 'iva'
+     *    ];
+     *    $filtros = [
+     *        'estatus' => 'activo',
+     *        'fecha >=' => '2023-01-01'
+     *    ];
+     *
+     *    $resultado = $modelo->suma(campos: $campos, filtro: $filtros);
+     *    // Resultado esperado:
+     *    // [
+     *    //     'total_monto' => 15000,
+     *    //     'total_iva' => 2400
+     *    // ]
+     *    ```
+     *
+     * 2. **Calcular sumas sin filtros**:
+     *    ```php
+     *    $campos = [
+     *        'total_monto' => 'monto',
+     *        'total_iva' => 'iva'
+     *    ];
+     *
+     *    $resultado = $modelo->suma(campos: $campos);
+     *    // Resultado esperado:
+     *    // [
+     *    //     'total_monto' => 20000,
+     *    //     'total_iva' => 3200
+     *    // ]
+     *    ```
+     *
+     * 3. **Caso de error por campos vacíos**:
+     *    ```php
+     *    $campos = [];
+     *
+     *    $resultado = $modelo->suma(campos: $campos);
+     *    // Resultado esperado:
+     *    // [
+     *    //     'error' => 1,
+     *    //     'mensaje' => 'Error campos no puede venir vacio',
+     *    //     'data' => []
+     *    // ]
+     *    ```
+     *
+     * ### Descripción de la operación:
+     * 1. **Validación de parámetros**:
+     *    - Valida que `$campos` no esté vacío.
+     *    - Genera las columnas SQL para las sumas mediante la clase `sumas`.
+     * 2. **Generación de filtros**:
+     *    - Utiliza la clase `where` para construir la cláusula `WHERE` basada en `$filtro`.
+     * 3. **Construcción de la consulta**:
+     *    - Genera la consulta SQL combinando columnas, tablas y filtros.
+     * 4. **Ejecución de la consulta**:
+     *    - Ejecuta la consulta SQL y devuelve el primer registro con los resultados de las sumas.
+     *
+     * ### Resultado esperado:
+     * - Si todo es correcto: Devuelve un array con las sumas totales de los campos especificados.
+     * - Si ocurre un error: Devuelve un array con detalles del error, incluyendo el mensaje y los datos relacionados.
      */
-    public function suma(array $campos, array $filtro = array()): array
+
+    final public function suma(array $campos, array $filtro = array()): array
     {
         $this->filtro = $filtro;
         if(count($campos)===0){

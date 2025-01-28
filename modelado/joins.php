@@ -227,22 +227,116 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Ajusta las tablas para las consultas SQL con JOINs.
+     * REG
+     * Ajusta y construye una cadena SQL de sentencias `JOIN` a partir de un conjunto de tablas base y relaciones.
      *
-     * Esta función toma una cadena que representa una tabla primaria y un array de 'joins' para ajustar
-     * adecuadamente las tablas que se usarán en la consulta. Si se produce un error durante el proceso,
-     * se maneja y se devuelve un error específico.
+     * La función procesa un array de relaciones de tablas (`$tablas_join`) y genera una cadena completa de sentencias
+     * `JOIN` que se concatenan con las tablas previamente definidas en `$tablas`.
      *
-     * @param string $tablas     La tabla primaria que se usará en la consulta.
-     * @param array  $tablas_join Las tablas adicionales que se unirán a la consulta.
+     * @param string $tablas Cadena de sentencias SQL previamente generadas para las tablas.
+     *                       Puede ser una cadena vacía si no se tienen sentencias iniciales.
+     *                       Ejemplo: `'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id'`.
+     * @param array $tablas_join Array asociativo que define las relaciones entre las tablas.
+     *                           La clave del array es el nombre de la tabla base, y el valor es:
+     *                           - Un array con los detalles de la relación.
+     *                           - Una cadena con el nombre de la tabla a enlazar.
+     *                           Ejemplo:
+     *                           ```php
+     *                           [
+     *                               'usuarios' => [
+     *                                   'tabla_base' => 'usuarios',
+     *                                   'tabla_enlace' => 'roles'
+     *                               ],
+     *                               'roles' => 'permisos'
+     *                           ]
+     *                           ```
      *
-     * @return array|string     Devuelve las tablas ajustadas si no hay errores, de lo contrario devuelve un error.
+     * @return array|string Devuelve la cadena completa de sentencias SQL `JOIN` ajustadas con las relaciones especificadas.
+     *                      Si ocurre un error, devuelve un array con el mensaje y los detalles del problema.
      *
-     * @throws errores Si se produjo un error al generar las tablas de unión.
-     * @version 16.28.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.ajusta_tablas.21.16.0
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $tablas = 'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id';
+     * $tablas_join = [
+     *     'usuarios' => [
+     *         'tabla_base' => 'usuarios',
+     *         'tabla_enlace' => 'roles'
+     *     ],
+     *     'roles' => 'permisos'
+     * ];
+     *
+     * $resultado = $this->ajusta_tablas(tablas: $tablas, tablas_join: $tablas_join);
+     *
+     * // Resultado esperado:
+     * // 'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id
+     * //  LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id
+     * //  LEFT JOIN roles AS roles ON roles.id = permisos.roles_id'
+     * ```
+     *
+     * ### Casos de uso:
+     *
+     * 1. **Construcción desde cero**:
+     *    ```php
+     *    $tablas = '';
+     *    $tablas_join = [
+     *        'usuarios' => [
+     *            'tabla_base' => 'usuarios',
+     *            'tabla_enlace' => 'roles'
+     *        ]
+     *    ];
+     *
+     *    $resultado = $this->ajusta_tablas(tablas: $tablas, tablas_join: $tablas_join);
+     *
+     *    // Resultado esperado:
+     *    // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * 2. **Concatenación con sentencias previas**:
+     *    ```php
+     *    $tablas = 'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id';
+     *    $tablas_join = [
+     *        'usuarios' => [
+     *            'tabla_base' => 'usuarios',
+     *            'tabla_enlace' => 'roles'
+     *        ]
+     *    ];
+     *
+     *    $resultado = $this->ajusta_tablas(tablas: $tablas, tablas_join: $tablas_join);
+     *
+     *    // Resultado esperado:
+     *    // 'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id
+     *    //  LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * ### Validaciones:
+     *
+     * - Se asegura que `$tablas_join` esté correctamente definido y que cada relación tenga los datos necesarios.
+     * - Valida que las claves del array `$tablas_join` (nombres de tablas) no sean numéricas ni estén vacías.
+     * - Gestiona errores mediante la función auxiliar `data_tabla_sql`.
+     *
+     * ### Casos de error:
+     *
+     * 1. **`$tablas_join` mal estructurado**:
+     *    ```php
+     *    $tablas = '';
+     *    $tablas_join = [
+     *        'usuarios' => 'roles', // Correcto.
+     *        123 => 'permisos'     // Incorrecto (clave numérica).
+     *    ];
+     *
+     *    $resultado = $this->ajusta_tablas(tablas: $tablas, tablas_join: $tablas_join);
+     *    // Resultado esperado: array con mensaje de error "Error al validar $tabla_join".
+     *    ```
+     *
+     * 2. **Errores en `data_tabla_sql`**:
+     *    Si ocurre un error durante el procesamiento de una relación, el flujo se interrumpe y se retorna el error.
+     *
+     * ### Resultado esperado:
+     * - Devuelve una cadena concatenada de sentencias SQL `JOIN`.
+     * - Si ocurre un error, devuelve un array con el mensaje descriptivo y los datos del problema.
      */
+
     private function ajusta_tablas( string $tablas, array $tablas_join): array|string
     {
         $tablas_env = $tablas;
@@ -390,23 +484,87 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Genera la información requerida para realizar un "JOIN" en una consulta SQL.
+     * REG
+     * Genera los datos necesarios para renombrar y establecer las relaciones entre tablas en una consulta SQL.
      *
-     * @param string $id_renombrada El identificador de la tabla renombrada.
-     * @param stdClass $init Contiene los datos iniciales necesarios para crear el "JOIN".
-     * @param string $join Indica el tipo de "JOIN" a realizar (INNER JOIN, LEFT JOIN, RIGHT JOIN, etc).
-     * @param string $renombrada El nombre que se le asignará a la tabla después del renombramiento.
+     * Esta función construye los componentes de un `JOIN` en una consulta SQL, incluyendo el tipo de `JOIN`,
+     * las condiciones de unión y el alias para la tabla renombrada. Valida los datos de entrada antes de generar el resultado.
      *
-     * @return stdClass|array Retorna un objeto stdClass con la descripción del "JOIN" a realizar,
-     * o un arreglo en caso de que se produzca un error.
+     * @param string $id_renombrada Identificador renombrado que se usará en la condición del `JOIN`.
+     *                              Usualmente incluye el prefijo de la tabla seguido de un identificador (`.id`).
+     * @param stdClass $init Objeto que contiene las propiedades necesarias para construir los datos de la relación.
+     *                       Debe incluir las claves `tabla` y `tabla_enlace`.
+     * @param string $join Tipo de `JOIN` a utilizar (por ejemplo: `INNER`, `LEFT`, `RIGHT`).
+     * @param string $renombrada Alias para la tabla renombrada que se usará en la consulta SQL.
      *
-     * El objeto retornado tiene la siguiente estructura:
-     * - 'join_tabla': La declaración del "JOIN" realizada con la tabla y su alias.
-     * - 'on_join': La condición bajo la cual se realizará el "JOIN".
-     * - 'asignacion_tabla': La asignación de renombramiento de la tabla.
-     * @version 15.40.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_for_rename.21.12.0
+     * @return stdClass|array Retorna un objeto con las siguientes propiedades en caso de éxito:
+     *                        - `join_tabla`: Sentencia del `JOIN` con el tipo y la tabla base.
+     *                        - `on_join`: Condición para la unión entre tablas.
+     *                        - `asignacion_tabla`: Alias para la tabla renombrada.
+     *                        Si ocurre un error, retorna un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $id_renombrada = '.id';
+     * $init = new stdClass();
+     * $init->tabla = 'usuarios';
+     * $init->tabla_enlace = 'roles.usuario_id';
+     * $join = 'INNER';
+     * $renombrada = 'usuarios_renombrados';
+     *
+     * $resultado = $this->data_for_rename(
+     *     id_renombrada: $id_renombrada,
+     *     init: $init,
+     *     join: $join,
+     *     renombrada: $renombrada
+     * );
+     *
+     * // Resultado esperado:
+     * // $resultado->join_tabla => 'INNER JOIN usuarios'
+     * // $resultado->on_join => 'usuarios_renombrados.id = roles.usuario_id'
+     * // $resultado->asignacion_tabla => 'INNER JOIN usuarios AS usuarios_renombrados'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$id_renombrada`**:
+     *   Representa el identificador renombrado que se usará en la condición `ON` del `JOIN`.
+     *   Ejemplo: `'.id'`.
+     *
+     * - **`$init`**:
+     *   Objeto que debe incluir las claves:
+     *     - `tabla`: Nombre de la tabla principal. Ejemplo: `'usuarios'`.
+     *     - `tabla_enlace`: Campo que define la relación con la tabla principal. Ejemplo: `'roles.usuario_id'`.
+     *
+     * - **`$join`**:
+     *   Tipo de unión a utilizar en la consulta SQL. Debe ser uno de los valores válidos como `INNER`, `LEFT` o `RIGHT`.
+     *   Ejemplo: `'LEFT'`.
+     *
+     * - **`$renombrada`**:
+     *   Alias que se asignará a la tabla principal en la consulta SQL.
+     *   Ejemplo: `'usuarios_renombrados'`.
+     *
+     * ### Resultado esperado:
+     *
+     * - **`join_tabla`**: Sentencia que indica el tipo de `JOIN` y la tabla a unirse.
+     *   Ejemplo: `'INNER JOIN usuarios'`.
+     *
+     * - **`on_join`**: Condición de unión para el `JOIN`.
+     *   Ejemplo: `'usuarios_renombrados.id = roles.usuario_id'`.
+     *
+     * - **`asignacion_tabla`**: Sentencia del `JOIN` con el alias asignado a la tabla.
+     *   Ejemplo: `'INNER JOIN usuarios AS usuarios_renombrados'`.
+     *
+     * ### Casos de error:
+     *
+     * - Si el parámetro `$init` no incluye las claves necesarias (`tabla`, `tabla_enlace`), se devuelve un array con detalles del error.
+     * - Si algún parámetro está vacío, se genera un mensaje de error indicando el problema.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función está diseñada para facilitar la creación dinámica de `JOIN` en consultas SQL.
+     * - Asegura que los datos requeridos para la consulta estén correctamente formateados y validados.
      */
     private function data_for_rename(string $id_renombrada, stdClass $init, string $join,
                                     string $renombrada): stdClass|array
@@ -429,26 +587,75 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Esta función obtiene los JOINs entre las tablas proporcionadas como array.
-     * Valida la existencia de las claves necesarias en $tabla_join.
-     * Si hay un error durante la validación, se retorna una cadena con el mensaje de error.
+     * REG
+     * Genera la cláusula SQL necesaria para realizar un `JOIN` entre tablas con validaciones previas.
      *
-     * Luego, intenta generar los datos de la unión.
-     * Si hay un error en este proceso, se retorna una cadena con el detalle del error.
+     * Esta función se encarga de validar los datos de configuración necesarios para un `JOIN`, construir la
+     * estructura requerida y finalmente generar la sentencia SQL del `JOIN` con los datos proporcionados.
      *
-     * Finalmente, intenta generar el join en sí. Si hay un error en este proceso, se retorna una cadena con el error.
+     * @param array $tabla_join Configuración de las tablas que participarán en el `JOIN`.
+     *                          Este array debe contener las claves:
+     *                          - `'tabla_base'`: Nombre de la tabla principal. Ejemplo: `'usuarios'`.
+     *                          - `'tabla_enlace'`: Nombre de la tabla relacionada (enlace). Ejemplo: `'roles'`.
+     *                          - `'tabla_renombrada'` (opcional): Alias para la tabla base. Ejemplo: `'usuarios_renombrados'`.
+     *                          - `'campo_tabla_base_id'` (opcional): Campo de la tabla base utilizado en la cláusula `ON`.
+     *                            Ejemplo: `'usuario_id'`.
+     *                          - `'campo_renombrado'` (opcional): Campo clave de la tabla de enlace para el `JOIN`.
+     *                            Ejemplo: `'id_usuario'`.
      *
-     * @param array $tabla_join Contiene las tablas a unir.
-     * @return array|string Devuelve una matriz con los datos de la unión o una cadena con el detalle del error, en caso de que haya uno.
-     * @throws errores Esta función arroja excepciones de la clase errores en caso de incidentes.
+     * @return array|string La cláusula `JOIN` generada en caso de éxito. En caso de error, devuelve un array con los
+     *                      detalles del error.
      *
-     * @example
-     * $instance->data_para_join(['tabla_base' => 'clientes', 'tabla_enlace' => 'pedidos']);
+     * ### Ejemplo de uso exitoso:
      *
-     * @version v15.57.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_para_join.21.13.0
+     * ```php
+     * $tabla_join = array(
+     *     'tabla_base' => 'usuarios',
+     *     'tabla_enlace' => 'roles',
+     *     'tabla_renombrada' => 'usuarios_renombrados',
+     *     'campo_tabla_base_id' => 'usuario_id',
+     *     'campo_renombrado' => 'id_usuario'
+     * );
+     *
+     * $resultado = $this->data_para_join(tabla_join: $tabla_join);
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla_join`**:
+     *   Array que contiene las configuraciones necesarias para construir el `JOIN`.
+     *   Ejemplo:
+     *   ```php
+     *   array(
+     *       'tabla_base' => 'usuarios',
+     *       'tabla_enlace' => 'roles',
+     *       'tabla_renombrada' => 'usuarios_renombrados',
+     *       'campo_tabla_base_id' => 'usuario_id',
+     *       'campo_renombrado' => 'id_usuario'
+     *   );
+     *   ```
+     *
+     * ### Casos de error:
+     *
+     * - Si el array `$tabla_join` no contiene las claves `'tabla_base'` o `'tabla_enlace'`, se genera un error indicando que
+     *   las claves son obligatorias.
+     * - Si ocurre un problema al validar o generar la cláusula `JOIN`, se devuelve un array con los detalles del error.
+     *
+     * ### Resultado esperado:
+     *
+     * - Genera una cláusula SQL `JOIN` en formato correcto.
+     *   Ejemplo:
+     *   `' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'`.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función utiliza validaciones estrictas para garantizar que la estructura de entrada sea correcta y evitar errores.
+     * - Es útil para construir consultas SQL dinámicas en aplicaciones que manejan relaciones complejas entre tablas.
      */
+
     private function data_para_join(array $tabla_join): array|string
     {
         $keys = array('tabla_base','tabla_enlace');
@@ -472,18 +679,111 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Genera una estructura de JOIN a partir de una clave y una tabla.
+     * REG
+     * Genera los datos necesarios para construir una sentencia SQL `JOIN` específica.
      *
-     * @param string $key La clave que será usada para el JOIN.
-     * @param string $tabla_join La tabla con la que se hará el JOIN.
+     * Esta función valida las tablas proporcionadas (`key` y `tabla_join`) y genera una sentencia `JOIN`
+     * utilizando los parámetros especificados.
      *
-     * @return array|string Si todo va bien, devuelve una estructura de JOIN.
-     * En caso de error durante la validación con `valida_tabla_join` o durante la generación del JOIN con `genera_join`,
-     * devuelve un mensaje con la descripción del error.
-     * @version 16.13.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_para_join_esp.21.16.0
+     * @param string $key Clave principal o alias de la tabla base utilizada en el `JOIN`.
+     *                    Debe ser una cadena no vacía y no numérica.
+     *                    Ejemplo: `'usuarios'`.
+     * @param string $tabla_join Nombre de la tabla de enlace utilizada en el `JOIN`.
+     *                           Debe ser una cadena no vacía y no numérica.
+     *                           Ejemplo: `'roles'`.
+     *
+     * @return array|string Devuelve un string con la sentencia `JOIN` generada si no hay errores.
+     *                      En caso de error, devuelve un array con detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $key = 'usuarios';
+     * $tabla_join = 'roles';
+     *
+     * $resultado = $this->data_para_join_esp(key: $key, tabla_join: $tabla_join);
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$key`**:
+     *   Representa el alias o nombre de la tabla base utilizada en el `JOIN`.
+     *   Requisitos:
+     *   - Debe ser una cadena no vacía.
+     *   - No puede ser numérico.
+     *   Ejemplo válido:
+     *   ```php
+     *   'usuarios'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   ''  // Está vacío.
+     *   123 // Es numérico.
+     *   ```
+     *
+     * - **`$tabla_join`**:
+     *   Es el nombre de la tabla de enlace que participa en el `JOIN`.
+     *   Requisitos:
+     *   - Debe ser una cadena no vacía.
+     *   - No puede ser numérico.
+     *   Ejemplo válido:
+     *   ```php
+     *   'roles'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   ''   // Está vacío.
+     *   456  // Es numérico.
+     *   ```
+     *
+     * ### Casos de uso exitoso:
+     *
+     * 1. Generar un `JOIN` entre las tablas `'usuarios'` y `'roles'`:
+     *    ```php
+     *    $key = 'usuarios';
+     *    $tabla_join = 'roles';
+     *
+     *    $resultado = $this->data_para_join_esp(key: $key, tabla_join: $tabla_join);
+     *
+     *    // Resultado esperado:
+     *    // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * ### Casos de error:
+     *
+     * 1. **`$key` está vacío**:
+     *    ```php
+     *    $resultado = $this->data_para_join_esp(key: '', tabla_join: 'roles');
+     *    // Resultado esperado: array con mensaje de error "Error key esta vacio".
+     *    ```
+     *
+     * 2. **`$tabla_join` está vacío**:
+     *    ```php
+     *    $resultado = $this->data_para_join_esp(key: 'usuarios', tabla_join: '');
+     *    // Resultado esperado: array con mensaje de error "Error $tabla_join esta vacio".
+     *    ```
+     *
+     * 3. **`$key` es numérico**:
+     *    ```php
+     *    $resultado = $this->data_para_join_esp(key: '123', tabla_join: 'roles');
+     *    // Resultado esperado: array con mensaje de error "Error el key no puede ser un numero".
+     *    ```
+     *
+     * 4. **Error al generar el `JOIN`**:
+     *    Si ocurre un error en la construcción del `JOIN`, se devuelve un array con detalles del problema.
+     *
+     * ### Resultado esperado:
+     * - Devuelve un string con la sentencia `JOIN` generada correctamente.
+     * - Si ocurre un error, devuelve un array con los detalles y el mensaje del problema.
+     *
+     * ### Notas adicionales:
+     * - La validación de las tablas se realiza a través de la función `valida_tabla_join`.
+     * - La generación de la sentencia SQL `JOIN` utiliza `genera_join` internamente.
      */
+
     private function data_para_join_esp(string $key, string $tabla_join): array|string
     {
         $key = trim($key);
@@ -502,26 +802,157 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Genera datos para una operación JOIN en SQL desde varias tablas.
+     * REG
+     * Genera y ajusta una cadena de sentencias SQL de tipo `JOIN` con base en la configuración de tablas proporcionadas.
      *
-     * Esta función permite unir varias tablas de una base de datos SQL.
-     * Admite tanto operaciones de unión básicas como personalizadas.
+     * Esta función construye las relaciones necesarias entre tablas para una consulta SQL,
+     * utilizando diferentes métodos según el tipo de `$tabla_join` (array o string).
      *
-     * @param string $key Llave utilizada para identificar un JOIN específico.
-     * @param array|string $tabla_join Representa la(s) tabla(s) para realizar la operación JOIN.
-     * Esto podría ser un array que contenga los nombres de múltiples tablas a unir o una cadena que contenga
-     * el nombre de una sola tabla.
-     * @param string $tablas Nombre de las tablas base donde se realizará la operación JOIN.
+     * @param string $key Nombre o alias de la tabla base que servirá como referencia para la relación `JOIN`.
+     *                    Debe ser una cadena no vacía.
+     *                    Ejemplo: `'usuarios'`.
+     * @param array|string $tabla_join Configuración de las tablas a relacionar.
+     *                                 Puede ser:
+     *                                 - Un **array** con la estructura de la relación.
+     *                                 - Un **string** representando la tabla de enlace.
+     *                                 Ejemplo array:
+     *                                 ```php
+     *                                 [
+     *                                     'tabla_base' => 'usuarios',
+     *                                     'tabla_enlace' => 'roles'
+     *                                 ]
+     *                                 ```
+     *                                 Ejemplo string:
+     *                                 ```php
+     *                                 'roles'
+     *                                 ```
+     * @param string $tablas Cadena de tablas o relaciones ya generadas, a la que se agregarán las nuevas sentencias `JOIN`.
+     *                       Puede estar vacía para comenzar desde cero.
+     *                       Ejemplo: `'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id'`.
      *
-     * @return array|string Dependiendo del escenario, esta función puede devolver una array de datos generados
-     * para la operación JOIN, o una string que representa un mensaje de error, en caso de que se produzca
-     * un error durante el proceso.
+     * @return array|string Retorna la cadena actualizada de tablas con las relaciones `JOIN` añadidas.
+     *                      En caso de error, retorna un array con los detalles del problema.
      *
-     * @throws errores En caso de que ocurra un error durante el proceso, este método lanzará una excepción.
-     * @version 16.26.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.data_tabla_sql.21.16.0
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $key = 'usuarios';
+     * $tabla_join = [
+     *     'tabla_base' => 'usuarios',
+     *     'tabla_enlace' => 'roles'
+     * ];
+     * $tablas = '';
+     *
+     * $resultado = $this->data_tabla_sql(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     * ```
+     *
+     * ### Parámetros:
+     *
+     * - **`$key`**:
+     *   Nombre o alias de la tabla base para la relación `JOIN`.
+     *   Ejemplo válido:
+     *   ```php
+     *   'usuarios'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   '' // Está vacío.
+     *   ```
+     *
+     * - **`$tabla_join`**:
+     *   Relación de tablas o nombre de la tabla de enlace.
+     *   Puede ser un **array** o un **string**.
+     *   Ejemplo de array válido:
+     *   ```php
+     *   [
+     *       'tabla_base' => 'usuarios',
+     *       'tabla_enlace' => 'roles'
+     *   ]
+     *   ```
+     *   Ejemplo de string válido:
+     *   ```php
+     *   'roles'
+     *   ```
+     *
+     * - **`$tablas`**:
+     *   Cadena de tablas o relaciones SQL ya generadas.
+     *   Se concatenará con las nuevas relaciones `JOIN`.
+     *   Ejemplo inicial:
+     *   ```php
+     *   ''
+     *   ```
+     *   Ejemplo con datos:
+     *   ```php
+     *   'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id'
+     *   ```
+     *
+     * ### Casos de uso exitoso:
+     *
+     * 1. Generar un `JOIN` con un array de relación:
+     *    ```php
+     *    $key = 'usuarios';
+     *    $tabla_join = [
+     *        'tabla_base' => 'usuarios',
+     *        'tabla_enlace' => 'roles'
+     *    ];
+     *    $tablas = '';
+     *
+     *    $resultado = $this->data_tabla_sql(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     *    // Resultado esperado:
+     *    // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * 2. Generar un `JOIN` con una tabla de enlace (string):
+     *    ```php
+     *    $key = 'usuarios';
+     *    $tabla_join = 'roles';
+     *    $tablas = '';
+     *
+     *    $resultado = $this->data_tabla_sql(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     *    // Resultado esperado:
+     *    // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * 3. Concatenar a una cadena existente:
+     *    ```php
+     *    $key = 'usuarios';
+     *    $tabla_join = 'roles';
+     *    $tablas = 'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id';
+     *
+     *    $resultado = $this->data_tabla_sql(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     *    // Resultado esperado:
+     *    // 'INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id
+     *    //  LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * ### Casos de error:
+     *
+     * 1. `$key` está vacío:
+     *    ```php
+     *    $resultado = $this->data_tabla_sql(key: '', tabla_join: 'roles', tablas: '');
+     *    // Resultado esperado: array con mensaje de error "Error key esta vacio".
+     *    ```
+     *
+     * 2. `$tabla_join` no es un array ni un string:
+     *    ```php
+     *    $resultado = $this->data_tabla_sql(key: 'usuarios', tabla_join: 123, tablas: '');
+     *    // Resultado esperado: array con mensaje de error "Error al validar $tabla_join".
+     *    ```
+     *
+     * 3. Error interno en generación del `JOIN`:
+     *    Si ocurre un problema en `tablas_join_base` o `tablas_join_esp`, se retorna el error correspondiente.
+     *
+     * ### Resultado esperado:
+     * - Devuelve una cadena concatenada de sentencias SQL `JOIN`.
+     * - Si ocurre un error, retorna un array descriptivo del problema.
      */
+
     private function data_tabla_sql(string $key, array|string $tabla_join, string $tablas): array|string
     {
         $tablas_env = $tablas;
@@ -585,30 +1016,57 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Esta función renombra un `id` en la tabla base de acuerdo al valor proporcionado.
+     * REG
+     * Genera un identificador renombrado basado en el campo proporcionado.
      *
-     * @param string $campo_tabla_base_id Es el nombre que se asignará al `id` de la tabla base.
-     * Si este parámetro está vacío, se asignará el valor '.id' por defecto.
+     * Esta función toma un nombre de campo y retorna una cadena con el identificador
+     * ajustado. Si se proporciona un nombre de campo no vacío, se usa como parte del
+     * identificador renombrado; de lo contrario, se usa el valor predeterminado `.id`.
      *
-     * @return string Retorna la `id` de la tabla base modificada.
-     * Si el parámetro de entrada está vacío, retorna '.id', en otro caso concatena '.' al principio
-     * del valor de entrada, y lo retorna.
+     * @param string $campo_tabla_base_id Nombre del campo de la tabla base utilizado para
+     *                                    construir el identificador renombrado. Si está vacío,
+     *                                    se utiliza el valor `.id` por defecto.
      *
-     * Ejemplo:
+     * @return string Retorna el identificador renombrado, prefijado por un punto (`.`).
      *
-     * code:
-     * // el valor del $campo_tabla_base_id es 'user'
-     * $id_renombrada = id_renombrada('user');
-     * echo $id_renombrada;
-     * // Retorna: '.user'
+     * ### Ejemplo de uso exitoso:
      *
-     * // el valor del $campo_tabla_base_id es ''
-     * $id_renombrada2 = id_renombrada('');
-     * echo $id_renombrada2;
-     * // Retorna: '.id'
-     * @version 15.34.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.id_renombrada.21.12.0
+     * ```php
+     * // Caso: Se proporciona un campo no vacío.
+     * $campo_tabla_base_id = 'usuario_id';
+     * $resultado = $this->id_renombrada($campo_tabla_base_id);
+     * echo $resultado;
+     * // Resultado esperado:
+     * // .usuario_id
+     *
+     * // Caso: Se proporciona un campo vacío.
+     * $campo_tabla_base_id = '';
+     * $resultado = $this->id_renombrada($campo_tabla_base_id);
+     * echo $resultado;
+     * // Resultado esperado:
+     * // .id
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$campo_tabla_base_id`**:
+     *   Este parámetro representa el nombre del campo que será utilizado para formar
+     *   el identificador renombrado. Si está vacío, el valor predeterminado `.id` será usado.
+     *   Ejemplo válido: `'usuario_id'`.
+     *   Ejemplo vacío: `''`.
+     *
+     * ### Resultado esperado:
+     *
+     * - Si se proporciona un nombre de campo no vacío (`$campo_tabla_base_id`), el retorno será una cadena
+     *   con el formato `.{campo_tabla_base_id}`.
+     *   Ejemplo: `.usuario_id`.
+     *
+     * - Si el parámetro está vacío, la función retorna el valor predeterminado `.id`.
+     *
+     * ### Notas adicionales:
+     *
+     * - Está diseñada para ser utilizada en la construcción de identificadores renombrados en consultas SQL.
+     * - Es una función auxiliar que asegura consistencia en el formato del identificador.
      */
     private function id_renombrada(string $campo_tabla_base_id): string
     {
@@ -621,21 +1079,103 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Genera una instrucción SQL JOIN.
+     * REG
+     * Genera una cláusula SQL `JOIN` dinámica para combinar tablas en una consulta.
      *
-     * Esta función genera una instrucción SQL JOIN entre dos tablas, pudiendo además renombrar campos.
-     * Retorna un string con la instrucción SQL generada en caso de éxito, y un arreglo en caso de error.
+     * Esta función construye una sentencia SQL `LEFT JOIN`, permitiendo el uso de alias para las tablas y
+     * configuraciones personalizadas en los campos utilizados en la cláusula `ON`. Se asegura de que los
+     * parámetros sean válidos antes de generar el SQL.
      *
-     * @param  string $tabla El nombre completo de la tabla base para el JOIN. No puede estar vacío.
-     * @param  string $tabla_enlace El nombre completo de la tabla con la que se establecerá el JOIN. No puede estar vacío.
-     * @param  string $campo_renombrado (Opcional) El nombre del campo que se desea renombrar. Si se omite, no se renombrará ningún campo.
-     * @param  string $campo_tabla_base_id (Opcional)  El nombre del campo en la tabla base que se usará para el JOIN. Si se omite, se usa el campo id por defecto.
-     * @param  string $renombrada (Opcional) El nuevo nombre para $campo_renombrado. Se usa solo si $campo_renombrado está presente.
-     * @return string|array Retorna una cadena con la instrucción SQL JOIN en caso de éxito, y un arreglo con el error en caso contrario.
-     * @throws errores Se lanza una excepción si alguno de los parámetros requeridos (tabla o tabla_enlace) está vacío.
-     * @version 15.56.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.genera_join.21.12.0
+     * @param string $tabla Nombre de la tabla principal que participa en el `JOIN`.
+     *                      Ejemplo: `'usuarios'`.
+     * @param string $tabla_enlace Nombre de la tabla relacionada que se une con la tabla principal.
+     *                             Ejemplo: `'roles'`.
+     * @param string $campo_renombrado (Opcional) Campo específico utilizado como clave en la cláusula `ON`.
+     *                                  Por defecto está vacío. Ejemplo: `'id_usuario'`.
+     * @param string $campo_tabla_base_id (Opcional) Campo de la tabla base que será referenciado en la condición `ON`.
+     *                                     Por defecto se utiliza `'id'` si este parámetro está vacío.
+     *                                     Ejemplo: `'usuario_id'`.
+     * @param string $renombrada (Opcional) Alias para la tabla principal en la consulta. Si está vacío, no se aplica un alias.
+     *                            Ejemplo: `'usuarios_renombrados'`.
+     *
+     * @return array|string Retorna la cláusula `LEFT JOIN` como una cadena en caso de éxito. En caso de error,
+     *                      devuelve un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso con alias para la tabla:
+     *
+     * ```php
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles';
+     * $campo_renombrado = 'id_usuario';
+     * $campo_tabla_base_id = 'usuario_id';
+     * $renombrada = 'usuarios_renombrados';
+     *
+     * $resultado = $this->genera_join(
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace,
+     *     campo_renombrado: $campo_renombrado,
+     *     campo_tabla_base_id: $campo_tabla_base_id,
+     *     renombrada: $renombrada
+     * );
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'
+     * ```
+     *
+     * ### Ejemplo de uso exitoso sin alias:
+     *
+     * ```php
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles';
+     *
+     * $resultado = $this->genera_join(
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla principal en la consulta. No debe estar vacío.
+     *   Ejemplo: `'usuarios'`.
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla relacionada (enlace) que será unida con la tabla principal.
+     *   Ejemplo: `'roles'`.
+     *
+     * - **`$campo_renombrado`**:
+     *   Campo específico que será utilizado como clave en la cláusula `ON`. Es opcional.
+     *   Ejemplo: `'id_usuario'`.
+     *
+     * - **`$campo_tabla_base_id`**:
+     *   Campo de la tabla base que se referenciará en la condición `ON`. Por defecto se utiliza `'id'`.
+     *   Ejemplo: `'usuario_id'`.
+     *
+     * - **`$renombrada`**:
+     *   Alias de la tabla principal para la consulta. Si está vacío, no se aplica un alias. Es opcional.
+     *   Ejemplo: `'usuarios_renombrados'`.
+     *
+     * ### Casos de error:
+     *
+     * - Si `$tabla` o `$tabla_enlace` están vacíos, se genera un error indicando que son parámetros obligatorios.
+     * - Si ocurre un problema al generar la cláusula SQL, se devuelve un array con los detalles del error.
+     *
+     * ### Resultado esperado:
+     *
+     * - Genera una cláusula `LEFT JOIN` con las condiciones `ON` especificadas.
+     * - Ejemplo con alias:
+     *   `' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'`.
+     * - Ejemplo sin alias:
+     *   `' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'`.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función es útil para construir consultas SQL dinámicas en aplicaciones con múltiples relaciones entre tablas.
+     * - Garantiza validaciones estrictas para evitar errores comunes al construir sentencias SQL manualmente.
      */
     private function genera_join(string $tabla, string $tabla_enlace, string $campo_renombrado = '',
                                  string $campo_tabla_base_id = '', string $renombrada = '' ):array|string{
@@ -661,19 +1201,91 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Genera una cláusula JOIN personalizada en una consulta SQL.
+     * REG
+     * Genera una cláusula `JOIN` renombrada para consultas SQL.
      *
-     * @param string $campo_renombrado El nombre del campo que se va a renombrar.
-     * @param string $campo_tabla_base_id El nombre del campo en la tabla base.
-     * @param string $join La cláusula JOIN que se va a utilizar (por ejemplo, LEFT JOIN, INNER JOIN, etc.).
-     * @param string $renombrada El nombre de la tabla donde se encuentra el campo que se va a renombrar.
-     * @param string $tabla La tabla base para la cláusula JOIN.
-     * @param string $tabla_enlace La tabla que se va a unir a la tabla base.
+     * Esta función construye dinámicamente una sentencia SQL `JOIN` incluyendo el alias de tabla,
+     * las condiciones de unión y el tipo de `JOIN` especificado. Valida todos los parámetros de entrada
+     * para asegurar que la salida sea válida y funcional.
      *
-     * @return array|string Si se genera un error durante el proceso, se devuelve un mensaje de error. Si todo va bien, se devuelve la cláusula JOIN generada.
-     * @version 15.41.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.genera_join_renombrado.21.12.0
+     * @param string $campo_renombrado Campo renombrado que será parte de la condición `ON` del `JOIN`.
+     *                                  Ejemplo: `'id_usuario'`.
+     * @param string $campo_tabla_base_id Identificador de la tabla base utilizado en la condición `ON`.
+     *                                    Puede ser una clave específica o `'id'`.
+     * @param string $join Tipo de `JOIN` a generar. Puede ser `INNER`, `LEFT` o `RIGHT`.
+     * @param string $renombrada Alias para la tabla renombrada. Este alias se utiliza en la consulta SQL.
+     * @param string $tabla Nombre de la tabla base en la consulta.
+     * @param string $tabla_enlace Nombre de la tabla relacionada (enlace) para la unión.
+     *
+     * @return array|string Devuelve la cláusula completa de `JOIN` como una cadena en caso de éxito.
+     *                      Si ocurre un error, devuelve un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $campo_renombrado = 'id_usuario';
+     * $campo_tabla_base_id = 'usuario_id';
+     * $join = 'LEFT';
+     * $renombrada = 'usuarios_renombrados';
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles';
+     *
+     * $resultado = $this->genera_join_renombrado(
+     *     campo_renombrado: $campo_renombrado,
+     *     campo_tabla_base_id: $campo_tabla_base_id,
+     *     join: $join,
+     *     renombrada: $renombrada,
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$campo_renombrado`**:
+     *   Campo que se usará como clave en la condición `ON`.
+     *   Ejemplo: `'id_usuario'`.
+     *
+     * - **`$campo_tabla_base_id`**:
+     *   Campo de la tabla base que se usará para enlazar en la condición `ON`.
+     *   Ejemplo: `'usuario_id'`. Si está vacío, se usará `.id` por defecto.
+     *
+     * - **`$join`**:
+     *   Tipo de unión SQL. Puede ser:
+     *     - `'INNER'`: Unión estricta.
+     *     - `'LEFT'`: Unión que incluye todos los registros de la tabla izquierda.
+     *     - `'RIGHT'`: Unión que incluye todos los registros de la tabla derecha.
+     *
+     * - **`$renombrada`**:
+     *   Alias que se asignará a la tabla base. Este alias se utiliza en la consulta para simplificar referencias.
+     *   Ejemplo: `'usuarios_renombrados'`.
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla base en la consulta SQL.
+     *   Ejemplo: `'usuarios'`.
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla relacionada que se usará para enlazar con la tabla base.
+     *   Ejemplo: `'roles'`.
+     *
+     * ### Resultado esperado:
+     *
+     * - Cláusula `JOIN` completa:
+     *   Ejemplo: `' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'`.
+     *
+     * ### Casos de error:
+     *
+     * - Si alguno de los parámetros obligatorios está vacío, la función devolverá un array con los detalles del error.
+     * - Si el tipo de `JOIN` no es válido (`INNER`, `LEFT`, `RIGHT`), se generará un error.
+     * - Si las claves necesarias en `$init` no están presentes (`tabla`, `tabla_enlace`), se generará un error.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función facilita la generación de consultas SQL complejas con múltiples uniones, asegurando consistencia y validación.
+     * - Asegúrate de que las tablas y campos utilizados existan en la base de datos para evitar errores en la ejecución de la consulta.
      */
     private function genera_join_renombrado(string $campo_renombrado, string $campo_tabla_base_id, string $join,
                                             string $renombrada, string $tabla, string $tabla_enlace):array|string{
@@ -832,34 +1444,90 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Función para inicializar y renombrar tablas y modelos en una operación join.
+     * REG
+     * Inicializa los nombres y clases de modelo para las tablas base y de enlace, ajustando su estructura
+     * y asegurando que ambos nombres sean válidos.
      *
-     * Esta función toma como entrada cuatro argumentos los que corresponden a nombres de tablas y devolviéndolos en un
-     * objeto estandar de PHP o un array en caso de error.
+     * @param string $tabla Nombre de la tabla base que se desea procesar. No puede estar vacío.
+     * @param string $tabla_enlace Nombre de la tabla de enlace asociada. No puede estar vacío.
      *
-     * @param string $tabla Un nombre de tabla para renombrar.
-     * @param string $tabla_enlace Un nombre de tabla de enlace para renombrar.
+     * @return stdClass|array Retorna un objeto `stdClass` con las siguientes propiedades en caso de éxito:
+     *                        - `tabla`: Nombre ajustado de la tabla base.
+     *                        - `class`: Nombre completo de la clase modelo para la tabla base.
+     *                        - `tabla_enlace`: Nombre ajustado de la tabla de enlace.
+     *                        - `class_enlace`: Nombre completo de la clase modelo para la tabla de enlace.
+     *                        En caso de error, retorna un array con los detalles del error.
      *
-     * @return stdClass|array Devuelve un objeto stdClass en caso de éxito con las propiedades 'tabla', 'class', 'tabla_enlace',
-     * y 'class_enlace' establecidas a sus nuevos nombres correspondientes, cada uno de tipo string.
-     * En caso de error, se devuelve un array con información relacionada con el error.
+     * ### Ejemplo de uso exitoso:
      *
-     * @throws errores se lanza ninguna excepción explícitamente, sin embargo, internamente maneja los errores llamando al
-     * método error del objeto error si ocurren durante el proceso de renombrado.
+     * ```php
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles_usuarios';
      *
-     * @example
-     * <code>
-     * // Crear un objeto de la clase que contiene init_renombre
-     * $obj = new Joins();
-     * // Llamar a alguna función pública que a su vez llama a init_renombre
-     * $array = ['tabla' => 'nombre_tabla', 'tabla_enlace' => 'nombre_tabla_enlace'];
-     * $resultado = $obj->algunMetodoPublico($array);
-     * </code>
+     * $resultado = $miClase->init_renombre($tabla, $tabla_enlace);
      *
-     * @version 15.28.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.init_renombre.21.11.0
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // stdClass Object
+     * // (
+     * //     [tabla] => usuarios
+     * //     [class] => models\usuarios
+     * //     [tabla_enlace] => roles_usuarios
+     * //     [class_enlace] => models\roles_usuarios
+     * // )
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: Uno de los nombres de las tablas está vacío.
+     *
+     * ```php
+     * $tabla = '';
+     * $tabla_enlace = 'roles_usuarios';
+     *
+     * $resultado = $miClase->init_renombre($tabla, $tabla_enlace);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error tabla no puede venir vacia
+     * //     [data] =>
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla base. Este valor será ajustado para generar el nombre del modelo.
+     *   Ejemplo válido: `'usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla de enlace. Este valor será ajustado para generar el nombre del modelo.
+     *   Ejemplo válido: `'roles_usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Retorna un objeto `stdClass` con las claves:
+     *   - `tabla`: Nombre ajustado de la tabla base.
+     *   - `class`: Nombre completo de la clase modelo para la tabla base.
+     *   - `tabla_enlace`: Nombre ajustado de la tabla de enlace.
+     *   - `class_enlace`: Nombre completo de la clase modelo para la tabla de enlace.
+     *
+     * - **Error**:
+     *   Si alguno de los parámetros está vacío, retorna un array con los detalles del error, incluyendo
+     *   un mensaje descriptivo y los datos proporcionados.
+     *
+     * ### Notas adicionales:
+     *
+     * - La función utiliza `ajusta_name_models` para procesar los nombres de las tablas y generar los nombres de las clases de modelo.
+     * - Está diseñada para asegurar que las tablas base y de enlace estén correctamente estructuradas antes de su uso en otros procesos.
      */
+
     private function init_renombre(string $tabla, string $tabla_enlace): stdClass|array
     {
         $tabla = trim($tabla);
@@ -905,20 +1573,114 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Función para obtener las tablas completas.
+     * REG
+     * Genera una cadena de tablas completas con alias y sentencias `JOIN` a partir de una tabla base y relaciones definidas.
      *
-     * Esta función toma un array de columnas join y el nombre de una tabla, y devuelve un array que representa las tablas completas.
+     * Esta función toma una tabla base y un conjunto de columnas relacionadas (joins) para construir una cadena SQL
+     * que incluye la tabla base y las tablas relacionadas mediante sentencias `JOIN`.
      *
-     * @param array $columnas_join Un array que contiene las columnas de join.
-     * @param string $tabla El nombre de la tabla a partir de la cual se generaran las tablas completas.
+     * @param array $columnas_join Array asociativo que define las relaciones entre las tablas.
+     *                             La clave es el nombre de la tabla base o relacionada, y el valor es:
+     *                             - Un array con los detalles del join (relación).
+     *                             - Una cadena con el nombre de la tabla relacionada.
+     *                             Ejemplo:
+     *                             ```php
+     *                             [
+     *                                 'usuarios' => [
+     *                                     'tabla_base' => 'usuarios',
+     *                                     'tabla_enlace' => 'roles'
+     *                                 ],
+     *                                 'roles' => 'permisos'
+     *                             ]
+     *                             ```
+     * @param string $tabla Nombre de la tabla base para la consulta.
+     *                      Se agrega como la tabla inicial con alias.
+     *                      Ejemplo: `'usuarios'`.
      *
-     * @return array|string Las tablas completas obtenidas o un error en caso de que algo salga mal durante la generación de las tablas.
+     * @return array|string Devuelve la cadena de tablas y relaciones formateadas para la consulta SQL.
+     *                      Si ocurre un error, devuelve un array con el mensaje descriptivo del problema.
      *
-     * @throws errores En caso de que la tabla enviada esté vacía o si hubo un error al generar las tablas.
-     * @version 16.29.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.obten_tablas_completas.21.16.0
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $columnas_join = [
+     *     'usuarios' => [
+     *         'tabla_base' => 'usuarios',
+     *         'tabla_enlace' => 'roles'
+     *     ],
+     *     'roles' => [
+     *         'tabla_base' => 'roles',
+     *         'tabla_enlace' => 'permisos'
+     *     ]
+     * ];
+     * $tabla = 'usuarios';
+     *
+     * $resultado = $this->obten_tablas_completas(columnas_join: $columnas_join, tabla: $tabla);
+     *
+     * // Resultado esperado:
+     * // 'usuarios AS usuarios
+     * //  LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id
+     * //  LEFT JOIN roles AS roles ON roles.id = permisos.roles_id'
+     * ```
+     *
+     * ### Casos de uso:
+     *
+     * 1. **Generar tablas con múltiples relaciones**:
+     *    ```php
+     *    $columnas_join = [
+     *        'usuarios' => [
+     *            'tabla_base' => 'usuarios',
+     *            'tabla_enlace' => 'roles'
+     *        ],
+     *        'roles' => [
+     *            'tabla_base' => 'roles',
+     *            'tabla_enlace' => 'permisos'
+     *        ]
+     *    ];
+     *    $tabla = 'usuarios';
+     *
+     *    $resultado = $this->obten_tablas_completas(columnas_join: $columnas_join, tabla: $tabla);
+     *    // Resultado esperado:
+     *    // 'usuarios AS usuarios
+     *    //  LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id
+     *    //  LEFT JOIN roles AS roles ON roles.id = permisos.roles_id'
+     *    ```
+     *
+     * 2. **Tabla sin relaciones**:
+     *    ```php
+     *    $columnas_join = [];
+     *    $tabla = 'productos';
+     *
+     *    $resultado = $this->obten_tablas_completas(columnas_join: $columnas_join, tabla: $tabla);
+     *    // Resultado esperado:
+     *    // 'productos AS productos'
+     *    ```
+     *
+     * ### Validaciones:
+     *
+     * - Se verifica que `$tabla` no esté vacía.
+     * - Se asegura que `$tabla` esté correctamente formateada y no sea numérica.
+     * - Se gestiona el ajuste de tablas y relaciones mediante la función `ajusta_tablas`.
+     *
+     * ### Casos de error:
+     *
+     * 1. **Tabla vacía**:
+     *    ```php
+     *    $columnas_join = [];
+     *    $tabla = '';
+     *
+     *    $resultado = $this->obten_tablas_completas(columnas_join: $columnas_join, tabla: $tabla);
+     *    // Resultado esperado: array con mensaje de error "La tabla no puede ir vacía".
+     *    ```
+     *
+     * 2. **Error en las relaciones**:
+     *    Si ocurre un error en `ajusta_tablas`, se devuelve un mensaje descriptivo con los detalles del problema.
+     *
+     * ### Resultado esperado:
+     * - Devuelve una cadena SQL completa con tablas y relaciones (`JOIN`) para consultas complejas.
+     * - Si hay errores, se devuelve un array con el mensaje y los datos relevantes.
      */
+
     final public function obten_tablas_completas(array $columnas_join, string $tabla):array|string{
         $tabla = str_replace('models\\','',$tabla);
         if($tabla === ''){
@@ -967,48 +1729,106 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Esta función se utiliza para generar una declaración de Join SQL.
+     * REG
+     * Genera una cláusula SQL `JOIN` para la construcción de consultas con alias y condiciones de unión.
      *
-     * @param string $campo_renombrado  El campo a renombrar.
-     * @param string $campo_tabla_base_id El campo ID de la tabla base.
-     * @param string $renombrada  La tabla a renombrar.
-     * @param string $tabla  La tabla para unirse.
-     * @param string $tabla_enlace  La tabla de enlace.
+     * Esta función permite crear una sentencia `LEFT JOIN` con la posibilidad de agregar un alias
+     * (`renombrada`) para la tabla base. Valida los parámetros y genera el SQL correspondiente, ya sea
+     * renombrado o con el nombre original de la tabla.
      *
-     * @return array|string  Devuelve una cadena SQL de Join o un error si hay problemas.
+     * @param string $campo_renombrado Campo que será utilizado como clave en la condición `ON` del `JOIN`.
+     *                                  Ejemplo: `'id_usuario'`.
+     * @param string $campo_tabla_base_id Campo de la tabla base que será referenciado en la condición `ON`.
+     *                                     Por defecto se utiliza `'id'` si este parámetro está vacío.
+     * @param string $renombrada Alias para renombrar la tabla base en la consulta. Si está vacío,
+     *                           no se aplica un alias.
+     * @param string $tabla Nombre de la tabla base que se utilizará en el `JOIN`.
+     * @param string $tabla_enlace Nombre de la tabla relacionada (enlace) que se unirá con la tabla base.
      *
-     * @throws errores Dispara una excepción si la tabla o tabla de enlace están vacías.
+     * @return array|string Devuelve la cláusula completa de `JOIN` como una cadena en caso de éxito.
+     *                      Si ocurre un error, retorna un array con los detalles del error.
      *
-     * Estructura del código de error:
-     * [
-     *    'mensaje' => string, // Descripción del error
-     *    'data' => mixed, // Datos relacionados con el error
-     * ]
+     * ### Ejemplo de uso exitoso con tabla renombrada:
      *
-     * Ejemplo de uso:
+     * ```php
+     * $campo_renombrado = 'id_usuario';
+     * $campo_tabla_base_id = 'usuario_id';
+     * $renombrada = 'usuarios_renombrados';
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles';
      *
-     * $result = $instance->sql_join("campo1", "id", "tabla1", "tabla2", "tabla3");
-     * if (is_array($result)) {
-     *     // Manejo de error
-     *     var_dump($result);
-     * } else {
-     *     // Uso del resultado de la consulta
-     *     var_dump($result);
-     * }
+     * $resultado = $this->sql_join(
+     *     campo_renombrado: $campo_renombrado,
+     *     campo_tabla_base_id: $campo_tabla_base_id,
+     *     renombrada: $renombrada,
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
      *
-     * Posibles resultados:
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'
+     * ```
      *
-     * 1) Devuelve una cadena SQL de Join en caso de éxito. Por ejemplo :
-     *    ' LEFT JOIN tabla2 AS tabla2 ON tabla2.id = tabla3.tabla2_id'
+     * ### Ejemplo de uso exitoso sin renombrar la tabla:
      *
-     * 2) Devuelve un error si alguno de los nombres de las tablas ($tabla, $tabla_enlace) está vacío. Por ejemplo :
-     *    [
-     *       'mensaje' => 'Error $tabla esta vacia',
-     *       'data' => '   '
-     *    ]
-     * @version 15.42.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.sql_join.21.12.0
+     * ```php
+     * $campo_renombrado = 'id_usuario';
+     * $campo_tabla_base_id = 'usuario_id';
+     * $renombrada = ''; // No se aplica alias
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles';
+     *
+     * $resultado = $this->sql_join(
+     *     campo_renombrado: $campo_renombrado,
+     *     campo_tabla_base_id: $campo_tabla_base_id,
+     *     renombrada: $renombrada,
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$campo_renombrado`**:
+     *   Especifica el campo utilizado como clave en la condición `ON`.
+     *   Ejemplo: `'id_usuario'`.
+     *
+     * - **`$campo_tabla_base_id`**:
+     *   Campo de la tabla base que será referenciado en la condición `ON`.
+     *   Ejemplo: `'usuario_id'`. Si está vacío, se asume como `'id'`.
+     *
+     * - **`$renombrada`**:
+     *   Alias de la tabla base para la consulta. Si está vacío, no se aplica un alias.
+     *   Ejemplo: `'usuarios_renombrados'`.
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla base que participa en el `JOIN`.
+     *   Ejemplo: `'usuarios'`.
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla relacionada (enlace) que se une con la tabla base.
+     *   Ejemplo: `'roles'`.
+     *
+     * ### Casos de error:
+     *
+     * - Si `$tabla` o `$tabla_enlace` están vacíos, se genera un error indicando que estos parámetros son obligatorios.
+     * - Si ocurre un problema durante la generación del `JOIN` renombrado, se devuelve un array con los detalles del error.
+     *
+     * ### Resultado esperado:
+     *
+     * - La función genera una cláusula `LEFT JOIN` con las condiciones `ON` especificadas.
+     * - Ejemplo con alias:
+     *   `' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'`.
+     * - Ejemplo sin alias:
+     *   `' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'`.
+     *
+     * ### Notas adicionales:
+     *
+     * - La función es flexible y soporta tanto consultas simples como aquellas que requieren alias para tablas.
+     * - Es ideal para construir consultas SQL dinámicas y evitar errores manuales al escribir cláusulas `JOIN`.
      */
     private function sql_join(string $campo_renombrado, string $campo_tabla_base_id, string $renombrada, string $tabla,
                               string $tabla_enlace): array|string
@@ -1183,27 +2003,85 @@ class joins{
 
 
     /**
-     * TOTAL
-     * La función tablas_join_base forma la base para realizar operaciones de unión entre tablas en una base de datos.
+     * REG
+     * Genera y agrega la cláusula SQL necesaria para un `JOIN` entre tablas a partir de los datos proporcionados.
      *
-     * @param array $tabla_join   Este parámetro es un arreglo que contiene información sobre las tablas
-     *                            que se unirán. Debe contener claves como 'tabla_base' y 'tabla_enlace'.
+     * Esta función valida la configuración de las tablas involucradas en un `JOIN`, genera la estructura del `JOIN`
+     * y la concatena con las tablas previamente procesadas en la consulta SQL.
      *
-     * @param string $tablas      Este parámetro es una cadena que representa las tablas que ya están en la unión.
-     *                            Esta cadena se actualizará para incluir las nuevas tablas de la operación de unión.
+     * @param array $tabla_join Configuración de las tablas que participan en el `JOIN`. Este array debe contener:
+     *                          - `'tabla_base'`: Nombre de la tabla principal. Ejemplo: `'usuarios'`.
+     *                          - `'tabla_enlace'`: Nombre de la tabla relacionada. Ejemplo: `'roles'`.
+     *                          - `'tabla_renombrada'` (opcional): Alias para la tabla principal. Ejemplo: `'usuarios_renombrados'`.
+     *                          - `'campo_tabla_base_id'` (opcional): Campo de la tabla principal usado en la cláusula `ON`.
+     *                            Ejemplo: `'usuario_id'`.
+     *                          - `'campo_renombrado'` (opcional): Campo clave de la tabla de enlace para el `JOIN`.
+     *                            Ejemplo: `'id_usuario'`.
+     * @param string $tablas Una cadena que contiene las tablas ya procesadas en la consulta SQL. La cláusula generada
+     *                       será concatenada a esta cadena.
      *
-     * La función primero verifica si el arreglo $tabla_join contiene las claves necesarias,
-     * 'tabla_base' y 'tabla_enlace', a través del método valida_existencia_keys del objeto validacion.
-     * Si $tabla_join no tiene las claves necesarias, la función devuelve un error.
+     * @return array|string Una cadena con las tablas actualizadas incluyendo el nuevo `JOIN`, o un array con los detalles
+     *                      del error si ocurre alguna falla.
      *
-     * Si $tabla_join tiene las claves necesarias, entonces la función procede a generar "datos para unirse"
-     * a través del método data_para_join. Si hay un error al generar estos datos, la función devuelve un error.
+     * ### Ejemplo de uso exitoso:
      *
-     * Si los "datos para unirse" se generan con éxito, se agregan a la cadena $tablas.
+     * ```php
+     * $tabla_join = array(
+     *     'tabla_base' => 'usuarios',
+     *     'tabla_enlace' => 'roles',
+     *     'tabla_renombrada' => 'usuarios_renombrados',
+     *     'campo_tabla_base_id' => 'usuario_id',
+     *     'campo_renombrado' => 'id_usuario'
+     * );
+     * $tablas = '';
      *
-     * @return array|string   La función devuelve la cadena $tablas actualizada o un arreglo de error si se encuentra alguno.
-     * @version 15.59.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tablas_join_base.21.15.0
+     * $resultado = $this->tablas_join_base(tabla_join: $tabla_join, tablas: $tablas);
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$tabla_join`**:
+     *   Un array que define las configuraciones necesarias para construir la cláusula `JOIN`.
+     *   Ejemplo:
+     *   ```php
+     *   array(
+     *       'tabla_base' => 'usuarios',
+     *       'tabla_enlace' => 'roles',
+     *       'tabla_renombrada' => 'usuarios_renombrados',
+     *       'campo_tabla_base_id' => 'usuario_id',
+     *       'campo_renombrado' => 'id_usuario'
+     *   );
+     *   ```
+     * - **`$tablas`**:
+     *   Una cadena que contiene las tablas o `JOINs` previamente generados en la consulta SQL.
+     *   Ejemplo:
+     *   ```php
+     *   'SELECT * FROM clientes LEFT JOIN direcciones ON clientes.id = direcciones.cliente_id'
+     *   ```
+     *
+     * ### Casos de error:
+     *
+     * - Si el array `$tabla_join` no contiene las claves `'tabla_base'` o `'tabla_enlace'`, se devuelve un error indicando
+     *   que dichas claves son obligatorias.
+     * - Si ocurre un problema al generar la estructura del `JOIN` en la función `data_para_join`, se devuelve un array con
+     *   los detalles del error.
+     *
+     * ### Resultado esperado:
+     *
+     * - Devuelve una cadena con las tablas y la nueva cláusula `JOIN` concatenada.
+     *   Ejemplo:
+     *   ```sql
+     *   ' LEFT JOIN usuarios AS usuarios_renombrados ON usuarios_renombrados.usuario_id = roles.id_usuario'
+     *   ```
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función es útil para construir consultas SQL dinámicas que manejan relaciones entre múltiples tablas.
+     * - La validación previa asegura que los datos proporcionados cumplen con los requisitos mínimos para evitar errores en
+     *   la generación del SQL.
      */
     private function tablas_join_base(array $tabla_join, string $tablas): array|string
     {
@@ -1222,34 +2100,134 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * tablas_join_esp Genera una string que representa una operación JOIN en SQL en español.
+     * REG
+     * Genera y agrega una sentencia SQL de tipo `JOIN` a una cadena de tablas existentes.
      *
-     * @param string $key Clave que se utiliza para buscar y unir la tabla especificada.
-     * @param string $tabla_join Nombre de la tabla que se está uniendo.
-     * @param string $tablas Variable acumulativa en la cual se van guardando las condiciones de union de las tablas.
+     * Esta función valida las tablas proporcionadas (`key` y `tabla_join`) y genera una sentencia SQL `JOIN`.
+     * Posteriormente, concatena esta sentencia a la cadena de tablas existente.
      *
-     * @return array|string Devuelve una cadena de texto que representa las condiciones de unión de las tablas si todo sale bien.
-     *                     Si ocurre un error en las validaciones o en la generación del JOIN, se devuelve un array con información sobre el error.
+     * @param string $key Nombre o alias de la tabla base para el `JOIN`.
+     *                    Debe ser una cadena no vacía y no numérica.
+     *                    Ejemplo: `'usuarios'`.
+     * @param string $tabla_join Nombre de la tabla de enlace utilizada en el `JOIN`.
+     *                           Debe ser una cadena no vacía y no numérica.
+     *                           Ejemplo: `'roles'`.
+     * @param string $tablas Cadena de tablas ya generadas, a la que se añadirá el nuevo `JOIN`.
+     *                       Puede ser una cadena vacía inicial o contener una lista de tablas ya procesadas.
      *
-     * ## Ejemplos de uso
+     * @return array|string Devuelve la cadena actualizada de tablas con la sentencia `JOIN` añadida si no hay errores.
+     *                      En caso de error, devuelve un array con los detalles del problema.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
      * ```php
-     * $instancia = new ClaseDondeEstaDefinidaEstaFuncion();
-     * $joins = $instancia->tablas_join_esp('clave', 'tabla_a_unirse', 'otras_tablas_join');
-     * if (is_array($joins)) {
-     *     // Hubo un error, manejarlo aquí.
-     * } else {
-     *     // $joins es una string con las condiciones de JOIN SQL, utilizarla en el query.
-     * }
+     * $key = 'usuarios';
+     * $tabla_join = 'roles';
+     * $tablas = '';
+     *
+     * $resultado = $this->tablas_join_esp(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     * // Resultado esperado:
+     * // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
      * ```
      *
-     * @see validaciones::valida_tabla_join() para la validación utilizada.
-     * @see data_para_join_esp() se utiliza para recopilar los datos necesarios para el JOIN.
+     * ### Detalles de los parámetros:
      *
-     * @throws errores si ocurre un error durante la validación o la generación del JOIN.
-     * @version 16.25.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tablas_join_esp.21.16.0
+     * - **`$key`**:
+     *   Nombre o alias de la tabla base utilizada en el `JOIN`.
+     *   Requisitos:
+     *   - Debe ser una cadena no vacía.
+     *   - No puede ser numérico.
+     *   Ejemplo válido:
+     *   ```php
+     *   'usuarios'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   ''  // Está vacío.
+     *   123 // Es numérico.
+     *   ```
+     *
+     * - **`$tabla_join`**:
+     *   Nombre de la tabla de enlace que participa en el `JOIN`.
+     *   Requisitos:
+     *   - Debe ser una cadena no vacía.
+     *   - No puede ser numérico.
+     *   Ejemplo válido:
+     *   ```php
+     *   'roles'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   ''   // Está vacío.
+     *   456  // Es numérico.
+     *   ```
+     *
+     * - **`$tablas`**:
+     *   Cadena de tablas generadas anteriormente.
+     *   Se concatenará con la nueva sentencia SQL `JOIN`.
+     *   Ejemplo inicial:
+     *   ```php
+     *   '' // Cadena vacía para una nueva construcción.
+     *   ```
+     *   Ejemplo con datos:
+     *   ```php
+     *   ' INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id'
+     *   ```
+     *
+     * ### Casos de uso exitoso:
+     *
+     * 1. Generar un `JOIN` entre las tablas `'usuarios'` y `'roles'` con una cadena inicial vacía:
+     *    ```php
+     *    $key = 'usuarios';
+     *    $tabla_join = 'roles';
+     *    $tablas = '';
+     *
+     *    $resultado = $this->tablas_join_esp(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     *    // Resultado esperado:
+     *    // ' LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * 2. Agregar un nuevo `JOIN` a una cadena existente:
+     *    ```php
+     *    $key = 'usuarios';
+     *    $tabla_join = 'roles';
+     *    $tablas = ' INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id';
+     *
+     *    $resultado = $this->tablas_join_esp(key: $key, tabla_join: $tabla_join, tablas: $tablas);
+     *
+     *    // Resultado esperado:
+     *    // ' INNER JOIN departamentos ON usuarios.departamento_id = departamentos.id
+     *    //   LEFT JOIN usuarios AS usuarios ON usuarios.id = roles.usuarios_id'
+     *    ```
+     *
+     * ### Casos de error:
+     *
+     * 1. **`$key` está vacío**:
+     *    ```php
+     *    $resultado = $this->tablas_join_esp(key: '', tabla_join: 'roles', tablas: '');
+     *    // Resultado esperado: array con mensaje de error "Error key esta vacio".
+     *    ```
+     *
+     * 2. **`$tabla_join` está vacío**:
+     *    ```php
+     *    $resultado = $this->tablas_join_esp(key: 'usuarios', tabla_join: '', tablas: '');
+     *    // Resultado esperado: array con mensaje de error "Error $tabla_join esta vacio".
+     *    ```
+     *
+     * 3. **Error al generar el `JOIN`**:
+     *    Si ocurre un error en la generación del `JOIN`, se devuelve un array con detalles del problema.
+     *
+     * ### Resultado esperado:
+     * - Devuelve una cadena con las tablas y el nuevo `JOIN` añadido correctamente.
+     * - En caso de error, devuelve un array con los detalles y el mensaje del problema.
+     *
+     * ### Notas adicionales:
+     * - Valida las tablas con `valida_tabla_join`.
+     * - Genera la sentencia `JOIN` mediante `data_para_join_esp`.
      */
+
     private function tablas_join_esp(string $key, string $tabla_join, string $tablas): array|string
     {
         $key = trim($key);

@@ -949,11 +949,82 @@ class where{
     }
 
     /**
-     * Antepone la palabra WHERE al filtro mandado por parametros
-     * @param string $filtro_sql filtro por aplicar
-     * @return string filtro enviado por parametros anteponiendo la palabra WHERE
-     * @version 1.489.49
+     * REG
+     * Genera una cláusula SQL `WHERE` basada en un filtro proporcionado.
+     *
+     * Esta función toma un filtro SQL en forma de cadena, valida que no esté vacío y genera una cláusula
+     * `WHERE` con dicho filtro. Si el filtro está vacío, retorna una cadena vacía, evitando generar un
+     * `WHERE` sin contenido.
+     *
+     * @param string $filtro_sql Cadena que representa la condición del filtro para la cláusula `WHERE`.
+     *                           Ejemplo: `"monto > 1000 AND estado = 'activo'"`.
+     *
+     * @return string Devuelve una cadena con la cláusula `WHERE` generada.
+     *                Ejemplo: `" WHERE monto > 1000 AND estado = 'activo'"`.
+     *                Si `$filtro_sql` está vacío, retorna una cadena vacía (`''`).
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * 1. **Generar una cláusula `WHERE` con un filtro válido**:
+     *    ```php
+     *    $filtro = "monto > 1000 AND estado = 'activo'";
+     *    $resultado = $this->where_suma(filtro_sql: $filtro);
+     *
+     *    // Resultado esperado:
+     *    // " WHERE monto > 1000 AND estado = 'activo'"
+     *    ```
+     *
+     * 2. **Generar una cláusula `WHERE` con un filtro vacío**:
+     *    ```php
+     *    $filtro = "";
+     *    $resultado = $this->where_suma(filtro_sql: $filtro);
+     *
+     *    // Resultado esperado:
+     *    // ""
+     *    ```
+     *
+     * 3. **Usar con filtros simples**:
+     *    ```php
+     *    $filtro = "id = 10";
+     *    $resultado = $this->where_suma(filtro_sql: $filtro);
+     *
+     *    // Resultado esperado:
+     *    // " WHERE id = 10"
+     *    ```
+     *
+     * ### Casos de validación:
+     *
+     * - Si el filtro está vacío, no se genera la cláusula `WHERE`:
+     *    ```php
+     *    $filtro = "";
+     *    $resultado = $this->where_suma(filtro_sql: $filtro);
+     *    // Resultado esperado: Cadena vacía ("").
+     *    ```
+     *
+     * - Si el filtro contiene solo espacios en blanco:
+     *    ```php
+     *    $filtro = "   ";
+     *    $resultado = $this->where_suma(filtro_sql: $filtro);
+     *    // Resultado esperado: Cadena vacía ("").
+     *    ```
+     *
+     * ### Uso en consultas SQL dinámicas:
+     * Esta función es útil para generar consultas SQL dinámicas en las que el filtro puede o no estar definido.
+     * Por ejemplo:
+     * ```php
+     * $filtro = "usuario_id = 5";
+     * $where = $this->where_suma(filtro_sql: $filtro);
+     * $sql = "SELECT * FROM usuarios" . $where;
+     *
+     * // Resultado:
+     * // $sql = "SELECT * FROM usuarios WHERE usuario_id = 5";
+     * ```
+     *
+     * ### Resultado esperado:
+     * - Si el filtro no está vacío: Retorna una cláusula `WHERE` correctamente formada.
+     * - Si el filtro está vacío: Retorna una cadena vacía.
      */
+
     final public function where_suma(string $filtro_sql): string
     {
         $where = '';

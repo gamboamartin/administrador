@@ -496,17 +496,111 @@ class validaciones extends validacion{
     }
 
     /**
-     * TOTAL
-     * Valida los parámetros necesarios para llevar a cabo operaciones de renombrado en consultas.
+     * REG
+     * Valida los parámetros relacionados con las configuraciones de renombre de tablas y joins en consultas SQL.
      *
-     * @param string $campo_renombrado El campo que se desea renombrar.
-     * @param string $join La operación JOIN a realizar.
-     * @param string $renombrada El nuevo nombre del campo.
-     * @param string $tabla El nombre de la tabla.
-     * @param string $tabla_enlace La tabla con la que se realiza el JOIN.
-     * @return true|array Devuelve true si todas las validaciones son correctas, de lo contrario, devuelve un arreglo con un mensaje de error.
-     * @version 15.33.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_renombres.21.11.0
+     * @param string $campo_renombrado Nombre del campo que se utilizará para el renombre. No puede estar vacío.
+     * @param string $join Tipo de JOIN que se aplicará en la consulta. Debe ser uno de los siguientes: `INNER`, `LEFT`, `RIGHT`.
+     * @param string $renombrada Nombre de la tabla renombrada. No puede estar vacío.
+     * @param string $tabla Nombre de la tabla original. No puede estar vacío.
+     * @param string $tabla_enlace Nombre de la tabla de enlace asociada. No puede estar vacío.
+     *
+     * @return true|array Retorna `true` si todos los parámetros son válidos. En caso de error, retorna un array con
+     *                    los detalles del error, incluyendo un mensaje descriptivo y los datos que generaron el error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $campo_renombrado = 'usuario_id';
+     * $join = 'INNER';
+     * $renombrada = 'usuarios_alias';
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles_usuarios';
+     *
+     * $resultado = $miClase->valida_renombres(
+     *     campo_renombrado: $campo_renombrado,
+     *     join: $join,
+     *     renombrada: $renombrada,
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
+     *
+     * var_dump($resultado);
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: El tipo de JOIN no es válido.
+     *
+     * ```php
+     * $campo_renombrado = 'usuario_id';
+     * $join = 'FULL'; // Error: No es un tipo de JOIN permitido.
+     * $renombrada = 'usuarios_alias';
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles_usuarios';
+     *
+     * $resultado = $miClase->valida_renombres(
+     *     campo_renombrado: $campo_renombrado,
+     *     join: $join,
+     *     renombrada: $renombrada,
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error join invalido debe ser INNER, LEFT O RIGTH
+     * //     [data] => FULL
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$campo_renombrado`**:
+     *   Nombre del campo que será utilizado para realizar el renombre. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'usuario_id'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$join`**:
+     *   Tipo de JOIN que se utilizará en la consulta. Este debe ser uno de los siguientes valores: `INNER`, `LEFT`, `RIGHT`.
+     *   Ejemplo válido: `'INNER'`.
+     *   Ejemplo inválido: `'FULL'` o `''`.
+     *
+     * - **`$renombrada`**:
+     *   Nombre de la tabla renombrada. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'usuarios_alias'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla original. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla de enlace asociada. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'roles_usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Retorna `true` si todos los parámetros son válidos.
+     *
+     * - **Error**:
+     *   Si algún parámetro no cumple con las condiciones, se retorna un array con los detalles del error:
+     *   - `error`: Indicador de error (`1`).
+     *   - `mensaje`: Descripción del error.
+     *   - `data`: Datos asociados al error.
+     *
+     * ### Notas adicionales:
+     *
+     * - Está diseñada para ser utilizada en la validación previa a la construcción de consultas SQL complejas.
+     * - Asegura que los valores de renombres y tipos de JOIN sean válidos antes de su uso en la lógica de negocio.
      */
     final public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
                                      string $tabla, string $tabla_enlace): true|array
@@ -536,19 +630,101 @@ class validaciones extends validacion{
     }
 
     /**
-     * TOTAL
-     * Valida los parámetros de entrada de una junta de tablas (_table join_).
+     * REG
+     * Valida los parámetros necesarios para procesar una tabla en un `JOIN` SQL.
      *
-     * @final
+     * Esta función verifica que las claves `key` y `tabla_join` proporcionadas sean válidas. Garantiza que no sean números
+     * y que no estén vacías, ya que son esenciales para la construcción de `JOINs` en consultas SQL.
      *
-     * @param string $key La clave que se va a validar. No puede ser un número ni una cadena vacía.
-     * @param string $tabla_join El nombre de la tabla que se va a unir (_join_). No puede ser un número ni una cadena vacía.
+     * @param string $key Clave principal o identificador que representa un alias o el nombre de una tabla.
+     *                    Debe ser una cadena no vacía y no numérica.
+     *                    Ejemplo: `'usuarios'`.
+     * @param string $tabla_join Nombre de la tabla que será utilizada en el `JOIN`.
+     *                           Debe ser una cadena no vacía y no numérica.
+     *                           Ejemplo: `'roles'`.
      *
-     * @return true|array Retorna verdadero si la validación fue exitosa. Si ocurre un error, retorna un arreglo con información sobre el error.
+     * @return true|array Retorna `true` si ambos parámetros son válidos. En caso de error, devuelve un array con los detalles
+     *                    del error, indicando el problema específico.
      *
-     * @throws errores Si algún parámetro no cumple las condiciones, se lanza un error con la descripción del problema.
-     * @version 15.68.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_tabla_join.21.15.0
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $key = 'usuarios';
+     * $tabla_join = 'roles';
+     *
+     * $resultado = $this->valida_tabla_join(key: $key, tabla_join: $tabla_join);
+     *
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$key`**:
+     *   Representa el alias o identificador de una tabla.
+     *   Requisitos:
+     *   - No puede ser numérico.
+     *   - No puede estar vacío.
+     *   Ejemplo válido:
+     *   ```php
+     *   'usuarios'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   123 // Es numérico.
+     *   ''
+     *   ```
+     *
+     * - **`$tabla_join`**:
+     *   Es el nombre de la tabla que se utilizará en el `JOIN`.
+     *   Requisitos:
+     *   - No puede ser numérico.
+     *   - No puede estar vacío.
+     *   Ejemplo válido:
+     *   ```php
+     *   'roles'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   456 // Es numérico.
+     *   ''
+     *   ```
+     *
+     * ### Casos de error:
+     *
+     * 1. **`$key` es numérico**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: '123', tabla_join: 'roles');
+     *    // Resultado esperado: array con mensaje de error "Error el key no puede ser un numero".
+     *    ```
+     *
+     * 2. **`$key` está vacío**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: '', tabla_join: 'roles');
+     *    // Resultado esperado: array con mensaje de error "Error key esta vacio".
+     *    ```
+     *
+     * 3. **`$tabla_join` es numérico**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: 'usuarios', tabla_join: '123');
+     *    // Resultado esperado: array con mensaje de error "Error el $tabla_join no puede ser un numero".
+     *    ```
+     *
+     * 4. **`$tabla_join` está vacío**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: 'usuarios', tabla_join: '');
+     *    // Resultado esperado: array con mensaje de error "Error $tabla_join esta vacio".
+     *    ```
+     *
+     * ### Resultado esperado:
+     *
+     * - Si ambos parámetros son válidos, retorna `true`.
+     * - Si alguno de los parámetros no cumple los requisitos, retorna un array con el mensaje de error y los detalles del problema.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función es útil para validar entradas antes de construir dinámicamente consultas SQL que incluyan `JOINs`.
+     * - Garantiza que se eviten errores comunes en la generación de SQL debido a parámetros inválidos.
      */
     final public function valida_tabla_join(string $key, string $tabla_join ): true|array
     {
