@@ -94,12 +94,53 @@ class sql_bass{
     }
 
     /**
-     * TOTAL
-     * Anexa coma al SQL
-     * @param string $columnas Columnas previas
-     * @return string
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql_bass.coma_sql.21.16.0
+     * REG
+     * Genera una coma separadora para agregar columnas en una consulta SQL.
+     *
+     * @param string $columnas Cadena que contiene las columnas actuales de una consulta SQL.
+     *                         - Si está vacía, no se agrega la coma separadora.
+     *                         - Si no está vacía, devuelve una coma separadora con espacios alrededor.
+     *
+     * @return string Devuelve una cadena con la coma separadora (`', '`) si `$columnas` no está vacía.
+     *                Devuelve una cadena vacía si `$columnas` está vacía.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $columnas = 'nombre, edad';
+     *
+     * $coma = $this->coma_sql($columnas);
+     * echo $coma;
+     * // Resultado esperado:
+     * // ' , '
+     *
+     * $columnas = '';
+     * $coma = $this->coma_sql($columnas);
+     * echo $coma;
+     * // Resultado esperado:
+     * // ''
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Trimming de `$columnas`:**
+     *    - Elimina espacios en blanco al inicio y al final de la cadena.
+     * 2. **Evaluación de `$columnas`:**
+     *    - Si `$columnas` no está vacía, asigna la coma separadora (`', '`).
+     *    - Si `$columnas` está vacía, retorna una cadena vacía.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve la coma separadora o una cadena vacía, según la evaluación.
+     *
+     * ### Ejemplo de errores:
+     * Esta función no lanza errores ya que no tiene validaciones específicas. Sin embargo, es importante que se utilice con una cadena válida como parámetro.
+     *
+     * ### Casos de uso:
+     * - Usada en la generación dinámica de consultas SQL, para agregar columnas adicionales de forma limpia.
+     * - Facilita la concatenación de columnas en instrucciones SQL complejas.
+     *
+     * ### Consideraciones:
+     * - La función está diseñada para manejar columnas en formato de cadena y determinar si se debe agregar una coma separadora.
+     * - Es útil cuando se construyen consultas SQL de manera dinámica.
      */
+
     final public function coma_sql(string $columnas): string
     {
         $columnas = trim($columnas);

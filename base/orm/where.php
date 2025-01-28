@@ -949,19 +949,61 @@ class where{
     }
 
     /**
-     * Antepone la palabra WHERE al filtro mandado por parametros
-     * @param string $filtro_sql filtro por aplicar
-     * @return string filtro enviado por parametros anteponiendo la palabra WHERE
-     * @version 1.489.49
+     * REG
+     * Genera una cláusula `WHERE` para una consulta SQL.
+     *
+     * Esta función toma un filtro en formato de cadena SQL y lo envuelve en una cláusula `WHERE`,
+     * si el filtro no está vacío. Si el filtro está vacío, devuelve una cadena vacía.
+     *
+     * @param string $filtro_sql Cadena con el filtro SQL a aplicar.
+     *                           - Puede contener condiciones como: `"campo = valor"`, `"campo > valor"`, etc.
+     *                           - Si está vacío, no se genera la cláusula `WHERE`.
+     *
+     * @return string Devuelve la cláusula `WHERE` con el filtro proporcionado o una cadena vacía
+     *                si el filtro está vacío.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $filtro_sql = "monto > 100";
+     * $resultado = $this->where_suma(filtro_sql: $filtro_sql);
+     *
+     * // Resultado esperado:
+     * // "WHERE monto > 100"
+     * ```
+     *
+     * ### Ejemplo de uso con filtro vacío:
+     * ```php
+     * $filtro_sql = "";
+     * $resultado = $this->where_suma(filtro_sql: $filtro_sql);
+     *
+     * // Resultado esperado:
+     * // ""
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación del filtro:**
+     *    - Si `$filtro_sql` no está vacío, se genera la cláusula `WHERE`.
+     *    - Si `$filtro_sql` está vacío, se retorna una cadena vacía.
+     * 2. **Construcción de la cláusula:**
+     *    - Si aplica, la cláusula `WHERE` se concatena con el filtro SQL.
+     * 3. **Retorno del resultado:**
+     *    - Una cadena con la cláusula `WHERE` o una cadena vacía.
+     *
+     * ### Casos de uso:
+     * - Útil para agregar dinámicamente filtros a consultas SQL.
+     * - Facilita la construcción de condiciones SQL sin repetir código.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que el filtro SQL proporcionado sea válido y seguro para prevenir inyecciones SQL.
      */
     final public function where_suma(string $filtro_sql): string
     {
         $where = '';
-        if(trim($filtro_sql) !== '' ){
-            $where = ' WHERE '. $filtro_sql;
+        if (trim($filtro_sql) !== '') {
+            $where = ' WHERE ' . $filtro_sql;
         }
         return $where;
-
     }
+
 
 }

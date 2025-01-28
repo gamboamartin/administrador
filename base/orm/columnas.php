@@ -13,19 +13,78 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Añade una columna en una consulta SQL.
+     * REG
+     * Genera una columna SQL con alias y función de agregación IFNULL(SUM()).
      *
-     * @param string $alias Identificador único para la columna a añadir.
-     * @param string $campo Identifica la columna en una tabla de la base de datos.
+     * @param string $alias Alias que se asignará al campo en la consulta SQL.
+     *                      - Debe ser una cadena no vacía.
+     * @param string $campo Nombre del campo que se procesará en la función SQL.
+     *                      - Debe ser una cadena no vacía.
      *
-     * @return string|array Retorna una cadena qué representa la sentencia SQL para sumar y añadir una columna en la consulta.
-     *                      Retorna un arreglo en caso de que haya un error con los parámetros de entrada.
+     * @return string|array Devuelve una cadena que representa la columna SQL generada,
+     *                      o un array de error si alguno de los parámetros no es válido.
      *
-     * @throws errores En caso de que $alias o $campo esten vacios.
-     * @version 16.30.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.add_column
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $alias = 'total_ventas';
+     * $campo = 'ventas.monto';
+     *
+     * $resultado = $this->add_column($alias, $campo);
+     * echo $resultado;
+     * // Resultado esperado:
+     * // 'IFNULL( SUM(ventas.monto) ,0)AS total_ventas'
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación de parámetros:**
+     *    - Verifica que `$campo` y `$alias` no estén vacíos.
+     *    - Si alguno de los parámetros está vacío, genera un error con un mensaje descriptivo.
+     * 2. **Generación de la columna SQL:**
+     *    - Crea una instrucción SQL que utiliza `IFNULL` para manejar valores nulos y `SUM` como función de agregación.
+     *    - Asigna el alias proporcionado a la columna generada.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve la cadena SQL generada.
+     *
+     * ### Ejemplo de errores:
+     * **Error por `$campo` vacío:**
+     * ```php
+     * $alias = 'total_ventas';
+     * $campo = '';
+     *
+     * $resultado = $this->add_column($alias, $campo);
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error $campo no puede venir vacio',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * **Error por `$alias` vacío:**
+     * ```php
+     * $alias = '';
+     * $campo = 'ventas.monto';
+     *
+     * $resultado = $this->add_column($alias, $campo);
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // [
+     * //     'error' => 1,
+     * //     'mensaje' => 'Error $alias no puede venir vacio',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Casos de uso:
+     * - Generar dinámicamente columnas para consultas SQL con funciones de agregación y manejo de valores nulos.
+     * - Uso en reportes o estadísticas que requieren sumar valores de una tabla con un alias descriptivo.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que los nombres de los campos y los alias estén correctamente definidos.
+     * - La función está diseñada para ser utilizada en contextos donde las consultas SQL necesitan columnas personalizadas con funciones de agregación.
      */
+
     final public function add_column(string $alias, string $campo): string|array
     {
         $campo = trim($campo);

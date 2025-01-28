@@ -1705,13 +1705,117 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Genera una llave de tipo in para SQL
-     * @param array $in IN precargada
-     * @return array
-     * @version 16.205.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.in_llave
+     *
+     * REG
+     * Valida y ajusta el valor de la clave `llave` dentro de un array `$in`. Si la clave `llave` existe y
+     * corresponde a una columna definida en `$this->columnas_extra`, se reemplaza su valor con el correspondiente.
+     *
+     * @param array $in Array de entrada que contiene potencialmente la clave `llave`.
+     *
+     * @return array Retorna el array `$in` ajustado si no se encuentra ningún error.
+     *               En caso de error, devuelve un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $in = [
+     *     'llave' => 'nombre_columna'
+     * ];
+     *
+     * $this->columnas_extra = [
+     *     'nombre_columna' => 'tabla.nombre_columna'
+     * ];
+     *
+     * $resultado = $miClase->in_llave($in);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [llave] => tabla.nombre_columna
+     * // )
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * 1. **Caso:** La clave `llave` no es un string.
+     *
+     * ```php
+     * $in = [
+     *     'llave' => 123
+     * ];
+     *
+     * $resultado = $miClase->in_llave($in);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error in[llave] debe ser un string
+     * //     [data] => Array
+     * //         (
+     * //             [llave] => 123
+     * //         )
+     * // )
+     * ```
+     *
+     * 2. **Caso:** La clave `llave` está vacía después de aplicar `trim`.
+     *
+     * ```php
+     * $in = [
+     *     'llave' => '   '
+     * ];
+     *
+     * $resultado = $miClase->in_llave($in);
+     *
+     * print_r($resultado);
+     * // Resultado esperado:
+     * // Array
+     * // (
+     * //     [error] => 1
+     * //     [mensaje] => Error in[llave] esta vacia
+     * //     [data] => Array
+     * //         (
+     * //             [llave] =>
+     * //         )
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$in`**:
+     *   Array de entrada que puede contener la clave `llave`.
+     *   Ejemplo válido:
+     *   ```php
+     *   [
+     *       'llave' => 'nombre_columna'
+     *   ]
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   [
+     *       'llave' => 123 // No es un string.
+     *   ]
+     *   ```
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Si la clave `llave` existe y se encuentra en `$this->columnas_extra`, se reemplaza por su valor correspondiente.
+     *   Si no existe en `$this->columnas_extra`, el valor original permanece.
+     *
+     * - **Error**:
+     *   Retorna un array con detalles del error si:
+     *   - La clave `llave` no es un string.
+     *   - La clave `llave` está vacía después de aplicar `trim`.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función es útil para estandarizar y ajustar valores de claves en arrays que se usarán en consultas o procesos relacionados con columnas específicas.
+     * - Depende de la propiedad `$this->columnas_extra` para realizar el ajuste de valores.
      */
+
     private function in_llave(array $in): array
     {
         if(count($in)>0) {
@@ -2709,48 +2813,139 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Suma sql
-     * @param array $campos [alias=>campo] alias = string no numerico campo string campo de la base de datos
-     * @param array $filtro Filtro para suma
-     * @return array con la suma de los elementos seleccionados y filtrados
+     * REG
+     * Genera y ejecuta una consulta SQL para obtener una suma de campos específicos con condiciones opcionales.
+     *
+     * Esta función permite generar una consulta SQL dinámica que incluye sumas de campos con alias,
+     * condiciones `WHERE` opcionales, y manejo de uniones de tablas.
+     *
+     * @param array $campos Array asociativo donde:
+     *                      - La clave (`alias`) representa el alias de la columna sumatoria.
+     *                      - El valor es el nombre del campo a sumar.
+     *                      - Ejemplo: ['suma_monto' => 'monto', 'suma_cantidad' => 'cantidad'].
+     * @param array $filtro Array asociativo para aplicar condiciones `WHERE` en la consulta.
+     *                      - Las claves representan los nombres de las columnas.
+     *                      - Los valores son los valores de filtrado.
+     *                      - Ejemplo: ['status' => 'activo', 'categoria_id' => 5].
+     *
+     * @return array Devuelve un array con el primer registro resultante de la consulta SQL.
+     *               Si ocurre un error, retorna un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campos = [
+     *     'suma_monto' => 'monto',
+     *     'suma_cantidad' => 'cantidad'
+     * ];
+     * $filtro = [
+     *     'status' => 'activo',
+     *     'categoria_id' => 5
+     * ];
+     *
+     * $resultado = $this->suma(campos: $campos, filtro: $filtro);
+     *
+     * // Resultado esperado:
+     * // [
+     * //     'suma_monto' => 1500,
+     * //     'suma_cantidad' => 30
+     * // ]
+     * ```
+     *
+     * ### Ejemplo de errores:
+     * ```php
+     * // Caso 1: Campos vacíos
+     * $campos = [];
+     * $resultado = $this->suma(campos: $campos);
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error campos no puede venir vacio',
+     * //   'data' => []
+     * // ]
+     *
+     * // Caso 2: Error al generar las columnas
+     * $campos = ['suma_monto' => '', 'suma_cantidad' => 'cantidad'];
+     * $resultado = $this->suma(campos: $campos);
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al agregar columnas',
+     * //   'data' => [...]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación inicial:**
+     *    - Verifica que `$campos` no esté vacío.
+     * 2. **Generación de columnas SQL:**
+     *    - Usa `columnas_suma` para crear las columnas con alias.
+     * 3. **Generación de condiciones `WHERE`:**
+     *    - Usa `genera_and` para construir condiciones SQL a partir del array `$filtro`.
+     *    - Usa `where_suma` para generar la cláusula `WHERE`.
+     * 4. **Obtención de tablas:**
+     *    - Usa `obten_tablas_completas` para generar la lista de tablas y sus uniones.
+     * 5. **Construcción y ejecución de la consulta:**
+     *    - Genera la consulta con `SELECT` y ejecuta usando `ejecuta_consulta`.
+     * 6. **Retorno del resultado:**
+     *    - Devuelve el primer registro obtenido o un error si algo falla.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Generación dinámica de consultas SQL para obtener sumas con condiciones opcionales.
+     * - **Ejemplo real:** Sumar los montos y cantidades de ventas activas:
+     *   ```sql
+     *   SELECT
+     *       IFNULL(SUM(monto),0) AS suma_monto,
+     *       IFNULL(SUM(cantidad),0) AS suma_cantidad
+     *   FROM ventas
+     *   WHERE status = 'activo' AND categoria_id = 5
+     *   ```
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$campos` sea un array válido con nombres de columnas y alias.
+     * - `$filtro` debe contener columnas y valores que existan en la base de datos.
+     * - La función usa clases externas como `sumas`, `where`, y `joins` para construir la consulta.
+     * - Maneja errores mediante la clase `errores`, proporcionando retroalimentación detallada.
      */
-    public function suma(array $campos, array $filtro = array()): array
+    final public function suma(array $campos, array $filtro = array()): array
     {
         $this->filtro = $filtro;
-        if(count($campos)===0){
-            return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos, es_final: true);
+        if (count($campos) === 0) {
+            return $this->error->error(mensaje: 'Error campos no puede venir vacio', data: $campos, es_final: true);
         }
 
         $columnas = (new sumas())->columnas_suma(campos: $campos);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al agregar columnas',data: $columnas);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al agregar columnas', data: $columnas);
         }
 
-        $filtro_sql = (new \gamboamartin\where\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_sql);
+        $filtro_sql = (new \gamboamartin\where\where())->genera_and(
+            columnas_extra: $this->columnas_extra, filtro: $filtro
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro_sql);
         }
 
         $where = (new where())->where_suma(filtro_sql: $filtro_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar where',data: $where);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
         }
 
         $tabla = $this->tabla;
-        $tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error('Error al obtener tablas',$tablas);
+        $tablas = (new joins())->obten_tablas_completas(columnas_join: $this->columnas, tabla: $tabla);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener tablas', $tablas);
         }
 
-        $consulta = 'SELECT '.$columnas.' FROM '.$tablas.$where;
+        $consulta = 'SELECT ' . $columnas . ' FROM ' . $tablas . $where;
 
         $resultado = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
-        if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$resultado);
+        if (errores::$error) {
+            return $this->error->error('Error al ejecutar sql', $resultado);
         }
 
         return $resultado->registros[0];
     }
+
 
 
     /**
