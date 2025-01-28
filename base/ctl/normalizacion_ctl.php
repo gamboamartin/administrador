@@ -122,15 +122,78 @@ class normalizacion_ctl{
     }
 
     /**
-     * TOTAL
-     * Esta función inicializa un controlador con los valores obtenidos desde la petición GET.
+     * REG
+     * Inicializa las propiedades del controlador con base en los valores de los parámetros recibidos por URL (`$_GET`).
      *
-     * @param controler $controler - El controlador a inicializar.
+     * Esta función asigna valores de parámetros HTTP GET a las propiedades del controlador (`controler`) y, en algunos casos,
+     * también a las propiedades de su modelo asociado. Es útil para configurar dinámicamente el estado del controlador en
+     * función de las solicitudes recibidas.
      *
-     * @return controler - Devuelve el controlador con sus atributos configurados.
-     * @version 17.18.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.ctl.nomalizacion_ctl.init_controler
+     * @param controler $controler Instancia del controlador a inicializar.
+     *                             - Debe ser una clase que contenga propiedades relacionadas con secciones, acciones,
+     *                               filtros y registros.
+     *                             - Ejemplo de propiedades:
+     *                               - `tabla`, `seccion`, `accion`, `valor_filtro`, `campo_filtro`, `selected`,
+     *                                 `registro_id`, `campo`, `campo_resultado`.
+     *
+     * @return controler Devuelve la instancia del controlador con sus propiedades inicializadas según los parámetros `$_GET`.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * // Supongamos que la URL es: ?seccion=usuarios&accion=editar&registro_id=1
+     *
+     * $controler = new controler();
+     * $controler = $this->init_controler(controler: $controler);
+     *
+     * // Resultado esperado:
+     * // $controler->tabla = 'usuarios';
+     * // $controler->seccion = 'usuarios';
+     * // $controler->accion = 'editar';
+     * // $controler->registro_id = 1;
+     * // $controler->modelo->registro_id = 1;
+     * ```
+     *
+     * ### Ejemplo de errores:
+     * ```php
+     * // Caso 1: `$_GET` no contiene parámetros esperados.
+     * $controler = new controler();
+     * $controler = $this->init_controler(controler: $controler);
+     *
+     * // Resultado esperado:
+     * // $controler->tabla = null;
+     * // $controler->seccion = null;
+     * // $controler->accion = null;
+     * // (Y el resto de las propiedades permanecen sin cambios).
+     * ```
+     *
+     * ### Parámetros esperados de `$_GET`:
+     * - **`seccion`**: Nombre de la tabla o sección (ejemplo: `usuarios`, `productos`).
+     * - **`accion`**: Acción a realizar (ejemplo: `crear`, `editar`).
+     * - **`valor_filtro`**: Valor del filtro aplicado.
+     * - **`campo_filtro`**: Campo sobre el cual se aplica el filtro.
+     * - **`selected`**: Indica el estado seleccionado.
+     * - **`registro_id`**: ID del registro actual. Se asigna como entero.
+     * - **`campo`**: Nombre del campo a utilizar.
+     * - **`campo_resultado`**: Campo donde se almacenará el resultado.
+     *
+     * ### Proceso de la función:
+     * 1. Verifica la existencia de cada parámetro en `$_GET`.
+     * 2. Asigna el valor correspondiente al controlador.
+     * 3. En el caso de `registro_id`, también lo asigna al modelo del controlador.
+     * 4. Retorna la instancia del controlador con las propiedades inicializadas.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Configuración dinámica del controlador en aplicaciones web basadas en controladores y acciones.
+     * - **Ejemplo real:** Una URL como `?seccion=productos&accion=ver&registro_id=5` inicializa un controlador para gestionar
+     *   la vista de un producto específico.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que los parámetros esperados se envíen correctamente mediante `$_GET`.
+     * - Esta función no realiza validaciones sobre los valores de los parámetros, más allá de la conversión de `registro_id`
+     *   a entero. Considera agregar validaciones adicionales si los parámetros tienen restricciones específicas.
+     * - La función asume que el controlador y su modelo contienen las propiedades utilizadas.
      */
+
     final public function init_controler(controler $controler): controler
     {
 
