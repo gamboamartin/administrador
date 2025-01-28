@@ -267,22 +267,114 @@ class params_sql{
 
 
     /**
-     * TOTAL
-     * Prepara y asegura las cláusulas SQL para su ejecución segura.
+     * REG
+     * Genera y organiza parámetros SQL para consultas avanzadas.
      *
-     * @param bool $aplica_seguridad Si es true, entonces aplica los procedimientos de seguridad a la consulta SQL.
-     * @param array $group_by Arreglo que contiene las columnas para la cláusula GROUP BY.
-     * @param int $limit Número entero para la cláusula LIMIT.
-     * @param array $modelo_columnas_extra Arreglo que contiene columnas adicionales para el modelo.
-     * @param int $offset Número entero para la cláusula OFFSET.
-     * @param array $order Arreglo que contiene las columnas para la cláusula ORDER BY.
-     * @param string $sql_where_previo Cadena de texto con una declaración SQL WHERE anterior.
+     * Esta función construye las secciones `GROUP BY`, `ORDER BY`, `LIMIT`, `OFFSET` y condiciones de seguridad
+     * (`WHERE`) para consultas SQL dinámicas. Proporciona un objeto que centraliza estos componentes, listo para ser usado
+     * en una consulta SQL completa.
      *
-     * @return array|stdClass Devuelve un objeto stdClass o un array que contienen los componentes SQL preparados.
-     *                        Si se encuentra un error durante el proceso, devuelve un mensaje de error.
-     * @version 15.58.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.params_sql
+     * @param bool $aplica_seguridad Indica si se deben aplicar restricciones de seguridad en la consulta.
+     *                               - `true`: Aplica condiciones adicionales basadas en la seguridad.
+     *                               - `false`: No aplica condiciones de seguridad.
+     * @param array $group_by Array de columnas para la cláusula `GROUP BY`.
+     *                        - Ejemplo: `['campo1', 'campo2']`.
+     * @param int $limit Número máximo de registros a devolver.
+     *                   - Debe ser mayor o igual a 0.
+     * @param array $modelo_columnas_extra Columnas adicionales para aplicar en la seguridad de la consulta.
+     *                                     - Ejemplo: `['columna1' => 'valor1', 'columna2' => 'valor2']`.
+     * @param int $offset Número de registros a omitir antes de comenzar a devolver resultados.
+     *                    - Debe ser mayor o igual a 0.
+     * @param array $order Array asociativo para ordenar resultados.
+     *                     - Ejemplo: `['campo' => 'ASC', 'campo2' => 'DESC']`.
+     * @param string $sql_where_previo Condiciones previas de la cláusula `WHERE` a integrar en la seguridad.
+     *                                 - Ejemplo: `"campo1 = 'valor1' AND campo2 > 10"`.
+     *
+     * @return array|stdClass Devuelve un objeto con los siguientes componentes SQL:
+     *                        - `group_by` (string): Cláusula `GROUP BY` generada.
+     *                        - `order` (string): Cláusula `ORDER BY` generada.
+     *                        - `limit` (string): Cláusula `LIMIT` generada.
+     *                        - `offset` (string): Cláusula `OFFSET` generada.
+     *                        - `seguridad` (string): Cláusula `WHERE` generada para condiciones de seguridad.
+     *                        Si ocurre un error, devuelve un array con los detalles del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $params = $this->params_sql(
+     *     aplica_seguridad: true,
+     *     group_by: ['categoria', 'tipo'],
+     *     limit: 10,
+     *     modelo_columnas_extra: ['usuario_id' => 1],
+     *     offset: 5,
+     *     order: ['fecha' => 'DESC'],
+     *     sql_where_previo: "estatus = 'activo'"
+     * );
+     *
+     * // Resultado esperado:
+     * // $params->group_by => "GROUP BY categoria, tipo"
+     * // $params->order => "ORDER BY fecha DESC"
+     * // $params->limit => "LIMIT 10"
+     * // $params->offset => "OFFSET 5"
+     * // $params->seguridad => "WHERE estatus = 'activo' AND usuario_id = 1"
+     * ```
+     *
+     * ### Ejemplo de errores:
+     * ```php
+     * // Caso 1: `$limit` negativo.
+     * $params = $this->params_sql(
+     *     aplica_seguridad: true,
+     *     group_by: ['categoria'],
+     *     limit: -1,
+     *     modelo_columnas_extra: [],
+     *     offset: 0,
+     *     order: [],
+     *     sql_where_previo: ''
+     * );
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error limit debe ser mayor o igual a 0',
+     * //   'data' => -1
+     * // ]
+     *
+     * // Caso 2: `$offset` negativo.
+     * $params = $this->params_sql(
+     *     aplica_seguridad: true,
+     *     group_by: [],
+     *     limit: 10,
+     *     modelo_columnas_extra: [],
+     *     offset: -5,
+     *     order: [],
+     *     sql_where_previo: ''
+     * );
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $offset debe ser mayor o igual a 0',
+     * //   'data' => -5
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación inicial:**
+     *    - Comprueba que `$limit` y `$offset` sean mayores o iguales a 0.
+     * 2. **Construcción de cláusulas SQL:**
+     *    - Genera `GROUP BY`, `ORDER BY`, `LIMIT`, `OFFSET` y `WHERE` utilizando funciones auxiliares.
+     * 3. **Seguridad adicional:**
+     *    - Integra condiciones de seguridad en la cláusula `WHERE` si `$aplica_seguridad` es `true`.
+     * 4. **Retorno:**
+     *    - Devuelve un objeto con las cláusulas SQL generadas.
+     *    - Si ocurre algún error durante el proceso, devuelve un array con detalles del error.
+     *
+     * ### Casos de uso:
+     * - Construcción de consultas SQL dinámicas para reportes, búsquedas avanzadas o sistemas con múltiples filtros.
+     * - Gestión de seguridad en las consultas, limitando los resultados según criterios específicos.
+     *
+     * ### Consideraciones:
+     * - Verifica que los valores de `$limit` y `$offset` sean válidos antes de llamar a esta función.
+     * - Utiliza `$modelo_columnas_extra` y `$sql_where_previo` para personalizar las condiciones de seguridad.
      */
+
     final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,
                                      int $offset, array $order, string $sql_where_previo): array|stdClass
     {

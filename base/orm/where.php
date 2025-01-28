@@ -676,31 +676,91 @@ class where{
     }
 
     /**
-     * TOTAL
-     * Genera la condicion sql de un filtro especial
+     * REG
+     * Genera una parte de filtro SQL dinámico basado en un campo, columnas adicionales y valores de filtro.
      *
-     * @param string $campo campo de una tabla tabla.campo
-     * @param array $columnas_extra Campos en forma de subquery del modelo
-     * @param array $filtro filtro a validar
+     * Esta función se encarga de validar y construir la cláusula SQL para un filtro especial basado en un campo específico,
+     * utilizando columnas adicionales para determinar si hay ajustes necesarios en el nombre del campo.
      *
-     * @return array|string
+     * @param string $campo Nombre del campo a filtrar.
+     *                      - Debe ser una cadena no vacía.
+     * @param array $columnas_extra Array de columnas adicionales que podrían afectar la estructura del filtro.
+     *                              - Ejemplo: `['columna_alias' => 'tabla.columna']`.
+     * @param array $filtro Filtro con las condiciones y valores a aplicar.
+     *                      - Debe contener una clave asociativa con el nombre del campo y, dentro de ella, la clave `valor`.
+     *                      - Ejemplo: `['campo1' => ['valor' => 'valor1'], 'campo2' => ['valor' => 'valor2']]`.
      *
-     * @example
-     *      Ej 1
-     *      $campo = 'x';
-     *      $filtro['x'] = array('operador'=>'x','valor'=>'x');
-     *      $resultado = maqueta_filtro_especial($campo, $filtro);
-     *      $resultado = x>'x'
+     * @return array|string Devuelve una cadena con el SQL del filtro generado o un array con detalles del error.
      *
-     *      Ej 2
-     *      $campo = 'x';
-     *      $filtro['x'] = array('operador'=>'x','valor'=>'x','es_campo'=>true);
-     *      $resultado = maqueta_filtro_especial($campo, $filtro);
-     *      $resultado = 'x'> x
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = 'estatus';
+     * $columnas_extra = ['estatus' => 'tabla.estatus'];
+     * $filtro = [
+     *     'estatus' => ['valor' => 'activo']
+     * ];
      *
-     * @version 16.164.0
-     * @url https://github.com/gamboamartin/where/wiki/administrador.base.orm.where.maqueta_filtro_especial
+     * $resultado = $this->maqueta_filtro_especial(campo: $campo, columnas_extra: $columnas_extra, filtro: $filtro);
+     *
+     * // Resultado esperado:
+     * // "tabla.estatus = 'activo'"
+     * ```
+     *
+     * ### Ejemplo de errores:
+     * ```php
+     * // Caso 1: Campo vacío.
+     * $campo = '';
+     * $columnas_extra = ['estatus' => 'tabla.estatus'];
+     * $filtro = [
+     *     'estatus' => ['valor' => 'activo']
+     * ];
+     *
+     * $resultado = $this->maqueta_filtro_especial(campo: $campo, columnas_extra: $columnas_extra, filtro: $filtro);
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al validar filtro',
+     * //   'data' => [...]
+     * // ]
+     *
+     * // Caso 2: Falta la clave `valor` en el filtro.
+     * $campo = 'estatus';
+     * $columnas_extra = ['estatus' => 'tabla.estatus'];
+     * $filtro = [
+     *     'estatus' => [] // Falta el índice 'valor'.
+     * ];
+     *
+     * $resultado = $this->maqueta_filtro_especial(campo: $campo, columnas_extra: $columnas_extra, filtro: $filtro);
+     * // Resultado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al validar filtro',
+     * //   'data' => [...]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación del campo:**
+     *    - Comprueba que `$campo` no esté vacío y que sea una cadena válida.
+     * 2. **Validación del filtro:**
+     *    - Verifica que `$filtro` contenga la clave `$campo` y dentro de ella, la clave `valor`.
+     * 3. **Ajuste del campo:**
+     *    - Si `$campo` está en `$columnas_extra`, utiliza la columna ajustada para construir el filtro.
+     * 4. **Generación del SQL:**
+     *    - Utiliza la función `data_sql` para construir la cláusula SQL basada en el campo y el valor del filtro.
+     * 5. **Retorno:**
+     *    - Devuelve la cláusula SQL generada o un array con detalles del error en caso de fallo.
+     *
+     * ### Casos de uso:
+     * - Construcción dinámica de filtros en consultas SQL basados en condiciones complejas.
+     * - Manejo de nombres de columnas ajustados mediante un mapeo en `$columnas_extra`.
+     * - Simplificación de generación de SQL para aplicaciones con múltiples filtros y validaciones.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de proporcionar un `$campo` válido y de que el `$filtro` incluya la clave `valor` para evitar errores.
+     * - `$columnas_extra` es opcional, pero si se usa, debe estar correctamente mapeado.
      */
+
     private function maqueta_filtro_especial(string $campo, array $columnas_extra, array $filtro):array|string{
         $campo = trim($campo);
 
