@@ -392,27 +392,58 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * TOTAL
-     * Función columnas_data
+     * REG
+     * Genera un objeto que encapsula los datos relacionados con columnas SQL, subconsultas y columnas extra.
      *
-     * Esta función se encarga de crear un objeto con varias cadenas de consultas SQL necesarias
-     * para interactuar con la base de datos.
+     * @param string $columnas_extra_sql Cadena con las columnas adicionales generadas.
+     *                                   Se espera que ya estén formateadas para ser utilizadas en una consulta SQL.
+     * @param string $columnas_sql Cadena con las columnas principales de la consulta SQL.
+     * @param string $sub_querys_sql Cadena con las subconsultas SQL generadas, si las hubiera.
      *
-     * @param string $columnas_extra_sql Representa cadenas de SQL extras para las columnas.
-     * @param string $columnas_sql Representa las cadenas de SQL para las columnas.
-     * @param string $sub_querys_sql Representa las cadenas de SQL para las subconsultas.
+     * @return stdClass Objeto con las siguientes propiedades:
+     *                  - `columnas_sql` (string): Contiene las columnas principales de la consulta SQL.
+     *                  - `sub_querys_sql` (string): Subconsultas generadas en formato SQL.
+     *                  - `columnas_extra_sql` (string): Columnas adicionales generadas en formato SQL.
      *
-     * @return stdClass Un objeto con propiedades que contienen las cadenas SQL.
+     * @example Generación exitosa de columnas SQL y subconsultas:
+     * ```php
+     * $columnas_extra_sql = "(SELECT SUM(precio) FROM ventas) AS ventas_totales";
+     * $columnas_sql = "ventas.id, productos.nombre";
+     * $sub_querys_sql = " , (SELECT COUNT(*) FROM productos WHERE stock > 0) AS productos_disponibles";
      *
-     * Las propiedades del objeto retornado son:
-     * - columnas_sql: Contiene la cadena SQL para las columnas.
-     * - sub_querys_sql: Contiene la cadena SQL para las subconsultas.
-     * - columnas_extra_sql: Contiene las cadenas SQL extras para las columnas.
-     * @version 16.135.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.columnas_data
+     * $resultado = $this->columnas_data(
+     *     columnas_extra_sql: $columnas_extra_sql,
+     *     columnas_sql: $columnas_sql,
+     *     sub_querys_sql: $sub_querys_sql
+     * );
+     * // Resultado:
+     * // $resultado->columnas_sql = "ventas.id, productos.nombre";
+     * // $resultado->sub_querys_sql = " , (SELECT COUNT(*) FROM productos WHERE stock > 0) AS productos_disponibles";
+     * // $resultado->columnas_extra_sql = "(SELECT SUM(precio) FROM ventas) AS ventas_totales";
+     * ```
+     *
+     * @example Sin columnas adicionales ni subconsultas:
+     * ```php
+     * $columnas_extra_sql = "";
+     * $columnas_sql = "ventas.id, productos.nombre";
+     * $sub_querys_sql = "";
+     *
+     * $resultado = $this->columnas_data(
+     *     columnas_extra_sql: $columnas_extra_sql,
+     *     columnas_sql: $columnas_sql,
+     *     sub_querys_sql: $sub_querys_sql
+     * );
+     * // Resultado:
+     * // $resultado->columnas_sql = "ventas.id, productos.nombre";
+     * // $resultado->sub_querys_sql = "";
+     * // $resultado->columnas_extra_sql = "";
+     * ```
      */
-    private function columnas_data(string $columnas_extra_sql, string $columnas_sql, string $sub_querys_sql): stdClass
-    {
+    private function columnas_data(
+        string $columnas_extra_sql,
+        string $columnas_sql,
+        string $sub_querys_sql
+    ): stdClass {
         $sub_querys_sql = trim($sub_querys_sql);
         $columnas_extra_sql = trim($columnas_extra_sql);
         $columnas_sql = trim($columnas_sql);
@@ -422,37 +453,68 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $columns_data->sub_querys_sql = $sub_querys_sql;
         $columns_data->columnas_extra_sql = $columnas_extra_sql;
 
-
         return $columns_data;
-
     }
 
+
     /**
-     * TOTAL
-     * Calcula y aplica la cadena SQL final de columnas al consulta actual en ejecución.
+     * REG
+     * Combina dos cadenas de columnas SQL en una única cadena formateada correctamente.
      *
-     * @param string $column_data Cadena SQL parcial para una columna
-     * @param string $columns_final Cadena SQL actual para todas las columnas
+     * @param string $column_data Cadena con las columnas o datos adicionales a agregar.
+     *                            Debe estar correctamente formateada como parte de una sentencia SQL.
+     * @param string $columns_final Cadena con las columnas actuales acumuladas. Se actualizará
+     *                               con los valores de `$column_data` si corresponde.
      *
-     * @return string Cadena SQL final después de agregar $column_data
-     * @version 16.143.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.columns_final
+     * @return string Una cadena con la combinación de `$columns_final` y `$column_data`, separadas por comas.
+     *                Si alguna de las cadenas está vacía, no se incluirán separadores adicionales.
+     *
+     * @example Agregar columnas a una cadena vacía:
+     * ```php
+     * $column_data = "SUM(precio) AS total_precio";
+     * $columns_final = "";
+     *
+     * $result = $this->columns_final(column_data: $column_data, columns_final: $columns_final);
+     * // Resultado:
+     * // $result = "SUM(precio) AS total_precio";
+     * ```
+     *
+     * @example Agregar columnas a una cadena existente:
+     * ```php
+     * $column_data = "COUNT(*) AS total_items";
+     * $columns_final = "SUM(precio) AS total_precio";
+     *
+     * $result = $this->columns_final(column_data: $column_data, columns_final: $columns_final);
+     * // Resultado:
+     * // $result = "SUM(precio) AS total_precio,COUNT(*) AS total_items";
+     * ```
+     *
+     * @example Sin agregar columnas cuando `$column_data` está vacío:
+     * ```php
+     * $column_data = "";
+     * $columns_final = "SUM(precio) AS total_precio";
+     *
+     * $result = $this->columns_final(column_data: $column_data, columns_final: $columns_final);
+     * // Resultado:
+     * // $result = "SUM(precio) AS total_precio";
+     * ```
      */
     private function columns_final(string $column_data, string $columns_final): string
     {
-        $columns_final = trim ($columns_final);
-        $column_data = trim ($column_data);
-        if($columns_final === ''){
-            $columns_final.=$column_data;
-        }
-        else{
-            if($column_data !==''){
-                $columns_final = $columns_final.','.$column_data;
+        $columns_final = trim($columns_final);
+        $column_data = trim($column_data);
+
+        if ($columns_final === '') {
+            $columns_final .= $column_data;
+        } else {
+            if ($column_data !== '') {
+                $columns_final = $columns_final . ',' . $column_data;
             }
         }
-        return $columns_final;
 
+        return $columns_final;
     }
+
 
     /**
      * Inicializa los elementos para una transaccion
@@ -919,30 +981,95 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * TOTAL
-     * Método extra_columns
+     * REG
+     * Genera columnas adicionales y subconsultas SQL para una consulta basada en los parámetros especificados.
      *
-     * Este método se utiliza para agregar subqueries y columnas adicionales al SQL final.
-     * Esta función genera las sentencias SQL para subquerys y columnas extra, las une y las devuelve.
+     * @param array $columnas Lista de nombres de columnas específicas que se desean incluir en la consulta.
+     *                        Si está vacía, se incluirán todas las columnas definidas.
+     * @param array $columnas_seleccionables Lista de alias de columnas que son seleccionables para subconsultas.
+     *                                       Si está vacía, no se aplican restricciones.
+     * @param string $columnas_sql Cadena SQL base que contiene las columnas iniciales de la consulta.
+     * @param bool $con_sq Indica si se deben generar subconsultas y columnas adicionales.
+     *                     Si es `false`, no se procesan estas partes.
      *
-     * @param array $columnas Array de las columnas presentes en el modelo.
-     * @param array $columnas_seleccionables Array de columnas que son seleccionables.
-     * @param string $columnas_sql String de las columnas separadas por comas para la consulta SQL.
-     * @param bool $con_sq Un indicador para decidir si se deben agregar subquerys.
+     * @return stdClass|array Retorna un objeto `stdClass` con las siguientes propiedades:
+     *                        - `sub_querys_sql` (string): Subconsultas SQL generadas.
+     *                        - `columnas_extra_sql` (string): Columnas adicionales generadas.
+     *                        En caso de error, retorna un array con detalles del problema encontrado.
      *
-     * @return stdClass|array Objeto que contiene las sentencias SQL finales para subquerys y columnas extras.
-     * @version 16.130.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.extra_columns
+     * @throws errores Si ocurre un problema durante la generación de subconsultas o columnas adicionales.
      *
+     * @example Generación exitosa de subconsultas y columnas adicionales:
+     * ```php
+     * $columnas = ['ventas_totales', 'productos_disponibles'];
+     * $columnas_seleccionables = ['ventas_totales'];
+     * $columnas_sql = 'ventas.id, productos.id';
+     * $con_sq = true;
+     *
+     * $resultado = $this->extra_columns(
+     *     columnas: $columnas,
+     *     columnas_seleccionables: $columnas_seleccionables,
+     *     columnas_sql: $columnas_sql,
+     *     con_sq: $con_sq
+     * );
+     * // Resultado:
+     * // $resultado->sub_querys_sql = ' , (SELECT SUM(precio) FROM ventas WHERE estado = "aprobado") AS ventas_totales';
+     * // $resultado->columnas_extra_sql = ' , (SELECT COUNT(*) FROM productos WHERE stock > 0) AS productos_disponibles';
+     * ```
+     *
+     * @example Sin subconsultas o columnas adicionales:
+     * ```php
+     * $columnas = [];
+     * $columnas_seleccionables = [];
+     * $columnas_sql = 'ventas.id, productos.id';
+     * $con_sq = false;
+     *
+     * $resultado = $this->extra_columns(
+     *     columnas: $columnas,
+     *     columnas_seleccionables: $columnas_seleccionables,
+     *     columnas_sql: $columnas_sql,
+     *     con_sq: $con_sq
+     * );
+     * // Resultado:
+     * // $resultado->sub_querys_sql = '';
+     * // $resultado->columnas_extra_sql = '';
+     * ```
+     *
+     * @example Error al generar subconsultas:
+     * ```php
+     * $columnas = ['ventas_totales'];
+     * $columnas_seleccionables = ['ventas_totales'];
+     * $columnas_sql = 'ventas.id, productos.id';
+     * $con_sq = true;
+     *
+     * // Simula un error en el modelo al generar subconsultas.
+     * $this->sub_querys = function() {
+     *     return $this->error->error(mensaje: 'Error al generar subquerys', data: []);
+     * };
+     *
+     * $resultado = $this->extra_columns(
+     *     columnas: $columnas,
+     *     columnas_seleccionables: $columnas_seleccionables,
+     *     columnas_sql: $columnas_sql,
+     *     con_sq: $con_sq
+     * );
+     * // Resultado esperado: Array con detalles del error.
+     * ```
      */
     private function extra_columns(
-        array $columnas, array $columnas_seleccionables, string $columnas_sql, bool $con_sq): stdClass|array
-    {
+        array $columnas,
+        array $columnas_seleccionables,
+        string $columnas_sql,
+        bool $con_sq
+    ): stdClass|array {
         $sub_querys_sql = '';
         $columnas_extra_sql = '';
-        if($con_sq) {
-            $sub_querys_sql = (new columnas())->sub_querys(columnas: $columnas_sql, modelo: $this,
-                columnas_seleccionables: $columnas_seleccionables);
+        if ($con_sq) {
+            $sub_querys_sql = (new columnas())->sub_querys(
+                columnas: $columnas_sql,
+                modelo: $this,
+                columnas_seleccionables: $columnas_seleccionables
+            );
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al generar sub querys en ' . $this->tabla,
                     data: $sub_querys_sql);
@@ -959,9 +1086,8 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
         $data->columnas_extra_sql = $columnas_extra_sql;
 
         return $data;
-
-
     }
+
 
     /**
      * Devuelve un array que contiene un rango de fechas con fecha inicial y final
@@ -996,31 +1122,63 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
     }
 
     /**
-     * TOTAL
-     * Genera una cadena que contiene las columnas finales basadas en los datos de las columnas proporcionados.
+     * REG
+     * Genera una cadena final de columnas SQL combinando múltiples partes de datos proporcionados en un objeto.
      *
-     * @param stdClass $columns_data El objeto que contiene los datos de las columnas que se deben procesar.
+     * @param stdClass $columns_data Objeto que contiene las diferentes cadenas de columnas SQL a combinar.
+     *                               Cada propiedad del objeto debe ser una cadena formateada como parte de una consulta SQL.
      *
-     * @return string|array Un string que representa las columnas finales obtenidas de los datos de entrada de las columnas.
+     * @return string|array Una cadena con todas las columnas SQL combinadas, separadas por comas.
+     *                      En caso de error, retorna un array con detalles del error.
      *
-     * @version 16.151.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_columns_final
+     * @throws errores Si ocurre un problema al combinar las columnas, se maneja mediante la clase `errores`.
+     *
+     * @example Uso con múltiples columnas:
+     * ```php
+     * $columns_data = new stdClass();
+     * $columns_data->col1 = "SUM(precio) AS total_precio";
+     * $columns_data->col2 = "COUNT(*) AS total_items";
+     *
+     * $result = $this->genera_columns_final(columns_data: $columns_data);
+     * // Resultado:
+     * // $result = "SUM(precio) AS total_precio, COUNT(*) AS total_items";
+     * ```
+     *
+     * @example Uso con una sola columna:
+     * ```php
+     * $columns_data = new stdClass();
+     * $columns_data->col1 = "SUM(precio) AS total_precio";
+     *
+     * $result = $this->genera_columns_final(columns_data: $columns_data);
+     * // Resultado:
+     * // $result = "SUM(precio) AS total_precio";
+     * ```
+     *
+     * @example Sin columnas válidas (retorna error):
+     * ```php
+     * $columns_data = new stdClass();
+     * $columns_data->col1 = ""; // Cadena vacía no válida.
+     *
+     * $result = $this->genera_columns_final(columns_data: $columns_data);
+     * // Resultado:
+     * // $result es un array con detalles del error.
+     * ```
      */
     private function genera_columns_final(stdClass $columns_data): string|array
     {
         $columns_final = '';
-        foreach ($columns_data as $column_data){
+        foreach ($columns_data as $column_data) {
             $column_data = trim($column_data);
             $columns_final = trim($columns_final);
 
-            $columns_final = $this->columns_final(column_data: $column_data,columns_final:  $columns_final);
-            if(errores::$error){
+            $columns_final = $this->columns_final(column_data: $column_data, columns_final: $columns_final);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al integrar columns_final', data: $columns_final);
             }
         }
         return $columns_final;
-
     }
+
 
     /**
      * @param modelo $modelo Modelo para generacion de descripcion
@@ -1128,61 +1286,160 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
-     * TOTAL
-     * Final public function genera_consulta_base() en la clase modelo_base.
+     * REG
+     * Genera una consulta SQL base para el modelo actual, incluyendo columnas, joins, y otras estructuras necesarias.
      *
-     * Este método facilita la construcción de consultas SQL básicas. Con base en
-     * los parámetros de entrada, este método genera una consulta que refleja las
-     * necesidades especificadas.
+     * @param array $columnas Columnas básicas que se desean incluir en la consulta.
+     * @param array $columnas_by_table Especifica columnas agrupadas por tabla para su inclusión en la consulta.
+     * @param bool $columnas_en_bruto Si es `true`, las columnas serán generadas directamente sin aplicar alias ni transformaciones.
+     * @param bool $con_sq Indica si se deben incluir subqueries en la consulta.
+     * @param bool $count Si es `true`, genera una consulta de conteo (`COUNT(*)`) en lugar de listar columnas.
+     * @param array $extension_estructura Define estructuras adicionales que se deben unir a la consulta (joins).
+     * @param array $extra_join Define joins específicos adicionales para la consulta.
+     * @param array $renombradas Especifica tablas con alias para incluir en la consulta.
      *
-     * @param array  $columnas Un array que indica las columnas a seleccionar.
-     * @param array  $columnas_by_table Un array con las columnas agrupadas por tabla.
-     * @param bool   $columnas_en_bruto Flag para indicar si las columnas se usarán en su forma bruta.
-     * @param bool   $con_sq Flag para indicar si la consulta incluirá sub-consultas.
-     * @param bool   $count Flag para indicar si la consulta tendrá una cláusula COUNT.
-     * @param array  $extension_estructura Un array para expandir la estructura.
-     * @param array  $extra_join Un array para especificar joins adicionales.
-     * @param array  $renombradas Un array con columnas renombradas.
+     * @return array|string Retorna una cadena SQL con la consulta generada. En caso de error, devuelve un array con los detalles del problema.
      *
-     * @return array|string Devuelve una cadena que representa la consulta SQL generada o un array de errores si se
-     * produce algún problema.
-     * @version 16.167.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.genera_consulta_base
+     * @throws errores Si ocurre algún problema durante la generación de la consulta SQL.
+     *
+     * @example Generar una consulta básica con columnas seleccionadas:
+     * ```php
+     * $columnas = ['columna1', 'columna2'];
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $con_sq = true;
+     * $count = false;
+     * $extension_estructura = [
+     *     'tabla_extra' => ['key' => 'id', 'enlace' => 'tabla_base', 'key_enlace' => 'tabla_extra_id']
+     * ];
+     * $extra_join = [];
+     * $renombradas = [];
+     *
+     * $consulta = $this->genera_consulta_base(
+     *     columnas: $columnas,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     con_sq: $con_sq,
+     *     count: $count,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     renombradas: $renombradas
+     * );
+     * // Resultado esperado:
+     * // "SELECT tabla.columna1, tabla.columna2 FROM tabla_base LEFT JOIN tabla_extra ON tabla_extra.id = tabla_base.tabla_extra_id"
+     * ```
+     *
+     * @example Generar una consulta de conteo:
+     * ```php
+     * $columnas = [];
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $con_sq = false;
+     * $count = true;
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $renombradas = [];
+     *
+     * $consulta = $this->genera_consulta_base(
+     *     columnas: $columnas,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     con_sq: $con_sq,
+     *     count: $count,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     renombradas: $renombradas
+     * );
+     * // Resultado esperado:
+     * // "SELECT COUNT(*) AS total_registros FROM tabla_base"
+     * ```
+     *
+     * @example Manejo de error al generar columnas:
+     * ```php
+     * $columnas = ['columna_invalida'];
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $con_sq = true;
+     * $count = false;
+     * $extension_estructura = [];
+     * $extra_join = [];
+     * $renombradas = [];
+     *
+     * $consulta = $this->genera_consulta_base(
+     *     columnas: $columnas,
+     *     columnas_by_table: $columnas_by_table,
+     *     columnas_en_bruto: $columnas_en_bruto,
+     *     con_sq: $con_sq,
+     *     count: $count,
+     *     extension_estructura: $extension_estructura,
+     *     extra_join: $extra_join,
+     *     renombradas: $renombradas
+     * );
+     * // Resultado: Array con detalles del error al procesar las columnas.
+     * ```
      */
-
     final public function genera_consulta_base(
-        array $columnas = array(), array $columnas_by_table = array(), bool $columnas_en_bruto = false,
-        bool $con_sq = true, bool $count = false, array $extension_estructura = array(), array $extra_join = array(),
-        array $renombradas = array()):array|string
-    {
-        $this->tabla = str_replace('models\\','',$this->tabla);
+        array $columnas = array(),
+        array $columnas_by_table = array(),
+        bool $columnas_en_bruto = false,
+        bool $con_sq = true,
+        bool $count = false,
+        array $extension_estructura = array(),
+        array $extra_join = array(),
+        array $renombradas = array()
+    ): array|string {
+        $this->tabla = str_replace('models\\', '', $this->tabla);
 
         $columnas_seleccionables = $columnas;
 
-        $columnas_sql = (new columnas())->obten_columnas_completas(modelo: $this,
-            columnas_by_table: $columnas_by_table, columnas_en_bruto: $columnas_en_bruto,
-            columnas_sql: $columnas_seleccionables, extension_estructura: $extension_estructura,
-            extra_join: $extra_join, renombres: $renombradas);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener columnas en '.$this->tabla,data: $columnas_sql);
+        $columnas_sql = (new columnas())->obten_columnas_completas(
+            modelo: $this,
+            columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto,
+            columnas_sql: $columnas_seleccionables,
+            extension_estructura: $extension_estructura,
+            extra_join: $extra_join,
+            renombres: $renombradas
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al obtener columnas en ' . $this->tabla,
+                data: $columnas_sql
+            );
         }
 
-
-        $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
-            extra_join: $extra_join, modelo_tabla: $this->tabla, renombradas: $renombradas, tabla: $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
+        $tablas = (new joins())->tablas(
+            columnas: $this->columnas,
+            extension_estructura: $extension_estructura,
+            extra_join: $extra_join,
+            modelo_tabla: $this->tabla,
+            renombradas: $renombradas,
+            tabla: $this->tabla
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar joins en ' . $this->tabla,
+                data: $tablas
+            );
         }
 
-        $columns_final = $this->integra_columns_final(columnas: $columnas,
-            columnas_seleccionables:  $columnas_seleccionables,columnas_sql:  $columnas_sql,
-            con_sq:  $con_sq,count:  $count);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar columns_final', data: $columns_final);
+        $columns_final = $this->integra_columns_final(
+            columnas: $columnas,
+            columnas_seleccionables: $columnas_seleccionables,
+            columnas_sql: $columnas_sql,
+            con_sq: $con_sq,
+            count: $count
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al integrar columns_final',
+                data: $columns_final
+            );
         }
 
         return /** @lang MYSQL */ "SELECT $columns_final FROM $tablas";
     }
+
 
 
     /**
@@ -1389,56 +1646,107 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
 
-
-
-
-
     /**
-     * TOTAL
-     * Integra la información final de las columnas, tras aplicar varias manipulaciones.
+     * REG
+     * Genera una cadena de columnas SQL finales combinando las columnas básicas, columnas adicionales y subqueries.
      *
-     * @param array $columnas Lista de columnas.
-     * @param array $columnas_seleccionables Lista de columnas seleccionables.
-     * @param string $columnas_sql Las columnas ya formateadas como cadena SQL.
-     * @param bool $con_sq Condición para la ejecución de subconsultas.
-     * @param bool $count Determina si se debe contar el número total de registros.
+     * @param array $columnas Columnas básicas que se utilizarán en la generación del SQL.
+     * @param array $columnas_seleccionables Columnas seleccionables que se deben considerar al integrar las columnas adicionales.
+     * @param string $columnas_sql Cadena inicial de columnas SQL que se usará como base para la integración.
+     * @param bool $con_sq Indica si se deben incluir subqueries en el resultado.
+     * @param bool $count Si es `true`, genera una columna SQL para contar el total de registros (`COUNT(*) AS total_registros`).
      *
-     * @return array|string Devuelve una cadena con las columnas finales para la consulta SQL.
-     *                      En caso de activarse $count, se devuelve "COUNT(*) AS total_registros".
+     * @return array|string Devuelve una cadena con las columnas SQL finales integradas. En caso de error, retorna un array con detalles del error.
      *
-     * @throws errores Retorna error si falla alguna de las etapas de generación de columnas.
-     * @version 16.165.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo_base.integra_columns_final
+     * @throws errores Si ocurre algún problema en los procesos de validación o integración de columnas.
+     *
+     * @example Uso básico con columnas adicionales y subqueries:
+     * ```php
+     * $columnas = ['columna1', 'columna2'];
+     * $columnas_seleccionables = ['subquery1', 'subquery2'];
+     * $columnas_sql = "tabla.columna_base";
+     * $con_sq = true;
+     * $count = false;
+     *
+     * $resultado = $this->integra_columns_final(
+     *     columnas: $columnas,
+     *     columnas_seleccionables: $columnas_seleccionables,
+     *     columnas_sql: $columnas_sql,
+     *     con_sq: $con_sq,
+     *     count: $count
+     * );
+     * // Resultado esperado:
+     * // "tabla.columna_base, subquery1_sql AS subquery1, subquery2_sql AS subquery2"
+     * ```
+     *
+     * @example Uso con conteo de registros:
+     * ```php
+     * $columnas = [];
+     * $columnas_seleccionables = [];
+     * $columnas_sql = "";
+     * $con_sq = false;
+     * $count = true;
+     *
+     * $resultado = $this->integra_columns_final(
+     *     columnas: $columnas,
+     *     columnas_seleccionables: $columnas_seleccionables,
+     *     columnas_sql: $columnas_sql,
+     *     con_sq: $con_sq,
+     *     count: $count
+     * );
+     * // Resultado esperado:
+     * // "COUNT(*) AS total_registros"
+     * ```
+     *
+     * @example Manejo de error al generar columnas adicionales:
+     * ```php
+     * $columnas = ['columna_invalida'];
+     * $columnas_seleccionables = [];
+     * $columnas_sql = "tabla.columna_base";
+     * $con_sq = true;
+     * $count = false;
+     *
+     * $resultado = $this->integra_columns_final(
+     *     columnas: $columnas,
+     *     columnas_seleccionables: $columnas_seleccionables,
+     *     columnas_sql: $columnas_sql,
+     *     con_sq: $con_sq,
+     *     count: $count
+     * );
+     * // Resultado:
+     * // Array con detalles del error al generar columnas adicionales.
+     * ```
      */
     private function integra_columns_final(array $columnas, array $columnas_seleccionables, string $columnas_sql,
                                            bool $con_sq, bool $count): array|string
     {
-        $extra_columns = $this->extra_columns(columnas: $columnas,columnas_seleccionables:  $columnas_seleccionables,
-            columnas_sql:  $columnas_sql,con_sq:  $con_sq);
+        $extra_columns = $this->extra_columns(columnas: $columnas, columnas_seleccionables: $columnas_seleccionables,
+            columnas_sql: $columnas_sql, con_sq: $con_sq);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar extra_columns', data: $extra_columns);
         }
 
-
-        $columns_data = $this->columnas_data(columnas_extra_sql: $extra_columns->columnas_extra_sql,
-            columnas_sql:  $columnas_sql,
-            sub_querys_sql:  $extra_columns->sub_querys_sql);
-        if(errores::$error){
+        $columns_data = $this->columnas_data(
+            columnas_extra_sql: $extra_columns->columnas_extra_sql,
+            columnas_sql: $columnas_sql,
+            sub_querys_sql: $extra_columns->sub_querys_sql
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar columnas_data', data: $columns_data);
         }
 
         $columns_final = $this->genera_columns_final(columns_data: $columns_data);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al integrar columns_final', data: $columns_final);
         }
 
-        if($count){
+        if ($count) {
             $columns_final = "COUNT(*) AS total_registros";
         }
 
         return $columns_final;
-
     }
+
 
 
     /**

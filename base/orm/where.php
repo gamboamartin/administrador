@@ -996,6 +996,7 @@ class where{
      * ### Consideraciones:
      * - Asegúrate de que el filtro SQL proporcionado sea válido y seguro para prevenir inyecciones SQL.
      */
+
     final public function where_suma(string $filtro_sql): string
     {
         $where = '';

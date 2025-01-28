@@ -1108,10 +1108,29 @@ class controlador_base extends controler
     }
 
     /**
-     * TOTAL
-     * Verifica si esta en transaccion previa
-     * @return bool
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.controlador_base.transaccion_previa
+     * REG
+     * Verifica si ya existe una transacción activa en la conexión actual.
+     *
+     * Esta función revisa si la conexión PDO está dentro de una transacción activa.
+     * Es útil para evitar conflictos al intentar iniciar o finalizar una transacción en
+     * un contexto donde ya se encuentra activa una transacción previa.
+     *
+     * @return bool Retorna `true` si hay una transacción activa, o `false` si no la hay.
+     *
+     * @example Uso básico:
+     * ```php
+     * if ($this->transaccion_previa()) {
+     *     echo "Ya existe una transacción activa.";
+     * } else {
+     *     echo "No hay transacción activa.";
+     * }
+     * ```
+     *
+     * @note
+     * - Utiliza el método `inTransaction()` de PDO para verificar el estado de la transacción.
+     * - Esta función no modifica el estado de la transacción, solo lo consulta.
+     *
+     * @throws errores No lanza errores, pero puede depender de una conexión PDO válida en `$this->link`.
      */
     final protected function transaccion_previa(): bool
     {
@@ -1121,6 +1140,7 @@ class controlador_base extends controler
         }
         return $transaccion_previa;
     }
+
 
     private function valida_menu(array $menu): bool|array
     {

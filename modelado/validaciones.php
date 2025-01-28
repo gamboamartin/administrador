@@ -169,22 +169,101 @@ class validaciones extends validacion{
 
 
     /**
-     * TOTAL
-     * Valida la data del filtro especial proporcionado.
+     * REG
+     * Valida la estructura y el contenido de un filtro especial para asegurarse de que cumple con los requisitos necesarios.
      *
-     * Esta función recibe dos parámetros, un string que representa el campo y un array que representa el filtro.
-     * Verifica si el campo está vacío, si el valor es un campo en el filtro, si existe un operador y si existe un valor.
-     * Si alguna de estas condiciones no se cumple, la función retorna un error. Si todas las condiciones se cumplen retorna true.
+     * @param string $campo Nombre del campo que será evaluado dentro del filtro. Debe ser un string no vacío.
+     * @param array $filtro Array asociativo que contiene los criterios del filtro. Debe incluir:
+     *  - `$filtro[$campo]['valor_es_campo']`: Indicador opcional para validar si el valor es un campo (puede faltar).
+     *  - `$filtro[$campo]['operador']`: Operador que define la lógica de comparación (debe existir).
+     *  - `$filtro[$campo]['valor']`: Valor del campo. Si no está definido, se inicializa como una cadena vacía. No puede ser un array.
      *
-     * @param string $campo El nombre del campo a validar.
-     * @param array $filtro El filtro a validar.
+     * @return true|array Devuelve `true` si la validación es exitosa. Si ocurre un error, devuelve un array con los detalles.
      *
-     * @return true|array Devuelve `true` si la validación es correcta, si no, devuelve un array con información sobre el error.
+     * @throws errores Si:
+     * - `$campo` está vacío.
+     * - `$filtro[$campo]['operador']` no está definido.
+     * - `$filtro[$campo]['valor']` es un array (no se permite).
+     * - `$campo` es numérico cuando no existe `$filtro[$campo]['valor_es_campo']`.
      *
-     * @throws errores Si el campo está vacío, si el valor del filtro no es un campo, si no existe un operador o si el valor es un array.
-     * @version 16.104.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_data_filtro_especial
+     * ### Ejemplos de uso:
+     *
+     * 1. **Validación exitosa de un filtro con todos los parámetros**:
+     *    ```php
+     *    $campo = 'nombre';
+     *    $filtro = [
+     *        'nombre' => [
+     *            'valor_es_campo' => true,
+     *            'operador' => '=',
+     *            'valor' => 'John Doe'
+     *        ]
+     *    ];
+     *    $resultado = $modelo->valida_data_filtro_especial(campo: $campo, filtro: $filtro);
+     *    // Resultado esperado: true
+     *    ```
+     *
+     * 2. **Validación exitosa con `valor` inicializado automáticamente**:
+     *    ```php
+     *    $campo = 'edad';
+     *    $filtro = [
+     *        'edad' => [
+     *            'operador' => '>',
+     *        ]
+     *    ];
+     *    $resultado = $modelo->valida_data_filtro_especial(campo: $campo, filtro: $filtro);
+     *    // Resultado esperado: true (se inicializa $filtro['edad']['valor'] como una cadena vacía)
+     *    ```
+     *
+     * 3. **Error por `$campo` vacío**:
+     *    ```php
+     *    $campo = '';
+     *    $filtro = [
+     *        'edad' => [
+     *            'operador' => '>',
+     *            'valor' => 30
+     *        ]
+     *    ];
+     *    $resultado = $modelo->valida_data_filtro_especial(campo: $campo, filtro: $filtro);
+     *    // Resultado esperado: Array con el mensaje "Error campo vacio".
+     *    ```
+     *
+     * 4. **Error por falta de `$filtro[$campo]['operador']`**:
+     *    ```php
+     *    $campo = 'edad';
+     *    $filtro = [
+     *        'edad' => [
+     *            'valor' => 30
+     *        ]
+     *    ];
+     *    $resultado = $modelo->valida_data_filtro_especial(campo: $campo, filtro: $filtro);
+     *    // Resultado esperado: Array con el mensaje "Error debe existir $filtro[campo][operador]".
+     *    ```
+     *
+     * 5. **Error por `$filtro[$campo]['valor']` como array**:
+     *    ```php
+     *    $campo = 'edad';
+     *    $filtro = [
+     *        'edad' => [
+     *            'operador' => '>',
+     *            'valor' => [30, 40]
+     *        ]
+     *    ];
+     *    $resultado = $modelo->valida_data_filtro_especial(campo: $campo, filtro: $filtro);
+     *    // Resultado esperado: Array con el mensaje "Error $filtro[edad]['valor'] debe ser un dato".
+     *    ```
+     *
+     * ### Proceso de la función:
+     * 1. Valida que `$campo` no esté vacío.
+     * 2. Verifica si `$filtro[$campo]['valor_es_campo']` está definido y si `$campo` es un texto válido.
+     * 3. Comprueba la existencia de `$filtro[$campo]['operador']`.
+     * 4. Inicializa `$filtro[$campo]['valor']` como cadena vacía si no está definido.
+     * 5. Valida que `$filtro[$campo]['valor']` no sea un array.
+     *
+     * ### Resultado esperado:
+     * - **Éxito**: `true` si todos los criterios son válidos.
+     * - **Error**: Array con detalles específicos del error.
      */
+
     final public function valida_data_filtro_especial(string $campo, array $filtro): true|array
     {
         if($campo === ''){
@@ -259,28 +338,82 @@ class validaciones extends validacion{
     }
 
     /**
-     * TOTAL
-     * Esta función verifica y valida los campos clave en el proceso de renombramiento.
+     * REG
+     * Valida la estructura de un array de datos y una tabla renombrada para asegurar que cumplan con los requisitos
+     * necesarios para realizar un proceso de renombre en una consulta SQL.
      *
-     * @param array $data - Los datos proporcionados por el usuario que contienen 'enlace' y 'nombre_original'
-     * @param string $tabla_renombrada - El nombre de la tabla renombrada
+     * @param array $data Datos a validar. Debe contener las siguientes claves:
+     *  - `enlace`: Nombre de la tabla con la que se establece el enlace.
+     *  - `nombre_original`: Nombre original de la tabla o campo. No debe estar vacío.
+     * @param string $tabla_renombrada Nombre de la tabla renombrada. No puede estar vacío.
      *
-     * @return true|array - Regresa verdadero si todas las validaciones son exitosas,
-     *                      de lo contrario, devuelve un array con información de error generada por la función error()
+     * @return true|array Devuelve `true` si todas las validaciones son exitosas. En caso de error, retorna un array con
+     * los detalles del mismo.
+     *
+     * @throws errores Si:
+     * - Falta la clave `enlace` en `$data`.
+     * - Falta la clave `nombre_original` en `$data` o si esta clave está vacía.
+     * - `$tabla_renombrada` está vacía o no es válida.
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Validación exitosa**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'tabla_enlace',
+     *        'nombre_original' => 'tabla_original'
+     *    ];
+     *    $tabla_renombrada = 'tabla_renombrada';
+     *
+     *    $resultado = $modelo->valida_keys_renombre(data: $data, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: true
+     *    ```
+     *
+     * 2. **Clave faltante en `$data`**:
+     *    ```php
+     *    $data = [
+     *        'nombre_original' => 'tabla_original'
+     *    ];
+     *    $tabla_renombrada = 'tabla_renombrada';
+     *
+     *    $resultado = $modelo->valida_keys_renombre(data: $data, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: Array con error indicando que falta la clave `enlace`.
+     *    ```
+     *
+     * 3. **Clave `nombre_original` vacía**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'tabla_enlace',
+     *        'nombre_original' => ''
+     *    ];
+     *    $tabla_renombrada = 'tabla_renombrada';
+     *
+     *    $resultado = $modelo->valida_keys_renombre(data: $data, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: Array con error indicando que `nombre_original` no puede estar vacía.
+     *    ```
+     *
+     * 4. **Tabla renombrada vacía**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'tabla_enlace',
+     *        'nombre_original' => 'tabla_original'
+     *    ];
+     *    $tabla_renombrada = '';
+     *
+     *    $resultado = $modelo->valida_keys_renombre(data: $data, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: Array con error indicando que `$tabla_renombrada` no puede venir vacía.
+     *    ```
      *
      * ### Proceso de validación:
-     * 1.   Verifica si existe la clave 'enlace' en la matriz de datos proporcionada.
-     *      Si no existe, genera un error y devuelve la respuesta del error.
-     * 2.   Verifica si existe la clave 'nombre_original' en la matriz de datos proporcionada.
-     *      Si no existe, genera un error y devuelve la respuesta del error.
-     * 3.   Realiza un trim() en el valor de 'nombre_original' y verifica si está vacío.
-     *      Si está vacío, genera un error y devuelve la respuesta del error.
-     * 4.   Realiza un trim() en el valor de la variable $tabla_renombrada y verifica si está vacío.
-     *      Si está vacío, genera un error y devuelve la respuesta del error.
+     * 1. Verifica que la clave `enlace` exista en `$data`.
+     * 2. Verifica que la clave `nombre_original` exista y no esté vacía en `$data`.
+     * 3. Valida que `$tabla_renombrada` no esté vacía y sea un texto válido.
      *
-     * @version 16.81.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_keys_renombre.21.25.0
+     * ### Resultado esperado:
+     * - **Validación exitosa**: `true`.
+     * - **Error**: Array con los detalles del error si alguna validación falla.
      */
+
     final public function valida_keys_renombre(array $data, string $tabla_renombrada): true|array
     {
         if(!isset($data['enlace'])){
@@ -303,19 +436,90 @@ class validaciones extends validacion{
     }
 
     /**
-     * TOTAL
-     * Función valida_keys_sql
+     * REG
+     * Valida la existencia y contenido de claves necesarias en un array relacionado con SQL.
      *
-     * Esta función valida los parámetros entregados para una consulta SQL.
-     * Los parámetros a validar son 'key', 'enlace', 'key_enlace'. Estos deben existir y no deben estar vacíos.
+     * Esta función asegura que el array `$data` contiene las claves necesarias (`key`, `enlace`, `key_enlace`)
+     * y que dichas claves no estén vacías. En caso de que alguna clave no exista o esté vacía, se retorna un error.
      *
-     * @param array $data    Datos a validar. Debe tener los indices 'key', 'enlace' y 'key_enlace'.
-     * @param string $tabla  La tabla SQL en la que se está trabajando para el contexto del mensaje de error.
+     * @param array $data Array que contiene los datos a validar. Debe incluir las claves:
+     *                    - `key`: Clave principal de la tabla.
+     *                    - `enlace`: Clave del enlace SQL.
+     *                    - `key_enlace`: Clave relacionada al enlace.
+     * @param string $tabla Nombre de la tabla asociada con los datos validados. Se utiliza para mensajes de error.
      *
-     * @return true|array    Retorna verdadero si los datos son válidos. En caso contrario retorna un array con el error.
-     * @version 16.55.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.validaciones.valida_keys_sql.21.24.0
+     * @return true|array Retorna `true` si la validación es exitosa. Si ocurre un error, retorna un array de error
+     *                    con detalles del problema.
+     *
+     * @throws array Si las claves requeridas no existen, están vacías o los valores no son válidos.
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Validación exitosa**:
+     *    ```php
+     *    $data = [
+     *        'key' => 'id_usuario',
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'id_perfil'
+     *    ];
+     *    $tabla = 'usuarios';
+     *
+     *    $resultado = $modelo->valida_keys_sql(data: $data, tabla: $tabla);
+     *    // Resultado esperado: true
+     *    ```
+     *
+     * 2. **Error por falta de claves en `$data`**:
+     *    ```php
+     *    $data = [
+     *        'key' => 'id_usuario',
+     *        'enlace' => 'usuarios'
+     *    ];
+     *    $tabla = 'usuarios';
+     *
+     *    $resultado = $modelo->valida_keys_sql(data: $data, tabla: $tabla);
+     *    // Resultado esperado:
+     *    // [
+     *    //     'error' => 1,
+     *    //     'mensaje' => 'Error data[key_enlace] debe existir',
+     *    //     'data' => [
+     *    //         'key' => 'id_usuario',
+     *    //         'enlace' => 'usuarios'
+     *    //     ]
+     *    // ]
+     *    ```
+     *
+     * 3. **Error por claves vacías**:
+     *    ```php
+     *    $data = [
+     *        'key' => '',
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'id_perfil'
+     *    ];
+     *    $tabla = 'usuarios';
+     *
+     *    $resultado = $modelo->valida_keys_sql(data: $data, tabla: $tabla);
+     *    // Resultado esperado:
+     *    // [
+     *    //     'error' => 1,
+     *    //     'mensaje' => 'Error data[key] esta vacio usuarios',
+     *    //     'data' => [
+     *    //         'key' => '',
+     *    //         'enlace' => 'usuarios',
+     *    //         'key_enlace' => 'id_perfil'
+     *    //     ]
+     *    // ]
+     *    ```
+     *
+     * ### Proceso de validación:
+     * 1. Verifica que las claves `key`, `enlace` y `key_enlace` existan en `$data`.
+     * 2. Asegura que las claves no estén vacías después de aplicar `trim`.
+     * 3. En caso de errores, retorna un array con el mensaje descriptivo y los datos relacionados.
+     *
+     * ### Resultados esperados:
+     * - **Validación exitosa**: Retorna `true`.
+     * - **Error**: Retorna un array de error con información detallada del problema.
      */
+
     final public function valida_keys_sql(array $data, string $tabla): true|array
     {
         if(!isset($data['key'])){
@@ -497,6 +701,7 @@ class validaciones extends validacion{
 
     /**
      * REG
+<<<<<<< HEAD
      * Valida que los valores proporcionados para renombrar columnas, tablas y tipos de joins sean correctos y estén completos.
      *
      * @param string $campo_renombrado Nombre del campo renombrado. Debe ser una cadena no vacía.
@@ -514,6 +719,27 @@ class validaciones extends validacion{
      * $renombrada = 'usuarios_renombrados';
      * $tabla = 'usuarios';
      * $tabla_enlace = 'roles';
+=======
+     * Valida los parámetros relacionados con las configuraciones de renombre de tablas y joins en consultas SQL.
+     *
+     * @param string $campo_renombrado Nombre del campo que se utilizará para el renombre. No puede estar vacío.
+     * @param string $join Tipo de JOIN que se aplicará en la consulta. Debe ser uno de los siguientes: `INNER`, `LEFT`, `RIGHT`.
+     * @param string $renombrada Nombre de la tabla renombrada. No puede estar vacío.
+     * @param string $tabla Nombre de la tabla original. No puede estar vacío.
+     * @param string $tabla_enlace Nombre de la tabla de enlace asociada. No puede estar vacío.
+     *
+     * @return true|array Retorna `true` si todos los parámetros son válidos. En caso de error, retorna un array con
+     *                    los detalles del error, incluyendo un mensaje descriptivo y los datos que generaron el error.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $campo_renombrado = 'usuario_id';
+     * $join = 'INNER';
+     * $renombrada = 'usuarios_alias';
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles_usuarios';
+>>>>>>> 49a610360774f77119bfa2ab68481482a093b2ee
      *
      * $resultado = $miClase->valida_renombres(
      *     campo_renombrado: $campo_renombrado,
@@ -523,6 +749,7 @@ class validaciones extends validacion{
      *     tabla_enlace: $tabla_enlace
      * );
      *
+<<<<<<< HEAD
      * var_dump($resultado); // Resultado esperado: true
      * ```
      *
@@ -560,11 +787,39 @@ class validaciones extends validacion{
      * );
      *
      * var_dump($resultado);
+=======
+     * var_dump($resultado);
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ### Ejemplo de error:
+     *
+     * - Caso: El tipo de JOIN no es válido.
+     *
+     * ```php
+     * $campo_renombrado = 'usuario_id';
+     * $join = 'FULL'; // Error: No es un tipo de JOIN permitido.
+     * $renombrada = 'usuarios_alias';
+     * $tabla = 'usuarios';
+     * $tabla_enlace = 'roles_usuarios';
+     *
+     * $resultado = $miClase->valida_renombres(
+     *     campo_renombrado: $campo_renombrado,
+     *     join: $join,
+     *     renombrada: $renombrada,
+     *     tabla: $tabla,
+     *     tabla_enlace: $tabla_enlace
+     * );
+     *
+     * print_r($resultado);
+>>>>>>> 49a610360774f77119bfa2ab68481482a093b2ee
      * // Resultado esperado:
      * // Array
      * // (
      * //     [error] => 1
      * //     [mensaje] => Error join invalido debe ser INNER, LEFT O RIGTH
+<<<<<<< HEAD
      * //     [data] => CROSS
      * //     [es_final] => true
      * // )
@@ -608,6 +863,54 @@ class validaciones extends validacion{
      * ### Resultado esperado:
      * - Devuelve `true` si todos los parámetros son válidos.
      * - Retorna un array con detalles del error si alguno de los valores no es válido.
+=======
+     * //     [data] => FULL
+     * // )
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$campo_renombrado`**:
+     *   Nombre del campo que será utilizado para realizar el renombre. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'usuario_id'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$join`**:
+     *   Tipo de JOIN que se utilizará en la consulta. Este debe ser uno de los siguientes valores: `INNER`, `LEFT`, `RIGHT`.
+     *   Ejemplo válido: `'INNER'`.
+     *   Ejemplo inválido: `'FULL'` o `''`.
+     *
+     * - **`$renombrada`**:
+     *   Nombre de la tabla renombrada. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'usuarios_alias'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$tabla`**:
+     *   Nombre de la tabla original. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * - **`$tabla_enlace`**:
+     *   Nombre de la tabla de enlace asociada. Este valor no puede estar vacío.
+     *   Ejemplo válido: `'roles_usuarios'`.
+     *   Ejemplo inválido: `''` (cadena vacía).
+     *
+     * ### Resultado esperado:
+     *
+     * - **Éxito**:
+     *   Retorna `true` si todos los parámetros son válidos.
+     *
+     * - **Error**:
+     *   Si algún parámetro no cumple con las condiciones, se retorna un array con los detalles del error:
+     *   - `error`: Indicador de error (`1`).
+     *   - `mensaje`: Descripción del error.
+     *   - `data`: Datos asociados al error.
+     *
+     * ### Notas adicionales:
+     *
+     * - Está diseñada para ser utilizada en la validación previa a la construcción de consultas SQL complejas.
+     * - Asegura que los valores de renombres y tipos de JOIN sean válidos antes de su uso en la lógica de negocio.
+>>>>>>> 49a610360774f77119bfa2ab68481482a093b2ee
      */
 
     final public function valida_renombres(string $campo_renombrado, string $join, string $renombrada,
@@ -639,6 +942,7 @@ class validaciones extends validacion{
 
     /**
      * REG
+<<<<<<< HEAD
      * Valida que los parámetros proporcionados `$key` y `$tabla_join` sean válidos para construir una relación SQL JOIN.
      *
      * @param string $key Identificador único de la tabla base en el JOIN.
@@ -716,6 +1020,102 @@ class validaciones extends validacion{
      * ### Consideraciones:
      * - Esta función es útil como paso previo para cualquier método que construya relaciones entre tablas en SQL.
      * - Asegúrate de que los parámetros `$key` y `$tabla_join` provengan de fuentes confiables y sean limpiados antes de su uso.
+=======
+     * Valida los parámetros necesarios para procesar una tabla en un `JOIN` SQL.
+     *
+     * Esta función verifica que las claves `key` y `tabla_join` proporcionadas sean válidas. Garantiza que no sean números
+     * y que no estén vacías, ya que son esenciales para la construcción de `JOINs` en consultas SQL.
+     *
+     * @param string $key Clave principal o identificador que representa un alias o el nombre de una tabla.
+     *                    Debe ser una cadena no vacía y no numérica.
+     *                    Ejemplo: `'usuarios'`.
+     * @param string $tabla_join Nombre de la tabla que será utilizada en el `JOIN`.
+     *                           Debe ser una cadena no vacía y no numérica.
+     *                           Ejemplo: `'roles'`.
+     *
+     * @return true|array Retorna `true` si ambos parámetros son válidos. En caso de error, devuelve un array con los detalles
+     *                    del error, indicando el problema específico.
+     *
+     * ### Ejemplo de uso exitoso:
+     *
+     * ```php
+     * $key = 'usuarios';
+     * $tabla_join = 'roles';
+     *
+     * $resultado = $this->valida_tabla_join(key: $key, tabla_join: $tabla_join);
+     *
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ### Detalles de los parámetros:
+     *
+     * - **`$key`**:
+     *   Representa el alias o identificador de una tabla.
+     *   Requisitos:
+     *   - No puede ser numérico.
+     *   - No puede estar vacío.
+     *   Ejemplo válido:
+     *   ```php
+     *   'usuarios'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   123 // Es numérico.
+     *   ''
+     *   ```
+     *
+     * - **`$tabla_join`**:
+     *   Es el nombre de la tabla que se utilizará en el `JOIN`.
+     *   Requisitos:
+     *   - No puede ser numérico.
+     *   - No puede estar vacío.
+     *   Ejemplo válido:
+     *   ```php
+     *   'roles'
+     *   ```
+     *   Ejemplo inválido:
+     *   ```php
+     *   456 // Es numérico.
+     *   ''
+     *   ```
+     *
+     * ### Casos de error:
+     *
+     * 1. **`$key` es numérico**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: '123', tabla_join: 'roles');
+     *    // Resultado esperado: array con mensaje de error "Error el key no puede ser un numero".
+     *    ```
+     *
+     * 2. **`$key` está vacío**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: '', tabla_join: 'roles');
+     *    // Resultado esperado: array con mensaje de error "Error key esta vacio".
+     *    ```
+     *
+     * 3. **`$tabla_join` es numérico**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: 'usuarios', tabla_join: '123');
+     *    // Resultado esperado: array con mensaje de error "Error el $tabla_join no puede ser un numero".
+     *    ```
+     *
+     * 4. **`$tabla_join` está vacío**:
+     *    ```php
+     *    $resultado = $this->valida_tabla_join(key: 'usuarios', tabla_join: '');
+     *    // Resultado esperado: array con mensaje de error "Error $tabla_join esta vacio".
+     *    ```
+     *
+     * ### Resultado esperado:
+     *
+     * - Si ambos parámetros son válidos, retorna `true`.
+     * - Si alguno de los parámetros no cumple los requisitos, retorna un array con el mensaje de error y los detalles del problema.
+     *
+     * ### Notas adicionales:
+     *
+     * - Esta función es útil para validar entradas antes de construir dinámicamente consultas SQL que incluyan `JOINs`.
+     * - Garantiza que se eviten errores comunes en la generación de SQL debido a parámetros inválidos.
+>>>>>>> 49a610360774f77119bfa2ab68481482a093b2ee
      */
 
     final public function valida_tabla_join(string $key, string $tabla_join ): true|array
