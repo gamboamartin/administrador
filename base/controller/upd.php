@@ -15,47 +15,123 @@ class upd{
     }
 
     /**
-     * TOTAL
-     * Este método asigna datos para modificar utilizando un objeto de controlador proporcionado.
+     * REG
+     * Asigna datos a un controlador para modificar un registro en una sección específica.
      *
-     * Primero, intenta limpiar el espacio de nombres de la sección del controlador objetivo.
-     * Si la sección del controlador está vacía, genera un error.
-     * Si el registro_id del controlador es igual o menor que 0, también genera un error.
+     * Esta función valida y asigna los datos necesarios para la modificación de un registro en el modelo relacionado
+     * con un controlador. Valida que la sección no esté vacía, que el registro tenga un ID válido, y obtiene los datos
+     * del modelo correspondiente para que el controlador los utilice en su lógica de modificación.
      *
-     * Luego, asigna el registro_id al modelo del controlador y intenta obtener la data con ese registro_id.
+     * @param controler $controler Instancia del controlador que contiene el modelo relacionado, la sección, y el ID del
+     *                             registro a modificar.
      *
-     * Si se encuentra un error durante la obtención de data, este método generará un error.
-     * En caso contrario, devuelve el resultado de la obtención de data.
+     * @return array Retorna un arreglo con los datos del registro obtenido del modelo o un arreglo con el detalle del
+     *               error si ocurre un problema durante el proceso.
      *
-     * @param controler $controler - El controlador con la sección y el registro_id a manejar.
-     * @return array - Un array que contiene el resultado de la obtención de data o un array de error.
-     * @throws errores - Si la sección del controlador está vacía, o el registro_id es igual o menor que 0,
-     * o si ocurre un error durante la obtención de data.
-     * @version 16.194.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.upd.asigna_datos_modifica
+     * @example Uso exitoso:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = 'usuarios';
+     * $controler->registro_id = 123;
+     * $controler->modelo = new modelo();
+     *
+     * $resultado = $controler->asigna_datos_modifica($controler);
+     *
+     * // Resultado:
+     * // [
+     * //     'id' => 123,
+     * //     'nombre' => 'Juan Pérez',
+     * //     'email' => 'juan.perez@ejemplo.com'
+     * // ]
+     * ```
+     *
+     * @example Error por sección vacía:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = '';
+     * $controler->registro_id = 123;
+     *
+     * $resultado = $controler->asigna_datos_modifica($controler);
+     *
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error seccion no puede venir vacio',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * @example Error por registro ID no válido:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = 'usuarios';
+     * $controler->registro_id = -1;
+     *
+     * $resultado = $controler->asigna_datos_modifica($controler);
+     *
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error registro_id debe sr mayor a 0',
+     * //     'data' => -1
+     * // ]
+     * ```
+     *
+     * @example Error al obtener datos del modelo:
+     * ```php
+     * $controler = new controler();
+     * $controler->seccion = 'usuarios';
+     * $controler->registro_id = 123;
+     * $controler->modelo = new modelo();
+     *
+     * $resultado = $controler->asigna_datos_modifica($controler);
+     *
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error al obtener datos',
+     * //     'data' => [...]
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - La sección está vacía.
+     * - El registro ID es menor o igual a 0.
+     * - Ocurre un error al obtener los datos del modelo.
+     *
+     * @note Esta función depende del método `obten_data` del modelo relacionado para obtener los datos del registro.
      */
-
-    final public function asigna_datos_modifica(controler $controler):array
+    final public function asigna_datos_modifica(controler $controler): array
     {
         $namespace = 'models\\';
-        $controler->seccion = str_replace($namespace,'', $controler->seccion);
+        $controler->seccion = str_replace($namespace, '', $controler->seccion);
 
-        if($controler->seccion === ''){
-            return$this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $controler->seccion,
-                es_final: true);
+        if ($controler->seccion === '') {
+            return $this->error->error(
+                mensaje: 'Error seccion no puede venir vacio',
+                data: $controler->seccion,
+                es_final: true
+            );
         }
-        if($controler->registro_id<=0){
-            return  $this->error->error(mensaje:'Error registro_id debe sr mayor a 0', data:$controler->registro_id,
-                es_final: true);
+        if ($controler->registro_id <= 0) {
+            return $this->error->error(
+                mensaje: 'Error registro_id debe sr mayor a 0',
+                data: $controler->registro_id,
+                es_final: true
+            );
         }
 
         $controler->modelo->registro_id = $controler->registro_id;
         $resultado = $controler->modelo->obten_data();
-        if(errores::$error){
-            return  $this->error->error(mensaje:'Error al obtener datos', data:$resultado);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al obtener datos',
+                data: $resultado
+            );
         }
         return $resultado;
     }
+
 
     /**
      * Modificacion base

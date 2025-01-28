@@ -3073,56 +3073,94 @@ class columnas{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función es responsable de generar columnas adicionales para una consulta SQL en base a un conjunto de
-     * columnas proporcionadas y un modelo específico.
+     * REG
+     * Genera una cadena SQL que incluye columnas adicionales basadas en subconsultas definidas en el modelo.
+     * Cada subconsulta se asocia con un alias y se agrega a la cadena resultante.
      *
-     * @param array $columnas Un array de columnas para las que se generarán columnas adicionales.
-     * @param modelo_base $modelo Una instancia del modelo base que se usa para la generación de las columnas adicionales.
-     * @return array|string Retorna una cadena SQL de columnas generadas, o un array de mensaje de error y datos
-     * correlacionados en caso de error.
+     * @param array $columnas Lista de columnas específicas que se desean incluir en la consulta.
+     *                        Si está vacía, se incluirán todas las columnas definidas en el modelo.
+     * @param modelo_base $modelo El modelo que contiene la propiedad `columnas_extra`,
+     *                            la cual define subconsultas con sus respectivos alias.
      *
-     * @throws errores Esta función puede lanzar una excepción si alguna de las condiciones para el nombre de las
-     * subqueries no es cumplida:
-     * - Si el nombre de la subquery es numérico.
-     * - Si el nombre de la subquery está vacío.
-     * - Si la sql de la subquery está vacía.
+     * @return array|string Una cadena SQL con las columnas adicionales generadas.
+     *                      En caso de error, devuelve un array detallando el problema encontrado.
      *
-     * @example
-     * $model = new modelo_base();
-     * $columnas = ['nombre', 'apellido'];
-     * echo genera_columnas_extra($columnas, $model);
+     * @throws errores Si las claves o valores en `columnas_extra` no cumplen con las validaciones requeridas.
      *
-     * Este código imprimirá una cadena de SQL que contiene las columnas adicionales construidas a partir de las
-     * columnas proporcionadas y el modelo dado,
-     * o imprimirá un mensaje de error con los datos relacionados, si alguna de las condiciones no se cumple.
-     * @version
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.genera_columnas_extra
+     * @example Uso exitoso:
+     * ```php
+     * $columnas = ['total_ventas', 'productos_disponibles'];
+     * $modelo = new modelo_base();
+     * $modelo->columnas_extra = [
+     *     'total_ventas' => '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")',
+     *     'productos_disponibles' => '(SELECT COUNT(*) FROM productos WHERE stock > 0)'
+     * ];
+     *
+     * $resultado = $this->genera_columnas_extra(columnas: $columnas, modelo: $modelo);
+     * // Resultado esperado:
+     * // "(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado") AS total_ventas,
+     * // (SELECT COUNT(*) FROM productos WHERE stock > 0) AS productos_disponibles"
+     * ```
+     *
+     * @example Sin columnas específicas (incluir todas):
+     * ```php
+     * $columnas = [];
+     * $modelo->columnas_extra = [
+     *     'ventas_aprobadas' => '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")',
+     *     'productos_en_stock' => '(SELECT COUNT(*) FROM productos WHERE stock > 0)'
+     * ];
+     *
+     * $resultado = $this->genera_columnas_extra(columnas: $columnas, modelo: $modelo);
+     * // Resultado esperado:
+     * // "(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado") AS ventas_aprobadas,
+     * // (SELECT COUNT(*) FROM productos WHERE stock > 0) AS productos_en_stock"
+     * ```
+     *
+     * @example Error por clave vacía:
+     * ```php
+     * $modelo->columnas_extra = [
+     *     '' => '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")'
+     * ];
+     *
+     * $resultado = $this->genera_columnas_extra(columnas: [], modelo: $modelo);
+     * // Resultado esperado: Array indicando que la clave no puede estar vacía.
+     * ```
+     *
+     * @example Error por valor SQL vacío:
+     * ```php
+     * $modelo->columnas_extra = [
+     *     'ventas_totales' => ''
+     * ];
+     *
+     * $resultado = $this->genera_columnas_extra(columnas: [], modelo: $modelo);
+     * // Resultado esperado: Array indicando que el SQL no puede estar vacío.
+     * ```
      */
-    final public function genera_columnas_extra(array $columnas, modelo_base $modelo):array|string
+    final public function genera_columnas_extra(array $columnas, modelo_base $modelo): array|string
     {
         $columnas_sql = '';
         $columnas_extra = $modelo->columnas_extra;
         foreach ($columnas_extra as $sub_query => $sql) {
-            if((count($columnas) > 0) && !in_array($sub_query, $columnas, true)) {
+            if ((count($columnas) > 0) && !in_array($sub_query, $columnas, true)) {
                 continue;
             }
-            if(is_numeric($sub_query)){
+            if (is_numeric($sub_query)) {
                 return $this->error->error(mensaje: 'Error el key debe ser el nombre de la subquery',
                     data: $columnas_extra, es_final: true);
             }
-            if((string)$sub_query === ''){
-                return $this->error->error(mensaje:'Error el key no puede venir vacio', data: $columnas_extra,
+            if ((string)$sub_query === '') {
+                return $this->error->error(mensaje: 'Error el key no puede venir vacio', data: $columnas_extra,
                     es_final: true);
             }
-            if((string)$sql === ''){
-                return $this->error->error(mensaje:'Error el sql no puede venir vacio', data: $columnas_extra,
+            if ((string)$sql === '') {
+                return $this->error->error(mensaje: 'Error el sql no puede venir vacio', data: $columnas_extra,
                     es_final: true);
             }
-            $columnas_sql .= $columnas_sql === ''?"$sql AS $sub_query":",$sql AS $sub_query";
+            $columnas_sql .= $columnas_sql === '' ? "$sql AS $sub_query" : ",$sql AS $sub_query";
         }
         return $columnas_sql;
     }
+
 
     /**
      * REG
@@ -3816,75 +3854,139 @@ class columnas{
     }
 
     /**
-     * TOTAL
-     * Crea una consulta subalterna con su correspondiente alias.
+     * REG
+     * Genera una cadena SQL para un subquery con un alias especificado.
+     * Valida que tanto el subquery como el alias sean cadenas no vacías antes de construir la sentencia SQL.
      *
-     * @param string $alias El alias para la consulta subalterna.
-     * @param string $sub_query La consulta subalterna como cadena.
+     * @param string $alias El alias que se asignará al subquery en la sentencia SQL.
+     *                      Este alias permite referenciar el resultado del subquery en consultas superiores.
+     * @param string $sub_query La sentencia SQL que representa el subquery a incluir.
+     *                           Debe ser una cadena SQL válida y no vacía.
      *
-     * @return string|array Devuelve la consulta subalterna con su alias, en caso de que los parámetros sean válidos,
-     * de lo contrario arroja un error.
-     * @version 16.112.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.sub_query_str
+     * @return string|array Retorna una cadena con la sentencia SQL del subquery y su alias.
+     *                      En caso de error, devuelve un array detallando el problema encontrado.
+     *
+     * @throws errores Si `$sub_query` o `$alias` están vacíos, devuelve un error con los detalles relevantes.
+     *
+     * @example Uso exitoso:
+     * ```php
+     * $alias = 'subconsulta_ventas';
+     * $sub_query = '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")';
+     *
+     * $resultado = $this->sub_query_str(alias: $alias, sub_query: $sub_query);
+     * // Resultado esperado: "(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado") AS subconsulta_ventas"
+     * ```
+     *
+     * @example Error por alias vacío:
+     * ```php
+     * $alias = '';
+     * $sub_query = '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")';
+     *
+     * $resultado = $this->sub_query_str(alias: $alias, sub_query: $sub_query);
+     * // Resultado esperado: Array indicando que el alias está vacío.
+     * ```
+     *
+     * @example Error por subquery vacío:
+     * ```php
+     * $alias = 'subconsulta_ventas';
+     * $sub_query = '';
+     *
+     * $resultado = $this->sub_query_str(alias: $alias, sub_query: $sub_query);
+     * // Resultado esperado: Array indicando que el subquery está vacío.
+     * ```
      */
     private function sub_query_str(string $alias, string $sub_query): string|array
     {
         $sub_query = trim($sub_query);
-        if($sub_query === ''){
+        if ($sub_query === '') {
             return $this->error->error(mensaje: 'Error sub_query esta vacio ', data: $sub_query, es_final: true);
         }
         $alias = trim($alias);
-        if($alias === ''){
+        if ($alias === '') {
             return $this->error->error(mensaje: 'Error alias esta vacio ', data: $alias, es_final: true);
         }
         return $sub_query . ' AS ' . $alias;
-
     }
 
+
     /**
-     * TOTAL
-     * Función que genera subqueries SQL a partir de un modelo.
+     * REG
+     * Genera una cadena SQL que incluye subconsultas (subqueries) con sus respectivos alias.
+     * Valida que los subqueries y sus alias sean válidos antes de generar la sentencia SQL.
      *
-     * @param string $columnas Columnas para las que se generarán las subqueries.
-     * @param modelo_base $modelo Modelo base que contiene las subqueries a generar.
-     * @param array $columnas_seleccionables Opcional. Array de columnas seleccionables que se usarán en las subqueries.
-     * Si el array está vacío, se utilizarán todas las columnas.
+     * @param string $columnas Las columnas actuales de la consulta, utilizadas para determinar la inclusión de una coma al inicio.
+     * @param modelo_base $modelo El modelo que contiene los subqueries definidos en su propiedad `sub_querys`.
+     * @param array $columnas_seleccionables (Opcional) Lista de alias permitidos para los subqueries.
+     *                                        Si se proporciona, solo los subqueries cuyos alias están en esta lista serán procesados.
      *
-     * @return array|string Si hay un error, se devuelve un array con información del error. Si no hay errores,
-     * se devuelve una cadena con las subqueries SQL generadas.
+     * @return array|string Una cadena SQL que incluye las subconsultas con sus alias.
+     *                      En caso de error, devuelve un array detallando el problema encontrado.
      *
-     * Los errores pueden ser:
-     * - Subquery vacía.
-     * - Alias vacío.
-     * - Alias que es un número.
-     * - Error al generar subquery con alias.
+     * @throws errores Si un subquery o su alias están vacíos, o si un alias es numérico.
      *
-     * @version 16.113.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.columnas.sub_querys
+     * @example Uso exitoso:
+     * ```php
+     * $columnas = 'id, nombre';
+     * $modelo = new modelo_base();
+     * $modelo->sub_querys = [
+     *     'ventas_totales' => '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")',
+     *     'productos_stock' => '(SELECT COUNT(*) FROM productos WHERE stock > 0)'
+     * ];
+     * $columnas_seleccionables = ['ventas_totales'];
+     *
+     * $resultado = $this->sub_querys(columnas: $columnas, modelo: $modelo, columnas_seleccionables: $columnas_seleccionables);
+     * // Resultado esperado: " , (SELECT SUM(precio) FROM ventas WHERE estado = "aprobado") AS ventas_totales"
+     * ```
+     *
+     * @example Error por subquery vacío:
+     * ```php
+     * $columnas = 'id, nombre';
+     * $modelo = new modelo_base();
+     * $modelo->sub_querys = [
+     *     'ventas_totales' => ''
+     * ];
+     *
+     * $resultado = $this->sub_querys(columnas: $columnas, modelo: $modelo);
+     * // Resultado esperado: Array indicando que el subquery está vacío.
+     * ```
+     *
+     * @example Error por alias vacío:
+     * ```php
+     * $columnas = 'id, nombre';
+     * $modelo = new modelo_base();
+     * $modelo->sub_querys = [
+     *     '' => '(SELECT SUM(precio) FROM ventas WHERE estado = "aprobado")'
+     * ];
+     *
+     * $resultado = $this->sub_querys(columnas: $columnas, modelo: $modelo);
+     * // Resultado esperado: Array indicando que el alias está vacío.
+     * ```
      */
     final public function sub_querys(
-        string $columnas, modelo_base $modelo, array $columnas_seleccionables = array()):array|string
-    {
+        string $columnas,
+        modelo_base $modelo,
+        array $columnas_seleccionables = array()
+    ): array|string {
         $sub_querys_sql = '';
-        foreach($modelo->sub_querys as $alias => $sub_query){
-            if($sub_query === ''){
+        foreach ($modelo->sub_querys as $alias => $sub_query) {
+            if ($sub_query === '') {
                 return $this->error->error(mensaje: "Error el sub query no puede venir vacio",
                     data: $modelo->sub_querys, es_final: true);
             }
-            if(trim($alias) === ''){
-                return $this->error->error(mensaje:"Error el alias no puede venir vacio", data:$modelo->sub_querys,
+            if (trim($alias) === '') {
+                return $this->error->error(mensaje: "Error el alias no puede venir vacio", data: $modelo->sub_querys,
                     es_final: true);
             }
-            if(is_numeric($alias)){
-                return $this->error->error(mensaje:"Error el alias no puede ser un numero", data:$modelo->sub_querys,
+            if (is_numeric($alias)) {
+                return $this->error->error(mensaje: "Error el alias no puede ser un numero", data: $modelo->sub_querys,
                     es_final: true);
             }
-            if((count($columnas_seleccionables) > 0) && !in_array($alias, $columnas_seleccionables, true)) {
+            if ((count($columnas_seleccionables) > 0) && !in_array($alias, $columnas_seleccionables, true)) {
                 continue;
             }
-            $sub_query_str = $this->sub_query_str(alias: $alias,sub_query:  $sub_query);
-            if(errores::$error){
-                return $this->error->error(mensaje:"Error generar subquery con alias", data:$sub_query_str);
+            $sub_query_str = $this->sub_query_str(alias: $alias, sub_query: $sub_query);
+            if (errores::$error) {
+                return $this->error->error(mensaje: "Error generar subquery con alias", data: $sub_query_str);
             }
 
             $coma = '';
@@ -3897,6 +3999,7 @@ class columnas{
 
         return $sub_querys_sql;
     }
+
 
     /**
      * REG

@@ -395,54 +395,163 @@ class controler{
     }
 
     /**
-     * FINAL
-     * Maneja y muestra errores en formato JSON.
+     * REG
+     * Envía un mensaje de error en formato JSON como respuesta HTTP.
      *
-     * Esta función limpia el búfer de salida, establece el encabezado de tipo de contenido a JSON
-     * y luego intenta codificar el error proporcionado como JSON y lo muestra.
-     * Si ocurre un error durante la codificación, captura la excepción y maneja el error.
+     * Esta función se utiliza para enviar mensajes de error estructurados en formato JSON como respuesta en un contexto
+     * de servicio web (Web Service). Se asegura de limpiar cualquier salida previa, establece el encabezado de tipo de
+     * contenido como `application/json`, y maneja errores al codificar el JSON.
      *
-     * @param stdClass|array $error El error que se va a mostrar en formato JSON.
+     * @param stdClass|array $error Estructura de datos que contiene los detalles del error a enviar. Debe ser un objeto
+     *                              (`stdClass`) o un arreglo asociativo con la información del error.
      *
-     * @return void
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.controler.out_ws_error
+     * @return void Esta función no devuelve un valor, ya que finaliza la ejecución con `exit` tras enviar la respuesta.
+     *
+     * @throws errores Retorna un error si ocurre un problema al codificar el mensaje en formato JSON. Este error se envía
+     *                 como salida con la información de excepción capturada.
+     *
+     * @example Uso exitoso:
+     * ```php
+     * $error = [
+     *     'error' => true,
+     *     'mensaje' => 'Recurso no encontrado',
+     *     'codigo' => 404
+     * ];
+     *
+     * $this->out_ws_error($error);
+     *
+     * // Salida (HTTP Response):
+     * // HTTP/1.1 200 OK
+     * // Content-Type: application/json
+     * // {
+     * //     "error": true,
+     * //     "mensaje": "Recurso no encontrado",
+     * //     "codigo": 404
+     * // }
+     * ```
+     *
+     * @example Error al codificar JSON:
+     * ```php
+     * $error = [
+     *     'error' => true,
+     *     'mensaje' => 'Error en la estructura de datos',
+     *     'codigo' => 500,
+     *     'detalles' => "\xB1\x31" // Carácter inválido para JSON
+     * ];
+     *
+     * $this->out_ws_error($error);
+     *
+     * // Resultado:
+     * // Error al maquetar json
+     * // Array
+     * // (
+     * //     [error] => ...
+     * //     [mensaje] => ...
+     * // )
+     * ```
+     *
+     * @note Esta función detiene la ejecución del script con `exit` después de enviar la respuesta, por lo que debe ser
+     *       usada únicamente en contextos donde sea seguro detener el flujo de ejecución.
+     *
+     * @note Utiliza la opción `JSON_THROW_ON_ERROR` para manejar errores en la codificación JSON de manera controlada.
      */
     private function out_ws_error(stdClass|array $error): void
     {
-        ob_clean();
-        header('Content-Type: application/json');
+        ob_clean(); // Limpia cualquier salida previa.
+        header('Content-Type: application/json'); // Establece el encabezado HTTP para JSON.
         try {
-            echo json_encode($error, JSON_THROW_ON_ERROR);
+            echo json_encode($error, JSON_THROW_ON_ERROR); // Codifica el error a JSON y lo envía como respuesta.
         }
-        catch (Throwable $e){
+        catch (Throwable $e) {
+            // Si ocurre un error al codificar el JSON, genera un error detallado.
             $error = $this->errores->error('Error al maquetar json', $e);
-            if($header){
+            if ($header) { // Si el encabezado aún no se envió, imprime el error y detiene la ejecución.
                 print_r($error);
                 exit;
             }
-            return;
+            return; // Si ya se envió un encabezado, simplemente retorna.
         }
-        exit;
+        exit; // Detiene la ejecución tras enviar la respuesta.
     }
 
+
     /**
-     * TOTAL
-     * Retorna un error.
+     * REG
+     * Maneja y retorna errores en diferentes formatos según el contexto.
      *
-     * Esta función se encarga de gestionar errores dentro de la aplicación. Recibe un mensaje de error,
-     * datos adicionales, un booleano para determinar si enviar la cabecera HTTP, un booleano para determinar
-     * si se trata de un error de Web Service y un array de parámetros opcionales.
+     * Esta función centraliza la lógica para gestionar errores en el sistema, permitiendo generar un array de error
+     * estructurado y realizar diferentes acciones como enviar respuestas JSON para servicios web, redirigir a otra
+     * ubicación en caso de errores de interfaz, o detener la ejecución con detalles del error.
      *
-     * @param string $mensaje Mensaje de error.
-     * @param mixed $data Datos adicionales del error.
-     * @param bool $header Flag para determinar si enviar la cabecera HTTP.
-     * @param bool $ws Flag para determinar si se trata de un error de Web Service.
-     * @param array $params Parámetros adicionales (opcional).
+     * @param string $mensaje Mensaje que describe el error ocurrido.
+     * @param mixed $data Información adicional relacionada con el error (puede ser cualquier tipo de dato).
+     * @param bool $header Indica si debe ejecutarse una redirección HTTP tras el error (true para redirigir).
+     * @param bool $ws Indica si el error debe enviarse como respuesta JSON para un servicio web (true para WS).
+     * @param string $class (Opcional) Nombre de la clase donde ocurrió el error.
+     * @param bool $es_final (Opcional) Indica si el error debe finalizar la ejecución del programa inmediatamente.
+     * @param string $file (Opcional) Archivo donde ocurrió el error.
+     * @param string $function (Opcional) Función donde ocurrió el error.
+     * @param string $line (Opcional) Línea de código donde ocurrió el error.
+     * @param array $params (Opcional) Parámetros adicionales para detallar el contexto del error.
      *
-     * @return array Array con informacion del error.
-     * @version 16.138.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.controller.controler.retorno_error
+     * @return array Retorna un array con la estructura del error generado.
      *
+     * @throws errores Detiene la ejecución con un mensaje estructurado si $ws es true.
+     *
+     * @example Uso en servicio web (respuesta JSON):
+     * ```php
+     * $error = $this->retorno_error(
+     *     mensaje: 'Recurso no encontrado',
+     *     data: ['id' => 123],
+     *     header: false,
+     *     ws: true
+     * );
+     * // Salida (JSON):
+     * // {
+     * //     "mensaje": "Recurso no encontrado",
+     * //     "data": {
+     * //         "id": 123
+     * //     },
+     * //     ...
+     * // }
+     * ```
+     *
+     * @example Uso en interfaz con redirección:
+     * ```php
+     * $_SESSION['seccion_header'] = 'producto';
+     * $_SESSION['accion_header'] = 'modifica';
+     * $_GET['registro_id'] = 42;
+     *
+     * $error = $this->retorno_error(
+     *     mensaje: 'Error al procesar la solicitud',
+     *     data: null,
+     *     header: true,
+     *     ws: false
+     * );
+     * // Redirige a:
+     * // ./index.php?seccion=producto&accion=modifica&registro_id=42&session_id=abc123
+     * ```
+     *
+     * @example Detener ejecución con mensaje:
+     * ```php
+     * $error = $this->retorno_error(
+     *     mensaje: 'Acceso no permitido',
+     *     data: null,
+     *     header: false,
+     *     ws: false
+     * );
+     * // Salida:
+     * // Acceso no permitido
+     * // <br>
+     * // <hr>
+     * // Error
+     * ```
+     *
+     * @note
+     * - Si `$ws` es true, la respuesta se envía como JSON y la ejecución se detiene.
+     * - Si `$header` es true, se verifica la existencia de `seccion_header` y `accion_header` en la sesión y se realiza
+     *   una redirección a la sección/acción correspondiente.
+     * - Si no aplica ni `$ws` ni `$header`, se imprimen los mensajes de error acumulados en `errores::$out`.
      */
     final public function retorno_error(string $mensaje, mixed $data, bool $header, bool $ws, string $class = '',
                                         bool$es_final = false, string $file  = '', string$function = '',

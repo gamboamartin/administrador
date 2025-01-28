@@ -643,39 +643,82 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Función que genera y retorna un objeto que contiene la sentencia SQL y la condición WHERE.
+     * REG
+     * Construye un objeto con una sentencia SQL actualizada y su cláusula WHERE correspondiente.
      *
-     * @param string $campo     El nombre del campo a considerar en la sentencia SQL.
-     * @param string $sentencia La sentencia SQL a ejecutar.
-     * @param string $value     El valor a comparar en la sentencia SQL.
-     * @param string $where     La condición WHERE de la sentencia SQL.
+     * @param string $campo Nombre del campo de la base de datos que se utilizará en la condición.
+     * @param string $sentencia Sentencia SQL existente a la cual se añadirá la nueva condición OR.
+     * @param string $value Valor que será comparado con el campo en la condición OR.
+     * @param string $where Cláusula WHERE inicial para la sentencia. Si está vacía, se asigna automáticamente "WHERE".
      *
-     * @return array|stdClass   Retorna un objeto con las propiedades 'where' y 'sentencia' si todo va bien,
-     *                          de lo contrario, retorna un array con el detalle del error.
-     * @version 16.170.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.data_sentencia
+     * @return array|stdClass Devuelve un objeto con las claves `where` y `sentencia` que contienen la cláusula WHERE
+     *                        y la sentencia SQL actualizada respectivamente. En caso de error, devuelve un array con los detalles del problema.
+     *
+     * @throws errores Si ocurre algún problema, como que el campo esté vacío.
+     *
+     * @example Generar una nueva sentencia con WHERE y condición OR:
+     * ```php
+     * $campo = 'nombre';
+     * $sentencia = '';
+     * $value = 'Juan';
+     * $where = '';
+     *
+     * $resultado = $this->data_sentencia(campo: $campo, sentencia: $sentencia, value: $value, where: $where);
+     * // Resultado:
+     * // stdClass {
+     * //     "where": " WHERE ",
+     * //     "sentencia": " nombre = 'Juan' "
+     * // }
+     * ```
+     *
+     * @example Actualizar una sentencia existente con una nueva condición OR:
+     * ```php
+     * $campo = 'apellido';
+     * $sentencia = "nombre = 'Juan'";
+     * $value = 'Pérez';
+     * $where = ' WHERE ';
+     *
+     * $resultado = $this->data_sentencia(campo: $campo, sentencia: $sentencia, value: $value, where: $where);
+     * // Resultado:
+     * // stdClass {
+     * //     "where": " WHERE ",
+     * //     "sentencia": "nombre = 'Juan' OR apellido = 'Pérez'"
+     * // }
+     * ```
+     *
+     * @example Manejo de error si el campo está vacío:
+     * ```php
+     * $campo = '';
+     * $sentencia = "nombre = 'Juan'";
+     * $value = 'Pérez';
+     * $where = ' WHERE ';
+     *
+     * $resultado = $this->data_sentencia(campo: $campo, sentencia: $sentencia, value: $value, where: $where);
+     * // Resultado: Array con detalles del error, indicando que el campo está vacío.
+     * ```
      */
     private function data_sentencia(string $campo, string $sentencia, string $value, string $where): array|stdClass
     {
         $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, es_final: true);
+        if ($campo === '') {
+            return $this->error->error(mensaje: 'Error el campo está vacío', data: $campo, es_final: true);
         }
 
-        if($where === ''){
+        if ($where === '') {
             $where = ' WHERE ';
         }
 
-        $sentencia_env = $this->sentencia_or(campo:  $campo, sentencia: $sentencia, value: $value);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql',data:$sentencia_env);
+        $sentencia_env = $this->sentencia_or(campo: $campo, sentencia: $sentencia, value: $value);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $sentencia_env);
         }
+
         $data = new stdClass();
         $data->where = $where;
         $data->sentencia = $sentencia_env;
         return $data;
     }
+
 
     /**
      * Maqueta la salida de los resultados
@@ -2128,53 +2171,145 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Obtiene los datos de un registro dado su identificador.
+     * REG
+     * Obtiene un registro único de la base de datos basado en su ID y asigna sus valores a `$this->row`.
      *
-     * @param array $columnas Opcional. Vector de columnas a recuperar. Si está vacío, se devolverán todas las columnas.
-     * @param bool $columnas_en_bruto Opcional. Si está establecido en true, se devolverán las columnas en su formato bruto.
-     * @param array $extension_estructura Opcional. Vector de estructuras adicionales a incluir en el resultado.
-     * @param array $hijo Opcional. Vector de hijos a incluir.
+     * Esta función realiza una consulta para obtener un registro único de la base de datos. La consulta incluye columnas
+     * específicas, estructuras extendidas y relaciones, según los parámetros proporcionados. Además, valida que el ID del
+     * registro sea válido y que los resultados obtenidos no generen problemas de integridad.
      *
-     * @return array Devuelve un vector asociativo que representa el registro. En caso de error devuelve un error.
+     * @param array $columnas (Opcional) Lista de columnas específicas a incluir en la consulta. Si está vacío, se seleccionan
+     *                        todas las columnas.
+     * @param bool $columnas_en_bruto (Opcional) Si es `true`, las columnas se procesan sin modificaciones.
+     * @param array $extension_estructura (Opcional) Estructura extendida que define tablas relacionadas para uniones
+     *                                           adicionales. Si está vacío, se utiliza la propiedad `$this->extension_estructura`.
+     * @param array $hijo (Opcional) Propiedades adicionales para enriquecer el resultado, como dependencias o subconsultas.
      *
-     * @throws errores Si el `registro_id` es menor que 0.
-     * @throws errores Si hay un error al recuperar el registro por su id.
-     * @throws errores Si no existe registro con el id proporcionado.
-     * @version 16.193.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.obten_data
+     * @return array Retorna un arreglo con el registro obtenido o un arreglo con los detalles del error en caso de fallo.
+     *
+     * @example Uso exitoso:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = 123;
+     * $modelo->tabla = 'usuarios';
+     * $resultado = $modelo->obten_data(
+     *     columnas: ['id', 'nombre', 'email'],
+     *     columnas_en_bruto: false,
+     *     extension_estructura: ['perfiles' => ['id', 'nombre']],
+     *     hijo: []
+     * );
+     * // Resultado:
+     * // [
+     * //     'id' => 123,
+     * //     'nombre' => 'Juan Pérez',
+     * //     'email' => 'juan.perez@ejemplo.com'
+     * // ]
+     * // Además, $modelo->row tendrá los datos asignados:
+     * // stdClass {
+     * //     "id": 123,
+     * //     "nombre": "Juan Pérez",
+     * //     "email": "juan.perez@ejemplo.com"
+     * // }
+     * ```
+     *
+     * @example Error por ID no válido:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = -1; // ID no válido
+     * $resultado = $modelo->obten_data();
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error el id debe ser mayor a 0 en el modelo usuarios',
+     * //     'data' => -1
+     * // ]
+     * ```
+     *
+     * @example Error por registro no encontrado:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = 9999; // ID inexistente
+     * $modelo->tabla = 'usuarios';
+     * $resultado = $modelo->obten_data();
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error no existe registro de usuarios',
+     * //     'data' => [...]
+     * // ]
+     * ```
+     *
+     * @example Error por múltiples registros con el mismo ID:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = 123; // ID duplicado
+     * $modelo->tabla = 'usuarios';
+     * $resultado = $modelo->obten_data();
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error de integridad existe mas de un registro con el mismo id usuarios',
+     * //     'data' => [...]
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - `registro_id` es menor a 0.
+     * - La consulta no genera un registro.
+     * - Existen múltiples registros con el mismo ID.
+     * - Falla la función interna `obten_por_id` para construir y ejecutar la consulta.
+     *
+     * @note Esta función asigna los valores del registro encontrado a la propiedad `$this->row`.
+     * @note Depende de la función `obten_por_id` para realizar la consulta principal.
      */
     final public function obten_data(
-        array $columnas = array(), bool $columnas_en_bruto = false, array $extension_estructura = array(),
-        array $hijo= array()): array
-    {
+        array $columnas = array(),
+        bool $columnas_en_bruto = false,
+        array $extension_estructura = array(),
+        array $hijo = array()
+    ): array {
         $this->row = new stdClass();
-        if($this->registro_id < 0){
-            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0 en el modelo '.$this->tabla,
-                data: $this->registro_id, es_final: true);
+        if ($this->registro_id < 0) {
+            return $this->error->error(
+                mensaje: 'Error el id debe ser mayor a 0 en el modelo ' . $this->tabla,
+                data: $this->registro_id,
+                es_final: true
+            );
         }
-        if(count($extension_estructura) === 0){
+        if (count($extension_estructura) === 0) {
             $extension_estructura = $this->extension_estructura;
         }
-        $resultado = $this->obten_por_id(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $extension_estructura, hijo: $hijo);
+        $resultado = $this->obten_por_id(
+            columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura,
+            hijo: $hijo
+        );
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener por id en '.$this->tabla, data: $resultado);
-        }
-        if((int)$resultado->n_registros === 0){
-            return $this->error->error(mensaje: 'Error no existe registro de '.$this->tabla,data:  $resultado);
-        }
-        if((int)$resultado->n_registros > 1){
+        if (errores::$error) {
             return $this->error->error(
-                mensaje: 'Error de integridad existe mas de un registro con el mismo id'.$this->tabla,
-                data:  $resultado);
+                mensaje: 'Error al obtener por id en ' . $this->tabla,
+                data: $resultado
+            );
         }
-        foreach($resultado->registros[0] as $campo=>$value){
+        if ((int)$resultado->n_registros === 0) {
+            return $this->error->error(
+                mensaje: 'Error no existe registro de ' . $this->tabla,
+                data: $resultado
+            );
+        }
+        if ((int)$resultado->n_registros > 1) {
+            return $this->error->error(
+                mensaje: 'Error de integridad existe mas de un registro con el mismo id ' . $this->tabla,
+                data: $resultado
+            );
+        }
+        foreach ($resultado->registros[0] as $campo => $value) {
             $this->row->$campo = $value;
         }
         return $resultado->registros[0];
     }
+
 
     /**
      *
@@ -2216,53 +2351,134 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Este método se encarga de obtener un registro de la base de datos según el ID del registro.
+     * REG
+     * Obtiene un registro específico de la base de datos basado en su ID.
      *
-     * @param array $columnas Array de columnas a devolver en la consulta de SQL.
-     * @param array $columnas_by_table Array de columnas organizado por tablas que existen en la extensión de la estructura.
-     * @param bool  $columnas_en_bruto Indica si las columnas se devolverán en bruto, true para bruto, false para no bruto.
-     * @param array $extension_estructura Array de extensiones a utilizar en la organización de la estructura.
-     * @param array $extra_join Array de joins extra a agregar en la consulta de SQL.
-     * @param array $hijo Array de datos del registro hijo a procesar en caso de ser necesario.
+     * Esta función genera una consulta SQL para obtener un registro único de la base de datos, incluyendo columnas
+     * específicas, estructuras extendidas y uniones adicionales según los parámetros proporcionados. La consulta
+     * aplica filtros basados en el `registro_id` del modelo.
      *
-     * @return array|stdClass Retorna un arreglo o un objeto stdClass con el resultado de la consulta,
-     * en caso de error se devuelve un objeto con el error.
-     * @version 16.192.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.obten_por_id
+     * @param array $columnas (Opcional) Un arreglo de columnas que se incluirán en la consulta. Si está vacío,
+     *                        se seleccionarán todas las columnas disponibles.
+     * @param array $columnas_by_table (Opcional) Un arreglo de columnas agrupadas por tabla. Si está vacío,
+     *                                  se omite este filtrado.
+     * @param bool $columnas_en_bruto (Opcional) Si es `true`, genera las columnas de forma directa, sin procesar.
+     * @param array $extension_estructura (Opcional) Estructura extendida de tablas que se unirán a la consulta. Si
+     *                                           está vacío, se utiliza la propiedad `$this->extension_estructura`.
+     * @param array $extra_join (Opcional) Uniones adicionales a incluir en la consulta.
+     * @param array $hijo (Opcional) Propiedades adicionales para enriquecer el resultado, como subconsultas o
+     *                    dependencias de datos.
+     *
+     * @return array|stdClass Retorna el registro obtenido como un objeto `stdClass` o un arreglo con los detalles
+     *                        del error en caso de fallo.
+     *
+     * @example Uso exitoso:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = 123;
+     * $modelo->tabla = 'usuarios';
+     * $resultado = $modelo->obten_por_id(
+     *     columnas: ['id', 'nombre', 'email'],
+     *     columnas_by_table: ['usuarios' => ['id', 'nombre']],
+     *     extension_estructura: ['perfiles' => ['id', 'nombre']],
+     *     extra_join: [['tabla_base' => 'usuarios', 'tabla_enlace' => 'perfiles', 'campo' => 'perfil_id']],
+     * );
+     * // Resultado:
+     * // stdClass {
+     * //     "id": 123,
+     * //     "nombre": "Juan Pérez",
+     * //     "email": "juan.perez@ejemplo.com",
+     * //     "perfil_nombre": "Administrador"
+     * // }
+     * ```
+     *
+     * @example Error por ID no válido:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = -1; // ID no válido
+     * $resultado = $modelo->obten_por_id();
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error el id debe ser mayor a 0',
+     * //     'data' => -1
+     * // ]
+     * ```
+     *
+     * @example Error en la consulta:
+     * ```php
+     * $modelo = new modelo();
+     * $modelo->registro_id = 123;
+     * $modelo->tabla = 'usuarios';
+     * $resultado = $modelo->obten_por_id(
+     *     columnas: ['id', 'nombre'],
+     *     extension_estructura: [['tabla_base' => '', 'tabla_enlace' => 'perfiles']]
+     * );
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error al generar consulta base',
+     * //     'data' => [...detalles del error...]
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - `registro_id` es menor a 0.
+     * - Falla la generación de la consulta base mediante `genera_consulta_base`.
+     * - Falla la generación de la cláusula `WHERE` mediante `_where::sql_where`.
+     * - Falla la ejecución de la consulta SQL mediante `ejecuta_consulta`.
+     *
+     * @note Esta función utiliza otras funciones internas como `genera_consulta_base`, `_where::sql_where`, y
+     *       `ejecuta_consulta` para construir, filtrar y ejecutar la consulta SQL.
      */
     private function obten_por_id(
-        array $columnas = array(),array $columnas_by_table = array(), bool $columnas_en_bruto = false,
-        array $extension_estructura= array(), array $extra_join = array (), array $hijo = array()):array|stdClass
-    {
-        if($this->registro_id < 0){
-            return  $this->error->error(mensaje: 'Error el id debe ser mayor a 0',data: $this->registro_id,
-                es_final: true);
+        array $columnas = array(),
+        array $columnas_by_table = array(),
+        bool $columnas_en_bruto = false,
+        array $extension_estructura = array(),
+        array $extra_join = array(),
+        array $hijo = array()
+    ): array|stdClass {
+        if ($this->registro_id < 0) {
+            return $this->error->error(
+                mensaje: 'Error el id debe ser mayor a 0',
+                data: $this->registro_id,
+                es_final: true
+            );
         }
-        if(count($extension_estructura)===0){
+        if (count($extension_estructura) === 0) {
             $extension_estructura = $this->extension_estructura;
         }
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, extension_estructura: $extension_estructura,
-            extra_join: $extra_join, renombradas: $this->renombres);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta base',data:  $consulta);
+        $consulta = $this->genera_consulta_base(
+            columnas: $columnas,
+            columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura,
+            extra_join: $extra_join,
+            renombradas: $this->renombres
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar consulta base', data: $consulta);
         }
 
-        $consulta = (new _where())->sql_where(consulta: $consulta,modelo:  $this);
-        if(errores::$error){
+        $consulta = (new _where())->sql_where(consulta: $consulta, modelo: $this);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar consulta con where', data: $consulta);
         }
 
-        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados,
-            hijo: $hijo);
+        $result = $this->ejecuta_consulta(
+            consulta: $consulta,
+            campos_encriptados: $this->campos_encriptados,
+            hijo: $hijo
+        );
 
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
         return $result;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI
@@ -2684,29 +2900,62 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Función privada que genera una sentencia OR en SQL.
+     * REG
+     * Genera o actualiza una sentencia SQL con una condición OR basada en un campo y un valor proporcionados.
      *
-     * @param string $campo El nombre del campo en la base de datos.
-     * @param string $sentencia La sentencia SQL existente a la cual se añadira la cláusula OR.
-     * @param string $value El valor que está siendo comparado en la cláusula OR.
-     * @return string|array Retorna la sentencia actualizada. Si hay un error, retorna un array con detalles del error.
-     * @version 16.169.0
-     * @url https://github.com/gamboamartin/where/wiki/administrador.base.orm.modelo.sentencia_or
+     * @param string $campo Nombre del campo de la base de datos que se utilizará en la condición.
+     * @param string $sentencia Sentencia SQL existente a la cual se añadirá la nueva condición OR.
+     * @param string $value Valor que será comparado con el campo en la sentencia OR.
+     *
+     * @return string|array Retorna la sentencia SQL actualizada con la condición OR agregada.
+     *                      En caso de error, devuelve un array con los detalles del problema.
+     *
+     * @throws errores Si ocurre algún problema, como que el campo esté vacío.
+     *
+     * @example Generar una sentencia OR desde cero:
+     * ```php
+     * $campo = 'nombre';
+     * $sentencia = '';
+     * $value = 'Juan';
+     *
+     * $resultado = $this->sentencia_or(campo: $campo, sentencia: $sentencia, value: $value);
+     * // Resultado: " nombre = 'Juan' "
+     * ```
+     *
+     * @example Añadir una condición OR a una sentencia existente:
+     * ```php
+     * $campo = 'apellido';
+     * $sentencia = "nombre = 'Juan'";
+     * $value = 'Pérez';
+     *
+     * $resultado = $this->sentencia_or(campo: $campo, sentencia: $sentencia, value: $value);
+     * // Resultado: "nombre = 'Juan' OR apellido = 'Pérez'"
+     * ```
+     *
+     * @example Manejo de error si el campo está vacío:
+     * ```php
+     * $campo = '';
+     * $sentencia = "nombre = 'Juan'";
+     * $value = 'Pérez';
+     *
+     * $resultado = $this->sentencia_or(campo: $campo, sentencia: $sentencia, value: $value);
+     * // Resultado: Array con detalles del error, indicando que el campo está vacío.
+     * ```
      */
-    private function sentencia_or(string $campo,  string $sentencia, string $value): string|array
+    private function sentencia_or(string $campo, string $sentencia, string $value): string|array
     {
         $campo = trim($campo);
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error el campo esta vacio',data: $campo, es_final: true);
+        if ($campo === '') {
+            return $this->error->error(mensaje: 'Error el campo está vacío', data: $campo, es_final: true);
         }
         $or = '';
-        if($sentencia !== ''){
+        if ($sentencia !== '') {
             $or = ' OR ';
         }
-        $sentencia.=" $or $campo = '$value'";
+        $sentencia .= " $or $campo = '$value'";
         return $sentencia;
     }
+
 
     /**
      * REG

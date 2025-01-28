@@ -19,222 +19,548 @@ class _where
     }
 
     /**
-     * TOTAL
-     * Metodo genera_where_seguridad
+     * REG
+     * Genera un `WHERE` SQL que incluye condiciones de seguridad específicas según las reglas definidas
+     * en el modelo proporcionado.
      *
-     * Este método se encarga de generar la parte WHERE de una consulta SQL, dependiendo de ciertas condiciones de seguridad.
+     * Esta función aplica reglas de seguridad basadas en la configuración del modelo, combinando cualquier
+     * condición de seguridad generada con un `WHERE` previo proporcionado.
      *
-     * @access private
-     * @param string $where El WHERE inicial de la consulta
-     * @return array|string El WHERE final de la consulta luego de aplicar las condiciones de seguridad
+     * @param modelo $modelo Instancia del modelo que define las reglas de seguridad a aplicar. Propiedades relevantes:
+     *                       - `aplica_seguridad` (bool): Determina si deben aplicarse condiciones de seguridad.
+     *                       - `columnas_extra` (array): Contiene la configuración específica para las condiciones
+     *                         de seguridad, como campos requeridos y subconsultas relacionadas.
+     * @param string $where Condición SQL `WHERE` inicial que puede estar vacía o contener condiciones previas.
      *
-     * @uses params_sql::seguridad() para generar las condiciones de seguridad
-     * @uses modelo::where_seguridad() para formar la parte WHERE de la consulta con las condiciones de seguridad
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.genera_where_seguridad
+     * @return array|string Retorna la condición `WHERE` resultante en formato SQL si la operación es exitosa.
+     *                      En caso de error, devuelve un arreglo con los detalles del error.
+     *
+     * @example Uso exitoso con seguridad aplicada:
+     * ```php
+     * $modelo->aplica_seguridad = true;
+     * $modelo->columnas_extra = [
+     *     'usuario_permitido_id' => "(tabla.usuario_id)"
+     * ];
+     * $where = "estado = 'activo'";
+     * $resultado = $this->genera_where_seguridad($modelo, $where);
+     * // Resultado:
+     * // "estado = 'activo' AND (tabla.usuario_id) = $_SESSION[usuario_id]"
+     * ```
+     *
+     * @example Uso exitoso sin seguridad aplicada:
+     * ```php
+     * $modelo->aplica_seguridad = false;
+     * $modelo->columnas_extra = [];
+     * $where = "estado = 'activo'";
+     * $resultado = $this->genera_where_seguridad($modelo, $where);
+     * // Resultado:
+     * // "estado = 'activo'"
+     * ```
+     *
+     * @example Uso con un `where` vacío:
+     * ```php
+     * $modelo->aplica_seguridad = true;
+     * $modelo->columnas_extra = [
+     *     'usuario_permitido_id' => "(tabla.usuario_id)"
+     * ];
+     * $where = '';
+     * $resultado = $this->genera_where_seguridad($modelo, $where);
+     * // Resultado:
+     * // "WHERE (tabla.usuario_id) = $_SESSION[usuario_id]"
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - La generación de condiciones de seguridad (`seguridad`) falla.
+     * - La integración del `WHERE` falla.
      */
     private function genera_where_seguridad(modelo $modelo, string $where): array|string
     {
-        $seguridad = (new params_sql())->seguridad(aplica_seguridad:$modelo->aplica_seguridad,
+        $seguridad = (new params_sql())->seguridad(
+            aplica_seguridad: $modelo->aplica_seguridad,
             modelo_columnas_extra: $modelo->columnas_extra,
-            sql_where_previo:  $where);
-        if(errores::$error){
+            sql_where_previo: $where
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
         }
 
         $where = $this->where_seguridad(modelo: $modelo, seguridad: $seguridad, where: $where);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar where', data: $where);
         }
 
         return $where;
-
     }
 
 
+
     /**
-     * TOTAL
-     * Esta función integra la cláusula WHERE segura a la consulta SQL proporcionada.
+     * REG
+     * Integra condiciones de seguridad en una consulta SQL agregando un `WHERE` con restricciones específicas
+     * basadas en las reglas definidas en el modelo proporcionado.
      *
-     * @param string $consulta Consulta SQL a la que se le debe agregar la cláusula WHERE.
-     * @param string $where Condición WHERE a ser agregadada a la consulta.
-     * @return string|array Consulta SQL con la cláusula WHERE segura agregada.
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.integra_where_seguridad
+     * Esta función toma una consulta base, aplica condiciones de seguridad según el modelo, y retorna la consulta
+     * completa con las condiciones de seguridad integradas.
      *
+     * @param string $consulta Consulta SQL base que puede o no contener un `WHERE` previo.
+     * @param modelo $modelo Instancia del modelo que define las reglas de seguridad a aplicar. Propiedades relevantes:
+     *                       - `aplica_seguridad` (bool): Indica si deben aplicarse restricciones de seguridad.
+     *                       - `columnas_extra` (array): Define las configuraciones y campos relacionados con la seguridad.
+     * @param string $where Condición SQL `WHERE` inicial que puede estar vacía o contener restricciones previas.
+     *
+     * @return string|array Retorna la consulta SQL completa con el `WHERE` de seguridad integrado si la operación es exitosa.
+     *                      En caso de error, devuelve un arreglo con los detalles del error.
+     *
+     * @example Uso exitoso con seguridad aplicada:
+     * ```php
+     * $consulta = "SELECT * FROM usuarios";
+     * $modelo->aplica_seguridad = true;
+     * $modelo->columnas_extra = [
+     *     'usuario_permitido_id' => "(tabla.usuario_id)"
+     * ];
+     * $where = "estado = 'activo'";
+     * $resultado = $this->integra_where_seguridad($consulta, $modelo, $where);
+     * // Resultado:
+     * // "SELECT * FROM usuarios WHERE estado = 'activo' AND (tabla.usuario_id) = $_SESSION[usuario_id]"
+     * ```
+     *
+     * @example Uso exitoso sin seguridad aplicada:
+     * ```php
+     * $consulta = "SELECT * FROM usuarios";
+     * $modelo->aplica_seguridad = false;
+     * $modelo->columnas_extra = [];
+     * $where = "estado = 'activo'";
+     * $resultado = $this->integra_where_seguridad($consulta, $modelo, $where);
+     * // Resultado:
+     * // "SELECT * FROM usuarios WHERE estado = 'activo'"
+     * ```
+     *
+     * @example Uso con consulta y `where` vacíos:
+     * ```php
+     * $consulta = "SELECT * FROM usuarios";
+     * $modelo->aplica_seguridad = true;
+     * $modelo->columnas_extra = [
+     *     'usuario_permitido_id' => "(tabla.usuario_id)"
+     * ];
+     * $where = '';
+     * $resultado = $this->integra_where_seguridad($consulta, $modelo, $where);
+     * // Resultado:
+     * // "SELECT * FROM usuarios WHERE (tabla.usuario_id) = $_SESSION[usuario_id]"
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - La generación del `WHERE` de seguridad falla.
+     * - La integración del `WHERE` en la consulta falla.
      */
     private function integra_where_seguridad(string $consulta, modelo $modelo, string $where): string|array
     {
         $where = $this->genera_where_seguridad(modelo: $modelo, where: $where);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar where', data: $where);
         }
 
         $consulta .= $where;
 
         return $consulta;
-
     }
 
+
     /**
-     * TOTAL
-     * Genera y valida una cláusula WHERE SQL para una consulta, asegurando que el registro ID sea válido
-     * y aplicando condiciones de seguridad adicionales.
+     * REG
+     * Genera una consulta SQL con una cláusula `WHERE` basada en los datos del modelo.
      *
-     * @param string $consulta La consulta SQL base a la cual se le añadirá la cláusula WHERE.
-     * @param modelo $modelo Instancia del modelo que contiene la información necesaria para generar
-     *                       la cláusula WHERE, incluyendo el ID del registro, la llave primaria y el nombre de la tabla.
+     * Esta función toma una consulta SQL base y agrega una cláusula `WHERE` utilizando el `registro_id` y
+     * opcionalmente el `campo_llave` definidos en el modelo. Además, integra seguridad adicional si está habilitada
+     * en el modelo.
      *
-     * @return string|array Devuelve la consulta SQL con la cláusula WHERE integrada si no hay errores.
-     *                      En caso de error, devuelve un array con detalles del error.
+     * @param string $consulta La consulta SQL base sobre la cual se construirá la cláusula `WHERE`.
+     * @param modelo $modelo Una instancia del modelo que contiene los datos necesarios para generar la cláusula
+     *                       `WHERE`, como `registro_id`, `campo_llave` y `tabla`.
      *
-     * @throws \errores::error() Si el ID del registro es menor o igual a 0, devuelve un error
-     *                           indicando que el registro ID debe ser mayor a 0.
-     * @throws \errores::error() Si ocurre un error al generar la cláusula WHERE inicial,
-     *                           devuelve un error con detalles del problema.
-     * @throws \errores::error() Si ocurre un error al integrar la cláusula WHERE en la consulta,
-     *                           devuelve un error con detalles del problema.
+     * @return array|string Retorna la consulta SQL completa con la cláusula `WHERE` integrada. En caso de error,
+     *                      retorna un arreglo con los detalles del error.
      *
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.sql_where
+     * @example Uso exitoso:
+     * ```php
+     * $consulta = 'SELECT * FROM usuarios';
+     * $modelo = new modelo();
+     * $modelo->registro_id = 123;
+     * $modelo->campo_llave = 'id_usuario';
+     * $modelo->tabla = 'usuarios';
+     * $consulta_completa = $this->sql_where(consulta: $consulta, modelo: $modelo);
+     * // Resultado:
+     * // "SELECT * FROM usuarios WHERE usuarios.id_usuario = 123"
+     * ```
+     *
+     * @example Error por `registro_id` inválido:
+     * ```php
+     * $consulta = 'SELECT * FROM usuarios';
+     * $modelo = new modelo();
+     * $modelo->registro_id = -1; // ID inválido
+     * $modelo->campo_llave = 'id_usuario';
+     * $modelo->tabla = 'usuarios';
+     * $resultado = $this->sql_where(consulta: $consulta, modelo: $modelo);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error registro_id debe ser mayor a 0',
+     * //     'data' => -1
+     * // ]
+     * ```
+     *
+     * @example Error en la generación de la cláusula `WHERE`:
+     * ```php
+     * $consulta = 'SELECT * FROM usuarios';
+     * $modelo = new modelo();
+     * $modelo->registro_id = 123;
+     * $modelo->campo_llave = '';
+     * $modelo->tabla = ''; // Tabla vacía
+     * $resultado = $this->sql_where(consulta: $consulta, modelo: $modelo);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error tabla esta vacia',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - `registro_id` del modelo es menor o igual a 0.
+     * - La función `where_inicial` falla en la construcción de la cláusula `WHERE`.
+     * - La función `integra_where_seguridad` falla al integrar seguridad adicional en la consulta.
+     *
+     * @note Esta función utiliza las funciones privadas `where_inicial` y `integra_where_seguridad` para construir
+     *       la cláusula `WHERE` y aplicar reglas de seguridad según el modelo.
      */
-    final public function sql_where(string $consulta, modelo $modelo):array|string
+    final public function sql_where(string $consulta, modelo $modelo): array|string
     {
-        if($modelo->registro_id <= 0 ){
-            return $this->error->error(mensaje: 'Error registro_id debe ser mayor a 0',data:  $modelo->registro_id,
-                es_final: true);
-        }
-        $where = $this->where_inicial(campo_llave: $modelo->campo_llave,registro_id:  $modelo->registro_id,
-            tabla:  $modelo->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar where',data:  $where);
+        if ($modelo->registro_id <= 0) {
+            return $this->error->error(
+                mensaje: 'Error registro_id debe ser mayor a 0',
+                data: $modelo->registro_id,
+                es_final: true
+            );
         }
 
-        $consulta = $this->integra_where_seguridad(consulta: $consulta, modelo: $modelo, where: $where);
-        if(errores::$error){
+        $where = $this->where_inicial(
+            campo_llave: $modelo->campo_llave,
+            registro_id: $modelo->registro_id,
+            tabla: $modelo->tabla
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
+        }
+
+        $consulta = $this->integra_where_seguridad(
+            consulta: $consulta,
+            modelo: $modelo,
+            where: $where
+        );
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar where', data: $consulta);
         }
 
         return $consulta;
-
     }
 
+
     /**
-     * TOTAL
-     * The `where_campo_llave` function constructs an SQL WHERE clause based upon
-     * the parameters given.
+     * REG
+     * Genera una cláusula `WHERE` para filtrar registros en una tabla utilizando un campo llave y su valor.
      *
-     * @param string $campo_llave The name of the key field's column.
-     * @param int $registro_id The id of the record.
-     * @param string $tabla The name of the table.
-     * @return string|array The SQL WHERE clause OR error array with message and data if either $campo_llave or $tabla are empty.
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.where_campo_llave
+     * Esta función construye una cláusula SQL `WHERE` basada en un campo llave específico, su valor y el nombre de la
+     * tabla. Se valida que el nombre de la tabla y el campo llave no estén vacíos antes de construir la cláusula.
+     *
+     * @param string $campo_llave El nombre del campo llave que se utilizará para filtrar los registros. Debe ser una
+     *                            cadena no vacía.
+     * @param int $registro_id El ID del registro que se desea filtrar. Debe ser un número entero válido.
+     * @param string $tabla El nombre de la tabla donde se realizará el filtro. Debe ser una cadena no vacía.
+     *
+     * @return string|array Retorna la cláusula `WHERE` en formato de cadena si la operación es exitosa. Por ejemplo:
+     *                      `" WHERE usuarios.id_usuario = 123 "`.
+     *                      En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example Uso exitoso:
+     * ```php
+     * $campo_llave = 'id_usuario';
+     * $registro_id = 123;
+     * $tabla = 'usuarios';
+     * $where = $this->where_campo_llave($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // " WHERE usuarios.id_usuario = 123 "
+     * ```
+     *
+     * @example Error por tabla vacía:
+     * ```php
+     * $campo_llave = 'id_usuario';
+     * $registro_id = 123;
+     * $tabla = '';
+     * $where = $this->where_campo_llave($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error tabla esta vacia',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * @example Error por campo llave vacío:
+     * ```php
+     * $campo_llave = '';
+     * $registro_id = 123;
+     * $tabla = 'usuarios';
+     * $where = $this->where_campo_llave($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error campo_llave esta vacia',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - El nombre de la tabla está vacío.
+     * - El nombre del campo llave está vacío.
+     *
+     * @note Esta función no valida si el `$registro_id` o `$campo_llave` son válidos en términos de negocio, solo se
+     *       asegura de que estén presentes y sean utilizables en la consulta.
      */
     private function where_campo_llave(string $campo_llave, int $registro_id, string $tabla): string|array
     {
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje:'Error tabla esta vacia', data:$tabla, es_final: true);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla, es_final: true);
         }
         $campo_llave = trim($campo_llave);
-        if($campo_llave === ''){
-            return $this->error->error(mensaje:'Error campo_llave esta vacia', data:$campo_llave, es_final: true);
+        if ($campo_llave === '') {
+            return $this->error->error(mensaje: 'Error campo_llave esta vacia', data: $campo_llave, es_final: true);
         }
-        return " WHERE $tabla".".$campo_llave = $registro_id ";
-
+        return " WHERE $tabla" . ".$campo_llave = $registro_id ";
     }
 
+
     /**
-     * TOTAL
-     * Este método genera una condición WHERE para una consulta SQL utilizando
-     * el ID de registro y el nombre de tabla proporcionados.
+     * REG
+     * Genera una cláusula `WHERE` básica para buscar un registro específico en una tabla por su ID.
      *
-     * @param int $registro_id Es el ID del registro en la base de datos
-     * @param string $tabla Es el nombre de la tabla en la base de datos
-     * @return string|array Retorna una cadena que representa una condición WHERE
-     * en caso de éxito y un array con un mensaje de error si el nombre de la tabla
-     * proporcionado está vacío
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.where_id_base
+     * La función construye una condición SQL `WHERE` para filtrar registros basándose en el ID proporcionado y el nombre
+     * de la tabla. Se valida que el nombre de la tabla no esté vacío antes de construir la cláusula.
+     *
+     * @param int $registro_id El ID del registro que se desea filtrar en la tabla. Debe ser un número entero válido.
+     * @param string $tabla El nombre de la tabla donde se realizará el filtro. Debe ser una cadena no vacía.
+     *
+     * @return string|array Retorna la cláusula `WHERE` en formato de cadena si la operación es exitosa. Por ejemplo:
+     *                      `" WHERE tabla.id = 123 "`.
+     *                      En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example Uso exitoso:
+     * ```php
+     * $registro_id = 123;
+     * $tabla = 'usuarios';
+     * $where = $this->where_id_base($registro_id, $tabla);
+     * // Resultado:
+     * // " WHERE usuarios.id = 123 "
+     * ```
+     *
+     * @example Error por tabla vacía:
+     * ```php
+     * $registro_id = 123;
+     * $tabla = '';
+     * $where = $this->where_id_base($registro_id, $tabla);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error tabla esta vacia',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - El nombre de la tabla está vacío.
+     *
+     * @note Esta función no valida si el `$registro_id` es válido en términos de negocio, solo asume que es un entero.
+     *       Se recomienda validar el `$registro_id` antes de llamar a esta función si es necesario.
      */
     private function where_id_base(int $registro_id, string $tabla): string|array
     {
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla, es_final: true);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla, es_final: true);
         }
-        return " WHERE $tabla".".id = $registro_id ";
+        return " WHERE $tabla" . ".id = $registro_id ";
     }
 
+
     /**
-     * TOTAL
-     * Genera una cláusula WHERE SQL inicial basándose en el campo clave proporcionado y el registro_id.
+     * REG
+     * Genera una cláusula `WHERE` inicial basada en un registro ID y opcionalmente un campo llave.
      *
-     * @param string $campo_llave El nombre del campo clave para el cual se generará la cláusula WHERE.
-     * @param int $registro_id El identificador del registro para el que se generará la cláusula WHERE.
-     * @param string $tabla El nombre de la tabla donde se realizará la consulta.
+     * Esta función construye una cláusula SQL `WHERE` para filtrar registros en una tabla. Si se proporciona un campo
+     * llave, se utiliza para construir el filtro; de lo contrario, se filtra únicamente por el ID del registro.
      *
-     * @return array|string Si todo va bien, retorna la cláusula WHERE generada. En caso de error,
-     * retorna un array con la descripción del error.
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.where_inicial
+     * @param string $campo_llave El nombre del campo llave que se utilizará para filtrar los registros. Puede ser una
+     *                            cadena vacía si no se utiliza un campo llave adicional.
+     * @param int $registro_id El ID del registro que se desea filtrar. Debe ser un número entero válido.
+     * @param string $tabla El nombre de la tabla donde se realizará el filtro. Debe ser una cadena no vacía.
+     *
+     * @return string|array Retorna la cláusula `WHERE` en formato de cadena si la operación es exitosa. Por ejemplo:
+     *                      `" WHERE tabla.id = 123 "` o `" WHERE tabla.campo_llave = 123 "`.
+     *                      En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example Uso exitoso sin campo llave:
+     * ```php
+     * $campo_llave = '';
+     * $registro_id = 123;
+     * $tabla = 'usuarios';
+     * $where = $this->where_inicial($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // " WHERE usuarios.id = 123 "
+     * ```
+     *
+     * @example Uso exitoso con campo llave:
+     * ```php
+     * $campo_llave = 'id_usuario';
+     * $registro_id = 123;
+     * $tabla = 'usuarios';
+     * $where = $this->where_inicial($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // " WHERE usuarios.id_usuario = 123 "
+     * ```
+     *
+     * @example Error por tabla vacía:
+     * ```php
+     * $campo_llave = '';
+     * $registro_id = 123;
+     * $tabla = '';
+     * $where = $this->where_inicial($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error tabla esta vacia',
+     * //     'data' => ''
+     * // ]
+     * ```
+     *
+     * @example Error por fallo en la generación de `where_id_base`:
+     * ```php
+     * $campo_llave = '';
+     * $registro_id = -1; // Valor inválido que causa un error en `where_id_base`.
+     * $tabla = 'usuarios';
+     * $where = $this->where_inicial($campo_llave, $registro_id, $tabla);
+     * // Resultado:
+     * // [
+     * //     'error' => true,
+     * //     'mensaje' => 'Error al generar where_id_base',
+     * //     'data' => ... // Detalles del error.
+     * // ]
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - El nombre de la tabla está vacío.
+     * - La función `where_id_base` o `where_campo_llave` falla.
+     *
+     * @note Esta función utiliza las funciones privadas `where_id_base` y `where_campo_llave` para construir la cláusula
+     *       `WHERE` según los parámetros proporcionados.
      */
     private function where_inicial(string $campo_llave, int $registro_id, string $tabla): array|string
     {
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla esta vacia',data:  $tabla, es_final: true);
-        }
-        $where_id_base = $this->where_id_base(registro_id: $registro_id,tabla:  $tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_id_base);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla, es_final: true);
         }
 
-        if($campo_llave === ""){
-            $where = $where_id_base;
+        $where_id_base = $this->where_id_base(registro_id: $registro_id, tabla: $tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar where_id_base', data: $where_id_base);
         }
-        else{
-            $where_campo_llave = $this->where_campo_llave(campo_llave: $campo_llave, registro_id: $registro_id,
-                tabla: $tabla);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar where_id_base',data:  $where_campo_llave);
+
+        if ($campo_llave === "") {
+            $where = $where_id_base;
+        } else {
+            $where_campo_llave = $this->where_campo_llave(campo_llave: $campo_llave, registro_id: $registro_id, tabla: $tabla);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar where_id_base', data: $where_campo_llave);
             }
             $where = $where_campo_llave;
         }
-        return $where;
 
+        return $where;
     }
 
+
     /**
-     * TOTAL
-     * Método que se encarga de aplicar una condición de seguridad a una declaración WHERE de SQL.
+     * REG
+     * Genera o ajusta una cláusula SQL `WHERE` incorporando condiciones de seguridad según el modelo.
      *
-     * @param string $seguridad La condición de seguridad a aplicar.
-     * @param string $where La declaración WHERE actual, a la que se añadirá la condición de seguridad.
+     * Esta función asegura que, si el modelo requiere aplicar seguridad, se integre una cláusula de seguridad
+     * en el `WHERE` existente o se cree una nueva cláusula `WHERE` si no existe previamente.
      *
-     * @return string|array Si 'aplica_seguridad' es verdadero, devuelve una nueva declaración WHERE con la condición de seguridad aplicada.
-     *                      Si 'aplica_seguridad' es falso, simplemente devuelve la declaración WHERE original.
+     * @param modelo $modelo Instancia del modelo que contiene la propiedad `aplica_seguridad`, indicando si
+     *                       debe aplicarse seguridad.
+     *                       - `true`: Se aplica seguridad.
+     *                       - `false`: No se realiza ningún cambio en el `WHERE`.
+     * @param string $seguridad Condición de seguridad en formato SQL que debe ser integrada al `WHERE`. Ejemplo:
+     *                          ```sql
+     *                          "(tabla.usuario_id) = $_SESSION[usuario_id]"
+     *                          ```
+     *                          Esta condición asegura que los datos sean filtrados según el usuario actual.
+     * @param string $where Condición `WHERE` existente que puede ser extendida con la condición de seguridad.
+     *                      Si está vacía, se genera una nueva cláusula `WHERE`.
      *
-     *                      Si la condición de seguridad o la declaración WHERE están vacías, termina la ejecución del método y
-     *                      devuelve un array con un mensaje de error y la condición de seguridad que causó el problema.
+     * @return string|array Devuelve el `WHERE` resultante en formato SQL si la operación es exitosa.
+     *                      En caso de error, retorna un arreglo con los detalles del error.
      *
-     * @example Si 'aplica_seguridad' es verdadero, $seguridad es 'usuario_id = 1' y $where es 'producto_id = 5', el método devolverá
-     *          'producto_id = 5 AND usuario_id = 1'.
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm._where.where_seguridad
+     * @example Uso exitoso con `aplica_seguridad = true` y `where` existente:
+     * ```php
+     * $modelo->aplica_seguridad = true;
+     * $seguridad = "(tabla.usuario_id) = $_SESSION[usuario_id]";
+     * $where = "estado = 'activo'";
+     * $resultado = $this->where_seguridad($modelo, $seguridad, $where);
+     * // Resultado:
+     * // "estado = 'activo' AND (tabla.usuario_id) = $_SESSION[usuario_id]"
+     * ```
      *
+     * @example Uso exitoso con `aplica_seguridad = true` y `where` vacío:
+     * ```php
+     * $modelo->aplica_seguridad = true;
+     * $seguridad = "(tabla.usuario_id) = $_SESSION[usuario_id]";
+     * $where = '';
+     * $resultado = $this->where_seguridad($modelo, $seguridad, $where);
+     * // Resultado:
+     * // "WHERE (tabla.usuario_id) = $_SESSION[usuario_id]"
+     * ```
+     *
+     * @example Uso sin aplicar seguridad:
+     * ```php
+     * $modelo->aplica_seguridad = false;
+     * $seguridad = "(tabla.usuario_id) = $_SESSION[usuario_id]";
+     * $where = "estado = 'activo'";
+     * $resultado = $this->where_seguridad($modelo, $seguridad, $where);
+     * // Resultado:
+     * // "estado = 'activo'"
+     * ```
+     *
+     * @throws errores Retorna un error si:
+     * - `seguridad` está vacío cuando `aplica_seguridad` es `true`.
+     * - Ocurre cualquier fallo en la lógica.
      */
     private function where_seguridad(modelo $modelo, string $seguridad, string $where): string|array
     {
-        if($modelo->aplica_seguridad){
+        if ($modelo->aplica_seguridad) {
             $seguridad = trim($seguridad);
-            if($seguridad === ''){
-                return $this->error->error(mensaje: 'Error seguridad esta vacia',data:  $seguridad, es_final: true);
+            if ($seguridad === '') {
+                return $this->error->error(mensaje: 'Error seguridad esta vacia', data: $seguridad, es_final: true);
             }
             $where = trim($where);
-            if($where === ''){
+            if ($where === '') {
                 $where .= " WHERE $seguridad ";
-            }
-            else{
+            } else {
                 $where .= " AND $seguridad ";
             }
             $where = " $where ";
         }
         return $where;
     }
+
 
 }
