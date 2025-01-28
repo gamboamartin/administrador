@@ -972,25 +972,99 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Este método se utiliza para unir extensiones de estructura en una tabla base.
+     * REG
+     * Genera y extiende las instrucciones SQL de JOIN basadas en una estructura de extensiones proporcionada.
      *
-     * Este método recorre cada extensión en la estructura proporcionada, llamando al método join_base()
-     * para cada extensión y agregándola a la tabla base.
+     * Este método recorre una estructura de extensión, valida los datos de cada tabla y construye las instrucciones
+     * de JOIN necesarias para integrarlas a la cadena de tablas SQL existente. Asegura que los datos y las claves
+     * requeridas sean válidas antes de proceder con la generación del SQL.
      *
-     * @param array  $extension_estructura Datos que describen cómo se deben unir las extensiones a la tabla.
-     * @param string $modelo_tabla El modelo de la tabla a la que se unirán las extensiones.
-     * @param string $tablas Un string que detalla las tablas a las que se unirán las extensiones.
+     * @param array $extension_estructura Estructura de extensión que define las tablas y datos necesarios para
+     * construir los JOIN. Cada entrada debe contener:
+     *  - `key`: Nombre del campo clave en la tabla base.
+     *  - `enlace`: Nombre de la tabla con la que se realiza el JOIN.
+     *  - `key_enlace`: Nombre del campo clave en la tabla de enlace.
+     *  - `renombre` (opcional): Nombre renombrado para la tabla base en el JOIN.
+     * @param string $modelo_tabla Nombre de la tabla principal del modelo. Se utiliza para validaciones.
+     * @param string $tablas Cadena actual de tablas SQL con las instrucciones generadas previamente.
      *
-     * @return array|string Las tablas actualizadas con las extensiones unidas se devuelven si todo ha ido bien.
-     * En caso de errores, se devuelve un mensaje indicando el error específico.
+     * @return array|string Devuelve la cadena SQL actualizada con las nuevas instrucciones JOIN generadas.
+     * En caso de error, retorna un array con los detalles del mismo.
      *
-     * @throws errores Se lanzará una excepción si los datos no son un array o si se encontró un error
-     * al validar los datos o generar la unión.
+     * @throws errores Si:
+     * - `$extension_estructura` contiene datos que no son arrays.
+     * - Alguna clave requerida (`key`, `enlace`, `key_enlace`) no está presente o está vacía.
+     * - Alguna tabla en `$extension_estructura` tiene un índice numérico o no es un texto válido.
+     * - Falla la generación de la instrucción JOIN.
      *
-     * @version 16.76.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.extensiones_join.21.24.0
+     * ### Ejemplos de uso:
+     *
+     * 1. **Caso exitoso con datos completos**:
+     *    ```php
+     *    $extension_estructura = [
+     *        'usuarios' => [
+     *            'key' => 'id',
+     *            'enlace' => 'pedidos',
+     *            'key_enlace' => 'usuario_id',
+     *            'renombre' => 'usuarios_alias'
+     *        ],
+     *        'productos' => [
+     *            'key' => 'id',
+     *            'enlace' => 'pedidos',
+     *            'key_enlace' => 'producto_id',
+     *            'renombre' => 'productos_alias'
+     *        ]
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tablas = 'pedidos AS pedidos';
+     *
+     *    $resultado = $modelo->extensiones_join(extension_estructura: $extension_estructura, modelo_tabla: $modelo_tabla, tablas: $tablas);
+     *    // Resultado esperado: "pedidos AS pedidos LEFT JOIN usuarios AS usuarios_alias ON usuarios_alias.id = pedidos.usuario_id LEFT JOIN productos AS productos_alias ON productos_alias.id = pedidos.producto_id"
+     *    ```
+     *
+     * 2. **Caso con estructura no válida (índice numérico en la clave de tabla)**:
+     *    ```php
+     *    $extension_estructura = [
+     *        1 => [
+     *            'key' => 'id',
+     *            'enlace' => 'pedidos',
+     *            'key_enlace' => 'usuario_id',
+     *            'renombre' => 'usuarios_alias'
+     *        ]
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tablas = 'pedidos AS pedidos';
+     *
+     *    $resultado = $modelo->extensiones_join(extension_estructura: $extension_estructura, modelo_tabla: $modelo_tabla, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que $tabla debe ser un texto.
+     *    ```
+     *
+     * 3. **Caso con datos incompletos (clave faltante)**:
+     *    ```php
+     *    $extension_estructura = [
+     *        'usuarios' => [
+     *            'enlace' => 'pedidos',
+     *            'key_enlace' => 'usuario_id'
+     *        ]
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tablas = 'pedidos AS pedidos';
+     *
+     *    $resultado = $modelo->extensiones_join(extension_estructura: $extension_estructura, modelo_tabla: $modelo_tabla, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que falta la clave `key` en la entrada.
+     *    ```
+     *
+     * ### Proceso de evaluación:
+     * 1. Itera por cada entrada en `$extension_estructura` para validar que los datos sean un array.
+     * 2. Valida las claves requeridas (`key`, `enlace`, `key_enlace`) en cada entrada utilizando `valida_keys_sql`.
+     * 3. Genera el SQL JOIN utilizando `join_base` para cada tabla en la estructura.
+     * 4. Ajusta y concatena las nuevas instrucciones JOIN con la cadena SQL existente.
+     *
+     * ### Resultado esperado:
+     * - **SQL completo**: Cadena SQL que incluye todas las instrucciones JOIN generadas.
+     * - **Error**: Array con detalles del error en caso de que alguna validación o proceso falle.
      */
+
     private function extensiones_join(array $extension_estructura, string $modelo_tabla, string $tablas): array|string
     {
         $tablas_env = $tablas;
@@ -1320,35 +1394,92 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Este método genera una cadena SQL JOIN.
+     * REG
+     * Genera y ajusta la cadena SQL para un JOIN en base a los datos y parámetros proporcionados.
      *
-     * @param array $data Los datos que se utilizarán en la cláusula SQL JOIN.
-     * @param string $modelo_tabla El nombre del modelo de la tabla con la que se realizará la operación JOIN.
-     * @param string $tabla El nombre de la tabla con la que se realizará la operación JOIN.
-     * @param string $tablas Cadena que representa la consulta SQL actualmente en construcción.
+     * Esta función valida los datos de entrada, genera la instrucción SQL para el JOIN y ajusta la cadena
+     * final de tablas con la nueva instrucción generada. Se asegura de manejar correctamente alias y
+     * renombres de tablas en la instrucción.
      *
-     * @return string|array Devuelve la cadena SQL JOIN generada o un error si ocurre alguna excepción.
+     * @param array $data Datos requeridos para construir el JOIN. Debe incluir:
+     *  - `key`: Nombre del campo clave en la tabla base.
+     *  - `enlace`: Nombre de la tabla con la que se realiza el JOIN.
+     *  - `key_enlace`: Nombre del campo clave en la tabla de enlace.
+     *  - `renombre` (opcional): Nombre renombrado para la tabla base en el JOIN.
+     * @param string $modelo_tabla Nombre de la tabla base que se está validando.
+     * @param string $tabla Nombre de la tabla base para el JOIN. No debe estar vacío.
+     * @param string $tablas Cadena actual de tablas con las instrucciones SQL generadas previamente.
      *
-     * @throws errores Si los datos proporcionados son incorrectos, lanza una excepción con un mensaje de error.
+     * @return array|string Devuelve la cadena SQL actualizada con la nueva instrucción JOIN.
+     * En caso de error, retorna un array con los detalles del mismo.
      *
-     * @example
-     * // Crear una instancia de la clase en la que se encuentra el método
-     * $joins = new Joins();
+     * @throws errores Si:
+     * - `$data` no contiene las claves requeridas (`key`, `enlace`, `key_enlace`).
+     * - `$tabla` está vacía.
+     * - `$tablas` no puede ser procesado correctamente.
+     * - El proceso de generación de la instrucción JOIN falla en algún paso.
      *
-     * // Llamar al método con los datos necesarios
-     * $tablas = $joins->join_base(
-     *      ["columna1" => "valor1", "columna2" => "valor2"],
-     *      "modelo_tabla",
-     *      "nombre_tabla",
-     *      "SELECT * FROM nombre_tabla"
-     * );
+     * ### Ejemplos de uso:
      *
-     * // Ahora, $tablas contiene una cadena SQL JOIN completa con los datos proporcionados
+     * 1. **Caso exitoso con datos completos**:
+     *    ```php
+     *    $data = [
+     *        'key' => 'id',
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'usuario_id',
+     *        'renombre' => 'usuarios_alias'
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tabla = 'usuarios';
+     *    $tablas = 'pedidos AS pedidos';
      *
-     * @version 16.75.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.join_base.21.24.0
+     *    $resultado = $modelo->join_base(data: $data, modelo_tabla: $modelo_tabla, tabla: $tabla, tablas: $tablas);
+     *    // Resultado esperado: "pedidos AS pedidos LEFT JOIN usuarios AS usuarios_alias ON usuarios_alias.id = usuarios.usuario_id"
+     *    ```
+     *
+     * 2. **Caso con tabla vacía**:
+     *    ```php
+     *    $data = [
+     *        'key' => 'id',
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'usuario_id',
+     *        'renombre' => 'usuarios_alias'
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tabla = '';
+     *    $tablas = 'pedidos AS pedidos';
+     *
+     *    $resultado = $modelo->join_base(data: $data, modelo_tabla: $modelo_tabla, tabla: $tabla, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que $tabla está vacía.
+     *    ```
+     *
+     * 3. **Caso sin clave `key` en `$data`**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'usuario_id',
+     *        'renombre' => 'usuarios_alias'
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tabla = 'usuarios';
+     *    $tablas = 'pedidos AS pedidos';
+     *
+     *    $resultado = $modelo->join_base(data: $data, modelo_tabla: $modelo_tabla, tabla: $tabla, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que falta la clave `key` en $data.
+     *    ```
+     *
+     * ### Proceso de evaluación:
+     * 1. Valida que `$data` contenga las claves requeridas utilizando `valida_keys_sql`.
+     * 2. Genera el string para el LEFT JOIN si `$tablas` no está vacío.
+     * 3. Determina el nombre renombrado de la tabla base utilizando `tabla_renombrada`.
+     * 4. Genera la instrucción SQL del JOIN con `string_sql_join`.
+     * 5. Ajusta la cadena de `$tablas` agregando el nuevo JOIN generado.
+     *
+     * ### Resultado esperado:
+     * - **SQL JOIN generado**: Una cadena SQL que incluye la instrucción JOIN completa.
+     * - **Error**: Array detallando el error encontrado en caso de que alguna validación o proceso falle.
      */
+
     private function join_base(array $data, string $modelo_tabla, string $tabla, string $tablas): array|string
     {
         $valida = (new validaciones())->valida_keys_sql(data: $data, tabla: $modelo_tabla);
@@ -1384,25 +1515,86 @@ class joins{
 
 
     /**
-     * TOTAL
-     * Método para gestionar los joins de SQL en PHP.
+     * REG
+     * Genera un string SQL para realizar un `LEFT JOIN` entre tablas, considerando nombres originales y renombrados.
+     * Valida los datos necesarios y aplica los formatos requeridos para construir el `JOIN`.
      *
-     * @param array $data Representa los datos para el join. Debe tener las claves 'nombre_original' y 'enlace'.
-     * @param string $modelo_tabla Las tablas en las que se realiza el join.
-     * @param string $tabla_renombrada El nombre bajo el que se referenciará la tabla tras el join.
-     * @param string $tablas += ' '.$str_join;
+     * @param array $data Datos para construir el `JOIN`. Debe incluir las claves:
+     *  - `enlace`: Nombre de la tabla con la que se realiza el enlace.
+     *  - `nombre_original`: Nombre original de la tabla base.
+     *  - `key`: Clave primaria o de enlace de la tabla base.
+     *  - `key_enlace`: Clave de la tabla con la que se realiza el enlace.
+     * @param string $modelo_tabla Nombre de la tabla base del modelo.
+     * @param string $tabla_renombrada Nombre renombrado que se asignará a la tabla.
+     * @param string $tablas String con la acumulación de tablas y `JOIN` previos.
      *
-     * Este método realiza varias validaciones sobre los datos proporcionados y devuelve errores en caso de que no sean válidos.
+     * @return array|string Devuelve un string SQL con el `LEFT JOIN` generado si todo es correcto.
+     * En caso de error, devuelve un array con los detalles del error.
      *
-     * @return array|string Devuelve un string que representa la consulta SQL con los joins, o un array con información de error.
+     * @throws errores Si:
+     * - `$data` no contiene las claves requeridas (`enlace`, `nombre_original`, `key`, `key_enlace`).
+     * - `$tabla_renombrada` está vacía o no es válida.
+     * - `$data['nombre_original']` o `$data['enlace']` están vacíos.
      *
-     * @throws validaciones()->valida_keys_renombre En caso de que los datos no sean válidos
-     * @throws validaciones()->valida_keys_sql En caso de que los datos SQL no sean válidos
-     * @throws errores Si hay un error al generar el string SQL para el join
-     * @throws errores Si hay un error al generar la consulta SQL completa
-     * @version 16.83.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.join_renombres.21.25.0
+     * ### Ejemplos de uso:
+     *
+     * 1. **Generación exitosa del `LEFT JOIN`**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'tabla_enlace',
+     *        'nombre_original' => 'tabla_original',
+     *        'key' => 'id',
+     *        'key_enlace' => 'tabla_original_id'
+     *    ];
+     *    $modelo_tabla = 'tabla_modelo';
+     *    $tabla_renombrada = 'alias_tabla';
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->join_renombres(data: $data, modelo_tabla: $modelo_tabla, tabla_renombrada: $tabla_renombrada, tablas: $tablas);
+     *    // Resultado esperado:
+     *    // " LEFT JOIN tabla_original AS alias_tabla ON alias_tabla.id = tabla_enlace.tabla_original_id"
+     *    ```
+     *
+     * 2. **Error por falta de clave en `$data`**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'tabla_enlace',
+     *        'key' => 'id'
+     *    ];
+     *    $modelo_tabla = 'tabla_modelo';
+     *    $tabla_renombrada = 'alias_tabla';
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->join_renombres(data: $data, modelo_tabla: $modelo_tabla, tabla_renombrada: $tabla_renombrada, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que falta la clave `nombre_original`.
+     *    ```
+     *
+     * 3. **Error por `$tabla_renombrada` vacía**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'tabla_enlace',
+     *        'nombre_original' => 'tabla_original',
+     *        'key' => 'id',
+     *        'key_enlace' => 'tabla_original_id'
+     *    ];
+     *    $modelo_tabla = 'tabla_modelo';
+     *    $tabla_renombrada = '';
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->join_renombres(data: $data, modelo_tabla: $modelo_tabla, tabla_renombrada: $tabla_renombrada, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que `$tabla_renombrada` no puede estar vacía.
+     *    ```
+     *
+     * ### Proceso de la función:
+     * 1. Se valida la estructura de `$data` mediante la función `valida_keys_renombre`.
+     * 2. Se eliminan prefijos del namespace (`models\\`) en nombres de tablas si existen.
+     * 3. Se genera el string SQL para el `LEFT JOIN` usando los datos validados.
+     *
+     * ### Resultado esperado:
+     * - **Éxito**: String SQL con el `LEFT JOIN` construido.
+     * - **Error**: Array con los detalles del error si alguna validación falla.
      */
+
     private function join_renombres(array $data, string $modelo_tabla, string $tabla_renombrada,
                                     string $tablas): array|string
     {
@@ -1554,15 +1746,53 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Crea una cadena de texto para realizar un LEFT JOIN en una consulta SQL, si la cadena $tablas no está vacía.
+     * REG
+     * Genera la estructura básica de una cláusula `LEFT JOIN` basada en la presencia de una cadena de tablas.
      *
-     * @param string $tablas Una cadena que contiene el nombre de las tablas a unir.
+     * Esta función evalúa si la cadena proporcionada en `$tablas` no está vacía. Si contiene información, retorna
+     * la cadena `' LEFT JOIN '`. Si está vacía, retorna una cadena vacía.
      *
-     * @return string La cadena ' LEFT JOIN ' si $tablas no está vacía, de lo contrario devuelve una cadena vacía.
-     * @version 16.63.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.left_join_str.21.24.0
+     * @param string $tablas Cadena de texto que representa tablas o información relacionada.
+     *                       Si está vacía o contiene solo espacios en blanco, no genera la cláusula.
+     *
+     * @return string Retorna la cadena `' LEFT JOIN '` si `$tablas` no está vacía, de lo contrario retorna una cadena vacía.
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Caso exitoso con tablas no vacías**:
+     *    ```php
+     *    $tablas = 'usuarios';
+     *
+     *    $resultado = $modelo->left_join_str(tablas: $tablas);
+     *    // Resultado esperado: ' LEFT JOIN '
+     *    ```
+     *
+     * 2. **Caso con tablas vacías**:
+     *    ```php
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->left_join_str(tablas: $tablas);
+     *    // Resultado esperado: ''
+     *    ```
+     *
+     * 3. **Caso con tablas que contienen espacios en blanco**:
+     *    ```php
+     *    $tablas = '   ';
+     *
+     *    $resultado = $modelo->left_join_str(tablas: $tablas);
+     *    // Resultado esperado: ''
+     *    ```
+     *
+     * ### Proceso de evaluación:
+     * 1. Se aplica `trim` a la cadena `$tablas` para eliminar espacios en blanco al inicio y al final.
+     * 2. Si la cadena resultante no está vacía, se asigna `' LEFT JOIN '` a `$left_join`.
+     * 3. Si la cadena está vacía, `$left_join` se define como una cadena vacía.
+     *
+     * ### Resultados esperados:
+     * - **Cadena no vacía**: Retorna `' LEFT JOIN '`.
+     * - **Cadena vacía o solo espacios**: Retorna `''`.
      */
+
     private function left_join_str(string $tablas): string
     {
         $left_join = '';
@@ -1698,18 +1928,92 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Esta función se usa para renombrar múltiples tablas en una operación Join.
+     * REG
+     * Genera los `JOIN` SQL para un conjunto de tablas renombradas, asegurando que cada tabla se asocie con los datos
+     * proporcionados y se valide correctamente.
      *
-     * @param string $modelo_tabla La tabla principal que se está uniendo.
-     * @param array $renombradas Un array asociativo de tablas para renombrar y sus correspondientes datos.
-     * @param string $tablas Las tablas a las que se unirán.
+     * @param string $modelo_tabla Nombre de la tabla base del modelo, utilizada como referencia para las validaciones.
+     * @param array $renombradas Arreglo asociativo con las tablas renombradas y sus datos. Formato esperado:
+     *  - Clave: Nombre renombrado de la tabla.
+     *  - Valor: Arreglo con los datos necesarios para construir el `JOIN`. Debe incluir:
+     *      - `enlace`: Tabla con la que se realiza el enlace.
+     *      - `nombre_original`: Nombre original de la tabla base.
+     *      - `key`: Clave primaria o de enlace de la tabla base.
+     *      - `key_enlace`: Clave de la tabla con la que se realiza el enlace.
+     * @param string $tablas String acumulado con los `JOIN` generados previamente.
      *
-     * @return array|string Devuelve un string actualizado de tablas renombradas para el comando Join.
-     *                      Si ocurre un error, devuelve un array que contiene información del error.
-     * @version 16.87.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.renombres_join.21.25.0
+     * @return array|string Devuelve un string con los `JOIN` generados correctamente si no hay errores.
+     * En caso de error, devuelve un array con los detalles del error.
+     *
+     * @throws errores Si:
+     * - `$renombradas` contiene valores que no son arrays.
+     * - Alguna de las claves necesarias (`enlace`, `nombre_original`, `key`, `key_enlace`) está ausente en `$renombradas`.
+     * - Alguna tabla renombrada tiene valores inválidos o vacíos.
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Generación exitosa de `JOIN`**:
+     *    ```php
+     *    $modelo_tabla = 'tabla_base';
+     *    $renombradas = [
+     *        'alias_tabla1' => [
+     *            'enlace' => 'tabla_enlace1',
+     *            'nombre_original' => 'tabla_original1',
+     *            'key' => 'id',
+     *            'key_enlace' => 'tabla_original1_id'
+     *        ],
+     *        'alias_tabla2' => [
+     *            'enlace' => 'tabla_enlace2',
+     *            'nombre_original' => 'tabla_original2',
+     *            'key' => 'id',
+     *            'key_enlace' => 'tabla_original2_id'
+     *        ]
+     *    ];
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->renombres_join(modelo_tabla: $modelo_tabla, renombradas: $renombradas, tablas: $tablas);
+     *    // Resultado esperado:
+     *    // " LEFT JOIN tabla_original1 AS alias_tabla1 ON alias_tabla1.id = tabla_enlace1.tabla_original1_id
+     *    //   LEFT JOIN tabla_original2 AS alias_tabla2 ON alias_tabla2.id = tabla_enlace2.tabla_original2_id"
+     *    ```
+     *
+     * 2. **Error por datos no válidos en `$renombradas`**:
+     *    ```php
+     *    $modelo_tabla = 'tabla_base';
+     *    $renombradas = [
+     *        'alias_tabla1' => 'dato_invalido'
+     *    ];
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->renombres_join(modelo_tabla: $modelo_tabla, renombradas: $renombradas, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que el valor debe ser un array.
+     *    ```
+     *
+     * 3. **Error por falta de clave en `$renombradas`**:
+     *    ```php
+     *    $modelo_tabla = 'tabla_base';
+     *    $renombradas = [
+     *        'alias_tabla1' => [
+     *            'enlace' => 'tabla_enlace1'
+     *        ]
+     *    ];
+     *    $tablas = '';
+     *
+     *    $resultado = $modelo->renombres_join(modelo_tabla: $modelo_tabla, renombradas: $renombradas, tablas: $tablas);
+     *    // Resultado esperado: Array con error indicando que falta la clave `nombre_original`.
+     *    ```
+     *
+     * ### Proceso de la función:
+     * 1. Itera sobre las tablas renombradas proporcionadas en `$renombradas`.
+     * 2. Valida que los datos de cada tabla sean un array y contengan las claves requeridas.
+     * 3. Genera el `LEFT JOIN` correspondiente utilizando la función `join_renombres`.
+     * 4. Acumula el resultado de cada `JOIN` en el string `$tablas`.
+     *
+     * ### Resultado esperado:
+     * - **Éxito**: String SQL con los `JOIN` generados para todas las tablas renombradas.
+     * - **Error**: Array con los detalles del error si alguna validación falla.
      */
+
     private function renombres_join(string $modelo_tabla, array $renombradas, string $tablas): array|string
     {
         $tablas_env = $tablas;
@@ -1861,31 +2165,81 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Genera una cadena SQL para una operación JOIN con las condiciones especificadas.
+     * REG
+     * Genera una cadena SQL para una instrucción JOIN basada en los datos proporcionados.
      *
-     * @param array  $data          Los datos utilizados para generar la cláusula JOIN. Esta es una matriz asociativa
-     * que contiene los siguientes elementos: 'key' (la clave utilizada en la tabla principal),
-     * 'enlace' (la tabla con la que se realiza la unión) y 'key_enlace' (la clave utilizada en la tabla de enlace).
-     * @param string $modelo_tabla  El nombre del modelo de tabla en el que se basará la condición JOIN.
-     * @param string $tabla         El nombre de la tabla principal.
-     * @param string $tabla_renombrada El alias de la tabla con el que se realizará la unión.
+     * Esta función construye una cadena SQL para una instrucción JOIN utilizando una tabla base, una tabla renombrada,
+     * y los datos que definen las claves y enlaces para la relación entre las tablas.
      *
-     * @return string|array Una cadena que representa la cláusula JOIN en SQL o una matriz con información de
-     * error si ocurre un problema.
+     * @param array $data Array que debe contener las claves `key`, `enlace` y `key_enlace` para definir la relación de las tablas.
+     * @param string $modelo_tabla Nombre de la tabla del modelo que está siendo validado.
+     * @param string $tabla Nombre de la tabla base. No debe estar vacío ni ser numérico.
+     * @param string $tabla_renombrada Nombre renombrado de la tabla. No debe estar vacío ni ser numérico.
      *
-     * Las verificaciones de error en la función incluyen:
-     * - Error al validar data
-     * - $tabla no puede estar vacía
-     * - $tabla_renombrada no puede estar vacía
-     * - $tabla debe ser un texto (no puede ser numérico)
-     * - $tabla_renombrada debe ser texto
+     * @return string|array Devuelve una cadena SQL con la estructura del JOIN. En caso de error, retorna un array con los detalles del mismo.
      *
-     * Ejemplo de uso:
-     * -> string_sql_join(['key' => 'id', 'enlace' => 'usuarios', 'key_enlace' => 'usuario_id'], 'usuarios', 'pedidos', 'p')
-     * @version 16.65.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.string_sql_join.21.24.0
+     * @throws errores Si:
+     * - `$tabla` o `$tabla_renombrada` están vacíos.
+     * - `$tabla` o `$tabla_renombrada` son valores numéricos.
+     * - `$data` no contiene las claves requeridas (`key`, `enlace`, `key_enlace`).
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Caso exitoso con datos válidos**:
+     *    ```php
+     *    $data = [
+     *        'key' => 'id',
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'usuario_id'
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tabla = 'usuarios';
+     *    $tabla_renombrada = 'usuarios_alias';
+     *
+     *    $resultado = $modelo->string_sql_join(data: $data, modelo_tabla: $modelo_tabla, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: "usuarios AS usuarios_alias ON usuarios_alias.id = usuarios.usuario_id"
+     *    ```
+     *
+     * 2. **Caso con tabla vacía**:
+     *    ```php
+     *    $data = [
+     *        'key' => 'id',
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'usuario_id'
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tabla = '';
+     *    $tabla_renombrada = 'usuarios_alias';
+     *
+     *    $resultado = $modelo->string_sql_join(data: $data, modelo_tabla: $modelo_tabla, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: Array con error indicando que $tabla no puede estar vacía.
+     *    ```
+     *
+     * 3. **Caso con datos faltantes en `$data`**:
+     *    ```php
+     *    $data = [
+     *        'enlace' => 'usuarios',
+     *        'key_enlace' => 'usuario_id'
+     *    ];
+     *    $modelo_tabla = 'pedidos';
+     *    $tabla = 'usuarios';
+     *    $tabla_renombrada = 'usuarios_alias';
+     *
+     *    $resultado = $modelo->string_sql_join(data: $data, modelo_tabla: $modelo_tabla, tabla: $tabla, tabla_renombrada: $tabla_renombrada);
+     *    // Resultado esperado: Array con error indicando que falta la clave `key` en $data.
+     *    ```
+     *
+     * ### Proceso de evaluación:
+     * 1. Valida que `$data` contenga las claves necesarias (`key`, `enlace`, `key_enlace`).
+     * 2. Limpia los valores de `$tabla` y `$tabla_renombrada` utilizando `trim`.
+     * 3. Verifica que `$tabla` y `$tabla_renombrada` no estén vacíos ni sean valores numéricos.
+     * 4. Construye y retorna la cadena SQL para el JOIN.
+     *
+     * ### Resultado esperado:
+     * - **SQL JOIN generado**: Retorna la cadena SQL con la estructura `"$tabla AS $tabla_renombrada ON $tabla_renombrada.$data[key] = $data[enlace].$data[key_enlace]"`.
+     * - **Error**: Devuelve un array con el detalle del error si alguno de los parámetros no cumple con las validaciones.
      */
+
     private function string_sql_join( array $data, string $modelo_tabla, string $tabla,
                                       string $tabla_renombrada): string|array
     {
@@ -1915,17 +2269,61 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Esta función sirve para renombrar una tabla si recibe el parámetro de 'renombre'.
+     * REG
+     * Determina el nombre de una tabla renombrada a partir de los datos proporcionados.
      *
-     * @param array $data Contiene la información sobre el renombramiento.
-     * @param string $tabla Es el nombre original de la tabla.
+     * Esta función evalúa si se ha definido un nombre alternativo para una tabla mediante el índice `renombre` en el array `$data`.
+     * Si existe y no está vacío, usa este nombre como el renombrado de la tabla. En caso contrario, utiliza el nombre original de `$tabla`.
      *
-     * @return string|array Retorna el nombre renombrado de la tabla si se proporciona 'renombre'.
-     *                      Retorna un error si el nombre de la tabla proporcionado está vacío.
-     * @version 16.69.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tabla_renombrada.21.24.0
+     * @param array $data Array de datos que puede contener el índice `renombre` con el nombre alternativo de la tabla.
+     * @param string $tabla Nombre original de la tabla. Este valor no debe estar vacío.
+     *
+     * @return string|array Retorna el nombre de la tabla renombrada como cadena de texto. Si ocurre un error, retorna un array
+     *                      con los detalles del mismo.
+     *
+     * @throws errores Si `$tabla` está vacío, retorna un error indicando que `$tabla` no puede estar vacío.
+     *
+     * ### Ejemplos de uso:
+     *
+     * 1. **Caso exitoso con renombre definido**:
+     *    ```php
+     *    $data = ['renombre' => 'usuarios_alias'];
+     *    $tabla = 'usuarios';
+     *
+     *    $resultado = $modelo->tabla_renombrada(data: $data, tabla: $tabla);
+     *    // Resultado esperado: 'usuarios_alias'
+     *    ```
+     *
+     * 2. **Caso exitoso sin renombre definido**:
+     *    ```php
+     *    $data = [];
+     *    $tabla = 'usuarios';
+     *
+     *    $resultado = $modelo->tabla_renombrada(data: $data, tabla: $tabla);
+     *    // Resultado esperado: 'usuarios'
+     *    ```
+     *
+     * 3. **Caso con tabla vacía**:
+     *    ```php
+     *    $data = ['renombre' => 'usuarios_alias'];
+     *    $tabla = '';
+     *
+     *    $resultado = $modelo->tabla_renombrada(data: $data, tabla: $tabla);
+     *    // Resultado esperado: Array con el error indicando que $tabla está vacía.
+     *    ```
+     *
+     * ### Proceso de evaluación:
+     * 1. Se limpia `$tabla` utilizando `trim` para eliminar espacios en blanco al inicio y al final.
+     * 2. Si `$tabla` está vacío después de la limpieza, se retorna un error.
+     * 3. Si `$data` contiene el índice `renombre` y su valor no está vacío después de aplicar `trim`, se utiliza como el nombre renombrado.
+     * 4. Si no, se utiliza `$tabla` como el nombre de la tabla.
+     *
+     * ### Resultados esperados:
+     * - **Renombre definido**: Retorna el valor de `$data['renombre']`.
+     * - **Sin renombre definido**: Retorna el valor de `$tabla`.
+     * - **Tabla vacía**: Retorna un error indicando que `$tabla` no puede estar vacía.
      */
+
     private function tabla_renombrada(array $data, string $tabla): string|array
     {
         $tabla = trim($tabla);
@@ -1945,31 +2343,110 @@ class joins{
     }
 
     /**
-     * TOTAL
-     * Este método se utiliza para generar un conjunto de tablas para una consulta SQL JOIN.
+     * REG
+     * Genera la cadena SQL con todas las tablas y `JOIN` necesarios para una consulta, incluyendo extensiones
+     * estructurales, `JOIN` adicionales y tablas renombradas.
      *
-     * Acepta una serie de parámetros que definen la estructura de la consulta SQL y devuelve un array con las tablas resultantes.
-     * Si se encuentra algún error durante el proceso, se devuelve una cadena con el mensaje de error.
+     * @param array $columnas Columnas base necesarias para generar los `JOIN` principales.
+     * @param array $extension_estructura Extensiones estructurales adicionales que requieren `JOIN`. Cada elemento
+     * debe ser un array con las claves necesarias para definir los datos del `JOIN`.
+     * @param array $extra_join Configuración adicional para `JOIN` externos, en el mismo formato que `$extension_estructura`.
+     * @param string $modelo_tabla Nombre de la tabla base del modelo. Usada como referencia para las validaciones.
+     * @param array $renombradas Tablas renombradas que requieren `JOIN`. Cada clave es el nombre renombrado y el valor es un
+     * array con los datos necesarios, incluyendo:
+     *  - `enlace`: Tabla con la que se realiza el enlace.
+     *  - `nombre_original`: Nombre original de la tabla.
+     *  - `key`: Clave primaria o de enlace de la tabla base.
+     *  - `key_enlace`: Clave de la tabla enlazada.
+     * @param string $tabla Nombre de la tabla principal que será incluida en la consulta.
      *
-     * @param array $columnas Un array que contiene las columnas que se van a seleccionar en la consulta SQL.
-     * @param array $extension_estructura Un array que contiene información adicional sobre la estructura de la consulta.
-     * @param array $extra_join Un array con información adicional para el JOIN.
-     * @param string $modelo_tabla La tabla base que se va a usar en la consulta SQL JOIN.
-     * @param array $renombradas Un array con los nuevos nombres que se van a asignar a las columnas seleccionadas.
-     * @param string $tabla El nombre de la tabla a considerar.
+     * @return array|string Devuelve un string con la cadena de tablas y `JOIN` generados correctamente si no hay errores.
+     * En caso de error, devuelve un array con los detalles del error.
      *
-     * @return array|string Retorna una matriz con las tablas generadas para la consulta SQL JOIN.
-     * Si ocurre un error, retorna una cadena con el mensaje de error.
+     * @throws errores Si:
+     * - `$tabla` está vacía.
+     * - Alguna de las extensiones o tablas renombradas contiene datos inválidos o vacíos.
      *
-     * @throws errores Se lanza una excepción si detecta que la tabla está vacía.
-     * Otros errores posibles que se pueden generar están relacionados con las operaciones de la función interna 'error'.
+     * ### Ejemplos de uso:
      *
-     * @example
-     * $res = $instance->tablas(['col1', 'col2'], [], [], 'tabla1', [], 'tabla2');
-     * print_r($res);
-     * @version 16.88.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.joins.tablas.21.25.0
+     * 1. **Generación exitosa de tablas y `JOIN`**:
+     *    ```php
+     *    $columnas = ['columna1', 'columna2'];
+     *    $extension_estructura = [
+     *        'tabla_extension' => [
+     *            'enlace' => 'tabla_enlace',
+     *            'key' => 'id',
+     *            'key_enlace' => 'tabla_extension_id'
+     *        ]
+     *    ];
+     *    $extra_join = [];
+     *    $modelo_tabla = 'modelo_base';
+     *    $renombradas = [
+     *        'tabla_renombrada' => [
+     *            'enlace' => 'tabla_enlace',
+     *            'nombre_original' => 'tabla_original',
+     *            'key' => 'id',
+     *            'key_enlace' => 'tabla_original_id'
+     *        ]
+     *    ];
+     *    $tabla = 'tabla_principal';
+     *
+     *    $resultado = $modelo->tablas(
+     *        columnas: $columnas,
+     *        extension_estructura: $extension_estructura,
+     *        extra_join: $extra_join,
+     *        modelo_tabla: $modelo_tabla,
+     *        renombradas: $renombradas,
+     *        tabla: $tabla
+     *    );
+     *    // Resultado esperado:
+     *    // "tabla_principal AS tabla_principal
+     *    //  LEFT JOIN tabla_extension ON tabla_extension.id = tabla_enlace.tabla_extension_id
+     *    //  LEFT JOIN tabla_original AS tabla_renombrada ON tabla_renombrada.id = tabla_enlace.tabla_original_id"
+     *    ```
+     *
+     * 2. **Error por tabla vacía**:
+     *    ```php
+     *    $tabla = '';
+     *    $resultado = $modelo->tablas(
+     *        columnas: $columnas,
+     *        extension_estructura: $extension_estructura,
+     *        extra_join: $extra_join,
+     *        modelo_tabla: $modelo_tabla,
+     *        renombradas: $renombradas,
+     *        tabla: $tabla
+     *    );
+     *    // Resultado esperado: Array con error indicando que la tabla está vacía.
+     *    ```
+     *
+     * 3. **Error por datos inválidos en extensiones**:
+     *    ```php
+     *    $extension_estructura = [
+     *        'tabla_extension' => 'dato_invalido'
+     *    ];
+     *    $resultado = $modelo->tablas(
+     *        columnas: $columnas,
+     *        extension_estructura: $extension_estructura,
+     *        extra_join: $extra_join,
+     *        modelo_tabla: $modelo_tabla,
+     *        renombradas: $renombradas,
+     *        tabla: $tabla
+     *    );
+     *    // Resultado esperado: Array con error indicando que los datos de la extensión deben ser un array.
+     *    ```
+     *
+     * ### Proceso de la función:
+     * 1. Valida que `$tabla` no esté vacía.
+     * 2. Obtiene las tablas completas y los `JOIN` básicos con `obten_tablas_completas`.
+     * 3. Agrega extensiones estructurales y `JOIN` adicionales con `extensiones_join`.
+     * 4. Procesa las tablas renombradas con `renombres_join`.
+     * 5. Devuelve la cadena SQL completa con las tablas y `JOIN`.
+     *
+     * ### Resultado esperado:
+     * - **Éxito**: String SQL con la cadena de tablas y `JOIN`.
+     * - **Error**: Array con detalles del error si alguna validación falla.
      */
+
     final public function tablas(array $columnas, array $extension_estructura, array $extra_join, string $modelo_tabla,
                                  array $renombradas, string $tabla): array|string
     {
