@@ -63,26 +63,50 @@ class inicializacion{
     }
 
     /**
-     * TOTAL
-     * Ajusta los parametros si no existen en el complemento
-     * @param stdClass $complemento Complemento con datos para maquetacion de sql
-     * @return array|stdClass
-     * @version 1.259.40
-     * @verfuncion 1.1.0
-     * @fecha 2022-08-02 13:07
-     * @author mgamboa
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.ajusta_params
+     * REG
+     * Ajusta la propiedad `params` del objeto complemento.
+     *
+     * Este método verifica si el objeto `$complemento` ya posee la propiedad `params`. Si no existe,
+     * se inicializa llamando al método `init_params()`. En caso de que ocurra un error durante la inicialización,
+     * se retorna un arreglo con la información del error; de lo contrario, se retorna el objeto `$complemento`
+     * actualizado.
+     *
+     * @param stdClass $complemento Objeto complementario que contendrá los parámetros adicionales para la consulta SQL.
+     *                              Se espera que, si no tiene la propiedad `params`, se inicialice a través de este método.
+     *
+     * @return stdClass|array Devuelve el objeto `$complemento` con la propiedad `params` inicializada si todo es correcto;
+     *                        en caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @example
+     * <pre>
+     * // Ejemplo de uso:
+     * // Se crea un objeto complemento sin la propiedad "params".
+     * $complemento = new stdClass();
+     *
+     * // Se ajustan los parámetros, inicializando "params" si es necesario.
+     * $complemento = $this->ajusta_params($complemento);
+     *
+     * // Resultado esperado:
+     * // $complemento->params es un objeto stdClass que contiene:
+     * //    - offset   => ""
+     * //    - group_by => ""
+     * //    - order    => ""
+     * //    - limit    => ""
+     * </pre>
+     *
+     * @version 1.0.0
      */
     final public function ajusta_params(stdClass $complemento): array|stdClass
     {
-        if(!isset($complemento->params)){
+        if (!isset($complemento->params)) {
             $complemento = $this->init_params(complemento: $complemento);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al inicializar params',data: $complemento);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al inicializar params', data: $complemento);
             }
         }
         return $complemento;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI
@@ -685,15 +709,32 @@ class inicializacion{
     }
 
     /**
-     * TOTAL
-     * Inicializacion de parametros a vacio
-     * @param stdClass $complemento Complemento con datos para maquetacion de sql
-     * @return stdClass
-     * @version 1.258.40
-     * @version 1.1.0
-     * @fecha 2022-08-02 12:33
-     * @author mgamboa
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.init_params
+     * REG
+     * Inicializa la propiedad "params" del objeto complemento.
+     *
+     * Este método asigna un nuevo objeto `stdClass` a la propiedad `params` del objeto `$complemento` y define
+     * los atributos `offset`, `group_by`, `order` y `limit` con cadenas vacías. Estos atributos se utilizan para almacenar
+     * parámetros adicionales en consultas SQL, como el desplazamiento (offset), la cláusula de agrupación (group_by),
+     * el ordenamiento (order) y el límite (limit).
+     *
+     * @param stdClass $complemento Objeto complementario al que se asignarán los parámetros de consulta SQL.
+     *
+     * @return stdClass Retorna el objeto `$complemento` con la propiedad `params` inicializada.
+     *
+     * @example
+     * <pre>
+     * // Ejemplo de uso:
+     * $complemento = new stdClass();
+     * $complemento = $this->init_params($complemento);
+     *
+     * // Resultado esperado:
+     * // $complemento->params->offset   => ""
+     * // $complemento->params->group_by => ""
+     * // $complemento->params->order    => ""
+     * // $complemento->params->limit    => ""
+     * </pre>
+     *
+     * @version 1.0.0
      */
     private function init_params(stdClass $complemento): stdClass
     {
@@ -704,6 +745,7 @@ class inicializacion{
         $complemento->params->limit = '';
         return $complemento;
     }
+
 
     /**
      * TOTAL

@@ -70,4 +70,6 @@ unit_test/prueba.zip
 /vendor/
 /templates/generals/error_previo.php
 /composer.lock
+/build
+
 

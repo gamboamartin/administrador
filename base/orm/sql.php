@@ -494,35 +494,7 @@ class sql{
 
     }
 
-    /**
-     * TOTAL
-     * Función para crear una consulta SQL con operador IN
-     *
-     * @param string $llave La clave que será buscada en la consulta SQL.
-     * @param string $values_sql Una cadena de texto con los valores que serán buscados con el operador IN.
-     * @return string|array La consulta SQL generada, o un array en caso de error.
-     * @version 16.284.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.in
-     */
-    final public function in(string $llave, string $values_sql): string|array
-    {
-        $valida = $this->valida_in(llave: $llave, values_sql: $values_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar in', data: $valida);
-        }
 
-        $in_sql = '';
-        if($values_sql!==''){
-            $in_sql.="$llave IN ($values_sql)";
-        }
-
-        $in_sql = $this->limpia_espacios_dobles(txt: $in_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar sql', data: $in_sql);
-        }
-
-        return $in_sql;
-    }
 
 
     /**
@@ -685,24 +657,47 @@ class sql{
     }
 
     /**
-     * TOTAL
-     * Limpia todos los espacios dobles definidos en un texto
-     * @param string $txt Texto a limpiar
-     * @param int $n_iteraciones no de veces que ejecutara la limpieza
-     * @return string
-     * @version 16.271.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.limpia_espacios_dobles
+     * REG
+     * Limpia todos los espacios dobles de una cadena.
+     *
+     * Esta función toma una cadena de texto y, mediante un bucle de iteraciones, reemplaza todas las ocurrencias de dos
+     * espacios consecutivos ("  ") por un único espacio (" "). Se realizan hasta *n_iteraciones* repeticiones para asegurar
+     * que se eliminen todos los espacios dobles, especialmente en casos en los que existan más de dos espacios consecutivos.
+     *
+     * **Detalles de la implementación:**
+     * - Se utiliza un bucle `while` que se ejecuta hasta que se alcance el número máximo de iteraciones especificado.
+     * - En cada iteración, se reemplazan todas las ocurrencias de dos espacios por un espacio simple utilizando `str_replace()`.
+     *
+     * @param string $txt           La cadena de texto que se desea limpiar de espacios dobles.
+     * @param int    $n_iteraciones El número máximo de iteraciones que se ejecutarán para limpiar la cadena.
+     *                               Por defecto es 10.
+     *
+     * @return string               La cadena resultante después de eliminar los espacios dobles.
+     *
+     * @example
+     * // Ejemplo 1: Limpiar una cadena con espacios dobles
+     * $textoOriginal = "Este   es    un   ejemplo     de   cadena  con espacios   dobles.";
+     * $textoLimpio = $objeto->limpia_espacios_dobles($textoOriginal);
+     * // Resultado esperado: "Este es un ejemplo de cadena con espacios dobles."
+     *
+     * @example
+     * // Ejemplo 2: Limitar el número de iteraciones
+     * $textoOriginal = "Múltiples        espacios";
+     * // Con solo 2 iteraciones, es posible que aún queden espacios dobles si existen más de dos espacios consecutivos.
+     * $textoLimpio = $objeto->limpia_espacios_dobles($textoOriginal, 2);
+     *
+     * @see str_replace() Para más información sobre la función utilizada para reemplazar las cadenas.
      */
     final public function limpia_espacios_dobles(string $txt, int $n_iteraciones = 10): string
     {
         $iteracion = 0;
-        while ($iteracion <= $n_iteraciones){
+        while ($iteracion <= $n_iteraciones) {
             $txt = str_replace('  ', ' ', $txt);
             $iteracion++;
         }
         return $txt;
-
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
@@ -1205,18 +1200,83 @@ class sql{
     }
 
     /**
-     * TOTAL
-     * Función para validar los valores de entrada `llave` y `values_sql`
+     * REG
+     * Valida la coherencia entre la llave y la cadena de valores SQL para una cláusula IN.
      *
-     * @param string $llave      Nombre de la llave. Debe ser una cadena de texto no vacía si `values_sql` no está vacía.
-     * @param string $values_sql Valor SQL para la llave. Debe ser una cadena de texto no vacía si `llave` no está vacía.
+     * Esta función se encarga de verificar que, si se proporciona un valor para la llave (es decir, el nombre
+     * de la columna para la cláusula IN), también se proporcione una cadena de valores SQL, y viceversa.
+     * Es decir:
      *
-     * @return bool|array Retorna verdadero si la validación fue exitosa.
-     *                    En caso de error, retorna un array con información de error proporcionada por la función `error`.
+     * - Si **$llave** no es una cadena vacía, se requiere que **$values_sql** tampoco lo sea.
+     * - Si **$values_sql** no es una cadena vacía, se requiere que **$llave** tampoco lo sea.
      *
-     * @final Esta función no puede ser sobrescrita en una clase hija.
-     * @version 16.265.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.sql.valida_in
+     * En caso de que alguna de estas condiciones no se cumpla, se devuelve un array de error generado
+     * mediante el método `error()` de la clase de manejo de errores. Si ambas entradas son coherentes,
+     * la función retorna `true`, indicando que la validación fue exitosa.
+     *
+     * ## Ejemplos de Uso:
+     *
+     * ### Ejemplo 1: Validación exitosa
+     * Se proporcionan ambos parámetros con información:
+     *
+     * ```php
+     * $llave = "categoria_id";
+     * $values_sql = "'10','20','30'";
+     *
+     * $resultado = $sqlObj->valida_in($llave, $values_sql);
+     * // Resultado esperado: true
+     * ```
+     *
+     * ### Ejemplo 2: Error por $values_sql vacío cuando $llave tiene valor
+     * Se proporciona un valor para la llave, pero la cadena de valores está vacía:
+     *
+     * ```php
+     * $llave = "categoria_id";
+     * $values_sql = "";
+     *
+     * $resultado = $sqlObj->valida_in($llave, $values_sql);
+     * // Resultado esperado: Array de error
+     * // [
+     * //     'error'         => 1,
+     * //     'mensaje'       => 'Error si llave tiene info values debe tener info',
+     * //     'mensaje_limpio'=> 'Error si llave tiene info values debe tener info',
+     * //     'data'          => 'categoria_id',
+     * //     ... (otros datos del error)
+     * // ]
+     * ```
+     *
+     * ### Ejemplo 3: Error por $llave vacío cuando $values_sql tiene valor
+     * Se proporciona una cadena de valores, pero la llave está vacía:
+     *
+     * ```php
+     * $llave = "";
+     * $values_sql = "'10','20','30'";
+     *
+     * $resultado = $sqlObj->valida_in($llave, $values_sql);
+     * // Resultado esperado: Array de error
+     * // [
+     * //     'error'         => 1,
+     * //     'mensaje'       => 'Error si values_sql tiene info llave debe tener info',
+     * //     'mensaje_limpio'=> 'Error si values_sql tiene info llave debe tener info',
+     * //     'data'          => "'10','20','30'",
+     * //     ... (otros datos del error)
+     * // ]
+     * ```
+     *
+     * ## Parámetros:
+     *
+     * @param string $llave       La llave o nombre de columna para la cláusula IN. Se espera que sea una cadena
+     *                            no vacía si se desea especificar valores para la cláusula.
+     * @param string $values_sql  La cadena SQL que contiene los valores a utilizar en la cláusula IN.
+     *                            Generalmente, estos valores deben estar formateados y separados por comas,
+     *                            por ejemplo: "'10','20','30'". Se espera que sea no vacía si se proporciona una llave.
+     *
+     * ## Valor de Retorno:
+     *
+     * @return bool|array         Devuelve `true` si la validación es exitosa; de lo contrario, devuelve un array
+     *                            con los detalles del error generado por el método de manejo de errores.
+     *
+     * @see errores::error() Para el formato del array de error devuelto.
      */
     final public function valida_in(string $llave, string $values_sql): bool|array
     {
@@ -1224,19 +1284,26 @@ class sql{
         $values_sql = trim($values_sql);
         if($llave !== ''){
             if($values_sql ===''){
-                return $this->error->error(mensaje: 'Error si llave tiene info values debe tener info',
-                    data: $llave, es_final: true);
+                return $this->error->error(
+                    mensaje: 'Error si llave tiene info values debe tener info',
+                    data: $llave,
+                    es_final: true
+                );
             }
         }
 
         if($values_sql !== ''){
             if($llave ===''){
                 return $this->error->error(
-                    mensaje: 'Error si values_sql tiene info llave debe tener info', data: $values_sql, es_final: true);
+                    mensaje: 'Error si values_sql tiene info llave debe tener info',
+                    data: $values_sql,
+                    es_final: true
+                );
             }
         }
         return true;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV

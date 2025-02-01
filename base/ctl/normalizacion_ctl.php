@@ -78,21 +78,77 @@ class normalizacion_ctl{
 
 
     /**
-     * Genera los filtros para envio de datos
-     * @param array $filtros_brutos Filtro directos de POST
-     * @return array
+     * REG
+     * Genera un arreglo de filtros a partir de un arreglo de entrada.
+     *
+     * Esta función procesa un arreglo de filtros brutos (asociativo), validando que las claves de cada
+     * elemento sean cadenas de texto. Si alguna clave es numérica, se genera un error y se retorna un mensaje
+     * indicando que la clave debe ser de tipo texto. Si todas las claves son válidas, la función retorna el
+     * mismo arreglo de filtros con las claves procesadas.
+     *
+     * @param array $filtros_brutos Arreglo asociativo con filtros, donde las claves representan los campos
+     *                               a filtrar y los valores representan los valores a aplicar a esos filtros.
+     *                               Las claves deben ser cadenas de texto, no números.
+     *
+     * @return array Retorna un arreglo asociativo de filtros procesados si todas las claves son válidas.
+     *               Si alguna clave es numérica, se retorna un arreglo de error.
+     *
+     * @throws errores Si se detecta una clave numérica, la función retorna un error con un mensaje explicativo.
+     *
+     * @example Ejemplo de entrada:
+     * ```php
+     * $filtros_brutos = [
+     *     'nombre' => 'Juan',
+     *     'edad' => 30,
+     *     'activo' => true
+     * ];
+     * ```
+     *
+     * @example Ejemplo de salida exitosa:
+     * ```php
+     * $filtros = [
+     *     'nombre' => 'Juan',
+     *     'edad' => 30,
+     *     'activo' => true
+     * ];
+     * ```
+     *
+     * @example Ejemplo de salida con error:
+     * ```php
+     * $filtros_brutos = [
+     *     0 => 'Juan',  // Clave numérica, generará un error
+     *     'edad' => 30
+     * ];
+     *
+     * // Salida:
+     * [
+     *     'mensaje' => 'Error el key debe ser un texto',
+     *     'data' => 0, // La clave problemática
+     *     'es_final' => true // El error es final, deteniendo el flujo
+     * ]
+     * ```
      */
     final public function genera_filtros_envio(array $filtros_brutos): array
     {
+        // Inicializamos el arreglo de filtros vacío
         $filtros = array();
-        foreach($filtros_brutos as $campo =>$value){
-            if(is_numeric($campo)){
-                return $this->error->error('Error el key debe ser un texto',$campo);
+
+        // Iteramos sobre el arreglo de filtros brutos
+        foreach ($filtros_brutos as $campo => $value) {
+            // Verificamos si la clave (campo) es numérica
+            if (is_numeric($campo)) {
+                // Si la clave es numérica, generamos un error y detenemos el proceso
+                return $this->error->error('Error el key debe ser un texto', $campo, es_final: true);
             }
+
+            // Si la clave es válida, la agregamos al arreglo de filtros con su valor correspondiente
             $filtros[$campo] = $value;
         }
+
+        // Retornamos el arreglo de filtros procesados
         return $filtros;
     }
+
 
 
     /**

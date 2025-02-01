@@ -599,10 +599,12 @@ class controler{
     final protected function resultado_filtrado(): array|stdClass
     {
         if(!isset($_POST['filtros'])){
-            return $this->errores->error('Error no existe filtros en POST',$_POST);
+
+            return $this->errores->error('Error no existe filtros en POST',$_POST, es_final: true);
         }
         if(!is_array($_POST['filtros'])){
-            return $this->errores->error('Error al generar filtros en POST debe ser un array',$_POST);
+            return $this->errores->error('Error al generar filtros en POST debe ser un array',$_POST,
+                es_final: true);
         }
         $filtros = (new normalizacion_ctl())->genera_filtros_envio($_POST['filtros']);
         if(errores::$error){

@@ -91,8 +91,64 @@ normalizacion_ctlTest extends test {
     }
 
 
+    public function test_genera_filtros_envio(): void
+    {
+        errores::$error = false;
+        $normalizacion_ctl = new normalizacion_ctl();
+        // Prueba 1: Claves válidas (texto)
+        $input = [
+            'nombre' => 'Juan',
+            'edad' => 30
+        ];
 
+        $result = $normalizacion_ctl->genera_filtros_envio($input);
 
+        $this->assertIsArray($result, 'El resultado debe ser un arreglo');
+        $this->assertFalse(errores::$error, 'No debe haberse generado ningún error');
+        $this->assertEquals($input, $result, 'El arreglo retornado debe ser igual al de entrada');
+
+        // Prueba 2: Clave numérica
+        $inputWithNumericKey = [
+            0 => 'valor_incorrecto',
+            'nombre' => 'Juan'
+        ];
+        errores::$error = false;
+        $resultWithNumericKey = $normalizacion_ctl->genera_filtros_envio($inputWithNumericKey);
+
+        $this->assertIsArray($resultWithNumericKey, 'El resultado debe ser un arreglo de error');
+        $this->assertTrue(errores::$error, 'Se debe marcar error al haber una clave numérica');
+        $this->assertArrayHasKey('mensaje', $resultWithNumericKey, 'El arreglo de error debe tener la clave "mensaje"');
+        $this->assertStringContainsStringIgnoringCase('Error el key debe ser un texto', $resultWithNumericKey['mensaje'], 'El mensaje de error debe indicar que la clave debe ser un texto');
+        $this->assertEquals(0, $resultWithNumericKey['data'], 'El valor de data debe ser la clave numérica que generó el error');
+        errores::$error = false;
+    }
+
+    public function test_genera_registros_envio(): void
+    {
+        errores::$error = false;
+        $nm = new normalizacion_ctl();
+        $nm = new liberator($nm);
+        $controler = new controler($this->link, '', '');
+
+        $registros = array();
+        $resultado = $nm->genera_registros_envio($controler, $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEmpty($resultado);
+
+        errores::$error = false;
+
+        $controler = new controler($this->link, '', '');
+        $controler->seccion = 'x';
+        $controler->modelo = new adm_seccion($this->link);
+        $registros = array();
+        $registros['a'] = '';
+        $resultado = $nm->genera_registros_envio($controler, $registros);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertNotEmpty($resultado);
+        errores::$error = false;
+    }
 
 
     public function test_init_upd_base(): void
@@ -155,33 +211,6 @@ normalizacion_ctlTest extends test {
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertEquals("a", $resultado['a']);
-        errores::$error = false;
-    }
-
-    public function test_genera_registros_envio(): void
-    {
-        errores::$error = false;
-        $nm = new normalizacion_ctl();
-        $nm = new liberator($nm);
-        $controler = new controler($this->link, '', '');
-
-        $registros = array();
-        $resultado = $nm->genera_registros_envio($controler, $registros);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEmpty($resultado);
-
-        errores::$error = false;
-
-        $controler = new controler($this->link, '', '');
-        $controler->seccion = 'x';
-        $controler->modelo = new adm_seccion($this->link);
-        $registros = array();
-        $registros['a'] = '';
-        $resultado = $nm->genera_registros_envio($controler, $registros);
-        $this->assertIsArray($resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertNotEmpty($resultado);
         errores::$error = false;
     }
 

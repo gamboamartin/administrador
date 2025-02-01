@@ -267,58 +267,175 @@ class params_sql{
 
 
     /**
-     * TOTAL
-     * Prepara y asegura las cláusulas SQL para su ejecución segura.
+     * REG
+     * Genera un objeto de parámetros SQL para la consulta.
      *
-     * @param bool $aplica_seguridad Si es true, entonces aplica los procedimientos de seguridad a la consulta SQL.
-     * @param array $group_by Arreglo que contiene las columnas para la cláusula GROUP BY.
-     * @param int $limit Número entero para la cláusula LIMIT.
-     * @param array $modelo_columnas_extra Arreglo que contiene columnas adicionales para el modelo.
-     * @param int $offset Número entero para la cláusula OFFSET.
-     * @param array $order Arreglo que contiene las columnas para la cláusula ORDER BY.
-     * @param string $sql_where_previo Cadena de texto con una declaración SQL WHERE anterior.
+     * Esta función construye un objeto que contiene las cláusulas SQL necesarias para la generación
+     * de una consulta, incluyendo GROUP BY, ORDER BY, LIMIT, OFFSET y una cláusula de seguridad en función
+     * del usuario activo (si se aplica). Se valida que los valores de `$limit` y `$offset` sean mayores o iguales a 0,
+     * y se generan cada una de las cláusulas utilizando métodos internos.
      *
-     * @return array|stdClass Devuelve un objeto stdClass o un array que contienen los componentes SQL preparados.
-     *                        Si se encuentra un error durante el proceso, devuelve un mensaje de error.
-     * @version 15.58.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.modelado.params_sql.params_sql
+     * Los pasos realizados son los siguientes:
+     * <ol>
+     *   <li>Se valida que el valor de <code>$limit</code> sea mayor o igual a 0.</li>
+     *   <li>Se valida que el valor de <code>$offset</code> sea mayor o igual a 0.</li>
+     *   <li>Se genera la cláusula GROUP BY llamando a <code>group_by_sql()</code> con el array <code>$group_by</code>.</li>
+     *   <li>Se genera la cláusula ORDER BY llamando a <code>order_sql()</code> con el array <code>$order</code>.</li>
+     *   <li>Se genera la cláusula LIMIT llamando a <code>limit_sql()</code> con el valor <code>$limit</code>.</li>
+     *   <li>Se genera la cláusula OFFSET llamando a <code>offset_sql()</code> con el valor <code>$offset</code>.</li>
+     *   <li>Si <code>$aplica_seguridad</code> es <code>true</code>, se genera una cláusula de seguridad mediante
+     *       <code>seguridad()</code> utilizando el array <code>$modelo_columnas_extra</code> y la condición previa
+     *       <code>$sql_where_previo</code>; de lo contrario, la cláusula de seguridad queda vacía.</li>
+     *   <li>Se crea un objeto <code>stdClass</code> y se asignan las propiedades resultantes para cada cláusula:
+     *       <code>group_by</code>, <code>order</code>, <code>limit</code>, <code>offset</code> y <code>seguridad</code>.</li>
+     * </ol>
+     *
+     * @param bool   $aplica_seguridad      Indica si se debe aplicar una cláusula de seguridad basada en el usuario activo.
+     *                                      Si es <code>true</code>, se valida que <code>$_SESSION['usuario_id']</code>
+     *                                      esté definida y se genera la condición correspondiente.
+     * @param array  $group_by             Array de campos por los cuales agrupar la consulta. Ejemplo: <code>['campo1', 'campo2']</code>.
+     * @param int    $limit                Número máximo de registros a devolver. Debe ser mayor o igual a 0.
+     * @param array  $modelo_columnas_extra Array asociativo que contiene columnas extra del modelo. En particular,
+     *                                      debe incluir la clave <code>'usuario_permitido_id'</code> si se aplica seguridad.
+     * @param int    $offset               Número de registros a omitir (offset). Debe ser mayor o igual a 0.
+     * @param array  $order                Array asociativo para el ordenamiento, donde las claves son los nombres de los
+     *                                      campos y los valores son <code>'ASC'</code> o <code>'DESC'</code>.
+     *                                      Ejemplo: <code>['campo1' => 'ASC', 'campo2' => 'DESC']</code>.
+     * @param string $sql_where_previo     Condición SQL previa (por ejemplo, parte de un WHERE) que se usará para integrar
+     *                                      la cláusula de seguridad. Si está vacía, se usará para generar la palabra
+     *                                      clave <code>WHERE</code> en la cláusula de seguridad.
+     *
+     * @return array|stdClass Devuelve un objeto <code>stdClass</code> que contiene las siguientes propiedades:
+     * <ul>
+     *   <li><code>group_by</code>: Cadena SQL con la cláusula GROUP BY (ejemplo: <code>" GROUP BY campo1, campo2 "</code>).</li>
+     *   <li><code>order</code>: Cadena SQL con la cláusula ORDER BY (ejemplo: <code>" ORDER BY campo1 ASC, campo2 DESC "</code>).</li>
+     *   <li><code>limit</code>: Cadena SQL con la cláusula LIMIT (ejemplo: <code>" LIMIT 20"</code>).</li>
+     *   <li><code>offset</code>: Cadena SQL con la cláusula OFFSET (ejemplo: <code>" OFFSET 5"</code>).</li>
+     *   <li><code>seguridad</code>: Cadena SQL que representa la condición de seguridad, si se aplica;
+     *       de lo contrario, es una cadena vacía.</li>
+     * </ul>
+     * En caso de error, retorna un array con los detalles del error utilizando el manejador de errores.
+     *
+     * @example Ejemplo 1: Aplicando seguridad sin cláusula WHERE previa
+     * <pre>
+     * // Suponiendo que $_SESSION['usuario_id'] está definida:
+     * $_SESSION['usuario_id'] = 10;
+     * $aplica_seguridad = true;
+     * $group_by = ['campo1', 'campo2'];
+     * $limit = 20;
+     * $modelo_columnas_extra = ['usuario_permitido_id' => 'tabla.usuario_id'];
+     * $offset = 0;
+     * $order = ['campo1' => 'ASC'];
+     * $sql_where_previo = '';
+     *
+     * $params = $this->params_sql($aplica_seguridad, $group_by, $limit, $modelo_columnas_extra, $offset, $order, $sql_where_previo);
+     *
+     * // Resultado esperado:
+     * // stdClass {
+     * //     group_by => " GROUP BY campo1, campo2 ",
+     * //     order => " ORDER BY campo1 ASC ",
+     * //     limit => " LIMIT 20",
+     * //     offset => "",
+     * //     seguridad => " WHERE (tabla.usuario_id) = $_SESSION[usuario_id] "
+     * // }
+     * </pre>
+     *
+     * @example Ejemplo 2: Sin aplicar seguridad y con cláusula WHERE previa
+     * <pre>
+     * $aplica_seguridad = false;
+     * $group_by = [];
+     * $limit = 0;
+     * $modelo_columnas_extra = []; // No se utiliza ya que la seguridad no se aplica
+     * $offset = 5;
+     * $order = [];
+     * $sql_where_previo = 'estado = "activo"';
+     *
+     * $params = $this->params_sql($aplica_seguridad, $group_by, $limit, $modelo_columnas_extra, $offset, $order, $sql_where_previo);
+     *
+     * // Resultado esperado:
+     * // stdClass {
+     * //     group_by => "",
+     * //     order => "",
+     * //     limit => "",
+     * //     offset => " OFFSET 5",
+     * //     seguridad => ""
+     * // }
+     * </pre>
+     *
+     * @example Ejemplo 3: Manejo de error por límite negativo
+     * <pre>
+     * $params = $this->params_sql(true, [], -1, [], 0, [], '');
+     * // Resultado esperado:
+     * // Array de error con mensaje: "Error limit debe ser mayor o igual a 0"
+     * </pre>
      */
-    final public function params_sql(bool $aplica_seguridad, array $group_by, int $limit, array $modelo_columnas_extra,
-                                     int $offset, array $order, string $sql_where_previo): array|stdClass
+    final public function params_sql(
+        bool $aplica_seguridad,
+        array $group_by,
+        int $limit,
+        array $modelo_columnas_extra,
+        int $offset,
+        array $order,
+        string $sql_where_previo
+    ): array|stdClass
     {
-        if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit, es_final: true);
+        if ($limit < 0) {
+            return $this->error->error(
+                mensaje: 'Error limit debe ser mayor o igual a 0',
+                data: $limit,
+                es_final: true
+            );
         }
-        if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
-                es_final: true);
-
+        if ($offset < 0) {
+            return $this->error->error(
+                mensaje: 'Error $offset debe ser mayor o igual a 0',
+                data: $offset,
+                es_final: true
+            );
         }
 
         $group_by_sql = $this->group_by_sql(group_by: $group_by);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data:$group_by_sql);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar sql',
+                data: $group_by_sql
+            );
         }
 
         $order_sql = $this->order_sql(order: $order);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar order',data:$order_sql);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar order',
+                data: $order_sql
+            );
         }
 
         $limit_sql = $this->limit_sql(limit: $limit);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar limit',data:$limit_sql);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar limit',
+                data: $limit_sql
+            );
         }
 
         $offset_sql = $this->offset_sql(offset: $offset);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar offset',data:$offset_sql);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar offset',
+                data: $offset_sql
+            );
         }
 
-        $seguridad = $this->seguridad(aplica_seguridad:$aplica_seguridad, modelo_columnas_extra: $modelo_columnas_extra,
-            sql_where_previo:  $sql_where_previo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql de seguridad', data: $seguridad);
+        $seguridad = $this->seguridad(
+            aplica_seguridad: $aplica_seguridad,
+            modelo_columnas_extra: $modelo_columnas_extra,
+            sql_where_previo: $sql_where_previo
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar sql de seguridad',
+                data: $seguridad
+            );
         }
 
         $params = new stdClass();
@@ -329,8 +446,8 @@ class params_sql{
         $params->seguridad = $seguridad;
 
         return $params;
-
     }
+
 
     /**
      * REG

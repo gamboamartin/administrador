@@ -571,76 +571,225 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Genera y ejecuta una consulta SQL para contar el número de registros según los filtros proporcionados.
+     * REG
+     * Ejecuta una consulta SQL para contar el total de registros que cumplen con los filtros especificados.
      *
-     * Esta función construye una consulta SQL basada en varios parámetros, incluidos filtros personalizados,
-     * columnas, joins adicionales, y agrupaciones. Luego, ejecuta la consulta y devuelve el número de registros encontrados.
-     * Si ocurre un error en cualquier paso, devuelve un array con los detalles del error; en caso de éxito, retorna el total de registros.
+     * Este método genera y ejecuta una consulta SQL que retorna el número total de registros según diversos criterios de filtrado,
+     * unión, agrupamiento y ordenamiento. La consulta se construye a partir de una serie de parámetros que definen:
      *
-     * @param bool $aplica_seguridad Indica si se deben aplicar los filtros de seguridad.
-     * @param array $columnas Las columnas a incluir en la consulta.
-     * @param array $columnas_by_table Las columnas a incluir, agrupadas por tabla.
-     * @param bool $columnas_en_bruto Indica si se deben usar las columnas en su formato bruto.
-     * @param bool $con_sq Indica si se debe incluir un subquery.
-     * @param array $diferente_de Filtros para excluir valores.
-     * @param array $extra_join Joins adicionales para la consulta.
-     * @param array $filtro Filtros de búsqueda.
-     * @param array $filtro_especial Filtros especiales adicionales.
-     * @param array $filtro_extra Filtros extra.
-     * @param array $filtro_fecha Filtros basados en fechas.
-     * @param array $filtro_rango Filtros de rango.
-     * @param array $group_by Columnas para la agrupación.
-     * @param array $hijo Parámetros relacionados con entidades hijas.
-     * @param array $in Filtros para incluir valores específicos.
-     * @param array $not_in Filtros para excluir valores específicos.
-     * @param string $sql_extra SQL adicional para agregar a la consulta.
-     * @param string $tipo_filtro El tipo de filtro a aplicar (por defecto: 'numeros').
+     * <ul>
+     *   <li>Las columnas a seleccionar y cómo se agrupan (parámetros $columnas, $columnas_by_table y $columnas_en_bruto).</li>
+     *   <li>La inclusión o no de subconsultas mediante $con_sq.</li>
+     *   <li>Filtros básicos ($filtro), condiciones especiales ($filtro_especial), filtros extra ($filtro_extra),
+     *       filtros de rango ($filtro_rango) y filtros basados en fechas ($filtro_fecha).</li>
+     *   <li>Condiciones "diferente de" a aplicar ($diferente_de).</li>
+     *   <li>Parámetros para construir cláusulas IN y NOT IN ($in y $not_in).</li>
+     *   <li>Opciones de agrupamiento ($group_by), ordenamiento ($order) y SQL extra ($sql_extra).</li>
+     *   <li>El tipo de filtro a aplicar ($tipo_filtro), por ejemplo, "numeros" para coincidencia exacta o "textos" para búsquedas con comodines.</li>
+     *   <li>El parámetro $aplica_seguridad indica si se deben aplicar filtros de seguridad, integrando los definidos en
+     *       $this->filtro_seguridad.</li>
+     *   <li>El parámetro $count se utiliza para modificar la consulta y que ésta devuelva únicamente un conteo de registros.</li>
+     * </ul>
      *
-     * @return array|int Retorna un entero con el número total de registros. En caso de error, retorna un array con detalles del error.
+     * Para construir la consulta final, este método utiliza internamente:
+     * <ul>
+     *   <li>El método {@see genera_sql_filtro()} para armar la consulta base con los filtros.</li>
+     *   <li>El método {@see ejecuta_consulta()} para ejecutar la consulta generada y obtener los resultados.</li>
+     * </ul>
      *
+     * @param bool $aplica_seguridad Indica si se deben aplicar filtros de seguridad (se fusionan con $filtro mediante array_merge).
+     *                                   <b>Ejemplo:</b> <code>true</code>.
+     * @param array $columnas Array de columnas a seleccionar en la consulta.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.id', 'usuarios.nombre', 'usuarios.email']</code>.
+     * @param array $columnas_by_table Array asociativo que agrupa columnas por tabla.
+     *                                   <b>Ejemplo:</b> <code>['usuarios' => ['id', 'nombre']]</code>.
+     * @param bool $columnas_en_bruto Indica si se deben usar las columnas en su forma original (sin alias).
+     *                                   <b>Ejemplo:</b> <code>false</code>.
+     * @param bool $con_sq Indica si se deben incluir subconsultas en la consulta base.
+     *                                   <b>Ejemplo:</b> <code>true</code>.
+     * @param array $diferente_de Array de condiciones para la cláusula "diferente de" (<>).
+     *                                   <b>Ejemplo:</b> <code>['usuarios.estado' => 'inactivo']</code>.
+     * @param array $extra_join Array con información de joins adicionales.
+     *                                   <b>Ejemplo:</b> <code>[ 'direcciones' => ['on' => 'usuarios.id = direcciones.usuario_id'] ]</code>.
+     * @param array $filtro Array de filtros básicos para la cláusula WHERE.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.status' => 'activo']</code>.
+     * @param array $filtro_especial Array de filtros especiales, donde cada elemento es un array con 'operador', 'valor'
+     *                                   y 'comparacion'.
+     *                                   <b>Ejemplo:</b>
+     *                                   <code>
+     *                                   [
+     *                                      'usuarios.edad' => ['operador' => '>', 'valor' => '18', 'comparacion' => 'AND']
+     *                                   ]
+     *                                   </code>.
+     * @param array $filtro_extra Array de filtros adicionales a concatenar en la cláusula WHERE.
+     *                                   <b>Ejemplo:</b> <code>[]</code> (sin filtros extra).
+     * @param array $filtro_fecha (Opcional) Array adicional de filtros basados en fechas.
+     *                                   <b>Ejemplo:</b> <code>[]</code>.
      *
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.cuenta_bis
+     * @param array $filtro_rango Array para definir filtros de rango. Puede ser de la forma:
+     *                                   <ul>
+     *                                     <li><code>['usuarios.edad' => ['valor1' => 18, 'valor2' => 65]]</code></li>
+     *                                     <li><code>['usuarios.edad' => ['valor1' => 18, 'valor2' => 65, 'valor_campo' => true]]</code></li>
+     *                                   </ul>
+     * @param array $group_by Array de columnas para la cláusula GROUP BY.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.departamento']</code>.
+     * @param array $hijo Array con parámetros para relaciones de registros hijos, si aplica.
+     *                                   <b>Ejemplo:</b> <code>[]</code>.
+     * @param array $in Array para la cláusula IN, con la estructura:
+     *                                   <code>['llave' => 'usuarios.id', 'values' => [1, 2, 3]]</code>.
+     * @param array $not_in Array para la cláusula NOT IN, con una estructura similar a $in.
+     *                                   <b>Ejemplo:</b> <code>[]</code>.
+     * @param string $sql_extra Cadena SQL extra a concatenar en la consulta. Usualmente condiciones adicionales.
+     *                                   <b>Ejemplo:</b> <code>""</code>.
+     * @param string $tipo_filtro Tipo de filtro a aplicar: por ejemplo, "numeros" para coincidencias exactas o "textos" para
+     *                                   búsquedas con comodines.
+     *                                   <b>Ejemplo:</b> <code>'numeros'</code>.
+     * @return array|int Devuelve un entero con el número total de registros que cumplen con los criterios,
+     *                   o un array con detalles del error si ocurre algún fallo.
+     *
+     * @example Ejemplo 1: Contar registros con un filtro básico
+     * <pre>
+     * // Supongamos que se desea contar los usuarios activos:
+     * $columnas           = ['usuarios.id', 'usuarios.nombre', 'usuarios.email'];
+     * $columnas_by_table  = [];
+     * $columnas_en_bruto  = false;
+     * $con_sq             = true;
+     * $diferente_de       = [];
+     * $extra_join         = [];
+     * $filtro             = ['usuarios.status' => 'activo'];
+     * $filtro_especial    = [];
+     * $filtro_extra       = [];
+     * $filtro_fecha       = [];
+     * $filtro_rango       = [];
+     * $group_by           = [];
+     * $hijo               = [];
+     * $in                 = ['llave' => 'usuarios.id', 'values' => [1, 2, 3]];
+     * $not_in             = [];
+     * $limit              = 0;
+     * $offset             = 0;
+     * $order              = [];
+     * $sql_extra          = "";
+     * $tipo_filtro        = 'textos';
+     * $count              = true;
+     *
+     * // Llamada:
+     * $total_registros = $modelo->cuenta_bis(
+     *      $aplica_seguridad,
+     *      $columnas,
+     *      $columnas_by_table,
+     *      $columnas_en_bruto,
+     *      $con_sq,
+     *      $diferente_de,
+     *      $extra_join,
+     *      $filtro,
+     *      $filtro_especial,
+     *      $filtro_extra,
+     *      $filtro_fecha,
+     *      $filtro_rango,
+     *      $group_by,
+     *      $hijo,
+     *      $in,
+     *      $not_in,
+     *      $sql_extra,
+     *      $tipo_filtro
+     * );
+     *
+     * // Resultado esperado (por ejemplo):
+     * // 125
+     * </pre>
+     *
+     * @example Ejemplo 2: Error al especificar un límite negativo
+     * <pre>
+     * $limit = -5;
+     * // Al llamar a la función con $limit negativo, se retornará un array de error similar a:
+     * // [
+     * //   'error'     => 1,
+     * //   'mensaje'   => "Error limit debe ser mayor o igual a 0",
+     * //   'data'      => -5,
+     * //   'es_final'  => true
+     * // ]
+     * $total_registros = $modelo->cuenta_bis(
+     *      $aplica_seguridad,
+     *      $columnas,
+     *      $columnas_by_table,
+     *      $columnas_en_bruto,
+     *      $con_sq,
+     *      $diferente_de,
+     *      $extra_join,
+     *      $filtro,
+     *      $filtro_especial,
+     *      $filtro_extra,
+     *      $filtro_fecha,
+     *      $filtro_rango,
+     *      $group_by,
+     *      $hijo,
+     *      $in,
+     *      $not_in,
+     *      $sql_extra,
+     *      $tipo_filtro,
+     *      true // count activado
+     * );
+     * </pre>
      */
-    final public function cuenta_bis(bool $aplica_seguridad = true, array $columnas =array(),
-                                     array $columnas_by_table = array(), bool $columnas_en_bruto = false,
-                                     bool $con_sq = true, array $diferente_de = array(), array $extra_join = array(),
-                                     array $filtro=array(), array $filtro_especial= array(),
-                                     array $filtro_extra = array(), array $filtro_fecha = array(),
-                                     array $filtro_rango = array(), array $group_by=array(), array $hijo = array(),
-                                     array $in = array(),  array $not_in = array(), string $sql_extra = '',
-                                     string $tipo_filtro='numeros'): array|int
-    {
-
-
-
+    final public function cuenta_bis(
+        bool $aplica_seguridad = true,
+        array $columnas = array(),
+        array $columnas_by_table = array(),
+        bool $columnas_en_bruto = false,
+        bool $con_sq = true,
+        array $diferente_de = array(),
+        array $extra_join = array(),
+        array $filtro = array(),
+        array $filtro_especial = array(),
+        array $filtro_extra = array(),
+        array $filtro_fecha = array(),
+        array $filtro_rango = array(),
+        array $group_by = array(),
+        array $hijo = array(),
+        array $in = array(),
+        array $not_in = array(),
+        string $sql_extra = '',
+        string $tipo_filtro = 'numeros'
+    ): array|int {
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro', data: $verifica_tf);
         }
-
-        if($this->aplica_seguridad && $aplica_seguridad) {
+        if ($this->aplica_seguridad && $aplica_seguridad) {
             $filtro = array_merge($filtro, $this->filtro_seguridad);
         }
-
-
-        $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de,
-            extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
-            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: 0, not_in: $not_in, offset: 0,
-            order: array(), sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, count: true, filtro_fecha: $filtro_fecha);
-
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
+        $sql = $this->genera_sql_filtro(
+            columnas: $columnas,
+            columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto,
+            con_sq: $con_sq,
+            diferente_de: $diferente_de,
+            extra_join: $extra_join,
+            filtro: $filtro,
+            filtro_especial: $filtro_especial,
+            filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango,
+            group_by: $group_by,
+            in: $in,
+            limit: 0,
+            not_in: $not_in,
+            offset: 0,
+            order: array(),
+            sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro,
+            count: true,
+            filtro_fecha: $filtro_fecha
+        );
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al maquetar sql', data: $sql);
         }
-
-        $result = $this->ejecuta_consulta(consulta:$sql,campos_encriptados: $this->campos_encriptados, hijo: $hijo);
-        if(errores::$error){
-            return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
+        $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados, hijo: $hijo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
-
         return (int)$result->registros[0]['total_registros'];
     }
+
 
     /**
      * REG
@@ -1150,186 +1299,285 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Devuelve un array de la siguiente con la informacion de registros encontrados
+     * REG
+     * Ejecuta una consulta SQL combinando múltiples filtros en forma de cláusula AND.
      *
-     * @param bool $aplica_seguridad Si aplica seguridad entonces valida el usuario logueado
-     * @param array $columnas columnas a mostrar en la consulta, si columnas = array(), se muestran todas las columnas
-     * @param array $columnas_by_table arreglo para obtener los campos especificos de una tabla, si esta seteada,
-     * no aplicara las columnas tradicionales
-     * @param bool $columnas_en_bruto si true se trae las columnas sion renombrar y solo de la tabla seleccionada
-     * @param array $columnas_totales
-     * @param bool $con_sq
-     * @param array $diferente_de Arreglo con los elementos para integrar <> o diferente en el SQL
-     * @param array $extra_join Arreglo para integrar tabla integra en la consulta
-     * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
-     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
-     *          arreglo con condiciones especiales $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'AND OR')
-     * @param array $filtro_extra arreglo que contiene las condiciones
-     * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
-     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @param array $filtro_rango
-     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     *                  Opcion2.-
-     *                      Debe ser un array con la siguiente forma
-     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
-     *                  Opcion1.- $filtro_rango['tabla.campo'] = array('valor1'=>'valor','valor2'=>'valor')
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param array $hijo configuracion para asignacion de un array al resultado de un campo foráneo
-     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @param int $limit numero de registros a mostrar, 0 = sin limite
-     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @param int $offset numero de registros de comienzo de datos
-     * @param array $order array('tabla.campo'=>'ASC');
-     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
-     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
-     * @return array|stdClass
-     * @example
-     *      $filtro_extra[0][tabla.campo]['operador'] = '<';
-     *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
+     * Esta función construye y ejecuta una consulta SQL que integra diversos criterios de filtrado,
+     * agrupamiento, uniones y ordenamiento, combinándolos mediante la cláusula AND. El proceso
+     * general es el siguiente:
      *
-     *      $filtro_extra[0][tabla2.campo]['operador'] = '>';
-     *      $filtro_extra[0][tabla2.campo]['valor'] = 'x';
-     *      $filtro_extra[0][tabla2.campo]['comparacion'] = 'OR';
+     * 1. **Validación del Tipo de Filtro:**
+     *    Se verifica que el parámetro `$tipo_filtro` sea válido mediante el método
+     *    `verifica_tipo_filtro()` de la clase `where`. Esto permite asegurar que se utilice el
+     *    tipo de filtro correcto (por ejemplo, 'numeros' o 'textos').
      *
-     *      $resultado = filtro_extra_sql($filtro_extra);
-     *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
-     * @example
-     *      Ej 1
-     *      $resultado = filtro_and();
-     *      $resultado['registros'] = array $registro; //100% de los registros en una tabla
-     *              $registro = array('tabla_campo'=>'valor','tabla_campo_n'=> 'valor_n');
-     *      $resultado['n_registros'] = int count de todos los registros de una tabla
-     *      $resultado['sql'] = string 'SELECT FROM modelo->tabla'
+     * 2. **Aplicación de Seguridad:**
+     *    Si el parámetro `$aplica_seguridad` es `true` y la propiedad interna `$this->aplica_seguridad`
+     *    está habilitada, se combinan las condiciones de filtrado básicas contenidas en `$filtro` con las
+     *    condiciones de seguridad definidas en `$this->filtro_seguridad`.
      *
-     *      Ej 2
-     *      $filtro = array();
-     *      $tipo_filtro = 'numeros';
-     *      $filtro_especial = array();
-     *      $order = array();
-     *      $limit = 0;
-     *      $offset = 0;
-     *      $group_by = array();
-     *      $columnas = array();
-     *      $filtro_rango['tabla.campo']['valor1'] = 1;
-     *      $filtro_rango['tabla.campo']['valor2'] = 2;
+     * 3. **Generación de la Consulta SQL:**
+     *    Se llama a la función `genera_sql_filtro()` pasando todos los parámetros necesarios para
+     *    construir la sentencia SQL, tales como columnas, filtros, joins, condiciones IN/NOT IN, límites,
+     *    offset, orden, SQL extra y tipo de filtro.
      *
-     *      $resultado = filtro_and($filtro,$tipo_filtro,$filtro_especial,$order,$limit,$offset,$group_by,$columnas,
-     *                                  $filtro_rango);
+     * 4. **Ejecución de la Consulta:**
+     *    Con la sentencia SQL generada, se ejecuta la consulta mediante el método `ejecuta_consulta()`,
+     *    utilizando también parámetros para la encriptación de campos y configuración de registros hijos
+     *    (si los hubiera).
      *
-     *      $resultado['registros'] = array $registro; //registros encontrados como WHERE tabla.campo BETWEEN '1' AND '2'
-     *              $registro = array('tabla_campo'=>'valor','tabla_campo_n'=> 'valor_n');
-     *      $resultado['n_registros'] = int Total de registros encontrados
-     *      $resultado['sql'] = string "SELECT FROM modelo->tabla WHERE tabla.campo BETWEEN '1' AND '2'"
+     * 5. **Retorno del Resultado:**
+     *    El resultado de la consulta se retorna, el cual puede ser un objeto de tipo `stdClass` o un array,
+     *    dependiendo de la implementación interna de `ejecuta_consulta()`. En caso de error en cualquiera de
+     *    los pasos, se retorna un array con información detallada del error.
      *
+     * ### Parámetros de Entrada
      *
-     *      Ej 3
-     *      $filtro = array();
-     *      $tipo_filtro = 'numeros';
-     *      $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'OR')
-     *      $order = array();
-     *      $limit = 0;
-     *      $offset = 0;
-     *      $group_by = array();
-     *      $columnas = array();
-     *      $filtro_rango['tabla.campo']['valor1'] = 1;
-     *      $filtro_rango['tabla.campo']['valor2'] = 2;
+     * @param bool $aplica_seguridad Indica si se deben aplicar condiciones de seguridad adicionales.
+     *                                   <br><b>Ejemplo:</b> `true`
+     * @param array $columnas Array de nombres de columnas a seleccionar.
+     *                                   <br><b>Ejemplo:</b> `['usuarios.id', 'usuarios.nombre']`
+     * @param array $columnas_by_table Array asociativo para agrupar columnas por tabla.
+     *                                   <br><b>Ejemplo:</b> `['usuarios' => ['id', 'nombre']]`
+     * @param bool $columnas_en_bruto Indica si las columnas deben utilizarse en su formato original (sin alias).
+     *                                   <br><b>Ejemplo:</b> `false`
+     * @param array $columnas_totales (Opcional) Array de columnas totales para la consulta.
+     *                                   <br><b>Ejemplo:</b> `['total' => 'SUM(ventas.monto)']`
+     * @param bool $con_sq Indica si se deben incluir subconsultas (subqueries) en la consulta base.
+     *                                   <br><b>Ejemplo:</b> `true`
+     * @param array $diferente_de Array de condiciones para la cláusula "diferente de" (<>).
+     *                                   <br><b>Ejemplo:</b> `['usuarios.estado' => 'inactivo']`
+     * @param array $extra_join Array con la configuración de joins adicionales a integrar.
+     *                                   <br><b>Ejemplo:</b> `['departamentos' => ['on' => 'usuarios.departamento_id = departamentos.id']]`
+     * @param array $filtro Array de filtros básicos para la cláusula WHERE.
+     *                                   <br><b>Ejemplo:</b> `['usuarios.status' => 'activo']`
+     * @param array $filtro_especial Array de filtros especiales; cada entrada es un array con las claves:
+     *                                   - `operador`: Operador lógico (ej. `>`, `<`, `=`).
+     *                                   - `valor`: Valor a comparar.
+     *                                   - `comparacion`: Conector lógico (ej. `AND`, `OR`).
+     *                                   <br><b>Ejemplo:</b>
+     *                                   `['usuarios.edad' => ['operador' => '>', 'valor' => '18', 'comparacion' => 'AND']]`
+     * @param array $filtro_extra Array de filtros adicionales a concatenar a la cláusula WHERE.
+     *                                   <br><b>Ejemplo:</b> `[]`
+     * @param array $filtro_fecha (Opcional) Array adicional de filtros basados en fechas.
+     *                                   <br><b>Ejemplo:</b> `[]`
      *
-     *      $resultado = filtro_and($filtro,$tipo_filtro,$filtro_especial,$order,$limit,$offset,$group_by,$columnas,
-     *                                  $filtro_rango);
+     * @param array $filtro_rango Array de filtros de rango. Puede definirse de la forma:
+     *                                   <ul>
+     *                                     <li>Simple: `['usuarios.edad' => ['valor1' => 18, 'valor2' => 65]]`</li>
+     *                                     <li>Extendida: `['usuarios.edad' => ['valor1' => 18, 'valor2' => 65, 'valor_campo' => true]]`</li>
+     *                                   </ul>
+     * @param array $group_by Array de columnas para la cláusula GROUP BY.
+     *                                   <br><b>Ejemplo:</b> `['usuarios.departamento_id']`
+     * @param array $hijo Array de parámetros para relaciones de registros hijos.
+     *                                   <br><b>Ejemplo:</b> `[]`
+     * @param array $in Array para la cláusula IN con la estructura:
+     *                                   `['llave' => 'usuarios.id', 'values' => [1, 2, 3]]`
+     * @param int $limit Número máximo de registros a retornar. Debe ser >= 0.
+     *                                   <br><b>Ejemplo:</b> `10`
+     * @param array $not_in Array para la cláusula NOT IN, con estructura similar a $in.
+     *                                   <br><b>Ejemplo:</b> `[]`
+     * @param int $offset Número de registros a omitir (offset). Debe ser >= 0.
+     *                                   <br><b>Ejemplo:</b> `0`
+     * @param array $order Array asociativo para la cláusula ORDER BY.
+     *                                   <br><b>Ejemplo:</b> `['usuarios.nombre' => 'ASC']`
+     * @param string $sql_extra Cadena SQL extra que se integrará en la consulta (por ejemplo, condiciones adicionales).
+     *                                   <br><b>Ejemplo:</b> `""`
+     * @param string $tipo_filtro Tipo de filtro a aplicar; por ejemplo, 'numeros' para comparaciones exactas o 'textos'
+     *                                   para búsquedas con comodines.
+     *                                   <br><b>Ejemplo:</b> `'numeros'`
+     * @return array|string Devuelve la sentencia SQL final generada como cadena, o un array de error en caso de fallo.
      *
-     *      $resultado['registros'] = array $registro; //registros encontrados como WHERE tabla.campo BETWEEN '1' AND '2' OR (tabla.campo < 'x')
-     *              $registro = array('tabla_campo'=>'valor','tabla_campo_n'=> 'valor_n');
-     *      $resultado['n_registros'] = int Total de registros encontrados
-     *      $resultado['sql'] = string "SELECT FROM modelo->tabla WHERE tabla.campo BETWEEN '1' AND '2' OR (tabla.campo < 'x')"
+     * @example Ejemplo 1: Consulta para contar usuarios activos
+     * <pre>
+     * // Parámetros:
+     * $columnas           = ['usuarios.id', 'usuarios.nombre', 'usuarios.email'];
+     * $columnas_by_table  = [];
+     * $columnas_en_bruto  = false;
+     * $con_sq             = true;
+     * $diferente_de       = [];
+     * $extra_join         = [];
+     * $filtro             = ['usuarios.status' => 'activo'];
+     * $filtro_especial    = [];
+     * $filtro_extra       = [];
+     * $filtro_fecha       = [];
+     * $filtro_rango       = [];
+     * $group_by           = [];
+     * $hijo               = [];
+     * $in                 = ['llave' => 'usuarios.id', 'values' => [1, 2, 3]];
+     * $not_in             = [];
+     * $limit              = 10;
+     * $offset             = 0;
+     * $order              = ['usuarios.nombre' => 'ASC'];
+     * $sql_extra          = "";
+     * $tipo_filtro        = 'textos';
+     * $count              = true;
+     * $filtro_fecha       = [];
      *
+     * // Llamada:
+     * $sql = $this->genera_sql_filtro(
+     *     $columnas, $columnas_by_table, $columnas_en_bruto, $con_sq,
+     *     $diferente_de, $extra_join, $filtro, $filtro_especial,
+     *     $filtro_extra, $filtro_rango, $group_by, $in, $limit,
+     *     $not_in, $offset, $order, $sql_extra, $tipo_filtro, $count, $filtro_fecha
+     * );
      *
-     *      Ej 4
-     *      $filtro = array();
-     *      $tipo_filtro = 'numeros';
-     *      $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x','comparacion'=>'OR')
-     *      $order = array();
-     *      $limit = 0;
-     *      $offset = 0;
-     *      $group_by = array();
-     *      $columnas = array();
-     *      $filtro_rango = array()
+     * // Salida (cadena SQL final):
+     * // "SELECT COUNT(*) AS total_registros FROM usuarios WHERE usuarios.status = 'activo' ORDER BY usuarios.nombre ASC LIMIT 10"
+     * </pre>
      *
-     *      $resultado = filtro_and($filtro,$tipo_filtro,$filtro_especial,$order,$limit,$offset,$group_by,$columnas,
-     *                                  $filtro_rango);
+     * @example Ejemplo 2: Error por límite negativo
+     * <pre>
+     * $limit = -5;
+     * $sql = $this->genera_sql_filtro(
+     *     $columnas, $columnas_by_table, $columnas_en_bruto, $con_sq,
+     *     $diferente_de, $extra_join, $filtro, $filtro_especial,
+     *     $filtro_extra, $filtro_rango, $group_by, $in, $limit,
+     *     $not_in, $offset, $order, $sql_extra, $tipo_filtro, $count, $filtro_fecha
+     * );
      *
-     *      $resultado['registros'] = array $registro; //registros encontrados como WHERE (tabla.campo < 'x')
-     *              $registro = array('tabla_campo'=>'valor','tabla_campo_n'=> 'valor_n');
-     *      $resultado['n_registros'] = int Total de registros encontrados
-     *      $resultado['sql'] = string "SELECT FROM modelo->tabla WHERE (tabla.campo < 'x')"
+     * // Salida (array de error):
+     * // [
+     * //   'error'     => 1,
+     * //   'mensaje'   => "Error limit debe ser mayor o igual a 0",
+     * //   'data'      => -5,
+     * //   'es_final'  => true
+     * // ]
+     * </pre>
      *
-     *      Ej 5
+     * @example Ejemplo 3: Uso avanzado con múltiples filtros y joins
+     * <pre>
+     * // Parámetros para contar usuarios que:
+     * // - Tengan status "activo".
+     * // - Su edad sea mayor a 18 (filtro especial).
+     * // - Pertenecen a ciertos departamentos (JOIN y cláusula IN).
+     * // - Se excluyan ciertos tipos de usuarios (filtro "diferente de").
      *
-     *      $filtro['status_cliente.muestra_ajusta_monto_venta'] = 'activo';
-     *      $filtro_especial[0]['cliente.monto_venta']['operador'] = '>';
-     *      $filtro_especial[0]['cliente.monto_venta']['valor'] = '0.0';
-     *      $r_cliente = $this->filtro_and($filtro,'numeros',$filtro_especial);
-     *      $r_cliente['registros] = array con registros de tipo registro
-     *      $resultado['sql'] = string "SELECT FROM cliente WHERE status_cliente.muestra_ajusta_monto_venta = 'activo' AND ( cliente.monto_venta>'0.0' )"
+     * $columnas           = ['usuarios.id'];
+     * $columnas_by_table  = [];
+     * $columnas_en_bruto  = false;
+     * $con_sq             = true;
+     * $diferente_de       = ['usuarios.tipo' => 'invitado'];
+     * $extra_join         = [
+     *     'departamentos' => ['on' => 'usuarios.departamento_id = departamentos.id']
+     * ];
+     * $filtro             = ['usuarios.status' => 'activo'];
+     * $filtro_especial    = [
+     *     'usuarios.edad' => ['operador' => '>', 'valor' => '18', 'comparacion' => 'AND']
+     * ];
+     * $filtro_extra       = [];
+     * $filtro_fecha       = [];
+     * $filtro_rango       = [];
+     * $group_by           = ['usuarios.departamento_id'];
+     * $hijo               = [];
+     * $in                 = ['llave' => 'usuarios.id', 'values' => [1, 2, 3, 4]];
+     * $not_in             = ['llave' => 'usuarios.id', 'values' => [5, 6]];
+     * $limit              = 20;
+     * $offset             = 0;
+     * $order              = ['usuarios.nombre' => 'ASC'];
+     * $sql_extra          = "";
+     * $tipo_filtro        = 'numeros';
+     * $count              = true;
+     * $filtro_fecha       = [];
      *
-     *      Ej 6
-     *      $filtro_rango[$fecha]['valor1'] = 'periodo.fecha_inicio';
-     *      $filtro_rango[$fecha]['valor2'] = 'periodo.fecha_fin';
-     *      $filtro_rango[$fecha]['valor_campo'] = true;
-     *      $r_periodo = $this->filtro_and(array(),'numeros',array(),array(),0,0,array(),array(),$filtro_rango);
+     * $sql = $this->genera_sql_filtro(
+     *     $columnas, $columnas_by_table, $columnas_en_bruto, $con_sq,
+     *     $diferente_de, $extra_join, $filtro, $filtro_especial,
+     *     $filtro_extra, $filtro_rango, $group_by, $in, $limit,
+     *     $not_in, $offset, $order, $sql_extra, $tipo_filtro, $count, $filtro_fecha
+     * );
      *
-     * @internal  $this->genera_sentencia_base($tipo_filtro);
-     * @internal  $this->filtro_especial_sql($filtro_especial);
-     * @internal  $this->filtro_rango_sql($filtro_rango);
-     * @internal  $this->filtro_extra_sql($filtro_extra);
-     * @internal  $this->genera_consulta_base($columnas);
-     * @internal  $this->order_sql($order);
-     * @internal  $this->filtro_especial_final($filtro_especial_sql,$where);
-     * @internal  $this->ejecuta_consulta($hijo);
+     * // La salida será una cadena SQL avanzada que, al ejecutarse, devolverá el total de registros
+     * // que cumplen con todas las condiciones definidas.
+     * </pre>
      */
-    final public function filtro_and(bool $aplica_seguridad = true, array $columnas =array(),
-                                     array $columnas_by_table = array(), bool $columnas_en_bruto = false,
-                                     array $columnas_totales = array(), bool $con_sq = true,
-                                     array $diferente_de = array(), array $extra_join = array(), array $filtro=array(),
-                                     array $filtro_especial= array(), array $filtro_extra = array(),
-                                     array $filtro_fecha = array(), array $filtro_rango = array(),
-                                     array $group_by=array(), array $hijo = array(), array $in = array(),
-                                     int $limit=0,  array $not_in = array(), int $offset=0, array $order = array(),
-                                     string $sql_extra = '', string $tipo_filtro='numeros'): array|stdClass{
-
-
-
+    final public function filtro_and(
+        bool $aplica_seguridad = true,
+        array $columnas = array(),
+        array $columnas_by_table = array(),
+        bool $columnas_en_bruto = false,
+        array $columnas_totales = array(),
+        bool $con_sq = true,
+        array $diferente_de = array(),
+        array $extra_join = array(),
+        array $filtro = array(),
+        array $filtro_especial = array(),
+        array $filtro_extra = array(),
+        array $filtro_fecha = array(),
+        array $filtro_rango = array(),
+        array $group_by = array(),
+        array $hijo = array(),
+        array $in = array(),
+        int $limit = 0,
+        array $not_in = array(),
+        int $offset = 0,
+        array $order = array(),
+        string $sql_extra = '',
+        string $tipo_filtro = 'numeros'
+    ): array|stdClass {
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al validar tipo_filtro',
+                data: $verifica_tf
+            );
         }
 
-        if($this->aplica_seguridad && $aplica_seguridad) {
+        if ($this->aplica_seguridad && $aplica_seguridad) {
             $filtro = array_merge($filtro, $this->filtro_seguridad);
         }
 
-        if($limit < 0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
-                data: $limit);
+        if ($limit < 0) {
+            return $this->error->error(
+                mensaje: 'Error limit debe ser mayor o igual a 0  con 0 no aplica limit',
+                data: $limit
+            );
         }
 
-        $sql = $this->genera_sql_filtro(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, diferente_de: $diferente_de,
-            extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
-            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, not_in: $not_in, offset: $offset,
-            order: $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro, filtro_fecha: $filtro_fecha);
-
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al maquetar sql',data:$sql);
+        $sql = $this->genera_sql_filtro(
+            columnas: $columnas,
+            columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto,
+            con_sq: $con_sq,
+            diferente_de: $diferente_de,
+            extra_join: $extra_join,
+            filtro: $filtro,
+            filtro_especial: $filtro_especial,
+            filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango,
+            group_by: $group_by,
+            in: $in,
+            limit: $limit,
+            not_in: $not_in,
+            offset: $offset,
+            order: $order,
+            sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro,
+            filtro_fecha: $filtro_fecha
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al maquetar sql',
+                data: $sql
+            );
         }
 
-        $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados,
-            columnas_totales: $columnas_totales, hijo: $hijo);
-        if(errores::$error){
-            return  $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
+        $result = $this->ejecuta_consulta(
+            consulta: $sql,
+            campos_encriptados: $this->campos_encriptados,
+            columnas_totales: $columnas_totales,
+            hijo: $hijo
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al ejecutar sql',
+                data: $result
+            );
         }
 
         return $result;
     }
+
 
 
     /**
@@ -1391,101 +1639,279 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Genera los filtros para una sentencia select
-     * @param array $columnas Columnas para muestra si vacio muestra todas
-     * @param array $columnas_by_table Obtiene solo las columnas de la tabla en ejecucion
-     * @param bool $columnas_en_bruto if true obtiene solo los elementos nativos de la tabla o modelo
-     * @param bool $con_sq
-     * @param array $diferente_de Arreglo con los elementos para integrar un diferente de
-     * @param array $extra_join
-     * @param array $filtro Filtro base para ejecucion de WHERE genera ANDS
-     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
-     * @param array $filtro_extra arreglo que contiene las condiciones
-     * $filtro_extra[0]['tabla.campo']=array('operador'=>'>','valor'=>'x','comparacion'=>'AND');
-     * @param array $filtro_rango
-     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     *                  Opcion2.-
-     *                      Debe ser un array con la siguiente forma
-     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
-     * @param array $group_by Es un array con la forma array(0=>'tabla.campo', (int)N=>(string)'tabla.campo')
-     * @param array $in Arreglo con los elementos para integrar un IN en SQL in[llave] = tabla.campo, in['values'] = array()
-     * @param int $limit Numero de registros a mostrar
-     * @param array $not_in Conjunto de valores para not_in not_in[llave] = string, not_in['values'] = array()
-     * @param int $offset Numero de inicio de registros
-     * @param array $order con parametros para generar sentencia
-     * @param string $sql_extra Sql previo o extra si existe forzara la integracion de un WHERE
-     * @param string $tipo_filtro Si es numero es un filtro exacto si es texto es con %%
-     * @param bool $count Si count deja solo el campo count y no integra columnas
-     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @return array|string
-     * @example
-     *      $filtro_extra[0][tabla.campo]['operador'] = '<';
-     *      $filtro_extra[0][tabla.campo]['valor'] = 'x';
+     * REG
+     * Genera la sentencia SQL final a partir de múltiples parámetros de filtrado y configuración.
      *
-     *      $filtro_extra[0][tabla2.campo]['operador'] = '>';
-     *      $filtro_extra[0][tabla2.campo]['valor'] = 'x';
-     *      $filtro_extra[0][tabla2.campo]['comparacion'] = 'OR';
+     * Esta función realiza las siguientes acciones:
+     * <ol>
+     *   <li>Valida que los valores de $limit y $offset sean mayores o iguales a 0.</li>
+     *   <li>Verifica que el tipo de filtro especificado en $tipo_filtro sea válido, utilizando el método
+     *       <code>verifica_tipo_filtro()</code> de la clase <code>\gamboamartin\where\where</code>.</li>
+     *   <li>Genera la consulta base llamando a <code>genera_consulta_base()</code>, que arma la parte inicial de la consulta
+     *       SQL utilizando los parámetros de columnas, subconsultas, joins y otros ajustes.</li>
+     *   <li>Normaliza e integra la cláusula IN en la consulta mediante el método <code>in_llave()</code>.</li>
+     *   <li>Genera el complemento de filtros completo mediante el método <code>complemento_sql()</code> de la clase
+     *       <code>filtros</code>, que procesa los filtros básicos, especiales, extra, de rango, de fecha, y las cláusulas
+     *       NOT IN.</li>
+     *   <li>Concatena la consulta base y el complemento de filtros completo usando el método
+     *       <code>consulta_full_and()</code> de la clase <code>filtros</code> para obtener la sentencia SQL final.</li>
+     *   <li>Asigna la consulta SQL final a la propiedad <code>$this->consulta</code> y la retorna.</li>
+     * </ol>
      *
-     *      $resultado = filtro_extra_sql($filtro_extra);
-     *      $resultado =  tabla.campo < 'x' OR tabla2.campo > 'x'
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.genera_sql_filtro
+     * @param array  $columnas           Array de columnas a seleccionar en la consulta.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.id', 'usuarios.nombre', 'usuarios.email']</code>.
+     * @param array  $columnas_by_table  Array asociativo que agrupa columnas por tabla.
+     *                                   <b>Ejemplo:</b> <code>['usuarios' => ['id', 'nombre']]</code>.
+     * @param bool   $columnas_en_bruto  Indica si las columnas se deben utilizar en su forma original, sin aplicar alias.
+     *                                   <b>Ejemplo:</b> <code>false</code>.
+     * @param bool   $con_sq             Determina si se deben incluir subconsultas (subqueries) en la consulta base.
+     *                                   <b>Ejemplo:</b> <code>true</code>.
+     * @param array  $diferente_de       Array de condiciones para la cláusula "diferente de" (<>).
+     *                                   <b>Ejemplo:</b> <code>['usuarios.estado' => 'inactivo']</code>.
+     * @param array  $extra_join         Array con información de joins adicionales a integrar en la consulta.
+     *                                   <b>Ejemplo:</b> <code>[ 'direcciones' => ['on' => 'usuarios.id = direcciones.usuario_id'] ]</code>.
+     * @param array  $filtro             Array con filtros básicos para la cláusula WHERE.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.status' => 'activo']</code>.
+     * @param array  $filtro_especial    Array que define condiciones especiales de filtro. Cada elemento es un array con
+     *                                   claves como 'operador', 'valor' y 'comparacion'.
+     *                                   <b>Ejemplo:</b>
+     *                                   <code>
+     *                                   [
+     *                                      'usuarios.edad' => [
+     *                                          'operador' => '>',
+     *                                          'valor' => '18',
+     *                                          'comparacion' => 'AND'
+     *                                      ]
+     *                                   ]
+     *                                   </code>.
+     * @param array  $filtro_extra       Array de filtros extra que se concatenan a la consulta.
+     *                                   <b>Ejemplo:</b> <code>[]</code> (sin filtros extra).
+     * @param array  $filtro_rango       Array para definir filtros de rango (por ejemplo, para BETWEEN).
+     *                                   Puede tener la forma:
+     *                                   <ul>
+     *                                     <li><code>['usuarios.edad' => ['valor1' => 18, 'valor2' => 65]]</code></li>
+     *                                     <li><code>['usuarios.edad' => ['valor1' => 18, 'valor2' => 65, 'valor_campo' => true]]</code></li>
+     *                                   </ul>
+     * @param array  $group_by           Array de columnas para la cláusula GROUP BY.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.departamento']</code>.
+     * @param array  $in                 Array para la cláusula IN. Debe tener la estructura:
+     *                                   <code>['llave' => 'usuarios.id', 'values' => [1,2,3]]</code>.
+     * @param int    $limit              Número máximo de registros a retornar. Debe ser mayor o igual a 0.
+     *                                   <b>Ejemplo:</b> <code>10</code>.
+     * @param array  $not_in             Array para la cláusula NOT IN. Estructura similar a la de $in.
+     *                                   <b>Ejemplo:</b> <code>[]</code> (sin NOT IN).
+     * @param int    $offset             Número de registros a omitir (offset). Debe ser mayor o igual a 0.
+     *                                   <b>Ejemplo:</b> <code>0</code>.
+     * @param array  $order              Array asociativo para la cláusula ORDER BY.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.nombre' => 'ASC']</code>.
+     * @param string $sql_extra          Cadena SQL extra que se desea concatenar a la consulta base, usualmente para condiciones adicionales.
+     *                                   <b>Ejemplo:</b> <code>""</code>.
+     * @param string $tipo_filtro        Tipo de filtro a aplicar: por ejemplo, "numeros" para coincidencias exactas o "textos" para búsquedas con comodines.
+     *                                   <b>Ejemplo:</b> <code>'numeros'</code>.
+     * @param bool   $count              (Opcional) Si es true, la consulta se ajusta para retornar un conteo en lugar de registros específicos. Por defecto es false.
+     *                                   <b>Ejemplo:</b> <code>false</code>.
+     * @param array  $filtro_fecha       Array de filtros basados en fechas. Cada elemento debe especificar la columna de fecha y su condición.
+     *                                   <b>Ejemplo:</b> <code>['usuarios.fecha_registro' => ['valor' => '2023-01-01', 'operador' => '>=']]</code>.
+     *
+     * @return array|string Devuelve la sentencia SQL final completa (como cadena) que integra la consulta base y todos los filtros,
+     *                      o un array de error con detalles en caso de fallo.
+     *
+     * @throws errores Si alguno de los parámetros $limit o $offset es negativo, o si ocurre algún error en la validación del tipo de filtro.
+     *
+     * @example Ejemplo 1: Generar una consulta SELECT simple con filtros básicos
+     * <pre>
+     * // Parámetros de ejemplo:
+     * $columnas = ['usuarios.id', 'usuarios.nombre', 'usuarios.email'];
+     * $columnas_by_table = [];
+     * $columnas_en_bruto = false;
+     * $con_sq = true;
+     * $diferente_de = [];
+     * $extra_join = [];
+     * $filtro = ['usuarios.status' => 'activo'];
+     * $filtro_especial = [];
+     * $filtro_extra = [];
+     * $filtro_rango = [];
+     * $group_by = [];
+     * $in = ['llave' => 'usuarios.id', 'values' => [1, 2, 3]];
+     * $limit = 10;
+     * $not_in = [];
+     * $offset = 0;
+     * $order = ['usuarios.nombre' => 'ASC'];
+     * $sql_extra = "";
+     * $tipo_filtro = 'textos';
+     * $count = false;
+     * $filtro_fecha = [];
+     *
+     * // Llamada a la función:
+     * $sql = $this->genera_sql_filtro(
+     *      $columnas,
+     *      $columnas_by_table,
+     *      $columnas_en_bruto,
+     *      $con_sq,
+     *      $diferente_de,
+     *      $extra_join,
+     *      $filtro,
+     *      $filtro_especial,
+     *      $filtro_extra,
+     *      $filtro_rango,
+     *      $group_by,
+     *      $in,
+     *      $limit,
+     *      $not_in,
+     *      $offset,
+     *      $order,
+     *      $sql_extra,
+     *      $tipo_filtro,
+     *      $count,
+     *      $filtro_fecha
+     * );
+     *
+     * // Resultado esperado:
+     * // Una cadena SQL completa, por ejemplo:
+     * // "SELECT usuarios.id, usuarios.nombre, usuarios.email FROM usuarios WHERE usuarios.status = 'activo' AND ... ORDER BY usuarios.nombre ASC LIMIT 10 OFFSET 0"
+     * </pre>
+     *
+     * @example Ejemplo 2: Error por límite negativo
+     * <pre>
+     * $limit = -5;
+     * $sql = $this->genera_sql_filtro(
+     *      $columnas,
+     *      $columnas_by_table,
+     *      $columnas_en_bruto,
+     *      $con_sq,
+     *      $diferente_de,
+     *      $extra_join,
+     *      $filtro,
+     *      $filtro_especial,
+     *      $filtro_extra,
+     *      $filtro_rango,
+     *      $group_by,
+     *      $in,
+     *      $limit,
+     *      $not_in,
+     *      $offset,
+     *      $order,
+     *      $sql_extra,
+     *      $tipo_filtro,
+     *      $count,
+     *      $filtro_fecha
+     * );
+     *
+     * // Resultado: Array de error indicando que $limit debe ser mayor o igual a 0.
+     * </pre>
      */
-    private function genera_sql_filtro(array $columnas, array $columnas_by_table, bool $columnas_en_bruto, bool $con_sq,
-                                       array $diferente_de, array $extra_join, array $filtro, array $filtro_especial,
-                                       array $filtro_extra, array $filtro_rango, array $group_by, array $in, int $limit,
-                                       array $not_in, int $offset, array $order, string $sql_extra, string $tipo_filtro,
-                                       bool $count = false, array $filtro_fecha = array()): array|string
-    {
-
-
-        if($limit<0){
-            return $this->error->error(mensaje: 'Error limit debe ser mayor o igual a 0',data:  $limit,
-                es_final: true);
+    private function genera_sql_filtro(
+        array $columnas,
+        array $columnas_by_table,
+        bool $columnas_en_bruto,
+        bool $con_sq,
+        array $diferente_de,
+        array $extra_join,
+        array $filtro,
+        array $filtro_especial,
+        array $filtro_extra,
+        array $filtro_rango,
+        array $group_by,
+        array $in,
+        int $limit,
+        array $not_in,
+        int $offset,
+        array $order,
+        string $sql_extra,
+        string $tipo_filtro,
+        bool $count = false,
+        array $filtro_fecha = array()
+    ): array|string {
+        if ($limit < 0) {
+            return $this->error->error(
+                mensaje: 'Error limit debe ser mayor o igual a 0',
+                data: $limit,
+                es_final: true
+            );
         }
-        if($offset<0){
-            return $this->error->error(mensaje: 'Error $offset debe ser mayor o igual a 0',data: $offset,
-                es_final: true);
-
+        if ($offset < 0) {
+            return $this->error->error(
+                mensaje: 'Error $offset debe ser mayor o igual a 0',
+                data: $offset,
+                es_final: true
+            );
         }
 
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al validar tipo_filtro',
+                data: $verifica_tf
+            );
         }
 
-        $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
-            columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, count: $count,
-            extension_estructura: $this->extension_estructura, extra_join: $extra_join, renombradas: $this->renombres);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
+        $consulta = $this->genera_consulta_base(
+            columnas: $columnas,
+            columnas_by_table: $columnas_by_table,
+            columnas_en_bruto: $columnas_en_bruto,
+            con_sq: $con_sq,
+            count: $count,
+            extension_estructura: $this->extension_estructura,
+            extra_join: $extra_join,
+            renombradas: $this->renombres
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al generar sql',
+                data: $consulta
+            );
         }
-
 
         $in = $this->in_llave(in: $in);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al integrar in',data: $in);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al integrar in',
+                data: $in
+            );
         }
 
-        $complemento_sql = (new filtros())->complemento_sql(aplica_seguridad:false, diferente_de: $diferente_de,
-            filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: $filtro_extra,
-            filtro_rango: $filtro_rango, group_by: $group_by, in: $in, limit: $limit, modelo: $this, not_in: $not_in,
-            offset:  $offset, order:  $order, sql_extra: $sql_extra, tipo_filtro: $tipo_filtro,
-            filtro_fecha:  $filtro_fecha);
-
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al maquetar sql',data: $complemento_sql);
+        $complemento_sql = (new filtros())->complemento_sql(
+            aplica_seguridad: false,
+            diferente_de: $diferente_de,
+            filtro: $filtro,
+            filtro_especial: $filtro_especial,
+            filtro_extra: $filtro_extra,
+            filtro_rango: $filtro_rango,
+            group_by: $group_by,
+            in: $in,
+            limit: $limit,
+            modelo: $this,
+            not_in: $not_in,
+            offset: $offset,
+            order: $order,
+            sql_extra: $sql_extra,
+            tipo_filtro: $tipo_filtro,
+            filtro_fecha: $filtro_fecha
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al maquetar sql',
+                data: $complemento_sql
+            );
         }
 
-        $sql = (new filtros())->consulta_full_and(complemento:  $complemento_sql, consulta: $consulta, modelo: $this);
-        if(errores::$error){
-            return  $this->error->error(mensaje:'Error al maquetar sql',data: $sql);
+        $sql = (new filtros())->consulta_full_and(
+            complemento: $complemento_sql,
+            consulta: $consulta,
+            modelo: $this
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al maquetar sql',
+                data: $sql
+            );
         }
 
         $this->consulta = $sql;
 
         return $sql;
     }
+
 
 
 
@@ -1748,32 +2174,107 @@ class modelo extends modelo_base {
     }
 
     /**
-     * TOTAL
-     * Genera una llave de tipo in para SQL
-     * @param array $in IN precargada
+     * REG
+     * Normaliza y valida el arreglo de configuración para la cláusula IN en SQL.
+     *
+     * Esta función procesa un array que debe contener la clave 'llave' (y opcionalmente 'values') para
+     * construir una cláusula IN en una consulta SQL. Realiza las siguientes acciones:
+     *
+     * <ul>
+     *     <li>Verifica si el array tiene elementos.</li>
+     *     <li>Si existe la clave 'llave', se valida que su valor sea un string.</li>
+     *     <li>Se recorta el valor de 'llave' para eliminar espacios en blanco al inicio y al final.</li>
+     *     <li>Si el valor resultante es una cadena vacía, se retorna un error indicando que la llave está vacía.</li>
+     *     <li>Si la 'llave' existe en el array de columnas extra (<code>$this->columnas_extra</code>), se reemplaza
+     *         por el valor correspondiente de dicho arreglo.</li>
+     * </ul>
+     *
+     * @param array $in Array asociativo que debe incluir, al menos, la clave:
+     *                  - <code>'llave'</code>: Nombre de la columna que se utilizará en la cláusula IN.
+     *                    Este valor debe ser un string no vacío. Opcionalmente, puede incluir la clave
+     *                  - <code>'values'</code>: Un array de valores a utilizar en la cláusula IN.
+     *
+     * @return array Devuelve el mismo array <code>$in</code> con la llave validada y normalizada.
+     *               En caso de error, retorna un array con la estructura de error definida por la clase <code>errores</code>.
+     *
+     * @example Ejemplo 1: Llave definida correctamente sin coincidencia en columnas extra
+     * <pre>
+     * $in = [
+     *     'llave'  => 'nombre_columna',
+     *     'values' => [1, 2, 3]
+     * ];
+     *
+     * // Si $this->columnas_extra no contiene 'nombre_columna', la función devuelve:
+     * // [
+     * //     'llave'  => 'nombre_columna',
+     * //     'values' => [1, 2, 3]
+     * // ]
+     * $resultado = $this->in_llave($in);
+     * </pre>
+     *
+     * @example Ejemplo 2: La llave es una cadena vacía
+     * <pre>
+     * $in = [
+     *     'llave'  => '   ',
+     *     'values' => [1, 2, 3]
+     * ];
+     *
+     * // La función detecta que, tras aplicar trim, la llave es vacía y retorna un error:
+     * // [
+     * //     'error'     => 1,
+     * //     'mensaje'   => 'Error in[llave] esta vacia',
+     * //     'data'      => $in,
+     * //     'es_final'  => true
+     * // ]
+     * $resultado = $this->in_llave($in);
+     * </pre>
+     *
+     * @example Ejemplo 3: La llave no es un string
+     * <pre>
+     * $in = [
+     *     'llave'  => 123, // Valor numérico en lugar de string
+     *     'values' => [1, 2, 3]
+     * ];
+     *
+     * // La función retorna un error indicando que la llave debe ser un string:
+     * // [
+     * //     'error'     => 1,
+     * //     'mensaje'   => 'Error in[llave] debe ser un string',
+     * //     'data'      => $in,
+     * //     'es_final'  => true
+     * // ]
+     * $resultado = $this->in_llave($in);
+     * </pre>
+     *
      * @return array
-     * @version 16.205.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.in_llave
      */
     private function in_llave(array $in): array
     {
-        if(count($in)>0) {
-            if(isset($in['llave'])){
-                if(!is_string($in['llave'])){
-                    return $this->error->error(mensaje: 'Error in[llave] debe ser un string',data:  $in,
-                        es_final: true);
+        if (count($in) > 0) {
+            if (isset($in['llave'])) {
+                if (!is_string($in['llave'])) {
+                    return $this->error->error(
+                        mensaje: 'Error in[llave] debe ser un string',
+                        data: $in,
+                        es_final: true
+                    );
                 }
                 $in['llave'] = trim($in['llave']);
-                if($in['llave'] === ''){
-                    return $this->error->error(mensaje: 'Error in[llave] esta vacia',data:  $in, es_final: true);
+                if ($in['llave'] === '') {
+                    return $this->error->error(
+                        mensaje: 'Error in[llave] esta vacia',
+                        data: $in,
+                        es_final: true
+                    );
                 }
-                if(array_key_exists($in['llave'], $this->columnas_extra)){
+                if (array_key_exists($in['llave'], $this->columnas_extra)) {
                     $in['llave'] = $this->columnas_extra[$in['llave']];
                 }
             }
         }
         return $in;
     }
+
 
 
     /**

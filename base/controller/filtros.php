@@ -116,19 +116,97 @@ class filtros{
     }
 
     /**
-     * Filtra los elementos llamados desde un controler
-     * @param controler $controler Controlador en ejecucion
-     * @param array $filtros Filtros precargados
-     * @return array|stdClass
+     * REG
+     * Ejecuta el filtrado de registros utilizando los filtros especificados.
+     *
+     * Este método invoca el método `filtro_and()` del modelo asociado al controlador para aplicar los filtros
+     * proporcionados y obtener los registros que cumplan con dichos criterios. En caso de producirse un error durante
+     * el filtrado, se retorna la estructura de error utilizando el manejador de errores del controlador.
+     *
+     * @param controler $controler Instancia del controlador desde el cual se llama a esta función. Este parámetro se utiliza para acceder
+     *                             al modelo asociado (a través de `$controler->modelo`) y al manejador de errores (a través de `$controler->errores`).
+     *                             <br><b>Ejemplo:</b> `new controler($link)`
+     * @param array $filtros Array asociativo que contiene los filtros a aplicar en la consulta. Cada elemento del array debe estar
+     *                       estructurado según lo esperado por el método `filtro_and()` del modelo.
+     *                       <br><b>Ejemplo:</b>
+     *                       <pre>
+     *                       [
+     *                           'usuarios.status' => 'activo',
+     *                           'usuarios.edad'   => 30
+     *                       ]
+     *                       </pre>
+     *
+     * @return array|stdClass Devuelve un objeto o un array (dependiendo de la implementación interna del modelo) que contiene
+     *                        los registros filtrados. En caso de error, retorna un array con la información del error generado.
+     *
+     * @throws errores Lanza un error si falla la ejecución del filtrado.
+     *
+     * @example Ejemplo 1: Filtrado básico de registros
+     * <pre>
+     * // Supongamos que se tiene un controlador $ctl cuyo modelo tiene registros de usuarios.
+     * // Se desea obtener únicamente los usuarios activos.
+     * $filtros = [
+     *     'usuarios.status' => 'activo'
+     * ];
+     *
+     * // Se llama al método filtra pasando el controlador y los filtros:
+     * $resultado = $ctl->filtra($ctl, $filtros);
+     *
+     * // Si la operación es exitosa, $resultado contendrá los registros de usuarios activos.
+     * // Por ejemplo:
+     * // stdClass {
+     * //     "n_registros": 5,
+     * //     "registros": [
+     * //         { "usuarios.id": 1, "usuarios.nombre": "Juan", ... },
+     * //         { "usuarios.id": 2, "usuarios.nombre": "María", ... },
+     * //         ...
+     * //     ]
+     * // }
+     * </pre>
+     *
+     * @example Ejemplo 2: Filtrado con múltiples criterios
+     * <pre>
+     * // Se desea filtrar los usuarios que estén activos y tengan al menos 25 años.
+     * $filtros = [
+     *     'usuarios.status' => 'activo',
+     *     'usuarios.edad'   => 25
+     * ];
+     *
+     * $resultado = $ctl->filtra($ctl, $filtros);
+     *
+     * // El método aplicará ambos filtros y retornará los usuarios que cumplan ambas condiciones.
+     * </pre>
+     *
+     * @example Ejemplo 3: Manejo de error en el filtrado
+     * <pre>
+     * // Si se pasa un filtro con un formato incorrecto, por ejemplo, un valor nulo o mal estructurado:
+     * $filtros = [
+     *     'usuarios.status' => null
+     * ];
+     *
+     * $resultado = $ctl->filtra($ctl, $filtros);
+     *
+     * // En caso de error, se retornará un array con la siguiente estructura:
+     * // [
+     * //     'error'     => 1,
+     * //     'mensaje'   => 'Error al obtener datos',
+     * //     'data'      => (detalles del error),
+     * //     'es_final'  => true
+     * // ]
+     * </pre>
      */
     final public function filtra(controler $controler, array $filtros): array|stdClass
     {
         $r_modelo = $controler->modelo->filtro_and(filtro: $filtros);
         if(errores::$error){
-            return $controler->errores->error(mensaje: 'Error al obtener datos',data: $r_modelo);
+            return $controler->errores->error(
+                mensaje: 'Error al obtener datos',
+                data: $r_modelo
+            );
         }
         return $r_modelo;
     }
+
 
     /**
      * Integra un filtro de get para get_out
