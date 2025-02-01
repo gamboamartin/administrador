@@ -95,67 +95,50 @@ class sql_bass{
 
     /**
      * REG
-     * Genera una coma separadora para una consulta SQL si la cadena de columnas no está vacía.
+     * Genera una coma separadora para agregar columnas en una consulta SQL.
      *
-     * Esta función agrega una coma (`,`) precedida y seguida por espacios si la cadena de columnas
-     * proporcionada no está vacía. Esto es útil para construir dinámicamente consultas SQL con
-     * múltiples columnas, asegurando que las comas se manejen correctamente.
+     * @param string $columnas Cadena que contiene las columnas actuales de una consulta SQL.
+     *                         - Si está vacía, no se agrega la coma separadora.
+     *                         - Si no está vacía, devuelve una coma separadora con espacios alrededor.
      *
-     * @param string $columnas Una cadena que representa columnas en una consulta SQL.
-     *                         Ejemplo: `'columna1, columna2'`.
-     *                         Si la cadena está vacía, no se agrega la coma.
-     *
-     * @return string Devuelve una cadena con una coma separadora (`,`) si `$columnas` no está vacía.
-     *                Si `$columnas` está vacía, devuelve una cadena vacía.
+     * @return string Devuelve una cadena con la coma separadora (`', '`) si `$columnas` no está vacía.
+     *                Devuelve una cadena vacía si `$columnas` está vacía.
      *
      * ### Ejemplo de uso exitoso:
+     * ```php
+     * $columnas = 'nombre, edad';
      *
-     * 1. **Agregar coma para columnas existentes**:
-     *    ```php
-     *    $columnas = 'columna1';
-     *    $resultado = $this->coma_sql(columnas: $columnas);
-     *    // Resultado esperado:
-     *    // ' , '
-     *    ```
+     * $coma = $this->coma_sql($columnas);
+     * echo $coma;
+     * // Resultado esperado:
+     * // ' , '
      *
-     * 2. **Evitar coma para columnas vacías**:
-     *    ```php
-     *    $columnas = '';
-     *    $resultado = $this->coma_sql(columnas: $columnas);
-     *    // Resultado esperado:
-     *    // ''
-     *    ```
+     * $columnas = '';
+     * $coma = $this->coma_sql($columnas);
+     * echo $coma;
+     * // Resultado esperado:
+     * // ''
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Trimming de `$columnas`:**
+     *    - Elimina espacios en blanco al inicio y al final de la cadena.
+     * 2. **Evaluación de `$columnas`:**
+     *    - Si `$columnas` no está vacía, asigna la coma separadora (`', '`).
+     *    - Si `$columnas` está vacía, retorna una cadena vacía.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve la coma separadora o una cadena vacía, según la evaluación.
+     *
+     * ### Ejemplo de errores:
+     * Esta función no lanza errores ya que no tiene validaciones específicas. Sin embargo, es importante que se utilice con una cadena válida como parámetro.
      *
      * ### Casos de uso:
+     * - Usada en la generación dinámica de consultas SQL, para agregar columnas adicionales de forma limpia.
+     * - Facilita la concatenación de columnas en instrucciones SQL complejas.
      *
-     * - **Construcción dinámica de consultas SQL**:
-     *   ```php
-     *   $columnas = 'columna1, columna2';
-     *   $nueva_columna = 'columna3';
-     *   $coma = $this->coma_sql(columnas: $columnas);
-     *   $consulta = $columnas . $coma . $nueva_columna;
-     *   // Resultado:
-     *   // 'columna1, columna2 , columna3'
-     *   ```
-     *
-     * - **Sin columnas iniciales**:
-     *   ```php
-     *   $columnas = '';
-     *   $nueva_columna = 'columna1';
-     *   $coma = $this->coma_sql(columnas: $columnas);
-     *   $consulta = $columnas . $coma . $nueva_columna;
-     *   // Resultado:
-     *   // 'columna1'
-     *   ```
-     *
-     * ### Validaciones:
-     *
-     * - La función no realiza validaciones explícitas sobre el contenido de `$columnas` más allá de verificar si está vacía.
-     * - El retorno siempre será una cadena vacía (`''`) o una coma formateada (`' , '`).
-     *
-     * ### Resultado esperado:
-     * - Si `$columnas` no está vacía: devuelve `' , '`.
-     * - Si `$columnas` está vacía: devuelve `''`.
+     * ### Consideraciones:
+     * - La función está diseñada para manejar columnas en formato de cadena y determinar si se debe agregar una coma separadora.
+     * - Es útil cuando se construyen consultas SQL de manera dinámica.
      */
 
     final public function coma_sql(string $columnas): string

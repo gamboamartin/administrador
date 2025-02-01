@@ -214,7 +214,7 @@ class modeloTest extends test {
         $resultado = $modelo->data_sentencia($campo, $sentencia, $value, $where);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el campo esta vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error el campo está vacío', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -1341,7 +1341,7 @@ class modeloTest extends test {
         $resultado = $modelo->sentencia_or($campo, $sentencia, $value);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el campo esta vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error el campo está vacío', $resultado['mensaje']);
 
         errores::$error = false;
 

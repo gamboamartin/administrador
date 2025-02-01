@@ -59,7 +59,7 @@ class params_sqlTest extends test {
         $resultado = $ps->group_by_sql($group_by);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error el campo no puede venir vacío', $resultado['mensaje']);
 
         errores::$error = false;
 
