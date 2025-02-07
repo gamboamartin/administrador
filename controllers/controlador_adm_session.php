@@ -244,8 +244,12 @@ class controlador_adm_session extends controlador_base{
             return $this->retorno_error('Error al dar de alta session', $r_alta, $header, $ws);
         }
 
-        header("Location: ./index.php?seccion=adm_session&accion=inicio&mensaje=Bienvenido&tipo_mensaje=exito&session_id=".(new generales())->session_id);
-        exit;
+        if($header) {
+            header("Location: ./index.php?seccion=adm_session&accion=inicio&mensaje=Bienvenido&tipo_mensaje=exito&session_id=" . (new generales())->session_id);
+            exit;
+        }
+        return $r_alta;
+
     }
 
     public function obten_categoria(){
