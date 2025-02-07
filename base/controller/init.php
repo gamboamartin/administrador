@@ -540,16 +540,12 @@ class init{
     }
 
 
-    /**
-     * @param bool $aplica_seguridad si aplica seguridad se implementa acl por accion
-     * @return array|stdClass
-     */
-    public function index(bool $aplica_seguridad): array|stdClass
+    public function index(bool $aplica_seguridad, array|stdClass $extra_params): array|stdClass
     {
         $con = new conexion();
         $link = conexion::$link;
 
-        $session = (new adm_session($link))->carga_data_session();
+        $session = (new adm_session($link))->carga_data_session(extra_params: $extra_params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al asignar session',data: $session);
 

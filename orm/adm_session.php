@@ -124,12 +124,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         return $resultado['registros'];
     }
 
-    /**
-     * P ORDER P INT ERRORREV
-     * @param stdClass $r_session
-     * @return array
-     */
-    final public function asigna_data_session(stdClass $r_session): array
+
+    final public function asigna_data_session(stdClass $r_session, array|stdClass $extra_params): array
     {
 
         $session_activa = $this->session_activa();
@@ -137,7 +133,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
             return $this->error->error(mensaje: 'Error al validar session', data: $session_activa);
         }
 
-        $carga = $this->init_data_session(r_session: $r_session,session_activa:  $session_activa);
+        $carga = $this->init_data_session(r_session: $r_session,session_activa:  $session_activa, extra_params: $extra_params);
         if(errores::$error){
             return $this->error->error(mensaje:'Error al $asigna session', data: $carga);
         }
@@ -145,14 +141,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         return $_SESSION;
     }
 
-    /**
-     *
-     * Asigna los datos a mostrar al usuario en base a su id de grupo y usuario
-     * @param stdClass $r_session Session a verificar
-     * @return array
-     * @version 1.518.51
-     */
-    private function asigna_datos_session(stdClass $r_session): array
+
+    private function asigna_datos_session(stdClass $r_session, array|object $extra_params = array()): array
     {
 
         $valida = $this->valida_session_db(r_session: $r_session);
@@ -165,16 +155,19 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
         $_SESSION['usuario_id'] = $r_session->registros[0]['adm_usuario_id'];
         $_SESSION['nombre_usuario'] = $r_session->registros[0]['adm_session_nombre_completo'];
+
+        foreach ($extra_params as $key=>$extra_param){
+            $key = trim($key);
+            $_SESSION[$key] = $extra_param;
+        }
+
+
+
         return $_SESSION;
     }
 
-    /**
-     * Carga los datos de una session
-     * @param stdClass $r_session Resultado de session
-     * @return array
 
-     */
-    private function carga_session(stdClass $r_session): array
+    private function carga_session(stdClass $r_session, array|stdClass $extra_params): array
     {
         $generales = new generales();
         $generales->session_id = trim($generales->session_id);
@@ -192,31 +185,18 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
             return $this->error->error(mensaje: 'Error al iniciar session',data:  $init);
         }
 
-        $asigna = $this->asigna_datos_session(r_session: $r_session);
+        $asigna = $this->asigna_datos_session(r_session: $r_session, extra_params: $extra_params);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al $asigna session', data: $asigna);
         }
         return $asigna;
     }
 
-    /**
-     * P ORDER P INT ERRORREV
-     *
-     * Funcion que carga los datos de una sesion. En caso de haber una sesion activa, cargará los
-     * datos de esa sesion. Caso contrario cerrará/destuirá las sesiones. Devuelve el estado de la sesion.
-     *
-     * @param stdClass $r_session Sesion a verificar
-     * @param bool $session_activa Verífica la sesion está activa
-     * @return bool|array
-     *
-     * @function $carga = $adm_session->carga_session(r_session: $r_session);
-     * Maqueta los datos de la sesion en curso. En caso de error al asignar la sesion devolverá un error
-     *
-     */
-    private function init_data_session(stdClass $r_session, bool $session_activa): bool|array
+
+    private function init_data_session(stdClass $r_session, bool $session_activa, array|stdClass $extra_params): bool|array
     {
         if($session_activa) {
-            $carga = $this->carga_session(r_session: $r_session);
+            $carga = $this->carga_session(r_session: $r_session, extra_params: $extra_params);
             if(errores::$error){
                 return $this->error->error(mensaje: 'Error al $asigna session',data:  $carga);
             }
@@ -270,19 +250,8 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         return $r_session;
     }
 
-    /**
-     * P INT P ORDER ERROREV
-     *
-     * Funcion para cargar los datos de una sesion iniciada en base a los filtros aplicados a $session_id.
-     * En caso de error al obtener o a asignar una sesion, lanzará un mensaje.
-     *
-     * @return array
-     *
-     * $r_session = $adm_session->filtro_and(filtro: $filtro);
-     *
-     * $session = $adm_seccion->asigna_data_session(r_session: $r_session);
-     */
-    final public function carga_data_session(): array
+
+    final public function carga_data_session(array|stdClass $extra_params): array
     {
         $session_id = $_GET['session_id'] ?? '';
         $filtro['adm_session.name'] = $session_id;
@@ -292,7 +261,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
         }
         $session = array();
         if((int)$r_session->n_registros === 1){
-            $session = $this->asigna_data_session(r_session: $r_session);
+            $session = $this->asigna_data_session(r_session: $r_session, extra_params: $extra_params);
             if(errores::$error){
                 return $this->error->error(mensaje:'Error al asignar session',data: $session);
             }
