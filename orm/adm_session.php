@@ -142,19 +142,21 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     }
 
 
-    private function asigna_datos_session(stdClass $r_session, array|object $extra_params): array
+    final public function asigna_datos_session(stdClass $r_session, array|object $extra_params, bool $carga_solo_extra): array
     {
 
-        $valida = $this->valida_session_db(r_session: $r_session);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar r_session',data:  $valida);
-        }
+        if(!$carga_solo_extra) {
+            $valida = $this->valida_session_db(r_session: $r_session);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar r_session', data: $valida);
+            }
 
-        $_SESSION['numero_empresa'] = 1;
-        $_SESSION['activa'] = 1;
-        $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
-        $_SESSION['usuario_id'] = $r_session->registros[0]['adm_usuario_id'];
-        $_SESSION['nombre_usuario'] = $r_session->registros[0]['adm_session_nombre_completo'];
+            $_SESSION['numero_empresa'] = 1;
+            $_SESSION['activa'] = 1;
+            $_SESSION['grupo_id'] = $r_session->registros[0]['adm_grupo_id'];
+            $_SESSION['usuario_id'] = $r_session->registros[0]['adm_usuario_id'];
+            $_SESSION['nombre_usuario'] = $r_session->registros[0]['adm_session_nombre_completo'];
+        }
 
         foreach ($extra_params as $key=>$extra_param){
             $key = trim($key);
@@ -185,7 +187,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
             return $this->error->error(mensaje: 'Error al iniciar session',data:  $init);
         }
 
-        $asigna = $this->asigna_datos_session(r_session: $r_session, extra_params: $extra_params);
+        $asigna = $this->asigna_datos_session(r_session: $r_session, extra_params: $extra_params, carga_solo_extra: false);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al $asigna session', data: $asigna);
         }
