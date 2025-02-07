@@ -142,7 +142,7 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
     }
 
 
-    private function asigna_datos_session(stdClass $r_session, array|object $extra_params = array()): array
+    private function asigna_datos_session(stdClass $r_session, array|object $extra_params): array
     {
 
         $valida = $this->valida_session_db(r_session: $r_session);

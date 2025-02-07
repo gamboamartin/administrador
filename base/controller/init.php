@@ -540,7 +540,7 @@ class init{
     }
 
 
-    public function index(bool $aplica_seguridad, array|stdClass $extra_params): array|stdClass
+    public function index(bool $aplica_seguridad, array|stdClass $extra_params = array()): array|stdClass
     {
         $con = new conexion();
         $link = conexion::$link;
