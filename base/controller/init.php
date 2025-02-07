@@ -1973,6 +1973,9 @@ class init{
         if($sistema === 'ks_ops'){
             $namespace = 'gamboamartin\\ks_ops\\';
         }
+        if($sistema === 'contrato'){
+            $namespace = 'gamboamartin\\contrato\\';
+        }
 
         $name_ctl = 'controlador_'.$seccion;
         $name_ctl = str_replace($namespace.'controllers\\','',$name_ctl);
