@@ -126,9 +126,10 @@ class salida_data{
             }
 
             if ($params->ws) {
-                header('Content-Type: application/json');
                 ob_clean();
+                header('Content-Type: application/json');
                 echo $out;
+                exit;
             }
         }
         catch (Throwable $e){
