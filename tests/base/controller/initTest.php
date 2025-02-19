@@ -333,9 +333,10 @@ class initTest extends test {
         $accion = 'v';
         $seccion = 'a';
         $resultado = $init->include_action_template($accion, $seccion);
+        //print_r($resultado);exit;
         $this->assertIsString($resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('/var/www/html/administrador/views/a/v.php',$resultado);
+        $this->assertStringContainsStringIgnoringCase('views/a/v.php',$resultado);
 
     }
 

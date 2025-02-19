@@ -3,6 +3,7 @@ namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\controlador_base;
 use gamboamartin\administrador\instalacion\instalacion;
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
 use gamboamartin\administrador\models\adm_year;
@@ -65,6 +66,13 @@ class controlador_baseTest extends test {
             $error = (new errores())->error('Error al dar de alta usuario', $r_alta_usuario);
             print_r($error);
             die('Error');
+        }
+
+        $del = (new adm_elemento_lista($this->link))->elimina_todo();
+        if(errores::$error){
+            $error = (new errores())->error('Error al eliminar', $del);
+            print_r($error);
+            exit;
         }
 
         $del = (new adm_seccion($this->link))->elimina_todo();

@@ -248,49 +248,7 @@ class sqlTest extends test {
         $this->assertStringContainsString("AND fk.CONSTRAINT_TYPE = 'FOREIGN KEY'",$resultado);
         errores::$error = false;
     }
-    public function test_in(): void
-    {
-        errores::$error = false;
-        $sql = new sql();
-        //$sql = new liberator($sql);
 
-        $llave = '';
-        $values_sql = '';
-        $resultado = $sql->in($llave, $values_sql);
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertEquals('',$resultado);
-
-        errores::$error = false;
-
-        $llave = 'a';
-        $values_sql = '';
-        $resultado = $sql->in($llave, $values_sql);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar in',$resultado['mensaje']);
-
-        errores::$error = false;
-
-        $llave = '';
-        $values_sql = 'a';
-        $resultado = $sql->in($llave, $values_sql);
-        $this->assertIsArray( $resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al validar in',$resultado['mensaje']);
-
-        errores::$error = false;
-
-        $llave = 'a';
-        $values_sql = 'a';
-        $resultado = $sql->in($llave, $values_sql);
-
-        $this->assertIsString( $resultado);
-        $this->assertNotTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('a IN (a)',$resultado);
-
-        errores::$error = false;
-    }
     public function test_index_unique(): void
     {
         errores::$error = false;

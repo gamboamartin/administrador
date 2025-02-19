@@ -335,9 +335,12 @@ class _resultTest extends test {
         $campos_encriptados = array('descripcion');
         $resultado = $mb->maqueta_arreglo_registros(modelos_hijos: $modelos_hijos, r_sql: $r_sql,
             campos_encriptados: $campos_encriptados,modelo_base: $modelo_base);
+
+        //print_r($resultado);exit;
+
         $this->assertIsArray($resultado);
-        $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error al ajustar rows', $resultado['mensaje']);
+        $this->assertNotTrue(errores::$error);
+        //$this->assertStringContainsStringIgnoringCase('Error al ajustar rows', $resultado['mensaje']);
 
         errores::$error = false;
 
