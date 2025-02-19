@@ -417,58 +417,272 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * Obtiene los permisos de una interaccion el el sistema
-     * @param string $adm_accion Accion a validar
-     * @param int $adm_grupo_id Grupo de usuario a validar
-     * @param string $adm_seccion Seccion a validar
-     * @return array|stdClass
+     * REG
+     * Obtiene y valida los permisos de un grupo de usuarios en una acción y sección específica.
+     *
+     * Esta función realiza varias validaciones para asegurarse de que los parámetros proporcionados son correctos.
+     * Luego, genera los datos del permiso y verifica si la sesión está validada en la base de datos.
+     * Finalmente, devuelve un objeto con la información del permiso y la validación de sesión.
+     *
+     * ---
+     *
+     * ### **Validaciones realizadas:**
+     * - Verifica que `adm_accion`, `adm_seccion` y `adm_grupo_id` sean correctos (`valida_datos_permiso`).
+     * - Genera un objeto con la acción y la sección (`data_permiso`).
+     * - Obtiene el estado de la sesión validada (`get_val_session`).
+     * - Devuelve un objeto `stdClass` con los datos del permiso y el estado de la sesión (`val_session` y `existe`).
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     *
+     * $resultado = $adm_usuario->get_data_permiso('modifica', 3, 'usuarios');
+     *
+     * if ($resultado instanceof stdClass) {
+     *     echo "Acción: " . $resultado->adm_accion . "\n";
+     *     echo "Sección: " . $resultado->adm_seccion . "\n";
+     *     echo "Permiso existe: " . ($resultado->existe ? 'Sí' : 'No') . "\n";
+     *     echo "Validación de sesión: " . $resultado->val_session . "\n";
+     * } else {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Entrada válida con datos existentes:**
+     * ```php
+     * $adm_accion = "alta";
+     * $adm_grupo_id = 5;
+     * $adm_seccion = "productos";
+     * ```
+     * **Salida esperada (`stdClass` con datos):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [adm_accion] => alta
+     *     [adm_seccion] => productos
+     *     [existe] => true
+     *     [val_session] => 1
+     * )
+     * ```
+     *
+     * **Entrada con `adm_grupo_id` inválido (Error):**
+     * ```php
+     * $adm_accion = "modifica";
+     * $adm_grupo_id = 0;
+     * $adm_seccion = "clientes";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_grupo_id debe ser mayor a 0',
+     *     'data' => 0,
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con `adm_accion` vacía (Error):**
+     * ```php
+     * $adm_accion = "";
+     * $adm_grupo_id = 2;
+     * $adm_seccion = "clientes";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_accion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con `adm_seccion` vacía (Error):**
+     * ```php
+     * $adm_accion = "modifica";
+     * $adm_grupo_id = 3;
+     * $adm_seccion = "";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_seccion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $adm_accion Acción del administrador a validar.
+     * @param int $adm_grupo_id ID del grupo de usuario al que pertenece.
+     * @param string $adm_seccion Sección del sistema donde se aplicará la acción.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con:
+     *                        - `adm_accion`: Acción validada.
+     *                        - `adm_seccion`: Sección validada.
+     *                        - `existe`: `true` si el permiso existe, `false` si no.
+     *                        - `val_session`: `1` si la sesión es válida, `0` si no.
+     *                        Si hay un error, retorna un array con un mensaje detallado.
+     *
+     * @throws array Si algún parámetro no es válido, devuelve un error con los detalles.
      */
     private function get_data_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array|stdClass
     {
-
-
-        $valida = $this->valida_datos_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
-            adm_seccion:  $adm_seccion);
+        // Validación de los datos de permiso
+        $valida = $this->valida_datos_permiso(
+            adm_accion: $adm_accion,
+            adm_grupo_id: $adm_grupo_id,
+            adm_seccion: $adm_seccion
+        );
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
+        // Genera el objeto con los datos del permiso
         $data_permiso = $this->data_permiso(adm_accion: $adm_accion, adm_seccion: $adm_seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
         }
 
-        $data = $this->get_val_session(adm_grupo_id: $adm_grupo_id,data_permiso:  $data_permiso);
+        // Obtiene el estado de validación de sesión
+        $data = $this->get_val_session(adm_grupo_id: $adm_grupo_id, data_permiso: $data_permiso);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener val_session', data: $data);
         }
+
+        // Agrega la información de la sesión al objeto del permiso
         $data_permiso->val_session = $data->val_session;
         $data_permiso->existe = $data->existe;
+
         return $data_permiso;
     }
 
+
     /**
-     * Obtiene los elementos de una session
-     * @param int $adm_grupo_id Grupo de usuario
-     * @param stdClass $data_permiso datos previos de permiso a validar
-     * @return array|stdClass
+     * REG
+     * Obtiene el estado de validación de sesión para un grupo de usuarios en una acción y sección específica.
+     *
+     * Esta función valida los datos del permiso (`data_permiso`), verifica la existencia de la sesión en la base de datos
+     * y determina si el grupo de usuarios tiene acceso a la acción y sección indicadas.
+     *
+     * ---
+     *
+     * ### **Validaciones realizadas:**
+     * - Comprueba que `data_permiso` contenga las claves necesarias (`adm_accion`, `adm_seccion`).
+     * - Verifica que `adm_grupo_id` sea un número entero mayor a `0`.
+     * - Genera un filtro de búsqueda basado en la acción, grupo y sección.
+     * - Verifica si la sesión de permisos existe en la base de datos.
+     * - Devuelve un objeto `stdClass` con `existe` (booleano) y `val_session` (entero).
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     *
+     * $data_permiso = new stdClass();
+     * $data_permiso->adm_accion = 'modifica';
+     * $data_permiso->adm_seccion = 'usuarios';
+     *
+     * $resultado = $adm_usuario->get_val_session(3, $data_permiso);
+     *
+     * if ($resultado instanceof stdClass) {
+     *     echo "Existe: " . ($resultado->existe ? 'Sí' : 'No') . "\n";
+     *     echo "Validación de sesión: " . $resultado->val_session . "\n";
+     * } else {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Entrada válida con datos existentes:**
+     * ```php
+     * $adm_grupo_id = 5;
+     * $data_permiso = (object) [
+     *     'adm_accion' => 'alta',
+     *     'adm_seccion' => 'productos'
+     * ];
+     * ```
+     * **Salida esperada (`stdClass` con datos):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [existe] => true
+     *     [val_session] => 1
+     * )
+     * ```
+     *
+     * **Entrada con `adm_grupo_id` inválido (Error):**
+     * ```php
+     * $adm_grupo_id = 0;
+     * $data_permiso = (object) [
+     *     'adm_accion' => 'modifica',
+     *     'adm_seccion' => 'clientes'
+     * ];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_grupo_id debe ser mayor a 0',
+     *     'data' => 0,
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con datos incompletos en `$data_permiso` (Error):**
+     * ```php
+     * $adm_grupo_id = 3;
+     * $data_permiso = (object) [
+     *     'adm_accion' => 'modifica'
+     * ];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al validar $data_permiso',
+     *     'data' => [...],
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param int $adm_grupo_id ID del grupo de usuarios que se validará.
+     * @param stdClass $data_permiso Objeto con los datos de permiso (`adm_accion`, `adm_seccion`).
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con:
+     *                        - `existe` (bool): Indica si el permiso existe (`true`) o no (`false`).
+     *                        - `val_session` (int): `1` si la sesión es válida, `0` si no.
+     *                        Si hay un error, retorna un array con un mensaje detallado.
+     *
+     * @throws array Si `adm_grupo_id` es inválido o los datos de `data_permiso` son incorrectos, retorna un error con detalles.
      */
     private function get_val_session(int $adm_grupo_id, stdClass $data_permiso): array|stdClass
     {
-
-        $keys = array('adm_accion','adm_seccion');
-        $valida = $this->validacion->valida_existencia_keys(keys: $keys,registro:  $data_permiso);
+        $keys = array('adm_accion', 'adm_seccion');
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $data_permiso);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar $data_permiso', data: $valida);
         }
 
-        if($adm_grupo_id <= 0){
-            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id,
-                es_final: true);
+        if ($adm_grupo_id <= 0) {
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0', data: $adm_grupo_id, es_final: true);
         }
 
-        $filtro = $this->filtro(adm_accion: $data_permiso->adm_accion,adm_grupo_id: $adm_grupo_id,
-            adm_seccion: $data_permiso->adm_seccion);
+        $filtro = $this->filtro(
+            adm_accion: $data_permiso->adm_accion,
+            adm_grupo_id: $adm_grupo_id,
+            adm_seccion: $data_permiso->adm_seccion
+        );
+
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
         }
@@ -480,6 +694,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
         return $data;
     }
+
 
     /**
      * Integra en un a variable de SESSION un bool de validacion de permiso
@@ -609,30 +824,157 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * Valida e integra una validacion de existe para session
-     * @param bool $existe Si true val session existe
-     * @return int
-     * @version 10.41.2
+     * REG
+     * Convierte un valor booleano en un valor entero representando la validez de una sesión.
+     *
+     * Esta función recibe un booleano (`true` o `false`) y lo convierte en un entero `1` o `0`,
+     * respectivamente. Se utiliza para determinar si una sesión de usuario tiene un permiso
+     * válido en la aplicación.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     * $resultado = $adm_usuario->val_session(true);
+     * echo $resultado; // 1
+     *
+     * $resultado = $adm_usuario->val_session(false);
+     * echo $resultado; // 0
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada válida con `true`:**
+     * ```php
+     * $existe = true;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * 1
+     * ```
+     *
+     * **Entrada válida con `false`:**
+     * ```php
+     * $existe = false;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * 0
+     * ```
+     *
+     * ---
+     *
+     * @param bool $existe Indica si la sesión es válida (`true`) o no (`false`).
+     *
+     * @return int Retorna `1` si la sesión es válida, `0` si no lo es.
      */
     private function val_session(bool $existe): int
     {
-        $val_session = 0;
-        if ($existe) {
-            $val_session = 1;
-        }
-        return $val_session;
+        return $existe ? 1 : 0;
     }
 
+
     /**
-     * Verifica si una session existe en base de datos asi como su permiso
-     * @param array $filtro Filtro a integrar para validacion
-     * @return array|stdClass
+     * REG
+     * Verifica si una sesión existe en la base de datos y obtiene su estado de validación.
+     *
+     * Esta función recibe un conjunto de filtros para buscar en la base de datos si una acción de grupo
+     * (`adm_accion_grupo`) existe. Si la búsqueda es exitosa, determina si la sesión es válida (`1`) o no (`0`).
+     *
+     * ---
+     *
+     * ### **Validaciones realizadas:**
+     * - Verifica que `$filtro` no esté vacío.
+     * - Ejecuta una consulta para determinar si el filtro encuentra un registro en `adm_accion_grupo`.
+     * - Convierte la existencia del registro en una sesión válida (`1` para `true`, `0` para `false`).
+     * - Retorna un objeto `stdClass` con las propiedades `existe` (booleano) y `val_session` (entero).
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     * $filtro = ['adm_accion.descripcion' => 'modifica', 'adm_grupo.id' => 3];
+     *
+     * $resultado = $adm_usuario->val_session_existe($filtro);
+     *
+     * if ($resultado instanceof stdClass) {
+     *     echo "Existe: " . ($resultado->existe ? 'Sí' : 'No') . "\n";
+     *     echo "Validación de sesión: " . $resultado->val_session . "\n";
+     * } else {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Entrada válida con filtro existente:**
+     * ```php
+     * $filtro = [
+     *     'adm_accion.descripcion' => 'alta',
+     *     'adm_grupo.id' => 5
+     * ];
+     * ```
+     * **Salida esperada (`stdClass` con datos):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [existe] => true
+     *     [val_session] => 1
+     * )
+     * ```
+     *
+     * **Entrada con filtro vacío (Error):**
+     * ```php
+     * $filtro = [];
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error filtro esta vacio',
+     *     'data' => [],
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con filtro sin coincidencias en la BD:**
+     * ```php
+     * $filtro = [
+     *     'adm_accion.descripcion' => 'elimina',
+     *     'adm_grupo.id' => 99
+     * ];
+     * ```
+     * **Salida esperada (`stdClass` indicando que no existe):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [existe] => false
+     *     [val_session] => 0
+     * )
+     * ```
+     *
+     * ---
+     *
+     * @param array $filtro Filtro de búsqueda para verificar la existencia de una sesión en `adm_accion_grupo`.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con:
+     *                        - `existe` (bool): Indica si el registro existe (`true`) o no (`false`).
+     *                        - `val_session` (int): `1` si existe, `0` si no.
+     *                        Si hay un error, retorna un array con un mensaje detallado.
+     *
+     * @throws array Si el filtro está vacío o ocurre un error en la consulta, retorna un array con información del error.
      */
     private function val_session_existe(array $filtro): array|stdClass
     {
-        if(count($filtro) === 0){
+        if (count($filtro) === 0) {
             return $this->error->error(mensaje: 'Error filtro esta vacio', data: $filtro, es_final: true);
         }
+
         $existe = (new adm_accion_grupo(link: $this->link))->existe(filtro: $filtro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
@@ -642,11 +984,14 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener val_session', data: $val_session);
         }
+
         $data = new stdClass();
         $data->existe = $existe;
         $data->val_session = $val_session;
+
         return $data;
     }
+
 
     /**
      * REG
