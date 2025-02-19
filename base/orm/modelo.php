@@ -505,70 +505,142 @@ class modelo extends modelo_base {
 
 
     /**
-     * Cuenta los registros de un modelo conforme al filtro en aplicacion
-     * @param array $diferente_de Integra el sql para diferente de
-     * @param array $extra_join Arreglo para integrar tabla integra en la consulta
-                $extra_join[tabla] = array(); donde tabla se inicial LEFT JOIN tabla
-                $extra_join['tabla']['key'] = 'key'; donde key es el key de enlace de la tabla
-                    LEFT JOIN  tabla AS tabla  ON tabla.key
-                $extra_join['tabla']['enlace'] = 'tabla_enlace'; Es la tabla del join
-                    LEFT JOIN  tabla AS tabla  ON tabla.key = tabla_enlace.key_enlace
-                $extra_join['tabla']['key_enlace'] = 'key_enlace';
-     * @param array $filtro Filtro de ejecucion basico
-     * @param string $tipo_filtro validos son numeros y textos
-     * @param array $filtro_especial arreglo con las condiciones $filtro_especial[0][tabla.campo]= array('operador'=>'<','valor'=>'x')
-     * @param array $filtro_rango
-     *                  Opcion1.- Debe ser un array con la siguiente forma array('valor1'=>'valor','valor2'=>'valor')
-     *                  Opcion2.-
-     *                      Debe ser un array con la siguiente forma
-     *                          array('valor1'=>'valor','valor2'=>'valor','valor_campo'=>true)
-     * @param array $filtro_fecha Filtros de fecha para sql filtro[campo_1], filtro[campo_2], filtro[fecha]
-     * @param array $in Genera IN en sql
-     * @param array $not_in Genera NOT IN en SQL
-     * @return array|int
+     * REG
+     * Obtiene la cantidad de registros que cumplen con los filtros aplicados en la base de datos.
+     *
+     * Esta función ejecuta una consulta SQL para contar el número de registros en la tabla del modelo actual
+     * que coincidan con los filtros proporcionados. Permite aplicar diferentes tipos de filtros y condiciones
+     * como filtros especiales, rangos, fechas y listas de inclusión/exclusión.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param array $diferente_de Filtros para excluir valores específicos en ciertas columnas.
+     *                            - **Ejemplo:** `['id' => 10]` (Excluye registros con `id = 10`).
+     * @param array $extra_join Arreglo de `JOIN` adicionales a incluir en la consulta.
+     *                            - **Ejemplo:** `[ ['tabla' => 'otra_tabla', 'on' => 'tabla.id = otra_tabla.fk_id'] ]`.
+     * @param array $filtro Filtros directos sobre las columnas.
+     *                            - **Ejemplo:** `['nombre' => 'Juan']` (Filtra registros donde `nombre = 'Juan'`).
+     * @param string $tipo_filtro Define el tipo de filtro aplicado (`'numeros'`, `'texto'`, etc.).
+     *                            - **Valores permitidos:** `'numeros'`, `'texto'`, `'fecha'`.
+     *                            - **Ejemplo:** `'numeros'`.
+     * @param array $filtro_especial Filtros avanzados personalizados.
+     *                            - **Ejemplo:** `['estatus' => 'activo']`.
+     * @param array $filtro_rango Filtros de tipo rango para valores numéricos.
+     *                            - **Ejemplo:** `['edad' => ['min' => 18, 'max' => 30]]`.
+     * @param array $filtro_fecha Filtros por rango de fechas.
+     *                            - **Ejemplo:** `['fecha_creacion' => ['desde' => '2024-01-01', 'hasta' => '2024-12-31']]`.
+     * @param array $in Lista de valores permitidos en una columna.
+     *                            - **Ejemplo:** `['id' => [1, 2, 3, 4, 5]]`.
+     * @param array $not_in Lista de valores excluidos en una columna.
+     *                            - **Ejemplo:** `['id' => [10, 11, 12]]`.
+     *
+     * @return array|int Retorna el número de registros que cumplen con los filtros aplicados.
+     *                   En caso de error, devuelve un array con el mensaje de error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $modelo = new adm_usuario($pdo);
+     *
+     * // Contar usuarios activos en el sistema
+     * $cantidad = $modelo->cuenta(filtro: ['estatus' => 'activo']);
+     *
+     * echo "Usuarios activos: " . $cantidad;
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Ejemplo 1: Contar registros sin filtros**
+     * ```php
+     * $modelo = new adm_usuario($pdo);
+     * $cantidad = $modelo->cuenta();
+     * ```
+     * **Salida esperada:** `150` (total de registros en la tabla `adm_usuario`).
+     *
+     * **Ejemplo 2: Contar usuarios activos**
+     * ```php
+     * $cantidad = $modelo->cuenta(filtro: ['estatus' => 'activo']);
+     * ```
+     * **Salida esperada:** `95` (número de usuarios activos).
+     *
+     * **Ejemplo 3: Contar usuarios con un rango de edades**
+     * ```php
+     * $cantidad = $modelo->cuenta(filtro_rango: ['edad' => ['min' => 18, 'max' => 30]]);
+     * ```
+     * **Salida esperada:** `50` (número de usuarios entre 18 y 30 años).
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con detalles si ocurre un error en la validación de los filtros o ejecución de la consulta.
      */
     final public function cuenta(array $diferente_de = array(), array $extra_join = array(), array $filtro = array(),
                                  string $tipo_filtro = 'numeros', array $filtro_especial = array(),
                                  array $filtro_rango = array(), array $filtro_fecha = array(),
-                                 array $in = array(), array $not_in = array()):array|int{
+                                 array $in = array(), array $not_in = array()): array|int
+    {
 
+        // Validar el tipo de filtro antes de ejecutar la consulta
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tipo_filtro',data: $verifica_tf);
+            return $this->error->error(mensaje: 'Error al validar tipo_filtro', data: $verifica_tf);
         }
 
-
+        // Configuración inicial de joins y estructuras adicionales
         $extension_estructura = array();
         $renombradas = array();
 
-        $tablas = (new joins())->tablas(columnas: $this->columnas, extension_estructura:  $extension_estructura,
-            extra_join: $extra_join, modelo_tabla: $this->tabla, renombradas: $renombradas, tabla: $this->tabla);
+        $tablas = (new joins())->tablas(
+            columnas: $this->columnas,
+            extension_estructura: $extension_estructura,
+            extra_join: $extra_join,
+            modelo_tabla: $this->tabla,
+            renombradas: $renombradas,
+            tabla: $this->tabla
+        );
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar joins e '.$this->tabla, data: $tablas);
+            return $this->error->error(mensaje: 'Error al generar joins en '.$this->tabla, data: $tablas);
         }
 
-        $filtros = (new where())->data_filtros_full(columnas_extra: $this->columnas_extra,diferente_de: $diferente_de,
-            filtro:  $filtro, filtro_especial: $filtro_especial, filtro_extra: array(), filtro_fecha: $filtro_fecha,
-            filtro_rango: $filtro_rango, in:$in, keys_data_filter: $this->keys_data_filter, not_in: $not_in,
-            sql_extra: '', tipo_filtro: $tipo_filtro);
-
+        // Generar filtros con los parámetros recibidos
+        $filtros = (new where())->data_filtros_full(
+            columnas_extra: $this->columnas_extra,
+            diferente_de: $diferente_de,
+            filtro: $filtro,
+            filtro_especial: $filtro_especial,
+            filtro_extra: array(),
+            filtro_fecha: $filtro_fecha,
+            filtro_rango: $filtro_rango,
+            in: $in,
+            keys_data_filter: $this->keys_data_filter,
+            not_in: $not_in,
+            sql_extra: '',
+            tipo_filtro: $tipo_filtro
+        );
 
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtros',data: $filtros);
+            return $this->error->error(mensaje: 'Error al generar filtros', data: $filtros);
         }
 
+        // Construcción de la consulta SQL para contar registros
         $sql = /** @lang MYSQL */
             " SELECT COUNT(*) AS total_registros FROM $tablas $filtros->where $filtros->sentencia 
             $filtros->filtro_especial $filtros->filtro_rango $filtros->in";
 
+        // Ejecución de la consulta
         $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados);
         if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
+            return $this->error->error(mensaje: 'Error al ejecutar SQL', data: $result);
         }
 
+        // Retornar la cantidad de registros encontrados
         return (int)$result->registros[0]['total_registros'];
-
     }
+
 
     /**
      * REG
@@ -1178,24 +1250,85 @@ class modelo extends modelo_base {
     }
 
     /**
-     * Verifica si existe o no un registro basado en un filtro
-     * @param array $filtro array('tabla.campo'=>'value'=>valor,'tabla.campo'=>'campo'=>tabla.campo);
-     * @return array|bool
+     * REG
+     * Verifica si existen registros en la base de datos que cumplan con los filtros proporcionados.
+     *
+     * Esta función ejecuta una consulta a la base de datos utilizando el método `cuenta()`,
+     * que devuelve el número de registros que coinciden con el filtro proporcionado.
+     * Si el número de registros es mayor a cero, la función retorna `true`, indicando que al menos
+     * un registro cumple con los criterios. En caso contrario, retorna `false`.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param array $filtro Filtros que se aplicarán para verificar la existencia de registros.
+     *                      - **Ejemplo:** `['email' => 'usuario@example.com']` (Busca si existe un usuario con ese email).
+     *
+     * @return array|bool Retorna `true` si existe al menos un registro que cumple con los filtros.
+     *                    Retorna `false` si no existen registros.
+     *                    En caso de error, devuelve un array con el mensaje de error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $modelo = new adm_usuario($pdo);
+     *
+     * // Verificar si existe un usuario con un email específico
+     * $existe = $modelo->existe(['email' => 'usuario@example.com']);
+     *
+     * if ($existe === true) {
+     *     echo "El usuario existe en la base de datos.";
+     * } else {
+     *     echo "El usuario no existe.";
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Ejemplo 1: Verificar si existe un usuario con un correo electrónico**
+     * ```php
+     * $modelo = new adm_usuario($pdo);
+     * $existe = $modelo->existe(['email' => 'admin@example.com']);
+     * ```
+     * **Salida esperada:** `true` (si el usuario existe) o `false` (si no existe).
+     *
+     * **Ejemplo 2: Verificar si existe un usuario con un ID específico**
+     * ```php
+     * $existe = $modelo->existe(['id' => 100]);
+     * ```
+     * **Salida esperada:** `true` (si existe un usuario con ID 100) o `false` (si no existe).
+     *
+     * **Ejemplo 3: Verificar si existe un usuario en un grupo específico**
+     * ```php
+     * $existe = $modelo->existe(['adm_grupo_id' => 3]);
+     * ```
+     * **Salida esperada:** `true` (si hay usuarios en el grupo 3) o `false` (si no hay usuarios en ese grupo).
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con detalles si ocurre un error en la validación de los filtros o ejecución de la consulta.
      */
     final public function existe(array $filtro): array|bool
     {
+        // Obtener la cantidad de registros que cumplen con el filtro
         $resultado = $this->cuenta(filtro: $filtro);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al contar registros',data: $resultado);
+            return $this->error->error(mensaje: 'Error al contar registros', data: $resultado);
         }
+
+        // Determinar si existen registros
         $existe = false;
-        if((int)$resultado>0){
+        if((int)$resultado > 0){
             $existe = true;
         }
 
         return $existe;
-
     }
+
 
     private function existe_atributo_critico(string $atributo_critico, string $key_attr): bool
     {

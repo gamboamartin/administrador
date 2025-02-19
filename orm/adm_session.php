@@ -163,8 +163,6 @@ class adm_session extends modelo{//PRUEBAS FINALIZADAS
             $_SESSION[$key] = $extra_param;
         }
 
-
-
         return $_SESSION;
     }
 

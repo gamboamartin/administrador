@@ -105,31 +105,129 @@ class _defaults{
     }
 
     /**
-     * Genera un filtro para default
-     * @param modelo $entidad Entidad en ejecucion
-     * @param array $row Registro a insertar
-     * @param array $filtro filtro custom
-     * @return array
-     * @version 9.129.5
+     * REG
+     * Genera un filtro para validar la existencia de un registro en la base de datos.
+     *
+     * Esta función crea un filtro basado en el valor del campo `codigo` dentro del registro `$row`.
+     * Si no se proporciona un filtro preexistente (`$filtro` está vacío), se validará que el campo `codigo` esté presente en `$row`.
+     * Luego, se construirá un filtro para verificar la existencia del registro en la tabla de la entidad proporcionada.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo $entidad Instancia del modelo que representa la entidad en la base de datos.
+     *                        Se utilizará su propiedad `$tabla` para formar el filtro.
+     *                        - **Ejemplo:** `new adm_usuario($pdo)` representa la tabla `adm_usuario`.
+     *
+     * @param array $row Registro que contiene los datos a validar, incluyendo el campo `codigo`.
+     *                   - **Ejemplo:** `['codigo' => 'USR123', 'nombre' => 'Juan Pérez']`
+     *
+     * @param array $filtro (Opcional) Filtro preexistente que puede ser combinado con el generado.
+     *                      Si está vacío, se generará un filtro con base en `codigo`.
+     *                      - **Ejemplo:** `['adm_usuario.email' => 'usuario@example.com']`
+     *
+     * ---
+     *
+     * @return array Retorna un array con el filtro generado para validar la existencia del registro.
+     *               Si `$filtro` ya contenía valores, se conservarán y se añadirá el nuevo filtro.
+     *               En caso de error, la función devolverá un array con el mensaje de error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $modelo = new adm_usuario($pdo);
+     * $row = ['codigo' => 'USR123', 'nombre' => 'Juan Pérez'];
+     * $filtro = $modelo->filtro_default(entidad: $modelo, row: $row);
+     * print_r($filtro);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'adm_usuario.codigo' => 'USR123'
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con Filtro Preexistente:**
+     * ```php
+     * $modelo = new adm_usuario($pdo);
+     * $row = ['codigo' => 'USR123', 'nombre' => 'Juan Pérez'];
+     * $filtro_existente = ['adm_usuario.email' => 'usuario@example.com'];
+     * $filtro = $modelo->filtro_default(entidad: $modelo, row: $row, filtro: $filtro_existente);
+     * print_r($filtro);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'adm_usuario.email' => 'usuario@example.com',
+     *     'adm_usuario.codigo' => 'USR123'
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Manejo de Errores**
+     *
+     * **Ejemplo 1: Si el campo `codigo` no está presente en `$row`**
+     * ```php
+     * $row = ['nombre' => 'Juan Pérez'];
+     * $filtro = $modelo->filtro_default(entidad: $modelo, row: $row);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'error' => true,
+     *     'mensaje' => 'Error al validar row',
+     *     'data' => ['nombre' => 'Juan Pérez']
+     * ]
+     * ```
+     *
+     * **Ejemplo 2: Si la tabla está vacía**
+     * ```php
+     * $modelo->tabla = ''; // Forzar un error
+     * $filtro = $modelo->filtro_default(entidad: $modelo, row: ['codigo' => 'USR123']);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'error' => true,
+     *     'mensaje' => 'Error tabla esta vacia',
+     *     'data' => ''
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si la tabla está vacía o si el campo `codigo` no está presente en `$row`.
      */
     private function filtro_default(modelo $entidad, array $row, array $filtro = array()): array
     {
+        // Validar que la tabla de la entidad no esté vacía
         $tabla = trim($entidad->tabla);
         if($tabla === ''){
             return $this->error->error(mensaje: 'Error tabla esta vacia', data: $tabla);
         }
 
+        // Si no se ha pasado un filtro preexistente, validar la existencia del campo 'codigo' en el registro
         if(count($filtro) === 0) {
             $keys = array('codigo');
-            $valida = (new validacion())->valida_existencia_keys(keys: $keys,registro:  $row);
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $row);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al validar row', data: $valida);
             }
 
+            // Generar filtro basado en el campo 'codigo'
             $filtro[$tabla . '.codigo'] = $row['codigo'];
         }
+
         return $filtro;
     }
+
 
     private function inserta_default(modelo $entidad, array $row, array $filtro = array()){
         $existe = $this->existe_cod_default(entidad: $entidad,row:  $row, filtro: $filtro);

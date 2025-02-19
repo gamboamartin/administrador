@@ -33,13 +33,13 @@ class adm_sessionTest extends test {
 
         errores::$error = false;
         $session = new adm_session($this->link);
-        $session = new liberator($session);
+        //$session = new liberator($session);
         $r_session = new stdClass();
         $r_session->registros[0]['adm_grupo_id'] = 1;
         $r_session->registros[0]['adm_usuario_id'] = 1;
         $r_session->registros[0]['adm_session_nombre_completo'] = '';
-        $resultado = $session->asigna_datos_session($r_session);
-
+        $resultado = $session->asigna_datos_session($r_session,array(),false);
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertNotTrue(errores::$error);
         errores::$error = false;
@@ -60,7 +60,7 @@ class adm_sessionTest extends test {
         $r_session->registros[0]['adm_usuario_id'] = 1;
         $r_session->registros[0]['adm_session_nombre_completo'] = 1;
 
-        $resultado = $session->carga_session($r_session);
+        $resultado = $session->carga_session($r_session,array());
         //print_r($resultado);exit;
 
         $this->assertIsArray($resultado);

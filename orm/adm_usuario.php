@@ -95,22 +95,82 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * TOTAL
-     * Maqueta en un objeto los elementos para validar un permiso
+     * REG
+     * Genera un objeto con la información de un permiso de usuario.
      *
-     * Esta función recibe como argumentos el nombre de una acción y una sección. Luego, realiza una validación para cada una.
-     * Si está vacía cualquiera de las dos, devolverá un error especificando qué elemento está vacío.
+     * Esta función recibe como parámetros una acción y una sección del sistema, los valida y devuelve un objeto `stdClass`
+     * con estos valores. Si alguno de los valores está vacío, retorna un error detallado.
      *
-     * Al final, devuelve un objeto con los elementos validados
+     * ---
      *
-     * @param string $adm_accion    Acción a validar.
-     * @param string $adm_seccion   Sección a validar.
+     * ### Ejemplo de Uso:
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     * $resultado = $adm_usuario->data_permiso('modifica', 'usuarios');
      *
-     * @return array|stdClass       Retorna un objeto con 'adm_seccion' y 'adm_accion' como propiedades si éstos son válidos.
-     *                              Retorna un array si ocurre algun error, con el mensaje de error y los datos con los que se llamó a la función.
+     * if ($resultado instanceof stdClass) {
+     *     echo "Acción: " . $resultado->adm_accion . "\n";
+     *     echo "Sección: " . $resultado->adm_seccion . "\n";
+     * } else {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
      *
-     * @version 16.297.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm.adm_usuario.data_permiso.21.15.0
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada válida:**
+     * ```php
+     * $adm_accion = "alta";
+     * $adm_seccion = "productos";
+     * ```
+     * **Salida esperada (`stdClass`):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [adm_seccion] => productos
+     *     [adm_accion] => alta
+     * )
+     * ```
+     *
+     * **Entrada con acción vacía (Error):**
+     * ```php
+     * $adm_accion = "";
+     * $adm_seccion = "clientes";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_accion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con sección vacía (Error):**
+     * ```php
+     * $adm_accion = "modifica";
+     * $adm_seccion = "";
+     * ```
+     * **Salida esperada (array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_seccion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $adm_accion Acción del administrador a validar.
+     * @param string $adm_seccion Sección del sistema donde se aplicará la acción.
+     *
+     * @return array|stdClass Retorna un objeto `stdClass` con los valores si la validación es exitosa.
+     *                        En caso de error, devuelve un array con el mensaje y los datos del error.
+     *
+     * @throws array Si algún parámetro no es válido, devuelve un error con los detalles.
      */
     private function data_permiso(string $adm_accion, string $adm_seccion): array|stdClass
     {
@@ -127,6 +187,7 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $data->adm_accion = $adm_accion;
         return $data;
     }
+
 
     /**
      * Elimina un registro de adm_usuario y las sessiones ligadas a ese usuario
@@ -165,36 +226,124 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * TOTAL
-     * Método para filtrar la acción y la sección del grupo.
+     * REG
+     * Genera un filtro de búsqueda para validar permisos de un usuario en una sección específica.
      *
-     * Este método acepta una acción, un grupo y una sección.
-     * Realiza la validación y prepara un conjunto de parámetros.
-     * Los parámetros se utilizan para realizar operaciones en otras partes del sistema:
+     * Esta función construye un array con los criterios de filtrado necesarios para validar si un grupo de usuarios
+     * tiene acceso a una determinada acción dentro de una sección específica del sistema.
      *
-     * @param string $adm_accion Representa la acción que se validará.
-     * @param int $adm_grupo_id Representa el ID del grupo de usuario que se validará.
-     * @param string $adm_seccion Representa la sección que se validará.
+     * **Validaciones realizadas:**
+     * - `adm_accion`: No debe estar vacío.
+     * - `adm_seccion`: No debe estar vacío.
+     * - `adm_grupo_id`: Debe ser un número entero mayor a 0.
      *
-     * @return array
-     * El método devuelve un array con los parámetros validados y preconfigurados.
-     * Si algún parámetro no es válido, se devuelve un mensaje de error correspondiente.
-     * @version 16.299.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm.adm_usuario.filtro.21.15.0
+     * En caso de error en las validaciones, devuelve un array con un mensaje de error.
+     * Si los datos son correctos, retorna un array con los parámetros de filtrado.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     * $filtro = $adm_usuario->filtro('modifica', 3, 'usuarios');
+     *
+     * if (isset($filtro['mensaje'])) {
+     *     echo "Error: " . $filtro['mensaje'];
+     * } else {
+     *     print_r($filtro);
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada válida:**
+     * ```php
+     * $adm_accion = "alta";
+     * $adm_grupo_id = 5;
+     * $adm_seccion = "productos";
+     * ```
+     * **Salida esperada (Array de filtros):**
+     * ```php
+     * [
+     *     "adm_grupo.id" => 5,
+     *     "adm_accion.descripcion" => "alta",
+     *     "adm_grupo.status" => "activo",
+     *     "adm_accion.status" => "activo",
+     *     "adm_seccion.descripcion" => "productos",
+     *     "adm_seccion.status" => "activo"
+     * ]
+     * ```
+     *
+     * **Entrada con acción vacía (Error):**
+     * ```php
+     * $adm_accion = "";
+     * $adm_grupo_id = 2;
+     * $adm_seccion = "clientes";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_accion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con sección vacía (Error):**
+     * ```php
+     * $adm_accion = "modifica";
+     * $adm_grupo_id = 1;
+     * $adm_seccion = "";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_seccion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con `adm_grupo_id` inválido (Error):**
+     * ```php
+     * $adm_accion = "elimina";
+     * $adm_grupo_id = 0;
+     * $adm_seccion = "usuarios";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_grupo_id debe ser mayor a 0',
+     *     'data' => 0
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $adm_accion Acción del sistema a validar.
+     * @param int $adm_grupo_id ID del grupo de usuarios que se validará.
+     * @param string $adm_seccion Sección en la que se ejecutará la acción.
+     *
+     * @return array Retorna un array con los criterios de filtrado si la validación es correcta.
+     *               En caso de error, devuelve un array con un mensaje de error y el dato inválido.
+     *
+     * @throws array Si algún parámetro no es válido, devuelve un array con detalles del error.
      */
     private function filtro(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array
     {
         $adm_accion = trim($adm_accion);
         if($adm_accion === ''){
-            return $this->error->error(mensaje: 'Error adm_accion esta vacia',data:  $adm_accion, es_final: true);
+            return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion, es_final: true);
         }
         $adm_seccion = trim($adm_seccion);
         if($adm_seccion === ''){
-            return $this->error->error(mensaje: 'Error adm_seccion esta vacia',data:  $adm_seccion, es_final: true);
+            return $this->error->error(mensaje: 'Error adm_seccion esta vacia', data: $adm_seccion, es_final: true);
         }
 
         if($adm_grupo_id <= 0){
-            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id);
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0', data: $adm_grupo_id);
         }
 
         $filtro['adm_grupo.id'] = $adm_grupo_id;
@@ -203,8 +352,10 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         $filtro['adm_accion.status'] = 'activo';
         $filtro['adm_seccion.descripcion'] = $adm_seccion;
         $filtro['adm_seccion.status'] = 'activo';
+
         return $filtro;
     }
+
 
     /**
      * Genera un filtro en forma de array para integrarlo a la seguridad de datos. En caso de error al
@@ -498,20 +649,102 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
     }
 
     /**
-     * TOTAL
-     * Valida los datos del permiso sean correctos a nivel parametros.
+     * REG
+     * Valida los datos requeridos para verificar un permiso de usuario en el sistema.
      *
-     * Esta función recibe los datos que representan a un permiso de un grupo de usuario y realiza validaciones
-     * sobre los mismos antes de permitir operaciones adicionales. En caso de encontrar un error, detendrá
-     * la operación y generará un error.
+     * Esta función verifica que los parámetros proporcionados sean válidos antes de continuar con
+     * la validación de permisos de un usuario. Comprueba lo siguiente:
+     * - `adm_accion`: No debe estar vacío.
+     * - `adm_seccion`: No debe estar vacío.
+     * - `adm_grupo_id`: Debe ser un número entero mayor que 0.
      *
-     * @param string $adm_accion Acción del administrador a ser validada.
-     * @param int    $adm_grupo_id ID del grupo al que pertenece el administrador.
-     * @param string $adm_seccion Sección del administrador a ser validada.
+     * Si alguno de estos valores es inválido, la función devuelve un error detallado con la información incorrecta.
+     * En caso contrario, retorna `true`, indicando que la validación fue exitosa.
      *
-     * @return true|array Resultado de las validaciones. En caso de un error, se genera un error.
-     * @version 16.31.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.orm.adm_usuario.valida_datos_permiso.24.15.0
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     * $resultado = $adm_usuario->valida_datos_permiso('modifica', 3, 'usuarios');
+     *
+     * if ($resultado === true) {
+     *     echo "Permiso validado correctamente.";
+     * } else {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### Ejemplo de Entrada y Salida:
+     *
+     * **Entrada válida:**
+     * ```php
+     * $adm_accion = "alta";
+     * $adm_grupo_id = 5;
+     * $adm_seccion = "productos";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * **Entrada con acción vacía (Error):**
+     * ```php
+     * $adm_accion = "";
+     * $adm_grupo_id = 2;
+     * $adm_seccion = "clientes";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_accion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con sección vacía (Error):**
+     * ```php
+     * $adm_accion = "modifica";
+     * $adm_grupo_id = 1;
+     * $adm_seccion = "";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_seccion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con `adm_grupo_id` inválido (Error):**
+     * ```php
+     * $adm_accion = "elimina";
+     * $adm_grupo_id = 0;
+     * $adm_seccion = "usuarios";
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_grupo_id debe ser mayor a 0',
+     *     'data' => 0,
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $adm_accion Acción del administrador a validar.
+     * @param int $adm_grupo_id ID del grupo de usuario al que pertenece.
+     * @param string $adm_seccion Sección del sistema donde se aplicará la acción.
+     *
+     * @return true|array Retorna `true` si todos los valores son válidos.
+     *                    En caso de error, devuelve un array con el mensaje y los datos del error.
+     *
+     * @throws array Si algún parámetro no es válido, devuelve un error con los detalles.
      */
     private function valida_datos_permiso(string $adm_accion, int $adm_grupo_id, string $adm_seccion): true|array
     {
@@ -524,11 +757,12 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
             return $this->error->error(mensaje: 'Error adm_accion esta vacia', data: $adm_accion, es_final: true);
         }
         if($adm_grupo_id <= 0){
-            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0',data:  $adm_grupo_id,
+            return $this->error->error(mensaje: 'Error adm_grupo_id debe ser mayor a 0', data: $adm_grupo_id,
                 es_final: true);
         }
         return true;
     }
+
 
     /**
      * Valida que un usuario y un password exista
