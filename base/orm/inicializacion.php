@@ -349,20 +349,69 @@ class inicializacion{
 
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Asigna un valor encriptado a un campo específico en el registro.
+     * REG
+     * Encripta un valor y lo asigna a un campo específico dentro de un registro.
      *
-     * @param stdClass $campo_limpio Un objeto con los datos sobre el campo a encriptar.
-     * @param array $registro El registro que contiene el campo a encriptar.
+     * Este método:
+     * 1. Valida que el objeto `$campo_limpio` contenga las claves `valor` y `campo`.
+     * 2. Valida que el campo especificado en `$campo_limpio->campo` exista en `$registro` y no esté vacío.
+     * 3. Encripta el valor contenido en `$campo_limpio->valor` usando la clase `encriptador`.
+     * 4. Asigna el valor encriptado al campo dentro del `$registro`.
+     * 5. Retorna el `$registro` actualizado.
+     * 6. Si ocurre un error en cualquier validación o en el proceso de encriptación, devuelve un arreglo con información del error.
      *
-     * @return array Devuelve el registro con el valor del campo encriptado.
-     * Se devuelve un error si ocurre un problema durante la encriptación,
-     * o si falta un campo requerido en el objeto $campo_limpio.
+     * ---
      *
-     * @throws errores Lanza una excepción si ocurre un error durante el proceso de encriptación.
+     * ### Ejemplo de Uso:
+     * ```php
+     * $inicializacion = new inicializacion();
      *
-     * @see encriptador::encripta Para el método que se utiliza para la encriptación.
-     * @version 16.287.1
+     * // Registro de ejemplo
+     * $registro = [
+     *     'clave' => 'MiClave123'
+     * ];
+     *
+     * // Datos a encriptar
+     * $campo_limpio = new stdClass();
+     * $campo_limpio->campo = 'clave';
+     * $campo_limpio->valor = 'MiClave123';
+     *
+     * // Ejecutar encriptación
+     * $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'clave' => 'ValorEncriptadoABC123'
+     * // ]
+     *
+     * // Caso 2: Error por falta de clave en $campo_limpio
+     * $campo_limpio = new stdClass();
+     * $campo_limpio->campo = 'clave';
+     *
+     * $resultado = $inicializacion->asigna_valor_encriptado($campo_limpio, $registro);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al validar campo_limpio',
+     * //   'data' => 'valor no está definido en campo_limpio',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ---
+     *
+     * @param stdClass $campo_limpio Objeto que contiene la información del campo a encriptar.
+     *                               Debe incluir:
+     *                               - `campo`: Nombre del campo en el registro.
+     *                               - `valor`: Valor que será encriptado.
+     * @param array $registro Registro en el cual se asignará el valor encriptado.
+     *
+     * @return array Retorna el `$registro` con el valor encriptado asignado.
+     *               Si ocurre un error, retorna un arreglo con detalles del error.
+     *
+     * @throws array Si no se encuentran las claves necesarias en `$campo_limpio` o `$registro`,
+     *               o si ocurre un error durante la encriptación.
      */
     private function asigna_valor_encriptado(stdClass $campo_limpio, array $registro): array
     {
@@ -388,9 +437,11 @@ class inicializacion{
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al encriptar valor del campo', data: $valor);
         }
+
         $registro[$campo_limpio->campo] = $valor;
         return $registro;
     }
+
 
     private function carga_atributos(stdClass $attr, array $keys, modelo $modelo){
         foreach ($attr->registros as $atributo){
@@ -427,92 +478,263 @@ class inicializacion{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Esta función realiza la encriptación de un valor de registro y lo adjunta al registro.
+     * REG
+     * Encripta un valor de un registro si el campo está dentro de los campos encriptados.
      *
-     * @param string $campo Nombre del campo a encriptar.
-     * @param array $campos_encriptados Array de campos que deben ser encriptados.
-     * @param array $registro Registro actual que contiene los datos a encriptar.
-     * @param mixed $valor El valor a encriptar.
+     * Este método:
+     * 1. Valida que el valor proporcionado no sea un array ni un objeto iterable.
+     * 2. Valida que el campo no esté vacío.
+     * 3. Verifica que el campo exista en el `$registro` y no esté vacío.
+     * 4. Limpia los valores del campo antes de proceder con la encriptación.
+     * 5. Si el campo se encuentra en `$campos_encriptados`, encripta su valor y lo asigna al `$registro`.
+     * 6. Retorna el `$registro` con el valor encriptado (si aplica).
+     * 7. Si ocurre un error en alguna validación o en la encriptación, retorna un arreglo con información del error.
      *
-     * @return array Retorna el registro con el valor encriptado adjunto.
+     * ---
      *
-     * @throws errores En caso de que ocurra una excepción, se devuelve un mensaje de error relevante.
-     * @version 16.288.1
+     * ### Ejemplo de Uso:
+     * ```php
+     * $inicializacion = new inicializacion();
+     *
+     * // Registro de ejemplo
+     * $registro = [
+     *     'clave' => 'MiClave123',
+     *     'nombre' => 'Juan Pérez'
+     * ];
+     *
+     * // Lista de campos que deben ser encriptados
+     * $campos_encriptados = ['clave'];
+     *
+     * // Encriptar el campo 'clave'
+     * $resultado = $inicializacion->encripta_valor_registro('clave', $campos_encriptados, $registro, 'MiClave123');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'clave' => 'ValorEncriptadoXYZ789',
+     * //     'nombre' => 'Juan Pérez'
+     * // ]
+     *
+     * // Caso 2: Intentar encriptar un campo que no está en la lista de campos encriptados
+     * $resultado = $inicializacion->encripta_valor_registro('nombre', $campos_encriptados, $registro, 'Juan Pérez');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'clave' => 'ValorEncriptadoXYZ789',
+     * //     'nombre' => 'Juan Pérez'
+     * // ]
+     *
+     * // Caso 3: Error por campo vacío
+     * $resultado = $inicializacion->encripta_valor_registro('', $campos_encriptados, $registro, 'MiClave123');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error campo no puede venir vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     *
+     * // Caso 4: Error por valor iterable
+     * $resultado = $inicializacion->encripta_valor_registro('clave', $campos_encriptados, $registro, ['ArrayNoValido']);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error valor no puede ser iterable',
+     * //   'data' => ['ArrayNoValido'],
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $campo Nombre del campo a verificar y encriptar si es necesario.
+     * @param array $campos_encriptados Lista de campos que deben ser encriptados.
+     * @param array $registro Registro que contiene el campo y su valor correspondiente.
+     * @param mixed $valor Valor a encriptar, si corresponde.
+     *
+     * @return array Retorna el `$registro` con el valor encriptado si aplica.
+     *               Si el campo no está en `$campos_encriptados`, retorna el registro sin cambios.
+     *               En caso de error, retorna un arreglo con los detalles del error.
+     *
+     * @throws array Si el campo está vacío, el valor es iterable o si ocurre un error en la encriptación.
      */
     private function encripta_valor_registro(string $campo, array $campos_encriptados, array $registro,
-                                            mixed $valor): array
+                                             mixed $valor): array
     {
-
-        if(is_iterable($valor)){
-            return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor, es_final: true);
+        // Validar que el valor no sea iterable
+        if (is_iterable($valor)) {
+            return $this->error->error(
+                mensaje: 'Error valor no puede ser iterable',
+                data: $valor,
+                es_final: true
+            );
         }
 
+        // Eliminar espacios en blanco del campo y del valor
         $campo = trim($campo);
-        if(!is_null($valor)) {
+        if (!is_null($valor)) {
             $valor = trim($valor);
         }
 
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo, es_final: true);
+        // Validar que el campo no esté vacío
+        if ($campo === '') {
+            return $this->error->error(
+                mensaje: 'Error campo no puede venir vacio',
+                data: $campo,
+                es_final: true
+            );
         }
 
+        // Validar que el campo exista en el registro y no esté vacío
         $keys = array($campo);
-        $valida = $this->validacion->valida_existencia_keys(keys:  $keys, registro: $registro,valida_vacio: false);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar registro', data: $valida);
+        $valida = $this->validacion->valida_existencia_keys(keys: $keys, registro: $registro, valida_vacio: false);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al validar registro',
+                data: $valida
+            );
         }
 
-        $campo_limpio = $this->limpia_valores(campo:$campo,valor:  $valor);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar valores'.$campo, data: $campo_limpio);
+        // Limpiar valores antes de proceder
+        $campo_limpio = $this->limpia_valores(campo: $campo, valor: $valor);
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al limpiar valores' . $campo,
+                data: $campo_limpio
+            );
         }
 
-        if(in_array($campo_limpio->campo, $campos_encriptados, true)){
+        // Si el campo está en la lista de campos encriptados, encriptarlo
+        if (in_array($campo_limpio->campo, $campos_encriptados, true)) {
             $registro = $this->asigna_valor_encriptado(campo_limpio: $campo_limpio, registro: $registro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al asignar campo encriptado'.$campo, data: $registro);
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al asignar campo encriptado' . $campo,
+                    data: $registro
+                );
             }
         }
+
         return $registro;
     }
 
+
     /**
-     * POR DOCUMENTAR EN WIKI FINAL REV
-     * Encripta los valores de un registro
+     * REG
+     * Encripta los valores de un registro si sus campos están en la lista de campos encriptados.
      *
-     * Esta función encripta los valores de un registro a través de un conjunto de campos especificados.
-     * Recorre todos los campos del registro y si el campo es iterable, retornará un error.
-     * Cada valor es encriptado y asignado al registro. Si hay un error durante la asignación, también se retornará un error.
-     * Si el proceso es exitoso, el registro encriptado se retorna.
+     * Este método:
+     * 1. Verifica que el `$registro` no esté vacío.
+     * 2. Recorre todos los campos del `$registro` y valida que sus valores no sean iterables.
+     * 3. Si el campo está en la lista de `$campos_encriptados`, encripta su valor usando `encripta_valor_registro()`.
+     * 4. Retorna el `$registro` con los valores encriptados cuando corresponde.
+     * 5. Si ocurre un error en la validación o en la encriptación, retorna un arreglo con información del error.
      *
-     * @param array $campos_encriptados Lista de campos que se deben encriptar.
-     * @param array $registro Registro a encriptar.
-     * @return array Retorna el registro con los valores de los campos especificados encriptados.
-     * @throws errores Si el registro está vacío, si el valor es iterable, si hay un error al asignar el campo encriptado
-     * @version 16.289.1
+     * ---
      *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $inicializacion = new inicializacion();
+     *
+     * // Registro de ejemplo
+     * $registro = [
+     *     'clave' => 'MiClave123',
+     *     'nombre' => 'Juan Pérez',
+     *     'token' => 'TokenSecreto456'
+     * ];
+     *
+     * // Lista de campos que deben ser encriptados
+     * $campos_encriptados = ['clave', 'token'];
+     *
+     * // Encriptar los valores del registro
+     * $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'clave' => 'ValorEncriptadoXYZ789',
+     * //     'nombre' => 'Juan Pérez',
+     * //     'token' => 'ValorEncriptadoABC123'
+     * // ]
+     *
+     * // Caso 2: Registro vacío
+     * $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, []);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error el registro no puede venir vacio',
+     * //   'data' => [],
+     * //   'es_final' => true
+     * // ]
+     *
+     * // Caso 3: Error por valor iterable
+     * $registro = [
+     *     'clave' => ['ArrayNoValido']
+     * ];
+     * $resultado = $inicializacion->encripta_valores_registro($campos_encriptados, $registro);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error valor no puede ser iterable',
+     * //   'data' => ['ArrayNoValido'],
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ---
+     *
+     * @param array $campos_encriptados Lista de campos que deben ser encriptados.
+     * @param array $registro Registro con los datos a procesar.
+     *
+     * @return array Retorna el `$registro` con los valores encriptados si corresponde.
+     *               Si el `$registro` está vacío o ocurre un error, retorna un arreglo con detalles del error.
+     *
+     * @throws array Si el `$registro` está vacío o si un valor es iterable.
      */
     private function encripta_valores_registro(array $campos_encriptados, array $registro): array
     {
-        if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error el registro no puede venir vacio', data: $registro,
-                es_final: true);
+        // Validar que el registro no esté vacío
+        if (count($registro) === 0) {
+            return $this->error->error(
+                mensaje: 'Error el registro no puede venir vacio',
+                data: $registro,
+                es_final: true
+            );
         }
-        foreach($registro as $campo=>$valor){
 
-            if(is_iterable($valor)){
-                return $this->error->error(mensaje: 'Error valor no puede ser iterable', data: $valor, es_final: true);
+        // Recorrer cada campo del registro
+        foreach ($registro as $campo => $valor) {
+            // Validar que el valor no sea iterable
+            if (is_iterable($valor)) {
+                return $this->error->error(
+                    mensaje: 'Error valor no puede ser iterable',
+                    data: $valor,
+                    es_final: true
+                );
             }
 
-            $registro = $this->encripta_valor_registro(campo:$campo
-                , campos_encriptados: $campos_encriptados,registro:  $registro,valor:  $valor);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al asignar campo encriptado '.$campo, data: $registro);
+            // Encriptar el valor si corresponde
+            $registro = $this->encripta_valor_registro(
+                campo: $campo,
+                campos_encriptados: $campos_encriptados,
+                registro: $registro,
+                valor: $valor
+            );
+
+            // Verificar si ocurrió un error al encriptar
+            if (errores::$error) {
+                return $this->error->error(
+                    mensaje: 'Error al asignar campo encriptado ' . $campo,
+                    data: $registro
+                );
             }
         }
+
         return $registro;
     }
+
 
     private function genera_atributos(stdClass $attr, modelo $modelo){
         $keys = array('Null','Key','Default','Extra');
@@ -851,35 +1073,71 @@ class inicializacion{
 
 
     /**
-     * TOTAL
-     * Este método limpia los valores entregados y los agrupa en un objeto de tipo stdClass.
+     * REG
+     * Limpia y normaliza los valores de un campo, eliminando espacios en blanco.
      *
-     * @param string $campo El nombre del campo a procesar.
-     * @param string $valor El valor del campo a procesar.
+     * Este método:
+     * 1. Elimina los espacios en blanco al inicio y al final de la cadena en `$campo` y `$valor`.
+     * 2. Valida que el `$campo` no esté vacío.
+     * 3. Retorna un objeto `stdClass` con los valores limpios en caso de éxito.
+     * 4. En caso de error, retorna un arreglo de error detallando el problema.
      *
-     * @return stdClass|array Retorna un objeto con los atributos "campo" y "valor" si todo ha ido bien,
-     *                        o un error si el campo de entrada está vacío.
+     * ---
      *
-     * @throws errores En caso de que el campo de entrada esté vacío.
-     * @version 16.266.1
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.limpia_valores
+     * ### Ejemplo de Uso:
+     * ```php
+     * $inicializacion = new inicializacion();
      *
+     * // Caso 1: Limpieza de un campo con valores normales
+     * $resultado = $inicializacion->limpia_valores(' nombre ', '  Juan Pérez  ');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // stdClass Object (
+     * //     [campo] => nombre
+     * //     [valor] => Juan Pérez
+     * // )
+     *
+     * // Caso 2: Error por campo vacío
+     * $resultado = $inicializacion->limpia_valores(' ', 'Valor');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error campo no puede venir vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $campo Nombre del campo a limpiar.
+     * @param string $valor Valor asociado al campo que también será limpiado.
+     *
+     * @return stdClass|array Retorna un objeto `stdClass` con los valores limpios si la validación es exitosa.
+     *                        Si el campo está vacío, retorna un arreglo con los detalles del error.
+     *
+     * @throws array Si `$campo` está vacío, retorna un arreglo de error con el mensaje correspondiente.
      */
     private function limpia_valores(string $campo, string $valor): stdClass|array
     {
         $campo = trim($campo);
         $valor = trim($valor);
 
-        if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo no puede venir vacio', data: $campo, es_final: true);
+        if ($campo === '') {
+            return $this->error->error(
+                mensaje: 'Error campo no puede venir vacio',
+                data: $campo,
+                es_final: true
+            );
         }
 
         $data = new stdClass();
         $data->campo = $campo;
         $data->valor = $valor;
         return $data;
-
     }
+
 
     /**
      *
@@ -978,44 +1236,136 @@ class inicializacion{
     }
 
     /**
-     * Maqueta eñ registro a insertar
-     * @param array $campos_encriptados Conjunto de campos a encriptar en el guardado
-     * @param bool $integra_datos_base
-     * @param array $registro Registro que se insertara
-     * @param string $status_default status activo o inactivo
-     * @param array $tipo_campos Tipificacion de campos del modelo
-     * @return array
-     * @author mgamboa
-     * @fecha 2022-08-01 16:08
+     * REG
+     * Prepara un registro para inserción en la base de datos, asignando estado, ajustando valores monetarios
+     * y encriptando campos según sea necesario.
+     *
+     * Este método realiza las siguientes acciones:
+     * 1. **Valida el parámetro `$status_default`** asegurando que no esté vacío.
+     * 2. **Asigna el estado (`status`) al registro** si la integración de datos base está activada.
+     * 3. **Ajusta los valores de tipo moneda** en el registro para eliminar caracteres no numéricos como `$` y `,`.
+     * 4. **Encripta los valores de los campos especificados** en `$campos_encriptados`.
+     * 5. **Retorna el registro modificado**, listo para ser insertado en la base de datos.
+     *
+     * ---
+     *
+     * ### Ejemplo de Uso:
+     * ```php
+     * $inicializacion = new inicializacion();
+     *
+     * // Registro de ejemplo
+     * $registro = [
+     *     'id' => 1,
+     *     'nombre' => 'Juan Pérez',
+     *     'salario' => '$10,000.50',
+     *     'password' => 'miClaveSegura'
+     * ];
+     *
+     * // Campos que deben ser encriptados
+     * $campos_encriptados = ['password'];
+     *
+     * // Tipo de datos para los campos
+     * $tipo_campos = [
+     *     'salario' => 'moneda'
+     * ];
+     *
+     * // Preparar el registro para inserción
+     * $resultado = $inicializacion->registro_ins(
+     *     $campos_encriptados,
+     *     true,                // Integrar datos base
+     *     $registro,           // Registro original
+     *     'activo',            // Estado por defecto
+     *     $tipo_campos         // Tipos de datos
+     * );
+     *
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //     'id' => 1,
+     * //     'nombre' => 'Juan Pérez',
+     * //     'salario' => '10000.50',
+     * //     'password' => 'ValorEncriptadoXYZ789',
+     * //     'status' => 'activo'
+     * // ]
+     *
+     * // Caso 2: Error por `status_default` vacío
+     * $resultado = $inicializacion->registro_ins($campos_encriptados, true, $registro, '', $tipo_campos);
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error status_default no puede venir vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ---
+     *
+     * @param array $campos_encriptados Lista de campos que deben ser encriptados antes de la inserción.
+     * @param bool $integra_datos_base Indica si se debe integrar el estado predeterminado en el registro.
+     * @param array $registro Registro original que se insertará en la base de datos.
+     * @param string $status_default Estado predeterminado para el registro (ejemplo: 'activo' o 'inactivo').
+     * @param array $tipo_campos Lista de tipos de datos de los campos, donde los valores pueden ser 'moneda' o 'double'.
+     *
+     * @return array Retorna el registro listo para ser insertado en la base de datos.
+     *               Si ocurre un error, retorna un arreglo con los detalles del error.
+     *
+     * @throws array Si `$status_default` está vacío o si ocurre un error en la validación o encriptación.
      */
     final public function registro_ins(array $campos_encriptados, bool $integra_datos_base, array $registro,
                                        string $status_default, array $tipo_campos): array
     {
+        // Validar que el status predeterminado no esté vacío
         $status_default = trim($status_default);
-        if($status_default === ''){
-            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default,
-                es_final: true);
+        if ($status_default === '') {
+            return $this->error->error(
+                mensaje: 'Error status_default no puede venir vacio',
+                data: $status_default,
+                es_final: true
+            );
         }
 
-        $registro = $this->status(integra_datos_base: $integra_datos_base, registro: $registro,
-            status_default:  $status_default);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar status', data: $registro);
+        // Asignar status al registro si corresponde
+        $registro = $this->status(
+            integra_datos_base: $integra_datos_base,
+            registro: $registro,
+            status_default: $status_default
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar status',
+                data: $registro
+            );
         }
 
-        $registro = (new data_format())->ajusta_campos_moneda(registro: $registro, tipo_campos: $tipo_campos);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar campo ', data: $registro);
+        // Ajustar los valores de tipo moneda en el registro
+        $registro = (new data_format())->ajusta_campos_moneda(
+            registro: $registro,
+            tipo_campos: $tipo_campos
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar campo ',
+                data: $registro
+            );
         }
 
-        $registro = $this->encripta_valores_registro(campos_encriptados: $campos_encriptados,
-            registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al asignar campos encriptados', data: $registro);
+        // Encriptar los valores de los campos especificados
+        $registro = $this->encripta_valores_registro(
+            campos_encriptados: $campos_encriptados,
+            registro: $registro
+        );
+        if (errores::$error) {
+            return $this->error->error(
+                mensaje: 'Error al asignar campos encriptados',
+                data: $registro
+            );
         }
 
         return $registro;
     }
+
 
     /**
      * POR DOCUMENTAR EN WIKI
@@ -1079,42 +1429,82 @@ class inicializacion{
     }
 
     /**
-     * TOTAL
-     * Establece el estado de un registro.
+     * REG
+     * Ajusta el estado de un registro.
      *
-     * Este método ajusta el estado de un registro en base a diversas condiciones:
-     * - Si el valor de 'status' no se encuentra dentro del registro, y se desea integrar datos de la base,
-     *   se establecerá el estado del registro a 'status_default'.
-     * - De lo contrario, se conservará el estado existente en el registro.
+     * Este método verifica si el registro tiene un estado (`status`). Si no lo tiene y está habilitada la opción
+     * `$integra_datos_base`, se asigna el estado predeterminado proporcionado en `$status_default`.
      *
-     * @param bool $integra_datos_base Define si se integrarán datos de la base en el registro actual.
-     * @param array $registro Registro en proceso.
-     * @param string $status_default Estado predeterminado en caso que no exista 'status' en el registro.
+     * ---
      *
-     * @return array Registro con el estado ajustado.
+     * ### Ejemplo de Uso:
+     * ```php
+     * $inicializacion = new inicializacion();
      *
-     * @throws errores Si el parámetro 'status_default' contiene una cadena vacía.
+     * // Caso 1: Registro sin estado, con integración de datos base activada
+     * $registro = [];
+     * $resultado = $inicializacion->status(true, $registro, 'activo');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // ['status' => 'activo']
      *
-     * @version 15.6.0
-     * @fecha 2022-11-02 10:20
-     * @author Martin Gamboa
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.inicializacion.status.21.18.0
+     * // Caso 2: Registro con estado existente
+     * $registro = ['status' => 'inactivo'];
+     * $resultado = $inicializacion->status(true, $registro, 'activo');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // ['status' => 'inactivo']
+     *
+     * // Caso 3: Registro sin estado, pero sin integración de datos base
+     * $registro = [];
+     * $resultado = $inicializacion->status(false, $registro, 'activo');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // []
+     *
+     * // Caso 4: Error al pasar un `status_default` vacío
+     * $registro = [];
+     * $resultado = $inicializacion->status(true, $registro, '');
+     * print_r($resultado);
+     * // Salida esperada:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error status_default no puede venir vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ---
+     *
+     * @param bool $integra_datos_base Indica si se debe integrar el estado predeterminado en caso de ausencia.
+     * @param array $registro Registro en proceso de validación.
+     * @param string $status_default Estado predeterminado en caso de que no exista el campo `status` en el registro.
+     *
+     * @return array Retorna el registro con el estado ajustado si aplica.
+     *
+     * @throws array Si `$status_default` está vacío, retorna un error con los detalles.
      */
     private function status(bool $integra_datos_base, array $registro, string $status_default): array
     {
         $status_default = trim($status_default);
-        if($status_default === ''){
-            return $this->error->error(mensaje: 'Error status_default no puede venir vacio', data: $status_default,
-                es_final: true);
+        if ($status_default === '') {
+            return $this->error->error(
+                mensaje: 'Error status_default no puede venir vacio',
+                data: $status_default,
+                es_final: true
+            );
         }
 
-        if(!isset($registro['status'])){
-            if($integra_datos_base){
+        if (!isset($registro['status'])) {
+            if ($integra_datos_base) {
                 $registro['status'] = $status_default;
             }
         }
+
         return $registro;
     }
+
 
     /**
      * REG

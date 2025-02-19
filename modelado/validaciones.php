@@ -47,26 +47,82 @@ class validaciones extends validacion{
     }
 
     /**
-     * Valida los elementos bases de un alta en base de datos
-     * @param array $registro Registro a validar
-     * @param string $tabla Nombre de tabla a validar
-     * @return bool|array
-     * @fecha 2022-08-01 16:39
-     * @author mgamboa
+     * REG
+     * Valida los datos antes de realizar una inserción en la base de datos.
+     *
+     * Este método verifica que el array de datos `$registro` no esté vacío y que el nombre de la tabla `$tabla` sea válido.
+     * Se asegura de que `$tabla` no esté vacío y contenga únicamente caracteres alfanuméricos y guiones bajos.
+     *
+     * @param array $registro Datos que se desean insertar en la base de datos. No debe estar vacío.
+     * @param string $tabla Nombre de la tabla donde se insertarán los datos. Debe ser una cadena no vacía y contener
+     *                      solo caracteres alfanuméricos y guiones bajos.
+     *
+     * @return bool|array Devuelve `true` si los datos son válidos. En caso de error, retorna un array con los detalles del problema.
+     *
+     * @throws array Si el `$registro` está vacío, si `$tabla` está vacío o si contiene caracteres inválidos.
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $registro = [
+     *     'nombre' => 'Juan',
+     *     'email' => 'juan@example.com'
+     * ];
+     * $tabla = 'usuarios';
+     *
+     * $resultado = $this->valida_alta_bd($registro, $tabla);
+     * if ($resultado === true) {
+     *     echo "Validación exitosa.";
+     * } else {
+     *     print_r($resultado); // Muestra los detalles del error si ocurre.
+     * }
+     * ```
+     *
+     * ### **Ejemplos de Errores:**
+     * 1. **Registro vacío**
+     * ```php
+     * $registro = [];
+     * $tabla = 'usuarios';
+     * $resultado = $this->valida_alta_bd($registro, $tabla);
+     * // Resultado esperado: Array con mensaje de error "Error: el registro no puede estar vacío".
+     * ```
+     *
+     * 2. **Tabla vacía**
+     * ```php
+     * $registro = ['nombre' => 'Juan'];
+     * $tabla = '';
+     * $resultado = $this->valida_alta_bd($registro, $tabla);
+     * // Resultado esperado: Array con mensaje de error "Error: el nombre de la tabla no puede estar vacío".
+     * ```
+     *
+     * 3. **Nombre de tabla con caracteres inválidos**
+     * ```php
+     * $registro = ['nombre' => 'Juan'];
+     * $tabla = 'usuarios#invalid!';
+     * $resultado = $this->valida_alta_bd($registro, $tabla);
+     * // Resultado esperado: Array con mensaje de error "Error: el nombre de la tabla contiene caracteres inválidos".
+     * ```
      */
     final public function valida_alta_bd(array $registro, string $tabla): bool|array
     {
-        if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error registro no puede venir vacio', data: $registro);
+        if (empty($registro)) {
+            return $this->error->error(mensaje: 'Error: el registro no puede estar vacío', data: $registro,
+                es_final: true);
         }
 
         $tabla = trim($tabla);
-        if($tabla === ''){
-            return $this->error->error(mensaje: 'Error $tabla esta vacia'.$tabla, data: $tabla);
+        if ($tabla === '') {
+            return $this->error->error(mensaje: 'Error: el nombre de la tabla no puede estar vacío',
+                data: $tabla, es_final: true);
+        }
+
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $tabla)) {
+            return $this->error->error(mensaje: 'Error: el nombre de la tabla contiene caracteres inválidos',
+                data: $tabla, es_final: true);
         }
 
         return true;
     }
+
 
     /**
      * Valida loa campos de un elemento lista

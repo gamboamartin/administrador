@@ -18,27 +18,71 @@ class data_format{
     }
 
     /**
-     * TOTAL
-     * Esta función ajusta los campos de tipo moneda en un arreglo.
+     * REG
+     * Ajusta los campos de tipo moneda dentro de un registro.
      *
-     * @param array $registro Es el registro donde se van a buscar y ajustar los campos.
-     * @param array $tipo_campos Es un arreglo que define el tipo de dato para cada campo en $registro.
-     *                           Debe seguir la forma $modelo->tipo_campos[campo] = regex.
-     *                           Donde el regex debe existir en el paquete de validaciones en validacion->patterns.
+     * Este método recorre un array de campos y sus respectivos tipos de datos y
+     * aplica el formato de moneda a aquellos que correspondan. Se asegura de eliminar
+     * caracteres especiales de moneda, como `$`, `€`, y `,` en los valores correspondientes.
      *
-     * @return array Retorna el registro ajustado. En caso de error, retorna un arreglo con información del error.
-     *               Los posibles errores incluyen campos vacios, y tipo de dato no es una cadena de texto.
+     * @param array $registro Registro que contiene los datos a procesar.
+     *                        - Ejemplo:
+     *                          ```php
+     *                          [
+     *                              'precio' => '$1,234.56',
+     *                              'costo' => '€ 2.500,75',
+     *                              'cantidad' => 5
+     *                          ]
+     *                          ```
+     * @param array $tipo_campos Especifica el tipo de dato esperado para cada campo.
+     *                           Se debe definir en la forma `['campo' => 'tipo_dato']`.
+     *                           - Ejemplo:
+     *                             ```php
+     *                             [
+     *                                 'precio' => 'moneda',
+     *                                 'costo' => 'moneda',
+     *                                 'cantidad' => 'int'
+     *                             ]
+     *                             ```
      *
-     * @throws errores En caso de que $campo esté vacío, se lanza un error.
-     *               En caso de que el tipo de dato no sea un string, se lanza un error.
-     *               En caso de que $tipo_dato esté vacío, se lanza un error.
-     *               Todas estas excepciones incluyen 'mensaje', 'data', y 'fix' en el arreglo de retorno del error.
+     * @return array Retorna el registro con los campos de tipo `moneda` o `double`
+     *               ajustados correctamente.
+     *               - Si un campo es de tipo `moneda` o `double`, se le aplica el formato.
+     *               - Si un campo no existe en `$registro`, se omite su procesamiento.
+     *               - Si hay un error, se devuelve un array con los detalles del error.
      *
+     * @throws array Devuelve un error en los siguientes casos:
+     *               - Si `$campo` está vacío.
+     *               - Si `$tipo_dato` no es un string válido.
+     *               - Si `$tipo_dato` está vacío.
      *
-     * @final
-     * @version 16.237.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.data_format.ajusta_campos_moneda
+     * @example
+     * ```php
+     * $registro = [
+     *     'precio' => '$1,234.56',
+     *     'costo' => '€ 2.500,75',
+     *     'cantidad' => 5
+     * ];
+     *
+     * $tipo_campos = [
+     *     'precio' => 'moneda',
+     *     'costo' => 'moneda',
+     *     'cantidad' => 'int'
+     * ];
+     *
+     * $dataFormat = new data_format();
+     * $registro_limpio = $dataFormat->ajusta_campos_moneda($registro, $tipo_campos);
+     *
+     * print_r($registro_limpio);
+     * // Salida esperada:
+     * // [
+     * //     'precio' => '1234.56',
+     * //     'costo' => '2500.75',
+     * //     'cantidad' => 5
+     * // ]
+     * ```
      */
+
     final public function ajusta_campos_moneda(array $registro, array $tipo_campos): array
     {
         foreach($tipo_campos as $campo =>$tipo_dato){
@@ -70,19 +114,71 @@ class data_format{
     }
 
     /**
-     * TOTAL
-     * Esta función asigna un formato a un campo de moneda en un registro.
-     * Remueve el caracter de moneda($) y las comas que son comúnmente usadas
-     * en formatos de moneda.
+     * REG
+     * Formatea un campo de tipo moneda en un registro eliminando caracteres no numéricos.
      *
-     * @param string $campo El nombre del campo que se va a formatear.
-     * @param array $registro El registro que contiene el campo a formatear.
+     * Esta función toma un campo dentro de un array asociativo y elimina caracteres
+     * especiales de moneda, como `$`, `€`, y separadores de miles `,`, dejando solo
+     * el valor numérico listo para ser procesado como un número flotante.
      *
-     * @return array Retorna el registro con el campo de moneda formateado.
-     * @throws errores Se lanza si el campo está vacío o si el campo no existe en el registro.
-     * @version 15.9.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.data_format.asigna_campo_moneda
+     * @param string $campo Nombre del campo que se va a formatear.
+     *                      - Ejemplo: 'precio', 'costo_total', 'saldo'.
+     * @param array $registro Array asociativo que contiene los datos del registro.
+     *                        - Ejemplo:
+     *                          ```php
+     *                          [
+     *                              'precio' => '$1,234.56',
+     *                              'cantidad' => 10
+     *                          ]
+     *                          ```
+     *
+     * @return array Retorna el registro con el campo monetario formateado.
+     *               - Si el campo existe y es válido, retorna el array con el valor limpio.
+     *               - Si hay un error, retorna un array con la estructura del error.
+     *
+     * @throws array Devuelve un error en los siguientes casos:
+     *               - Si el nombre del campo está vacío.
+     *               - Si el campo no existe dentro del array `$registro`.
+     *               - Si el valor del campo es `null` o una cadena vacía.
+     *               - Si el valor no puede convertirse a un número válido.
+     *
+     * @example
+     * ```php
+     * $registro = [
+     *     'precio' => '$1,234.56',
+     *     'cantidad' => 5
+     * ];
+     *
+     * $dataFormat = new data_format();
+     * $registro_limpio = $dataFormat->asigna_campo_moneda('precio', $registro);
+     *
+     * print_r($registro_limpio);
+     * // Salida esperada:
+     * // [
+     * //     'precio' => '1234.56',
+     * //     'cantidad' => 5
+     * // ]
+     * ```
+     *
+     * @example
+     * ```php
+     * $registro = [
+     *     'costo' => '€ 2.500,75'
+     * ];
+     * $registro_limpio = $dataFormat->asigna_campo_moneda('costo', $registro);
+     * // Salida esperada: ['costo' => '2500.75']
+     * ```
+     *
+     * @example
+     * ```php
+     * $registro = [
+     *     'saldo' => null
+     * ];
+     * $registro_limpio = $dataFormat->asigna_campo_moneda('saldo', $registro);
+     * // Error: 'Error: el valor del campo saldo es nulo o vacío'
+     * ```
      */
+
     private function asigna_campo_moneda(string $campo, array $registro): array
     {
         $campo = trim($campo);
@@ -93,25 +189,83 @@ class data_format{
             return $this->error->error(mensaje: 'Error $registro['.$campo.'] no existe',data:  $registro,
                 es_final: true);
         }
+        $registro[$campo] = str_replace('€', '', $registro[$campo]);
         $registro[$campo] = str_replace('$', '', $registro[$campo]);
         $registro[$campo] = str_replace(',', '', $registro[$campo]);
         return $registro;
     }
 
     /**
-     * TOTAL
-     * Este método se utiliza para asignar un valor de tipo moneda a un campo especificado en un registro.
+     * REG
+     * Asigna un formato adecuado a un campo de tipo moneda dentro de un registro.
      *
-     * @param string $campo Es el nombre del campo al que se le asignará el valor.
-     * @param array $registro Es el registro donde se encuentra el campo a asignar.
-     * @param string $tipo_dato Es el tipo de dato que se asignará. Debe ser 'double' o 'moneda'.
+     * Esta función verifica si un campo en un registro necesita ser formateado como
+     * una moneda o un número de tipo `double`. Si el campo existe y su tipo de dato es
+     * 'moneda' o 'double', se aplicará el formato correspondiente eliminando caracteres
+     * especiales como `$`, `€`, y separadores de miles `,`.
      *
-     * @return array Retorna el registro con el campo asignado. Si se encuentra un error, se retorna información detallada del error.
+     * @param string $campo Nombre del campo dentro del array `$registro` que se desea formatear.
+     *                      - Ejemplo: 'precio', 'costo_total', 'saldo'.
+     * @param array $registro Registro que contiene los datos a procesar.
+     *                        - Ejemplo:
+     *                          ```php
+     *                          [
+     *                              'precio' => '$1,234.56',
+     *                              'cantidad' => 10
+     *                          ]
+     *                          ```
+     * @param string $tipo_dato Tipo de dato que se validará antes de aplicar el formato.
+     *                          Solo se procesarán valores de tipo `'double'` o `'moneda'`.
+     *                          - Ejemplo: `'double'`, `'moneda'`
      *
-     * @throws errores Si el campo o el tipo de dato están vacíos o no existen, se lanza una excepción.
-     * @version 16.222.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.data_format.asignacion_campo_moneda
+     * @return array Retorna el registro con el campo formateado correctamente.
+     *               - Si el campo existe y es de tipo `'double'` o `'moneda'`, se aplicará el formato.
+     *               - Si el campo no está en `$registro`, se devuelve el registro sin cambios.
+     *               - Si hay un error, se devuelve un array con detalles del error.
+     *
+     * @throws array Devuelve un error en los siguientes casos:
+     *               - Si `$campo` está vacío.
+     *               - Si `$tipo_dato` está vacío.
+     *               - Si `$tipo_dato` no es un string válido.
+     *               - Si `$registro[$campo]` no existe y es obligatorio.
+     *
+     * @example
+     * ```php
+     * $registro = [
+     *     'precio' => '$1,234.56',
+     *     'cantidad' => 5
+     * ];
+     *
+     * $dataFormat = new data_format();
+     * $registro_limpio = $dataFormat->asignacion_campo_moneda('precio', $registro, 'moneda');
+     *
+     * print_r($registro_limpio);
+     * // Salida esperada:
+     * // [
+     * //     'precio' => '1234.56',
+     * //     'cantidad' => 5
+     * // ]
+     * ```
+     *
+     * @example
+     * ```php
+     * $registro = [
+     *     'costo' => '€ 2.500,75'
+     * ];
+     * $registro_limpio = $dataFormat->asignacion_campo_moneda('costo', $registro, 'moneda');
+     * // Salida esperada: ['costo' => '2500.75']
+     * ```
+     *
+     * @example
+     * ```php
+     * $registro = [
+     *     'saldo' => '1,000.00'
+     * ];
+     * $registro_limpio = $dataFormat->asignacion_campo_moneda('saldo', $registro, 'double');
+     * // Salida esperada: ['saldo' => '1000.00']
+     * ```
      */
+
     private function asignacion_campo_moneda(string $campo, array $registro, string $tipo_dato): array
     {
         $campo = trim($campo);

@@ -396,25 +396,124 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
         return $filtro;
     }
 
-    private function genera_session_permite(string $adm_accion, int $adm_grupo_id, string $adm_seccion){
-
-        $valida = $this->valida_datos_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
-            adm_seccion:  $adm_seccion);
+    /**
+     * REG
+     * Genera y almacena en la sesión un permiso basado en la acción, grupo y sección especificados.
+     *
+     * Esta función valida los datos del permiso, obtiene la información necesaria y la almacena en la sesión.
+     * Si alguno de los pasos falla, se genera un mensaje de error detallado.
+     *
+     * ---
+     *
+     * ### **Proceso de la función:**
+     * 1. **Valida los parámetros:** Se verifica que `$adm_accion`, `$adm_grupo_id` y `$adm_seccion` sean correctos.
+     * 2. **Obtiene los datos del permiso:** Se extrae la información relevante mediante `get_data_permiso()`.
+     * 3. **Registra el permiso en sesión:** Se guarda en `$_SESSION['permite']` utilizando `session_permite()`.
+     * 4. **Devuelve el objeto `$data_permiso`** si todo es correcto.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     *
+     * $permiso = $adm_usuario->genera_session_permite('modifica', 3, 'usuarios');
+     *
+     * if ($permiso instanceof stdClass) {
+     *     echo "Permiso registrado con éxito.";
+     * } else {
+     *     echo "Error: " . $permiso['mensaje'];
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Entrada válida:**
+     * ```php
+     * $adm_accion = "alta";
+     * $adm_grupo_id = 5;
+     * $adm_seccion = "productos";
+     * ```
+     * **Salida esperada (`stdClass` con datos de permiso y `$_SESSION` actualizada):**
+     * ```php
+     * stdClass Object
+     * (
+     *     [adm_accion] => alta
+     *     [adm_seccion] => productos
+     *     [val_session] => 1
+     *     [existe] => true
+     * )
+     * $_SESSION['permite'][5]['productos']['alta'] = 1;
+     * ```
+     *
+     * **Entrada con `adm_accion` vacía (Error):**
+     * ```php
+     * $adm_accion = "";
+     * $adm_grupo_id = 2;
+     * $adm_seccion = "clientes";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_accion esta vacia',
+     *     'data' => '',
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con `adm_grupo_id` inválido (Error):**
+     * ```php
+     * $adm_accion = "elimina";
+     * $adm_grupo_id = 0;
+     * $adm_seccion = "usuarios";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error adm_grupo_id debe ser mayor a 0',
+     *     'data' => 0
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @param string $adm_accion Acción a validar.
+     * @param int $adm_grupo_id ID del grupo de usuarios a validar.
+     * @param string $adm_seccion Sección donde se ejecutará la acción.
+     *
+     * @return stdClass|array Retorna un objeto con los datos del permiso si la validación es exitosa.
+     *                        En caso de error, devuelve un array con el mensaje de error y el dato inválido.
+     *
+     * @throws array Si algún parámetro no es válido, devuelve un error con los detalles.
+     */
+    private function genera_session_permite(string $adm_accion, int $adm_grupo_id, string $adm_seccion): array|stdClass
+    {
+        // 1. Validar los datos de permiso
+        $valida = $this->valida_datos_permiso(adm_accion: $adm_accion, adm_grupo_id: $adm_grupo_id,
+            adm_seccion: $adm_seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
         }
 
-        $data_permiso = $this->get_data_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
-            adm_seccion:  $adm_seccion);
+        // 2. Obtener la información del permiso
+        $data_permiso = $this->get_data_permiso(adm_accion: $adm_accion, adm_grupo_id: $adm_grupo_id,
+            adm_seccion: $adm_seccion);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener data_permiso', data: $data_permiso);
         }
-        $session_permite = $this->session_permite(adm_grupo_id: $adm_grupo_id,data_permiso:  $data_permiso);
+
+        // 3. Registrar el permiso en sesión
+        $session_permite = $this->session_permite(adm_grupo_id: $adm_grupo_id, data_permiso: $data_permiso);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al asignar permite en session', data: $session_permite);
         }
+
+        // 4. Retornar la información del permiso
         return $data_permiso;
     }
+
 
     /**
      * REG
@@ -697,65 +796,327 @@ class adm_usuario extends modelo{ //PRUEBAS en proceso
 
 
     /**
-     * Integra en un a variable de SESSION un bool de validacion de permiso
-     * @param int $adm_grupo_id Grupo a integrar
-     * @param stdClass $data_permiso Permiso obtenido
-     * @return array
+     * REG
+     * Registra un permiso en la sesión del usuario basado en un grupo y datos de permiso.
+     *
+     * Esta función valida que los parámetros sean correctos y, si todo es válido,
+     * almacena en `$_SESSION` si un grupo de usuarios tiene permitido ejecutar una acción en una sección específica.
+     *
+     * ---
+     *
+     * ### **Validaciones realizadas:**
+     * - Verifica que `$adm_grupo_id` sea mayor que `0`.
+     * - Verifica que `$data_permiso->adm_seccion` y `$data_permiso->adm_accion` existan y no estén vacíos.
+     * - Si `val_session` no está definido en `$data_permiso`, se establece en `0`.
+     * - Se almacena la validación en la variable de sesión `$_SESSION['permite']`.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     *
+     * $data_permiso = new stdClass();
+     * $data_permiso->adm_seccion = "productos";
+     * $data_permiso->adm_accion = "modifica";
+     * $data_permiso->val_session = 1;
+     *
+     * $resultado = $adm_usuario->session_permite(3, $data_permiso);
+     *
+     * print_r($_SESSION['permite'][3]); // Muestra los permisos almacenados en la sesión
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Entrada válida:**
+     * ```php
+     * $adm_grupo_id = 5;
+     * $data_permiso = new stdClass();
+     * $data_permiso->adm_seccion = "clientes";
+     * $data_permiso->adm_accion = "alta";
+     * $data_permiso->val_session = 1;
+     * ```
+     * **Salida esperada (`$_SESSION` actualizada con permiso registrado):**
+     * ```php
+     * $_SESSION['permite'][5] = [
+     *     "clientes" => [
+     *         "alta" => 1
+     *     ]
+     * ];
+     * ```
+     *
+     * **Entrada con `adm_grupo_id` inválido (Error):**
+     * ```php
+     * $adm_grupo_id = 0;
+     * $data_permiso = new stdClass();
+     * $data_permiso->adm_seccion = "productos";
+     * $data_permiso->adm_accion = "modifica";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error $adm_grupo_id debe ser mayor a 0',
+     *     'data' => 0,
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada con `adm_seccion` vacía (Error):**
+     * ```php
+     * $adm_grupo_id = 3;
+     * $data_permiso = new stdClass();
+     * $data_permiso->adm_seccion = "";
+     * $data_permiso->adm_accion = "modifica";
+     * ```
+     * **Salida esperada (Array con error):**
+     * ```php
+     * [
+     *     'mensaje' => 'Error $data_permiso->adm_seccion esta vacia',
+     *     'data' => $data_permiso,
+     *     'es_final' => true
+     * ]
+     * ```
+     *
+     * **Entrada sin `val_session` definido:**
+     * ```php
+     * $adm_grupo_id = 2;
+     * $data_permiso = new stdClass();
+     * $data_permiso->adm_seccion = "ventas";
+     * $data_permiso->adm_accion = "consulta";
+     * ```
+     * **Salida esperada (`val_session` se establece en `0` automáticamente):**
+     * ```php
+     * $_SESSION['permite'][2] = [
+     *     "ventas" => [
+     *         "consulta" => 0
+     *     ]
+     * ];
+     * ```
+     *
+     * ---
+     *
+     * @param int $adm_grupo_id ID del grupo de usuario.
+     * @param stdClass $data_permiso Datos del permiso a registrar en sesión.
+     *
+     * @return array Retorna el arreglo actualizado con los permisos del grupo de usuarios.
+     *               En caso de error, devuelve un array con el mensaje de error.
+     *
+     * @throws array Si algún parámetro no es válido, devuelve un error con los detalles.
      */
     private function session_permite(int $adm_grupo_id, stdClass $data_permiso): array
     {
+        // Validar que el ID del grupo sea mayor a 0
+        if ($adm_grupo_id <= 0) {
+            return $this->error->error(
+                mensaje: 'Error $adm_grupo_id debe ser mayor a 0',
+                data: $adm_grupo_id,
+                es_final: true
+            );
+        }
+
+        // Validar que la sección exista en el objeto de permisos
+        if (!isset($data_permiso->adm_seccion)) {
+            return $this->error->error(
+                mensaje: 'Error $data_permiso->adm_seccion debe existir',
+                data: $data_permiso,
+                es_final: true
+            );
+        }
+
+        // Limpiar espacios en blanco de la sección
+        $data_permiso->adm_seccion = trim($data_permiso->adm_seccion);
+        if ($data_permiso->adm_seccion === '') {
+            return $this->error->error(
+                mensaje: 'Error $data_permiso->adm_seccion esta vacia',
+                data: $data_permiso,
+                es_final: true
+            );
+        }
+
+        // Validar que la acción exista en el objeto de permisos
+        if (!isset($data_permiso->adm_accion)) {
+            return $this->error->error(
+                mensaje: 'Error $data_permiso->adm_accion debe existir',
+                data: $data_permiso,
+                es_final: true
+            );
+        }
+
+        // Limpiar espacios en blanco de la acción
+        $data_permiso->adm_accion = trim($data_permiso->adm_accion);
+        if ($data_permiso->adm_accion === '') {
+            return $this->error->error(
+                mensaje: 'Error $data_permiso->adm_accion esta vacia',
+                data: $data_permiso,
+                es_final: true
+            );
+        }
+
+        // Si no está definido `val_session`, se establece en `0`
+        if (!isset($data_permiso->val_session)) {
+            $data_permiso->val_session = 0;
+        }
+
+        // Registrar permiso en la variable de sesión
         $_SESSION['permite'][$adm_grupo_id][$data_permiso->adm_seccion][$data_permiso->adm_accion]
             = (int)$data_permiso->val_session;
 
         return $_SESSION['permite'][$adm_grupo_id];
     }
 
+
     /**
-     * Verifica si el usuario en ejecucion tiene permiso
-     * @param string $adm_accion Accion en ejecucion
-     * @param string $adm_seccion Seccion en ejecucion
-     * @return array|bool
+     * REG
+     * Verifica si el usuario actual tiene permiso para realizar una acción en una sección específica.
+     *
+     * Esta función consulta los permisos almacenados en la sesión del usuario. Si no encuentra un permiso previo,
+     * intenta generarlo dinámicamente. Si el permiso existe, retorna `true`; de lo contrario, retorna `false`.
+     *
+     * ---
+     *
+     * ### **Proceso de la función:**
+     * 1. **Obtener el ID del usuario:** Verifica si `$_SESSION['usuario_id']` está definido.
+     * 2. **Obtener el ID del grupo:** Si el usuario tiene un grupo asociado (`$_SESSION['grupo_id']`), lo recupera.
+     * 3. **Verificar en `$_SESSION` si el permiso ya está almacenado.**
+     * 4. **Si el permiso no existe, lo genera con `genera_session_permite()`.**
+     * 5. **Retorna `true` si el usuario tiene permiso, `false` si no lo tiene.**
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $adm_usuario = new adm_usuario($pdo);
+     *
+     * $tiene_permiso = $adm_usuario->tengo_permiso('modifica', 'usuarios');
+     *
+     * if ($tiene_permiso === true) {
+     *     echo "El usuario tiene permiso.";
+     * } else {
+     *     echo "El usuario NO tiene permiso.";
+     * }
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Entrada y Salida:**
+     *
+     * **Caso: Usuario con permiso almacenado en sesión**
+     * ```php
+     * $_SESSION['usuario_id'] = 1;
+     * $_SESSION['grupo_id'] = 2;
+     * $_SESSION['permite'][2]['usuarios']['modifica'] = 1;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * **Caso: Usuario sin permiso almacenado, pero válido**
+     * ```php
+     * $_SESSION['usuario_id'] = 3;
+     * $_SESSION['grupo_id'] = 5;
+     * ```
+     * **Salida esperada (Después de generarlo dinámicamente):**
+     * ```php
+     * true
+     * ```
+     *
+     * **Caso: Usuario sin permiso y sin generación válida**
+     * ```php
+     * $_SESSION['usuario_id'] = 4;
+     * $_SESSION['grupo_id'] = 6;
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * false
+     * ```
+     *
+     * ---
+     *
+     * ### **Casos de Error:**
+     *
+     * **Caso: Usuario sin sesión activa**
+     * ```php
+     * unset($_SESSION['usuario_id']);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * false
+     * ```
+     *
+     * **Caso: Grupo de usuario no definido**
+     * ```php
+     * $_SESSION['usuario_id'] = 7;
+     * unset($_SESSION['grupo_id']);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * false
+     * ```
+     *
+     * ---
+     *
+     * @param string $adm_accion Acción que se quiere validar.
+     * @param string $adm_seccion Sección en la que se aplicará la acción.
+     *
+     * @return bool|array Retorna `true` si el usuario tiene permiso, `false` si no lo tiene.
+     *                    En caso de error, devuelve un array con el mensaje de error.
+     *
+     * @throws array Si ocurre un error en la validación o en la generación del permiso, se devuelve un array de error.
      */
     final public function tengo_permiso(string $adm_accion, string $adm_seccion): array|bool
     {
+        // 1. Obtener el ID del usuario de la sesión
         $adm_usuario_id = -1;
-        if(isset($_SESSION['usuario_id'])) {
+        if (isset($_SESSION['usuario_id'])) {
             $adm_usuario_id = $_SESSION['usuario_id'];
         }
+
+        // Inicializar el objeto de permiso
         $data_permiso = new stdClass();
         $data_permiso->existe = false;
 
-        if((int)$adm_usuario_id > 0) {
+        // 2. Verificar si el usuario tiene un ID válido
+        if ((int)$adm_usuario_id > 0) {
 
+            // 3. Obtener el ID del grupo de usuario
             $adm_grupo_id = -1;
-            if(isset($_SESSION['grupo_id'])){
+            if (isset($_SESSION['grupo_id'])) {
                 $adm_grupo_id = (int)$_SESSION['grupo_id'];
             }
 
-            if($adm_grupo_id > 0) {
+            // 4. Si el grupo de usuario es válido
+            if ($adm_grupo_id > 0) {
 
+                // 5. Verificar si el permiso ya está en sesión
                 if (isset($_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion])) {
                     if ((int)$_SESSION['permite'][$adm_grupo_id][$adm_seccion][$adm_accion] === 1) {
                         $data_permiso->existe = true;
                     }
-                }
-                else {
-                    $valida = $this->valida_datos_permiso(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
-                        adm_seccion:  $adm_seccion);
+                } else {
+                    // 6. Validar los datos del permiso antes de generarlo
+                    $valida = $this->valida_datos_permiso(adm_accion: $adm_accion, adm_grupo_id: $adm_grupo_id,
+                        adm_seccion: $adm_seccion);
                     if (errores::$error) {
                         return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
                     }
-                    $data_permiso = $this->genera_session_permite(adm_accion: $adm_accion,adm_grupo_id:  $adm_grupo_id,
-                        adm_seccion:  $adm_seccion);
+
+                    // 7. Generar el permiso si no estaba almacenado en sesión
+                    $data_permiso = $this->genera_session_permite(adm_accion: $adm_accion, adm_grupo_id: $adm_grupo_id,
+                        adm_seccion: $adm_seccion);
                     if (errores::$error) {
-                        return $this->error->error(mensaje: 'Error al asignar permite en session', data: $data_permiso);
+                        return $this->error->error(mensaje: 'Error al asignar permiso en sesión', data: $data_permiso);
                     }
                 }
             }
         }
-        return $data_permiso->existe;
 
+        // 8. Retornar si el usuario tiene permiso o no
+        return $data_permiso->existe;
     }
+
 
     /**
      * Obtiene un usuario por id

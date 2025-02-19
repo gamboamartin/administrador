@@ -41,7 +41,7 @@ class validacionesTest extends test {
         $resultado = $val->valida_alta_bd($registro, $tabla);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error registro no puede venir vacio', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error: el registro no puede estar vacío', $resultado['mensaje']);
 
         errores::$error = false;
 
@@ -51,7 +51,7 @@ class validacionesTest extends test {
         $resultado = $val->valida_alta_bd($registro, $tabla);
         $this->assertIsArray( $resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase('Error $tabla esta vacia', $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase('Error: el nombre de la tabla no puede estar vacío', $resultado['mensaje']);
 
         errores::$error = false;
 

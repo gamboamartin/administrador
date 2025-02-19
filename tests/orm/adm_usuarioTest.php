@@ -206,6 +206,29 @@ class adm_usuarioTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_session_permite(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+        $adm_accion = 'b';
+        $adm_grupo_id = 1;
+        $adm_seccion = 'a';
+        $resultado = $modelo->genera_session_permite($adm_accion,$adm_grupo_id,$adm_seccion);
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
+
+
+    }
+
     public function test_get_data_permiso(): void
     {
 
@@ -296,6 +319,29 @@ class adm_usuarioTest extends test {
         $this->assertEquals('password', $resultado->password);
         $this->assertEquals('admin@test.com', $resultado->email);
         errores::$error = false;
+
+
+    }
+
+    public function test_session_permite(): void
+    {
+
+        errores::$error = false;
+        $modelo = new adm_usuario($this->link);
+        $modelo = new liberator($modelo);
+
+        $_SESSION['usuario_id'] = 2;
+        $adm_grupo_id = 2;
+        $data_permiso = new stdClass();
+        $data_permiso->adm_seccion = 'a';
+        $data_permiso->adm_accion = 'b';
+        $resultado = $modelo->session_permite($adm_grupo_id,$data_permiso);
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+
+
+        errores::$error = false;
+
 
 
     }
