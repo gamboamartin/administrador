@@ -3288,43 +3288,90 @@ class modelo extends modelo_base {
 
 
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Este método toma un ID de registro y otras opciones para luego obtener y devolver los datos de dicho registro.
+     * REG
+     * Obtiene un registro de la base de datos con las columnas y estructuras especificadas.
      *
-     * @param int $registro_id El ID del registro a obtener.
-     * @param array $columnas (opcional) Especifica las columnas a obtener del registro.
-     * @param bool $columnas_en_bruto (opcional) Si se establece en verdadero, se devolverán las columnas en
-     *  crudo (sin procesar).
-     * @param array $extension_estructura (opcional) Especifica cualquier extensión de la estructura de los datos a obtener.
-     * @param array $hijo (opcional) Especifica cualquier hijo a obtener junto con el registro.
-     * @param bool $retorno_obj (opcional) Si se establece en verdadero, se devolverán los datos del registro como un
-     *  objeto en lugar de un array.
+     * @param int $registro_id ID del registro a obtener. Debe ser mayor a 0.
+     * @param array $columnas Lista de columnas a recuperar. Si está vacío, se recuperan todas las disponibles.
+     * @param bool $columnas_en_bruto Si es `true`, obtiene los datos sin procesar.
+     * @param array $extension_estructura Permite extender la estructura del registro con datos adicionales.
+     * @param array $hijo Configura la relación con registros hijos.
+     * @param bool $retorno_obj Si es `true`, el resultado se devuelve como un objeto en lugar de un array.
      *
-     * @return array|stdClass Devuelve los datos del registro en forma de array o de objeto, según el parámetro $retorno_obj.
+     * @return array|stdClass Devuelve el registro como un array o un objeto (`stdClass`) según la configuración de `$retorno_obj`.
      *
-     * @throws errores En caso de error, se lanza una excepción con detalles del error.
-     * @version 16.197.0
+     * @throws array Devuelve un array de error en el formato `errores::$error` si `$registro_id` es menor o igual a 0 o si ocurre un fallo al obtener el registro.
+     *
+     * @example
+     * // Ejemplo 1: Obtener un registro con ID 10 con columnas específicas
+     * $registro = $obj->registro(
+     *     registro_id: 10,
+     *     columnas: ['nombre', 'email', 'fecha_creacion']
+     * );
+     * print_r($registro);
+     *
+     * @example
+     * // Ejemplo 2: Obtener un registro como objeto
+     * $registro = $obj->registro(
+     *     registro_id: 25,
+     *     columnas: ['nombre', 'apellido'],
+     *     retorno_obj: true
+     * );
+     * echo $registro->nombre;
+     *
+     * @example
+     * // Ejemplo 3: Obtener un registro con estructura extendida y sin procesamiento de columnas
+     * $registro = $obj->registro(
+     *     registro_id: 50,
+     *     extension_estructura: ['extra_info'],
+     *     columnas_en_bruto: true
+     * );
+     * print_r($registro);
+     *
+     * @example
+     * // Ejemplo 4: Manejo de error si el registro ID es inválido
+     * $registro = $obj->registro(
+     *     registro_id: 0
+     * );
+     * if (isset($registro['error'])) {
+     *     echo "Error: " . $registro['mensaje'];
+     * }
      */
-    final public function registro(int $registro_id, array $columnas = array(), bool $columnas_en_bruto = false,
-                             array $extension_estructura = array(), array $hijo = array(),
-                             bool $retorno_obj = false):array|stdClass{
-        if($registro_id <=0){
-            return  $this->error->error(mensaje: 'Error al obtener registro $registro_id debe ser mayor a 0',
-                data: $registro_id, es_final: true);
-        }
-        $this->registro_id = $registro_id;
-        $registro = $this->obten_data(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
-            extension_estructura: $extension_estructura, hijo: $hijo);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
+    final public function registro(
+        int $registro_id,
+        array $columnas = array(),
+        bool $columnas_en_bruto = false,
+        array $extension_estructura = array(),
+        array $hijo = array(),
+        bool $retorno_obj = false
+    ): array|stdClass {
+        if ($registro_id <= 0) {
+            return $this->error->error(
+                mensaje: 'Error al obtener registro: $registro_id debe ser mayor a 0',
+                data: $registro_id,
+                es_final: true
+            );
         }
 
-        if($retorno_obj){
+        $this->registro_id = $registro_id;
+        $registro = $this->obten_data(
+            columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto,
+            extension_estructura: $extension_estructura,
+            hijo: $hijo
+        );
+
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
+        }
+
+        if ($retorno_obj) {
             $registro = (object)$registro;
         }
 
         return $registro;
     }
+
 
     /**
      * Obtiene el registro basado en el codigo

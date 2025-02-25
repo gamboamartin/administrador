@@ -3,6 +3,7 @@ namespace gamboamartin\administrador\tests\base\controller;
 
 use base\controller\controlador_base;
 use gamboamartin\administrador\instalacion\instalacion;
+use gamboamartin\administrador\models\adm_accion;
 use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\administrador\models\adm_usuario;
@@ -35,6 +36,13 @@ class controlador_baseTest extends test {
 
         $_SESSION['usuario_id'] = 2;
         $_GET['session_id'] = 1;
+
+        $del = (new adm_accion($this->link))->elimina_todo();
+        if (errores::$error) {
+            $error = (new errores())->error('Error al eliminar accion', $del);
+            print_r($error);
+            die('Error');
+        }
 
         $instala = (new instalacion())->instala(link: $this->link);
         if (errores::$error) {
