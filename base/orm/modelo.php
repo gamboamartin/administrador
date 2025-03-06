@@ -2124,9 +2124,9 @@ class modelo extends modelo_base {
      * @return array
      */
     final public function get_data_lista(array $filtro = array(), array $columnas =array(),
-                                         array $filtro_especial = array(), int $n_rows_for_page = 10, int $pagina = 1,
-                                         array $in = array(), array $extra_join = array(),
-                                         array $order = array()): array
+                                         array $filtro_especial = array(), array $filtro_rango = array(),
+                                         int $n_rows_for_page = 10, int $pagina = 1, array $in = array(),
+                                         array $extra_join = array(), array $order = array()): array
     {
         if(count($order) === 0){
             $order[$this->tabla.'.id'] = 'DESC';
@@ -2134,7 +2134,8 @@ class modelo extends modelo_base {
 
         $limit = $n_rows_for_page;
 
-        $n_rows = $this->cuenta_bis(extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial, in: $in);
+        $n_rows = $this->cuenta_bis(extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial,
+            filtro_rango: $filtro_rango, in: $in);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
         }
@@ -2146,7 +2147,8 @@ class modelo extends modelo_base {
         }
 
         $result = $this->filtro_and(columnas: $columnas, extra_join: $extra_join, filtro: $filtro,
-            filtro_especial: $filtro_especial, in: $in, limit: $limit, offset: $offset, order: $order);
+            filtro_especial: $filtro_especial, filtro_rango: $filtro_rango, in: $in, limit: $limit, offset: $offset,
+            order: $order);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
         }
