@@ -659,20 +659,21 @@ class validaciones extends validacion{
 
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio ',  data: $key);
+            return $this->error->error(mensaje: 'Error key esta vacio ',  data: $key, es_final: true);
         }
         if(!isset($registro[$key])){
-            return $this->error->error(mensaje: 'Error no existe el campo '.$key, data: $registro);
+            return $this->error->error(mensaje: 'Error no existe el campo '.$key, data: $registro, es_final: true);
         }
         if(!isset($this->patterns[$tipo_campo])){
-            return $this->error->error(mensaje: 'Error no existe el pattern '.$tipo_campo,data: $registro);
+            return $this->error->error(mensaje: 'Error no existe el pattern '.$tipo_campo,data: $registro,
+                es_final: true);
         }
         $value = trim($registro[$key]);
         $pattern = trim($this->patterns[$tipo_campo]);
 
         if(!preg_match($pattern, $value)){
             return $this->error->error(mensaje: 'Error el campo '.$key.' es invalido',
-                data: array($registro[$key],$pattern));
+                data: array($registro[$key],$pattern), es_final: true);
         }
 
         return true;
