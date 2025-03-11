@@ -15,10 +15,24 @@ class params_inputs{
     }
 
     /**
-     * Integra clases css de manera dinamica
-     * @param array $class_css
-     * @return string|array
+     * REG
+     * Genera una cadena HTML con la lista de clases CSS proporcionadas.
+     *
+     * Valida que las clases no estén vacías y las concatena en una cadena con el formato `class="clase1 clase2"`.
+     * Si una clase dentro del array está vacía, devuelve un error.
+     *
      * @version 11.10.0
+     * @stable true
+     *
+     * @param array $class_css Lista de clases CSS a integrar en el atributo `class` del HTML.
+     * @return string|array Devuelve una cadena con las clases formateadas o un array de error si alguna clase es inválida.
+     *
+     * @example
+     * ```php
+     * $obj = new params_inputs();
+     * echo $obj->class_html(['btn', 'btn-primary']);  // Salida: class='btn btn-primary'
+     * echo $obj->class_html([]);  // Salida: (cadena vacía)
+     * ```
      */
     final public function class_html(array $class_css): string|array
     {
@@ -26,31 +40,52 @@ class params_inputs{
         foreach ($class_css as $class){
             $class = trim($class);
             if($class === ''){
-                return $this->error->error(mensaje: 'Error class vacio',data:  $class);
+                return $this->error->error(mensaje: 'Error class vacio', data: $class);
             }
-            $class_html.=" $class ";
+            $class_html .= " $class ";
         }
         $class_html = trim($class_html);
-        if($class_html!==''){
+        if($class_html !== ''){
             $class_html = "class='$class_html'";
         }
         return $class_html;
     }
-    
+
+
     /**
-     * Si disabled retorna attr disabled  en string
-     * @param bool $disabled Si disabled retorna attr disabled
-     * @return string
+     * REG
+     * Genera el atributo `disabled` en HTML si el valor proporcionado es `true`.
      *
+     * Si `$disabled` es `true`, retorna la cadena `"disabled"`, lo que hace que el elemento HTML sea deshabilitado.
+     * Si `$disabled` es `false`, retorna una cadena vacía, permitiendo que el elemento siga habilitado.
+     *
+     * @version 1.0.0
+     * @stable true
+     *
+     * @param bool $disabled Determina si el atributo `disabled` debe incluirse en el HTML.
+     * @return string Retorna `"disabled"` si `$disabled` es `true`, o una cadena vacía `""` si es `false`.
+     *
+     * @example
+     * ```php
+     * $obj = new params_inputs();
+     * echo "<input type='text' " . $obj->disabled_html(true) . ">";
+     * ```
+     * **Salida esperada:** `<input type='text' disabled>`
+     *
+     * ```php
+     * echo "<input type='text' " . $obj->disabled_html(false) . ">";
+     * ```
+     * **Salida esperada:** `<input type='text'>`
      */
     final public function disabled_html(bool $disabled): string
     {
         $disabled_html = '';
-        if($disabled){
+        if ($disabled) {
             $disabled_html = 'disabled';
         }
         return $disabled_html;
     }
+
 
     /**
      * Integra los id para elementos de frontend
@@ -143,20 +178,27 @@ class params_inputs{
 
 
     /**
-     * Genera required en forma html para ser integrado en un input
+     * REG
+     * Genera el atributo `required` en formato HTML para ser integrado en un input.
+     *
      * @version 1.87.19
      * @stable true
-     * @param bool $required indica si es requerido o no
-     * @return string required en caso true o vacio en false
+     *
+     * @param bool $required Indica si el input debe ser requerido (`true`) o no (`false`).
+     * @return string Devuelve `'required'` si `$required` es `true`, de lo contrario, devuelve una cadena vacía.
+     *
+     * @example
+     * ```php
+     * $obj = new params_inputs();
+     * echo $obj->required_html(true);  // Salida: required
+     * echo $obj->required_html(false); // Salida: (cadena vacía)
+     * ```
      */
     final public function required_html(bool $required): string
     {
-        $required_html = '';
-        if($required){
-            $required_html = 'required';
-        }
-        return $required_html;
+        return $required ? 'required' : '';
     }
+
 
     public function multiple_html(bool $multiple): string
     {
