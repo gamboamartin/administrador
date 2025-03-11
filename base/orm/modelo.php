@@ -1,5 +1,7 @@
 <?php
+
 namespace base\orm;
+
 use config\database;
 use gamboamartin\administrador\modelado\joins;
 use gamboamartin\administrador\modelado\params_sql;
@@ -11,11 +13,12 @@ use JsonException;
 use PDO;
 use stdClass;
 
-class modelo extends modelo_base {
+class modelo extends modelo_base
+{
 
-    public array $sql_seguridad_por_ubicacion ;
+    public array $sql_seguridad_por_ubicacion;
     public array $campos_tabla = array();
-    public array $extensiones_imagen = array('jpg','jpeg','png');
+    public array $extensiones_imagen = array('jpg', 'jpeg', 'png');
     public bool $aplica_transaccion_inactivo;
     public array $order = array();
     public int $limit = 0;
@@ -61,16 +64,17 @@ class modelo extends modelo_base {
      * @param array $atributos_criticos
      * @param bool $valida_atributos_criticos
      */
-    public function __construct(PDO $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
-                                bool $aplica_transaccion_inactivo = true, bool $aplica_transacciones_base = true,
-                                array $campos_encriptados = array(), array $campos_obligatorios= array(),
-                                array $columnas = array(), array $campos_view= array(), array $columnas_extra = array(),
+    public function __construct(PDO   $link, string $tabla, bool $aplica_bitacora = false, bool $aplica_seguridad = false,
+                                bool  $aplica_transaccion_inactivo = true, bool $aplica_transacciones_base = true,
+                                array $campos_encriptados = array(), array $campos_obligatorios = array(),
+                                array $columnas = array(), array $campos_view = array(), array $columnas_extra = array(),
                                 array $extension_estructura = array(), array $no_duplicados = array(),
                                 array $renombres = array(), array $sub_querys = array(), array $tipo_campos = array(),
-                                bool $validation = false,array $campos_no_upd = array(), array $parents = array(),
-                                bool $temp = false, array $childrens = array(), array $defaults = array(),
+                                bool  $validation = false, array $campos_no_upd = array(), array $parents = array(),
+                                bool  $temp = false, array $childrens = array(), array $defaults = array(),
                                 array $parents_data = array(), array $atributos_criticos = array(),
-                                bool $valida_atributos_criticos = true){
+                                bool  $valida_atributos_criticos = true)
+    {
 
 
         $this->valida_atributos_criticos = $valida_atributos_criticos;
@@ -80,7 +84,7 @@ class modelo extends modelo_base {
          */
 
 
-        $tabla = str_replace('models\\','',$tabla);
+        $tabla = str_replace('models\\', '', $tabla);
         parent::__construct(link: $link, aplica_transacciones_base: $aplica_transacciones_base, defaults: $defaults,
             parents_data: $parents_data, temp: $temp);
 
@@ -102,20 +106,20 @@ class modelo extends modelo_base {
         $entidades = new estructuras(link: $link);
         $data = $entidades->entidades((new database())->db_name);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al obtener entidades '.$tabla, data: $data, class: __CLASS__,
+            $error = $this->error->error(mensaje: 'Error al obtener entidades ' . $tabla, data: $data, class: __CLASS__,
                 file: __FILE__, funcion: __FUNCTION__, line: __LINE__);
             print_r($error);
             die('Error');
         }
 
-        if(!in_array($this->tabla, $data)  && $this->valida_existe_entidad){
-            $error = $this->error->error(mensaje: 'Error no existe la entidad eb db '.$this->tabla, data: $data);
+        if (!in_array($this->tabla, $data) && $this->valida_existe_entidad) {
+            $error = $this->error->error(mensaje: 'Error no existe la entidad eb db ' . $this->tabla, data: $data);
             print_r($error);
             die('Error');
         }
 
         $campos_entidad = array();
-        if(isset($entidades->estructura_bd->$tabla->campos)) {
+        if (isset($entidades->estructura_bd->$tabla->campos)) {
             $campos_entidad = $entidades->estructura_bd->$tabla->campos;
         }
 
@@ -124,12 +128,12 @@ class modelo extends modelo_base {
 
         $attrs = (new inicializacion())->integra_attrs(modelo: $this);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al obtener attr '.$tabla, data: $attrs);
+            $error = $this->error->error(mensaje: 'Error al obtener attr ' . $tabla, data: $attrs);
             print_r($error);
             die('Error');
         }
 
-        if($this->valida_atributos_criticos) {
+        if ($this->valida_atributos_criticos) {
             $valida = $this->valida_atributos_criticos(atributos_criticos: $atributos_criticos);
             if (errores::$error) {
                 $error = $this->error->error(mensaje: 'Error al verificar atributo critico ' . $tabla, data: $valida);
@@ -139,18 +143,18 @@ class modelo extends modelo_base {
         }
 
 
-        if(!in_array('id', $this->campos_no_upd, true)){
+        if (!in_array('id', $this->campos_no_upd, true)) {
             $this->campos_no_upd[] = 'id';
         }
 
-        if(isset($_SESSION['usuario_id'])){
+        if (isset($_SESSION['usuario_id'])) {
             $this->usuario_id = (int)$_SESSION['usuario_id'];
         }
 
 
-        $campos_tabla = (new columnas())->campos_tabla(modelo:$this, tabla: $tabla);
+        $campos_tabla = (new columnas())->campos_tabla(modelo: $this, tabla: $tabla);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al obtener campos tabla '.$tabla, data: $campos_tabla);
+            $error = $this->error->error(mensaje: 'Error al obtener campos tabla ' . $tabla, data: $campos_tabla);
             print_r($error);
             die('Error');
         }
@@ -160,12 +164,11 @@ class modelo extends modelo_base {
         $campos_obligatorios = (new columnas())->integra_campos_obligatorios(
             campos_obligatorios: $campos_obligatorios, campos_tabla: $this->campos_tabla);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al integrar campos obligatorios '.$tabla, data: $campos_obligatorios);
+            $error = $this->error->error(mensaje: 'Error al integrar campos obligatorios ' . $tabla, data: $campos_obligatorios);
             print_r($error);
             die('Error');
         }
         $this->campos_obligatorios = $campos_obligatorios;
-
 
 
         $this->sub_querys = $sub_querys;
@@ -174,13 +177,13 @@ class modelo extends modelo_base {
 
         $limpia = $this->campos_obligatorios(campos_obligatorios: $campos_obligatorios);
         if (errores::$error) {
-            $error = $this->error->error(mensaje: 'Error al asignar campos obligatorios en '.$tabla, data: $limpia);
+            $error = $this->error->error(mensaje: 'Error al asignar campos obligatorios en ' . $tabla, data: $limpia);
             print_r($error);
             die('Error');
         }
 
 
-        $this->campos_view = array_merge($this->campos_view,$campos_view);
+        $this->campos_view = array_merge($this->campos_view, $campos_view);
         $this->tipo_campos = $tipo_campos;
 
         $this->aplica_transaccion_inactivo = $aplica_transaccion_inactivo;
@@ -188,14 +191,14 @@ class modelo extends modelo_base {
 
         $aplica_seguridad_filter = (new seguridad_dada())->aplica_filtro_seguridad(modelo: $this);
         if (errores::$error) {
-            $error = $this->error->error( mensaje: 'Error al obtener filtro de seguridad', data: $aplica_seguridad_filter);
+            $error = $this->error->error(mensaje: 'Error al obtener filtro de seguridad', data: $aplica_seguridad_filter);
             print_r($error);
             die('Error');
         }
 
 
-        $this->key_id = $this->tabla.'_id';
-        $this->key_filtro_id = $this->tabla.'.id';
+        $this->key_id = $this->tabla . '_id';
+        $this->key_filtro_id = $this->tabla . '.id';
 
         $this->etiqueta = $this->tabla;
     }
@@ -208,36 +211,36 @@ class modelo extends modelo_base {
      * @return array|stdClass
      * @final revisada
      */
-    public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass{
+    public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass
+    {
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data:  $registro_id);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro_id);
         }
 
-        if($registro_id>0){
-            $this->registro_id  = $registro_id;
+        if ($registro_id > 0) {
+            $this->registro_id = $registro_id;
         }
-        if($this->registro_id <= 0){
-            return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en '.$this->tabla,data: $this->registro_id);
+        if ($this->registro_id <= 0) {
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en ' . $this->tabla, data: $this->registro_id);
         }
 
-        $data_activacion = (new activaciones())->init_activa(modelo:$this, reactiva: $reactiva);
+        $data_activacion = (new activaciones())->init_activa(modelo: $this, reactiva: $reactiva);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al generar datos de activacion '.$this->tabla,
-                data:$data_activacion);
+            return $this->error->error(mensaje: 'Error al generar datos de activacion ' . $this->tabla,
+                data: $data_activacion);
         }
 
-        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__,
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla, funcion: __FUNCTION__,
             modelo: $this, registro_id: $this->registro_id, sql: $data_activacion->consulta);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al EJECUTAR TRANSACCION en '.$this->tabla,data:$transaccion);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION en ' . $this->tabla, data: $transaccion);
         }
 
         $data = new stdClass();
-        $data->mensaje = 'Registro activado con éxito en '.$this->tabla;
+        $data->mensaje = 'Registro activado con éxito en ' . $this->tabla;
         $data->registro_id = $this->registro_id;
         $data->transaccion = $transaccion;
-
 
 
         return $data;
@@ -251,28 +254,26 @@ class modelo extends modelo_base {
      */
     public function activa_todo(): array
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data:  array());
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: array());
         }
 
         $this->transaccion = 'UPDATE';
         $consulta = "UPDATE " . $this->tabla . " SET status = 'activo'  ";
 
         $resultado = $this->ejecuta_sql(consulta: $consulta);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
         }
 
 
-
-        return array('mensaje'=>'Registros activados con éxito','sql'=>$this->consulta);
+        return array('mensaje' => 'Registros activados con éxito', 'sql' => $this->consulta);
     }
 
     /**
      *
      * Inserta un registro por registro enviado
      * @return array|stdClass con datos del registro insertado
-
      * @internal  $this->valida_campo_obligatorio();
      * @internal  $this->valida_estructura_campos();
      * @internal  $this->asigna_data_user_transaccion();
@@ -282,60 +283,61 @@ class modelo extends modelo_base {
      *          'proveedor_id'=>1,'tipo_proveedor_id'=>1,'referencia'=>1,'tipo_almacen_id'=>1);
      * $resultado = $entrada_modelo->alta_bd();
      */
-    public function alta_bd(): array|stdClass{
-        if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array(), es_final: true);
+    public function alta_bd(): array|stdClass
+    {
+        if (!isset($_SESSION['usuario_id'])) {
+            return $this->error->error(mensaje: 'Error SESSION no iniciada', data: array(), es_final: true);
         }
 
-        if($_SESSION['usuario_id'] <= 0){
-            return $this->error->error(mensaje: 'Error USUARIO INVALIDO',data: $_SESSION['usuario_id'], es_final: true);
+        if ($_SESSION['usuario_id'] <= 0) {
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO', data: $_SESSION['usuario_id'], es_final: true);
         }
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro,
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $this->registro,
                 es_final: true);
         }
 
         $registro_original = $this->registro;
         $this->status_default = 'activo';
-        $registro = (new inicializacion())->registro_ins(campos_encriptados:$this->campos_encriptados,
-            integra_datos_base: $this->integra_datos_base,registro: $this->registro,
+        $registro = (new inicializacion())->registro_ins(campos_encriptados: $this->campos_encriptados,
+            integra_datos_base: $this->integra_datos_base, registro: $this->registro,
             status_default: $this->status_default, tipo_campos: $this->tipo_campos);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar registro ', data: $registro);
         }
 
         $this->registro = $registro;
 
         $valida = (new val_sql())->valida_base_alta(campos_obligatorios: $this->campos_obligatorios, modelo: $this,
-            no_duplicados: $this->no_duplicados, registro: $registro,tabla:  $this->tabla,
+            no_duplicados: $this->no_duplicados, registro: $registro, tabla: $this->tabla,
             tipo_campos: $this->tipo_campos, parents: $this->parents);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar alta ', data: $valida);
         }
 
-        if($this->id_code && !isset($this->registro['id'])){
+        if ($this->id_code && !isset($this->registro['id'])) {
             $this->registro['id'] = $this->registro['codigo'];
         }
 
         $transacciones = (new inserts())->transacciones(modelo: $this);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar transacciones',data:  $transacciones);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar transacciones', data: $transacciones);
         }
 
         $registro = $this->registro(registro_id: $this->registro_id);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
-        $registro_puro = $this->registro(registro_id: $this->registro_id,columnas_en_bruto: true,retorno_obj: true);
-        if(errores::$error){
+        $registro_puro = $this->registro(registro_id: $this->registro_id, columnas_en_bruto: true, retorno_obj: true);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
 
         $data = $this->data_result_transaccion(mensaje: 'Registro insertado con éxito', registro: $registro,
             registro_ejecutado: $this->registro, registro_id: $this->registro_id, registro_original: $registro_original,
             registro_puro: $registro_puro, sql: $transacciones->sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar respuesta registro', data: $registro);
         }
 
@@ -351,7 +353,7 @@ class modelo extends modelo_base {
      * @return stdClass|array
      * @version 18.21.0
      */
-    public function alta_documento(array $registro,array $file): stdClass|array
+    public function alta_documento(array $registro, array $file): stdClass|array
     {
         return new stdClass();
 
@@ -364,40 +366,40 @@ class modelo extends modelo_base {
      */
     final protected function alta_existente(array $filtro): array|stdClass
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $filtro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $filtro);
         }
-        if(count($filtro) === 0){
-            return $this->error->error(mensaje: 'Error filtro esta vacio',data: $filtro);
+        if (count($filtro) === 0) {
+            return $this->error->error(mensaje: 'Error filtro esta vacio', data: $filtro);
         }
 
         $result = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar si existe',data: $result);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al verificar si existe', data: $result);
         }
 
-        if($result->n_registros > 1){
-            return $this->error->error(mensaje: 'Error de integridad existe mas de un registro',data: $result);
+        if ($result->n_registros > 1) {
+            return $this->error->error(mensaje: 'Error de integridad existe mas de un registro', data: $result);
         }
-        if($result->n_registros === 0){
-            return $this->error->error(mensaje: 'Error de integridad no existe registro',data: $result);
+        if ($result->n_registros === 0) {
+            return $this->error->error(mensaje: 'Error de integridad no existe registro', data: $result);
         }
 
         $registro = $result->registros[0];
         $registro_original = $registro;
 
-        $registro_puro = $this->registro(registro_id: $registro[$this->key_id],columnas_en_bruto: true,
+        $registro_puro = $this->registro(registro_id: $registro[$this->key_id], columnas_en_bruto: true,
             retorno_obj: true);
 
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
 
         $r_alta_bd = $this->data_result_transaccion(mensaje: "Registro existente", registro: $registro,
             registro_ejecutado: $this->registro, registro_id: $registro[$this->key_id],
             registro_original: $registro_original, registro_puro: $registro_puro, sql: 'Sin ejecucion');
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al maquetar salida',data: $r_alta_bd);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al maquetar salida', data: $r_alta_bd);
         }
         return $r_alta_bd;
     }
@@ -413,16 +415,16 @@ class modelo extends modelo_base {
     private function alta_predeterminado(
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $this->registro);
         }
 
         $pred_ins['predeterminado'] = 'activo';
         $pred_ins['codigo'] = $codigo;
         $pred_ins['descripcion'] = $descripcion;
         $r_alta = $this->alta_registro(registro: $pred_ins);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar prederminado en modelo '.$this->tabla,data:  $r_alta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar prederminado en modelo ' . $this->tabla, data: $r_alta);
         }
         return $r_alta;
     }
@@ -433,28 +435,29 @@ class modelo extends modelo_base {
      * @return array|stdClass
      *
      */
-     public function alta_registro(array $registro):array|stdClass{
+    public function alta_registro(array $registro): array|stdClass
+    {
 
 
-        if(!isset($_SESSION['usuario_id'])){
-            return $this->error->error(mensaje: 'Error SESSION no iniciada',data: array());
+        if (!isset($_SESSION['usuario_id'])) {
+            return $this->error->error(mensaje: 'Error SESSION no iniciada', data: array());
         }
 
-        if($_SESSION['usuario_id'] <= 0){
-            return $this->error->error(mensaje: 'Error USUARIO INVALIDO en modelo '.$this->tabla,
+        if ($_SESSION['usuario_id'] <= 0) {
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO en modelo ' . $this->tabla,
                 data: $_SESSION['usuario_id']);
         }
-         if(!$this->aplica_transacciones_base){
-             return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $this->registro);
-         }
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $this->registro);
+        }
 
         $this->registro = $registro;
 
-        $r_alta  = $this->alta_bd();
-        if(errores::$error) {
+        $r_alta = $this->alta_bd();
+        if (errores::$error) {
             $database = (new database())->db_name;
-            return $this->error->error(mensaje: 'Error al dar de alta registro en database '.$database.'  en modelo '
-                .$this->tabla, data: $r_alta);
+            return $this->error->error(mensaje: 'Error al dar de alta registro en database ' . $database . '  en modelo '
+                . $this->tabla, data: $r_alta);
         }
 
         return $r_alta;
@@ -475,45 +478,45 @@ class modelo extends modelo_base {
      */
     final public function alter_table(
         string $campo, string $statement, string $table, string $longitud = '', string $new_name = '',
-        string $tipo_dato = '', bool $valida_pep_8 = true):array|stdClass
+        string $tipo_dato = '', bool $valida_pep_8 = true): array|stdClass
     {
-        $sql = (new sql())->alter_table(campo: $campo,statement:  $statement,table:  $table,
-            longitud: $longitud,new_name: $new_name,tipo_dato: $tipo_dato, valida_pep_8: $valida_pep_8);
-        if(errores::$error){
+        $sql = (new sql())->alter_table(campo: $campo, statement: $statement, table: $table,
+            longitud: $longitud, new_name: $new_name, tipo_dato: $tipo_dato, valida_pep_8: $valida_pep_8);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar sql', data: $sql);
         }
         $exe = $this->ejecuta_sql(consulta: $sql);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar sql', data: $exe);
         }
         return $exe;
 
     }
 
-    private function campos_obligatorios(array $campos_obligatorios){
-        $this->campos_obligatorios = array_merge($this->campos_obligatorios,$campos_obligatorios);
+    private function campos_obligatorios(array $campos_obligatorios)
+    {
+        $this->campos_obligatorios = array_merge($this->campos_obligatorios, $campos_obligatorios);
 
-        if(isset($campos_obligatorios[0]) && trim($campos_obligatorios[0]) === '*'){
+        if (isset($campos_obligatorios[0]) && trim($campos_obligatorios[0]) === '*') {
 
             $limpia = $this->todos_campos_obligatorios();
             if (errores::$error) {
-                return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en '.$this->tabla, data: $limpia);
+                return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en ' . $this->tabla, data: $limpia);
             }
         }
         return $this->campos_obligatorios;
     }
 
 
-
-    final public function cuenta(array $diferente_de = array(), array $extra_join = array(), array $filtro = array(),
+    final public function cuenta(array  $diferente_de = array(), array $extra_join = array(), array $filtro = array(),
                                  string $tipo_filtro = 'numeros', array $filtro_especial = array(),
-                                 array $filtro_rango = array(), array $filtro_fecha = array(),
-                                 array $in = array(), array $not_in = array()): array|int
+                                 array  $filtro_rango = array(), array $filtro_fecha = array(),
+                                 array  $in = array(), array $not_in = array()): array|int
     {
 
         // Validar el tipo de filtro antes de ejecutar la consulta
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar tipo_filtro', data: $verifica_tf);
         }
 
@@ -529,8 +532,8 @@ class modelo extends modelo_base {
             renombradas: $renombradas,
             tabla: $this->tabla
         );
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar joins en '.$this->tabla, data: $tablas);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar joins en ' . $this->tabla, data: $tablas);
         }
 
         // Generar filtros con los parámetros recibidos
@@ -549,7 +552,7 @@ class modelo extends modelo_base {
             tipo_filtro: $tipo_filtro
         );
 
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar filtros', data: $filtros);
         }
 
@@ -560,14 +563,13 @@ class modelo extends modelo_base {
 
         // Ejecución de la consulta
         $result = $this->ejecuta_consulta(consulta: $sql, campos_encriptados: $this->campos_encriptados);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al ejecutar SQL', data: $result);
         }
 
         // Retornar la cantidad de registros encontrados
         return (int)$result->registros[0]['total_registros'];
     }
-
 
 
     /**
@@ -601,48 +603,49 @@ class modelo extends modelo_base {
      * Total de registros: 45
      * ```
      *
-     * @param bool   $aplica_seguridad   Indica si se deben aplicar filtros de seguridad.
-     * @param array  $columnas           Columnas a incluir en la consulta (no afecta el conteo).
-     * @param array  $columnas_by_table  Columnas organizadas por tabla.
-     * @param bool   $columnas_en_bruto  Si `true`, las columnas se mantienen sin alias ni modificaciones.
-     * @param bool   $con_sq             Si `true`, permite generar subconsultas (`WITH`).
-     * @param array  $diferente_de       Filtros de exclusión (`!=`).
-     * @param array  $extra_join         Joins adicionales en la consulta.
-     * @param array  $filtro             Condiciones en formato `columna => valor`.
-     * @param array  $filtro_especial    Condiciones avanzadas de filtrado.
-     * @param array  $filtro_extra       Filtros adicionales personalizados.
-     * @param array  $filtro_fecha       Filtros basados en fechas.
-     * @param array  $filtro_rango       Filtros basados en rangos de valores.
-     * @param array  $group_by           Cláusula `GROUP BY`.
-     * @param array  $hijo               Configuración de relaciones con otras tablas.
-     * @param array  $in                 Filtros `IN`.
-     * @param array  $not_in             Filtros `NOT IN`.
-     * @param string $sql_extra          SQL adicional a incluir en la consulta.
-     * @param string $tipo_filtro        Tipo de filtro (`AND` o `OR`).
+     * @param bool $aplica_seguridad Indica si se deben aplicar filtros de seguridad.
+     * @param array $columnas Columnas a incluir en la consulta (no afecta el conteo).
+     * @param array $columnas_by_table Columnas organizadas por tabla.
+     * @param bool $columnas_en_bruto Si `true`, las columnas se mantienen sin alias ni modificaciones.
+     * @param bool $con_sq Si `true`, permite generar subconsultas (`WITH`).
+     * @param array $diferente_de Filtros de exclusión (`!=`).
+     * @param array $extra_join Joins adicionales en la consulta.
+     * @param array $filtro Condiciones en formato `columna => valor`.
+     * @param array $filtro_especial Condiciones avanzadas de filtrado.
+     * @param array $filtro_extra Filtros adicionales personalizados.
+     * @param array $filtro_fecha Filtros basados en fechas.
+     * @param array $filtro_rango Filtros basados en rangos de valores.
+     * @param array $group_by Cláusula `GROUP BY`.
+     * @param array $hijo Configuración de relaciones con otras tablas.
+     * @param array $in Filtros `IN`.
+     * @param array $not_in Filtros `NOT IN`.
+     * @param string $sql_extra SQL adicional a incluir en la consulta.
+     * @param string $tipo_filtro Tipo de filtro (`AND` o `OR`).
      *
      * @return array|int Retorna el número total de registros encontrados o un array de error si falla.
      */
 
     final public function cuenta_bis(
-        bool $aplica_seguridad = true,
-        array $columnas = array(),
-        array $columnas_by_table = array(),
-        bool $columnas_en_bruto = false,
-        bool $con_sq = true,
-        array $diferente_de = array(),
-        array $extra_join = array(),
-        array $filtro = array(),
-        array $filtro_especial = array(),
-        array $filtro_extra = array(),
-        array $filtro_fecha = array(),
-        array $filtro_rango = array(),
-        array $group_by = array(),
-        array $hijo = array(),
-        array $in = array(),
-        array $not_in = array(),
+        bool   $aplica_seguridad = true,
+        array  $columnas = array(),
+        array  $columnas_by_table = array(),
+        bool   $columnas_en_bruto = false,
+        bool   $con_sq = true,
+        array  $diferente_de = array(),
+        array  $extra_join = array(),
+        array  $filtro = array(),
+        array  $filtro_especial = array(),
+        array  $filtro_extra = array(),
+        array  $filtro_fecha = array(),
+        array  $filtro_rango = array(),
+        array  $group_by = array(),
+        array  $hijo = array(),
+        array  $in = array(),
+        array  $not_in = array(),
         string $sql_extra = '',
         string $tipo_filtro = 'numeros'
-    ): array|int {
+    ): array|int
+    {
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al validar tipo_filtro', data: $verifica_tf);
@@ -772,8 +775,8 @@ class modelo extends modelo_base {
      * @param string $sql Sql ejecutado
      * @return stdClass
      */
-    final protected function data_result_transaccion(string $mensaje, array $registro, array $registro_ejecutado,
-                                                     int $registro_id, array|stdClass $registro_original,
+    final protected function data_result_transaccion(string   $mensaje, array $registro, array $registro_ejecutado,
+                                                     int      $registro_id, array|stdClass $registro_original,
                                                      stdClass $registro_puro, string $sql): stdClass
     {
         $data = new stdClass();
@@ -786,7 +789,7 @@ class modelo extends modelo_base {
         $data->registro_puro = $registro_puro;
         $data->campos = $this->campos_tabla;
         $data->registro_original = $registro_original;
-        $key_id = $this->tabla.'_id';
+        $key_id = $this->tabla . '_id';
         $data->$key_id = $registro_id;
         return $data;
     }
@@ -797,47 +800,47 @@ class modelo extends modelo_base {
      * @throws JsonException
      * @final rev
      */
-    public function desactiva_bd(): array|stdClass{
+    public function desactiva_bd(): array|stdClass
+    {
 
-        if($this->registro_id<=0){
-            return  $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',data: $this->registro_id);
+        if ($this->registro_id <= 0) {
+            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0', data: $this->registro_id);
         }
 
-        if(!$this->aplica_transacciones_base){
+        if (!$this->aplica_transacciones_base) {
             return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',
                 data: $this->registro_id);
         }
 
         $registro = $this->registro(registro_id: $this->registro_id);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
 
 
         $valida = $this->validacion->valida_transaccion_activa(
             aplica_transaccion_inactivo: $this->aplica_transaccion_inactivo, registro: $registro,
-            registro_id:  $this->registro_id, tabla: $this->tabla);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al validar transaccion activa',data: $valida);
+            registro_id: $this->registro_id, tabla: $this->tabla);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar transaccion activa', data: $valida);
         }
         $tabla = $this->tabla;
         $this->consulta = /** @lang MYSQL */
             "UPDATE $tabla SET status = 'inactivo' WHERE id = $this->registro_id";
         $this->transaccion = 'DESACTIVA';
-        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla,funcion: __FUNCTION__, modelo: $this,
-            registro_id:  $this->registro_id);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION',data: $transaccion);
+        $transaccion = (new bitacoras())->ejecuta_transaccion(tabla: $this->tabla, funcion: __FUNCTION__, modelo: $this,
+            registro_id: $this->registro_id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al EJECUTAR TRANSACCION', data: $transaccion);
         }
 
         $desactiva = $this->aplica_desactivacion_dependencias();
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al desactivar dependiente',data:  $desactiva);
+            return $this->error->error(mensaje: 'Error al desactivar dependiente', data: $desactiva);
         }
 
 
-
-        return array('mensaje'=>'Registro desactivado con éxito', 'registro_id'=>$this->registro_id);
+        return array('mensaje' => 'Registro desactivado con éxito', 'registro_id' => $this->registro_id);
 
     }
 
@@ -847,20 +850,19 @@ class modelo extends modelo_base {
      */
     public function desactiva_todo(): array
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: array());
         }
 
         $consulta = /** @lang MYSQL */
             "UPDATE  $this->tabla SET status='inactivo'";
 
         $this->link->query($consulta);
-        if($this->link->errorInfo()[1]){
-            return  $this->error->error($this->link->errorInfo()[0],'');
-        }
-        else{
+        if ($this->link->errorInfo()[1]) {
+            return $this->error->error($this->link->errorInfo()[0], '');
+        } else {
 
-            return array('mensaje'=>'Registros desactivados con éxito');
+            return array('mensaje' => 'Registros desactivados con éxito');
         }
     }
 
@@ -879,57 +881,58 @@ class modelo extends modelo_base {
      * @internal  $this->ejecuta_sql();
      * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
      */
-    public function elimina_bd(int $id): array|stdClass{
+    public function elimina_bd(int $id): array|stdClass
+    {
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $id);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $id);
         }
 
-        if($id <= 0){
-            return  $this->error->error(mensaje: 'El id no puede ser menor a 0 en '.$this->tabla, data: $id);
+        if ($id <= 0) {
+            return $this->error->error(mensaje: 'El id no puede ser menor a 0 en ' . $this->tabla, data: $id);
         }
         $this->registro_id = $id;
 
         $valida = (new activaciones())->valida_activacion(modelo: $this);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al validar transaccion activa en ' .$this->tabla,data: $valida);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar transaccion activa en ' . $this->tabla, data: $valida);
         }
 
         $registro_bitacora = $this->obten_data();
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener registro en '.$this->tabla, data:$registro_bitacora);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro en ' . $this->tabla, data: $registro_bitacora);
         }
         $registro_puro = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al obtener registro en '.$this->tabla, data:$registro_puro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro en ' . $this->tabla, data: $registro_puro);
         }
 
         $tabla = $this->tabla;
         $this->consulta = /** @lang MYSQL */
-            'DELETE FROM '.$tabla. ' WHERE id = '.$id;
+            'DELETE FROM ' . $tabla . ' WHERE id = ' . $id;
         $consulta = $this->consulta;
         $this->transaccion = 'DELETE';
 
         $elimina = (new dependencias())->aplica_eliminacion_dependencias(
-            desactiva_dependientes:$this->desactiva_dependientes,link: $this->link,
-            models_dependientes: $this->models_dependientes,registro_id: $this->registro_id,tabla: $this->tabla);
+            desactiva_dependientes: $this->desactiva_dependientes, link: $this->link,
+            models_dependientes: $this->models_dependientes, registro_id: $this->registro_id, tabla: $this->tabla);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al eliminar dependiente ', data:$elimina);
+            return $this->error->error(mensaje: 'Error al eliminar dependiente ', data: $elimina);
         }
 
-        $valida = $this->valida_eliminacion_children(id:$id);
+        $valida = $this->valida_eliminacion_children(id: $id);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al validar children', data:$valida);
+            return $this->error->error(mensaje: 'Error al validar children', data: $valida);
         }
 
         $resultado = $this->ejecuta_sql(consulta: $this->consulta);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql en '.$this->tabla, data:$resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql en ' . $this->tabla, data: $resultado);
         }
         $bitacora = (new bitacoras())->bitacora(
-            consulta: $consulta, funcion: __FUNCTION__,modelo: $this, registro: $registro_bitacora);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al insertar bitacora de '.$this->tabla, data: $bitacora);
+            consulta: $consulta, funcion: __FUNCTION__, modelo: $this, registro: $registro_bitacora);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al insertar bitacora de ' . $this->tabla, data: $bitacora);
         }
 
         $data = new stdClass();
@@ -937,7 +940,7 @@ class modelo extends modelo_base {
         $data->sql = $this->consulta;
         $data->registro = $registro_bitacora;
         $data->registro_puro = $registro_puro;
-        $data->mensaje = 'Se elimino el registro con el id '.$id;
+        $data->mensaje = 'Se elimino el registro con el id ' . $id;
 
 
         return $data;
@@ -949,26 +952,27 @@ class modelo extends modelo_base {
      * @return string[]
      * @version 1.564.51
      */
-    public function elimina_con_filtro_and(array $filtro): array{
+    public function elimina_con_filtro_and(array $filtro): array
+    {
 
 
-        if(count($filtro) === 0){
+        if (count($filtro) === 0) {
             return $this->error->error('Error no existe filtro', $filtro);
         }
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $filtro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $filtro);
         }
 
         $result = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros '.$this->tabla,data:  $result);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros ' . $this->tabla, data: $result);
         }
         $dels = array();
-        foreach ($result->registros as $row){
+        foreach ($result->registros as $row) {
 
-            $del = $this->elimina_bd(id:$row[$this->tabla.'_id']);
-            if(errores::$error){
-                return $this->error->error('Error al eliminar registros '.$this->tabla, $del);
+            $del = $this->elimina_bd(id: $row[$this->tabla . '_id']);
+            if (errores::$error) {
+                return $this->error->error('Error al eliminar registros ' . $this->tabla, $del);
             }
             $dels[] = $del;
 
@@ -981,20 +985,20 @@ class modelo extends modelo_base {
 
     public function elimina_full_childrens(): array
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array(),
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: array(),
                 es_final: true);
         }
         $dels = array();
-        foreach ($this->childrens as $modelo_children=>$namespace){
+        foreach ($this->childrens as $modelo_children => $namespace) {
 
-            $modelo_children_obj = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
+            $modelo_children_obj = $this->genera_modelo(modelo: $modelo_children, namespace_model: $namespace);
             if (errores::$error) {
-                return $this->error->error(mensaje:'Error al generar modelo', data:$modelo_children_obj);
+                return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo_children_obj);
             }
             $elimina_todo_children = $modelo_children_obj->elimina_todo();
             if (errores::$error) {
-                return $this->error->error(mensaje:'Error al eliminar children', data:$elimina_todo_children);
+                return $this->error->error(mensaje: 'Error al eliminar children', data: $elimina_todo_children);
             }
             $dels[] = $elimina_todo_children;
         }
@@ -1007,51 +1011,52 @@ class modelo extends modelo_base {
      */
     public function elimina_todo(): array
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array(),
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: array(),
                 es_final: true);
         }
 
         $elimina_todo_children = $this->elimina_full_childrens();
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al eliminar childrens', data:$elimina_todo_children);
+            return $this->error->error(mensaje: 'Error al eliminar childrens', data: $elimina_todo_children);
         }
 
 
         $tabla = $this->tabla;
         $this->transaccion = 'DELETE';
         $this->consulta = /** @lang MYSQL */
-            'DELETE FROM '.$tabla;
+            'DELETE FROM ' . $tabla;
 
         $resultado = $this->ejecuta_sql($this->consulta);
 
-        if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$resultado);
+        if (errores::$error) {
+            return $this->error->error('Error al ejecutar sql', $resultado);
         }
 
         $exe = (new _instalacion(link: $this->link))->init_auto_increment(table: $this->tabla);
-        if(errores::$error){
-            return $this->error->error('Error al ejecutar sql init',$exe);
+        if (errores::$error) {
+            return $this->error->error('Error al ejecutar sql init', $exe);
         }
 
-        return array('mensaje'=>'Registros eliminados con éxito');
+        return array('mensaje' => 'Registros eliminados con éxito');
     }
 
     /**
      * PHPUNIT
      * @return array
      */
-    protected function estado_inicial():array{
-        $filtro[$this->tabla.'.inicial'] ='activo';
+    protected function estado_inicial(): array
+    {
+        $filtro[$this->tabla . '.inicial'] = 'activo';
         $r_estado = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error('Error al filtrar estado',$r_estado);
+        if (errores::$error) {
+            return $this->error->error('Error al filtrar estado', $r_estado);
         }
-        if((int)$r_estado['n_registros'] === 0){
-            return $this->error->error('Error al no existe estado default',$r_estado);
+        if ((int)$r_estado['n_registros'] === 0) {
+            return $this->error->error('Error al no existe estado default', $r_estado);
         }
-        if((int)$r_estado['n_registros'] > 1){
-            return $this->error->error('Error existe mas de un estado',$r_estado);
+        if ((int)$r_estado['n_registros'] > 1) {
+            return $this->error->error('Error existe mas de un estado', $r_estado);
         }
         return $r_estado['registros'][0];
     }
@@ -1063,10 +1068,10 @@ class modelo extends modelo_base {
     protected function estado_inicial_id(): int|array
     {
         $estado_inicial = $this->estado_inicial();
-        if(errores::$error){
-            return $this->error->error('Error al obtener estado',$estado_inicial);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener estado', $estado_inicial);
         }
-        return (int)$estado_inicial[$this->tabla.'_id'];
+        return (int)$estado_inicial[$this->tabla . '_id'];
     }
 
 
@@ -1074,13 +1079,13 @@ class modelo extends modelo_base {
     {
         // Obtener la cantidad de registros que cumplen con el filtro
         $resultado = $this->cuenta(filtro: $filtro);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al contar registros', data: $resultado);
         }
 
         // Determinar si existen registros
         $existe = false;
-        if((int)$resultado > 0){
+        if ((int)$resultado > 0) {
             $existe = true;
         }
 
@@ -1091,7 +1096,7 @@ class modelo extends modelo_base {
     private function existe_atributo_critico(string $atributo_critico, string $key_attr): bool
     {
         $existe_atributo_critico = false;
-        if($key_attr === $atributo_critico){
+        if ($key_attr === $atributo_critico) {
             $existe_atributo_critico = true;
         }
         return $existe_atributo_critico;
@@ -1104,20 +1109,20 @@ class modelo extends modelo_base {
      */
     final public function existe_by_id(int $registro_id): bool|array
     {
-        $filtro[$this->tabla.'.id'] = $registro_id;
+        $filtro[$this->tabla . '.id'] = $registro_id;
         $existe = $this->existe(filtro: $filtro);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener row', data: $existe);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener row', data: $existe);
         }
         return $existe;
     }
 
     final public function existe_by_codigo(string $codigo): bool|array
     {
-        $filtro[$this->tabla.'.codigo'] = $codigo;
+        $filtro[$this->tabla . '.codigo'] = $codigo;
         $existe = $this->existe(filtro: $filtro);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener row', data: $existe);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener row', data: $existe);
         }
         return $existe;
     }
@@ -1133,11 +1138,11 @@ class modelo extends modelo_base {
     private function existe_en_array(array $compare_1, array $compare_2, string $key): bool|array
     {
         $key = trim($key);
-        if($key === ''){
+        if ($key === '') {
             return $this->error->error('Error $key no puede venir vacio', $key);
         }
         $existe = false;
-        if(isset($compare_1[$key], $compare_2[$key])) {
+        if (isset($compare_1[$key], $compare_2[$key])) {
             if ((string)$compare_1[$key] === (string)$compare_2[$key]) {
                 $existe = true;
             }
@@ -1151,11 +1156,11 @@ class modelo extends modelo_base {
      */
     final public function existe_predeterminado(): bool|array
     {
-        $key = $this->tabla.'.predeterminado';
+        $key = $this->tabla . '.predeterminado';
         $filtro[$key] = 'activo';
         $existe = $this->existe(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
         }
         return $existe;
     }
@@ -1170,19 +1175,19 @@ class modelo extends modelo_base {
     protected function existe_registro_array(array $compare_1, array $compare_2, string $key): bool|array
     {
         $key = trim($key);
-        if($key === ''){
+        if ($key === '') {
             return $this->error->error('Error $key no puede venir vacio', $key);
         }
         $existe = false;
-        foreach($compare_1 as $data){
-            if(!is_array($data)){
+        foreach ($compare_1 as $data) {
+            if (!is_array($data)) {
                 return $this->error->error("Error data debe ser un array", $data);
             }
-            $existe = $this->existe_en_array($data, $compare_2,$key);
-            if(errores::$error){
+            $existe = $this->existe_en_array($data, $compare_2, $key);
+            if (errores::$error) {
                 return $this->error->error("Error al comparar dato", $existe);
             }
-            if($existe){
+            if ($existe) {
                 break;
             }
         }
@@ -1271,28 +1276,28 @@ class modelo extends modelo_base {
      * ---
      *
      * ### Parámetros:
-     * @param bool   $aplica_seguridad   Si `true`, aplica filtros de seguridad adicionales automáticamente.
-     * @param array  $columnas           Lista de columnas a incluir en la consulta.
-     * @param array  $columnas_by_table  Columnas organizadas por tabla.
-     * @param bool   $columnas_en_bruto  Si `true`, se mantiene la estructura original de las columnas sin alias.
-     * @param array  $columnas_totales   Lista de columnas a incluir en la salida total.
-     * @param bool   $con_sq             Si `true`, permite la generación de subconsultas (`WITH`).
-     * @param array  $diferente_de       Condiciones de exclusión (`!=`).
-     * @param array  $extra_join         Joins adicionales en la consulta.
-     * @param array  $filtro             Filtros en formato `columna => valor`.
-     * @param array  $filtro_especial    Filtros avanzados personalizados.
-     * @param array  $filtro_extra       Filtros adicionales opcionales.
-     * @param array  $filtro_fecha       Filtros de fecha (ejemplo: `['fecha_creacion' => ['>=', '2024-01-01']]`).
-     * @param array  $filtro_rango       Rango de valores (ejemplo: `['precio' => ['BETWEEN', 100, 500]]`).
-     * @param array  $group_by           Cláusula `GROUP BY` para agrupar resultados.
-     * @param array  $hijo               Configuración de relaciones con otras tablas.
-     * @param array  $in                 Filtros `IN` (ejemplo: `['id' => [1, 2, 3]]`).
-     * @param int    $limit              Límite de registros (0 para ilimitado).
-     * @param array  $not_in             Filtros `NOT IN` (ejemplo: `['id' => [3, 7, 10]]`).
-     * @param int    $offset             Número de registros a saltar (para paginación).
-     * @param array  $order              Cláusula `ORDER BY` para ordenar resultados.
-     * @param string $sql_extra          SQL adicional a incluir en la consulta.
-     * @param string $tipo_filtro        Tipo de filtro (TEXTOS, NUMEROS).
+     * @param bool $aplica_seguridad Si `true`, aplica filtros de seguridad adicionales automáticamente.
+     * @param array $columnas Lista de columnas a incluir en la consulta.
+     * @param array $columnas_by_table Columnas organizadas por tabla.
+     * @param bool $columnas_en_bruto Si `true`, se mantiene la estructura original de las columnas sin alias.
+     * @param array $columnas_totales Lista de columnas a incluir en la salida total.
+     * @param bool $con_sq Si `true`, permite la generación de subconsultas (`WITH`).
+     * @param array $diferente_de Condiciones de exclusión (`!=`).
+     * @param array $extra_join Joins adicionales en la consulta.
+     * @param array $filtro Filtros en formato `columna => valor`.
+     * @param array $filtro_especial Filtros avanzados personalizados.
+     * @param array $filtro_extra Filtros adicionales opcionales.
+     * @param array $filtro_fecha Filtros de fecha (ejemplo: `['fecha_creacion' => ['>=', '2024-01-01']]`).
+     * @param array $filtro_rango Rango de valores (ejemplo: `['precio' => ['BETWEEN', 100, 500]]`).
+     * @param array $group_by Cláusula `GROUP BY` para agrupar resultados.
+     * @param array $hijo Configuración de relaciones con otras tablas.
+     * @param array $in Filtros `IN` (ejemplo: `['id' => [1, 2, 3]]`).
+     * @param int $limit Límite de registros (0 para ilimitado).
+     * @param array $not_in Filtros `NOT IN` (ejemplo: `['id' => [3, 7, 10]]`).
+     * @param int $offset Número de registros a saltar (para paginación).
+     * @param array $order Cláusula `ORDER BY` para ordenar resultados.
+     * @param string $sql_extra SQL adicional a incluir en la consulta.
+     * @param string $tipo_filtro Tipo de filtro (TEXTOS, NUMEROS).
      *
      * @return array|stdClass Devuelve un `stdClass` con los registros obtenidos o un array con el error en caso de falla.
      *
@@ -1315,29 +1320,30 @@ class modelo extends modelo_base {
      */
 
     final public function filtro_and(
-        bool $aplica_seguridad = true,
-        array $columnas = array(),
-        array $columnas_by_table = array(),
-        bool $columnas_en_bruto = false,
-        array $columnas_totales = array(),
-        bool $con_sq = true,
-        array $diferente_de = array(),
-        array $extra_join = array(),
-        array $filtro = array(),
-        array $filtro_especial = array(),
-        array $filtro_extra = array(),
-        array $filtro_fecha = array(),
-        array $filtro_rango = array(),
-        array $group_by = array(),
-        array $hijo = array(),
-        array $in = array(),
-        int $limit = 0,
-        array $not_in = array(),
-        int $offset = 0,
-        array $order = array(),
+        bool   $aplica_seguridad = true,
+        array  $columnas = array(),
+        array  $columnas_by_table = array(),
+        bool   $columnas_en_bruto = false,
+        array  $columnas_totales = array(),
+        bool   $con_sq = true,
+        array  $diferente_de = array(),
+        array  $extra_join = array(),
+        array  $filtro = array(),
+        array  $filtro_especial = array(),
+        array  $filtro_extra = array(),
+        array  $filtro_fecha = array(),
+        array  $filtro_rango = array(),
+        array  $group_by = array(),
+        array  $hijo = array(),
+        array  $in = array(),
+        int    $limit = 0,
+        array  $not_in = array(),
+        int    $offset = 0,
+        array  $order = array(),
         string $sql_extra = '',
         string $tipo_filtro = 'numeros'
-    ): array|stdClass {
+    ): array|stdClass
+    {
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if (errores::$error) {
             return $this->error->error(
@@ -1402,7 +1408,6 @@ class modelo extends modelo_base {
     }
 
 
-
     /**
      * POR DOCUMENTAR EN WIKI FINAL REV
      * Ejecuta una consulta SQL basada en múltiples parametros. Una consulta base se genera primero y luego
@@ -1423,39 +1428,40 @@ class modelo extends modelo_base {
      * @throws errores si hay algún error al ejecutar la consulta
      * @version 19.6.0
      */
-    final public function filtro_or(bool $aplica_seguridad = false, array $columnas = array(),
+    final public function filtro_or(bool  $aplica_seguridad = false, array $columnas = array(),
                                     array $columnas_by_table = array(), bool $columnas_en_bruto = false,
                                     array $extra_join = array(), array $filtro = array(), array $group_by = array(),
                                     array $hijo = array(), int $limit = 0, int $offset = 0,
-                                    array $order = array()):array|stdClass{
+                                    array $order = array()): array|stdClass
+    {
 
         $consulta = $this->genera_consulta_base(columnas: $columnas, columnas_by_table: $columnas_by_table,
             columnas_en_bruto: $columnas_en_bruto, extension_estructura: $this->extension_estructura,
             extra_join: $extra_join, renombradas: $this->renombres);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar sql',data: $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar sql', data: $consulta);
         }
         $where = '';
         $sentencia = '';
-        foreach($filtro as $campo=>$value){
-            $data_sentencia = $this->data_sentencia(campo:  $campo,sentencia:  $sentencia,value:  $value, where: $where);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al generar data sentencia',data: $data_sentencia);
+        foreach ($filtro as $campo => $value) {
+            $data_sentencia = $this->data_sentencia(campo: $campo, sentencia: $sentencia, value: $value, where: $where);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al generar data sentencia', data: $data_sentencia);
             }
             $where = $data_sentencia->where;
             $sentencia = $data_sentencia->sentencia;
         }
 
-        $params_sql = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad,group_by:  $group_by,
-            limit:  $limit, modelo_columnas_extra: $this->columnas_extra, offset: $offset, order: $order,
+        $params_sql = (new params_sql())->params_sql(aplica_seguridad: $aplica_seguridad, group_by: $group_by,
+            limit: $limit, modelo_columnas_extra: $this->columnas_extra, offset: $offset, order: $order,
             sql_where_previo: $sentencia);
 
-        $consulta .= $where . $sentencia.$params_sql->limit;
+        $consulta .= $where . $sentencia . $params_sql->limit;
 
-        $result = $this->ejecuta_consulta(consulta:$consulta, campos_encriptados: $this->campos_encriptados,
+        $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados,
             hijo: $hijo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql',data: $result);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
 
         return $result;
@@ -1508,53 +1514,54 @@ class modelo extends modelo_base {
      * SELECT id, nombre, precio FROM productos WHERE categoria_id = 1 ORDER BY nombre ASC LIMIT 10 OFFSET 0;
      * ```
      *
-     * @param array  $columnas            Columnas a seleccionar en la consulta.
-     * @param array  $columnas_by_table   Columnas organizadas por tabla.
-     * @param bool   $columnas_en_bruto   Indica si las columnas deben estar sin alias ni modificaciones.
-     * @param bool   $con_sq              Indica si se debe generar una subquery en la consulta.
-     * @param array  $diferente_de        Condiciones de exclusión (`!=`).
-     * @param array  $extra_join          Joins adicionales a aplicar en la consulta.
-     * @param array  $filtro              Filtros básicos en formato `columna => valor`.
-     * @param array  $filtro_especial     Filtros especiales con condiciones avanzadas.
-     * @param array  $filtro_extra        Filtros adicionales no estándar.
-     * @param array  $filtro_rango        Filtros por rangos de valores.
-     * @param array  $group_by            Cláusula `GROUP BY`.
-     * @param array  $in                  Filtros `IN` para la consulta.
-     * @param int    $limit               Número máximo de registros a retornar.
-     * @param array  $not_in              Filtros `NOT IN`.
-     * @param int    $offset              Desplazamiento (`OFFSET`) para la paginación.
-     * @param array  $order               Cláusula `ORDER BY`.
-     * @param string $sql_extra           Fragmento SQL adicional para integrar.
-     * @param string $tipo_filtro         Tipo de filtro a aplicar (`AND` o `OR`).
-     * @param bool   $count               Indica si se debe generar una consulta de conteo (`COUNT(*)`).
-     * @param array  $filtro_fecha        Filtros por fechas.
+     * @param array $columnas Columnas a seleccionar en la consulta.
+     * @param array $columnas_by_table Columnas organizadas por tabla.
+     * @param bool $columnas_en_bruto Indica si las columnas deben estar sin alias ni modificaciones.
+     * @param bool $con_sq Indica si se debe generar una subquery en la consulta.
+     * @param array $diferente_de Condiciones de exclusión (`!=`).
+     * @param array $extra_join Joins adicionales a aplicar en la consulta.
+     * @param array $filtro Filtros básicos en formato `columna => valor`.
+     * @param array $filtro_especial Filtros especiales con condiciones avanzadas.
+     * @param array $filtro_extra Filtros adicionales no estándar.
+     * @param array $filtro_rango Filtros por rangos de valores.
+     * @param array $group_by Cláusula `GROUP BY`.
+     * @param array $in Filtros `IN` para la consulta.
+     * @param int $limit Número máximo de registros a retornar.
+     * @param array $not_in Filtros `NOT IN`.
+     * @param int $offset Desplazamiento (`OFFSET`) para la paginación.
+     * @param array $order Cláusula `ORDER BY`.
+     * @param string $sql_extra Fragmento SQL adicional para integrar.
+     * @param string $tipo_filtro Tipo de filtro a aplicar (`AND` o `OR`).
+     * @param bool $count Indica si se debe generar una consulta de conteo (`COUNT(*)`).
+     * @param array $filtro_fecha Filtros por fechas.
      *
      * @return array|string Retorna la consulta SQL generada como string o un array de error en caso de falla.
      */
 
 
     private function genera_sql_filtro(
-        array $columnas,
-        array $columnas_by_table,
-        bool $columnas_en_bruto,
-        bool $con_sq,
-        array $diferente_de,
-        array $extra_join,
-        array $filtro,
-        array $filtro_especial,
-        array $filtro_extra,
-        array $filtro_rango,
-        array $group_by,
-        array $in,
-        int $limit,
-        array $not_in,
-        int $offset,
-        array $order,
+        array  $columnas,
+        array  $columnas_by_table,
+        bool   $columnas_en_bruto,
+        bool   $con_sq,
+        array  $diferente_de,
+        array  $extra_join,
+        array  $filtro,
+        array  $filtro_especial,
+        array  $filtro_extra,
+        array  $filtro_rango,
+        array  $group_by,
+        array  $in,
+        int    $limit,
+        array  $not_in,
+        int    $offset,
+        array  $order,
         string $sql_extra,
         string $tipo_filtro,
-        bool $count = false,
-        array $filtro_fecha = array()
-    ): array|string {
+        bool   $count = false,
+        array  $filtro_fecha = array()
+    ): array|string
+    {
         if ($limit < 0) {
             return $this->error->error(
                 mensaje: 'Error limit debe ser mayor o igual a 0',
@@ -1646,31 +1653,29 @@ class modelo extends modelo_base {
     }
 
 
-
-
     /**
      * TOTAL
      * Este método genera un código aleatorio con longitud especificada.
      *
      * @param int $longitud La longitud deseada para el código aleatorio. Por defecto es 6.
      *
+     * @return string|array Devuelve una cadena aleatoria con la longitud especificada.
+     * Si se produce un error, devuelve un array con información del error.
      * @throws errores Si la longitud proporcionada es menor o igual a 0, se genera un error con el mensaje
      * 'Error longitud debe ser mayor a 0'.
      *
-     * @return string|array Devuelve una cadena aleatoria con la longitud especificada.
-     * Si se produce un error, devuelve un array con información del error.
      * @version 16.174.0
      * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.get_codigo_aleatorio
      */
     final public function get_codigo_aleatorio(int $longitud = 6): string|array
     {
-        if($longitud<=0){
+        if ($longitud <= 0) {
             return $this->error->error(mensaje: 'Error longitud debe ser mayor  a 0', data: $longitud);
         }
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $random_string = '';
 
-        for($i = 0; $i < $longitud; $i++) {
+        for ($i = 0; $i < $longitud; $i++) {
             $random_character = $chars[mt_rand(0, strlen($chars) - 1)];
             $random_string .= $random_character;
         }
@@ -1681,29 +1686,29 @@ class modelo extends modelo_base {
     final public function get_data_by_code(string $codigo, bool $columnas_en_bruto = false)
     {
         $filtro = array();
-        $filtro[$this->tabla.'.codigo'] = $codigo;
+        $filtro[$this->tabla . '.codigo'] = $codigo;
 
         $r_data = $this->filtro_and(columnas_en_bruto: $columnas_en_bruto, filtro: $filtro);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $r_data);
         }
-        if($r_data->n_registros === 0){
+        if ($r_data->n_registros === 0) {
             return $this->error->error(mensaje: 'Error no existe registro', data: $r_data);
         }
         return $r_data->registros_obj[0];
 
     }
-    
+
     final public function get_data_descripcion(string $dato, int $limit = 10, bool $por_descripcion_select = false)
     {
         $filtro = array();
-        $filtro[$this->tabla.'.descripcion'] = $dato;
-        if($por_descripcion_select){
+        $filtro[$this->tabla . '.descripcion'] = $dato;
+        if ($por_descripcion_select) {
             $filtro = array();
-            $filtro[$this->tabla.'.descripcion_select'] = $dato;
+            $filtro[$this->tabla . '.descripcion_select'] = $dato;
         }
         $r_data = $this->filtro_and(filtro: $filtro, limit: $limit, tipo_filtro: 'textos');
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $r_data);
         }
 
@@ -1723,33 +1728,34 @@ class modelo extends modelo_base {
      * @param array $order
      * @return array
      */
-    final public function get_data_lista(array $filtro = array(), array $columnas =array(),
-                                         array $filtro_especial = array(), array $filtro_rango = array(),
-                                         int $n_rows_for_page = 10, int $pagina = 1, array $in = array(),
-                                         array $extra_join = array(), array $order = array()): array
+    final public function get_data_lista(array $filtro = array(), array $columnas = array(),
+                                         array $filtro_especial = array(), array $filtro_extra = array() ,
+                                         array $filtro_rango = array(), int   $n_rows_for_page = 10, int $pagina = 1,
+                                         array $in = array(), array $extra_join = array(), array $order = array()): array
     {
-        if(count($order) === 0){
-            $order[$this->tabla.'.id'] = 'DESC';
+        if (count($order) === 0) {
+            $order[$this->tabla . '.id'] = 'DESC';
         }
 
         $limit = $n_rows_for_page;
 
         $n_rows = $this->cuenta_bis(extra_join: $extra_join, filtro: $filtro, filtro_especial: $filtro_especial,
-            filtro_rango: $filtro_rango, in: $in);
-        if(errores::$error){
+            filtro_extra: $filtro_extra, filtro_rango: $filtro_rango, in: $in);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $n_rows);
         }
 
         $offset = ($pagina - 1) * $n_rows_for_page;
 
-        if($n_rows <= $limit){
+        if ($n_rows <= $limit) {
             $offset = 0;
         }
 
         $result = $this->filtro_and(columnas: $columnas, extra_join: $extra_join, filtro: $filtro,
-            filtro_especial: $filtro_especial, filtro_rango: $filtro_rango, in: $in, limit: $limit, offset: $offset,
+            filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango, in: $in,
+            limit: $limit, offset: $offset,
             order: $order);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al obtener registros', data: $result);
         }
 
@@ -1765,14 +1771,14 @@ class modelo extends modelo_base {
     {
         $id = -1;
         $existe = $this->existe_by_codigo(codigo: $codigo);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar si existe codigo',data:  $existe);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe codigo', data: $existe);
         }
-        if($existe){
-            $filtro[$this->tabla.'.codigo'] = $codigo;
+        if ($existe) {
+            $filtro[$this->tabla . '.codigo'] = $codigo;
             $r_filtro = $this->filtro_and(columnas_en_bruto: true, filtro: $filtro);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_filtro);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener datos', data: $r_filtro);
             }
             $id = (int)$r_filtro->registros_obj[0]->id;
         }
@@ -1783,12 +1789,12 @@ class modelo extends modelo_base {
     final public function get_foraneas()
     {
         $foraneas = (new _instalacion(link: $this->link))->get_foraneas(table: $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener foraneas',data:  $foraneas);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener foraneas', data: $foraneas);
         }
 
         $out = new stdClass();
-        foreach ($foraneas as $fk){
+        foreach ($foraneas as $fk) {
             $key = $fk->columna_foranea;
             $out->$key = $fk;
         }
@@ -1798,14 +1804,14 @@ class modelo extends modelo_base {
 
     private function get_predeterminado(): array|stdClass
     {
-        $key = $this->tabla.'.predeterminado';
+        $key = $this->tabla . '.predeterminado';
         $filtro[$key] = 'activo';
         $r_modelo = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener datos', data: $r_modelo);
         }
-        if((int)$r_modelo->n_registros > 1){
-            return $this->error->error(mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+        if ((int)$r_modelo->n_registros > 1) {
+            return $this->error->error(mensaje: 'Error existe mas de un predeterminado', data: $r_modelo);
         }
         return $r_modelo;
     }
@@ -1817,35 +1823,36 @@ class modelo extends modelo_base {
      */
     final public function id_predeterminado(): array|int
     {
-        $key = $this->tabla.'.predeterminado';
+        $key = $this->tabla . '.predeterminado';
 
         $filtro[$key] = 'activo';
 
         $r_modelo = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener predeterminado',data:  $r_modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener predeterminado', data: $r_modelo);
         }
 
-        if($r_modelo->n_registros === 0){
-            return $this->error->error(mensaje: 'Error no existe predeterminado',data:  $r_modelo);
+        if ($r_modelo->n_registros === 0) {
+            return $this->error->error(mensaje: 'Error no existe predeterminado', data: $r_modelo);
         }
-        if($r_modelo->n_registros > 1){
+        if ($r_modelo->n_registros > 1) {
             return $this->error->error(
-                mensaje: 'Error existe mas de un predeterminado',data:  $r_modelo);
+                mensaje: 'Error existe mas de un predeterminado', data: $r_modelo);
         }
 
-        return (int) $r_modelo->registros[0][$this->key_id];
+        return (int)$r_modelo->registros[0][$this->key_id];
 
     }
 
-    final public function id_preferido(string $entidad_relacion){
+    final public function id_preferido(string $entidad_relacion)
+    {
 
-        $key_id = $entidad_relacion.'_id';
+        $key_id = $entidad_relacion . '_id';
         $sql = "SELECT COUNT(*), $key_id FROM $this->tabla GROUP BY $key_id ORDER BY COUNT(*) DESC LIMIT 1;";
 
         $result = $this->ejecuta_consulta(consulta: $sql);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener id preferido',data:  $result);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener id preferido', data: $result);
         }
         return (int)$result->registros[0][$key_id];
 
@@ -1895,7 +1902,7 @@ class modelo extends modelo_base {
      * @throws errores Si ocurre un error durante la consulta SQL o el procesamiento de datos.
      */
     public function id_preferido_detalle(string $entidad_preferida, array $extension_estructura = array(),
-                                         array $extra_join = array(), array $renombradas = array()): int|array
+                                         array  $extra_join = array(), array $renombradas = array()): int|array
     {
         // Validación: Verificar que la entidad preferida no esté vacía.
         $entidad_preferida = trim($entidad_preferida);
@@ -1969,21 +1976,7 @@ class modelo extends modelo_base {
      * @return array Devuelve el mismo array <code>$in</code> con la llave validada y normalizada.
      *               En caso de error, retorna un array con la estructura de error definida por la clase <code>errores</code>.
      *
-     * @example Ejemplo 1: Llave definida correctamente sin coincidencia en columnas extra
-     * <pre>
-     * $in = [
-     *     'llave'  => 'nombre_columna',
-     *     'values' => [1, 2, 3]
-     * ];
-     *
-     * // Si $this->columnas_extra no contiene 'nombre_columna', la función devuelve:
-     * // [
-     * //     'llave'  => 'nombre_columna',
-     * //     'values' => [1, 2, 3]
-     * // ]
-     * $resultado = $this->in_llave($in);
-     * </pre>
-     *
+     * @return array
      * @example Ejemplo 2: La llave es una cadena vacía
      * <pre>
      * $in = [
@@ -2018,7 +2011,21 @@ class modelo extends modelo_base {
      * $resultado = $this->in_llave($in);
      * </pre>
      *
-     * @return array
+     * @example Ejemplo 1: Llave definida correctamente sin coincidencia en columnas extra
+     * <pre>
+     * $in = [
+     *     'llave'  => 'nombre_columna',
+     *     'values' => [1, 2, 3]
+     * ];
+     *
+     * // Si $this->columnas_extra no contiene 'nombre_columna', la función devuelve:
+     * // [
+     * //     'llave'  => 'nombre_columna',
+     * //     'values' => [1, 2, 3]
+     * // ]
+     * $resultado = $this->in_llave($in);
+     * </pre>
+     *
      */
     private function in_llave(array $in): array
     {
@@ -2048,7 +2055,6 @@ class modelo extends modelo_base {
     }
 
 
-
     /**
      * Inserta un registro predeterminado del modelo en ejecucion
      * @param string|int $codigo Codigo predeterminado default
@@ -2059,20 +2065,20 @@ class modelo extends modelo_base {
         string|int $codigo = 'PRED', string $descripcion = 'PREDETERMINADO'): array|stdClass
     {
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: array());
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: array());
         }
 
         $r_pred = new stdClass();
         $existe = $this->existe_predeterminado();
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(
-                mensaje: 'Error al validar si existe predeterminado en modelo '.$this->tabla,data:  $existe);
+                mensaje: 'Error al validar si existe predeterminado en modelo ' . $this->tabla, data: $existe);
         }
-        if(!$existe){
+        if (!$existe) {
             $r_pred = $this->alta_predeterminado(codigo: $codigo, descripcion: $descripcion);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al insertar prederminado en modelo '.$this->tabla,data:  $r_pred);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al insertar prederminado en modelo ' . $this->tabla, data: $r_pred);
             }
         }
         return $r_pred;
@@ -2080,26 +2086,25 @@ class modelo extends modelo_base {
 
     final public function inserta_registro_si_no_existe(array $registro, array $con_descripcion = array()): array|string|stdClass
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro);
         }
 
-        if(count($con_descripcion) === 0) {
+        if (count($con_descripcion) === 0) {
             $existe = $this->existe_by_id(registro_id: $registro['id']);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
             }
-            $inserta = 'Id '.$registro['id'].' Ya existe';
-        }
-        else{
+            $inserta = 'Id ' . $registro['id'] . ' Ya existe';
+        } else {
             $existe = $this->existe(filtro: $con_descripcion);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
             }
-            $inserta = 'Id '.$registro['descripcion'].' Ya existe';
+            $inserta = 'Id ' . $registro['descripcion'] . ' Ya existe';
         }
 
-        if(!$existe) {
+        if (!$existe) {
             $inserta = $this->alta_registro(registro: $registro);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al insertar cat_sat_tipo_persona', data: $inserta);
@@ -2111,26 +2116,25 @@ class modelo extends modelo_base {
 
     final public function inserta_registro_si_no_existe_code(array $registro, array $con_descripcion = array()): array|string|stdClass
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro);
         }
 
-        if(count($con_descripcion) === 0) {
+        if (count($con_descripcion) === 0) {
             $existe = $this->existe_by_codigo(codigo: $registro['codigo']);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
             }
-            $inserta = 'Codigo '.$registro['codigo'].' Ya existe';
-        }
-        else{
+            $inserta = 'Codigo ' . $registro['codigo'] . ' Ya existe';
+        } else {
             $existe = $this->existe(filtro: $con_descripcion);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
             }
-            $inserta = 'Descripcion '.$registro['descripcion'].' Ya existe';
+            $inserta = 'Descripcion ' . $registro['descripcion'] . ' Ya existe';
         }
 
-        if(!$existe) {
+        if (!$existe) {
             $inserta = $this->alta_registro(registro: $registro);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al insertar cat_sat_tipo_persona', data: $inserta);
@@ -2142,16 +2146,16 @@ class modelo extends modelo_base {
 
     final public function inserta_registro_si_no_existe_filtro(array $registro, array $filtro): array|string|stdClass
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro);
         }
         $existe = $this->existe(filtro: $filtro);
         if (errores::$error) {
             return (new errores())->error(mensaje: 'Error al verificar si existe registro', data: $existe);
         }
-        $inserta = 'Row '.serialize($filtro).' Ya existe';
+        $inserta = 'Row ' . serialize($filtro) . ' Ya existe';
 
-        if(!$existe) {
+        if (!$existe) {
             $inserta = $this->alta_registro(registro: $registro);
             if (errores::$error) {
                 return (new errores())->error(mensaje: 'Error al insertar cat_sat_tipo_persona', data: $inserta);
@@ -2163,15 +2167,15 @@ class modelo extends modelo_base {
 
     final public function inserta_registros(array $registros)
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registros);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registros);
         }
         $out = array();
-        foreach ($registros as $registro){
+        foreach ($registros as $registro) {
             $alta_bd = $this->alta_registro(registro: $registro);
-            if(errores::$error){
-               return $this->error->error(mensaje: 'Error al insertar registro del modelo '.$this->tabla,
-                   data: $alta_bd);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al insertar registro del modelo ' . $this->tabla,
+                    data: $alta_bd);
             }
             $out[] = $alta_bd;
         }
@@ -2181,8 +2185,8 @@ class modelo extends modelo_base {
 
     final public function inserta_registros_no_existentes_id(array $registros): array
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registros);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registros);
         }
         $out = array();
         foreach ($registros as $registro) {
@@ -2200,7 +2204,6 @@ class modelo extends modelo_base {
     }
 
 
-
     /**
      * PHPUNIT
      * @param float $sub_total
@@ -2209,7 +2212,7 @@ class modelo extends modelo_base {
     protected function iva(float $sub_total): float
     {
         $iva = $sub_total * .16;
-        return  round($iva,2);
+        return round($iva, 2);
     }
 
 
@@ -2224,8 +2227,8 @@ class modelo extends modelo_base {
     {
         foreach ($campos_limpiar as $valor) {
             $valor = trim($valor);
-            if($valor === ''){
-                return $this->error->error(mensaje: 'Error el valor no puede venir vacio'.$this->tabla,data:  $valor);
+            if ($valor === '') {
+                return $this->error->error(mensaje: 'Error el valor no puede venir vacio' . $this->tabla, data: $valor);
             }
             if (isset($registro[$valor])) {
                 unset($registro[$valor]);
@@ -2243,15 +2246,15 @@ class modelo extends modelo_base {
     public function limpia_campos_registro(array $registro, int $id): array
     {
         $data_upd = array();
-        foreach ($registro as $campo){
+        foreach ($registro as $campo) {
             $data_upd[$campo] = '';
         }
         $r_modifica = $this->modifica_bd($data_upd, $id);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error("Error al modificar", $r_modifica);
         }
         $registro = $this->registro(registro_id: $id);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error("Error al obtener registro", $registro);
         }
         return $registro;
@@ -2260,8 +2263,8 @@ class modelo extends modelo_base {
 
     private function limpia_campos_obligatorios(array $unsets): array
     {
-        foreach($this->campos_obligatorios as $key=>$campo_obligatorio){
-            if(in_array($campo_obligatorio, $unsets, true)) {
+        foreach ($this->campos_obligatorios as $key => $campo_obligatorio) {
+            if (in_array($campo_obligatorio, $unsets, true)) {
                 unset($this->campos_obligatorios[$key]);
             }
         }
@@ -2282,13 +2285,13 @@ class modelo extends modelo_base {
      */
     private function limpia_campos_sin_bd(array $registro): array
     {
-        foreach ($registro as $campo=>$value){
+        foreach ($registro as $campo => $value) {
             $campo = trim($campo);
-            if($campo === ''){
+            if ($campo === '') {
                 return $this->error->error(mensaje: "Error campo esta vacio", data: $registro, es_final: true);
             }
             $attrs = (array)$this->atributos;
-            if(!array_key_exists($campo, $attrs)){
+            if (!array_key_exists($campo, $attrs)) {
                 unset($registro[$campo]);
             }
         }
@@ -2313,18 +2316,18 @@ class modelo extends modelo_base {
      */
     public function modifica_bd(array $registro, int $id, bool $reactiva = false): array|stdClass
     {
-        if($this->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id);
+        if ($this->usuario_id <= 0) {
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado', data: $this->usuario_id);
         }
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro);
         }
 
 
-        $resultado = $this->modifica_bd_base(registro: $registro,id:  $id, reactiva: $reactiva);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
+        $resultado = $this->modifica_bd_base(registro: $registro, id: $id, reactiva: $reactiva);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
         }
 
 
@@ -2335,48 +2338,48 @@ class modelo extends modelo_base {
     {
         $registro_original = $registro;
         $registro_original = serialize(value: $registro_original);
-        if($this->usuario_id <=0){
-            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado',data: $this->usuario_id,
+        if ($this->usuario_id <= 0) {
+            return $this->error->error(mensaje: 'Error usuario invalido no esta logueado', data: $this->usuario_id,
                 es_final: true);
         }
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro,
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro,
                 es_final: true);
         }
 
         $registro = $this->limpia_campos_sin_bd(registro: $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al limpiar campos',data: $registro);
-        }
-
-        $init = (new inicializacion())->init_upd(id:$id, modelo: $this,registro:  $registro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar registro original '.$registro_original.
-                ' del modelo '.$this->tabla, data: $init);
-        }
-
-
-        $valida = (new validaciones())->valida_upd_base(id:$id, registro_upd: $this->registro_upd,
-            tipo_campos: $this->tipo_campos, valida_row_vacio: $valida_row_vacio);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar datos',data: $valida);
-        }
-
-        $ajusta = (new inicializacion())->ajusta_campos_upd(id:$id, modelo: $this);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ajustar elemento',data:$ajusta);
-        }
-
-        $ejecuta_upd = (new upd())->ejecuta_upd(id:$id,modelo:  $this);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al verificar actualizacion',data:$ejecuta_upd);
-        }
-
-        $resultado = (new upd())->aplica_ejecucion(ejecuta_upd: $ejecuta_upd,id:  $id,modelo:  $this,
-            reactiva:  $reactiva,registro:  $registro, valida_user: $this->valida_user);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al ejecutar sql', data:  $resultado);
+            return $this->error->error(mensaje: 'Error al limpiar campos', data: $registro);
+        }
+
+        $init = (new inicializacion())->init_upd(id: $id, modelo: $this, registro: $registro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar registro original ' . $registro_original .
+                ' del modelo ' . $this->tabla, data: $init);
+        }
+
+
+        $valida = (new validaciones())->valida_upd_base(id: $id, registro_upd: $this->registro_upd,
+            tipo_campos: $this->tipo_campos, valida_row_vacio: $valida_row_vacio);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar datos', data: $valida);
+        }
+
+        $ajusta = (new inicializacion())->ajusta_campos_upd(id: $id, modelo: $this);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ajustar elemento', data: $ajusta);
+        }
+
+        $ejecuta_upd = (new upd())->ejecuta_upd(id: $id, modelo: $this);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al verificar actualizacion', data: $ejecuta_upd);
+        }
+
+        $resultado = (new upd())->aplica_ejecucion(ejecuta_upd: $ejecuta_upd, id: $id, modelo: $this,
+            reactiva: $reactiva, registro: $registro, valida_user: $this->valida_user);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $resultado);
         }
 
         return $resultado;
@@ -2391,35 +2394,34 @@ class modelo extends modelo_base {
      */
     public function modifica_con_filtro_and(array $filtro, array $registro): array
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro);
         }
 
         $this->registro_upd = $registro;
-        if(count($this->registro_upd) === 0){
-            return $this->error->error('El registro no puede venir vacio',$this->registro_upd);
+        if (count($this->registro_upd) === 0) {
+            return $this->error->error('El registro no puede venir vacio', $this->registro_upd);
         }
-        if(count($filtro) === 0){
-            return $this->error->error('El filtro no puede venir vacio',$filtro);
+        if (count($filtro) === 0) {
+            return $this->error->error('El filtro no puede venir vacio', $filtro);
         }
 
         $r_data = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error('Error al obtener registros',$r_data);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener registros', $r_data);
         }
 
         $data = array();
-        foreach ($r_data['registros'] as $row){
-            $upd = $this->modifica_bd($registro, $row[$this->tabla.'_id']);
-            if(errores::$error){
-                return $this->error->error('Error al modificar registro',$upd);
+        foreach ($r_data['registros'] as $row) {
+            $upd = $this->modifica_bd($registro, $row[$this->tabla . '_id']);
+            if (errores::$error) {
+                return $this->error->error('Error al modificar registro', $upd);
             }
             $data[] = $upd;
         }
 
 
-
-        return array('mensaje'=>'Registros modificados con exito',$data);
+        return array('mensaje' => 'Registros modificados con exito', $data);
 
     }
 
@@ -2429,14 +2431,14 @@ class modelo extends modelo_base {
      * @param int $id
      * @return array
      */
-    public function modifica_por_id(array $registro,int $id): array
+    public function modifica_por_id(array $registro, int $id): array
     {
 
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro);
         }
         $r_modifica = $this->modifica_bd($registro, $id);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error("Error al modificar", $r_modifica);
         }
         return $r_modifica;
@@ -2460,6 +2462,14 @@ class modelo extends modelo_base {
      *
      * @return array Retorna un arreglo con el registro obtenido o un arreglo con los detalles del error en caso de fallo.
      *
+     * @throws errores Retorna un error si:
+     * - `registro_id` es menor a 0.
+     * - La consulta no genera un registro.
+     * - Existen múltiples registros con el mismo ID.
+     * - Falla la función interna `obten_por_id` para construir y ejecutar la consulta.
+     *
+     * @note Esta función asigna los valores del registro encontrado a la propiedad `$this->row`.
+     * @note Depende de la función `obten_por_id` para realizar la consulta principal.
      * @example Uso exitoso:
      * ```php
      * $modelo = new modelo();
@@ -2526,21 +2536,14 @@ class modelo extends modelo_base {
      * // ]
      * ```
      *
-     * @throws errores Retorna un error si:
-     * - `registro_id` es menor a 0.
-     * - La consulta no genera un registro.
-     * - Existen múltiples registros con el mismo ID.
-     * - Falla la función interna `obten_por_id` para construir y ejecutar la consulta.
-     *
-     * @note Esta función asigna los valores del registro encontrado a la propiedad `$this->row`.
-     * @note Depende de la función `obten_por_id` para realizar la consulta principal.
      */
     final public function obten_data(
         array $columnas = array(),
-        bool $columnas_en_bruto = false,
+        bool  $columnas_en_bruto = false,
         array $extension_estructura = array(),
         array $hijo = array()
-    ): array {
+    ): array
+    {
         $this->row = new stdClass();
         if ($this->registro_id < 0) {
             return $this->error->error(
@@ -2597,26 +2600,26 @@ class modelo extends modelo_base {
      * @internal  $this->filtro_and($filtro,'numeros',array(),$this->order,1);
      * @version 1.451.48
      */
-    public function obten_datos_ultimo_registro(bool $aplica_seguridad = true, array $columnas = array(),
-                                                bool $columnas_en_bruto = false, array $filtro = array(),
+    public function obten_datos_ultimo_registro(bool  $aplica_seguridad = true, array $columnas = array(),
+                                                bool  $columnas_en_bruto = false, array $filtro = array(),
                                                 array $filtro_extra = array(), array $order = array()): array
     {
-        if($this->tabla === ''){
-            return $this->error->error(mensaje: 'Error tabla no puede venir vacia',data: $this->tabla);
+        if ($this->tabla === '') {
+            return $this->error->error(mensaje: 'Error tabla no puede venir vacia', data: $this->tabla);
         }
-        if(count($order)===0){
-            $order = array($this->tabla.'.id'=>'DESC');
+        if (count($order) === 0) {
+            $order = array($this->tabla . '.id' => 'DESC');
         }
 
         $this->limit = 1;
 
-        $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad,columnas: $columnas,
-            columnas_en_bruto: $columnas_en_bruto, filtro: $filtro,filtro_extra: $filtro_extra, limit: 1,
+        $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad, columnas: $columnas,
+            columnas_en_bruto: $columnas_en_bruto, filtro: $filtro, filtro_extra: $filtro_extra, limit: 1,
             order: $order);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener datos',data: $resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener datos', data: $resultado);
         }
-        if((int)$resultado->n_registros === 0){
+        if ((int)$resultado->n_registros === 0) {
             return array();
         }
         return $resultado->registros[0];
@@ -2645,6 +2648,14 @@ class modelo extends modelo_base {
      * @return array|stdClass Retorna el registro obtenido como un objeto `stdClass` o un arreglo con los detalles
      *                        del error en caso de fallo.
      *
+     * @throws errores Retorna un error si:
+     * - `registro_id` es menor a 0.
+     * - Falla la generación de la consulta base mediante `genera_consulta_base`.
+     * - Falla la generación de la cláusula `WHERE` mediante `_where::sql_where`.
+     * - Falla la ejecución de la consulta SQL mediante `ejecuta_consulta`.
+     *
+     * @note Esta función utiliza otras funciones internas como `genera_consulta_base`, `_where::sql_where`, y
+     *       `ejecuta_consulta` para construir, filtrar y ejecutar la consulta SQL.
      * @example Uso exitoso:
      * ```php
      * $modelo = new modelo();
@@ -2695,23 +2706,16 @@ class modelo extends modelo_base {
      * // ]
      * ```
      *
-     * @throws errores Retorna un error si:
-     * - `registro_id` es menor a 0.
-     * - Falla la generación de la consulta base mediante `genera_consulta_base`.
-     * - Falla la generación de la cláusula `WHERE` mediante `_where::sql_where`.
-     * - Falla la ejecución de la consulta SQL mediante `ejecuta_consulta`.
-     *
-     * @note Esta función utiliza otras funciones internas como `genera_consulta_base`, `_where::sql_where`, y
-     *       `ejecuta_consulta` para construir, filtrar y ejecutar la consulta SQL.
      */
     private function obten_por_id(
         array $columnas = array(),
         array $columnas_by_table = array(),
-        bool $columnas_en_bruto = false,
+        bool  $columnas_en_bruto = false,
         array $extension_estructura = array(),
         array $extra_join = array(),
         array $hijo = array()
-    ): array|stdClass {
+    ): array|stdClass
+    {
         if ($this->registro_id < 0) {
             return $this->error->error(
                 mensaje: 'Error el id debe ser mayor a 0',
@@ -2766,12 +2770,13 @@ class modelo extends modelo_base {
      * @return array|stdClass Los registros obtenidos de la consulta SQL
      * @version 16.247.0
      */
-    final public function obten_registros(bool $aplica_seguridad = false, array $columnas = array(),
-                                          bool $columnas_en_bruto = false, bool $con_sq = true,
-                                          array $group_by = array(), int $limit = 0,
-                                          string $sql_extra=''): array|stdClass{
+    final public function obten_registros(bool   $aplica_seguridad = false, array $columnas = array(),
+                                          bool   $columnas_en_bruto = false, bool $con_sq = true,
+                                          array  $group_by = array(), int $limit = 0,
+                                          string $sql_extra = ''): array|stdClass
+    {
 
-        if($this->limit > 0){
+        if ($this->limit > 0) {
             $limit = $this->limit;
         }
 
@@ -2781,20 +2786,20 @@ class modelo extends modelo_base {
             group_by: $group_by, limit: $limit, modelo: $this, offset: $this->offset, order: $this->order,
             renombres: $this->renombres, sql_where_previo: $sql_extra);
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar datos en '.$this->tabla, data: $base);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar datos en ' . $this->tabla, data: $base);
         }
 
-        $consulta = (new sql())->sql_select(consulta_base:$base->consulta_base,params_base:  $base->params,
+        $consulta = (new sql())->sql_select(consulta_base: $base->consulta_base, params_base: $base->params,
             sql_extra: $sql_extra);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar consulta en '.$this->tabla, data: $consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar consulta en ' . $this->tabla, data: $consulta);
         }
 
         $this->transaccion = 'SELECT';
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al ejecutar consulta en '.$this->tabla, data: $result);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar consulta en ' . $this->tabla, data: $result);
         }
         $this->transaccion = '';
 
@@ -2822,12 +2827,13 @@ class modelo extends modelo_base {
      * @fecha 2022-08-02 17:03
      * @author mgamboa
      */
-    final public function obten_registros_activos(array $filtro= array(), array $hijo = array(),
-                                            array $order = array()):array|stdClass{
+    final public function obten_registros_activos(array $filtro = array(), array $hijo = array(),
+                                                  array $order = array()): array|stdClass
+    {
 
-        $filtro[$this->tabla.'.status'] = 'activo';
-        $r_data = $this->filtro_and(filtro: $filtro, hijo: $hijo,order: $order);
-        if(errores::$error){
+        $filtro[$this->tabla . '.status'] = 'activo';
+        $r_data = $this->filtro_and(filtro: $filtro, hijo: $hijo, order: $order);
+        if (errores::$error) {
             return $this->error->error(mensaje: "Error al filtrar", data: $r_data);
         }
 
@@ -2847,31 +2853,31 @@ class modelo extends modelo_base {
      *  $filtro = array('elemento_lista.status'=>'activo','seccion_menu.descripcion'=>$seccion,'elemento_lista.encabezado'=>'activo');
      * $resultado = $elemento_lista_modelo->obten_registros_filtro_and_ordenado($filtro,'elemento_lista.orden','ASC');
      *
-
      * @internal  $this->genera_and();
      * @internal this->genera_consulta_base();
      * @internal $this->ejecuta_consulta();
      */
     public function obten_registros_filtro_and_ordenado(string $campo, bool $columnas_en_bruto, array $extra_join,
-                                                        array $filtros, string $orden):array|stdClass{
+                                                        array  $filtros, string $orden): array|stdClass
+    {
         $this->filtro = $filtros;
-        if(count($this->filtro) === 0){
-            return $this->error->error(mensaje: 'Error los filtros no pueden venir vacios',data: $this->filtro,
+        if (count($this->filtro) === 0) {
+            return $this->error->error(mensaje: 'Error los filtros no pueden venir vacios', data: $this->filtro,
                 es_final: true);
         }
-        if($campo === ''){
-            return $this->error->error(mensaje:'Error campo no pueden venir vacios',data:$this->filtro, es_final: true);
+        if ($campo === '') {
+            return $this->error->error(mensaje: 'Error campo no pueden venir vacios', data: $this->filtro, es_final: true);
         }
 
         $sentencia = (new \gamboamartin\where\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtros);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar and',data:$sentencia);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar and', data: $sentencia);
         }
         $consulta = $this->genera_consulta_base(columnas_en_bruto: $columnas_en_bruto,
             extension_estructura: $this->extension_estructura, extra_join: $extra_join, renombradas: $this->renombres);
 
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al generar consulta',data:$consulta);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar consulta', data: $consulta);
         }
 
         $where = " WHERE $sentencia";
@@ -2879,8 +2885,8 @@ class modelo extends modelo_base {
         $consulta .= $where . $order_by;
 
         $result = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
-        if(errores::$error){
-            return $this->error->error(mensaje:'Error al ejecutar sql',data:$result);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al ejecutar sql', data: $result);
         }
 
         return $result;
@@ -2891,14 +2897,14 @@ class modelo extends modelo_base {
      */
     final public function obten_ultimo_registro(): int|array
     {
-        $this->order = array($this->tabla.'.id'=>'DESC');
+        $this->order = array($this->tabla . '.id' => 'DESC');
         $this->limit = 1;
         $resultado = $this->obten_registros(limit: $this->limit);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
         }
 
-        if((int)$resultado->n_registros === 0){
+        if ((int)$resultado->n_registros === 0) {
             return 1;
         }
 
@@ -2914,11 +2920,11 @@ class modelo extends modelo_base {
     final public function primer_id(): int|array
     {
         $rows = $this->registros(columnas_en_bruto: true, limit: 1);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registros',data: $rows);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $rows);
         }
         $primer_id = -1;
-        if(count($rows) > 0){
+        if (count($rows) > 0) {
             $primer_id = (int)$rows[0]['id'];
         }
         return $primer_id;
@@ -2977,13 +2983,14 @@ class modelo extends modelo_base {
      * }
      */
     final public function registro(
-        int $registro_id,
+        int   $registro_id,
         array $columnas = array(),
-        bool $columnas_en_bruto = false,
+        bool  $columnas_en_bruto = false,
         array $extension_estructura = array(),
         array $hijo = array(),
-        bool $retorno_obj = false
-    ): array|stdClass {
+        bool  $retorno_obj = false
+    ): array|stdClass
+    {
         if ($registro_id <= 0) {
             return $this->error->error(
                 mensaje: 'Error al obtener registro: $registro_id debe ser mayor a 0',
@@ -3024,32 +3031,32 @@ class modelo extends modelo_base {
      * @version 8.86.1
      */
     final public function registro_by_codigo(string $codigo, array $columnas = array(), bool $columnas_en_bruto = false,
-                                             array $extra_join = array(), array $hijo = array(),
-                                             bool $retorno_obj = false): array|stdClass
+                                             array  $extra_join = array(), array $hijo = array(),
+                                             bool   $retorno_obj = false): array|stdClass
     {
 
         $codigo = trim($codigo);
-        if($codigo === ''){
-            return  $this->error->error(mensaje: 'Error el codigo esta vacio',data: $codigo);
+        if ($codigo === '') {
+            return $this->error->error(mensaje: 'Error el codigo esta vacio', data: $codigo);
         }
 
-        $filtro[$this->tabla.'.codigo'] = $codigo;
+        $filtro[$this->tabla . '.codigo'] = $codigo;
 
         $registros = $this->filtro_and(columnas: $columnas, columnas_en_bruto: $columnas_en_bruto,
             extra_join: $extra_join, filtro: $filtro, hijo: $hijo);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registros con codigo: '.$codigo,data: $registros);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros con codigo: ' . $codigo, data: $registros);
         }
-        if($registros->n_registros === 0){
-            return  $this->error->error(mensaje: 'Error no existe registro con codigo: '.$codigo,data: $registros);
+        if ($registros->n_registros === 0) {
+            return $this->error->error(mensaje: 'Error no existe registro con codigo: ' . $codigo, data: $registros);
         }
-        if($registros->n_registros > 1){
-            return  $this->error->error(mensaje: 'Error existe mas de un registro con codigo: '.$codigo,
+        if ($registros->n_registros > 1) {
+            return $this->error->error(mensaje: 'Error existe mas de un registro con codigo: ' . $codigo,
                 data: $registros);
         }
 
         $registro = $registros->registros[0];
-        if($retorno_obj){
+        if ($retorno_obj) {
             $registro = (object)$registro;
         }
         return $registro;
@@ -3064,11 +3071,11 @@ class modelo extends modelo_base {
     final public function registro_by_descripcion(string $descripcion): array|stdClass
     {
 
-        $key_descripcion = $this->tabla.'.descripcion';
+        $key_descripcion = $this->tabla . '.descripcion';
         $filtro[$key_descripcion] = $descripcion;
         $result = $this->filtro_and(filtro: $filtro);
-        if(errores::$error){
-            return  $this->error->error(mensaje: 'Error al obtener registros con descripcion: '.$descripcion,
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros con descripcion: ' . $descripcion,
                 data: $result);
         }
         return $result;
@@ -3090,19 +3097,20 @@ class modelo extends modelo_base {
      * @return array|stdClass Devuelve un array de registros o un objeto si $return_obj está establecido como 'true'.
      * @version 16.254.1
      */
-    final public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true,                              bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
-                              bool $return_obj = false):array|stdClass{
+    final public function registros(array $columnas = array(), bool $columnas_en_bruto = false, bool $con_sq = true, bool $aplica_seguridad = false, int $limit = 0, array $order = array(),
+                                    bool  $return_obj = false): array|stdClass
+    {
 
         $this->order = $order;
-        $resultado =$this->obten_registros(aplica_seguridad: $aplica_seguridad, columnas: $columnas,
+        $resultado = $this->obten_registros(aplica_seguridad: $aplica_seguridad, columnas: $columnas,
             columnas_en_bruto: $columnas_en_bruto, con_sq: $con_sq, limit: $limit);
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros activos en '.$this->tabla,data: $resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros activos en ' . $this->tabla, data: $resultado);
         }
         $this->registros = $resultado->registros;
         $registros = $resultado->registros;
-        if($return_obj){
+        if ($return_obj) {
             $registros = $resultado->registros_obj;
         }
 
@@ -3119,19 +3127,19 @@ class modelo extends modelo_base {
      * @version 11.22.0
      */
     final public function registros_activos(array $columnas = array(), bool $aplica_seguridad = false,
-                                            int $limit = 0, bool $retorno_obj = false): array
+                                            int   $limit = 0, bool $retorno_obj = false): array
     {
-        $filtro[$this->tabla.'.status'] = 'activo';
-        $resultado =$this->filtro_and(aplica_seguridad: $aplica_seguridad, columnas: $columnas, filtro: $filtro,
+        $filtro[$this->tabla . '.status'] = 'activo';
+        $resultado = $this->filtro_and(aplica_seguridad: $aplica_seguridad, columnas: $columnas, filtro: $filtro,
             limit: $limit);
 
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
         }
         $this->registros = $resultado->registros;
 
         $result = $resultado->registros;
-        if($retorno_obj){
+        if ($retorno_obj) {
             $result = $resultado->registros_obj;
         }
 
@@ -3145,9 +3153,9 @@ class modelo extends modelo_base {
      */
     public function registros_permitidos(array $columnas = array()): array
     {
-        $registros = $this->registros(columnas: $columnas,aplica_seguridad:  $this->aplica_seguridad);
-        if(errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registros en '.$this->tabla, data: $registros);
+        $registros = $this->registros(columnas: $columnas, aplica_seguridad: $this->aplica_seguridad);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros en ' . $this->tabla, data: $registros);
         }
 
         return $registros;
@@ -3162,9 +3170,9 @@ class modelo extends modelo_base {
     {
         $r_modelo = new stdClass();
         $r_modelo->n_registros = 0;
-        $r_modelo->registros= array();
-        $r_modelo->sql= '';
-        $r_modelo->registros_obj= array();
+        $r_modelo->registros = array();
+        $r_modelo->sql = '';
+        $r_modelo->registros_obj = array();
         return $r_modelo;
     }
 
@@ -3172,20 +3180,20 @@ class modelo extends modelo_base {
     {
 
         $r_modelo = $this->result_ini();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al inicializar result',data:  $r_modelo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al inicializar result', data: $r_modelo);
         }
 
 
         $tiene_predeterminado = $this->tiene_predeterminado();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener si predeterminado',data:  $tiene_predeterminado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener si predeterminado', data: $tiene_predeterminado);
         }
 
-        if($tiene_predeterminado){
+        if ($tiene_predeterminado) {
             $r_modelo = $this->get_predeterminado();
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al obtener datos',data:  $r_modelo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al obtener datos', data: $r_modelo);
             }
 
         }
@@ -3198,20 +3206,21 @@ class modelo extends modelo_base {
      * @return array|int
      * @version 1.356.41
      */
-    protected function seccion_menu_id(string $seccion):array|int{
+    protected function seccion_menu_id(string $seccion): array|int
+    {
         $seccion = trim($seccion);
-        if($seccion === ''){
-            return $this->error->error(mensaje: 'Error seccion no puede venir vacio',data: $seccion);
+        if ($seccion === '') {
+            return $this->error->error(mensaje: 'Error seccion no puede venir vacio', data: $seccion);
         }
         $filtro['adm_seccion.descripcion'] = $seccion;
         $modelo_sm = new adm_seccion($this->link);
 
-        $r_seccion_menu = $modelo_sm->filtro_and(filtro:$filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener seccion menu',data: $r_seccion_menu);
+        $r_seccion_menu = $modelo_sm->filtro_and(filtro: $filtro);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener seccion menu', data: $r_seccion_menu);
         }
-        if((int)$r_seccion_menu->n_registros === 0){
-            return $this->error->error(mensaje: 'Error al obtener seccion menu no existe',data: $r_seccion_menu);
+        if ((int)$r_seccion_menu->n_registros === 0) {
+            return $this->error->error(mensaje: 'Error al obtener seccion menu no existe', data: $r_seccion_menu);
         }
 
         $registros = $r_seccion_menu->registros[0];
@@ -3364,36 +3373,36 @@ class modelo extends modelo_base {
     final public function suma(array $campos, array $filtro = array()): array
     {
         $this->filtro = $filtro;
-        if(count($campos)===0){
-            return $this->error->error(mensaje: 'Error campos no puede venir vacio',data: $campos, es_final: true);
+        if (count($campos) === 0) {
+            return $this->error->error(mensaje: 'Error campos no puede venir vacio', data: $campos, es_final: true);
         }
 
         $columnas = (new sumas())->columnas_suma(campos: $campos);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al agregar columnas',data: $columnas);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al agregar columnas', data: $columnas);
         }
 
         $filtro_sql = (new \gamboamartin\where\where())->genera_and(columnas_extra: $this->columnas_extra, filtro: $filtro);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar filtro',data: $filtro_sql);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro_sql);
         }
 
         $where = (new where())->where_suma(filtro_sql: $filtro_sql);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al generar where',data: $where);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar where', data: $where);
         }
 
         $tabla = $this->tabla;
-        $tablas = (new joins())->obten_tablas_completas(columnas_join:  $this->columnas, tabla: $tabla);
-        if(errores::$error){
-            return $this->error->error('Error al obtener tablas',$tablas);
+        $tablas = (new joins())->obten_tablas_completas(columnas_join: $this->columnas, tabla: $tabla);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener tablas', $tablas);
         }
 
-        $consulta = 'SELECT '.$columnas.' FROM '.$tablas.$where;
+        $consulta = 'SELECT ' . $columnas . ' FROM ' . $tablas . $where;
 
         $resultado = $this->ejecuta_consulta(consulta: $consulta, campos_encriptados: $this->campos_encriptados);
-        if(errores::$error){
-            return $this->error->error('Error al ejecutar sql',$resultado);
+        if (errores::$error) {
+            return $this->error->error('Error al ejecutar sql', $resultado);
         }
 
         return $resultado->registros[0];
@@ -3421,26 +3430,26 @@ class modelo extends modelo_base {
      */
     public function status(string $campo, int $registro_id): array|stdClass
     {
-        if(!$this->aplica_transacciones_base){
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',data: $registro_id);
+        if (!$this->aplica_transacciones_base) {
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro_id);
         }
-        $registro = $this->registro(registro_id: $registro_id,columnas_en_bruto: true,retorno_obj: true);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registro',data: $registro);
+        $registro = $this->registro(registro_id: $registro_id, columnas_en_bruto: true, retorno_obj: true);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registro', data: $registro);
         }
 
         $status_actual = $registro->$campo;
         $status_nuevo = 'activo';
 
-        if($status_actual === 'activo'){
+        if ($status_actual === 'activo') {
             $status_nuevo = 'inactivo';
         }
 
         $registro_upd[$campo] = $status_nuevo;
 
-        $upd = $this->modifica_bd(registro: $registro_upd,id: $registro_id);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al actualizar registro',data: $upd);
+        $upd = $this->modifica_bd(registro: $registro_upd, id: $registro_id);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al actualizar registro', data: $upd);
         }
 
         return $upd;
@@ -3450,7 +3459,7 @@ class modelo extends modelo_base {
     final public function tiene_predeterminado(): bool
     {
         $tiene_predeterminado = false;
-        if(in_array('predeterminado', $this->data_columnas->columnas_parseadas)){
+        if (in_array('predeterminado', $this->data_columnas->columnas_parseadas)) {
             $tiene_predeterminado = true;
         }
         return $tiene_predeterminado;
@@ -3465,20 +3474,21 @@ class modelo extends modelo_base {
     {
         $total_registros = $this->total_registros();
         if (errores::$error) {
-            return  $this->error->error(mensaje: 'Error al obtener total registros '.$this->tabla, data: $total_registros);
+            return $this->error->error(mensaje: 'Error al obtener total registros ' . $this->tabla, data: $total_registros);
         }
         $tiene_registros = false;
-        if($total_registros > 0){
+        if ($total_registros > 0) {
             $tiene_registros = true;
         }
         return $tiene_registros;
     }
 
-    private function todos_campos_obligatorios(){
+    private function todos_campos_obligatorios()
+    {
         $this->campos_obligatorios = $this->campos_tabla;
         $limpia = $this->unset_campos_obligatorios();
         if (errores::$error) {
-            return  $this->error->error(mensaje: 'Error al limpiar campos obligatorios en '.$this->tabla, data: $limpia);
+            return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en ' . $this->tabla, data: $limpia);
 
         }
         return $limpia;
@@ -3492,8 +3502,8 @@ class modelo extends modelo_base {
     final public function total_registros(): array|int
     {
         $n_rows = $this->cuenta();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al contar registros',data: $n_rows);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al contar registros', data: $n_rows);
         }
         return (int)$n_rows;
     }
@@ -3505,14 +3515,14 @@ class modelo extends modelo_base {
      */
     public function ultimo_registro(): array
     {
-        $this->order = array($this->tabla.'.id'=>'DESC');
+        $this->order = array($this->tabla . '.id' => 'DESC');
         $this->limit = 1;
         $resultado = $this->obten_registros();
-        if(errores::$error){
-            return $this->error->error('Error al obtener registros',$resultado);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener registros', $resultado);
         }
 
-        if((int)$resultado['n_registros'] === 0){
+        if ((int)$resultado['n_registros'] === 0) {
             return array();
         }
 
@@ -3524,17 +3534,17 @@ class modelo extends modelo_base {
      */
     final public function ultimo_registro_id(): int|array
     {
-        $this->order = array($this->tabla.'.id'=>'DESC');
+        $this->order = array($this->tabla . '.id' => 'DESC');
         $this->limit = 1;
         $resultado = $this->obten_registros();
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener registros',data: $resultado);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener registros', data: $resultado);
         }
 
-        if((int)$resultado->n_registros === 0){
+        if ((int)$resultado->n_registros === 0) {
             return 0;
         }
-        return (int)$resultado->registros[0][$this->tabla.'_id'];
+        return (int)$resultado->registros[0][$this->tabla . '_id'];
     }
 
     /**
@@ -3543,30 +3553,32 @@ class modelo extends modelo_base {
      */
     protected function ultimos_registros(int $n_registros): array
     {
-        $this->order = array($this->tabla.'.id'=>'DESC');
+        $this->order = array($this->tabla . '.id' => 'DESC');
         $this->limit = $n_registros;
         $resultado = $this->obten_registros();
-        if(errores::$error){
-            return $this->error->error('Error al obtener registros',$resultado);
+        if (errores::$error) {
+            return $this->error->error('Error al obtener registros', $resultado);
         }
-        if((int)$resultado['n_registros'] === 0){
+        if ((int)$resultado['n_registros'] === 0) {
             $resultado['registros'] = array();
         }
         return $resultado['registros'];
     }
 
-    private function unset_campos_obligatorios(){
-        $unsets = array('fecha_alta','fecha_update','id','usuario_alta_id','usuario_update_id');
+    private function unset_campos_obligatorios()
+    {
+        $unsets = array('fecha_alta', 'fecha_update', 'id', 'usuario_alta_id', 'usuario_update_id');
 
         $limpia = $this->limpia_campos_obligatorios(unsets: $unsets);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en '.$this->tabla, data: $limpia);
+            return $this->error->error(mensaje: 'Error al limpiar campos obligatorios en ' . $this->tabla, data: $limpia);
         }
         return $limpia;
     }
 
-    private function valida_atributos_criticos(array $atributos_criticos){
-        foreach ($atributos_criticos as $atributo_critico){
+    private function valida_atributos_criticos(array $atributos_criticos)
+    {
+        foreach ($atributos_criticos as $atributo_critico) {
 
             $existe_atributo_critico = $this->verifica_atributo_critico(atributo_critico: $atributo_critico);
             if (errores::$error) {
@@ -3574,9 +3586,9 @@ class modelo extends modelo_base {
 
             }
 
-            if(!$existe_atributo_critico){
-                return $this->error->error(mensaje: 'Error no existe en db el  atributo '.$atributo_critico.
-                    ' del modelo '.$this->tabla, data: $this->atributos);
+            if (!$existe_atributo_critico) {
+                return $this->error->error(mensaje: 'Error no existe en db el  atributo ' . $atributo_critico .
+                    ' del modelo ' . $this->tabla, data: $this->atributos);
             }
         }
         return true;
@@ -3586,11 +3598,11 @@ class modelo extends modelo_base {
     {
         $existe = $modelo->existe(filtro: $filtro_children);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al validar si existe', data:$existe);
+            return $this->error->error(mensaje: 'Error al validar si existe', data: $existe);
         }
-        if($existe){
+        if ($existe) {
             return $this->error->error(
-                mensaje:'Error el registro tiene dependencias asignadas en '.$modelo->tabla, data:$existe);
+                mensaje: 'Error el registro tiene dependencias asignadas en ' . $modelo->tabla, data: $existe);
         }
         return true;
     }
@@ -3602,13 +3614,13 @@ class modelo extends modelo_base {
      */
     protected function valida_predetermiando(): bool|array
     {
-        if(isset($this->registro['predeterminado']) && $this->registro['predeterminado'] === 'activo'){
+        if (isset($this->registro['predeterminado']) && $this->registro['predeterminado'] === 'activo') {
             $existe = $this->existe_predeterminado();
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al verificar si existe',data:  $existe);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al verificar si existe', data: $existe);
             }
-            if($existe){
-                return $this->error->error(mensaje: 'Error ya existe elemento predeterminado',data:  $this->registro);
+            if ($existe) {
+                return $this->error->error(mensaje: 'Error ya existe elemento predeterminado', data: $this->registro);
             }
         }
         return true;
@@ -3616,25 +3628,26 @@ class modelo extends modelo_base {
 
     final public function valida_eliminacion_children(int $id): bool|array
     {
-        foreach ($this->childrens as $modelo_children=>$namespace){
-            $valida = $this->verifica_eliminacion_children(id:$id,modelo_children:  $modelo_children,
-                namespace:  $namespace);
+        foreach ($this->childrens as $modelo_children => $namespace) {
+            $valida = $this->verifica_eliminacion_children(id: $id, modelo_children: $modelo_children,
+                namespace: $namespace);
             if (errores::$error) {
-                return $this->error->error(mensaje:'Error al validar children', data:$valida);
+                return $this->error->error(mensaje: 'Error al validar children', data: $valida);
             }
         }
         return true;
     }
 
-    private function verifica_atributo_critico(string $atributo_critico){
+    private function verifica_atributo_critico(string $atributo_critico)
+    {
         $existe_atributo_critico = false;
 
-        foreach ($this->atributos as $key_attr=>$atributo){
-            $existe_atributo_critico = $this->existe_atributo_critico(atributo_critico: $atributo_critico,key_attr:  $key_attr);
+        foreach ($this->atributos as $key_attr => $atributo) {
+            $existe_atributo_critico = $this->existe_atributo_critico(atributo_critico: $atributo_critico, key_attr: $key_attr);
             if (errores::$error) {
-               return $this->error->error(mensaje: 'Error al obtener atributo critico ', data: $existe_atributo_critico);
+                return $this->error->error(mensaje: 'Error al obtener atributo critico ', data: $existe_atributo_critico);
             }
-            if($existe_atributo_critico){
+            if ($existe_atributo_critico) {
                 break;
             }
         }
@@ -3643,19 +3656,19 @@ class modelo extends modelo_base {
 
     private function verifica_eliminacion_children(int $id, string $modelo_children, string $namespace): bool|array
     {
-        $modelo = $this->genera_modelo(modelo: $modelo_children,namespace_model: $namespace);
+        $modelo = $this->genera_modelo(modelo: $modelo_children, namespace_model: $namespace);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al generar modelo', data:$modelo);
+            return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);
         }
 
-        $filtro_children = (new filtros())->filtro_children(tabla:$this->tabla,id: $id);
+        $filtro_children = (new filtros())->filtro_children(tabla: $this->tabla, id: $id);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al generar filtro', data:$filtro_children);
+            return $this->error->error(mensaje: 'Error al generar filtro', data: $filtro_children);
         }
 
-        $valida = $this->valida_elimina_children(filtro_children:$filtro_children, modelo: $modelo);
+        $valida = $this->valida_elimina_children(filtro_children: $filtro_children, modelo: $modelo);
         if (errores::$error) {
-            return $this->error->error(mensaje:'Error al validar children', data:$valida);
+            return $this->error->error(mensaje: 'Error al validar children', data: $valida);
         }
 
         return $valida;
