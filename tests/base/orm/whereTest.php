@@ -63,8 +63,7 @@ class whereTest extends test {
         $this->assertEquals("a IN ('a' ,'c')", $resultado->in);
         $this->assertEquals("a NOT IN ('a' ,'c')", $resultado->not_in);
 
-
-
+        errores::$error = false;
         $keys_data_filter = array();
         $columnas_extra = array();
         $filtro = array();
@@ -90,6 +89,44 @@ class whereTest extends test {
 
 
         errores::$error = false;
+
+
+
+        $keys_data_filter = array();
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $filtro_extra = array();
+        $filtro_fecha = array(array('campo_1'=>'a','campo_2'=>'b','fecha'=>'2020-01-01'));
+        $filtro_rango = array();
+        $not_in = array('llave'=>'a','values'=>array('a','c'));
+        $sql_extra = 'x';
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','c'));
+        $diferente_de['a'] = '';
+        $diferente_de['b'] = '';
+        
+        $filtro_extra[0]['key']['operador'] = '<>';
+        $filtro_extra[0]['key']['valor'] = '11';
+        $filtro_extra[0]['key']['comparacion'] = 'OR';
+
+        $filtro_extra[1]['key']['operador'] = '<>';
+        $filtro_extra[1]['key']['valor'] = '11';
+        $filtro_extra[1]['key']['comparacion'] = 'OR';
+
+        $resultado = $wh->data_filtros_full($columnas_extra,$diferente_de, $filtro, $filtro_especial, $filtro_extra, $filtro_fecha,
+            $filtro_rango, $in, $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+
+
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('', $resultado->sentencia);
+        $this->assertEquals("a IN ('a' ,'c')", $resultado->in);
+        $this->assertEquals("a NOT IN ('a' ,'c')", $resultado->not_in);
+        $this->assertEquals("  a <> ''   AND  b <> '' ", $resultado->diferente_de);
+        $this->assertEquals("key <> '11' OR key <> '11'", $resultado->filtro_extra);
+        errores::$error = false;
+
     }
 
 
@@ -405,6 +442,42 @@ class whereTest extends test {
 
 
         errores::$error = false;
+
+
+
+
+        $columnas_extra = array();
+        $filtro = array();
+        $filtro_especial = array();
+        $keys_data_filter = array();
+        $filtro_extra = array();
+        $filtro_rango = array();
+        $sql_extra = 'xx';
+        $not_in = array();
+        $tipo_filtro = '';
+        $in = array('llave'=>'a','values'=>array('a','f'));
+        $diferente_de['a'] = 'x';
+        $diferente_de['b'] = 's';
+        $filtro_extra[0]['campo']['operador'] = 'LIKE';
+        $filtro_extra[0]['campo']['valor'] = 'VALOR';
+        $filtro_extra[0]['campo']['comparacion'] = 'AND';
+
+        $filtro_extra[1]['campo']['operador'] = 'LIKE';
+        $filtro_extra[1]['campo']['valor'] = 'VALOR2';
+        $filtro_extra[1]['campo']['comparacion'] = 'AND';
+
+        $resultado = $wh->genera_filtros_sql($columnas_extra, $diferente_de, $filtro, $filtro_especial, $filtro_extra, $filtro_rango, $in,
+            $keys_data_filter, $not_in, $sql_extra, $tipo_filtro);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("a IN ('a' ,'f')",$resultado->in);
+        $this->assertEquals('xx',$resultado->sql_extra);
+        $this->assertEquals("  a <> 'x'   AND  b <> 's' ",$resultado->diferente_de);
+        $this->assertEquals("campo LIKE 'VALOR' AND campo LIKE 'VALOR2'",$resultado->filtro_extra);
+
+        errores::$error = false;
+
+
     }
 
     public function test_genera_in(){

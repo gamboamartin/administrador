@@ -20,29 +20,139 @@ class estructuras{
     }
 
     /**
-     * @param array $campo
-     * @param array $keys_no_foraneas
-     * @param string $name_modelo
-     * @return array|stdClass
+     * REG
+     * Asigna la información estructural de un campo dentro de la estructura de base de datos del modelo.
+     *
+     * Esta función valida y estructura los datos de un campo dentro del modelo correspondiente en la base de datos,
+     * asegurando que contenga todas las propiedades esenciales como su tipo de dato, si es clave primaria,
+     * foránea, auto_increment, permite valores nulos, entre otros.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener las claves `Field`, `Type`, `Default`, `Extra`, `Key` y `Null`.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'cliente_id',
+     *                         'Type' => 'int(11)',
+     *                         'Null' => 'YES',
+     *                         'Default' => null,
+     *                         'Extra' => '',
+     *                         'Key' => 'MUL'
+     *                     ]
+     *                     ```
+     * @param array $keys_no_foraneas Lista de claves que no deben considerarse foráneas.
+     *                                 - Ejemplo:
+     *                                 ```php
+     *                                 ['usuario_alta', 'usuario_update']
+     *                                 ```
+     * @param string $name_modelo Nombre del modelo al cual pertenece el campo.
+     *                            - No puede estar vacío.
+     *                            - Ejemplo: `'facturas'`.
+     *
+     * @return array|stdClass Devuelve el objeto `estructura_bd` con la información del campo asignada.
+     *                        En caso de error, devuelve un array con detalles del problema.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'cliente_id',
+     *     'Type' => 'int(11)',
+     *     'Null' => 'YES',
+     *     'Default' => null,
+     *     'Extra' => '',
+     *     'Key' => 'MUL'
+     * ];
+     *
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     * $name_modelo = 'facturas';
+     *
+     * $resultado = $this->asigna_dato_estructura($campo, $keys_no_foraneas, $name_modelo);
+     * // Resultado esperado:
+     * // $this->estructura_bd->facturas->data_campos->cliente_id = {
+     * //   'tabla_foranea' => 'clientes',
+     * //   'es_foranea' => true,
+     * //   'permite_null' => true,
+     * //   'campo_name' => 'cliente_id',
+     * //   'tipo_dato' => 'int(11)',
+     * //   'es_primaria' => false,
+     * //   'valor_default' => null,
+     * //   'extra' => '',
+     * //   'es_auto_increment' => false,
+     * //   'tipo_llave' => 'MUL'
+     * // }
+     * ```
+     *
+     * ### Ejemplo de error (`name_modelo` vacío):
+     * ```php
+     * $resultado = $this->asigna_dato_estructura($campo, $keys_no_foraneas, '');
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $name_modelo esta vacio',
+     * //   'data' => '',
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validaciones iniciales:**
+     *    - Verifica que `$name_modelo` no esté vacío.
+     *    - Verifica que `$campo` contenga las claves `Field`, `Type`, `Default`, `Extra`, `Key` y `Null`.
+     *    - Llama a `valida_existencia_keys` para asegurarse de que `Field` exista en `$campo`.
+     * 2. **Inicialización de la estructura en `$this->estructura_bd`:**
+     *    - Llama a `init_estructura_campo` para registrar el campo en la estructura del modelo.
+     * 3. **Registro de la información del campo:**
+     *    - Llama a `inicializa_campo` para obtener las propiedades estructurales del campo.
+     *    - Llama a `maqueta_estructura` para almacenar la información en `estructura_bd`.
+     * 4. **Retorno del resultado:**
+     *    - Devuelve `estructura_bd` con la información agregada.
+     *    - Si ocurre un error, devuelve un array con detalles del problema.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Definición de la estructura de modelos en una aplicación ORM.
+     * - **Ejemplo real:** Registrar un campo `cliente_id` en la estructura de la tabla `facturas`.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$campo` y `$campo_init` contengan la información esperada antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, proporcionando mensajes detallados.
      */
     private function asigna_dato_estructura(array $campo, array $keys_no_foraneas, string $name_modelo): array|stdClass
     {
-        $init = $this->init_estructura_campo(campo: $campo,name_modelo: $name_modelo);
-        if(errores::$error){
+        $name_modelo = trim($name_modelo);
+        if ($name_modelo === '') {
+            return $this->error->error(mensaje: 'Error $name_modelo esta vacio', data: $name_modelo);
+        }
+
+        $keys = ['Field'];
+        $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $campo);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar keys', data: $valida);
+        }
+
+        $required_keys = ['Null', 'Key', 'Field', 'Type', 'Default', 'Extra'];
+        foreach ($required_keys as $key) {
+            if (!isset($campo[$key])) {
+                return $this->error->error(mensaje: "Error \$campo[$key] no existe", data: $campo, es_final: true);
+            }
+        }
+
+        $init = $this->init_estructura_campo(campo: $campo, name_modelo: $name_modelo);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializa_estructura', data: $init);
         }
 
         $campo_init = $this->inicializa_campo(campo: $campo, keys_no_foraneas: $keys_no_foraneas);
-        if(errores::$error){
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al inicializar campo', data: $campo_init);
         }
 
-        $estructura_bd = $this->maqueta_estructura(campo: $campo,campo_init: $campo_init,name_modelo: $name_modelo);
-        if(errores::$error){
+        $estructura_bd = $this->maqueta_estructura(campo: $campo, campo_init: $campo_init, name_modelo: $name_modelo);
+        if (errores::$error) {
             return $this->error->error(mensaje: 'Error al maquetar estructura', data: $estructura_bd);
         }
+
         return $estructura_bd;
     }
+
 
 
     /**
@@ -198,41 +308,310 @@ class estructuras{
 
 
     /**
-     * @param stdClass $data
-     * @param stdClass $estructura_bd
-     * @param stdClass $foraneas
-     * @param string $modelo
-     * @return stdClass
+     * REG
+     * Asigna la información de una clave foránea dentro de la estructura del modelo.
+     *
+     * Esta función valida la existencia de una relación foránea en la estructura del modelo y la registra en el objeto `foraneas`,
+     * asegurando que la entidad tenga correctamente identificadas sus dependencias en la base de datos.
+     *
+     * @param stdClass $data Datos del campo que contiene la referencia foránea.
+     *                       Debe contener la clave `tabla_foranea`.
+     *                       - Ejemplo:
+     *                       ```php
+     *                       (object) [
+     *                           'tabla_foranea' => 'clientes'
+     *                       ]
+     *                       ```
+     * @param stdClass $estructura_bd Estructura general de la base de datos donde se almacena la relación.
+     * @param stdClass $foraneas Objeto que almacena las claves foráneas asignadas.
+     * @param string $modelo Nombre del modelo donde se asignará la clave foránea.
+     *                       - No puede estar vacío.
+     *                       - Ejemplo: `'facturas'`
+     *
+     * @return stdClass|array Devuelve la estructura general con la relación foránea asignada.
+     *                        En caso de error, devuelve un array con detalles del problema.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $data = (object) ['tabla_foranea' => 'clientes'];
+     * $estructura_bd = new stdClass();
+     * $foraneas = new stdClass();
+     * $modelo = 'facturas';
+     *
+     * $resultado = $this->asigna_dato_foranea($data, $estructura_bd, $foraneas, $modelo);
+     *
+     * // Resultado esperado:
+     * // $estructura_bd->facturas->tiene_foraneas = true;
+     * // $foraneas->clientes = new stdClass();
+     * ```
+     *
+     * ### Ejemplo de error (`modelo` vacío):
+     * ```php
+     * $resultado = $this->asigna_dato_foranea($data, $estructura_bd, $foraneas, '');
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $modelo esta vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Ejemplo de error (`tabla_foranea` no existe en `$data`):
+     * ```php
+     * $data = (object) [];
+     * $resultado = $this->asigna_dato_foranea($data, $estructura_bd, $foraneas, 'facturas');
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $data->tabla_foranea no existe',
+     * //   'data' => (object) [],
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validaciones iniciales:**
+     *    - Verifica que `$modelo` no esté vacío.
+     *    - Confirma que `$data` contenga la clave `tabla_foranea`.
+     *    - Verifica que `tabla_foranea` no esté vacía.
+     * 2. **Registro de la clave foránea en `estructura_bd`:**
+     *    - Crea la estructura de `$modelo` si no existe en `estructura_bd`.
+     *    - Marca que el modelo tiene claves foráneas (`tiene_foraneas = true`).
+     * 3. **Registro en `foraneas`:**
+     *    - Agrega la tabla referenciada como una clave foránea en el objeto `foraneas`.
+     * 4. **Retorno del resultado:**
+     *    - Devuelve `estructura_bd` con la relación asignada.
+     *    - Si ocurre un error, devuelve un array con detalles del problema.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Registrar claves foráneas en la estructura de modelos dentro de un ORM.
+     * - **Ejemplo real:** Asignar la tabla `clientes` como clave foránea en el modelo `facturas`.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$data->tabla_foranea` contenga un valor válido antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, proporcionando mensajes detallados.
      */
-    private function asigna_dato_foranea(stdClass $data, stdClass $estructura_bd, stdClass $foraneas,
-                                         string $modelo): stdClass
-    {
+    private function asigna_dato_foranea(
+        stdClass $data,
+        stdClass $estructura_bd,
+        stdClass $foraneas,
+        string $modelo
+    ): stdClass|array {
+        $modelo = trim($modelo);
+        if ($modelo === '') {
+            return $this->error->error(mensaje: 'Error $modelo esta vacio', data: $modelo, es_final: true);
+        }
+
+        if (!isset($data->tabla_foranea)) {
+            return $this->error->error(mensaje: 'Error $data->tabla_foranea no existe', data: $data, es_final: true);
+        }
+
+        $data->tabla_foranea = trim($data->tabla_foranea);
+        if ($data->tabla_foranea === '') {
+            return $this->error->error(mensaje: 'Error $data->tabla_foranea esta vacia', data: $data, es_final: true);
+        }
+
+        if (!isset($estructura_bd->$modelo)) {
+            $estructura_bd->$modelo = new stdClass();
+        }
+
         $tabla_foranea = $data->tabla_foranea;
         $foraneas->$tabla_foranea = new stdClass();
         $estructura_bd->$modelo->tiene_foraneas = true;
+
         return $estructura_bd;
     }
+
 
     /**
-     * @param array $data_table
-     * @param array $keys_no_foraneas
-     * @param string $name_modelo
-     * @return array|stdClass
+     * REG
+     * Asigna y estructura los datos de los campos de un modelo en la base de datos.
+     *
+     * Esta función recorre los campos de una tabla y los integra en la estructura del modelo correspondiente,
+     * validando la presencia de claves esenciales y asegurando que cada campo esté correctamente definido
+     * dentro de la estructura de la base de datos.
+     *
+     * @param array $data_table Lista de campos de la tabla en formato array asociativo.
+     *                          Cada elemento debe contener las claves `Field`, `Type`, `Null`, `Default`, `Extra` y `Key`.
+     *                          - Ejemplo:
+     *                          ```php
+     *                          [
+     *                              [
+     *                                  'Field' => 'id',
+     *                                  'Type' => 'int(11)',
+     *                                  'Null' => 'NO',
+     *                                  'Default' => null,
+     *                                  'Extra' => 'auto_increment',
+     *                                  'Key' => 'PRI'
+     *                              ],
+     *                              [
+     *                                  'Field' => 'cliente_id',
+     *                                  'Type' => 'int(11)',
+     *                                  'Null' => 'YES',
+     *                                  'Default' => null,
+     *                                  'Extra' => '',
+     *                                  'Key' => 'MUL'
+     *                              ]
+     *                          ]
+     *                          ```
+     * @param array $keys_no_foraneas Lista de claves que no deben considerarse foráneas.
+     *                                 - Ejemplo:
+     *                                 ```php
+     *                                 ['usuario_alta', 'usuario_update']
+     *                                 ```
+     * @param string $name_modelo Nombre del modelo al cual pertenecen los campos.
+     *                            - No puede estar vacío.
+     *                            - Ejemplo: `'facturas'`.
+     *
+     * @return array|stdClass Devuelve la estructura del modelo con los datos asignados.
+     *                        En caso de error, devuelve un array con detalles del problema.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $data_table = [
+     *     [
+     *         'Field' => 'id',
+     *         'Type' => 'int(11)',
+     *         'Null' => 'NO',
+     *         'Default' => null,
+     *         'Extra' => 'auto_increment',
+     *         'Key' => 'PRI'
+     *     ],
+     *     [
+     *         'Field' => 'cliente_id',
+     *         'Type' => 'int(11)',
+     *         'Null' => 'YES',
+     *         'Default' => null,
+     *         'Extra' => '',
+     *         'Key' => 'MUL'
+     *     ]
+     * ];
+     *
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     * $name_modelo = 'facturas';
+     *
+     * $resultado = $this->asigna_datos_modelo($data_table, $keys_no_foraneas, $name_modelo);
+     *
+     * // Resultado esperado:
+     * // $this->estructura_bd->facturas->data_campos->id = {
+     * //   'tabla_foranea' => '',
+     * //   'es_foranea' => false,
+     * //   'permite_null' => false,
+     * //   'campo_name' => 'id',
+     * //   'tipo_dato' => 'int(11)',
+     * //   'es_primaria' => true,
+     * //   'valor_default' => null,
+     * //   'extra' => 'auto_increment',
+     * //   'es_auto_increment' => true,
+     * //   'tipo_llave' => 'PRI'
+     * // }
+     * ```
+     *
+     * ### Ejemplo de error (`name_modelo` vacío):
+     * ```php
+     * $resultado = $this->asigna_datos_modelo($data_table, $keys_no_foraneas, '');
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $name_modelo esta vacio',
+     * //   'data' => ''
+     * // ]
+     * ```
+     *
+     * ### Ejemplo de error (`data_table` contiene un elemento que no es un array):
+     * ```php
+     * $data_table = [
+     *     'Field' => 'id',
+     *     'Type' => 'int(11)',
+     *     'Null' => 'NO',
+     *     'Default' => null,
+     *     'Extra' => 'auto_increment',
+     *     'Key' => 'PRI'
+     * ];
+     *
+     * $resultado = $this->asigna_datos_modelo($data_table, $keys_no_foraneas, 'facturas');
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $campo en $data_table debe ser un array',
+     * //   'data' => [...],
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validaciones iniciales:**
+     *    - Verifica que `$name_modelo` no esté vacío.
+     *    - Recorre cada campo en `$data_table` y valida que sea un array.
+     *    - Verifica que cada campo contenga las claves `Field`, `Type`, `Null`, `Default`, `Extra` y `Key`.
+     * 2. **Asignación de los datos a la estructura:**
+     *    - Llama a `asigna_dato_estructura` para procesar y registrar cada campo en la estructura.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve la estructura del modelo con los datos de los campos asignados.
+     *    - Si ocurre un error, devuelve un array con detalles del problema.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Definir la estructura de los modelos en una aplicación ORM.
+     * - **Ejemplo real:** Registrar los campos de la tabla `facturas` en la estructura de datos del sistema.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$data_table` sea un array de arrays y que cada campo contenga las claves requeridas.
+     * - La función maneja errores mediante la clase `errores`, proporcionando mensajes detallados.
      */
-    private function asigna_datos_modelo(array $data_table, array $keys_no_foraneas, string $name_modelo): array|stdClass
-    {
-        $estructura_bd = array();
-        foreach ($data_table as $campo){
+    private function asigna_datos_modelo(
+        array $data_table, array $keys_no_foraneas, string $name_modelo
+    ): array|stdClass {
+        $name_modelo = trim($name_modelo);
+        if ($name_modelo === '') {
+            return $this->error->error(mensaje: 'Error $name_modelo esta vacio', data: $name_modelo);
+        }
 
-            $estructura_bd = $this->asigna_dato_estructura(campo: $campo, keys_no_foraneas: $keys_no_foraneas,
-                name_modelo: $name_modelo);
-            if(errores::$error){
-                return $this->error->error(mensaje: 'Error al maquetar estructura', data: $estructura_bd);
+        $estructura_bd = array();
+        foreach ($data_table as $campo) {
+            if (!is_array($campo)) {
+                return $this->error->error(
+                    mensaje: 'Error $campo en $data_table debe ser un array',
+                    data: $estructura_bd,
+                    es_final: true
+                );
             }
 
+            $keys = ['Field'];
+            $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $campo);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar keys', data: $valida);
+            }
+
+            if(!isset($campo['Default'])){
+                $campo['Default'] = '';
+            }
+
+            $required_keys = ['Null', 'Key', 'Type', 'Default', 'Extra'];
+            foreach ($required_keys as $key) {
+                if (!isset($campo[$key])) {
+                    return $this->error->error(
+                        mensaje: "Error \$campo[$key] no existe",
+                        data: $campo,
+                        es_final: true
+                    );
+                }
+            }
+
+            $estructura_bd = $this->asigna_dato_estructura(
+                campo: $campo,
+                keys_no_foraneas: $keys_no_foraneas,
+                name_modelo: $name_modelo
+            );
+
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al maquetar estructura', data: $estructura_bd);
+            }
         }
+
         return $estructura_bd;
     }
+
 
     /**
      * @param stdClass $estructura_bd
@@ -298,65 +677,315 @@ class estructuras{
 
 
     /**
-     * Integra si el campo es autoincrement o no
-     * @param array $campo Campo a validar
-     * @return bool|array
-     * @version 11.1.0
+     * REG
+     * Determina si un campo de la base de datos es auto_incremental.
+     *
+     * Esta función verifica si la clave `Extra` en el array de datos del campo contiene el valor `'auto_increment'`,
+     * lo que indica que el campo es auto_incremental.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Puede contener la clave `Extra` con el valor `'auto_increment'` si el campo lo es.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'id',
+     *                         'Type' => 'int(11)',
+     *                         'Extra' => 'auto_increment'
+     *                     ]
+     *                     ```
+     *
+     * @return bool|array Retorna `true` si el campo es auto_incremental, `false` si no lo es,
+     *                    o un array de error si hay problemas con los datos de entrada.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'id',
+     *     'Type' => 'int(11)',
+     *     'Extra' => 'auto_increment'
+     * ];
+     *
+     * $resultado = $this->es_auto_increment($campo);
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)',
+     *     'Extra' => ''
+     * ];
+     *
+     * $resultado = $this->es_auto_increment($campo);
+     * // Resultado esperado:
+     * // false
+     * ```
+     *
+     * ### Ejemplo con `Extra` no definido:
+     * ```php
+     * $campo = [
+     *     'Field' => 'edad',
+     *     'Type' => 'int(3)'
+     * ];
+     *
+     * $resultado = $this->es_auto_increment($campo);
+     * // Resultado esperado:
+     * // false (se asigna '' a 'Extra' por defecto)
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Verificación de la existencia de la clave `Extra` en `$campo`:**
+     *    - Si `Extra` no está presente, se inicializa como una cadena vacía (`''`).
+     * 2. **Determinación de si es auto_incremental:**
+     *    - Si `Extra` es `'auto_increment'`, el campo es auto_incremental y retorna `true`.
+     *    - En cualquier otro caso, retorna `false`.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve `true` si el campo es auto_incremental.
+     *    - Devuelve `false` si no es auto_incremental.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validación de estructuras de base de datos en un ORM.
+     * - **Ejemplo real:** Determinar si el campo `id` en una tabla de usuarios es auto_incremental.
+     *
+     * ### Consideraciones:
+     * - Si `Extra` no está definido en `$campo`, se asigna como `''` en lugar de generar un error.
+     * - La función no maneja errores explícitamente, pero asegura que `Extra` siempre tenga un valor válido.
      */
     private function es_auto_increment(array $campo): bool|array
     {
-        if(!isset($campo['Extra'])){
+        if (!isset($campo['Extra'])) {
             $campo['Extra'] = '';
         }
+
         $es_auto_increment = false;
-        if($campo['Extra'] === 'auto_increment'){
+        if ($campo['Extra'] === 'auto_increment') {
             $es_auto_increment = true;
         }
+
         return $es_auto_increment;
     }
 
+
     /**
-     * Verifica si el campo es una llave foranea o no
-     * @param array $campo Campo a validar
-     * @param array $keys_no_foraneas Keys previos con foraneas
-     * @return bool|array
-     * @version 11.23.0
+     * REG
+     * Determina si un campo de la base de datos es una clave foránea.
+     *
+     * Esta función analiza el nombre del campo para determinar si representa una clave foránea.
+     * Se considera una clave foránea si su nombre termina en `_id` y no está presente en la lista de claves excluidas (`keys_no_foraneas`).
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener la clave `Field`, que representa el nombre del campo en la tabla.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'cliente_id',
+     *                         'Type' => 'int(11)'
+     *                     ]
+     *                     ```
+     * @param array $keys_no_foraneas Lista de claves que no deben considerarse foráneas.
+     *                                 - Ejemplo:
+     *                                 ```php
+     *                                 ['usuario_alta', 'usuario_update']
+     *                                 ```
+     *
+     * @return bool|array Retorna `true` si el campo es una clave foránea, `false` si no lo es,
+     *                    o un array de error si la clave `Field` no está definida en `$campo`.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'cliente_id',
+     *     'Type' => 'int(11)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->es_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->es_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // false
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'usuario_update',
+     *     'Type' => 'int(11)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->es_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // false (ya que está en keys_no_foraneas)
+     * ```
+     *
+     * ### Ejemplo de error (clave `Field` no definida):
+     * ```php
+     * $campo = [
+     *     'Type' => 'int(11)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->es_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al campo[Field] no existe',
+     * //   'data' => [
+     * //       'Type' => 'int(11)'
+     * //   ]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Verificación de la existencia de la clave `Field` en `$campo`:**
+     *    - Si `Field` no está presente, se retorna un error.
+     * 2. **Análisis del nombre del campo:**
+     *    - Se divide el nombre en partes separadas por `_id` utilizando `explode('_id', $campo['Field'])`.
+     * 3. **Verificación de si es una clave foránea:**
+     *    - Si el nombre tiene `_id` al final y no está en la lista `keys_no_foraneas`, se considera foránea (`true`).
+     *    - Si está en `keys_no_foraneas`, no se considera foránea (`false`).
+     * 4. **Retorno del resultado:**
+     *    - Devuelve `true` si el campo es una clave foránea.
+     *    - Devuelve `false` si no es clave foránea.
+     *    - Devuelve un array de error si la clave `Field` no está definida en `$campo`.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validación de estructuras de base de datos en un ORM.
+     * - **Ejemplo real:** Determinar si el campo `cliente_id` en una tabla de facturas es una clave foránea.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que el array `$campo` contiene la clave `Field` antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, asegurando que los errores sean informados correctamente.
      */
     private function es_foranea(array $campo, array $keys_no_foraneas): bool|array
     {
-        if(!isset($campo['Field'])){
+        if (!isset($campo['Field'])) {
             return $this->error->error(mensaje: 'Error al campo[Field] no existe', data: $campo);
         }
+
         $es_foranea = false;
         $explode_campo = explode('_id', $campo['Field']);
 
-        if((count($explode_campo) > 1) && $explode_campo[1] === '') {
+        if ((count($explode_campo) > 1) && $explode_campo[1] === '') {
             $es_no_foranea = in_array($explode_campo[0], $keys_no_foraneas, true);
-            if(!$es_no_foranea){
+            if (!$es_no_foranea) {
                 $es_foranea = true;
             }
-
         }
+
         return $es_foranea;
     }
 
+
     /**
-     * Asigna verdadero si el campo es una llave primaria
-     * @param array $campo Campo a validar
-     * @return bool|array
-     * @version 10.97.4
+     * REG
+     * Determina si un campo es una clave primaria en la base de datos.
+     *
+     * Esta función verifica si el campo especificado tiene la clave `Key` con el valor `'PRI'`,
+     * lo que indica que es una clave primaria.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener la clave `Key` con los valores esperados `'PRI'` para claves primarias.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'id',
+     *                         'Type' => 'int(11)',
+     *                         'Key' => 'PRI'
+     *                     ]
+     *                     ```
+     *
+     * @return bool|array Retorna `true` si el campo es clave primaria, `false` si no lo es,
+     *                    o un array de error si la clave `Key` no está definida en `$campo`.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'id',
+     *     'Type' => 'int(11)',
+     *     'Key' => 'PRI'
+     * ];
+     *
+     * $resultado = $this->es_primaria($campo);
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)',
+     *     'Key' => ''
+     * ];
+     *
+     * $resultado = $this->es_primaria($campo);
+     * // Resultado esperado:
+     * // false
+     * ```
+     *
+     * ### Ejemplo de error (clave `Key` no definida):
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)'
+     * ];
+     *
+     * $resultado = $this->es_primaria($campo);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error campo[Key] debe existir',
+     * //   'data' => [
+     * //       'Field' => 'nombre',
+     * //       'Type' => 'varchar(255)'
+     * //   ]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Verificación de la existencia de la clave `Key` en `$campo`:**
+     *    - Si la clave `Key` no está presente, se retorna un error.
+     * 2. **Determinación de si es clave primaria:**
+     *    - Si `Key` es `'PRI'`, significa que el campo es una clave primaria, por lo que retorna `true`.
+     *    - En cualquier otro caso, se considera que no es una clave primaria y retorna `false`.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve `true` si el campo es clave primaria.
+     *    - Devuelve `false` si no es clave primaria.
+     *    - Devuelve un array de error si la clave `Key` no está definida en `$campo`.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validación de estructuras de base de datos en un ORM.
+     * - **Ejemplo real:** Determinar si el campo `id` en una tabla de usuarios es una clave primaria.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que el array `$campo` contiene la clave `Key` antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, asegurando que los errores sean informados correctamente.
      */
     private function es_primaria(array $campo): bool|array
     {
-        if(!isset($campo['Key'])){
+        if (!isset($campo['Key'])) {
             return $this->error->error(mensaje: 'Error campo[Key] debe existir', data: $campo);
         }
+
         $es_primaria = false;
-        if($campo['Key'] === 'PRI'){
+        if ($campo['Key'] === 'PRI') {
             $es_primaria = true;
         }
+
         return $es_primaria;
     }
+
 
     /**
      * REG
@@ -435,28 +1064,128 @@ class estructuras{
 
 
     /**
-     * @param array $keys_no_foraneas
-     * @param array $modelos
-     * @return array|stdClass
+     * REG
+     * Genera la estructura de los modelos a partir de los datos de la base de datos.
+     *
+     * Esta función recorre la lista de modelos proporcionados, inicializa la estructura de cada modelo y
+     * asigna los datos de sus respectivos campos, validando la existencia y la correcta estructura de la información.
+     *
+     * @param array $keys_no_foraneas Lista de claves que no deben considerarse foráneas.
+     *                                - Ejemplo:
+     *                                ```php
+     *                                ['usuario_alta', 'usuario_update']
+     *                                ```
+     * @param array $modelos Lista de nombres de los modelos (tablas) a procesar.
+     *                       - No puede contener nombres vacíos o numéricos.
+     *                       - Ejemplo:
+     *                       ```php
+     *                       ['facturas', 'clientes', 'productos']
+     *                       ```
+     *
+     * @return array|stdClass Devuelve la estructura generada con los datos asignados de cada modelo.
+     *                        En caso de error, devuelve un array con detalles del problema.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     * $modelos = ['facturas', 'clientes', 'productos'];
+     *
+     * $resultado = $this->genera_estructura($keys_no_foraneas, $modelos);
+     *
+     * // Resultado esperado:
+     * // $this->estructura_bd->facturas->data_campos->id = {
+     * //   'tabla_foranea' => '',
+     * //   'es_foranea' => false,
+     * //   'permite_null' => false,
+     * //   'campo_name' => 'id',
+     * //   'tipo_dato' => 'int(11)',
+     * //   'es_primaria' => true,
+     * //   'valor_default' => null,
+     * //   'extra' => 'auto_increment',
+     * //   'es_auto_increment' => true,
+     * //   'tipo_llave' => 'PRI'
+     * // }
+     * ```
+     *
+     * ### Ejemplo de error (`name_modelo` vacío):
+     * ```php
+     * $resultado = $this->genera_estructura($keys_no_foraneas, ['']);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error name_modelo esta vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Ejemplo de error (`name_modelo` es numérico):
+     * ```php
+     * $resultado = $this->genera_estructura($keys_no_foraneas, ['123']);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error name_modelo no puede ser un numero',
+     * //   'data' => '123',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Recorre los modelos a procesar:**
+     *    - Valida que `$name_modelo` no esté vacío.
+     *    - Verifica que `$name_modelo` no sea un número.
+     * 2. **Inicializa la estructura del modelo:**
+     *    - Llama a `init_dato_estructura` para obtener los datos de los campos del modelo desde la base de datos.
+     * 3. **Asigna los datos a la estructura:**
+     *    - Llama a `asigna_datos_modelo` para integrar la información en `estructura_bd`.
+     * 4. **Retorno del resultado:**
+     *    - Devuelve `estructura_bd` con los datos de los modelos asignados.
+     *    - Si ocurre un error, devuelve un array con detalles del problema.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Creación de una estructura ORM a partir de los modelos de la base de datos.
+     * - **Ejemplo real:** Obtener la estructura de los modelos `facturas`, `clientes` y `productos`.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$modelos` contenga nombres de modelos válidos y no vacíos o numéricos.
+     * - La función maneja errores mediante la clase `errores`, proporcionando mensajes detallados.
      */
     private function genera_estructura(array $keys_no_foraneas, array $modelos): array|stdClass
     {
         $estructura_bd = array();
         $modelo_base = new modelo_base($this->link);
-        foreach ($modelos as $name_modelo){
 
-            $data_table = $this->init_dato_estructura(modelo_base: $modelo_base,name_modelo: $name_modelo);
-            if(errores::$error){
+        foreach ($modelos as $name_modelo) {
+            $name_modelo = trim($name_modelo);
+
+            if ($name_modelo === '') {
+                return $this->error->error(mensaje: 'Error name_modelo esta vacio', data: $name_modelo, es_final: true);
+            }
+            if (is_numeric($name_modelo)) {
+                return $this->error->error(mensaje: 'Error name_modelo no puede ser un numero', data: $name_modelo,
+                    es_final: true);
+            }
+
+            $data_table = $this->init_dato_estructura(modelo_base: $modelo_base, name_modelo: $name_modelo);
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al inicializa_estructura', data: $data_table);
             }
-            $estructura_bd = $this->asigna_datos_modelo(data_table: $data_table, keys_no_foraneas: $keys_no_foraneas,
-                name_modelo: $name_modelo);
-            if(errores::$error){
+
+            $estructura_bd = $this->asigna_datos_modelo(
+                data_table: $data_table,
+                keys_no_foraneas: $keys_no_foraneas,
+                name_modelo: $name_modelo
+            );
+
+            if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al maquetar estructura', data: $estructura_bd);
             }
         }
+
         return $estructura_bd;
     }
+
 
     /**
      * @param stdClass $data_campos
@@ -468,8 +1197,25 @@ class estructuras{
     private function genera_foranea(stdClass $data_campos, stdClass $estructura_bd, stdClass $foraneas,
                                     string $modelo): array|stdClass
     {
+        $modelo = trim($modelo);
+        if ($modelo === '') {
+            return $this->error->error(mensaje: 'Error $modelo esta vacio', data: $modelo, es_final: true);
+        }
+
         foreach ($data_campos as $data){
+            if(!is_object($data)){
+                return $this->error->error(mensaje: 'Error $data debe ser un objeto', data: $data_campos);
+            }
+            if(!isset($data->es_foranea)){
+                $data->es_foranea = false;
+            }
             if($data->es_foranea){
+
+                if (!isset($data->tabla_foranea)) {
+                    return $this->error->error(mensaje: 'Error $data->tabla_foranea no existe', data: $data,
+                        es_final: true);
+                }
+
                 $estructura_bd = $this->asigna_dato_foranea(data: $data,estructura_bd: $estructura_bd,
                     foraneas: $foraneas,modelo: $modelo);
                 if(errores::$error){
@@ -565,13 +1311,138 @@ class estructuras{
 
 
     /**
-     * Inicializa un campo con loa datos de estructura de bd
-     * @param array $campo campo a inicializar
-     * @param array $keys_no_foraneas Keys integrados como no foraneas
-     * @return array|stdClass
+     * REG
+     * Inicializa un campo con sus propiedades estructurales dentro de la base de datos.
+     *
+     * Esta función valida la existencia de claves esenciales en el array del campo (`Field`, `Null`, `Key`),
+     * y determina sus características principales como si permite valores nulos, si es clave primaria,
+     * si es auto_increment, si es una clave foránea y la tabla foránea asociada.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener al menos las claves `Field`, `Null` y `Key`.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'cliente_id',
+     *                         'Type' => 'int(11)',
+     *                         'Null' => 'YES',
+     *                         'Key' => 'PRI'
+     *                     ]
+     *                     ```
+     * @param array $keys_no_foraneas Lista de claves que no deben considerarse foráneas.
+     *                                 - Ejemplo:
+     *                                 ```php
+     *                                 ['usuario_alta', 'usuario_update']
+     *                                 ```
+     *
+     * @return array|stdClass Devuelve un objeto `stdClass` con las características del campo:
+     *   - `permite_null` (bool): Indica si el campo permite valores nulos.
+     *   - `es_primaria` (bool): Indica si el campo es clave primaria.
+     *   - `es_auto_increment` (bool): Indica si el campo es auto_increment.
+     *   - `es_foranea` (bool): Indica si el campo es clave foránea.
+     *   - `tabla_foranea` (string): Nombre de la tabla foránea asociada si es una clave foránea, vacío si no lo es.
+     *
+     * Si algún dato no es válido, devuelve un array con información del error.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'cliente_id',
+     *     'Type' => 'int(11)',
+     *     'Null' => 'YES',
+     *     'Key' => '',
+     *     'Extra' => ''
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->inicializa_campo($campo, $keys_no_foraneas);
+     *
+     * // Resultado esperado:
+     * // (stdClass) {
+     * //   permite_null => true,
+     * //   es_primaria => false,
+     * //   es_auto_increment => false,
+     * //   es_foranea => true,
+     * //   tabla_foranea => 'cliente'
+     * // }
+     * ```
+     *
+     * ### Ejemplo con clave primaria y auto_increment:
+     * ```php
+     * $campo = [
+     *     'Field' => 'id',
+     *     'Type' => 'int(11)',
+     *     'Null' => 'NO',
+     *     'Key' => 'PRI',
+     *     'Extra' => 'auto_increment'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->inicializa_campo($campo, $keys_no_foraneas);
+     *
+     * // Resultado esperado:
+     * // (stdClass) {
+     * //   permite_null => false,
+     * //   es_primaria => true,
+     * //   es_auto_increment => true,
+     * //   es_foranea => false,
+     * //   tabla_foranea => ''
+     * // }
+     * ```
+     *
+     * ### Ejemplo de error (clave `Field` no definida):
+     * ```php
+     * $campo = [
+     *     'Null' => 'YES',
+     *     'Key' => 'PRI'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->inicializa_campo($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al campo[Field] no existe',
+     * //   'data' => [
+     * //       'Null' => 'YES',
+     * //       'Key' => 'PRI'
+     * //   ]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validación de la existencia de las claves necesarias (`Field`, `Null`, `Key`)**:
+     *    - Si falta alguna, devuelve un error.
+     * 2. **Determinación de características del campo**:
+     *    - Llama a `permite_null` para determinar si el campo permite valores nulos.
+     *    - Llama a `es_primaria` para verificar si el campo es clave primaria.
+     *    - Llama a `es_auto_increment` para determinar si es auto_increment.
+     *    - Llama a `es_foranea` para verificar si el campo es clave foránea.
+     *    - Llama a `tabla_foranea` para obtener la tabla relacionada si el campo es clave foránea.
+     * 3. **Retorno del resultado**:
+     *    - Devuelve un objeto `stdClass` con las características del campo.
+     *    - En caso de error, devuelve un array con detalles del problema.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validación de estructuras de base de datos en un ORM.
+     * - **Ejemplo real:** Determinar las características de un campo `cliente_id` en una tabla de facturas.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que el array `$campo` contiene las claves `Field`, `Null` y `Key` antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, asegurando que los errores sean informados correctamente.
      */
     private function inicializa_campo(array $campo, array $keys_no_foraneas): array|stdClass
     {
+        if (!isset($campo['Null'])) {
+            return $this->error->error(mensaje: 'Error campo[Null] debe existir', data: $campo);
+        }
+        if (!isset($campo['Key'])) {
+            return $this->error->error(mensaje: 'Error campo[Key] debe existir', data: $campo);
+        }
+        if (!isset($campo['Field'])) {
+            return $this->error->error(mensaje: 'Error al campo[Field] no existe', data: $campo);
+        }
+
         $permite_null = $this->permite_null(campo: $campo);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al verificar permite null', data: $permite_null);
@@ -602,6 +1473,7 @@ class estructuras{
 
         return $data;
     }
+
 
     /**
      * REG
@@ -817,7 +1689,7 @@ class estructuras{
         $keys = array('Field');
         $valida = (new validacion())->valida_existencia_keys(keys: $keys, registro: $campo);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar valida', data: $valida);
+            return $this->error->error(mensaje: 'Error al validar keys', data: $valida);
         }
 
         if (!isset($this->estructura_bd->$name_modelo)) {
@@ -922,28 +1794,176 @@ class estructuras{
 
 
     /**
-     * @param array $campo
-     * @param stdClass $campo_init
-     * @param string $name_modelo
-     * @return stdClass
+     * REG
+     * Estructura y asigna los datos de un campo dentro de la estructura del modelo en la base de datos.
+     *
+     * Esta función toma la información de un campo de la base de datos y lo integra dentro de la estructura del modelo,
+     * asegurando que contenga todas las propiedades esenciales, tales como si es clave primaria, foránea, permite nulos,
+     * su tipo de dato, valores por defecto, entre otros.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener las claves `Field`, `Type`, `Default`, `Extra` y `Key`.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'cliente_id',
+     *                         'Type' => 'int(11)',
+     *                         'Null' => 'YES',
+     *                         'Default' => null,
+     *                         'Extra' => '',
+     *                         'Key' => 'MUL'
+     *                     ]
+     *                     ```
+     * @param stdClass $campo_init Estructura inicializada del campo, que contiene sus propiedades analizadas.
+     *                              - Debe contener:
+     *                                - `tabla_foranea` (string)
+     *                                - `es_foranea` (bool)
+     *                                - `permite_null` (bool)
+     *                                - `es_primaria` (bool)
+     *                                - `es_auto_increment` (bool)
+     *                              - Ejemplo:
+     *                              ```php
+     *                              (object) [
+     *                                  'tabla_foranea' => 'clientes',
+     *                                  'es_foranea' => true,
+     *                                  'permite_null' => true,
+     *                                  'es_primaria' => false,
+     *                                  'es_auto_increment' => false
+     *                              ]
+     *                              ```
+     * @param string $name_modelo Nombre del modelo al cual pertenece el campo.
+     *                            - No puede estar vacío.
+     *                            - Ejemplo: `'facturas'`.
+     *
+     * @return stdClass|array Devuelve el objeto `estructura_bd` con la información del campo asignada.
+     *                        En caso de error, devuelve un array con detalles del problema.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'cliente_id',
+     *     'Type' => 'int(11)',
+     *     'Null' => 'YES',
+     *     'Default' => null,
+     *     'Extra' => '',
+     *     'Key' => 'MUL'
+     * ];
+     *
+     * $campo_init = (object) [
+     *     'tabla_foranea' => 'clientes',
+     *     'es_foranea' => true,
+     *     'permite_null' => true,
+     *     'es_primaria' => false,
+     *     'es_auto_increment' => false
+     * ];
+     *
+     * $name_modelo = 'facturas';
+     *
+     * $resultado = $this->maqueta_estructura($campo, $campo_init, $name_modelo);
+     * // Resultado esperado:
+     * // $this->estructura_bd->facturas->data_campos->cliente_id = {
+     * //   'tabla_foranea' => 'clientes',
+     * //   'es_foranea' => true,
+     * //   'permite_null' => true,
+     * //   'campo_name' => 'cliente_id',
+     * //   'tipo_dato' => 'int(11)',
+     * //   'es_primaria' => false,
+     * //   'valor_default' => null,
+     * //   'extra' => '',
+     * //   'es_auto_increment' => false,
+     * //   'tipo_llave' => 'MUL'
+     * // }
+     * ```
+     *
+     * ### Ejemplo de error (`name_modelo` vacío):
+     * ```php
+     * $resultado = $this->maqueta_estructura($campo, $campo_init, '');
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error $name_modelo esta vacio',
+     * //   'data' => '',
+     * //   'es_final' => true
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Validaciones iniciales:**
+     *    - Verifica que `$name_modelo` no esté vacío.
+     *    - Verifica que `$campo` contenga las claves `Field`, `Type`, `Default`, `Extra` y `Key`.
+     *    - Verifica que `$campo_init` contenga `tabla_foranea`, `es_foranea`, `permite_null`, `es_primaria`, `es_auto_increment`.
+     * 2. **Inicialización de la estructura en `$this->estructura_bd`:**
+     *    - Crea las claves necesarias en `estructura_bd` si no existen (`$name_modelo`, `data_campos`).
+     * 3. **Registro de la información del campo:**
+     *    - Se almacena en `data_campos->$campo_name` la información del campo, incluyendo:
+     *      - `tabla_foranea`, `es_foranea`, `permite_null`, `tipo_dato`, `es_primaria`, `valor_default`, `extra`, `es_auto_increment`, `tipo_llave`.
+     * 4. **Retorno del resultado:**
+     *    - Devuelve `estructura_bd` con la información agregada.
+     *    - Si ocurre un error, devuelve un array con detalles del problema.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Definición de la estructura de modelos en una aplicación ORM.
+     * - **Ejemplo real:** Registrar un campo `cliente_id` en la estructura de la tabla `facturas`.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que `$campo` y `$campo_init` contengan la información esperada antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, proporcionando mensajes detallados.
      */
-    private function maqueta_estructura(array $campo, stdClass $campo_init, string $name_modelo): stdClass
+    private function maqueta_estructura(array $campo, stdClass $campo_init, string $name_modelo): stdClass|array
     {
-        $campo_name = $campo['Field'];
+        $name_modelo = trim($name_modelo);
+        if ($name_modelo === '') {
+            return $this->error->error(mensaje: 'Error $name_modelo esta vacio', data: $name_modelo,
+                es_final: true);
+        }
 
-        $this->estructura_bd->$name_modelo->campos[] = $campo['Field'];
-        $this->estructura_bd->$name_modelo->data_campos->$campo_name->tabla_foranea =  $campo_init->tabla_foranea;
+        $required_keys = ['Field', 'Type', 'Default', 'Extra', 'Key'];
+        foreach ($required_keys as $key) {
+            if (!isset($campo[$key])) {
+                return $this->error->error(mensaje: "Error \$campo[$key] no existe", data: $campo,
+                    es_final: true);
+            }
+        }
+
+        $required_init_keys = ['tabla_foranea', 'es_foranea', 'permite_null', 'es_primaria', 'es_auto_increment'];
+        foreach ($required_init_keys as $key) {
+            if (!isset($campo_init->$key)) {
+                return $this->error->error(mensaje: "Error \$campo_init->$key no existe", data: $campo_init,
+                    es_final: true);
+            }
+        }
+
+        if (!isset($this->estructura_bd->$name_modelo)) {
+            $this->estructura_bd->$name_modelo = new stdClass();
+        }
+        if (!isset($this->estructura_bd->$name_modelo->data_campos)) {
+            $this->estructura_bd->$name_modelo->data_campos = new stdClass();
+        }
+
+        $campo_name = trim($campo['Field']);
+        if ($campo_name === '') {
+            return $this->error->error(mensaje: 'Error $campo_name esta vacio', data: $campo_init, es_final: true);
+        }
+
+        if (!isset($this->estructura_bd->$name_modelo->data_campos->$campo_name)) {
+            $this->estructura_bd->$name_modelo->data_campos->$campo_name = new stdClass();
+        }
+
+        $this->estructura_bd->$name_modelo->campos[] = $campo_name;
+        $this->estructura_bd->$name_modelo->data_campos->$campo_name->tabla_foranea = $campo_init->tabla_foranea;
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->es_foranea = $campo_init->es_foranea;
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->permite_null = $campo_init->permite_null;
-        $this->estructura_bd->$name_modelo->data_campos->$campo_name->campo_name = $campo['Field'];
+        $this->estructura_bd->$name_modelo->data_campos->$campo_name->campo_name = $campo_name;
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->tipo_dato = $campo['Type'];
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->es_primaria = $campo_init->es_primaria;
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->valor_default = $campo['Default'];
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->extra = $campo['Extra'];
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->es_auto_increment = $campo_init->es_auto_increment;
         $this->estructura_bd->$name_modelo->data_campos->$campo_name->tipo_llave = $campo['Key'];
+
         return $this->estructura_bd;
     }
+
 
     /**
      * REG
@@ -1224,47 +2244,224 @@ class estructuras{
 
 
     /**
-     * Integra permite null
-     * @param array $campo Datos del campo
-     * @return bool|array
-     * @version 10.78.3
+     * REG
+     * Determina si un campo permite valores nulos en la base de datos.
+     *
+     * Esta función verifica la clave `Null` en el array de datos de un campo y determina si el campo
+     * puede aceptar valores nulos. Si el campo tiene el valor `'NO'` en `Null`, se considera que no permite nulos.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener la clave `Null` con los valores esperados `'YES'` o `'NO'`.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'nombre',
+     *                         'Type' => 'varchar(255)',
+     *                         'Null' => 'YES'
+     *                     ]
+     *                     ```
+     *
+     * @return bool|array Retorna `true` si el campo permite nulos, `false` si no los permite,
+     *                    o un array de error si la clave `Null` no está definida en `$campo`.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)',
+     *     'Null' => 'YES'
+     * ];
+     *
+     * $resultado = $this->permite_null($campo);
+     * // Resultado esperado:
+     * // true
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'id',
+     *     'Type' => 'int(11)',
+     *     'Null' => 'NO'
+     * ];
+     *
+     * $resultado = $this->permite_null($campo);
+     * // Resultado esperado:
+     * // false
+     * ```
+     *
+     * ### Ejemplo de error (clave `Null` no definida):
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)'
+     * ];
+     *
+     * $resultado = $this->permite_null($campo);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error campo[Null] debe existir',
+     * //   'data' => [
+     * //       'Field' => 'nombre',
+     * //       'Type' => 'varchar(255)'
+     * //   ]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Verificación de la existencia de la clave `Null` en `$campo`:**
+     *    - Si la clave no está presente, se retorna un error.
+     * 2. **Determinación del valor de `permite_null`:**
+     *    - Si `Null` es `'NO'`, significa que el campo no permite nulos, por lo que retorna `false`.
+     *    - En cualquier otro caso (por ejemplo, `'YES'`), se considera que permite nulos y retorna `true`.
+     * 3. **Retorno del resultado:**
+     *    - Devuelve `true` si permite nulos.
+     *    - Devuelve `false` si no los permite.
+     *    - Devuelve un array de error si la clave `Null` no está definida en `$campo`.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validación de estructuras de base de datos en un ORM.
+     * - **Ejemplo real:** Determinar si un campo `nombre` en una tabla de usuarios permite valores nulos.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que el array `$campo` contiene la clave `Null` antes de llamar a esta función.
+     * - En bases de datos, algunos motores como MySQL pueden definir valores por defecto para `Null`, verifica siempre su estructura.
      */
     private function permite_null(array $campo): bool|array
     {
-        if(!isset($campo['Null'])){
+        if (!isset($campo['Null'])) {
             return $this->error->error(mensaje: 'Error campo[Null] debe existir', data: $campo);
         }
 
         $permite_null = true;
-        if($campo['Null'] === 'NO'){
+        if ($campo['Null'] === 'NO') {
             $permite_null = false;
         }
+
         return $permite_null;
     }
 
+
     /**
-     * Integra el nombre de la tabla foranea ligada a la entidad
-     * @param array $campo Datos del campo
-     * @param array $keys_no_foraneas Key de foraneas
-     * @return string|array
-     * @version 11.25.0
+     * REG
+     * Obtiene el nombre de la tabla foránea asociada a un campo de base de datos.
+     *
+     * Esta función analiza el nombre del campo para determinar si representa una clave foránea.
+     * Se considera una clave foránea si su nombre termina en `_id` y no está presente en la lista de claves excluidas (`keys_no_foraneas`).
+     * Si el campo es una clave foránea, la función devuelve el nombre de la tabla relacionada.
+     *
+     * @param array $campo Datos del campo en la base de datos.
+     *                     Debe contener la clave `Field`, que representa el nombre del campo en la tabla.
+     *                     - Ejemplo de estructura esperada:
+     *                     ```php
+     *                     [
+     *                         'Field' => 'cliente_id',
+     *                         'Type' => 'int(11)'
+     *                     ]
+     *                     ```
+     * @param array $keys_no_foraneas Lista de claves que no deben considerarse foráneas.
+     *                                 - Ejemplo:
+     *                                 ```php
+     *                                 ['usuario_alta', 'usuario_update']
+     *                                 ```
+     *
+     * @return string|array Devuelve el nombre de la tabla foránea si el campo es una clave foránea,
+     *                      una cadena vacía `''` si no es una clave foránea,
+     *                      o un array de error si la clave `Field` no está definida en `$campo`.
+     *
+     * ### Ejemplo de uso exitoso:
+     * ```php
+     * $campo = [
+     *     'Field' => 'cliente_id',
+     *     'Type' => 'int(11)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->tabla_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // "cliente"
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'nombre',
+     *     'Type' => 'varchar(255)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->tabla_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // ""
+     * ```
+     *
+     * ```php
+     * $campo = [
+     *     'Field' => 'usuario_update',
+     *     'Type' => 'int(11)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->tabla_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // "" (ya que está en keys_no_foraneas)
+     * ```
+     *
+     * ### Ejemplo de error (clave `Field` no definida):
+     * ```php
+     * $campo = [
+     *     'Type' => 'int(11)'
+     * ];
+     * $keys_no_foraneas = ['usuario_alta', 'usuario_update'];
+     *
+     * $resultado = $this->tabla_foranea($campo, $keys_no_foraneas);
+     * // Resultado esperado:
+     * // [
+     * //   'error' => 1,
+     * //   'mensaje' => 'Error al campo[Field] no existe',
+     * //   'data' => [
+     * //       'Type' => 'int(11)'
+     * //   ]
+     * // ]
+     * ```
+     *
+     * ### Proceso de la función:
+     * 1. **Verificación de la existencia de la clave `Field` en `$campo`:**
+     *    - Si `Field` no está presente, se retorna un error.
+     * 2. **Análisis del nombre del campo:**
+     *    - Se divide el nombre en partes separadas por `_id` utilizando `explode('_id', $campo['Field'])`.
+     * 3. **Verificación de si es una clave foránea:**
+     *    - Si el nombre tiene `_id` al final y no está en la lista `keys_no_foraneas`, se considera foránea (`true`).
+     *    - Si está en `keys_no_foraneas`, se devuelve una cadena vacía `''`.
+     * 4. **Retorno del resultado:**
+     *    - Devuelve el nombre de la tabla foránea si el campo es una clave foránea.
+     *    - Devuelve `''` si no es una clave foránea.
+     *    - Devuelve un array de error si la clave `Field` no está definida en `$campo`.
+     *
+     * ### Casos de uso:
+     * - **Contexto:** Validación de estructuras de base de datos en un ORM.
+     * - **Ejemplo real:** Determinar la tabla relacionada para un campo `cliente_id` en una tabla de facturas.
+     *
+     * ### Consideraciones:
+     * - Asegúrate de que el array `$campo` contiene la clave `Field` antes de llamar a esta función.
+     * - La función maneja errores mediante la clase `errores`, asegurando que los errores sean informados correctamente.
      */
     private function tabla_foranea(array $campo, array $keys_no_foraneas): string|array
     {
-        if(!isset($campo['Field'])){
+        if (!isset($campo['Field'])) {
             return $this->error->error(mensaje: 'Error al campo[Field] no existe', data: $campo);
         }
 
         $tabla_foranea = '';
         $explode_campo = explode('_id', $campo['Field']);
-        if((count($explode_campo) > 1) && $explode_campo[1] === '') {
+        if ((count($explode_campo) > 1) && $explode_campo[1] === '') {
             $es_no_foranea = in_array($explode_campo[0], $keys_no_foraneas, true);
-            if(!$es_no_foranea){
+            if (!$es_no_foranea) {
                 $tabla_foranea = $explode_campo[0];
             }
-
         }
+
         return $tabla_foranea;
     }
+
 
 }

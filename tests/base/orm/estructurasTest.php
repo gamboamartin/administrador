@@ -3,9 +3,11 @@ namespace tests\base\orm;
 
 use base\orm\estructuras;
 use base\orm\modelo_base;
+use gamboamartin\administrador\models\adm_menu;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 
 class estructurasTest extends test {
@@ -16,20 +18,52 @@ class estructurasTest extends test {
         $this->errores = new errores();
     }
 
-    public function test_asigna_data_modelo(): void
+
+
+    public function test_asigna_dato_estructura(): void
     {
         errores::$error = false;
         $st = new estructuras($this->link);
         $st = new liberator($st);
-        $modelos = array();
-        $name_db = 'a';
-        $row = array();
-        $row['Tables_in_a'] = 'a';
-        $resultado = $st->asigna_data_modelo($modelos, $name_db, $row);
+        $campo = array();
+        $campo['Field'] = 'b';
+        $campo['Null'] = 'b';
+        $campo['Key'] = 'b';
+        $campo['Type'] = 'b';
+        $campo['Default'] = 'b';
+        $campo['Extra'] = 'b';
+        $keys_no_foraneas = array();
+        $name_modelo = 'a';
+
+        $resultado = $st->asigna_dato_estructura($campo,$keys_no_foraneas, $name_modelo);
+
+
         $this->assertNotTrue(errores::$error);
-        $this->assertIsArray($resultado);
+        $this->assertIsObject($resultado);
 
         errores::$error = false;
+
+    }
+
+    public function test_asigna_dato_foranea(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+
+        $data = new stdClass();
+        $estructura_bd = new stdClass();
+        $foraneas = new stdClass();
+        $modelo = 'a';
+        $data->tabla_foranea = 'x';
+        $resultado = $st->asigna_dato_foranea($data,$estructura_bd,$foraneas,$modelo);
+
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
     }
 
     public function test_asigna_datos_estructura(): void
@@ -57,6 +91,46 @@ class estructurasTest extends test {
 
         errores::$error = false;
 
+
+    }
+
+    public function test_asigna_data_modelo(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $modelos = array();
+        $name_db = 'a';
+        $row = array();
+        $row['Tables_in_a'] = 'a';
+        $resultado = $st->asigna_data_modelo($modelos, $name_db, $row);
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+
+        errores::$error = false;
+    }
+
+    public function test_asigna_datos_modelo(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $data_table = array();
+        $keys_no_foraneas = array();
+        $name_modelo = 'a';
+        $data_table[0]['Field'] = 'x';
+        $data_table[0]['Null'] = 'x';
+        $data_table[0]['Key'] = 'x';
+        $data_table[0]['Type'] = 'x';
+        $data_table[0]['Default'] = 'x';
+        $data_table[0]['Extra'] = 'x';
+        $resultado = $st->asigna_datos_modelo($data_table,$keys_no_foraneas, $name_modelo);
+
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
 
     }
 
@@ -125,6 +199,48 @@ class estructurasTest extends test {
         errores::$error = false;
     }
 
+    public function test_genera_estructura(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+
+        $keys_no_foraneas = array();
+        $modelos = array();
+        $modelos[] = 'adm_menu';
+        $resultado = $st->genera_estructura($keys_no_foraneas,$modelos);
+
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
+    }
+
+    public function test_genera_foranea(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+
+        $data_campos = new stdClass();
+        $estructura_bd = new stdClass();
+        $foraneas = new stdClass();
+        $modelo = 'a';
+        $data_campos->a = new stdClass();
+        $data_campos->a->es_foranea = true;
+        $data_campos->a->tabla_foranea = true;
+        $resultado = $st->genera_foranea($data_campos,$estructura_bd,$foraneas,$modelo);
+
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
+    }
+
     public function test_get_tables_sql(): void
     {
         errores::$error = false;
@@ -135,6 +251,25 @@ class estructurasTest extends test {
         $this->assertIsArray($resultado);
 
         errores::$error = false;
+    }
+
+    public function test_inicializa_campo(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $campo['Null'] = '';
+        $campo['Key'] = '';
+        $campo['Field'] = '';
+        $keys_no_foraneas = array();
+        $resultado = $st->inicializa_campo($campo,$keys_no_foraneas);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
     }
 
     public function test_init_estructura_campo(): void
@@ -200,6 +335,34 @@ class estructurasTest extends test {
         $this->assertIsString($resultado);
         $this->assertEquals('Tables_in_a',$resultado);
         errores::$error = false;
+    }
+
+    public function test_maqueta_estructura(): void
+    {
+        errores::$error = false;
+        $st = new estructuras($this->link);
+        $st = new liberator($st);
+        $campo = array();
+        $campo['Field'] = 'x';
+        $campo['Type'] = 'x';
+        $campo['Default'] = 'x';
+        $campo['Extra'] = 'x';
+        $campo['Key'] = 'x';
+        $campo_init = new stdClass();
+        $campo_init->tabla_foranea = '';
+        $campo_init->es_foranea = '';
+        $campo_init->permite_null = '';
+        $campo_init->es_primaria = '';
+        $campo_init->es_auto_increment = '';
+        $name_modelo = 'a';
+
+        $resultado = $st->maqueta_estructura($campo,$campo_init,$name_modelo);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+
+        errores::$error = false;
+
     }
 
     public function test_maqueta_modelos(): void

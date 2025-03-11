@@ -17,204 +17,114 @@ class where{
         $this->validacion = new validacion();
     }
 
-
     /**
      * REG
-     * Genera un objeto completo de filtros SQL a partir de múltiples parámetros.
+     * Genera una estructura completa de filtros SQL, incluyendo cláusulas WHERE, IN, NOT IN, rangos, fechas, y filtros personalizados.
      *
-     * Este método integra diversas condiciones y cláusulas para construir un filtro SQL completo, el cual
-     * se utiliza en consultas de la base de datos. Se combinan las siguientes cláusulas:
+     * Esta función encapsula la generación de filtros SQL y la estructura del `WHERE` a partir de múltiples parámetros de filtrado.
+     * Utiliza `genera_filtros_sql` para construir los filtros base y luego estructura los resultados con `where` y `filtros_full`.
      *
-     * - **Diferente de:** Condiciones que excluyen registros que cumplan ciertos valores.
-     * - **Filtro básico:** Condiciones simples definidas en el parámetro `$filtro`.
-     * - **Filtro especial:** Condiciones con operadores y comparaciones personalizadas (por ejemplo,
-     *   para condiciones complejas o subconsultas).
-     * - **Filtro extra:** Condiciones adicionales que se concatenan a la sentencia principal.
-     * - **Filtro de fecha:** Condiciones basadas en rangos de fecha.
-     * - **Filtro de rango:** Condiciones que utilizan el operador BETWEEN.
-     * - **Filtro IN:** Condiciones que filtran registros que contengan determinados valores.
-     * - **Filtro NOT IN:** Condiciones que excluyen registros con ciertos valores.
-     * - **SQL extra:** Cualquier cadena SQL adicional que se desee concatenar a la consulta.
+     * @param array $columnas_extra Columnas adicionales a incluir en la consulta.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre', 'apellido', 'email']
+     *     ```
      *
-     * Además, el método valida el tipo de filtro (`$tipo_filtro`), que puede ser:
-     * - **'numeros':** Para filtros exactos (sin comodines).
-     * - **'textos':** Para filtros que permiten coincidencias parciales (se integran comodines `%`).
+     * @param array $diferente_de Condiciones para excluir valores específicos.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['id' => 5, 'estado' => 'inactivo']
+     *     ```
+     *     Genera: `AND id <> 5 AND estado <> 'inactivo'`
      *
-     * El proceso de generación se realiza en los siguientes pasos:
-     * 1. Se valida que el tipo de filtro sea correcto usando `verifica_tipo_filtro()`.
-     * 2. Se genera la sentencia base para los filtros simples mediante `genera_sentencia_base()`.
-     * 3. Se generan las cláusulas específicas:
-     *    - **Filtro especial:** mediante `filtro_especial_sql()`.
-     *    - **Filtro de rango:** mediante `filtro_rango_sql()`.
-     *    - **Filtro extra:** mediante `filtro_extra_sql()`.
-     *    - **Filtro NOT IN:** mediante `genera_not_in_sql()`.
-     *    - **Filtro IN:** mediante `genera_in_sql_normalizado()`.
-     *    - **Filtro de fecha:** mediante `filtro_fecha()`.
-     *    - **Diferente de:** mediante `diferente_de_sql()`.
-     * 4. Se integran todas las cláusulas anteriores en un objeto de filtros completo usando
-     *    `genera_filtros_iniciales()`.
-     * 5. Se genera la cláusula WHERE (si corresponde) a partir de las claves definidas en `$keys_data_filter`
-     *    mediante el método `where()`.
-     * 6. Finalmente, se envuelven los filtros en paréntesis y se asigna la cláusula WHERE al objeto de filtros.
+     * @param array $filtro Filtros estándar aplicados en la consulta SQL.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre' => 'Juan', 'edad' => 30]
+     *     ```
+     *     Genera: `WHERE nombre = 'Juan' AND edad = 30`
      *
-     * @param array $columnas_extra Arreglo con columnas adicionales definidas para el modelo (por ejemplo, para subconsultas).
-     *                                  Ejemplo: `['tabla.campo' => 'alias_campo']`
-     * @param array $diferente_de Arreglo asociativo que define condiciones "diferente de" (<>).
-     *                                  Ejemplo: `['tabla.estado' => 'inactivo']`
-     * @param array $filtro Filtros básicos para la consulta, en forma de array asociativo.
-     *                                  Ejemplo: `['tabla.nombre' => 'Juan']`
-     * @param array $filtro_especial Filtros especiales para condiciones complejas.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.edad' => [
-     *                                          'operador' => '>',
-     *                                          'valor' => '30',
-     *                                          'comparacion' => 'AND'
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     * @param array $filtro_extra Filtros adicionales para la consulta.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.sueldo' => [
-     *                                          'operador' => '<',
-     *                                          'valor' => '5000',
-     *                                          'comparacion' => 'OR'
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     * @param array $filtro_fecha (Opcional) Arreglo adicional de filtros de fecha si se requiere.
+     * @param array $filtro_especial Filtros con operadores especiales (ej. `LIKE`).
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre' => '%Carlos%']
+     *     ```
+     *     Genera: `AND nombre LIKE '%Carlos%'`
      *
-     * @param array $filtro_rango Filtros de rango para consultas BETWEEN.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.puntaje' => [
-     *                                          'valor1' => 1,
-     *                                          'valor2' => 10,
-     *                                          'valor_campo' => false
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     * @param array $in Arreglo para la cláusula IN. Debe incluir la llave y los valores.
-     *                                  Ejemplo: `['llave' => 'tabla.id', 'values' => [1,2,3]]`
-     * @param array $keys_data_filter Array de claves que se utilizarán para identificar y procesar los filtros.
-     *                                  Ejemplo: `['nombre', 'edad', 'sueldo', 'fecha']`
-     * @param array $not_in Arreglo para la cláusula NOT IN.
-     *                                  Ejemplo: `['llave' => 'tabla.categoria_id', 'values' => [4,5,6]]`
-     * @param string $sql_extra SQL adicional que se desea concatenar a la consulta.
-     *                                  Ejemplo: `" AND activo = '1' "`
-     * @param string $tipo_filtro Tipo de filtro a aplicar: 'numeros' para filtros exactos o 'textos' para filtros con comodines.
-     *                                  Ejemplo: `'numeros'`
-     * @return array|stdClass Devuelve un objeto `stdClass` que contiene todas las cláusulas y componentes SQL generados:
-     *                        - `where`: La cláusula WHERE resultante (si se generó alguna condición).
-     *                        - `sentencia`: La sentencia SQL base.
-     *                        - Otros componentes como `filtro_especial`, `filtro_extra`, `filtro_rango`, `in`, `not_in`, etc.
+     * @param array $filtro_extra Filtros adicionales con condiciones específicas.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['activo' => true]
+     *     ```
+     *     Genera: `AND activo = 1`
      *
-     * En caso de error, retorna un array con los detalles del error.
+     * @param array $filtro_fecha Filtros específicos para fechas.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['creacion' => ['2024-01-01', '2024-12-31']]
+     *     ```
+     *     Genera: `AND creacion BETWEEN '2024-01-01' AND '2024-12-31'`
      *
-     * @example Ejemplo 1: Generación de filtros completos sin filtros de fecha adicionales
-     * ```php
-     * $columnas_extra = ['tabla.campo' => 'alias_campo'];
-     * $diferente_de   = ['tabla.estado' => 'inactivo'];
-     * $filtro         = ['tabla.nombre' => 'Juan'];
-     * $filtro_especial = [
-     *     'tabla.edad' => [
-     *         'operador' => '>',
-     *         'valor' => '30',
-     *         'comparacion' => 'AND'
+     * @param array $filtro_rango Filtrado por rangos en columnas numéricas o de fechas.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['precio' => ['100', '500']]
+     *     ```
+     *     Genera: `AND precio BETWEEN 100 AND 500`
+     *
+     * @param array $in Condiciones `IN` para filtrar por múltiples valores.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['id' => [1, 2, 3, 4]]
+     *     ```
+     *     Genera: `AND id IN (1, 2, 3, 4)`
+     *
+     * @param array $keys_data_filter Claves que deben ser consideradas al filtrar datos.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre', 'edad']
+     *     ```
+     *     Se usa para validar que solo estas claves sean consideradas en los filtros.
+     *
+     * @param array $not_in Condiciones `NOT IN` para excluir valores específicos.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['estado' => ['borrado', 'suspendido']]
+     *     ```
+     *     Genera: `AND estado NOT IN ('borrado', 'suspendido')`
+     *
+     * @param string $sql_extra SQL adicional que puede ser añadido manualmente.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     "AND prioridad = 'alta'"
+     *     ```
+     *
+     * @param string $tipo_filtro Tipo de filtro a aplicar en la consulta (`AND` o `OR`).
+     *     Ejemplo de entrada:
+     *     ```php
+     *     'AND'
+     *     ```
+     *
+     * @return array|stdClass Estructura de filtros generada o un objeto de error en caso de fallo.
+     *     Ejemplo de salida exitosa:
+     *     ```php
+     *     [
+     *         'sql' => "WHERE nombre = 'Juan' AND id NOT IN (5, 7, 9) AND fecha BETWEEN '2023-01-01' AND '2023-12-31'",
+     *         'params' => ['Juan', 5, 7, 9, '2023-01-01', '2023-12-31'],
+     *         'where' => "WHERE nombre = 'Juan' AND edad = 30"
      *     ]
-     * ];
-     * $filtro_extra   = [
-     *     'tabla.sueldo' => [
-     *         'operador' => '<',
-     *         'valor' => '5000',
-     *         'comparacion' => 'OR'
+     *     ```
+     *
+     *     Ejemplo de salida en caso de error:
+     *     ```php
+     *     (object) [
+     *         'error' => true,
+     *         'mensaje' => 'Error al validar tipo_filtro',
+     *         'data' => null
      *     ]
-     * ];
-     * $filtro_fecha   = [];  // Sin filtros de fecha
-     * $filtro_rango   = [
-     *     'tabla.puntaje' => [
-     *         'valor1' => 1,
-     *         'valor2' => 10,
-     *         'valor_campo' => false
-     *     ]
-     * ];
-     * $in             = ['llave' => 'tabla.id', 'values' => [1,2,3]];
-     * $keys_data_filter = ['nombre', 'edad', 'sueldo'];
-     * $not_in         = ['llave' => 'tabla.categoria_id', 'values' => [4,5,6]];
-     * $sql_extra      = " AND activo = '1' ";
-     * $tipo_filtro    = 'numeros';
-     *
-     * $filtros = $this->data_filtros_full(
-     *      $columnas_extra,
-     *      $diferente_de,
-     *      $filtro,
-     *      $filtro_especial,
-     *      $filtro_extra,
-     *      $filtro_fecha,
-     *      $filtro_rango,
-     *      $in,
-     *      $keys_data_filter,
-     *      $not_in,
-     *      $sql_extra,
-     *      $tipo_filtro
-     * );
-     *
-     * // Resultado esperado: Objeto stdClass con propiedades como:
-     * // ->where: " WHERE " (si se generó alguna condición)
-     * // ->sentencia: " alias_campo = 'Juan' "
-     * // ->filtro_especial: " AND ( tabla.edad > '30' ) "
-     * // ->filtro_extra: " OR ( tabla.sueldo < '5000' ) "
-     * // ->filtro_rango: " AND ( tabla.puntaje BETWEEN '1' AND '10' ) "
-     * // ->in: " alias_campo IN (1,2,3) " (según la implementación)
-     * // ->not_in: " alias_campo NOT IN (4,5,6) "
-     * // ->sql_extra: " AND activo = '1' "
-     * ```
-     *
-     * @example Ejemplo 2: Generación de filtros completos con filtros de fecha
-     * ```php
-     * $columnas_extra = ['tabla.fecha' => 'alias_fecha'];
-     * $diferente_de   = [];
-     * $filtro         = [];
-     * $filtro_especial = [];
-     * $filtro_extra   = [];
-     * $filtro_fecha   = [
-     *     'fecha' => [
-     *         'campo_1' => '2023-01-01',
-     *         'campo_2' => '2023-12-31',
-     *         'fecha' => '2023-06-15'
-     *     ]
-     * ];
-     * $filtro_rango   = [];
-     * $in             = [];
-     * $keys_data_filter = ['fecha'];
-     * $not_in         = [];
-     * $sql_extra      = "";
-     * $tipo_filtro    = 'numeros';
-     *
-     * $filtros = $this->data_filtros_full(
-     *      $columnas_extra,
-     *      $diferente_de,
-     *      $filtro,
-     *      $filtro_especial,
-     *      $filtro_extra,
-     *      $filtro_fecha,
-     *      $filtro_rango,
-     *      $in,
-     *      $keys_data_filter,
-     *      $not_in,
-     *      $sql_extra,
-     *      $tipo_filtro
-     * );
-     *
-     * // Resultado esperado: Objeto stdClass que incluye la cláusula WHERE generada para el filtro de fecha,
-     * // por ejemplo: " WHERE ( alias_fecha BETWEEN '2023-01-01' AND '2023-12-31' ) "
-     * ```
-     *
+     *     ```
      */
+
     final public function data_filtros_full(
         array $columnas_extra,
         array $diferente_de,
@@ -912,214 +822,113 @@ class where{
     }
 
 
+
     /**
      * REG
-     * Genera la estructura completa de filtros SQL integrados a partir de diversos componentes.
+     * Genera una estructura de filtros SQL basada en múltiples criterios.
      *
-     * Este método integra y organiza distintos componentes de filtros SQL, tales como:
-     * - Filtros base.
-     * - Filtros especiales (condiciones adicionales con operadores específicos).
-     * - Filtros extra (condiciones concatenadas mediante operadores lógicos).
-     * - Filtros de rango (para valores entre dos límites).
-     * - Cláusulas IN y NOT IN.
-     * - Filtros de fecha.
-     * - Condiciones "diferente de" (para excluir ciertos valores).
+     * Esta función construye diferentes cláusulas SQL (`WHERE`, `IN`, `NOT IN`, `BETWEEN`, etc.)
+     * basándose en los parámetros proporcionados. Se utiliza para crear consultas dinámicas
+     * con múltiples condiciones de filtrado.
      *
-     * El proceso de generación se realiza en los siguientes pasos:
+     * @param array $columnas_extra Columnas adicionales a incluir en la consulta.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre', 'apellido', 'email']
+     *     ```
      *
-     * 1. **Validación del Tipo de Filtro:**
-     *    Se verifica que el valor de `$tipo_filtro` sea válido mediante el método
-     *    `verifica_tipo_filtro()` de la clase `\gamboamartin\where\where`. Esto determina si los
-     *    filtros se procesarán para datos numéricos o textos.
+     * @param array $diferente_de Condiciones para excluir valores específicos en la consulta.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['id' => 5, 'estado' => 'inactivo']
+     *     ```
+     *     Genera: `AND id <> 5 AND estado <> 'inactivo'`
      *
-     * 2. **Generación de la Sentencia Base:**
-     *    Se construye la sentencia base SQL usando `genera_sentencia_base()`, que integra las columnas
-     *    extra y el filtro base (`$filtro`) según el tipo especificado.
+     * @param array $filtro Filtros estándar para la consulta SQL.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre' => 'Juan', 'edad' => 30]
+     *     ```
+     *     Genera: `WHERE nombre = 'Juan' AND edad = 30`
      *
-     * 3. **Generación de Filtros Especiales:**
-     *    Se genera la cláusula de filtros especiales a partir del arreglo `$filtro_especial` mediante el método
-     *    `filtro_especial_sql()`, el cual procesa condiciones particulares (por ejemplo, "tabla.campo < '10'").
+     * @param array $filtro_especial Filtros con condiciones especiales (como `LIKE`).
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre' => '%Carlos%']
+     *     ```
+     *     Genera: `AND nombre LIKE '%Carlos%'`
      *
-     * 4. **Generación del Filtro de Rango:**
-     *    Se procesa el arreglo `$filtro_rango` con el método `filtro_rango_sql()`, generando condiciones del tipo
-     *    `BETWEEN 'valor1' AND 'valor2'`.
+     * @param array $filtro_extra Filtros adicionales con condiciones personalizadas.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['activo' => true]
+     *     ```
+     *     Genera: `AND activo = 1`
      *
-     * 5. **Generación del Filtro Extra:**
-     *    Se construye la cláusula de filtros extra con el método `filtro_extra_sql()`, que agrupa condiciones
-     *    adicionales para la consulta.
+     * @param array $filtro_rango Filtrado por rangos en columnas numéricas o de fechas.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['fecha' => ['2023-01-01', '2023-12-31']]
+     *     ```
+     *     Genera: `AND fecha BETWEEN '2023-01-01' AND '2023-12-31'`
      *
-     * 6. **Generación de la Cláusula NOT IN:**
-     *    Se genera la condición NOT IN a partir del arreglo `$not_in` utilizando el método `genera_not_in_sql()`.
+     * @param array $in Condiciones `IN` para filtrar por múltiples valores.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['id' => [1, 2, 3, 4]]
+     *     ```
+     *     Genera: `AND id IN (1, 2, 3, 4)`
      *
-     * 7. **Generación de la Cláusula IN Normalizada:**
-     *    Se genera la cláusula IN a partir del arreglo `$in` llamando a `genera_in_sql_normalizado()`.
+     * @param array $keys_data_filter Claves que deben ser consideradas al filtrar datos.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['nombre', 'edad']
+     *     ```
+     *     Se usa para validar que solo estas claves sean consideradas en los filtros.
      *
-     * 8. **Generación del Filtro de Fecha:**
-     *    Se procesa el arreglo `$filtro_fecha` mediante `filtro_fecha()` para obtener condiciones basadas en fechas.
+     * @param array $not_in Condiciones `NOT IN` para excluir valores específicos.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['estado' => ['borrado', 'suspendido']]
+     *     ```
+     *     Genera: `AND estado NOT IN ('borrado', 'suspendido')`
      *
-     * 9. **Generación del Filtro "Diferente de":**
-     *    Se construye la condición para excluir ciertos valores mediante `diferente_de_sql()`, a partir del arreglo
-     *    `$diferente_de`.
+     * @param string $sql_extra SQL adicional que puede ser añadido manualmente.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     "AND prioridad = 'alta'"
+     *     ```
      *
-     * 10. **Integración de Todos los Filtros:**
-     *     Se integran todos los componentes anteriores en un único objeto de filtros utilizando el método
-     *     `genera_filtros_iniciales()`, el cual se encarga de limpiar, agrupar y ajustar cada parte (por ejemplo, encapsulándola
-     *     en paréntesis donde sea necesario).
+     * @param string $tipo_filtro Tipo de filtro a aplicar en la consulta (`AND` o `OR`).
+     *     Ejemplo de entrada:
+     *     ```php
+     *     'AND'
+     *     ```
      *
-     * Si en cualquiera de los pasos ocurre un error, se retorna un array con los detalles del error generado.
+     * @param array $filtro_fecha Filtros específicos para fechas.
+     *     Ejemplo de entrada:
+     *     ```php
+     *     ['creacion' => ['2024-01-01', '2024-12-31']]
+     *     ```
+     *     Genera: `AND creacion BETWEEN '2024-01-01' AND '2024-12-31'`
      *
-     * @param array  $columnas_extra    Arreglo asociativo con columnas extras definidas en el modelo.
-     *                                  Ejemplo: `['campo1' => 'tabla.campo1', 'campo2' => 'tabla.campo2']`.
-     * @param array  $diferente_de      Arreglo de condiciones "diferente de" para excluir registros.
-     *                                  Ejemplo: `['tabla.campo1' => 'valor_no_permitido']`.
-     * @param array  $filtro            Arreglo con el filtro base.
-     *                                  Ejemplo: `['tabla.campo2' => 'valor']`.
-     * @param array  $filtro_especial   Arreglo con condiciones especiales adicionales.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.campo3' => [
-     *                                          'operador' => '<',
-     *                                          'valor' => '10'
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     * @param array  $filtro_extra      Arreglo con condiciones extra concatenables.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.campo4' => [
-     *                                          'operador' => '>',
-     *                                          'valor' => '100',
-     *                                          'comparacion' => 'AND'
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     * @param array  $filtro_rango      Arreglo con condiciones de rango.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.campo5' => [
-     *                                          'valor1' => '1',
-     *                                          'valor2' => '5'
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     * @param array  $in                Arreglo para la cláusula IN.
-     *                                  Ejemplo: `['llave' => 'tabla.campo6', 'values' => ['A','B','C']]`.
-     * @param array  $keys_data_filter  Array de claves que se utilizarán para limpiar y agrupar los filtros.
-     *                                  Ejemplo: `['filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra']`.
-     * @param array  $not_in            Arreglo para la cláusula NOT IN.
-     *                                  Ejemplo: `['llave' => 'tabla.campo7', 'values' => ['X','Y']]`.
-     * @param string $sql_extra         Cadena SQL extra a concatenar (por ejemplo, para ordenamientos).
-     *                                  Ejemplo: `"ORDER BY tabla.campo8 DESC"`.
-     * @param string $tipo_filtro       Tipo de filtro a aplicar; valores típicos son `'numeros'` o `'textos'`.
-     * @param array  $filtro_fecha      (Opcional) Arreglo con condiciones basadas en fechas.
-     *                                  Ejemplo:
-     *                                  ```php
-     *                                  [
-     *                                      'tabla.campo9' => [
-     *                                          'valor' => '2023-01-01',
-     *                                          'operador' => '>='
-     *                                      ]
-     *                                  ]
-     *                                  ```
-     *
-     * @return array|stdClass Devuelve un objeto `stdClass` con las siguientes propiedades:
-     *                         - `filtro_especial`: Condición SQL de filtros especiales.
-     *                         - `filtro_extra`: Cláusula SQL de filtros extra.
-     *                         - `filtro_fecha`: Condición SQL de filtros basados en fecha.
-     *                         - `filtro_rango`: Cláusula SQL de filtros de rango.
-     *                         - `in`: Cláusula SQL IN.
-     *                         - `not_in`: Cláusula SQL NOT IN.
-     *                         - `sentencia`: La sentencia SQL base generada.
-     *                         - `sql_extra`: La cadena SQL extra.
-     *
-     *                         En caso de error, retorna un array con detalles del error.
-     *
-     * @example Ejemplo de uso exitoso:
-     * <pre>
-     * $columnas_extra = [
-     *     'campo1' => 'tabla.campo1',
-     *     'campo2' => 'tabla.campo2'
-     * ];
-     * $diferente_de = ['tabla.campo1' => 'valor_no_permitido'];
-     * $filtro = ['tabla.campo2' => 'valor'];
-     * $filtro_especial = [
-     *     'tabla.campo3' => [
-     *         'operador' => '<',
-     *         'valor' => '10'
+     * @return array|stdClass Estructura con los filtros generados o un objeto con detalles de error.
+     *     Ejemplo de salida exitosa:
+     *     ```php
+     *     [
+     *         'sql' => "WHERE nombre = 'Juan' AND id NOT IN (5, 7, 9) AND fecha BETWEEN '2023-01-01' AND '2023-12-31'",
+     *         'params' => ['Juan', 5, 7, 9, '2023-01-01', '2023-12-31']
      *     ]
-     * ];
-     * $filtro_extra = [
-     *     'tabla.campo4' => [
-     *         'operador' => '>',
-     *         'valor' => '100',
-     *         'comparacion' => 'AND'
+     *     ```
+     *
+     *     Ejemplo de salida en caso de error:
+     *     ```php
+     *     (object) [
+     *         'error' => true,
+     *         'mensaje' => 'Error al validar tipo_filtro',
+     *         'data' => null
      *     ]
-     * ];
-     * $filtro_rango = [
-     *     'tabla.campo5' => [
-     *         'valor1' => '1',
-     *         'valor2' => '5'
-     *     ]
-     * ];
-     * $in = ['llave' => 'tabla.campo6', 'values' => ['A','B','C']];
-     * $keys_data_filter = ['filtro_especial','filtro_extra','filtro_fecha','filtro_rango','in','not_in','sentencia','sql_extra'];
-     * $not_in = ['llave' => 'tabla.campo7', 'values' => ['X','Y']];
-     * $sql_extra = "ORDER BY tabla.campo8 DESC";
-     * $tipo_filtro = 'numeros';
-     * $filtro_fecha = [
-     *     'tabla.campo9' => [
-     *         'valor' => '2023-01-01',
-     *         'operador' => '>='
-     *     ]
-     * ];
-     *
-     * $filtros = $this->genera_filtros_iniciales(
-     *      "tabla.campo1 <> 'valor_no_permitido'",
-     *      "tabla.campo3 < '10'",
-     *      "tabla.campo4 > '100'",
-     *      "tabla.campo5 BETWEEN '1' AND '5'",
-     *      "tabla.campo6 IN ('A','B','C')",
-     *      $keys_data_filter,
-     *      "tabla.campo7 NOT IN ('X','Y')",
-     *      "SELECT * FROM tabla",
-     *      $sql_extra,
-     *      "tabla.campo9 >= '2023-01-01'"
-     * );
-     *
-     * // Resultado esperado:
-     * // stdClass {
-     * //     filtro_especial  => "tabla.campo3 < '10'",
-     * //     filtro_extra     => "tabla.campo4 > '100'",
-     * //     filtro_fecha     => "tabla.campo9 >= '2023-01-01'",
-     * //     filtro_rango     => "tabla.campo5 BETWEEN '1' AND '5'",
-     * //     in               => "tabla.campo6 IN ('A','B','C')",
-     * //     not_in           => "tabla.campo7 NOT IN ('X','Y')",
-     * //     sentencia        => "SELECT * FROM tabla",
-     * //     sql_extra        => "ORDER BY tabla.campo8 DESC"
-     * // }
-     * </pre>
-     *
-     * @example Ejemplo de error: Fallo en la asignación de filtros
-     * <pre>
-     * $diferente_de_sql = ""; // Cadena vacía no es válida
-     * $filtros = $this->genera_filtros_iniciales(
-     *      $diferente_de_sql,
-     *      $filtro_especial_sql,
-     *      $filtro_extra_sql,
-     *      $filtro_rango_sql,
-     *      $in_sql,
-     *      $keys_data_filter,
-     *      $not_in_sql,
-     *      $sentencia,
-     *      $sql_extra,
-     *      $filtro_fecha_sql
-     * );
-     *
-     * // Resultado esperado: Array de error con un mensaje indicando "Error al asignar filtros" junto con los datos relevantes.
-     * </pre>
+     *     ```
      */
     private function genera_filtros_sql(
         array $columnas_extra,
