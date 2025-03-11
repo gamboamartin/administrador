@@ -570,6 +570,59 @@ class modelo extends modelo_base {
 
 
 
+    /**
+     * REG
+     * Obtiene el número total de registros que cumplen con los filtros y condiciones especificadas.
+     *
+     * Este método genera una consulta SQL de conteo (`COUNT(*)`) basada en los filtros y condiciones
+     * especificadas en los parámetros. Posteriormente, ejecuta la consulta y retorna el número total
+     * de registros encontrados.
+     *
+     * ### Flujo del método:
+     * 1. **Validación del tipo de filtro:** Se verifica que el `$tipo_filtro` sea válido mediante `where::verifica_tipo_filtro()`.
+     * 2. **Aplicación de seguridad:** Si la seguridad está activada, se añaden filtros de seguridad a la consulta.
+     * 3. **Generación de la consulta SQL:** Se construye la consulta de conteo utilizando `genera_sql_filtro()`.
+     * 4. **Ejecución de la consulta:** Se ejecuta la consulta mediante `ejecuta_consulta()`.
+     * 5. **Retorno del resultado:** Se extrae el total de registros y se devuelve como un entero.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $modelo = new ModeloEjemplo();
+     * $total = $modelo->cuenta_bis(
+     *     aplica_seguridad: true,
+     *     filtro: ['categoria_id' => 1],
+     *     tipo_filtro: 'AND'
+     * );
+     * echo "Total de registros: " . $total;
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * ```
+     * Total de registros: 45
+     * ```
+     *
+     * @param bool   $aplica_seguridad   Indica si se deben aplicar filtros de seguridad.
+     * @param array  $columnas           Columnas a incluir en la consulta (no afecta el conteo).
+     * @param array  $columnas_by_table  Columnas organizadas por tabla.
+     * @param bool   $columnas_en_bruto  Si `true`, las columnas se mantienen sin alias ni modificaciones.
+     * @param bool   $con_sq             Si `true`, permite generar subconsultas (`WITH`).
+     * @param array  $diferente_de       Filtros de exclusión (`!=`).
+     * @param array  $extra_join         Joins adicionales en la consulta.
+     * @param array  $filtro             Condiciones en formato `columna => valor`.
+     * @param array  $filtro_especial    Condiciones avanzadas de filtrado.
+     * @param array  $filtro_extra       Filtros adicionales personalizados.
+     * @param array  $filtro_fecha       Filtros basados en fechas.
+     * @param array  $filtro_rango       Filtros basados en rangos de valores.
+     * @param array  $group_by           Cláusula `GROUP BY`.
+     * @param array  $hijo               Configuración de relaciones con otras tablas.
+     * @param array  $in                 Filtros `IN`.
+     * @param array  $not_in             Filtros `NOT IN`.
+     * @param string $sql_extra          SQL adicional a incluir en la consulta.
+     * @param string $tipo_filtro        Tipo de filtro (`AND` o `OR`).
+     *
+     * @return array|int Retorna el número total de registros encontrados o un array de error si falla.
+     */
+
     final public function cuenta_bis(
         bool $aplica_seguridad = true,
         array $columnas = array(),
@@ -1137,6 +1190,130 @@ class modelo extends modelo_base {
     }
 
 
+    /**
+     * REG
+     * Genera y ejecuta una consulta SQL aplicando filtros en formato `AND`.
+     *
+     * Este método construye y ejecuta una consulta SQL con múltiples condiciones de filtrado basadas en `AND`.
+     * Permite aplicar restricciones como filtros básicos, filtros especiales, filtros de fechas, rangos de valores,
+     * inclusiones (`IN`), exclusiones (`NOT IN`), agrupaciones (`GROUP BY`), ordenamientos (`ORDER BY`),
+     * límites (`LIMIT`), y paginación (`OFFSET`).
+     *
+     * ### Flujo del método:
+     * 1. **Validación del tipo de filtro:** Se verifica que `$tipo_filtro` sea válido mediante `where::verifica_tipo_filtro()`.
+     * 2. **Aplicación de seguridad:** Si `$aplica_seguridad` es `true`, se agregan filtros de seguridad automáticamente.
+     * 3. **Validación del límite:** Si `$limit` es menor a 0, se retorna un error.
+     * 4. **Generación de la consulta SQL:** Se construye la consulta utilizando `genera_sql_filtro()`.
+     * 5. **Ejecución de la consulta:** Se ejecuta la consulta con `ejecuta_consulta()`.
+     * 6. **Retorno del resultado:** Se devuelve un objeto `stdClass` con los registros obtenidos o un error si falla el proceso.
+     *
+     * ---
+     *
+     * ### Ejemplo de uso 1: Búsqueda básica con filtros específicos
+     * ```php
+     * $modelo = new ModeloEjemplo();
+     * $resultado = $modelo->filtro_and(
+     *     aplica_seguridad: true,
+     *     filtro: ['categoria_id' => 2, 'activo' => 1],
+     *     tipo_filtro: 'AND',
+     *     order: ['nombre' => 'ASC'],
+     *     limit: 5
+     * );
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * stdClass Object
+     * (
+     *     [registros] => Array
+     *         (
+     *             [0] => Array
+     *                 (
+     *                     [id] => 1
+     *                     [nombre] => "Producto A"
+     *                     [categoria_id] => 2
+     *                     [activo] => 1
+     *                 )
+     *             [1] => Array
+     *                 (
+     *                     [id] => 2
+     *                     [nombre] => "Producto B"
+     *                     [categoria_id] => 2
+     *                     [activo] => 1
+     *                 )
+     *         )
+     * )
+     * ```
+     * ---
+     *
+     * ### Ejemplo de uso 2: Aplicando filtros de fecha y paginación
+     * ```php
+     * $resultado = $modelo->filtro_and(
+     *     filtro_fecha: ['fecha_creacion' => ['>=', '2024-01-01']],
+     *     order: ['fecha_creacion' => 'DESC'],
+     *     limit: 10,
+     *     offset: 5
+     * );
+     * ```
+     * **Salida esperada:** Devuelve 10 registros a partir del sexto registro ordenados por fecha de creación descendente.
+     * ---
+     *
+     * ### Ejemplo de uso 3: Filtros avanzados con exclusiones y agrupaciones
+     * ```php
+     * $resultado = $modelo->filtro_and(
+     *     filtro: ['estado' => 'activo'],
+     *     not_in: ['id' => [3, 7, 10]],
+     *     group_by: ['categoria_id'],
+     *     order: ['categoria_id' => 'ASC']
+     * );
+     * ```
+     * **Salida esperada:** Devuelve registros agrupados por `categoria_id`, excluyendo los IDs `3`, `7` y `10`.
+     * ---
+     *
+     * ### Parámetros:
+     * @param bool   $aplica_seguridad   Si `true`, aplica filtros de seguridad adicionales automáticamente.
+     * @param array  $columnas           Lista de columnas a incluir en la consulta.
+     * @param array  $columnas_by_table  Columnas organizadas por tabla.
+     * @param bool   $columnas_en_bruto  Si `true`, se mantiene la estructura original de las columnas sin alias.
+     * @param array  $columnas_totales   Lista de columnas a incluir en la salida total.
+     * @param bool   $con_sq             Si `true`, permite la generación de subconsultas (`WITH`).
+     * @param array  $diferente_de       Condiciones de exclusión (`!=`).
+     * @param array  $extra_join         Joins adicionales en la consulta.
+     * @param array  $filtro             Filtros en formato `columna => valor`.
+     * @param array  $filtro_especial    Filtros avanzados personalizados.
+     * @param array  $filtro_extra       Filtros adicionales opcionales.
+     * @param array  $filtro_fecha       Filtros de fecha (ejemplo: `['fecha_creacion' => ['>=', '2024-01-01']]`).
+     * @param array  $filtro_rango       Rango de valores (ejemplo: `['precio' => ['BETWEEN', 100, 500]]`).
+     * @param array  $group_by           Cláusula `GROUP BY` para agrupar resultados.
+     * @param array  $hijo               Configuración de relaciones con otras tablas.
+     * @param array  $in                 Filtros `IN` (ejemplo: `['id' => [1, 2, 3]]`).
+     * @param int    $limit              Límite de registros (0 para ilimitado).
+     * @param array  $not_in             Filtros `NOT IN` (ejemplo: `['id' => [3, 7, 10]]`).
+     * @param int    $offset             Número de registros a saltar (para paginación).
+     * @param array  $order              Cláusula `ORDER BY` para ordenar resultados.
+     * @param string $sql_extra          SQL adicional a incluir en la consulta.
+     * @param string $tipo_filtro        Tipo de filtro (TEXTOS, NUMEROS).
+     *
+     * @return array|stdClass Devuelve un `stdClass` con los registros obtenidos o un array con el error en caso de falla.
+     *
+     * ---
+     *
+     * ### Ejemplo de salida con error:
+     * ```php
+     * // Si `limit` es negativo:
+     * $resultado = $modelo->filtro_and(limit: -1);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error limit debe ser mayor o igual a 0'
+     *     [data] => -1
+     * )
+     * ```
+     */
+
     final public function filtro_and(
         bool $aplica_seguridad = true,
         array $columnas = array(),
@@ -1283,6 +1460,77 @@ class modelo extends modelo_base {
 
         return $result;
     }
+
+    /**
+     * REG
+     * Genera una consulta SQL a partir de filtros y condiciones específicas.
+     *
+     * Este método construye dinámicamente una sentencia SQL basada en los parámetros proporcionados, incluyendo
+     * columnas, filtros, ordenamientos, paginación y condiciones especiales.
+     *
+     * ### Flujo del método:
+     * 1. Valida los parámetros de `limit` y `offset` para asegurar que sean valores positivos.
+     * 2. Verifica que el `tipo_filtro` sea válido llamando a `where::verifica_tipo_filtro()`.
+     * 3. Genera la consulta base mediante `genera_consulta_base()`, la cual estructura las columnas y joins.
+     * 4. Aplica filtros de inclusión (`IN`) mediante `in_llave()`.
+     * 5. Construye un complemento SQL con filtros aplicados utilizando `filtros::complemento_sql()`.
+     * 6. Ensambla la consulta SQL final con `filtros::consulta_full_and()`.
+     * 7. Asigna la consulta resultante a `$this->consulta` y la retorna.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $modelo = new ModeloEjemplo();
+     * $sql = $modelo->genera_sql_filtro(
+     *     columnas: ['id', 'nombre', 'precio'],
+     *     columnas_by_table: [],
+     *     columnas_en_bruto: false,
+     *     con_sq: false,
+     *     diferente_de: [],
+     *     extra_join: [],
+     *     filtro: ['categoria_id' => 1],
+     *     filtro_especial: [],
+     *     filtro_extra: [],
+     *     filtro_rango: [],
+     *     group_by: [],
+     *     in: [],
+     *     limit: 10,
+     *     not_in: [],
+     *     offset: 0,
+     *     order: ['nombre ASC'],
+     *     sql_extra: '',
+     *     tipo_filtro: 'AND'
+     * );
+     * echo $sql;
+     * ```
+     *
+     * ### Ejemplo de salida esperada:
+     * ```sql
+     * SELECT id, nombre, precio FROM productos WHERE categoria_id = 1 ORDER BY nombre ASC LIMIT 10 OFFSET 0;
+     * ```
+     *
+     * @param array  $columnas            Columnas a seleccionar en la consulta.
+     * @param array  $columnas_by_table   Columnas organizadas por tabla.
+     * @param bool   $columnas_en_bruto   Indica si las columnas deben estar sin alias ni modificaciones.
+     * @param bool   $con_sq              Indica si se debe generar una subquery en la consulta.
+     * @param array  $diferente_de        Condiciones de exclusión (`!=`).
+     * @param array  $extra_join          Joins adicionales a aplicar en la consulta.
+     * @param array  $filtro              Filtros básicos en formato `columna => valor`.
+     * @param array  $filtro_especial     Filtros especiales con condiciones avanzadas.
+     * @param array  $filtro_extra        Filtros adicionales no estándar.
+     * @param array  $filtro_rango        Filtros por rangos de valores.
+     * @param array  $group_by            Cláusula `GROUP BY`.
+     * @param array  $in                  Filtros `IN` para la consulta.
+     * @param int    $limit               Número máximo de registros a retornar.
+     * @param array  $not_in              Filtros `NOT IN`.
+     * @param int    $offset              Desplazamiento (`OFFSET`) para la paginación.
+     * @param array  $order               Cláusula `ORDER BY`.
+     * @param string $sql_extra           Fragmento SQL adicional para integrar.
+     * @param string $tipo_filtro         Tipo de filtro a aplicar (`AND` o `OR`).
+     * @param bool   $count               Indica si se debe generar una consulta de conteo (`COUNT(*)`).
+     * @param array  $filtro_fecha        Filtros por fechas.
+     *
+     * @return array|string Retorna la consulta SQL generada como string o un array de error en caso de falla.
+     */
 
 
     private function genera_sql_filtro(

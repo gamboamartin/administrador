@@ -127,6 +127,81 @@ class filtros{
 
 
 
+    /**
+     * REG
+     * Genera un complemento SQL con filtros, condiciones y parámetros de seguridad.
+     *
+     * Este método construye un conjunto de filtros SQL basado en diversos criterios como filtros especiales,
+     * filtros de rango, filtros de fecha, exclusiones (`not_in`), agrupaciones (`group_by`), órdenes (`order`),
+     * y seguridad (`aplica_seguridad`). Además, verifica la validez de los parámetros antes de generar la consulta.
+     *
+     * ### Proceso:
+     * 1. **Validaciones iniciales**:
+     *    - Verifica que `$limit` y `$offset` sean valores positivos.
+     *    - Valida el tipo de filtro (`$tipo_filtro`) mediante `verifica_tipo_filtro()`.
+     * 2. **Generación de parámetros SQL**:
+     *    - Crea la estructura de parámetros SQL con `params_sql()`, incluyendo `group_by`, `limit`, `offset`, `order`.
+     * 3. **Generación de filtros**:
+     *    - Usa `data_filtros_full()` para obtener un conjunto de filtros basado en los parámetros proporcionados.
+     * 4. **Normalización del filtro IN**:
+     *    - Se limpia la estructura de `filtros->in` para eliminar espacios dobles y correcciones de formato.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $modelo = new modelo();
+     * $resultado = $this->complemento_sql(
+     *     aplica_seguridad: true,
+     *     diferente_de: ['status' => 'cancelado'],
+     *     filtro: ['nombre' => 'Ejemplo'],
+     *     filtro_especial: ['monto > 1000'],
+     *     filtro_extra: [],
+     *     filtro_rango: ['fecha' => ['2024-01-01', '2024-12-31']],
+     *     group_by: ['categoria_id'],
+     *     in: ['estado' => ['activo', 'pendiente']],
+     *     limit: 10,
+     *     modelo: $modelo,
+     *     not_in: ['tipo' => ['borrador']],
+     *     offset: 0,
+     *     order: ['fecha DESC'],
+     *     sql_extra: '',
+     *     tipo_filtro: 'AND'
+     * );
+     * ```
+     *
+     * ### Salida esperada:
+     * ```php
+     * stdClass {
+     *     params: stdClass {
+     *         group_by: "GROUP BY categoria_id",
+     *         limit: "LIMIT 10",
+     *         offset: "OFFSET 0",
+     *         order: "ORDER BY fecha DESC"
+     *     },
+     *     where: "WHERE nombre = 'Ejemplo' AND monto > 1000 AND fecha BETWEEN '2024-01-01' AND '2024-12-31'",
+     *     in: "IN ('activo', 'pendiente')",
+     *     not_in: "NOT IN ('borrador')"
+     * }
+     * ```
+     *
+     * @param bool        $aplica_seguridad Si `true`, aplica reglas de seguridad en la consulta.
+     * @param array       $diferente_de     Condiciones de exclusión (`!=` en SQL).
+     * @param array       $filtro           Condiciones directas en el `WHERE`.
+     * @param array       $filtro_especial  Condiciones adicionales no estándar.
+     * @param array       $filtro_extra     Filtros opcionales adicionales.
+     * @param array       $filtro_rango     Filtros de rango (ej. `BETWEEN` en SQL).
+     * @param array       $group_by         Columnas para agrupar los resultados.
+     * @param array       $in               Condiciones de inclusión (`IN` en SQL).
+     * @param int         $limit            Límite de registros a retornar.
+     * @param modelo      $modelo           Instancia del modelo con información de la tabla.
+     * @param array       $not_in           Condiciones de exclusión (`NOT IN` en SQL).
+     * @param int         $offset           Desplazamiento de registros (`OFFSET` en SQL).
+     * @param array       $order            Orden de los registros (`ORDER BY` en SQL).
+     * @param string      $sql_extra        Sentencias SQL adicionales.
+     * @param string      $tipo_filtro      Tipo de combinación de filtros (`AND`, `OR`).
+     * @param array       $filtro_fecha     Filtros aplicados sobre fechas.
+     *
+     * @return array|stdClass Devuelve un objeto con los filtros generados o un array con el error en caso de fallo.
+     */
     final public function complemento_sql(
         bool $aplica_seguridad,
         array $diferente_de,
@@ -177,6 +252,7 @@ class filtros{
                 es_final: true
             );
         }
+
         $verifica_tf = (new \gamboamartin\where\where())->verifica_tipo_filtro(tipo_filtro: $tipo_filtro);
         if (errores::$error) {
             return $this->error->error(
@@ -226,18 +302,14 @@ class filtros{
             $filtros->in = '';
         }
 
-        // Normaliza la cadena del filtro IN, eliminando espacios redundantes y corrigiendo paréntesis.
-        $filtros->in = str_replace('( (', '((', $filtros->in);
-        $filtros->in = str_replace('  ', ' ', $filtros->in);
-        $filtros->in = str_replace('  ', ' ', $filtros->in);
-        $filtros->in = str_replace('  ', ' ', $filtros->in);
-        $filtros->in = str_replace('  ', ' ', $filtros->in);
-        $filtros->in = str_replace('( (', '((', $filtros->in);
+        // Normalización del filtro `IN`
+        $filtros->in = str_replace(['( (', '  '], ['((', ' '], $filtros->in);
         $filtros->in = trim($filtros->in);
 
         $filtros->params = $params;
         return $filtros;
     }
+
 
 
     /**

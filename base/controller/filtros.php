@@ -116,17 +116,75 @@ class filtros{
     }
 
 
+    /**
+     * REG
+     * Filtra los registros de un modelo utilizando los criterios proporcionados.
+     *
+     * Este método ejecuta la función `filtro_and` en el modelo del controlador, aplicando los filtros
+     * especificados en `$filtros`. Si ocurre un error durante la consulta, se captura y se devuelve
+     * un objeto de error. En caso de éxito, retorna el conjunto de registros filtrados.
+     *
+     * ### Funcionamiento:
+     * 1. Se invoca el método `filtro_and` del modelo asociado al controlador, pasando los filtros.
+     * 2. Si hay un error en la ejecución de la consulta, se devuelve un error detallado.
+     * 3. Si la consulta es exitosa, se retorna el conjunto de registros filtrados.
+     *
+     * ### Parámetros:
+     * @param controler $controler Instancia del controlador que contiene el modelo a consultar.
+     * @param array $filtros Filtros a aplicar en la consulta. Debe contener pares clave-valor donde la clave es
+     *                       el nombre del campo y el valor es el criterio de filtrado.
+     *
+     * ### Retorno:
+     * @return array|stdClass Devuelve un array con los registros filtrados o un objeto `stdClass` en caso de éxito.
+     *                        Si ocurre un error, retorna un array con los detalles del error.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * // Suponiendo que tenemos un controlador con un modelo de usuarios:
+     * $controlador = new UsuarioControlador();
+     *
+     * // Filtros a aplicar: buscamos usuarios con rol "admin"
+     * $filtros = [
+     *     'usuarios.rol' => 'admin'
+     * ];
+     *
+     * // Llamada al método filtra
+     * $resultado = $controlador->filtros->filtra($controlador, $filtros);
+     *
+     * // Ejemplo de salida esperada (si hay éxito):
+     * // [
+     * //     ["id" => 1, "nombre" => "Juan Pérez", "rol" => "admin"],
+     * //     ["id" => 2, "nombre" => "Ana López", "rol" => "admin"]
+     * // ]
+     * ```
+     *
+     * ### Ejemplo de salida en caso de error:
+     * ```php
+     * // Si hay un error en la consulta:
+     * [
+     *     'error' => 1,
+     *     'mensaje' => 'Error al obtener datos',
+     *     'data' => 'Detalles del error en la consulta'
+     * ]
+     * ```
+     */
     final public function filtra(controler $controler, array $filtros): array|stdClass
     {
+        // Ejecutar filtro en el modelo asociado al controlador
         $r_modelo = $controler->modelo->filtro_and(filtro: $filtros);
+
+        // Manejo de errores
         if(errores::$error){
             return $controler->errores->error(
                 mensaje: 'Error al obtener datos',
                 data: $r_modelo
             );
         }
+
+        // Retornar resultado filtrado
         return $r_modelo;
     }
+
 
 
     /**
