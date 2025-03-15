@@ -1155,22 +1155,26 @@ class modelo extends modelo_base
     {
 
         if (!$this->aplica_transacciones_base) {
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $id);
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $id,
+                es_final: true);
         }
 
         if ($id <= 0) {
-            return $this->error->error(mensaje: 'El id no puede ser menor a 0 en ' . $this->tabla, data: $id);
+            return $this->error->error(mensaje: 'El id no puede ser menor a 0 en ' . $this->tabla, data: $id,
+                es_final: true);
         }
         $this->registro_id = $id;
 
         $valida = (new activaciones())->valida_activacion(modelo: $this);
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al validar transaccion activa en ' . $this->tabla, data: $valida);
+            return $this->error->error(mensaje: 'Error al validar transaccion activa en ' . $this->tabla,
+                data: $valida);
         }
 
         $registro_bitacora = $this->obten_data();
         if (errores::$error) {
-            return $this->error->error(mensaje: 'Error al obtener registro en ' . $this->tabla, data: $registro_bitacora);
+            return $this->error->error(mensaje: 'Error al obtener registro en ' . $this->tabla,
+                data: $registro_bitacora);
         }
         $registro_puro = $this->registro(registro_id: $id, columnas_en_bruto: true, retorno_obj: true);
         if (errores::$error) {

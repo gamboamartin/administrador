@@ -130,14 +130,143 @@ class dependencias{
     }
 
     /**
-     * Elimina los elementos de dependencias
-     * @param bool $desactiva_dependientes Si desactiva busca dependientes
-     * @param array $models_dependientes Conjunto de modelos hijos
-     * @param PDO $link Conexion a la base de datos
-     * @param int $registro_id Registro en ejecucion
-     * @param string $tabla Tabla origen
-     * @return array
-     * @version 1.434.48
+     * REG
+     * Aplica la eliminación de registros dependientes de un modelo en la base de datos.
+     *
+     * Esta función verifica si se debe desactivar dependientes y, en caso afirmativo,
+     * llama a `elimina_data_modelos_dependientes()` para eliminar los registros asociados.
+     *
+     * ---
+     *
+     * ### **Flujo de ejecución:**
+     * 1. **Validación de `$desactiva_dependientes`**: Si es `true`, se ejecuta la eliminación.
+     * 2. **Llamada a `elimina_data_modelos_dependientes()`**: Se eliminan los registros dependientes.
+     * 3. **Manejo de errores**: Si ocurre un error en la eliminación, se detiene la ejecución y se retorna un mensaje de error.
+     * 4. **Retorno de resultados**: Devuelve un array con los registros eliminados si el proceso fue exitoso.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param bool $desactiva_dependientes Indica si se deben eliminar los registros dependientes.
+     *                                     - **Ejemplo válido:** `true`
+     *                                     - **Ejemplo inválido:** `false` (no se ejecuta la eliminación)
+     *
+     * @param PDO $link Conexión activa a la base de datos mediante PDO.
+     *                  - **Ejemplo:** `$pdo = new PDO($dsn, $user, $password);`
+     *
+     * @param array $models_dependientes Conjunto de modelos hijos cuyos registros serán eliminados.
+     *                                   - **Ejemplo válido:**
+     *                                     ```php
+     *                                     [
+     *                                         ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "facturas"],
+     *                                         ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "pagos"]
+     *                                     ]
+     *                                     ```
+     *                                   - **Ejemplo inválido:** `[]` (provoca un error si `$desactiva_dependientes` es `true`)
+     *
+     * @param int $registro_id Identificador del registro en la tabla principal cuya relación se eliminará.
+     *                         - **Debe ser un número entero mayor a 0.**
+     *                         - **Ejemplo válido:** `123`
+     *                         - **Ejemplo inválido:** `0` (provoca un error)
+     *
+     * @param string $tabla Nombre de la tabla principal desde donde se eliminan los registros dependientes.
+     *                      - **Ejemplo:** `"clientes"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Si `$desactiva_dependientes` es `true`, se ejecuta la eliminación con `elimina_data_modelos_dependientes()`.
+     * 2. Si ocurre un error en la eliminación, se retorna un array con la descripción del problema.
+     * 3. Si la eliminación se realiza con éxito, se retorna un array con los registros eliminados.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $models_dependientes = [
+     *     ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "facturas"],
+     *     ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "pagos"]
+     * ];
+     * $registro_id = 123;
+     * $tabla = "clientes";
+     * $desactiva_dependientes = true;
+     *
+     * $resultado = $this->aplica_eliminacion_dependencias($desactiva_dependientes, $pdo, $models_dependientes, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (registros eliminados correctamente):**
+     * ```php
+     * [
+     *     [
+     *         ["id" => 1, "clientes_id" => 123, "status" => "eliminado"],
+     *         ["id" => 2, "clientes_id" => 123, "status" => "eliminado"]
+     *     ],
+     *     [
+     *         ["id" => 3, "clientes_id" => 123, "status" => "eliminado"]
+     *     ]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$desactiva_dependientes = false` (No se eliminan registros):**
+     * ```php
+     * $desactiva_dependientes = false;
+     * $resultado = $this->aplica_eliminacion_dependencias($desactiva_dependientes, $pdo, $models_dependientes, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * []
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$models_dependientes` vacío y `$desactiva_dependientes = true` (Error):**
+     * ```php
+     * $models_dependientes = []; // No hay modelos dependientes
+     * $resultado = $this->aplica_eliminacion_dependencias(true, $pdo, $models_dependientes, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al eliminar dependiente",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$registro_id` inválido (Error):**
+     * ```php
+     * $registro_id = 0; // ID inválido
+     * $resultado = $this->aplica_eliminacion_dependencias(true, $pdo, $models_dependientes, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => 0
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros eliminados si el proceso es exitoso.
+     *               Si ocurre un error, retorna un array con información del error.
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$models_dependientes` no es válido, `$registro_id` es menor o igual a 0,
+     *               o si falla la eliminación de registros dependientes.
      */
     final public function aplica_eliminacion_dependencias(bool $desactiva_dependientes, PDO $link,array $models_dependientes,
                                                     int $registro_id, string $tabla): array
@@ -686,14 +815,154 @@ class dependencias{
     }
 
     /**
-     * Elimina los registros dependientes de un modelo
-     * @param string $modelo_dependiente Modelo Hijo
-     * @param string $namespace_model
-     * @param PDO $link Conexion a la bd
-     * @param int $registro_id Registro en proceso
-     * @param string $tabla Tabla origen
-     * @return array
-     * @version 1.410.47
+     * REG
+     * Elimina los registros dependientes de un modelo relacionado en la base de datos.
+     *
+     * Esta función busca registros en el modelo dependiente que están relacionados con un registro en la tabla
+     * principal y los elimina de la base de datos.
+     *
+     * ---
+     *
+     * ### **Flujo de ejecución:**
+     * 1. **Validación del `$modelo_dependiente`**: Se asegura de que no esté vacío y sea un modelo válido.
+     * 2. **Validación de `$registro_id`**: Debe ser un número entero mayor a 0.
+     * 3. **Generación del modelo dependiente**: Se instancia el modelo correspondiente al `$modelo_dependiente`.
+     * 4. **Eliminación de registros dependientes**: Se llama a `elimina_dependientes()` para realizar la eliminación.
+     * 5. **Retorno de resultados**: Devuelve un array con los registros eliminados o un mensaje de error si ocurre una falla.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param string $modelo_dependiente Nombre del modelo hijo cuyos registros serán eliminados.
+     *                                   - **Ejemplo válido:** `"facturas"`
+     *                                   - **Ejemplo inválido:** `""` (provoca un error)
+     *
+     * @param string $namespace_model Espacio de nombres del modelo dependiente.
+     *                                - **Ejemplo:** `"gamboamartin\\facturacion\\models"`
+     *
+     * @param PDO $link Conexión activa a la base de datos mediante PDO.
+     *                  - **Ejemplo:** `$pdo = new PDO($dsn, $user, $password);`
+     *
+     * @param int $registro_id Identificador del registro en la tabla principal cuya relación se eliminará.
+     *                         - **Debe ser un número entero mayor a 0.**
+     *                         - **Ejemplo válido:** `123`
+     *                         - **Ejemplo inválido:** `0` (provoca un error)
+     *
+     * @param string $tabla Nombre de la tabla principal desde donde se eliminan los registros dependientes.
+     *                      - **Ejemplo:** `"clientes"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$modelo_dependiente` no esté vacío y sea un modelo válido mediante `valida_data_modelo()`.
+     * 2. Se valida que `$registro_id` sea mayor a 0.
+     * 3. Se genera un modelo de `$modelo_dependiente` utilizando `genera_modelo()`.
+     * 4. Se llama a `elimina_dependientes()` para eliminar los registros dependientes.
+     * 5. Si algún paso falla, se devuelve un error estructurado.
+     * 6. Si todos los registros son eliminados con éxito, se retorna un array con los datos de eliminación.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo_dependiente = "facturas";
+     * $namespace_model = "gamboamartin\\facturacion\\models";
+     * $registro_id = 123;
+     * $tabla = "clientes";
+     *
+     * $resultado = $this->elimina_data_modelo($modelo_dependiente, $namespace_model, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (registros eliminados correctamente):**
+     * ```php
+     * [
+     *     ["id" => 1, "clientes_id" => 123, "status" => "eliminado"],
+     *     ["id" => 2, "clientes_id" => 123, "status" => "eliminado"]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$modelo_dependiente` inválido (Error):**
+     * ```php
+     * $modelo_dependiente = ""; // Nombre de modelo inválido
+     * $resultado = $this->elimina_data_modelo($modelo_dependiente, $namespace_model, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar modelo dependiente ",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$registro_id` inválido (Error):**
+     * ```php
+     * $registro_id = 0; // ID inválido
+     * $resultado = $this->elimina_data_modelo($modelo_dependiente, $namespace_model, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => 0
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con error al generar el modelo dependiente:**
+     * ```php
+     * // Simulación de error en genera_modelo()
+     * $resultado = $this->elimina_data_modelo($modelo_dependiente, $namespace_model, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al generar modelo",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con error al eliminar registros dependientes:**
+     * ```php
+     * // Simulación de error en elimina_dependientes()
+     * $resultado = $this->elimina_data_modelo($modelo_dependiente, $namespace_model, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al desactivar dependiente",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros eliminados si el proceso es exitoso.
+     *               Si ocurre un error, retorna un array con información del error.
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo_dependiente` es inválido, `$registro_id` es menor o igual a 0,
+     *               o si falla la obtención/eliminación de registros dependientes.
      */
     private function elimina_data_modelo(string $modelo_dependiente, string $namespace_model,PDO $link,
                                          int $registro_id, string $tabla): array
@@ -705,7 +974,8 @@ class dependencias{
                 data: $valida);
         }
         if($registro_id<=0){
-            return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',data:$registro_id);
+            return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',data:$registro_id,
+                es_final: true);
         }
 
 
@@ -723,14 +993,144 @@ class dependencias{
     }
 
     /**
-     * Elimina los datos de un modelo dependiente
-     * @param array $models_dependientes Modelos dependendientes
-     * @param PDO $link Conexion a la base de datos
-     * @param int $registro_id Registro en ejecucion
-     * @param string $tabla Tabla origen
-     * @return array
-     * @version 1.433.48
+     * REG
+     * Elimina los registros dependientes de múltiples modelos relacionados en la base de datos.
      *
+     * Esta función itera sobre un conjunto de modelos dependientes y elimina sus registros en función de un identificador padre.
+     *
+     * ---
+     *
+     * ### **Flujo de ejecución:**
+     * 1. **Validación de `$models_dependientes`**: Se asegura que cada modelo tenga las claves `namespace_model` y `dependiente`.
+     * 2. **Validación de `$registro_id`**: Debe ser un número entero mayor a 0.
+     * 3. **Iteración sobre los modelos dependientes**: Se eliminan los registros de cada modelo dependiente usando `elimina_data_modelo()`.
+     * 4. **Manejo de errores**: Si ocurre un error en cualquier modelo, se detiene la ejecución y se retorna un mensaje de error.
+     * 5. **Retorno de resultados**: Devuelve un array con los registros eliminados de cada modelo.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param array $models_dependientes Conjunto de modelos hijos cuyos registros serán eliminados.
+     *                                   - **Ejemplo válido:**
+     *                                     ```php
+     *                                     [
+     *                                         ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "facturas"],
+     *                                         ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "pagos"]
+     *                                     ]
+     *                                     ```
+     *                                   - **Ejemplo inválido:** `[]` (provoca un error)
+     *
+     * @param PDO $link Conexión activa a la base de datos mediante PDO.
+     *                  - **Ejemplo:** `$pdo = new PDO($dsn, $user, $password);`
+     *
+     * @param int $registro_id Identificador del registro en la tabla principal cuya relación se eliminará.
+     *                         - **Debe ser un número entero mayor a 0.**
+     *                         - **Ejemplo válido:** `123`
+     *                         - **Ejemplo inválido:** `0` (provoca un error)
+     *
+     * @param string $tabla Nombre de la tabla principal desde donde se eliminan los registros dependientes.
+     *                      - **Ejemplo:** `"clientes"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$models_dependientes` contenga las claves `namespace_model` y `dependiente` en cada elemento.
+     * 2. Se valida que `$registro_id` sea mayor a 0.
+     * 3. Se itera sobre cada modelo dependiente y se eliminan sus registros con `elimina_data_modelo()`.
+     * 4. Si algún paso falla, se devuelve un error estructurado.
+     * 5. Si todos los registros son eliminados con éxito, se retorna un array con los datos de eliminación.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $models_dependientes = [
+     *     ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "facturas"],
+     *     ["namespace_model" => "gamboamartin\\facturacion\\models", "dependiente" => "pagos"]
+     * ];
+     * $registro_id = 123;
+     * $tabla = "clientes";
+     *
+     * $resultado = $this->elimina_data_modelos_dependientes($models_dependientes, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (registros eliminados correctamente):**
+     * ```php
+     * [
+     *     [
+     *         ["id" => 1, "clientes_id" => 123, "status" => "eliminado"],
+     *         ["id" => 2, "clientes_id" => 123, "status" => "eliminado"]
+     *     ],
+     *     [
+     *         ["id" => 3, "clientes_id" => 123, "status" => "eliminado"]
+     *     ]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$models_dependientes` vacío (Error):**
+     * ```php
+     * $models_dependientes = []; // No hay modelos dependientes
+     * $resultado = $this->elimina_data_modelos_dependientes($models_dependientes, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar data_dep",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$registro_id` inválido (Error):**
+     * ```php
+     * $registro_id = 0; // ID inválido
+     * $resultado = $this->elimina_data_modelos_dependientes($models_dependientes, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => 0
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con error al eliminar datos de un modelo dependiente:**
+     * ```php
+     * // Simulación de error en elimina_data_modelo()
+     * $resultado = $this->elimina_data_modelos_dependientes($models_dependientes, $pdo, $registro_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al desactivar dependiente",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros eliminados si el proceso es exitoso.
+     *               Si ocurre un error, retorna un array con información del error.
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$models_dependientes` no es válido, `$registro_id` es menor o igual a 0,
+     *               o si falla la obtención/eliminación de registros dependientes.
      */
     private function elimina_data_modelos_dependientes(array $models_dependientes, PDO $link, int $registro_id,
                                                        string $tabla): array
@@ -751,7 +1151,7 @@ class dependencias{
             }
             if($registro_id<=0){
                 return $this->error->error(mensaje:'Error $this->registro_id debe ser mayor a 0',
-                    data:$registro_id);
+                    data:$registro_id, es_final: true);
             }
 
             $desactiva = $this->elimina_data_modelo(modelo_dependiente: $dependiente,
@@ -765,18 +1165,141 @@ class dependencias{
     }
 
     /**
-     * Elimina los registros dependientes de un modelo
-     * @param modelo $model Modelo en ejecucion
-     * @param int $parent_id Id origen
-     * @param string $tabla Tabla origen
-     * @return array
-     * @version 1.401.45
+     * REG
+     * Elimina los registros dependientes de una tabla relacionada.
+     *
+     * Esta función busca registros en la tabla dependiente relacionados con un registro en la tabla principal
+     * y los elimina de la base de datos.
+     *
+     * ---
+     *
+     * ### **Flujo de ejecución:**
+     * 1. **Validación de `$parent_id`**: Verifica que sea un entero mayor a 0.
+     * 2. **Obtención de registros dependientes**: Llama a `data_dependientes()` para obtener los registros relacionados.
+     * 3. **Eliminación de registros dependientes**: Itera sobre los registros y los elimina con `elimina_bd()`.
+     * 4. **Retorno de resultados**: Devuelve un array con los registros eliminados o un mensaje de error si falla algún paso.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo $model Instancia del modelo base que representa la tabla principal.
+     *                      - **Ejemplo:** `$modelo = new modelo($pdo); $modelo->tabla = 'clientes';`
+     *
+     * @param int $parent_id Identificador del registro en la tabla principal cuya relación se va a eliminar.
+     *                       - **Debe ser un número entero mayor a 0.**
+     *                       - **Ejemplo válido:** `123`
+     *                       - **Ejemplo inválido:** `0` (provoca un error)
+     *
+     * @param string $tabla Nombre de la tabla principal desde donde se eliminan los registros dependientes.
+     *                      - **Ejemplo:** `"clientes"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$parent_id` sea mayor a 0.
+     * 2. Se obtiene la lista de registros dependientes usando `data_dependientes()`.
+     * 3. Se recorre cada registro dependiente y se elimina con `elimina_bd()`.
+     * 4. Si algún paso falla, se devuelve un error estructurado.
+     * 5. Si todos los registros son eliminados con éxito, se retorna el resultado en un array.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo($pdo);
+     * $modelo->tabla = "clientes";
+     *
+     * $parent_id = 123;
+     * $tabla = "clientes";
+     *
+     * $resultado = $this->elimina_dependientes($modelo, $parent_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (registros eliminados correctamente):**
+     * ```php
+     * [
+     *     ["id" => 1, "clientes_id" => 123, "status" => "eliminado"],
+     *     ["id" => 2, "clientes_id" => 123, "status" => "eliminado"]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con `$parent_id` inválido (Error):**
+     * ```php
+     * $parent_id = -1; // ID no válido
+     * $resultado = $this->elimina_dependientes($modelo, $parent_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $parent_id debe ser mayor a 0",
+     *     "data" => -1
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con error al obtener dependientes:**
+     * ```php
+     * $modelo->tabla = "clientes";
+     * $parent_id = 123;
+     * $tabla = "clientes";
+     *
+     * // Simulación de error en data_dependientes()
+     * $resultado = $this->elimina_dependientes($modelo, $parent_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al obtener dependientes",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con error al eliminar registros:**
+     * ```php
+     * $modelo->tabla = "clientes";
+     * $parent_id = 123;
+     * $tabla = "clientes";
+     *
+     * // Simulación de error al eliminar registros
+     * $resultado = $this->elimina_dependientes($modelo, $parent_id, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al desactivar dependiente",
+     *     "data" => []
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros eliminados si el proceso es exitoso.
+     *               Si ocurre un error, retorna un array con información del error.
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$parent_id` es inválido o si falla la obtención/eliminación de registros dependientes.
      */
     private function elimina_dependientes(modelo $model, int $parent_id, string $tabla): array
     {
 
         if($parent_id<=0){
-            return $this->error->error(mensaje:'Error $parent_id debe ser mayor a 0',data: $parent_id);
+            return $this->error->error(mensaje:'Error $parent_id debe ser mayor a 0',data: $parent_id, es_final: true);
         }
 
         $dependientes = $this->data_dependientes(link: $model->link, namespace_model: $model->NAMESPACE,
