@@ -1020,21 +1020,66 @@ class modelo extends modelo_base
     }
 
     /**
-     * PHPUNIT
-     * @return array|stdClass
-     * @throws JsonException
-     * @final rev
+     * REG
+     * Desactiva un registro en la base de datos, marcándolo como inactivo.
+     *
+     * Este método realiza la desactivación lógica de un registro en la base de datos, asegurando que:
+     * - El ID del registro sea mayor a 0.
+     * - Se esté ejecutando dentro de un contexto que permita transacciones.
+     * - Se valide la transacción activa antes de ejecutar la actualización.
+     * - Se registre la transacción en la bitácora.
+     * - Se desactiven las dependencias relacionadas si existen.
+     *
+     * @return array|stdClass Retorna un array con mensaje de éxito o un error detallado en caso de falla.
+     *
+     * @example Entrada válida:
+     * ```php
+     * $modelo->registro_id = 5;
+     * $modelo->tabla = 'usuarios';
+     * $modelo->aplica_transacciones_base = true;
+     * $resultado = $modelo->desactiva_bd();
+     * print_r($resultado);
+     * ```
+     *
+     * @example Salida esperada en caso de éxito:
+     * ```php
+     * Array (
+     *     [mensaje] => 'Registro desactivado con éxito'
+     *     [registro_id] => 5
+     * )
+     * ```
+     *
+     * @example Salida esperada en caso de error (registro_id <= 0):
+     * ```php
+     * Array (
+     *     [error] => true,
+     *     [mensaje] => 'Error $this->registro_id debe ser mayor a 0',
+     *     [data] => 0,
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example Salida esperada en caso de error (transacciones no habilitadas):
+     * ```php
+     * Array (
+     *     [error] => true,
+     *     [mensaje] => 'Error solo se puede transaccionar desde layout',
+     *     [data] => 5,
+     *     [es_final] => true
+     * )
+     * ```
      */
     public function desactiva_bd(): array|stdClass
     {
 
         if ($this->registro_id <= 0) {
-            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0', data: $this->registro_id);
+            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
+                data: $this->registro_id, es_final: true);
         }
 
         if (!$this->aplica_transacciones_base) {
             return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',
-                data: $this->registro_id);
+                data: $this->registro_id, es_final: true);
         }
 
         $registro = $this->registro(registro_id: $this->registro_id);

@@ -229,6 +229,19 @@ class modeloTest extends test {
 
     }
 
+    public function test_desactiva_bd(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_mes($this->link);
+        $modelo->registro_id = 1;
+        //$modelo = new liberator($modelo);
+        $resultado = $modelo->desactiva_bd();
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
     public function test_elimina_bd(): void
     {
         errores::$error = false;

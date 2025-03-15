@@ -197,9 +197,52 @@ class modelo_base{ //PRUEBAS EN PROCESO //DOCUMENTACION EN PROCESO
 
 
     /**
+     * REG
+     * Desactiva las dependencias de un modelo si está habilitada la opción de desactivación de dependientes.
      *
-     * @return array
-     * @throws JsonException
+     * Este método revisa si el modelo tiene la propiedad `$desactiva_dependientes` habilitada y, en caso afirmativo,
+     * procede a desactivar las dependencias asociadas a través del método `desactiva_data_modelos_dependientes()` de la clase `dependencias`.
+     * Si ocurre un error en la desactivación, el método devuelve un mensaje de error con los detalles del problema.
+     *
+     * @final
+     * @protected
+     * @return array Datos sobre las dependencias desactivadas. En caso de error, devuelve un array con la información del error.
+     *
+     * @example
+     * ```php
+     * // Supongamos que tenemos un modelo con dependencias que deben ser desactivadas
+     * $modelo = new MiModelo();
+     * $modelo->desactiva_dependientes = true;
+     *
+     * $resultado = $modelo->aplica_desactivacion_dependencias();
+     * print_r($resultado);
+     * ```
+     * **Salida esperada (caso exitoso):**
+     * ```php
+     * Array
+     * (
+     *     [dependencia_1] => Array
+     *     (
+     *         [id] => 15
+     *         [status] => 'inactivo'
+     *     ),
+     *     [dependencia_2] => Array
+     *     (
+     *         [id] => 27
+     *         [status] => 'inactivo'
+     *     )
+     * )
+     * ```
+     *
+     * **Salida esperada (caso de error):**
+     * ```php
+     * Array
+     * (
+     *     [error] => true
+     *     [mensaje] => 'Error al desactivar dependiente'
+     *     [data] => Array()
+     * )
+     * ```
      */
     final protected function aplica_desactivacion_dependencias(): array
     {

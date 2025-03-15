@@ -15,28 +15,116 @@ class dependencias{
     }
 
     /**
-     * POR DOCUMENTAR EN WIKI
-     * Método privado que ajusta el valor del nombre del modelo
-     * proporcionado como argumento.
+     * REG
+     * Ajusta el nombre del modelo eliminando prefijos innecesarios y asegurando que tenga el formato correcto.
      *
+     * Esta función limpia y ajusta el nombre de un modelo, eliminando cualquier prefijo `models\` innecesario
+     * y volviendo a agregarlo si es necesario. Si el nombre del modelo está vacío o el resultado es inválido,
+     * la función devuelve un error.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
      * @param string $name_modelo Nombre del modelo a ajustar.
+     *                            - **Ejemplo válido:** `"models\\Cliente"`
+     *                            - **Ejemplo con error:** `""` (cadena vacía)
      *
-     * @return string|array Devuelve el nombre del modelo ajustado o un array conteniendo información de error.
+     * ---
      *
-     * @throws errores Si el $name_modelo está vacío.
-     * @version 16.111.0
+     * ### **Proceso Interno:**
+     * 1. Se elimina el espacio en blanco al inicio y final del nombre del modelo.
+     * 2. Se verifica si `$name_modelo` está vacío después del `trim()`. Si está vacío, se devuelve un error.
+     * 3. Se elimina el prefijo `models\` si está presente.
+     * 4. Se vuelve a agregar `models\` para garantizar el formato adecuado.
+     * 5. Se verifica nuevamente si el resultado es solo `models\`, lo que indica un error.
+     * 6. Se devuelve el nombre del modelo ajustado.
+     *
+     * ---
+     *
+     * @return string|array Devuelve el nombre del modelo ajustado en formato `models\NombreModelo`.
+     *                      Si ocurre un error, devuelve un array con el mensaje de error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $modelo = "models\\Factura";
+     * $resultado = $this->ajusta_modelo_comp($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * "models\\Factura"
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo sin prefijo:**
+     * ```php
+     * $modelo = "Factura";
+     * $resultado = $this->ajusta_modelo_comp($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * "models\\Factura"
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo vacío (Error):**
+     * ```php
+     * $modelo = "";
+     * $resultado = $this->ajusta_modelo_comp($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error name_modelo no puede venir vacio",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con solo el prefijo (Error):**
+     * ```php
+     * $modelo = "models\\";
+     * $resultado = $this->ajusta_modelo_comp($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error name_modelo no puede venir vacio",
+     *     "data" => "models\\"
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con mensaje de error si el `$name_modelo` está vacío o si el resultado es inválido.
      */
     private function ajusta_modelo_comp(string $name_modelo): string|array
     {
         $name_modelo = trim($name_modelo);
         if($name_modelo === ''){
-            return $this->error->error(mensaje:'Error name_modelo no puede venir vacio',data:  $name_modelo);
+            return $this->error->error(mensaje:'Error name_modelo no puede venir vacio',data:  $name_modelo,
+                es_final: true);
         }
         $name_modelo = str_replace('models\\','',$name_modelo);
         $name_modelo = 'models\\'.$name_modelo;
 
         if($name_modelo === 'models\\'){
-            return $this->error->error(mensaje: 'Error name_modelo no puede venir vacio', data: $name_modelo);
+            return $this->error->error(mensaje: 'Error name_modelo no puede venir vacio', data: $name_modelo,
+                es_final: true);
         }
         return trim($name_modelo);
     }
@@ -68,21 +156,119 @@ class dependencias{
     }
 
     /**
-     * Obtiene los dependientes de una tabla
-     * @param PDO $link Conexion a la base de datos
-     * @param string $namespace_model
-     * @param int $parent_id Registro padre
-     * @param string $tabla Tabla origen
-     * @param string $tabla_children Tabla hija
-     * @return array
-     * @version 1.400.45
+     * REG
+     * Obtiene los registros dependientes de una tabla en función de un identificador padre.
+     *
+     * Este método busca registros en la tabla hija (`$tabla_children`) que estén relacionados con un registro en la tabla
+     * principal (`$tabla`) a través del identificador `$parent_id`. Se usa un filtro para obtener solo los registros
+     * asociados a la tabla padre.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param PDO $link Conexión activa a la base de datos mediante PDO.
+     *                  - **Ejemplo:** `$pdo = new PDO($dsn, $user, $password);`
+     *
+     * @param string $namespace_model Espacio de nombres del modelo que representa la tabla hija.
+     *                                - **Ejemplo:** `"gamboamartin\\facturacion\\models"`
+     *
+     * @param int $parent_id Identificador del registro en la tabla padre (`$tabla`) que se usará para filtrar registros.
+     *                       - **Debe ser un número entero mayor a 0.**
+     *                       - **Ejemplo:** `123`
+     *
+     * @param string $tabla Nombre de la tabla padre que contiene el registro a relacionar.
+     *                      - **Ejemplo:** `"clientes"`
+     *
+     * @param string $tabla_children Nombre de la tabla hija donde se buscarán los registros dependientes.
+     *                                - **Ejemplo:** `"facturas"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$parent_id` sea un número mayor a 0.
+     * 2. Se valida que `$tabla_children` sea un nombre de modelo válido.
+     * 3. Se genera un modelo de la tabla hija utilizando `genera_modelo()`.
+     * 4. Se construye un filtro para obtener registros de `$tabla_children` que estén asociados a `$parent_id` en `$tabla`.
+     * 5. Se ejecuta la consulta con `filtro_and()` para obtener los registros dependientes.
+     *
+     * ---
+     *
+     * @return array Retorna un arreglo con los registros encontrados en la tabla hija (`$tabla_children`).
+     *               Si ocurre un error, devuelve un array con información del error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $namespace_model = "gamboamartin\\facturacion\\models";
+     * $parent_id = 123;
+     * $tabla = "clientes";
+     * $tabla_children = "facturas";
+     *
+     * $dependencias = $this->data_dependientes(
+     *     link: $pdo,
+     *     namespace_model: $namespace_model,
+     *     parent_id: $parent_id,
+     *     tabla: $tabla,
+     *     tabla_children: $tabla_children
+     * );
+     *
+     * print_r($dependencias);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     [
+     *         "id" => 1,
+     *         "clientes_id" => 123,
+     *         "total" => 500.00,
+     *         "status" => "pagado"
+     *     ],
+     *     [
+     *         "id" => 2,
+     *         "clientes_id" => 123,
+     *         "total" => 250.00,
+     *         "status" => "pendiente"
+     *     ]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Error (parent_id inválido):**
+     * ```php
+     * $parent_id = -1; // ID no válido
+     * $dependencias = $this->data_dependientes(
+     *     link: $pdo,
+     *     namespace_model: $namespace_model,
+     *     parent_id: $parent_id,
+     *     tabla: $tabla,
+     *     tabla_children: $tabla_children
+     * );
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $parent_id debe ser mayor a 0",
+     *     "data" => -1
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Si `$parent_id` es menor o igual a 0, o si `$tabla_children` no es válido.
      */
     private function data_dependientes(
         PDO $link, string $namespace_model, int $parent_id, string $tabla, string $tabla_children): array
     {
 
         if($parent_id<=0){
-            return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id);
+            return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id, es_final: true);
         }
         $tabla_children = trim($tabla_children);
         $valida = $this->validacion->valida_data_modelo(name_modelo: $tabla_children);
@@ -107,20 +293,125 @@ class dependencias{
     }
 
     /**
-     * PHPUNIT
-     * @param modelo_base $modelo
-     * @param string $modelo_dependiente
-     * @return array
-     * @throws JsonException
+     * REG
+     * Desactiva los registros dependientes de un modelo en la base de datos.
+     *
+     * Este método busca y desactiva los registros dependientes en un modelo relacionado (`$modelo_dependiente`)
+     * utilizando la estructura de relaciones definidas en `$modelo->registro_id`.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo_base $modelo Instancia del modelo base desde el cual se validan y desactivan los registros dependientes.
+     *                            - **Ejemplo:** `$modelo = new modelo_base($pdo); $modelo->tabla = 'clientes';`
+     *
+     * @param string $modelo_dependiente Nombre del modelo dependiente que contiene los registros a desactivar.
+     *                                    - **Ejemplo:** `"facturas"`
+     *
+     * @param string $namespace_model Espacio de nombres del modelo dependiente.
+     *                                - **Ejemplo:** `"gamboamartin\\facturacion\\models"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$modelo_dependiente` no esté vacío.
+     * 2. Se valida que `$modelo->registro_id` sea un número positivo mayor a 0.
+     * 3. Se ajusta el nombre del modelo dependiente mediante `modelo_dependiente_val()`.
+     * 4. Se genera el modelo dependiente con `model_dependiente()`.
+     * 5. Se ejecuta la desactivación de los registros dependientes mediante `desactiva_dependientes()`.
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros desactivados.
+     *               En caso de error, devuelve un array con información del error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo_base($pdo);
+     * $modelo->tabla = "clientes";
+     * $modelo->registro_id = 123;
+     *
+     * $namespace_model = "gamboamartin\\facturacion\\models";
+     * $modelo_dependiente = "facturas";
+     *
+     * $resultado = $this->desactiva_data_modelo($modelo, $modelo_dependiente, $namespace_model);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (lista de registros desactivados):**
+     * ```php
+     * [
+     *     ["id" => 1, "facturas_id" => 123, "status" => "inactivo"],
+     *     ["id" => 2, "facturas_id" => 123, "status" => "inactivo"]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo dependiente inválido (Error):**
+     * ```php
+     * $modelo_dependiente = ""; // Nombre de modelo inválido
+     * $resultado = $this->desactiva_data_modelo($modelo, $modelo_dependiente, $namespace_model);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error modelo_dependiente no puede venir vacio",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con registro_id inválido (Error):**
+     * ```php
+     * $modelo->registro_id = 0; // ID inválido
+     * $resultado = $this->desactiva_data_modelo($modelo, $modelo_dependiente, $namespace_model);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => 0
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo_dependiente` es inválido o `$modelo->registro_id` es menor o igual a 0.
      */
-    private function desactiva_data_modelo(modelo_base $modelo, string $modelo_dependiente): array
+    private function desactiva_data_modelo(
+        modelo_base $modelo, string $modelo_dependiente, string $namespace_model): array
     {
-        $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo, modelo_dependiente: $modelo_dependiente);
+
+        $modelo_dependiente = trim($modelo_dependiente);
+        if($modelo_dependiente === ''){
+            return $this->error->error(mensaje:'Error modelo_dependiente no puede venir vacio',
+                data:  $modelo_dependiente, es_final: true);
+        }
+        if($modelo->registro_id <= 0){
+            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id, es_final: true);
+        }
+
+        $modelo_dependiente_ajustado = $this->modelo_dependiente_val(
+            modelo: $modelo, modelo_dependiente: $modelo_dependiente);
         if(errores::$error){
             return  $this->error->error(mensaje: 'Error al ajustar modelo',data: $modelo_dependiente_ajustado);
         }
 
-        $modelo_ = $this->model_dependiente(modelo: $modelo, modelo_dependiente: $modelo_dependiente_ajustado);
+        $modelo_ = $this->model_dependiente(modelo: $modelo, modelo_dependiente: $modelo_dependiente_ajustado,
+            namespace_model: $namespace_model);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar modelo',data:  $modelo_);
         }
@@ -134,17 +425,108 @@ class dependencias{
     }
 
     /**
+     * REG
+     * Desactiva los registros dependientes de un modelo en la base de datos.
      *
-     * @param modelo_base $modelo
-     * @return array
-     * @throws JsonException
+     * Este método recorre los modelos dependientes definidos en `$modelo->models_dependientes`
+     * y desactiva cada uno de ellos utilizando la función `desactiva_data_modelo()`.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo_base $modelo Instancia del modelo base que contiene la lista de modelos dependientes.
+     *                            - **Ejemplo:** `$modelo = new modelo_base($pdo); $modelo->tabla = 'clientes';`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se inicializa un array `$data` para almacenar los resultados de la desactivación.
+     * 2. Se recorre `$modelo->models_dependientes`, extrayendo el nombre del modelo dependiente (`dependiente`).
+     * 3. Se llama a `desactiva_data_modelo()` para desactivar cada modelo dependiente.
+     * 4. Se almacenan los resultados en `$data`.
+     * 5. Si ocurre un error en cualquier paso, se retorna un mensaje de error con la información correspondiente.
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros desactivados.
+     *               En caso de error, devuelve un array con información del error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo_base($pdo);
+     * $modelo->tabla = "clientes";
+     * $modelo->registro_id = 123;
+     * $modelo->models_dependientes = [
+     *     ["dependiente" => "facturas"],
+     *     ["dependiente" => "pagos"]
+     * ];
+     *
+     * $resultado = $this->desactiva_data_modelos_dependientes($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (lista de registros desactivados en los modelos dependientes):**
+     * ```php
+     * [
+     *     [
+     *         ["id" => 1, "facturas_id" => 123, "status" => "inactivo"],
+     *         ["id" => 2, "facturas_id" => 123, "status" => "inactivo"]
+     *     ],
+     *     [
+     *         ["id" => 3, "pagos_id" => 123, "status" => "inactivo"]
+     *     ]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo dependiente inválido (Error):**
+     * ```php
+     * $modelo->models_dependientes = [
+     *     ["dependiente" => ""], // Nombre de modelo inválido
+     * ];
+     * $resultado = $this->desactiva_data_modelos_dependientes($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error modelo_dependiente no puede venir vacio",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo sin dependientes:**
+     * ```php
+     * $modelo->models_dependientes = []; // No hay modelos dependientes
+     * $resultado = $this->desactiva_data_modelos_dependientes($modelo);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * []
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo->models_dependientes` no contiene modelos válidos.
      */
     final public function desactiva_data_modelos_dependientes(modelo_base $modelo): array
     {
         $data = array();
         foreach ($modelo->models_dependientes as $data_dep) {
             $dependiente = $data_dep['dependiente'];
-            $desactiva = $this->desactiva_data_modelo(modelo: $modelo,modelo_dependiente:  $dependiente);
+            $desactiva = $this->desactiva_data_modelo(modelo: $modelo,modelo_dependiente:  $dependiente,
+                namespace_model: $modelo->NAMESPACE);
             if (errores::$error) {
                 return $this->error->error(mensaje: 'Error al desactivar dependiente', data: $desactiva);
             }
@@ -154,23 +536,124 @@ class dependencias{
     }
 
     /**
-     * PHPUNIT
-     * @param modelo $modelo
-     * @param string $namespace_model
-     * @param int $parent_id
-     * @param string $tabla_dep
-     * @return array
-     * @throws JsonException
+     * REG
+     * Desactiva registros dependientes de una tabla en la base de datos.
+     *
+     * Este método busca y desactiva todos los registros dependientes en la tabla especificada (`$tabla_dep`)
+     * que estén relacionados con un registro padre (`$parent_id`) en la tabla principal (`$modelo->tabla`).
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo_base $modelo Instancia del modelo base desde el cual se validan y desactivan los dependientes.
+     *                            - **Ejemplo:** `$modelo = new modelo_base($pdo); $modelo->tabla = 'clientes';`
+     *
+     * @param string $namespace_model Espacio de nombres del modelo dependiente.
+     *                                - **Ejemplo:** `"gamboamartin\\facturacion\\models"`
+     *
+     * @param int $parent_id Identificador del registro en la tabla padre (`$modelo->tabla`).
+     *                       - **Debe ser un número entero mayor a 0.**
+     *                       - **Ejemplo:** `123`
+     *
+     * @param string $tabla_dep Nombre de la tabla dependiente donde se buscarán los registros a desactivar.
+     *                          - **Ejemplo:** `"facturas"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$modelo->tabla` sea un nombre de clase válido.
+     * 2. Se valida que `$parent_id` sea un número positivo mayor a 0.
+     * 3. Se valida que `$tabla_dep` sea un nombre de modelo válido.
+     * 4. Se obtienen los registros dependientes en `$tabla_dep` relacionados con `$parent_id` en `$modelo->tabla`.
+     * 5. Se genera un modelo de la tabla dependiente (`$tabla_dep`).
+     * 6. Se desactivan los registros dependientes encontrados.
+     *
+     * ---
+     *
+     * @return array Retorna un array con los registros desactivados.
+     *               En caso de error, devuelve un array con información del error.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo_base($pdo);
+     * $modelo->tabla = "clientes";
+     *
+     * $namespace_model = "gamboamartin\\facturacion\\models";
+     * $parent_id = 123;
+     * $tabla_dep = "facturas";
+     *
+     * $resultado = $this->desactiva_dependientes($modelo, $namespace_model, $parent_id, $tabla_dep);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (lista de registros desactivados):**
+     * ```php
+     * [
+     *     ["id" => 1, "facturas_id" => 123, "status" => "inactivo"],
+     *     ["id" => 2, "facturas_id" => 123, "status" => "inactivo"]
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con parent_id inválido (Error):**
+     * ```php
+     * $parent_id = -1; // ID no válido
+     * $resultado = $this->desactiva_dependientes($modelo, $namespace_model, $parent_id, $tabla_dep);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $parent_id debe ser mayor a 0",
+     *     "data" => -1
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con tabla dependiente inválida (Error):**
+     * ```php
+     * $tabla_dep = ""; // Tabla vacía
+     * $resultado = $this->desactiva_dependientes($modelo, $namespace_model, $parent_id, $tabla_dep);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar $tabla_dep",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$parent_id` es inválido o `$tabla_dep` no es válida.
      */
     private function desactiva_dependientes(
         modelo_base $modelo, string $namespace_model, int $parent_id, string $tabla_dep): array
     {
         $valida = $this->validacion->valida_name_clase($modelo->tabla);
         if(errores::$error){
-            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida);
+            return $this->error->error(mensaje: 'Error al validar tabla',data: $valida, es_final: true);
         }
-        if($parent_id<=0){
-            return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id);
+        if($parent_id <= 0){
+            return $this->error->error(mensaje: 'Error $parent_id debe ser mayor a 0',data: $parent_id,
+                es_final: true);
+        }
+
+        $tabla_dep = trim($tabla_dep);
+        $valida = $this->validacion->valida_data_modelo(name_modelo: $tabla_dep);
+        if(errores::$error){
+            return $this->error->error(mensaje: 'Error al validar $tabla_dep',data: $valida);
         }
 
         $dependientes = $this->data_dependientes(link: $modelo->link, namespace_model: $namespace_model,
@@ -181,7 +664,7 @@ class dependencias{
 
         $key_dependiente_id = $tabla_dep.'_id';
 
-        $modelo_dep = $modelo->genera_modelo($tabla_dep);
+        $modelo_dep = $modelo->genera_modelo(modelo: $tabla_dep,namespace_model: $namespace_model);
         if(errores::$error){
             return $this->error->error(mensaje: 'Error al generar modelo',data: $modelo_dep);
         }
@@ -316,14 +799,126 @@ class dependencias{
 
     }
 
-    private function model_dependiente(modelo_base $modelo, string $modelo_dependiente): modelo_base|array
+    /**
+     * REG
+     * Genera y valida un modelo dependiente a partir de un modelo base.
+     *
+     * Este método ajusta el nombre del modelo dependiente, lo valida y genera una instancia del mismo
+     * usando el `namespace_model` especificado.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo_base $modelo Instancia del modelo base desde el cual se está verificando la dependencia.
+     *                            - **Ejemplo:** `$modelo = new modelo_base($pdo); $modelo->tabla = 'clientes'; $modelo->registro_id = 123;`
+     *
+     * @param string $modelo_dependiente Nombre del modelo dependiente que se desea generar.
+     *                                   - **Ejemplo válido:** `"models\\Facturas"`
+     *                                   - **Ejemplo con error:** `""` (cadena vacía)
+     *
+     * @param string $namespace_model Espacio de nombres del modelo dependiente.
+     *                                - **Ejemplo:** `"gamboamartin\\facturacion\\models"`
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$modelo_dependiente` no sea una cadena vacía.
+     * 2. Se valida que `$modelo->registro_id` sea un número positivo mayor a 0.
+     * 3. Se ajusta el nombre del modelo dependiente con `modelo_dependiente_val()`.
+     * 4. Se genera una instancia del modelo dependiente con `genera_modelo()`.
+     * 5. Si todas las validaciones son exitosas, se retorna la instancia del modelo dependiente.
+     *
+     * ---
+     *
+     * @return modelo_base|array Retorna una instancia del modelo dependiente (`modelo_base`).
+     *                           En caso de error, retorna un `array` con un mensaje de error y los datos problemáticos.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo_base($pdo);
+     * $modelo->tabla = "clientes";
+     * $modelo->registro_id = 123;
+     *
+     * $modelo_dependiente = "models\\Facturas";
+     * $namespace_model = "gamboamartin\\facturacion\\models";
+     *
+     * $resultado = $this->model_dependiente($modelo, $modelo_dependiente, $namespace_model);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (instancia de modelo dependiente):**
+     * ```php
+     * models\Facturas Object (
+     *     [tabla] => "facturas"
+     *     [registro_id] => 123
+     *     [link] => PDO Object (...)
+     * )
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo dependiente inválido (Error):**
+     * ```php
+     * $modelo_dependiente = "";
+     * $resultado = $this->model_dependiente($modelo, $modelo_dependiente, $namespace_model);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error modelo_dependiente no puede venir vacio",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con registro_id inválido (Error):**
+     * ```php
+     * $modelo->registro_id = -1; // ID no válido
+     * $resultado = $this->model_dependiente($modelo, $modelo_dependiente, $namespace_model);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => -1
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo_dependiente` no es válido o si `$modelo->registro_id <= 0`.
+     */
+    private function model_dependiente(
+        modelo_base $modelo, string $modelo_dependiente, string $namespace_model): modelo_base|array
     {
+
+        $modelo_dependiente = trim($modelo_dependiente);
+        if($modelo_dependiente === ''){
+            return $this->error->error(mensaje:'Error modelo_dependiente no puede venir vacio',
+                data:  $modelo_dependiente, es_final: true);
+        }
+        if($modelo->registro_id <= 0){
+            return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
+                data: $modelo->registro_id, es_final: true);
+        }
+
         $modelo_dependiente_ajustado = $this->modelo_dependiente_val(modelo: $modelo,
             modelo_dependiente: $modelo_dependiente);
         if(errores::$error){
-            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente);
+            return  $this->error->error('Error al ajustar modelo',$modelo_dependiente_ajustado);
         }
-        $modelo_ = $modelo->genera_modelo(modelo: $modelo_dependiente_ajustado);
+        $modelo_ = $modelo->genera_modelo(modelo: $modelo_dependiente_ajustado,namespace_model: $namespace_model);
         if (errores::$error) {
             return $this->error->error('Error al generar modelo', $modelo_);
         }
@@ -332,10 +927,96 @@ class dependencias{
 
 
     /**
-     * Ajusta los valores de un modelo dependiente
-     * @param modelo_base $modelo Modelo en ejecucion
-     * @param string $modelo_dependiente Modelo a validar
-     * @return array|string
+     * REG
+     * Valida y ajusta el nombre del modelo dependiente para su uso en la desactivación de registros.
+     *
+     * Este método verifica que el nombre del modelo dependiente sea válido y lo ajusta al formato correcto.
+     * También valida que el modelo principal tenga un `registro_id` válido antes de proceder.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo_base $modelo Instancia del modelo principal desde el cual se quiere validar el dependiente.
+     *                            - **Ejemplo:** `$modelo = new modelo_base($pdo); $modelo->tabla = 'clientes'; $modelo->registro_id = 123;`
+     *
+     * @param string $modelo_dependiente Nombre del modelo dependiente a validar.
+     *                                   - **Ejemplo válido:** `"models\\Facturas"`
+     *                                   - **Ejemplo con error:** `""` (cadena vacía)
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida que `$modelo_dependiente` no sea una cadena vacía.
+     * 2. Se valida que `$modelo->registro_id` sea un número positivo mayor a 0.
+     * 3. Se ajusta el nombre del modelo dependiente con `ajusta_modelo_comp()`.
+     * 4. Se valida que tanto el modelo principal como el dependiente sean correctos con `valida_data_desactiva()`.
+     * 5. Si todas las validaciones son exitosas, se retorna el modelo dependiente ajustado.
+     *
+     * ---
+     *
+     * @return array|string Retorna el nombre del modelo dependiente ajustado (`string`).
+     *                      En caso de error, retorna un `array` con un mensaje de error y los datos problemáticos.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo_base($pdo);
+     * $modelo->tabla = "clientes";
+     * $modelo->registro_id = 123;
+     *
+     * $modelo_dependiente = "models\\Facturas";
+     *
+     * $resultado = $this->modelo_dependiente_val($modelo, $modelo_dependiente);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * "models\\Facturas"
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo dependiente inválido (Error):**
+     * ```php
+     * $modelo_dependiente = "";
+     * $resultado = $this->modelo_dependiente_val($modelo, $modelo_dependiente);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error modelo_dependiente no puede venir vacio",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con registro_id inválido (Error):**
+     * ```php
+     * $modelo->registro_id = -1; // ID no válido
+     * $resultado = $this->modelo_dependiente_val($modelo, $modelo_dependiente);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => -1
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo_dependiente` no es válido o si `$modelo->registro_id <= 0`.
      */
     private function modelo_dependiente_val(modelo_base $modelo, string $modelo_dependiente): array|string
     {
@@ -343,11 +1024,11 @@ class dependencias{
         $modelo_dependiente = trim($modelo_dependiente);
         if($modelo_dependiente === ''){
             return $this->error->error(mensaje:'Error modelo_dependiente no puede venir vacio',
-                data:  $modelo_dependiente);
+                data:  $modelo_dependiente, es_final: true);
         }
-        if($modelo->registro_id<=0){
+        if($modelo->registro_id <= 0){
             return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
-                data: $modelo->registro_id);
+                data: $modelo->registro_id, es_final: true);
         }
 
         $modelo_dependiente_ajustado = $this->ajusta_modelo_comp(name_modelo: $modelo_dependiente);
@@ -364,11 +1045,94 @@ class dependencias{
     }
 
     /**
-     * Valida los datos de un modelo
-     * @param modelo_base $modelo Modelo en ejecucion
-     * @param string $modelo_dependiente Modelo que depende
-     * @return bool|array
-     * @version 10.99.3
+     * REG
+     * Valida los datos requeridos para la desactivación de un modelo dependiente.
+     *
+     * Esta función verifica si los datos del modelo principal y del modelo dependiente son válidos
+     * antes de proceder con la desactivación de registros en la base de datos.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param modelo_base $modelo Instancia del modelo principal desde el cual se quiere desactivar un dependiente.
+     *                            - **Ejemplo:** `$modelo = new modelo_base($pdo); $modelo->tabla = 'clientes';`
+     *
+     * @param string $modelo_dependiente Nombre del modelo dependiente a validar.
+     *                                   - **Ejemplo válido:** `"models\\Facturas"`
+     *                                   - **Ejemplo con error:** `""` (cadena vacía)
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida `$modelo_dependiente` y `$modelo->tabla` con `valida_names_model()`.
+     * 2. Se verifica que `$modelo->registro_id` sea un número positivo mayor a 0.
+     * 3. Si todas las validaciones son correctas, se retorna `true`.
+     *
+     * ---
+     *
+     * @return bool|array Retorna `true` si los datos son válidos.
+     *                    En caso de error, retorna un array con un mensaje de error y los datos del problema.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $pdo = new PDO($dsn, $user, $password);
+     * $modelo = new modelo_base($pdo);
+     * $modelo->tabla = "clientes";
+     * $modelo->registro_id = 123;
+     *
+     * $modelo_dependiente = "models\\Facturas";
+     *
+     * $resultado = $this->valida_data_desactiva($modelo, $modelo_dependiente);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo dependiente inválido (Error):**
+     * ```php
+     * $modelo_dependiente = "";
+     * $resultado = $this->valida_data_desactiva($modelo, $modelo_dependiente);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar modelos",
+     *     "data" => "models\\Facturas"
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con registro_id inválido (Error):**
+     * ```php
+     * $modelo->registro_id = -1; // ID no válido
+     * $resultado = $this->valida_data_desactiva($modelo, $modelo_dependiente);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error $this->registro_id debe ser mayor a 0",
+     *     "data" => -1
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo_dependiente` no es válido o si `$modelo->registro_id <= 0`.
      */
     private function valida_data_desactiva(modelo_base $modelo, string $modelo_dependiente): bool|array
     {
@@ -380,17 +1144,120 @@ class dependencias{
 
         if($modelo->registro_id<=0){
             return $this->error->error(mensaje: 'Error $this->registro_id debe ser mayor a 0',
-                data: $modelo->registro_id);
+                data: $modelo->registro_id, es_final: true);
         }
         return true;
     }
 
     /**
-     * Valida el nombre de un modelo
-     * @param string $modelo_dependiente Modelo a validar
-     * @param string $tabla tabla
-     * @return bool|array
-     * @version 9.69.1
+     * REG
+     * Valida el nombre de un modelo dependiente y el nombre de una tabla.
+     *
+     * Esta función verifica que el nombre del modelo dependiente y el nombre de la tabla sean válidos.
+     * Se utilizan dos validaciones:
+     * 1. `valida_data_modelo(name_modelo: $modelo_dependiente)`: Verifica si el nombre del modelo dependiente
+     *    es correcto.
+     * 2. `valida_name_clase(tabla: $tabla)`: Verifica si el nombre de la tabla es válido.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param string $modelo_dependiente Nombre del modelo dependiente que se desea validar.
+     *                                   - **Ejemplo válido:** `"models\\Factura"`
+     *                                   - **Ejemplo con error:** `""` (cadena vacía)
+     *
+     * @param string $tabla Nombre de la tabla que se desea validar.
+     *                      - **Ejemplo válido:** `"facturas"`
+     *                      - **Ejemplo con error:** `""` (cadena vacía)
+     *
+     * ---
+     *
+     * ### **Proceso Interno:**
+     * 1. Se valida `$modelo_dependiente` utilizando `valida_data_modelo()`. Si es incorrecto, se genera un error.
+     * 2. Se valida `$tabla` utilizando `valida_name_clase()`. Si es incorrecto, se genera un error.
+     * 3. Si ambas validaciones son correctas, la función devuelve `true`.
+     *
+     * ---
+     *
+     * @return bool|array Retorna `true` si ambos nombres son válidos.
+     *                    En caso de error, retorna un array con un mensaje de error y los datos del problema.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $modelo_dependiente = "models\\Factura";
+     * $tabla = "facturas";
+     * $resultado = $this->valida_names_model($modelo_dependiente, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con modelo dependiente inválido (Error):**
+     * ```php
+     * $modelo_dependiente = "";
+     * $tabla = "facturas";
+     * $resultado = $this->valida_names_model($modelo_dependiente, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar modelo_dependiente",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con tabla inválida (Error):**
+     * ```php
+     * $modelo_dependiente = "models\\Factura";
+     * $tabla = "";
+     * $resultado = $this->valida_names_model($modelo_dependiente, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar tabla",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo con ambos valores inválidos (Error):**
+     * ```php
+     * $modelo_dependiente = "";
+     * $tabla = "";
+     * $resultado = $this->valida_names_model($modelo_dependiente, $tabla);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada:**
+     * ```php
+     * [
+     *     "error" => true,
+     *     "mensaje" => "Error al validar modelo_dependiente",
+     *     "data" => ""
+     * ]
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si `$modelo_dependiente` o `$tabla` no son válidos.
      */
     private function valida_names_model(string $modelo_dependiente, string $tabla): bool|array
     {

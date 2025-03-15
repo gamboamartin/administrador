@@ -26,6 +26,22 @@ class modelo_baseTest extends test {
     }
 
 
+    public function test_aplica_desactivacion_dependencias(): void
+    {
+
+
+        errores::$error = false;
+        $_SESSION['usuario_id'] = 2;
+        $mb = new modelo_base($this->link);
+        $mb = new liberator($mb);
+
+        $resultado = $mb->aplica_desactivacion_dependencias();
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
 
     public function test_asigna_codigo(): void
     {

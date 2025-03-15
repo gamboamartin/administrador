@@ -223,6 +223,26 @@ class controlador_baseTest extends test {
         errores::$error = false;
     }
 
+    public function test_desactiva_bd(): void
+    {
+
+        errores::$error = false;
+
+        $_SESSION['usuario_id'] = 2;
+        $modelo = new adm_year($this->link);
+
+        $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
+        $ctl->registro_id = 1;
+        //$ctl = new liberator($ctl);
+
+        $resultado = $ctl->desactiva_bd(false, false);
+
+        $this->assertIsArray($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_elimina_bd(): void
     {
 

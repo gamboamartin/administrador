@@ -570,17 +570,51 @@ class controlador_base extends controler
     }
 
     /**
+     * REG
+     * Desactiva un registro en la base de datos y maneja la transacción según el contexto.
      *
-     * @param bool $header
-     * @param bool $ws
-     * @return array
-     * @throws JsonException
-     * @final rev
+     * Este método desactiva un registro cambiando su estado a 'inactivo', validando previamente
+     * que el ID del registro sea válido y que la transacción pueda ejecutarse correctamente.
+     * La función puede manejar la respuesta mediante un header, un JSON (si es un web service),
+     * o devolver un array con el resultado.
+     *
+     * @param bool $header Indica si se debe redirigir a otra página después de la operación.
+     *                     - `true`: Redirige a la lista de registros con un mensaje de éxito.
+     *                     - `false`: Retorna el resultado de la operación en un array.
+     * @param bool $ws Indica si la respuesta debe ser en formato JSON (para servicios web).
+     *                 - `true`: Devuelve la respuesta en JSON y finaliza la ejecución.
+     *                 - `false`: Retorna un array con el resultado.
+     *
+     * @return array Retorna un array con los datos de la operación si no se ejecuta redirección.
+     *               En caso de error, retorna un array estructurado con detalles del fallo.
+     *
+     * @throws errores En caso de errores durante la validación o la transacción, se devuelve
+     *                 un array de error o se detiene la ejecución mostrando el mensaje correspondiente.
+     *
+     * @example Uso básico con respuesta en array:
+     * ```php
+     * $resultado = $controlador->desactiva_bd(false, false);
+     * if (isset($resultado['error'])) {
+     *     echo "Error: " . $resultado['mensaje'];
+     * } else {
+     *     echo "Registro desactivado con éxito";
+     * }
+     * ```
+     *
+     * @example Uso con respuesta JSON (Web Service):
+     * ```php
+     * $controlador->desactiva_bd(false, true);
+     * ```
+     *
+     * @example Uso con redirección automática:
+     * ```php
+     * $controlador->desactiva_bd(true, false);
+     * ```
      */
     public function desactiva_bd(bool $header, bool $ws): array
-    {//FINPROTEOCOMPLETA
+    {
         if ($this->registro_id <= 0) {
-            $error = $this->errores->error('Error id debe ser mayor a 0', $_GET);
+            $error = $this->errores->error(mensaje: 'Error id debe ser mayor a 0',data:  $_GET,es_final: true);
             if (!$header) {
                 return $error;
             }
@@ -589,7 +623,7 @@ class controlador_base extends controler
         }
         $valida = $this->validacion->valida_transaccion_status(controler: $this);
         if (errores::$error) {
-            $error = $this->errores->error('Error al validar transaccion activa', $valida);
+            $error = $this->errores->error(mensaje: 'Error al validar transaccion activa', data: $valida);
             if (!$header) {
                 return $error;
             }
@@ -599,7 +633,7 @@ class controlador_base extends controler
         $this->modelo->registro_id = $this->registro_id;
         $resultado = $this->modelo->desactiva_bd();
         if (errores::$error) {
-            $error = $this->errores->error('Error al desactivar', $resultado);
+            $error = $this->errores->error(mensaje: 'Error al desactivar', data: $resultado);
             if (!$header) {
                 return $error;
             }

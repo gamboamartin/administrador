@@ -2,7 +2,10 @@
 namespace tests\base\orm;
 
 use base\orm\dependencias;
+use gamboamartin\administrador\models\adm_elemento_lista;
 use gamboamartin\administrador\models\adm_mes;
+use gamboamartin\administrador\models\adm_seccion;
+use gamboamartin\administrador\models\adm_year;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
@@ -64,6 +67,58 @@ class dependenciasTest extends test {
         errores::$error = false;
     }
 
+    public function test_desactiva_data_modelo(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_id = 1;
+        $namespace_model = '\\gamboamartin\\administrador\\models';
+
+        $modelo_dependiente = 'adm_accion';
+
+        $resultado = $dep->desactiva_data_modelo($modelo,$modelo_dependiente,$namespace_model);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
+    public function test_desactiva_data_modelos_dependientes(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        //$dep = new liberator($dep);
+        $modelo = new adm_seccion($this->link);
+        $modelo->registro_id = 1;
+
+        $resultado = $dep->desactiva_data_modelos_dependientes($modelo);
+
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
+
+    public function test_desactiva_dependientes(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+        $modelo = new adm_seccion($this->link);
+        $namespace_model = '\\gamboamartin\\administrador\\models';
+        $parent_id = 1;
+        $tabla_dep = 'adm_accion';
+
+        $resultado = $dep->desactiva_dependientes($modelo,$namespace_model,$parent_id,$tabla_dep);
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
     public function test_elimina_data_modelo(): void
     {
         errores::$error = false;
@@ -110,6 +165,24 @@ class dependenciasTest extends test {
         $resultado = $dep->elimina_dependientes($model, $parent_id, $tabla);
         $this->assertNotTrue(errores::$error);
         $this->assertIsArray($resultado);
+        errores::$error = false;
+    }
+
+    public function test_model_dependiente(): void
+    {
+        errores::$error = false;
+        $dep = new dependencias();
+        $dep = new liberator($dep);
+
+        $modelo_dependiente = 'adm_elemento_lista';
+        $modelo = new adm_mes($this->link);
+
+        $modelo->registro_id = 1;
+        $resultado = $dep->model_dependiente($modelo,$modelo_dependiente,'gamboamartin\administrador\models');
+
+        $this->assertNotTrue(errores::$error);
+        $this->assertIsObject($resultado);
+        $this->assertEquals('adm_elemento_lista',$resultado->tabla);
         errores::$error = false;
     }
 

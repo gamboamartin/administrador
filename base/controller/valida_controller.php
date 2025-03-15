@@ -148,13 +148,64 @@ class valida_controller extends base_modelos{
     }
 
     /**
+     * REG
+     * Valida el estado de la transacción antes de ejecutarla.
      *
-     * @param controler $controler
-     * @return array|bool
+     * Esta función verifica si el `registro_id` del controlador es válido y luego obtiene
+     * el registro asociado al modelo. Si existen errores en la obtención del registro o en
+     * la validación de la transacción activa, la función devuelve un array con detalles
+     * del error. En caso contrario, retorna `true` si la validación es exitosa.
+     *
+     * @param controler $controler Instancia del controlador con los datos de la transacción.
+     *
+     * @return array|bool Retorna `true` si la transacción está en un estado válido.
+     *                    Retorna un array de error si ocurre un problema durante la validación.
+     *
+     * @throws errores Si no se puede obtener el registro o si la transacción no es válida.
+     *
+     * @example
+     * ```php
+     * $controler = new controler();
+     * $controler->registro_id = 10;
+     * $controler->modelo = new ModeloEjemplo();
+     *
+     * $valida = $this->valida_transaccion_status($controler);
+     * if (is_array($valida)) {
+     *     echo "Error: " . print_r($valida, true);
+     * } else {
+     *     echo "Transacción válida";
+     * }
+     * ```
+     *
+     * **Ejemplo de entrada correcta:**
+     * ```php
+     * $controler->registro_id = 15;
+     * $controler->modelo = new ModeloEjemplo();
+     * ```
+     *
+     * **Ejemplo de salida correcta:**
+     * ```php
+     * true
+     * ```
+     *
+     * **Ejemplo de entrada incorrecta (registro_id inválido):**
+     * ```php
+     * $controler->registro_id = 0;
+     * ```
+     *
+     * **Ejemplo de salida incorrecta:**
+     * ```php
+     * [
+     *     'mensaje' => 'Error al registro_id debe ser mayor a 0',
+     *     'data' => 0,
+     *     'es_final' => true
+     * ]
+     * ```
      */
     final public function valida_transaccion_status(controler $controler):array|bool{
         if($controler->registro_id<=0){
-            return  $this->error->error('Error al registro_id debe ser mayor a 0',$controler->registro_id);
+            return  $this->error->error(mensaje: 'Error al registro_id debe ser mayor a 0',
+                data: $controler->registro_id, es_final: true);
         }
 
         $registro = $controler->modelo->registro(registro_id: $controler->registro_id);
