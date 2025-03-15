@@ -2,6 +2,7 @@
 namespace tests\base\orm;
 
 use base\orm\val_sql;
+use gamboamartin\administrador\models\adm_grupo;
 use gamboamartin\administrador\models\adm_seccion;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
@@ -216,6 +217,43 @@ class val_sqlTest extends test {
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_existe_duplicado(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $modelo = new adm_grupo($this->link);
+        $campo = 'status';
+        $registro = array();
+        $tabla = 'adm_grupo';
+        $registro['status'] = 'activo';
+        $resultado = $val->existe_duplicado($campo,$modelo,$registro, $tabla);
+
+        $this->assertIsArray( $resultado);
+        $this->assertTrue(errores::$error);
+        $this->assertEquals('Error ya existe un registro con el campo status',$resultado['mensaje_limpio']);
+        errores::$error = false;
+    }
+
+    public function test_filtro_no_duplicado(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $campo = 'a';
+        $registro = array();
+        $tabla = 'b';
+        $registro['a'] = 'a';
+        $resultado = $val->filtro_no_duplicado($campo,$registro,$tabla);
+
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('a',$resultado['b.a']);
         errores::$error = false;
     }
 
@@ -582,6 +620,37 @@ class val_sqlTest extends test {
         errores::$error = false;
     }
 
+    public function test_verifica_base(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $campo = 'x';
+        $keys = array();
+        $registro['x'] = '1';
+        $pattern_rev = 'id';
+        $resultado = $val->verifica_base($campo,$keys,$pattern_rev,$registro);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+
+        $registro = array();
+        $campo = 'x';
+        $keys = array();
+        $registro['x'] = 'AAA';
+        $pattern_rev = 'cod_3_letras_mayusc';
+        $resultado = $val->verifica_base($campo,$keys,$pattern_rev,$registro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+        errores::$error = false;
+    }
+
     public function test_verifica_chk(): void
     {
         errores::$error = false;
@@ -596,6 +665,26 @@ class val_sqlTest extends test {
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_verifica_cod_3_mayusc(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $registro = array();
+        $campo = 'a';
+        $keys_cod_3_mayus = array();
+        $registro['a'] = 'AAA';
+        $resultado = $val->verifica_cod_3_mayusc($campo,$keys_cod_3_mayus,$registro);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+
+
         errores::$error = false;
     }
 
@@ -664,6 +753,65 @@ class val_sqlTest extends test {
         $keys_ids = array();
         $registro['x'] = '1';
         $resultado = $val->verifica_id($campo, $keys_ids, $registro);
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+
+    public function test_verifica_no_duplicado(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $modelo = new adm_grupo($this->link);
+        $registro = array();
+        $tabla = 'adm_grupo';
+        $no_duplicados = array();
+        $no_duplicados[] = 'id';
+        $registro['id'] = '-1';
+        $resultado = $val->verifica_no_duplicado($modelo,$no_duplicados,$registro, $tabla);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_verifica_parent(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        $val = new liberator($val);
+
+        $modelo = new adm_seccion($this->link);
+        $parent = 'gamboamartin\administrador\models\adm_menu';
+        $registro = array();
+        $registro['adm_menu_id'] = 1;
+        $resultado = $val->verifica_parent($modelo,$parent,$registro);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
+    public function test_verifica_parents(): void
+    {
+        errores::$error = false;
+        $val = new val_sql();
+        //$val = new liberator($val);
+
+        $modelo = new adm_seccion($this->link);
+        $parents = array();
+        $registro = array();
+        $registro['adm_menu_id'] = 1;
+        $parents[] = 'gamboamartin\administrador\models\adm_menu';
+        $resultado = $val->verifica_parents($modelo,$parents,$registro);
+        //print_r($resultado);exit;
+
         $this->assertIsBool( $resultado);
         $this->assertNotTrue(errores::$error);
         $this->assertTrue($resultado);

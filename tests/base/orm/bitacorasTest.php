@@ -303,6 +303,23 @@ class bitacorasTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_bitacora(){
+        $_SESSION['usuario_id'] = 2;
+        errores::$error = false;
+        $bitacora = new bitacoras();
+        $bitacora = (new liberator($bitacora));
+        $consulta = 'x';
+        $funcion = 'x';
+        $modelo = new adm_accion($this->link);
+        $modelo->registro_id = 1;
+        $resultado = $bitacora->valida_bitacora($consulta,$funcion,$modelo);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+    }
+
     public function test_valida_data_bitacora(){
 
         errores::$error = false;

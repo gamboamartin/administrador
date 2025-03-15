@@ -113,6 +113,35 @@ class controlador_baseTest extends test {
 
     }
 
+    public function test_activa_bd(): void
+    {
+        $_SESSION['usuario_id'] = 2;
+
+        $alta = (new base_test())->alta_adm_accion(link: $this->link,adm_seccion_descripcion: 'adm_session',
+            descripcion: 'login');
+        if(errores::$error){
+            $error = (new errores())->error('Error al insertar', $alta);
+            print_r($error);exit;
+        }
+        errores::$error = false;
+
+
+        $_GET['registro_id'] = 1;
+        $_GET['seccion'] = 'adm_session';
+        $_GET['accion'] = 'login';
+        $modelo = new adm_year($this->link);
+
+
+        $ctl = new controlador_base(link: $this->link, modelo: $modelo,paths_conf:$this->paths_conf );
+        //$ctl = new liberator($ctl);
+
+        $resultado = $ctl->activa_bd(header: false);
+        $this->assertIsObject($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+
+    }
+
     public function test_alta(): void
     {
 

@@ -205,24 +205,102 @@ class modelo extends modelo_base
 
 
     /**
-     * Activa un elemento
-     * @param bool $reactiva Si reactiva valida si el registro se puede reactivar
-     * @param int $registro_id
-     * @return array|stdClass
-     * @final revisada
+     * REG
+     * Activa un registro en la base de datos y registra la transacción en la bitácora.
+     *
+     * Esta función realiza la activación de un registro en la base de datos,
+     * validando la existencia de un ID de registro válido y asegurando que se permita
+     * la ejecución de transacciones. Además, genera los datos necesarios para la activación
+     * y registra la transacción en la bitácora del sistema.
+     *
+     * ### Funcionamiento:
+     * 1. **Verifica que la propiedad `aplica_transacciones_base` esté habilitada.**
+     * 2. **Si `registro_id` es mayor a 0, lo asigna a la propiedad `registro_id`.**
+     * 3. **Valida que `registro_id` sea mayor a 0, de lo contrario, devuelve un error.**
+     * 4. **Genera los datos de activación utilizando la clase `activaciones`.**
+     * 5. **Ejecuta la transacción con `bitacoras::ejecuta_transaccion`.**
+     * 6. **Devuelve un objeto con el mensaje de éxito, `registro_id` y los detalles de la transacción.**
+     *
+     * ### Parámetros:
+     *
+     * @param bool $reactiva Indica si el registro debe ser reactivado en caso de estar inactivo (por defecto `false`).
+     * @param int $registro_id ID del registro a activar. Si se deja en `-1`, se usará el valor de `$this->registro_id`.
+     *
+     * @return array|stdClass Retorna un objeto con el mensaje de éxito, el `registro_id` y la transacción realizada,
+     * o un array de error en caso de fallos.
+     *
+     * ### Ejemplo de uso:
+     * ```php
+     * $modelo = new MiModelo();
+     * $resultado = $modelo->activa_bd(reactiva: true, registro_id: 15);
+     * print_r($resultado);
+     * ```
+     *
+     * ### Posibles Salidas:
+     * **Caso 1: Éxito**
+     * ```php
+     * stdClass Object
+     * (
+     *     [mensaje] => "Registro activado con éxito en usuarios"
+     *     [registro_id] => 15
+     *     [transaccion] => Array (...) // Datos de la bitácora
+     * )
+     * ```
+     *
+     * **Caso 2: Error - Transacciones deshabilitadas**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error solo se puede transaccionar desde layout"
+     *     [data] => 15
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 3: Error - ID de registro inválido**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error id debe ser mayor a 0 en usuarios"
+     *     [data] => 0
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 4: Error - Fallo en la generación de datos de activación**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error al generar datos de activacion usuarios"
+     *     [data] => false
+     * )
+     * ```
+     *
+     * **Caso 5: Error - Fallo en la ejecución de la transacción**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error al EJECUTAR TRANSACCION en usuarios"
+     *     [data] => false
+     * )
+     * ```
+     *
+     * @throws errores Si las validaciones de transacción, activación o bitácora fallan.
      */
     public function activa_bd(bool $reactiva = false, int $registro_id = -1): array|stdClass
     {
 
         if (!$this->aplica_transacciones_base) {
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro_id);
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $registro_id,
+                es_final: true);
         }
 
         if ($registro_id > 0) {
             $this->registro_id = $registro_id;
         }
         if ($this->registro_id <= 0) {
-            return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en ' . $this->tabla, data: $this->registro_id);
+            return $this->error->error(mensaje: 'Error id debe ser mayor a 0 en ' . $this->tabla,
+                data: $this->registro_id, es_final: true);
         }
 
         $data_activacion = (new activaciones())->init_activa(modelo: $this, reactiva: $reactiva);
@@ -290,7 +368,8 @@ class modelo extends modelo_base
         }
 
         if ($_SESSION['usuario_id'] <= 0) {
-            return $this->error->error(mensaje: 'Error USUARIO INVALIDO', data: $_SESSION['usuario_id'], es_final: true);
+            return $this->error->error(mensaje: 'Error USUARIO INVALIDO', data: $_SESSION['usuario_id'],
+                es_final: true);
         }
 
         if (!$this->aplica_transacciones_base) {
@@ -430,25 +509,62 @@ class modelo extends modelo_base
     }
 
     /**
-     * Inserta un registro
-     * @param array $registro Registro con datos para la insersion
-     * @return array|stdClass
+     * REG
+     * Registra un nuevo registro en la base de datos.
      *
+     * Este método realiza la inserción de un nuevo registro en la base de datos,
+     * validando previamente la sesión del usuario, el estado del modelo y la aplicación
+     * de transacciones base. Si alguna validación falla, se devuelve un error detallado.
+     *
+     * @param array $registro Datos del registro a insertar en la base de datos.
+     *
+     * @return array|stdClass Retorna el resultado de la inserción si es exitosa o un array con información de error.
+     *
+     * @throws errores Si ocurre un error en la inserción del registro.
+     *
+     * @example
+     * // Ejemplo de entrada:
+     * $registro = [
+     *     'nombre' => 'Ejemplo',
+     *     'descripcion' => 'Descripción del ejemplo',
+     *     'usuario_id' => 1
+     * ];
+     *
+     * $modelo = new Modelo();
+     * $resultado = $modelo->alta_registro($registro);
+     *
+     * // Ejemplo de salida en caso de éxito:
+     * stdClass Object
+     * (
+     *     [id] => 10
+     *     [nombre] => Ejemplo
+     *     [descripcion] => Descripción del ejemplo
+     *     [usuario_id] => 1
+     * )
+     *
+     * // Ejemplo de salida en caso de error:
+     * Array
+     * (
+     *     [error] => true
+     *     [mensaje] => 'Error SESSION no iniciada'
+     *     [data] => Array()
+     * )
      */
     public function alta_registro(array $registro): array|stdClass
     {
 
 
         if (!isset($_SESSION['usuario_id'])) {
-            return $this->error->error(mensaje: 'Error SESSION no iniciada', data: array());
+            return $this->error->error(mensaje: 'Error SESSION no iniciada', data: array(), es_final: true);
         }
 
         if ($_SESSION['usuario_id'] <= 0) {
             return $this->error->error(mensaje: 'Error USUARIO INVALIDO en modelo ' . $this->tabla,
-                data: $_SESSION['usuario_id']);
+                data: $_SESSION['usuario_id'], es_final: true);
         }
         if (!$this->aplica_transacciones_base) {
-            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $this->registro);
+            return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout',
+                data: $this->registro, es_final: true);
         }
 
         $this->registro = $registro;
@@ -508,6 +624,115 @@ class modelo extends modelo_base
     }
 
 
+    /**
+     * REG
+     * Calcula la cantidad de registros en la base de datos según los filtros especificados.
+     *
+     * Esta función construye y ejecuta una consulta SQL `COUNT(*)` basada en diferentes criterios de filtrado,
+     * incluyendo filtros estándar, rangos, fechas, exclusiones y condiciones especiales.
+     *
+     * ### Funcionamiento:
+     * 1. **Validación del tipo de filtro:** Se valida que el `tipo_filtro` proporcionado sea válido.
+     * 2. **Generación de joins:** Se generan las relaciones necesarias entre tablas según la estructura de la base de datos.
+     * 3. **Construcción de filtros:** Se configuran los filtros con base en los parámetros proporcionados.
+     * 4. **Ejecución de la consulta:** Se construye la sentencia SQL y se ejecuta para obtener la cantidad de registros.
+     * 5. **Retorno del resultado:** Se devuelve el número total de registros encontrados.
+     *
+     * @param array $diferente_de Lista de campos y valores para excluir de la consulta.
+     *                            Ejemplo:
+     *                            ```php
+     *                            ['estado' => 'inactivo']
+     *                            ```
+     *
+     * @param array $extra_join Lista de tablas adicionales a incluir en la consulta.
+     *                          Ejemplo:
+     *                          ```php
+     *                          [
+     *                              ['tabla' => 'usuarios', 'tipo' => 'INNER JOIN', 'on' => 'usuarios.id = pedidos.usuario_id']
+     *                          ]
+     *                          ```
+     *
+     * @param array $filtro Lista de condiciones para filtrar registros específicos.
+     *                      Ejemplo:
+     *                      ```php
+     *                      ['categoria' => 'electronica']
+     *                      ```
+     *
+     * @param string $tipo_filtro Define el tipo de comparación a aplicar en los filtros.
+     *                            Puede ser 'numeros', 'texto', 'fechas', etc.
+     *                            Ejemplo:
+     *                            ```php
+     *                            'texto'
+     *                            ```
+     *
+     * @param array $filtro_especial Condiciones avanzadas de filtrado.
+     *                               Ejemplo:
+     *                               ```php
+     *                               ['precio > 1000']
+     *                               ```
+     *
+     * @param array $filtro_rango Rango de valores para ciertos campos.
+     *                            Ejemplo:
+     *                            ```php
+     *                            ['fecha' => ['2024-01-01', '2024-12-31']]
+     *                            ```
+     *
+     * @param array $filtro_fecha Filtros específicos para fechas.
+     *                            Ejemplo:
+     *                            ```php
+     *                            ['fecha_creacion' => '2024-03-01']
+     *                            ```
+     *
+     * @param array $in Lista de valores permitidos en una columna específica.
+     *                  Ejemplo:
+     *                  ```php
+     *                  ['estado' => ['activo', 'pendiente']]
+     *                  ```
+     *
+     * @param array $not_in Lista de valores prohibidos en una columna específica.
+     *                      Ejemplo:
+     *                      ```php
+     *                      ['estado' => ['inactivo', 'cancelado']]
+     *                      ```
+     *
+     * @return array|int Retorna la cantidad de registros que cumplen con los filtros aplicados.
+     *                   En caso de error, devuelve un array con detalles del error.
+     *
+     * @example **Ejemplo de uso:**
+     * ```php
+     * $modelo = new modelo();
+     * $total_registros = $modelo->cuenta(
+     *     filtro: ['categoria' => 'ropa'],
+     *     filtro_rango: ['precio' => [100, 500]],
+     *     filtro_fecha: ['fecha_venta' => '2025-01-01'],
+     *     in: ['estado' => ['activo', 'pendiente']],
+     *     not_in: ['estado' => ['cancelado']],
+     *     tipo_filtro: 'numeros'
+     * );
+     * print_r($total_registros);
+     * ```
+     *
+     * ### **Posibles resultados:**
+     *
+     * **Caso 1: Se encontraron registros**
+     * ```php
+     * 35 // Retorna la cantidad de registros que cumplen con los filtros
+     * ```
+     *
+     * **Caso 2: No se encontraron registros**
+     * ```php
+     * 0
+     * ```
+     *
+     * **Caso 3: Error en los filtros**
+     * ```php
+     * [
+     *     'error' => 1,
+     *     'mensaje' => 'Error al generar filtros',
+     *     'data' => [...]
+     * ]
+     * ```
+     */
     final public function cuenta(array  $diferente_de = array(), array $extra_join = array(), array $filtro = array(),
                                  string $tipo_filtro = 'numeros', array $filtro_especial = array(),
                                  array  $filtro_rango = array(), array $filtro_fecha = array(),
@@ -1075,6 +1300,67 @@ class modelo extends modelo_base
     }
 
 
+    /**
+     * REG
+     * Verifica si existen registros en la base de datos que cumplan con un conjunto de filtros.
+     *
+     * Esta función utiliza el método `cuenta()` para contar la cantidad de registros que cumplen con los criterios
+     * especificados en `$filtro`. Si el número de registros es mayor a 0, se considera que existen registros y devuelve `true`,
+     * de lo contrario, devuelve `false`. En caso de error, devuelve un array con detalles del problema.
+     *
+     * @param array $filtro Un array asociativo que define los criterios de filtrado para la consulta.
+     *                      Debe contener claves que correspondan a los nombres de las columnas en la base de datos.
+     *
+     * @return array|bool Retorna:
+     *  - `true` si existen registros que coinciden con el filtro.
+     *  - `false` si no hay registros que coincidan con el filtro.
+     *  - Un `array` con detalles del error si ocurre un problema al contar los registros.
+     *
+     * @example
+     * ### Ejemplo 1: Verificar si existe un usuario con un ID específico
+     * ```php
+     * $modelo = new ModeloUsuarios();
+     * $filtro = ['id' => 10];
+     * $resultado = $modelo->existe($filtro);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true  // Si el usuario con ID 10 existe
+     * false // Si el usuario con ID 10 no existe
+     * ```
+     *
+     * @example
+     * ### Ejemplo 2: Verificar si existe un producto con un código específico
+     * ```php
+     * $modelo = new ModeloProductos();
+     * $filtro = ['codigo' => 'PRD123'];
+     * $resultado = $modelo->existe($filtro);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true  // Si el producto con código "PRD123" existe
+     * false // Si el producto con código "PRD123" no existe
+     * ```
+     *
+     * @example
+     * ### Ejemplo 3: Intentar verificar existencia sin filtro (Error)
+     * ```php
+     * $modelo = new ModeloPedidos();
+     * $filtro = [];
+     * $resultado = $modelo->existe($filtro);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada (error, porque el filtro está vacío):**
+     * ```php
+     * [
+     *   'error' => 1,
+     *   'mensaje' => 'Error al contar registros',
+     *   'data' => [...detalles del error...]
+     * ]
+     * ```
+     */
     final public function existe(array $filtro): array|bool
     {
         // Obtener la cantidad de registros que cumplen con el filtro
@@ -1103,9 +1389,68 @@ class modelo extends modelo_base
     }
 
     /**
-     * Verifica si existe un elemento basado en el id
-     * @param int $registro_id registro a verificar
-     * @return bool|array
+     * REG
+     * Verifica si un registro existe en la base de datos basado en su ID.
+     *
+     * Esta función genera un filtro con el ID del registro y consulta si dicho registro existe en la tabla
+     * correspondiente. Utiliza el método `existe()` para realizar la verificación.
+     *
+     * ---
+     *
+     * ### **Parámetros:**
+     *
+     * @param int $registro_id El ID del registro a verificar.
+     *                         - **Ejemplo:** `25`
+     *
+     * ---
+     *
+     * @return bool|array Retorna:
+     *  - `true` si el registro con el ID especificado existe en la base de datos.
+     *  - `false` si no existe.
+     *  - Un `array` con detalles del error si la consulta falla.
+     *
+     * ---
+     *
+     * ### **Ejemplo de Uso:**
+     * ```php
+     * $modelo = new UsuarioModel($pdo);
+     * $registro_id = 10;
+     * $resultado = $modelo->existe_by_id($registro_id);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada si el registro existe:**
+     * ```php
+     * true
+     * ```
+     *
+     * **Salida esperada si el registro no existe:**
+     * ```php
+     * false
+     * ```
+     *
+     * ---
+     *
+     * ### **Ejemplo de Error:**
+     * ```php
+     * $registro_id = -1; // ID inválido
+     * $resultado = $modelo->existe_by_id($registro_id);
+     * print_r($resultado);
+     * ```
+     *
+     * **Salida esperada (error de validación):**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1,
+     *     [mensaje] => "Error al obtener row",
+     *     [data] => false
+     * )
+     * ```
+     *
+     * ---
+     *
+     * @throws array Devuelve un array con un mensaje de error si ocurre un problema en la consulta.
      */
     final public function existe_by_id(int $registro_id): bool|array
     {
@@ -1654,23 +1999,50 @@ class modelo extends modelo_base
 
 
     /**
-     * TOTAL
-     * Este método genera un código aleatorio con longitud especificada.
+     * REG
+     * Genera un código aleatorio de longitud variable compuesto por números y letras.
      *
-     * @param int $longitud La longitud deseada para el código aleatorio. Por defecto es 6.
+     * Esta función genera una cadena aleatoria utilizando caracteres alfanuméricos
+     * (`0-9, a-z, A-Z`). La longitud del código puede ser especificada por el usuario.
      *
-     * @return string|array Devuelve una cadena aleatoria con la longitud especificada.
-     * Si se produce un error, devuelve un array con información del error.
-     * @throws errores Si la longitud proporcionada es menor o igual a 0, se genera un error con el mensaje
-     * 'Error longitud debe ser mayor a 0'.
+     * ### Funcionamiento:
+     * 1. **Valida que la longitud sea mayor a 0.**
+     * 2. **Define el conjunto de caracteres permitidos (`0-9, a-z, A-Z`).**
+     * 3. **Genera un código aleatorio seleccionando caracteres de manera aleatoria.**
+     * 4. **Devuelve la cadena generada o un error si la validación falla.**
      *
-     * @version 16.174.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.base.orm.modelo.get_codigo_aleatorio
+     * @param int $longitud Longitud del código a generar (por defecto es `6`).
+     *
+     * @return string|array Un código aleatorio de la longitud especificada o un **array de error** si hay problemas.
+     *
+     * @example **Ejemplo de uso:**
+     * ```php
+     * $codigo = $this->get_codigo_aleatorio(longitud: 8);
+     * print_r($codigo);
+     * ```
+     *
+     * ### **Posibles salidas:**
+     * **Caso 1: Éxito (código generado con longitud `8`)**
+     * ```php
+     * "G3aL9zQX"
+     * ```
+     *
+     * **Caso 2: Error (`longitud` menor o igual a 0)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error longitud debe ser mayor a 0"
+     *     [data] => 0
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @throws errores Si `$longitud` es menor o igual a `0`, se devuelve un error.
      */
     final public function get_codigo_aleatorio(int $longitud = 6): string|array
     {
         if ($longitud <= 0) {
-            return $this->error->error(mensaje: 'Error longitud debe ser mayor  a 0', data: $longitud);
+            return $this->error->error(mensaje: 'Error longitud debe ser mayor  a 0', data: $longitud, es_final: true);
         }
         $chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $random_string = '';

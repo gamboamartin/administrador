@@ -247,13 +247,34 @@ class controlador_base extends controler
 
 
     /**
-     * Función que activa un registro de la base de datos. Retorna un arreglo con el registro
-     * correspondiente al id del registro en cuestión.
-     * @param bool $header si header retorna error en navegador y corta la operacion
-     * @return array almacena en un arreglo todos los datos del registro
-     * @final revisada
+     * REG
+     * Activa un registro en la base de datos y valida la transacción antes de proceder.
+     *
+     * Esta función verifica que el `registro_id` sea válido, obtiene el registro correspondiente,
+     * valida que la transacción pueda ser activada, y procede a activar el registro utilizando la clase `activacion`.
+     * Si la activación es exitosa, redirige a la lista de registros o devuelve el resultado.
+     *
+     * @param bool $header Si es `true`, redirige después de la activación; si es `false`, devuelve el resultado.
+     * @return array|stdClass Retorna los datos del registro activado en caso de éxito o un error estructurado.
+     *
+     * @example Uso sin redirección:
+     * ```php
+     * $resultado = $controlador->activa_bd(false);
+     * if (isset($resultado['error'])) {
+     *     echo "Error: " . $resultado['mensaje'];
+     * } else {
+     *     echo "Registro activado con éxito";
+     * }
+     * ```
+     *
+     * @example Uso con redirección:
+     * ```php
+     * $controlador->activa_bd(true); // Redirige automáticamente en caso de éxito.
+     * ```
+     *
+     * @throws errores Si ocurre un error en alguna de las validaciones o en el proceso de activación.
      */
-    public function activa_bd(bool $header): array
+    public function activa_bd(bool $header): array|stdClass
     {
         if ($this->registro_id === -1) {
             return $this->errores->error('No existe id para activar', $_GET);

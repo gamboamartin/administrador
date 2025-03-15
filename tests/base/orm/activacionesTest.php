@@ -224,10 +224,10 @@ class activacionesTest extends test {
 
         $resultado = $act->valida_activacion($modelo);
 
-
+        //print_r($resultado);exit;
         $this->assertIsArray($resultado);
         $this->assertTrue(errores::$error);
-        $this->assertStringContainsStringIgnoringCase("Error al validar transaccion activa en adm_dia", $resultado['mensaje']);
+        $this->assertStringContainsStringIgnoringCase("Error al validar transacción activa en adm_dia", $resultado['mensaje']);
 
 
         errores::$error = false;

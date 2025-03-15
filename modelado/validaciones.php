@@ -603,32 +603,85 @@ class validaciones extends validacion{
     }
 
     /**
+     * REG
+     * Valida que un campo en un registro, si está presente y no está vacío, cumpla con un patrón predefinido.
      *
-     * Valida que una expresion regular se cumpla en un registro
-     * @param string $key campo de un registro o this->registro
-     * @param array $registro Registro a validar
-     * @param string $tipo_campo tipo de pattern a validar en this->patterns
+     * Esta función verifica si un campo en `$registro` debe ser validado y, en caso afirmativo,
+     * delega la validación a `valida_pattern_model`. Si el campo no existe o está vacío, la validación se omite.
      *
-     * @return array|bool
-     * @example
-     *      foreach($this->tipo_campos as $key =>$tipo_campo){
-     * $valida_campos = $this->valida_pattern_campo($key,$tipo_campo);
-     * if(isset($valida_campos['error'])){
-     * return $this->error->error('Error al validar campos',$valida_campos);
-     * }
-     * }
+     * ### Funcionamiento:
+     * 1. **Verifica que `$registro` no esté vacío.**
+     * 2. **Valida que `$key` no esté vacío.**
+     * 3. **Si el campo `$key` existe en `$registro` y no está vacío:**
+     *    - Se llama a `valida_pattern_model` para aplicar la validación del patrón.
+     *    - Si la validación falla, se devuelve un error detallado.
+     * 4. **Si no hay errores, retorna `true`.**
      *
-     * @uses modelo_basico->valida_estructura_campos
-     * @internal  $this->valida_pattern($key,$tipo_campo);
-     * @version 1.286.41
+     * @param string $key Nombre del campo dentro de `$registro` que debe validarse.
+     * @param array $registro Datos a validar, donde `$key` puede o no estar presente.
+     * @param string $tipo_campo Clave del patrón en `$this->patterns` con el cual se debe validar el valor.
+     *
+     * @return array|bool `true` si el campo es válido o un **array de error** si alguna validación falla.
+     *
+     * @example **Ejemplo de uso:**
+     * ```php
+     * $validacion = new validacion();
+     * $validacion->patterns['codigo_numerico'] = "/^[0-9]{6}$/"; // Definiendo un patrón para números de 6 dígitos
+     *
+     * $registro = ['codigo' => '123456'];
+     * $resultado = $validacion->valida_pattern_campo(
+     *     key: 'codigo',
+     *     registro: $registro,
+     *     tipo_campo: 'codigo_numerico'
+     * );
+     * print_r($resultado);
+     * ```
+     *
+     * ### **Posibles salidas:**
+     * **Caso 1: Éxito (el campo cumple con el patrón)**
+     * ```php
+     * true
+     * ```
+     *
+     * **Caso 2: Error (`registro` está vacío)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error el registro no puede venir vacío"
+     *     [data] => Array()
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 3: Error (`key` está vacío)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error key está vacío"
+     *     [data] => ""
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 4: Error (el valor del campo no cumple con el patrón)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error al validar"
+     *     [data] => false
+     * )
+     * ```
+     *
+     * @throws errores Si `$registro` está vacío, si `$key` está vacío o si el valor del campo no cumple con el patrón.
      */
-    public function valida_pattern_campo(string $key, array $registro, string $tipo_campo):array|bool{
+    final public function valida_pattern_campo(string $key, array $registro, string $tipo_campo):array|bool{
         if(count($registro) === 0){
-            return $this->error->error(mensaje: 'Error el registro no no puede venir vacio',  data: $registro);
+            return $this->error->error(mensaje: 'Error el registro no no puede venir vacio',  data: $registro,
+                es_final: true);
         }
         $key = trim($key);
         if($key === ''){
-            return $this->error->error(mensaje: 'Error key esta vacio ', data:  $key);
+            return $this->error->error(mensaje: 'Error key esta vacio ', data:  $key, es_final: true);
         }
         if(isset($registro[$key])&&(string)$registro[$key] !==''){
             $valida_data = $this->valida_pattern_model(key:$key,registro: $registro, tipo_campo: $tipo_campo);
@@ -642,18 +695,92 @@ class validaciones extends validacion{
 
 
     /**
+     * REG
+     * Valida que un campo en un registro cumpla con un patrón predefinido.
      *
-     * Valida que una expresion regular se cumpla en un registro
-     * @param string $key campo de un registro o this->registro
-     * @param array $registro Registro a validar
-     * @param string $tipo_campo tipo de pattern a validar en this->patterns
-
-     * @return array|bool
-     * @example
-     *      $valida_data = $this->valida_pattern($key,$tipo_campo);
+     * Esta función verifica si el valor de un campo dentro de `$registro` cumple con un patrón de validación
+     * definido en `$this->patterns` bajo la clave `$tipo_campo`.
      *
-     * @uses modelo_basico->valida_pattern_campo
-     * @version 1.286.41
+     * ### Funcionamiento:
+     * 1. **Verifica que `$key` no esté vacío.**
+     * 2. **Confirma que `$key` existe en `$registro`.**
+     * 3. **Comprueba que `$tipo_campo` tenga un patrón de validación registrado en `$this->patterns`.**
+     * 4. **Obtiene el patrón y lo aplica sobre el valor del campo en `$registro`.**
+     * 5. **Si el valor coincide con el patrón, retorna `true`.**
+     * 6. **Si no coincide, devuelve un array de error detallado.**
+     *
+     * @param string $key Nombre del campo dentro de `$registro` que debe validarse.
+     * @param array $registro Datos a validar, donde se espera que `$key` esté presente.
+     * @param string $tipo_campo Clave del patrón en `$this->patterns` con el cual se debe validar el valor.
+     *
+     * @return array|bool `true` si el campo es válido o un **array de error** si alguna validación falla.
+     *
+     * @example **Ejemplo de uso:**
+     * ```php
+     * $validacion = new validacion();
+     * $validacion->patterns['codigo_numerico'] = "/^[0-9]{6}$/"; // Definiendo un patrón para números de 6 dígitos
+     *
+     * $registro = ['codigo' => '123456'];
+     * $resultado = $validacion->valida_pattern_model(
+     *     key: 'codigo',
+     *     registro: $registro,
+     *     tipo_campo: 'codigo_numerico'
+     * );
+     * print_r($resultado);
+     * ```
+     *
+     * ### **Posibles salidas:**
+     * **Caso 1: Éxito (el campo cumple con el patrón)**
+     * ```php
+     * true
+     * ```
+     *
+     * **Caso 2: Error (`key` está vacío)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error key está vacío"
+     *     [data] => ""
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 3: Error (`key` no existe en `$registro`)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error no existe el campo codigo"
+     *     [data] => Array()
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 4: Error (`tipo_campo` no tiene un patrón definido en `$this->patterns`)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error no existe el pattern codigo_numerico"
+     *     [data] => Array()
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * **Caso 5: Error (el valor del campo no cumple con el patrón)**
+     * ```php
+     * Array
+     * (
+     *     [error] => "Error el campo codigo es inválido"
+     *     [data] => Array
+     *         (
+     *             [0] => "12A456"
+     *             [1] => "/^[0-9]{6}$/"
+     *         )
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @throws errores Si `$key` está vacío, si `$key` no existe en `$registro`,
+     * si `$tipo_campo` no tiene un patrón registrado o si el valor del campo no cumple con el patrón.
      */
     private function valida_pattern_model(string $key, array $registro, string $tipo_campo):array|bool{
 

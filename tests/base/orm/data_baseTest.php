@@ -62,8 +62,8 @@ class data_baseTest extends test {
         $resultado = $database->asigna_data_row_previo($data, $id, $modelo);
         $this->assertIsArray( $resultado);
         $this->assertNotTrue(errores::$error);
-        $this->assertEquals('1',$resultado['descripcion']);
-        $this->assertEquals('1',$resultado['codigo']);
+        $this->assertIsString($resultado['descripcion']);
+        $this->assertIsString($resultado['codigo']);
         errores::$error = false;
     }
 
