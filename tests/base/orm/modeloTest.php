@@ -1432,6 +1432,46 @@ class modeloTest extends test {
         errores::$error = false;
     }
 
+    public function test_valida_elimina_children(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+
+        $modelo_ = new adm_seccion($this->link);
+
+        $filtro_children = array();
+        $filtro_children['adm_seccion.id'] = 9999;
+        $resultado = $modelo->valida_elimina_children($filtro_children,$modelo_);
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+
+    }
+
+    public function test_valida_eliminacion_children(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
+
+        $id = 99999;
+
+        $resultado = $modelo->valida_eliminacion_children($id);
+
+
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
+
+
     public function test_valida_predetermiando(): void
     {
         errores::$error = false;
@@ -1462,8 +1502,23 @@ class modeloTest extends test {
 
 
 
+    public function test_verifica_eliminacion_children(): void
+    {
+        errores::$error = false;
+        $modelo = new adm_seccion($this->link);
+        $modelo = new liberator($modelo);
 
+        $id = 99999;
+        $modelo_children = 'adm_accion';
+        $namespace = $modelo->NAMESPACE;
+        $resultado = $modelo->verifica_eliminacion_children($id,$modelo_children,$namespace);
 
+        $this->assertIsBool( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertTrue($resultado);
+        errores::$error = false;
+
+    }
 
     public function test_where_suma(): void
     {

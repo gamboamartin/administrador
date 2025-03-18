@@ -659,10 +659,48 @@ class controlador_base extends controler
     }
 
     /**
-     * Elimina un registro
-     * @param bool $header Si header muestra resultado en nav
-     * @param bool $ws Si ws muestra resultado en json
-     * @return array|stdClass
+     * REG
+     * Elimina un registro de la base de datos, validando su existencia y controlando transacciones.
+     *
+     * Este método se encarga de eliminar un registro de la base de datos asegurando que:
+     * - El ID proporcionado sea válido.
+     * - La transacción esté correctamente manejada.
+     * - El registro exista antes de intentar eliminarlo.
+     * - Se realicen las validaciones de activación necesarias antes de la eliminación.
+     *
+     * En caso de error, la transacción se revierte y se devuelve un mensaje de error.
+     *
+     * @param bool $header Indica si se debe redirigir a la página anterior tras la eliminación.
+     *                     - `true`: Redirige a la página anterior.
+     *                     - `false`: Devuelve el resultado de la operación.
+     * @param bool $ws Indica si el resultado debe ser devuelto en formato JSON para un servicio web.
+     *                 - `true`: Devuelve la respuesta en formato JSON.
+     *                 - `false`: Devuelve un array o un objeto estándar (`stdClass`).
+     *
+     * @return array|stdClass Devuelve un array con los datos del registro eliminado o un objeto `stdClass` con detalles de la eliminación.
+     *                        En caso de error, devuelve un array con información del problema.
+     *
+     * @example Uso sin redirección (manejo de errores manual):
+     * ```php
+     * $resultado = $controlador->elimina_bd(false, false);
+     * if (isset($resultado['error'])) {
+     *     echo "Error al eliminar: " . $resultado['mensaje'];
+     * } else {
+     *     echo "Registro eliminado correctamente.";
+     * }
+     * ```
+     *
+     * @example Uso con redirección automática:
+     * ```php
+     * $controlador->elimina_bd(true, false); // Redirige automáticamente en caso de éxito.
+     * ```
+     *
+     * @example Uso con respuesta JSON (Web Service):
+     * ```php
+     * $controlador->elimina_bd(false, true); // Devuelve una respuesta en formato JSON.
+     * ```
+     *
+     * @throws errores En caso de que ocurra un error en cualquier paso, se detiene la ejecución y se devuelve un mensaje de error.
      */
     public function elimina_bd(bool $header, bool $ws): array|stdClass
     {
@@ -704,7 +742,8 @@ class controlador_base extends controler
             return $this->retorno_error('Error al eliminar', $registro, $header, $ws);
         }
 
-        $_SESSION['exito'][]['mensaje'] = 'Se elimino registro de ' . $this->tabla . ' de manera exitosa id: ' . $this->registro_id;
+        $_SESSION['exito'][]['mensaje'] = 'Se elimino registro de ' . $this->tabla . ' de manera exitosa id: ' .
+            $this->registro_id;
 
         if (!$transacion_previa) {
             $this->link->commit();

@@ -1138,18 +1138,107 @@ class modelo extends modelo_base
 
 
     /**
+     * REG
+     * Elimina un registro de la base de datos asegurando validaciones y transacciones previas.
      *
-     * Elimina un registro por el id enviado
-     * @param int $id id del registro a eliminar
+     * Este método permite eliminar un registro en la base de datos, verificando previamente que la transacción
+     * esté activa, validando dependencias, eliminando registros relacionados y registrando la eliminación
+     * en la bitácora.
      *
-     * @return array|stdClass con datos del registro eliminado
-     * @example
-     *      $registro = $this->modelo->elimina_bd($this->registro_id);
+     * ### Flujo del método:
+     * 1. **Validación de transacción:** Se verifica que la transacción esté habilitada (`$this->aplica_transacciones_base`).
+     * 2. **Validación del ID:** Se verifica que `$id` sea un número positivo mayor a 0.
+     * 3. **Validación de activación:** Se comprueba que el modelo tiene una transacción activa usando `valida_activacion()`.
+     * 4. **Obtención de datos previos:** Se recupera el registro a eliminar (`obten_data()`) y su estado puro (`registro()`).
+     * 5. **Generación de consulta SQL:** Se construye la consulta `DELETE` para eliminar el registro de la base de datos.
+     * 6. **Eliminación de dependencias:** Se ejecuta `aplica_eliminacion_dependencias()` para manejar registros dependientes.
+     * 7. **Validación de dependencias hijos:** Se usa `valida_eliminacion_children()` para asegurar que no existan registros hijos.
+     * 8. **Ejecución de la consulta:** Se ejecuta la consulta SQL (`ejecuta_sql()`).
+     * 9. **Registro en bitácora:** Se registra la eliminación en la bitácora con `bitacora()`.
+     * 10. **Retorno de datos:** Se retorna un objeto `stdClass` con la información del registro eliminado.
      *
-     * @internal  $this->validacion->valida_transaccion_activa($this, $this->aplica_transaccion_inactivo, $this->registro_id, $this->tabla);
-     * @internal  $this->obten_data();
-     * @internal  $this->ejecuta_sql();
-     * @internal  $this->bitacora($registro_bitacora,__FUNCTION__,$consulta);
+     * ---
+     *
+     * @param int $id Identificador del registro que se desea eliminar.
+     *                - Debe ser un número entero mayor a 0.
+     *
+     * @return array|stdClass Devuelve un objeto con los datos del registro eliminado, la consulta SQL ejecutada y un mensaje de éxito.
+     *                        En caso de error, retorna un array con detalles del error.
+     *
+     * @example **Ejemplo 1: Eliminación exitosa**
+     * ```php
+     * $id = 15;
+     * $resultado = $this->elimina_bd($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * stdClass Object
+     * (
+     *     [registro_id] => 15
+     *     [sql] => "DELETE FROM productos WHERE id = 15"
+     *     [registro] => Array ( ... datos del registro eliminado ... )
+     *     [registro_puro] => Array ( ... datos originales del registro ... )
+     *     [mensaje] => "Se elimino el registro con el id 15"
+     * )
+     * ```
+     *
+     * @example **Ejemplo 2: Error por ID inválido**
+     * ```php
+     * $id = -5;
+     * $resultado = $this->elimina_bd($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'El id no puede ser menor a 0 en productos'
+     *     [data] => -5
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example **Ejemplo 3: Error al validar transacción**
+     * ```php
+     * $this->aplica_transacciones_base = false;
+     * $id = 10;
+     * $resultado = $this->elimina_bd($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error solo se puede transaccionar desde layout'
+     *     [data] => 10
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example **Ejemplo 4: Error por dependencias encontradas**
+     * ```php
+     * $id = 20;
+     * $resultado = $this->elimina_bd($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada si el registro tiene dependencias en otras tablas:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error al validar children'
+     *     [data] => Array
+     *         (
+     *             [error] => 1
+     *             [mensaje] => 'Error el registro tiene dependencias asignadas en facturas'
+     *             [data] => true
+     *             [es_final] => true
+     *         )
+     * )
+     * ```
      */
     public function elimina_bd(int $id): array|stdClass
     {
@@ -4015,6 +4104,79 @@ class modelo extends modelo_base
         return true;
     }
 
+    /**
+     * REG
+     * Valida si un registro tiene dependencias antes de ser eliminado.
+     *
+     * Este método verifica si existen registros relacionados en la base de datos antes de proceder con la eliminación.
+     * Se basa en un filtro (`$filtro_children`) que se usa para comprobar la existencia de registros en el modelo proporcionado.
+     *
+     * ### Flujo de validación:
+     * 1. **Consulta de existencia:** Se ejecuta `$modelo->existe(filtro: $filtro_children)`, verificando si hay registros con ese filtro.
+     * 2. **Manejo de errores:** Si ocurre un error en la verificación, se retorna un array con detalles del error.
+     * 3. **Validación de dependencias:** Si existen registros relacionados, se retorna un error indicando que el registro tiene dependencias.
+     * 4. **Retorno exitoso:** Si no hay dependencias encontradas, retorna `true`, indicando que la eliminación puede continuar.
+     *
+     * ---
+     *
+     * @param array  $filtro_children Filtro que se usará para verificar si existen registros relacionados.
+     *                                - Debe ser un array asociativo con las claves y valores de filtrado.
+     *                                - Ejemplo: `['usuarios.id' => 10]` busca si existe un usuario con ID 10.
+     *
+     * @param modelo $modelo Instancia del modelo en el cual se buscarán registros dependientes.
+     *                       - Debe contener un método `existe(array $filtro): bool` que verifique la existencia de registros.
+     *                       - Debe incluir una propiedad `$modelo->tabla` para indicar la tabla donde se busca la relación.
+     *
+     * @return bool|array Retorna `true` si no existen dependencias y el registro puede eliminarse.
+     *                    Si se encuentran dependencias o ocurre un error, retorna un array con detalles del error.
+     *
+     * @example **Ejemplo 1: Eliminación permitida (sin dependencias)**
+     * ```php
+     * $filtro = ['usuarios.id' => 10];
+     * $modelo = new modelo(); // Suponiendo que `modelo` es una instancia válida
+     * $resultado = $this->valida_elimina_children($filtro, $modelo);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * @example **Ejemplo 2: Error por existencia de dependencias**
+     * ```php
+     * $filtro = ['productos.id' => 5];
+     * $modelo = new modelo();
+     * $resultado = $this->valida_elimina_children($filtro, $modelo);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada (si existen registros relacionados en `productos`):**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error el registro tiene dependencias asignadas en productos'
+     *     [data] => true
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example **Ejemplo 3: Error en la consulta de existencia**
+     * ```php
+     * $filtro = ['clientes.id' => 3];
+     * $modelo = new modelo();
+     * $resultado = $this->valida_elimina_children($filtro, $modelo);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada (si ocurre un error en la consulta de existencia):**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error al validar si existe'
+     *     [data] => null
+     * )
+     * ```
+     */
     private function valida_elimina_children(array $filtro_children, modelo $modelo): bool|array
     {
         $existe = $modelo->existe(filtro: $filtro_children);
@@ -4023,7 +4185,8 @@ class modelo extends modelo_base
         }
         if ($existe) {
             return $this->error->error(
-                mensaje: 'Error el registro tiene dependencias asignadas en ' . $modelo->tabla, data: $existe);
+                mensaje: 'Error el registro tiene dependencias asignadas en ' . $modelo->tabla, data: $existe,
+                es_final: true);
         }
         return true;
     }
@@ -4047,8 +4210,90 @@ class modelo extends modelo_base
         return true;
     }
 
-    final public function valida_eliminacion_children(int $id): bool|array
+    /**
+     * REG
+     * Valida si un registro puede ser eliminado verificando que no tenga dependencias en modelos hijos.
+     *
+     * Este método revisa si el registro con el ID proporcionado tiene relaciones en modelos hijos especificados
+     * en `$this->childrens`. Para cada modelo hijo, se ejecuta `verifica_eliminacion_children`, asegurando
+     * que el registro no tenga dependencias antes de permitir su eliminación.
+     *
+     * ### Flujo del método:
+     * 1. **Validación del ID:** Se verifica que `$id` sea un número positivo mayor a 0.
+     * 2. **Iteración sobre modelos hijos:** Se recorren las relaciones en `$this->childrens`, verificando en cada modelo si el registro tiene dependencias.
+     * 3. **Llamada a `verifica_eliminacion_children`:** Para cada modelo hijo, se invoca `verifica_eliminacion_children(id, modelo_children, namespace)`.
+     * 4. **Manejo de errores:** Si alguna validación falla, se retorna un array con detalles del error.
+     * 5. **Retorno exitoso:** Si ninguna validación falla, retorna `true`, indicando que el registro puede eliminarse.
+     *
+     * ---
+     *
+     * @param int $id Identificador del registro que se desea eliminar.
+     *                - Debe ser un número entero mayor a 0.
+     *
+     * @return bool|array Retorna `true` si el registro puede eliminarse sin problemas.
+     *                    Si existen dependencias o errores, retorna un array con detalles del error.
+     *
+     * @example **Ejemplo 1: Eliminación permitida (sin dependencias)**
+     * ```php
+     * $id = 7;
+     * $resultado = $this->valida_eliminacion_children($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * @example **Ejemplo 2: Error por ID inválido**
+     * ```php
+     * $id = 0;
+     * $resultado = $this->valida_eliminacion_children($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error $id debe ser mayor a 0'
+     *     [data] => 0
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example **Ejemplo 3: Error por dependencias encontradas en un modelo hijo**
+     * ```php
+     * $id = 10;
+     * $this->childrens = [
+     *     'facturas' => 'gamboamartin\\facturacion\\models',
+     *     'pagos' => 'gamboamartin\\pagos\\models'
+     * ];
+     *
+     * $resultado = $this->valida_eliminacion_children($id);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada si `facturas` tiene registros relacionados:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error al validar children'
+     *     [data] => Array
+     *         (
+     *             [error] => 1
+     *             [mensaje] => 'Error el registro tiene dependencias asignadas en facturas'
+     *             [data] => true
+     *             [es_final] => true
+     *         )
+     * )
+     * ```
+     */
+    private function valida_eliminacion_children(int $id): bool|array
     {
+        if($id <= 0){
+            return $this->error->error(mensaje:'Error $id debe ser mayor a 0', data:$id, es_final: true);
+        }
+
         foreach ($this->childrens as $modelo_children => $namespace) {
             $valida = $this->verifica_eliminacion_children(id: $id, modelo_children: $modelo_children,
                 namespace: $namespace);
@@ -4075,8 +4320,137 @@ class modelo extends modelo_base
         return $existe_atributo_critico;
     }
 
+    /**
+     * REG
+     * Verifica si un registro puede ser eliminado validando que no tenga dependencias en modelos hijos.
+     *
+     * Este método se encarga de comprobar si un registro en la base de datos tiene relaciones dependientes
+     * en una tabla secundaria antes de permitir su eliminación. Para ello, genera un modelo hijo con el
+     * namespace indicado, construye un filtro para buscar dependencias y valida si existen registros asociados.
+     *
+     * ### Flujo del método:
+     * 1. **Validación inicial:** Verifica que `$modelo_children` no esté vacío y que `$id` sea un número positivo.
+     * 2. **Generación del modelo hijo:** Crea una instancia del modelo hijo utilizando el namespace proporcionado.
+     * 3. **Generación del filtro:** Construye el filtro de búsqueda utilizando la tabla base y el ID.
+     * 4. **Validación de dependencias:** Verifica si existen registros relacionados en el modelo hijo.
+     * 5. **Retorno del resultado:** Si no hay dependencias, retorna `true`. Si hay dependencias o errores, retorna un array con detalles del error.
+     *
+     * ---
+     *
+     * @param int    $id Identificador del registro que se desea eliminar.
+     *                   - Debe ser un número entero mayor a 0.
+     *
+     * @param string $modelo_children Nombre del modelo hijo en el que se buscarán dependencias.
+     *                                - Debe ser una cadena no vacía.
+     *                                - Debe corresponder a un modelo válido dentro del sistema.
+     *
+     * @param string $namespace Namespace donde se encuentra el modelo hijo.
+     *                          - Debe ser una cadena válida que incluya el espacio de nombres del modelo.
+     *
+     * @return bool|array Retorna `true` si el registro puede ser eliminado sin problemas.
+     *                    Si existen dependencias o errores, retorna un array con detalles del error.
+     *
+     * @example **Ejemplo 1: Eliminación permitida (sin dependencias)**
+     * ```php
+     * $id = 5;
+     * $modelo_children = 'facturas';
+     * $namespace = 'gamboamartin\\facturacion\\models';
+     *
+     * $resultado = $this->verifica_eliminacion_children($id, $modelo_children, $namespace);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * true
+     * ```
+     *
+     * @example **Ejemplo 2: Error por modelo vacío**
+     * ```php
+     * $id = 5;
+     * $modelo_children = '';
+     * $namespace = 'gamboamartin\\facturacion\\models';
+     *
+     * $resultado = $this->verifica_eliminacion_children($id, $modelo_children, $namespace);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error $modelo_children esta vacio'
+     *     [data] => ''
+     * )
+     * ```
+     *
+     * @example **Ejemplo 3: Error por ID no válido**
+     * ```php
+     * $id = 0;
+     * $modelo_children = 'facturas';
+     * $namespace = 'gamboamartin\\facturacion\\models';
+     *
+     * $resultado = $this->verifica_eliminacion_children($id, $modelo_children, $namespace);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error $id debe ser mayor a 0'
+     *     [data] => 0
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example **Ejemplo 4: Error al generar modelo**
+     * ```php
+     * $id = 10;
+     * $modelo_children = 'facturas';
+     * $namespace = 'namespace_invalido\\models';
+     *
+     * $resultado = $this->verifica_eliminacion_children($id, $modelo_children, $namespace);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada si el namespace es incorrecto:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error al generar modelo'
+     *     [data] => null
+     * )
+     * ```
+     *
+     * @example **Ejemplo 5: Error por dependencias encontradas**
+     * ```php
+     * $id = 3;
+     * $modelo_children = 'facturas';
+     * $namespace = 'gamboamartin\\facturacion\\models';
+     *
+     * $resultado = $this->verifica_eliminacion_children($id, $modelo_children, $namespace);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada si existen facturas asociadas al registro:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error el registro tiene dependencias asignadas en facturas'
+     *     [data] => true
+     *     [es_final] => true
+     * )
+     * ```
+     */
     private function verifica_eliminacion_children(int $id, string $modelo_children, string $namespace): bool|array
     {
+        $modelo_children = trim($modelo_children);
+        if($modelo_children === ''){
+            return $this->error->error(mensaje: 'Error $modelo_children esta vacio', data: $modelo_children);
+        }
+        if($id <= 0){
+            return $this->error->error(mensaje:'Error $id debe ser mayor a 0', data:$id, es_final: true);
+        }
         $modelo = $this->genera_modelo(modelo: $modelo_children, namespace_model: $namespace);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar modelo', data: $modelo);

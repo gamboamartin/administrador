@@ -437,10 +437,87 @@ class filtros{
         return $modelo->consulta;
     }
 
-
-
+    /**
+     * REG
+     * Genera un filtro para consultas SQL basado en una tabla y un ID específico.
+     *
+     * Este método construye un array de filtro que asocia el identificador de una tabla con un ID específico.
+     * Se utiliza comúnmente en la generación de condiciones `WHERE` en consultas SQL para obtener registros
+     * relacionados con una entidad primaria.
+     *
+     * ### Proceso de validación:
+     * 1. Se **limpia** la cadena `$tabla` eliminando espacios innecesarios al inicio y al final.
+     * 2. Se **verifica** que `$tabla` no esté vacía. Si está vacía, se genera un error.
+     * 3. Se **valida** que `$id` sea mayor a 0. Si es menor o igual a 0, se genera un error.
+     * 4. Se **construye** un array asociativo con la clave `tabla.id` y el valor del ID proporcionado.
+     * 5. Se **retorna** el array resultante con la estructura de filtro.
+     *
+     * ---
+     *
+     * @param string $tabla Nombre de la tabla sobre la cual se aplicará el filtro.
+     *                     - Debe ser una cadena no vacía.
+     *                     - Se espera que represente un nombre de tabla válido en la base de datos.
+     *
+     * @param int $id Identificador de la entidad dentro de la tabla.
+     *                - Debe ser un entero positivo mayor a 0.
+     *
+     * @return array Retorna un array asociativo con la estructura de filtro `tabla.id => $id`.
+     *               En caso de error, retorna un array con detalles del error.
+     *
+     * @example **Ejemplo 1: Uso correcto con tabla y ID válidos**
+     * ```php
+     * $filtro = $this->filtro_children('usuarios', 10);
+     * print_r($filtro);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [usuarios.id] => 10
+     * )
+     * ```
+     *
+     * @example **Ejemplo 2: Error por tabla vacía**
+     * ```php
+     * $filtro = $this->filtro_children('', 10);
+     * print_r($filtro);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error $tabla esta vacia'
+     *     [data] => ''
+     *     [es_final] => true
+     * )
+     * ```
+     *
+     * @example **Ejemplo 3: Error por ID menor o igual a 0**
+     * ```php
+     * $filtro = $this->filtro_children('productos', 0);
+     * print_r($filtro);
+     * ```
+     * **Salida esperada:**
+     * ```php
+     * Array
+     * (
+     *     [error] => 1
+     *     [mensaje] => 'Error $id debe ser mayor a 0'
+     *     [data] => 'productos'
+     *     [es_final] => true
+     * )
+     * ```
+     */
     final public function filtro_children(string $tabla, int $id): array
     {
+        $tabla = trim($tabla);
+        if($tabla === ''){
+            return $this->error->error(mensaje:'Error $tabla esta vacia', data:$tabla, es_final: true);
+        }
+        if($id <= 0){
+            return $this->error->error(mensaje:'Error $id debe ser mayor a 0', data:$tabla, es_final: true);
+        }
         $filtro_children = array();
         $filtro_children[$tabla.'.id'] = $id;
         return $filtro_children;

@@ -197,6 +197,20 @@ class filtrosTest extends test {
         errores::$error = false;
     }
 
+    public function test_filtro_children(){
+        errores::$error = false;
+        $filtros = new filtros();
+        //$filtros = new liberator($filtros);
+
+        $tabla = 'a';
+        $id = 1;
+        $resultado = $filtros->filtro_children($tabla,$id);
+        $this->assertIsArray( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals(1,$resultado['a.id']);
+        errores::$error = false;
+    }
+
     public function test_inicializa_complemento(){
         errores::$error = false;
         $filtros = new filtros();
