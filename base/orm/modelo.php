@@ -1311,16 +1311,66 @@ class modelo extends modelo_base
     }
 
     /**
-     * Elimina registros con filtro
-     * @return string[]
-     * @version 1.564.51
+     * REG
+     * Elimina registros de la base de datos utilizando un filtro AND.
+     *
+     * Este método busca registros en la base de datos utilizando un conjunto de condiciones
+     * proporcionadas en el parámetro `$filtro`. Si se encuentran registros coincidentes,
+     * se eliminan uno por uno mediante `elimina_bd()`.
+     *
+     * @param array $filtro Filtro que se aplicará para seleccionar los registros a eliminar.
+     *                      Debe ser un array asociativo con las condiciones de búsqueda.
+     *
+     * @return array Un array con los resultados de las eliminaciones de cada registro.
+     *               En caso de error, devuelve un array con los detalles del error.
+     *
+     * @throws errores En caso de error, la función retorna un array con un mensaje de error
+     *                 y los datos asociados.
+     *
+     * @example Uso básico:
+     * ```php
+     * $filtro = [
+     *     'usuario_id' => 5,
+     *     'status' => 'inactivo'
+     * ];
+     * $resultado = $modelo->elimina_con_filtro_and($filtro);
+     * print_r($resultado);
+     * ```
+     * **Salida esperada (si hay registros eliminados):**
+     * ```php
+     * [
+     *     ['mensaje' => 'Se eliminó el registro con ID 10'],
+     *     ['mensaje' => 'Se eliminó el registro con ID 15']
+     * ]
+     * ```
+     *
+     * **Salida esperada (si no hay coincidencias en la base de datos):**
+     * ```php
+     * [
+     *     'error' => 'Error al obtener registros tabla_usuarios',
+     *     'data' => []
+     * ]
+     * ```
+     *
+     * @example Uso con múltiples filtros:
+     * ```php
+     * $filtro = [
+     *     'categoria_id' => 3,
+     *     'activo' => 'no'
+     * ];
+     * $resultado = $modelo->elimina_con_filtro_and($filtro);
+     * if (isset($resultado['error'])) {
+     *     echo "Error: " . $resultado['error'];
+     * } else {
+     *     echo "Registros eliminados exitosamente.";
+     * }
+     * ```
      */
     public function elimina_con_filtro_and(array $filtro): array
     {
 
-
         if (count($filtro) === 0) {
-            return $this->error->error('Error no existe filtro', $filtro);
+            return $this->error->error('Error no existe filtro', $filtro, es_final: true);
         }
         if (!$this->aplica_transacciones_base) {
             return $this->error->error(mensaje: 'Error solo se puede transaccionar desde layout', data: $filtro);
@@ -1340,7 +1390,6 @@ class modelo extends modelo_base
             $dels[] = $del;
 
         }
-
 
         return $dels;
 

@@ -29,7 +29,45 @@ class seguridad{
 
     }
 
-    private function elimina_session_activa(array $filtro, adm_session $session_modelo){
+    /**
+     * REG
+     * Elimina una sesión activa en la base de datos y destruye la sesión en PHP.
+     *
+     * Esta función valida la existencia del filtro proporcionado, elimina la sesión en la base de datos
+     * utilizando `adm_session::elimina_con_filtro_and()`, y si la sesión está activa en PHP, la destruye.
+     *
+     * @param array $filtro Filtro para seleccionar la sesión a eliminar. Debe contener al menos un elemento.
+     *                      - Ejemplo de entrada:
+     *                      ```php
+     *                      $filtro = ['adm_session.name' => 'my_session_id'];
+     *                      ```
+     * @param adm_session $session_modelo Instancia del modelo `adm_session`, utilizado para eliminar registros en la BD.
+     *
+     * @return bool|array Retorna `true` si la eliminación y destrucción de sesión fueron exitosas.
+     *                    Retorna un array con detalles de error si ocurre una falla.
+     *
+     * @example Ejemplo de uso:
+     * ```php
+     * $filtro = ['adm_session.name' => session_id()];
+     * $session_modelo = new adm_session($link);
+     * $resultado = $this->elimina_session_activa(filtro: $filtro, session_modelo: $session_modelo);
+     *
+     * if ($resultado !== true) {
+     *     echo "Error: " . print_r($resultado, true);
+     * } else {
+     *     echo "Sesión eliminada con éxito.";
+     * }
+     * ```
+     *
+     * @throws errores Si el filtro está vacío o si hay un error al eliminar la sesión en la BD.
+     */
+    private function elimina_session_activa(array $filtro, adm_session $session_modelo): bool|array
+    {
+
+        if (count($filtro) === 0) {
+            return $this->error->error('Error no existe filtro', $filtro, es_final: true);
+        }
+
         $result = $session_modelo->elimina_con_filtro_and(filtro: $filtro);
         if (errores::$error) {
             return $this->error->error(mensaje:"Error al eliminar registro",data:  $result);
@@ -42,15 +80,56 @@ class seguridad{
     }
 
     /**
-     * Verifica si se permite o no la eliminacion de una session
-     * @param stdClass $r_session Resultado previo de session en database
-     * @return bool
+     * REG
+     * Verifica si se debe eliminar una sesión de la base de datos.
+     *
+     * Esta función analiza la sesión proporcionada y determina si debe ser eliminada.
+     * Si la sesión es permanente (`adm_session_permanente` = "activo"), la eliminación no se permite.
+     *
+     * @param stdClass $r_session Objeto que representa el resultado de la consulta de sesión en la base de datos.
+     *                            Debe contener los atributos:
+     *                            - `n_registros` (int): Número de registros encontrados.
+     *                            - `registros` (array): Lista de registros de sesión.
+     *                              - Cada registro debe incluir:
+     *                                - `adm_session_permanente` (string): Indica si la sesión es permanente ("activo" o "inactivo").
+     *
+     * @return bool Retorna `true` si la sesión puede eliminarse, `false` si es una sesión permanente y no debe eliminarse.
+     *
+     * @example Ejemplo de entrada:
+     * ```php
+     * $r_session = new stdClass();
+     * $r_session->n_registros = 1;
+     * $r_session->registros = [
+     *     ['adm_session_permanente' => 'inactivo']
+     * ];
+     * $puede_eliminar = $this->elimina_session_verifica($r_session);
+     * echo $puede_eliminar ? "Sesión eliminable" : "Sesión permanente, no eliminable";
+     * ```
+     *
+     * @example Ejemplo de salida:
+     * ```php
+     * true  // Si la sesión puede eliminarse
+     * false // Si la sesión es permanente y no debe eliminarse
+     * ```
+     *
+     * @throws errores No lanza errores, pero ajusta los valores por defecto si las claves no están definidas en `$r_session`.
      */
     private function elimina_session_verifica(stdClass $r_session): bool
     {
         $elimina = true;
+        if(!isset($r_session->n_registros)){
+            $r_session->n_registros = -1;
+        }
         if((int)$r_session->n_registros === 1){
+            if(!isset($r_session->registros[0])){
+                $r_session->registros[0] = array();
+            }
             $session = $r_session->registros[0];
+
+            if(!isset($session['adm_session_permanente'])){
+                $session['adm_session_permanente'] = 'inactivo';
+            }
+
             if($session['adm_session_permanente'] === 'activo'){
                 $elimina = false;
             }

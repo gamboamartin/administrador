@@ -2,9 +2,11 @@
 namespace tests\base;
 
 use base\seguridad;
+use gamboamartin\administrador\models\adm_session;
 use gamboamartin\errores\errores;
 use gamboamartin\test\liberator;
 use gamboamartin\test\test;
+use stdClass;
 
 
 class seguridadTest extends test {
@@ -13,6 +15,46 @@ class seguridadTest extends test {
     {
         parent::__construct($name);
         $this->errores = new errores();
+    }
+
+    public function test_elimina_session_activa(){
+
+        errores::$error = false;
+
+        if(isset($_SESSION['activa'])){
+            unset($_SESSION['activa']);
+        }
+        $seg = new seguridad();
+        $seg = new liberator($seg);
+
+        $filtro = array();
+        $filtro['adm_session.id'] = -1;
+        $session_modelo = new adm_session($this->link);
+
+        $resultado = $seg->elimina_session_activa($filtro,$session_modelo);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
+    }
+
+    public function test_elimina_session_verifica(){
+
+        errores::$error = false;
+
+        if(isset($_SESSION['activa'])){
+            unset($_SESSION['activa']);
+        }
+        $seg = new seguridad();
+        $seg = new liberator($seg);
+
+        $r_session = new stdClass();
+
+        $resultado = $seg->elimina_session_verifica($r_session);
+
+        $this->assertIsBool($resultado);
+        $this->assertNotTrue(errores::$error);
+        errores::$error = false;
     }
 
     public function test_init(){
