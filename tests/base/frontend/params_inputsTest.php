@@ -166,5 +166,24 @@ class params_inputsTest extends test {
 
     }
 
+    public function test_title_html(): void
+    {
+        errores::$error = false;
+        $params = new params_inputs();
+        //$params = new liberator($params);
+
+        $place_holder = 'x';
+        $title = '';
+        $resultado = $params->title_html($place_holder,$title);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("title='x'", $resultado);
+
+
+        errores::$error = false;
+
+    }
+
     
 }

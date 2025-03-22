@@ -162,6 +162,63 @@ class conexionTest extends test {
         errores::$error = false;
     }
 
+    public function test_conexion(): void
+    {
+        errores::$error = false;
+
+        $paths = new stdClass();
+
+
+        $paths->generales = '/var/www/html/administrador/config/generales.php';
+        $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
+
+        $cnx = new conexion($paths);
+        $cnx = new liberator($cnx);
+
+        $conf_database = new stdClass();
+        $motor = 'MYSQL';
+        $conf_database->db_user = (new database())->db_user;
+        $conf_database->db_host = (new database())->db_host;
+        $conf_database->db_name = (new database())->db_name;
+        $conf_database->db_password = (new database())->db_password;
+        $conf_database->set_name = (new database())->set_name;
+        $conf_database->time_out = (new database())->time_out;
+        $conf_database->sql_mode = (new database())->sql_mode;
+        $resultado = $cnx->conexion($conf_database, $motor);
+
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
+
+    public function test_usa_base_datos(): void
+    {
+        errores::$error = false;
+
+        $paths = new stdClass();
+
+
+        $paths->generales = '/var/www/html/administrador/config/generales.php';
+        $paths->database = '/var/www/html/administrador/config/database.php';
+        $paths->views = '/var/www/html/administrador/config/views.php';
+
+        $cnx = new conexion($paths);
+        $cnx = new liberator($cnx);
+
+        $db_name = 'administrador';
+        $resultado = $cnx->usa_base_datos($this->link, $db_name);
+
+
+        $this->assertIsObject( $resultado);
+        $this->assertNotTrue(errores::$error);
+
+        errores::$error = false;
+    }
+
 
 
 

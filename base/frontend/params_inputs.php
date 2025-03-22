@@ -1,14 +1,81 @@
 <?php
 namespace base\frontend;
 
-
-
 use gamboamartin\errores\errores;
 use stdClass;
 
+/**
+ * Clase `params_inputs`
+ *
+ * Esta clase proporciona métodos utilitarios para generar atributos HTML dinámicos destinados a inputs y elementos
+ * de formularios en general. Su enfoque está en simplificar la integración de parámetros como `class`, `id`,
+ * `required`, `disabled`, `multiple`, `pattern`, `title`, y configuraciones estándar para inputs tipo `radio` o `checkbox`.
+ *
+ * Todos los métodos implementan validaciones básicas para asegurar consistencia en los datos utilizados en los
+ * formularios del frontend. En caso de error, retornan estructuras compatibles con la clase `errores`, la cual
+ * centraliza el manejo de errores.
+ *
+ * @package base\frontend
+ * @author Gamboa
+ * @version 1.0.0
+ * @since 2025-03-21
+ *
+ * @example Uso básico
+ * ```php
+ * use base\frontend\params_inputs;
+ *
+ * $inputs = new params_inputs();
+ *
+ * echo "<input type='text' "
+ *      . $inputs->class_html(['form-control', 'text-primary']) . " "
+ *      . $inputs->ids_html(['input-nombre']) . " "
+ *      . $inputs->required_html(true) . ">";
+ * ```
+ *
+ * @example Generar parámetros para input tipo checkbox:
+ * ```php
+ * $params = $inputs->params_base_chk('activo', '¿Activo?');
+ * if (!is_array($params)) {
+ *     echo "<input type='checkbox' class='" . implode(' ', $params->class_radio) . "' "
+ *          . "id='" . implode(' ', $params->ids_css) . "' "
+ *          . "name='" . $params->name . "'>";
+ *     echo "<label class='" . implode(' ', $params->class_label) . "' for='" . $params->for . "'>"
+ *          . $params->label_html . "</label>";
+ * }
+ * ```
+ *
+ * Esta clase es ideal para la generación dinámica de formularios con estándares de accesibilidad,
+ * consistencia visual y validación mínima integrada.
+ */
 class params_inputs{
+
+
+    /**
+     * Instancia de la clase `errores` para el manejo interno de errores.
+     *
+     * Esta propiedad se utiliza en todos los métodos para devolver errores estructurados
+     * cuando las validaciones no se cumplen. Permite unificar el formato de errores en la clase
+     * y facilita el rastreo de problemas durante la generación de HTML dinámico.
+     *
+     * @var errores
+     */
     private errores $error;
 
+
+
+    /**
+     * Constructor de la clase `params_inputs`.
+     *
+     * Inicializa internamente una instancia de la clase `errores`, la cual se utiliza para
+     * gestionar errores en los distintos métodos de generación de parámetros HTML.
+     *
+     * @example Uso básico
+     * ```php
+     * use base\frontend\params_inputs;
+     *
+     * $inputs = new params_inputs();
+     * ```
+     */
     public function __construct()
     {
         $this->error = new errores();
@@ -357,9 +424,41 @@ class params_inputs{
 
 
     /**
-     * @param string $place_holder
-     * @param string $title
-     * @return string
+     * REG
+     * Genera el atributo `title` en formato HTML para un elemento de formulario.
+     *
+     * Este método valida y construye el atributo `title`, que se utiliza como texto emergente (tooltip)
+     * cuando el usuario pasa el cursor sobre el elemento. Si el título proporcionado está vacío,
+     * se utiliza el texto del `place_holder` como valor alternativo.
+     *
+     * @version 1.0.0
+     * @stable true
+     *
+     * @param string $place_holder Texto alternativo que se usará como `title` si el título está vacío.
+     *                              Ejemplo: `'Ingrese su nombre completo'`
+     * @param string $title Texto que se mostrará como tooltip del campo.
+     *                      Ejemplo: `'Nombre completo del usuario'`
+     *
+     * @return string Devuelve una cadena con el formato `title='valor'` o una cadena vacía si no hay texto válido.
+     *
+     * @example Título personalizado definido:
+     * ```php
+     * $obj = new params_inputs();
+     * echo $obj->title_html('Ingrese su nombre completo', 'Nombre completo del usuario');
+     * // Salida esperada: title='Nombre completo del usuario'
+     * ```
+     *
+     * @example Título vacío, se usa el `place_holder`:
+     * ```php
+     * echo $obj->title_html('Ingrese su nombre completo', '');
+     * // Salida esperada: title='Ingrese su nombre completo'
+     * ```
+     *
+     * @example Ambos vacíos:
+     * ```php
+     * echo $obj->title_html('', '');
+     * // Salida esperada: (cadena vacía)
+     * ```
      */
     public function title_html(string $place_holder, string $title): string
     {

@@ -9,14 +9,62 @@ class configuraciones extends validacion {
 
 
     /**
-     * TOTAL
-     * Función para validar una configuración especificada.
+     * REG
+     * Valida una configuración específica de la aplicación, verificando que:
+     * - El archivo de configuración exista.
+     * - El namespace esté correctamente registrado en `composer.json`.
      *
-     * @param stdClass $paths_conf - Ruta de la configuración a validar.
-     * @param string $tipo_conf - El tipo de configuración a validar.
-     * @return bool|array Devuelve true si la validación fue exitosa, o un error en caso contrario.
+     * Este método combina dos validaciones críticas:
+     * 1. Verifica si el archivo de configuración (como `config/database.php`) existe.
+     * 2. Verifica si el namespace correspondiente (`config\`) está registrado en el autoload de Composer.
+     *
+     * En caso de error en cualquiera de las validaciones, se devuelve un array detallado con el mensaje
+     * del error, datos asociados y una posible sugerencia de solución.
+     *
+     * @param stdClass $paths_conf Objeto con las rutas de los archivos de configuración a validar.
+     *                              Cada propiedad debe corresponder al tipo de configuración.
+     *                              Ejemplo: `$paths_conf->database = "config/database.php";`
+     *
+     * @param string $tipo_conf Nombre del tipo de configuración a validar.
+     *                          Debe coincidir con una propiedad de `$paths_conf`, como `generales`, `database`, etc.
+     *
+     * @return bool|array Devuelve `true` si ambas validaciones son exitosas.
+     *                    Devuelve un array con mensaje y datos si ocurre algún error.
+     *
+     * @throws errores Si ocurre un error en alguna de las validaciones internas (`valida_conf_file`, `valida_conf_composer`).
+     *
      * @version 16.24.0
+     * @author Martin Gamboa
      * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf.21.28.0
+     *
+     * @example Validación exitosa:
+     * ```php
+     * $paths_conf = new stdClass();
+     * $paths_conf->database = 'config/database.php';
+     * $validador = new \validacion\confs\configuraciones();
+     * $resultado = $validador->valida_conf($paths_conf, 'database');
+     * var_dump($resultado); // true
+     * ```
+     *
+     * @example Validación con error por archivo inexistente:
+     * ```php
+     * $paths_conf = new stdClass();
+     * $paths_conf->database = 'config/no_existe.php';
+     * $validador = new \validacion\confs\configuraciones();
+     * $resultado = $validador->valida_conf($paths_conf, 'database');
+     * print_r($resultado);
+     * // Resultado esperado: array con mensaje indicando que no existe el archivo
+     * ```
+     *
+     * @example Validación con error por tipo de configuración vacío:
+     * ```php
+     * $paths_conf = new stdClass();
+     * $paths_conf->database = 'config/database.php';
+     * $validador = new \validacion\confs\configuraciones();
+     * $resultado = $validador->valida_conf($paths_conf, '');
+     * print_r($resultado);
+     * // Resultado esperado: ['mensaje' => 'Error $tipo_conf esta vacio', ...]
+     * ```
      */
     private function valida_conf(stdClass $paths_conf,string $tipo_conf): bool|array
     {
@@ -37,35 +85,63 @@ class configuraciones extends validacion {
     }
 
     /**
-     * TOTAL
-     * Valida las configuraciones de la aplicación.
+     * REG
+     * Valida múltiples configuraciones críticas del sistema (`generales`, `database`, `views`).
      *
-     * Esta función verifica las configuraciones de `generales`, `database` y `views`.
-     * Retorna `true` si todas las configuraciones son válidas.
-     * Si alguna configuración no es válida, se retorna un array con el mensaje de error y los datos de validación.
+     * Este método itera sobre los tipos de configuración requeridos y valida para cada uno:
+     * - Que el archivo de configuración exista.
+     * - Que el namespace esté registrado correctamente en Composer (`autoload.psr-4`).
      *
-     * @param stdClass $paths_conf  Las rutas de las configuraciones a validar.
-     * @return bool|array           `true` si todas las configuraciones son válidas.
-     *                              Si no, un array con el mensaje del error y los datos de validación.
+     * Si alguna configuración falla su validación, se devuelve un array con el mensaje de error y
+     * los datos detallados del fallo.
      *
-     * @throws errores            Lanza una excepción si ocurre un error durante la validación.
-     *
-     * @example
+     * @param stdClass $paths_conf Objeto que contiene las rutas a los archivos de configuración.
+     *                              Debe incluir las propiedades: `generales`, `database`, `views`.
+     *                              Ejemplo:
      * ```php
-     * $configuraciones = new Configuraciones();
      * $paths_conf = new stdClass();
-     * $paths_conf->generales = '/path/to/generales.php';
-     * $paths_conf->database = '/path/to/database.php';
-     * $paths_conf->views = '/path/to/views.php';
-     * $result = $configuraciones->valida_confs($paths_conf);
-     * if (is_array($result)) {
-     *     echo "Se produjo un error al validar las configuraciones: " . $result['mensaje'];
-     * } else {
-     *     echo "Las configuraciones se validaron correctamente.";
+     * $paths_conf->generales = 'config/generales.php';
+     * $paths_conf->database = 'config/database.php';
+     * $paths_conf->views = 'config/views.php';
+     * ```
+     *
+     * @return bool|array Devuelve `true` si todas las configuraciones son válidas.
+     *                    Devuelve un `array` de error si alguna validación falla, con mensaje y datos asociados.
+     *
+     * @throws errores Lanza una excepción o devuelve array con mensaje si alguna validación de archivo o namespace falla.
+     *
+     * @version 16.79.0
+     * @author Martin Gamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_confs.21.28.0
+     *
+     * @example Validación correcta de todas las configuraciones:
+     * ```php
+     * use validacion\confs\configuraciones;
+     *
+     * $validador = new configuraciones();
+     * $paths_conf = new stdClass();
+     * $paths_conf->generales = 'config/generales.php';
+     * $paths_conf->database = 'config/database.php';
+     * $paths_conf->views = 'config/views.php';
+     *
+     * $resultado = $validador->valida_confs($paths_conf);
+     * if ($resultado === true) {
+     *     echo "Todas las configuraciones están correctamente validadas.";
      * }
      * ```
-     * @version 16.79.0
-     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_confs.21.28.0
+     *
+     * @example Error al validar una configuración inexistente:
+     * ```php
+     * $paths_conf = new stdClass();
+     * $paths_conf->generales = 'config/generales.php';
+     * $paths_conf->database = 'config/no_existe.php';
+     * $paths_conf->views = 'config/views.php';
+     *
+     * $resultado = $validador->valida_confs($paths_conf);
+     * if (is_array($resultado)) {
+     *     echo "Error: " . $resultado['mensaje'];
+     * }
+     * ```
      */
     final public function valida_confs(stdClass $paths_conf): bool|array
     {
@@ -84,19 +160,47 @@ class configuraciones extends validacion {
 
 
     /**
-     * TOTAL
-     * Esta función valida la configuración necesaria para un proyecto Composer.
+     * REG
+     * Valida que la configuración esté registrada correctamente en `composer.json`.
      *
-     * @param   string $tipo_conf El tipo de configuración que se desea validar.
-     * @return  bool|array Si la validación es exitosa, devuelve true.
-     *                     Si la validación falla, entonces se devolverá un array
-     *                     con el error que ocurrió.
-     * @throws  errores Excepción lanzada si ocurre un error al codificar el objeto a formato JSON.
+     * Esta función verifica si la clase de configuración especificada existe en el autoload de Composer
+     * bajo el namespace `config\`. Si no está registrada, se genera un mensaje de error indicando cómo
+     * registrar el namespace en el `composer.json`, utilizando PSR-4.
      *
-     * @author  Martin Gamboa
+     * También construye un ejemplo de la clave que debe agregarse al `composer.json` en caso de estar ausente,
+     * y sugiere ejecutar `composer update` después de la modificación.
+     *
+     * @param string $tipo_conf El nombre del archivo de configuración (sin extensión) que se desea validar.
+     *                          Por ejemplo: `generales`, `database`, `views`.
+     *
+     * @return true|array Devuelve `true` si la clase está registrada correctamente.
+     *                    Devuelve un array con el mensaje de error si no se encuentra la clase.
+     *
+     * @throws errores Si ocurre un error al codificar el arreglo JSON con `json_encode`.
+     *
      * @version 16.0.0
-     * @urhttps://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf_composer.21.28.0
+     * @author Martin Gamboa
+     * @url https://github.com/gamboamartin/administrador/wiki/administrador.validacion.confs.configuraciones.valida_conf_composer.21.28.0
      *
+     * @example Validación exitosa:
+     * ```php
+     * $validador = new \validacion\confs\configuraciones();
+     * $resultado = $validador->valida_conf_composer('generales');
+     * var_dump($resultado); // true
+     * ```
+     *
+     * @example Validación fallida (namespace no registrado en composer.json):
+     * ```php
+     * // Si no está registrado "config\\" => "config/" en composer.json:
+     * $resultado = $validador->valida_conf_composer('generales');
+     * print_r($resultado);
+     * // Resultado:
+     * // [
+     * //   'mensaje' => 'Agrega el registro {"autoload":{"psr-4":{"config\\":"config/"}}} en composer.json despues ejecuta composer update',
+     * //   'data' => '',
+     * //   'es_final' => true,
+     * // ]
+     * ```
      */
     private function valida_conf_composer(string $tipo_conf): true|array
     {
