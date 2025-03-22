@@ -128,6 +128,22 @@ class params_inputsTest extends test {
         errores::$error = false;
     }
 
+    public function test_regex_html()
+    {
+        errores::$error = false;
+        $params = new params_inputs();
+        //$params = new liberator($params);
+        $regex = true;
+
+        $resultado = $params->regex_html($regex);
+
+        $this->assertIsString( $resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("pattern='1'", $resultado);
+
+        errores::$error = false;
+    }
+
 
     public function test_required_html(): void
     {

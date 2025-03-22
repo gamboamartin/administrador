@@ -147,17 +147,64 @@ class params_inputs{
 
 
     /**
-     * Obtiene los parametros base para un input de tipo radio
-     * @param string $campo Campo a integrar
-     * @param string $tag Tag de input
-     * @return stdClass|array
+     * REG
+     * Genera los parámetros base para un input de tipo radio o checkbox.
+     *
+     * Este método crea una estructura estándar con clases CSS, atributos de accesibilidad
+     * y etiquetas, necesarios para renderizar correctamente un campo `radio` o `checkbox` en HTML.
+     *
+     * Si el parámetro `$tag` está vacío, se genera automáticamente a partir del `$campo`,
+     * reemplazando guiones bajos por espacios y capitalizando las palabras.
+     *
      * @version 11.9.0
+     * @stable true
+     *
+     * @param string $campo Nombre del campo, también utilizado como identificador y parte del nombre del input.
+     *                      Ejemplo: `'estatus_activo'`
+     * @param string $tag Texto que se mostrará como etiqueta (`label`) del input. Si está vacío, se genera automáticamente.
+     *                    Ejemplo: `'¿Activo?'`
+     *
+     * @return stdClass|array Retorna un objeto con los siguientes atributos:
+     * - `class_label` (array): Clases CSS para el label.
+     * - `class_radio` (array): Clases CSS para el input tipo radio.
+     * - `for` (string): Atributo `for` del label.
+     * - `ids_css` (array): Lista de identificadores CSS.
+     * - `label_html` (string): Texto para el label.
+     * - `title` (string): Título o tooltip.
+     * - `name` (string): Nombre del campo.
+     *
+     * Si ocurre un error (por ejemplo, si `$campo` está vacío), se devuelve un array con información del error.
+     *
+     * @example Generación básica:
+     * ```php
+     * $obj = new params_inputs();
+     * $resultado = $obj->params_base_chk('activo', '¿Activo?');
+     *
+     * print_r($resultado);
+     * // Salida:
+     * // stdClass Object
+     * // (
+     * //     [class_label] => ['form-check-label', 'chk']
+     * //     [class_radio] => ['form-check-input', 'activo']
+     * //     [for] => ¿Activo?
+     * //     [ids_css] => ['activo']
+     * //     [label_html] => ¿Activo?
+     * //     [title] => ¿Activo?
+     * //     [name] => activo
+     * // )
+     * ```
+     *
+     * @example Sin `tag` (se genera automáticamente):
+     * ```php
+     * $resultado = $obj->params_base_chk('estatus_activo', '');
+     * // `tag` será: 'Estatus Activo'
+     * ```
      */
     final public function params_base_chk(string $campo, string $tag): stdClass|array{
 
         $campo = trim($campo);
         if($campo === ''){
-            return $this->error->error(mensaje: 'Error campo vacio',data:  $campo);
+            return $this->error->error(mensaje: 'Error campo vacio',data:  $campo, es_final: true);
         }
 
         $tag = trim($tag);
@@ -200,11 +247,36 @@ class params_inputs{
 
 
     /**
-     * Integra un regex a un pattern input
-     * @param string $regex
-     * @return string
+     * REG
+     * Genera el atributo `pattern` en formato HTML a partir de una expresión regular proporcionada.
+     *
+     * Este método permite integrar validación por expresión regular directamente en un input HTML.
+     * Si el valor de `$regex` no está vacío, se construye el atributo `pattern='...'`.
+     * Si `$regex` está vacío, se devuelve una cadena vacía.
+     *
+     * @version 1.0.0
+     * @stable true
+     *
+     * @param string $regex Expresión regular que se desea aplicar como patrón de validación en un input HTML.
+     *                      Debe estar en formato válido para el atributo `pattern` de HTML5.
+     *
+     * @return string Devuelve una cadena con el atributo `pattern='...'` si `$regex` tiene contenido.
+     *                Si `$regex` está vacío, devuelve una cadena vacía.
+     *
+     * @example Uso con expresión regular válida:
+     * ```php
+     * $obj = new params_inputs();
+     * echo $obj->regex_html("[A-Za-z]{3,}");
+     * // Salida: pattern='[A-Za-z]{3,}'
+     * ```
+     *
+     * @example Uso con cadena vacía:
+     * ```php
+     * echo $obj->regex_html("");
+     * // Salida: (cadena vacía)
+     * ```
      */
-    public function regex_html(string $regex): string
+    final public function regex_html(string $regex): string
     {
         $regex_html = '';
         if($regex){
@@ -212,6 +284,7 @@ class params_inputs{
         }
         return $regex_html;
     }
+
 
 
     /**
