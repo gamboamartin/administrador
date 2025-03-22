@@ -88,9 +88,45 @@ class params_inputs{
 
 
     /**
-     * Integra los id para elementos de frontend
-     * @param array $ids_css Identificadores css
-     * @return string|array
+     * REG
+     * Genera el atributo `id` en formato HTML a partir de un arreglo de identificadores CSS.
+     *
+     * Este método construye el atributo `id` concatenando todos los identificadores proporcionados en el arreglo.
+     * Si alguno de los elementos del arreglo está vacío, retorna un error.
+     * Si el arreglo está vacío, retorna una cadena vacía.
+     *
+     * @version 1.0.0
+     * @stable true
+     *
+     * @param array $ids_css Arreglo de identificadores CSS que se usarán para formar el atributo `id` en HTML.
+     *                       Cada valor debe ser una cadena no vacía.
+     *
+     * @return string|array Devuelve una cadena con el atributo `id='...'` si todos los valores son válidos.
+     *                      Si hay un identificador vacío, devuelve un array de error con mensaje y datos asociados.
+     *
+     * @example Uso correcto:
+     * ```php
+     * $obj = new params_inputs();
+     * echo $obj->ids_html(['input-user', 'form-control']);
+     * // Salida: id='input-user form-control'
+     * ```
+     *
+     * @example Uso con identificador vacío:
+     * ```php
+     * echo $obj->ids_html(['input-user', '']);
+     * // Salida (error): [
+     * //     'mensaje' => 'Error id_css vacio',
+     * //     'data' => '',
+     * //     'es_final' => true,
+     * //     ...
+     * // ]
+     * ```
+     *
+     * @example Uso con arreglo vacío:
+     * ```php
+     * echo $obj->ids_html([]);
+     * // Salida: (cadena vacía)
+     * ```
      */
     final public function ids_html(array $ids_css): string|array
     {
@@ -98,7 +134,7 @@ class params_inputs{
         foreach ($ids_css as $id_css){
             $id_css = trim($id_css);
             if($id_css === ''){
-                return $this->error->error(mensaje: 'Error id_css vacio',data:  $id_css);
+                return $this->error->error(mensaje: 'Error id_css vacio',data:  $id_css, es_final: true);
             }
             $id_html.=" $id_css ";
         }
@@ -108,6 +144,7 @@ class params_inputs{
         }
         return $id_html;
     }
+
 
     /**
      * Obtiene los parametros base para un input de tipo radio
@@ -200,14 +237,51 @@ class params_inputs{
     }
 
 
-    public function multiple_html(bool $multiple): string
+    /**
+     * REG
+     * Genera el atributo `multiple` en formato HTML para ser utilizado en inputs como select o file.
+     *
+     * Este método permite agregar el atributo `multiple` en elementos HTML que admiten múltiples valores,
+     * como `<select multiple>` o `<input type="file" multiple>`. Si el parámetro `$multiple` es verdadero,
+     * se retornará la cadena `"multiple"`, de lo contrario se retornará una cadena vacía.
+     *
+     * @version 1.0.0
+     * @stable true
+     *
+     * @param bool $multiple Define si el input debe aceptar múltiples valores (`true`) o no (`false`).
+     *                       - `true`: Se retorna el atributo `multiple`
+     *                       - `false`: Se retorna una cadena vacía
+     *
+     * @return string Retorna la cadena `"multiple"` si `$multiple` es verdadero, de lo contrario una cadena vacía.
+     *
+     * @example Uso con select:
+     * ```php
+     * $obj = new params_inputs();
+     * echo "<select name='opciones[]' " . $obj->multiple_html(true) . ">";
+     * // Salida: <select name='opciones[]' multiple>
+     * ```
+     *
+     * @example Uso con input file:
+     * ```php
+     * echo "<input type='file' name='archivos[]' " . $obj->multiple_html(true) . ">";
+     * // Salida: <input type='file' name='archivos[]' multiple>
+     * ```
+     *
+     * @example Si se pasa `false`:
+     * ```php
+     * echo "<select name='opciones[]' " . $obj->multiple_html(false) . ">";
+     * // Salida: <select name='opciones[]'>
+     * ```
+     */
+    final public function multiple_html(bool $multiple): string
     {
         $multiple_html = '';
-        if($multiple){
+        if ($multiple) {
             $multiple_html = 'multiple';
         }
         return $multiple_html;
     }
+
 
     /**
      * @param string $place_holder

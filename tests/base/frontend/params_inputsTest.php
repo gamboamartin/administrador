@@ -63,6 +63,52 @@ class params_inputsTest extends test {
         errores::$error = false;
     }
 
+    public function test_ids_html()
+    {
+        errores::$error = false;
+        $params = new params_inputs();
+        //$params = new liberator($params);
+        $ids_css = array();
+        $ids_css[] = 'x';
+        $ids_css[] = 'y';
+
+        $resultado = $params->ids_html($ids_css);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals("id='x  y'",$resultado);
+
+
+        errores::$error = false;
+    }
+
+    public function test_multiple_html()
+    {
+        errores::$error = false;
+        $params = new params_inputs();
+        //$params = new liberator($params);
+        $multiple = false;
+
+        $resultado = $params->multiple_html($multiple);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('',$resultado);
+
+        errores::$error = false;
+
+        $multiple = true;
+
+        $resultado = $params->multiple_html($multiple);
+
+        $this->assertIsString($resultado);
+        $this->assertNotTrue(errores::$error);
+        $this->assertEquals('multiple',$resultado);
+
+
+        errores::$error = false;
+    }
+
     public function test_params_base_chk()
     {
         errores::$error = false;
