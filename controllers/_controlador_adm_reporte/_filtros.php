@@ -24,7 +24,24 @@ class _filtros
             }
         }
         return $filtro_rango;
+    }
 
+    final public function filtro_texto(string $table): array
+    {
+        $filtro = array();
+        if(!empty($_POST['folio'])){
+            $filtro[$table.'.folio'] = $_POST['folio'];
+        }
+
+        if(!empty($_POST['total'])){
+            $filtro[$table.'.total'] = $_POST['total'];
+        }
+
+        if(!empty($_POST['rfc'])){
+            $filtro['com_cliente.rfc'] = $_POST['rfc'];
+        }
+
+        return $filtro;
     }
 
     private function filtro_rango_post(string $table): array
@@ -42,11 +59,5 @@ class _filtros
         $filtro_rango[$table.'.fecha']['valor1'] = $_POST['fecha_inicial'];
         $filtro_rango[$table.'.fecha']['valor2'] = $_POST['fecha_final'];
         return $filtro_rango;
-
     }
-
-
-
-
-
 }
