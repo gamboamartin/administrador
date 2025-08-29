@@ -181,6 +181,7 @@ class _table
             $ths[] = array('etiqueta'=>'Tipo Cambio', 'campo'=>'com_tipo_cambio_monto');
             $ths[] = array('etiqueta'=>'Uso CFDI', 'campo'=>'cat_sat_uso_cfdi_descripcion');
             $ths[] = array('etiqueta'=>'Exportacion', 'campo'=>'fc_factura_exportacion');
+            $ths[] = array('etiqueta'=>'Estado', 'campo'=>'fc_factura_etapa');
         }
         if($adm_reporte_descripcion === 'Pagos'){
             $ths[] = array('etiqueta'=>'Folio', 'campo'=>'fc_complemento_pago_folio');
@@ -198,6 +199,7 @@ class _table
             $ths[] = array('etiqueta'=>'Tipo Cambio', 'campo'=>'com_tipo_cambio_monto');
             $ths[] = array('etiqueta'=>'Uso CFDI', 'campo'=>'cat_sat_uso_cfdi_descripcion');
             $ths[] = array('etiqueta'=>'Exportacion', 'campo'=>'fc_complemento_pago_exportacion');
+            $ths[] = array('etiqueta'=>'Estado', 'campo'=>'fc_complemento_pago_etapa');
         }
         if($adm_reporte_descripcion === 'Egresos'){
             $ths[] = array('etiqueta'=>'Folio', 'campo'=>'fc_nota_credito_folio');
@@ -215,6 +217,7 @@ class _table
             $ths[] = array('etiqueta'=>'Tipo Cambio', 'campo'=>'com_tipo_cambio_monto');
             $ths[] = array('etiqueta'=>'Uso CFDI', 'campo'=>'cat_sat_uso_cfdi_descripcion');
             $ths[] = array('etiqueta'=>'Exportacion', 'campo'=>'fc_nota_credito_exportacion');
+            $ths[] = array('etiqueta'=>'Estado', 'campo'=>'fc_nota_credito_etapa');
         }
         return $ths;
     }
