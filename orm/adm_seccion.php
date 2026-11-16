@@ -564,6 +564,13 @@ class adm_seccion extends _modelo_children {
      */
     final public function validar_acciones(array $secciones_sistema): array
     {
+        // Conservar la semántica histórica para consumidores con IDs no canónicos.
+        foreach ($secciones_sistema as $seccion) {
+            $id = $seccion['adm_seccion_id'] ?? null;
+            $canonico = (is_int($id) && $id > 0)
+                || (is_string($id) && preg_match('/^[1-9][0-9]*$/D', $id));
+            if (!$canonico) {
+
         foreach ($secciones_sistema as $item => $value){
             $adm_seccion_id = $value['adm_seccion_id'];
 
@@ -580,6 +587,20 @@ class adm_seccion extends _modelo_children {
             if (!in_array("lista",$stream)){
                 unset($secciones_sistema[$item]);
             }
+        }
+        return $secciones_sistema;
+                }
+        }
+        if (count($secciones_sistema) === 0) return [];
+        $ids = array_column($secciones_sistema, 'adm_seccion_id');
+        $acciones = (new adm_accion($this->link))->filtro_and(
+            columnas: ['adm_accion_descripcion', 'adm_seccion_id'],
+            in: ['llave' => 'adm_seccion.id', 'values' => $ids]);
+        if (errores::$error) return $this->error->error(mensaje: 'Error al obtener acciones ', data: $acciones);
+        $por_seccion = [];
+        foreach ($acciones->registros as $row) $por_seccion[$row['adm_seccion_id']][] = $row['adm_accion_descripcion'];
+        foreach ($secciones_sistema as $item => $value) {
+            if (!in_array('lista', $por_seccion[$value['adm_seccion_id']] ?? [])) unset($secciones_sistema[$item]);
         }
         return $secciones_sistema;
     }
