@@ -358,10 +358,25 @@ class controler{
     {
         if($header){
             $retorno_sig = trim($retorno_sig);
-            $retorno = $_SERVER['HTTP_REFERER'];
-
-            if($retorno_sig!==''){
-                $retorno = $retorno_sig;
+            // El retorno explícito del controlador no depende de una cabecera opcional.
+            $retorno = $retorno_sig;
+            if ($retorno === '') {
+                $referer = $_SERVER['HTTP_REFERER'] ?? null;
+                if (is_string($referer) && trim($referer) !== '' && !preg_match('/[\r\n]/', $referer)) {
+                    // Conservar la navegación histórica cuando existe una cabecera válida.
+                    $retorno = $referer;
+                } else {
+                    // Sin autoridad externa: reconstruir únicamente contexto del controlador.
+                    $query = [
+                        'seccion' => $this->seccion,
+                        'accion' => $this->registro_id > 0 ? 'modifica' : 'lista'
+                    ];
+                    if ($this->registro_id > 0) {
+                        $query['registro_id'] = $this->registro_id;
+                    }
+                    $query['session_id'] = $this->session_id ?? '';
+                    $retorno = './index.php?' . http_build_query($query, '', '&', PHP_QUERY_RFC3986);
+                }
             }
             header('Location:'.$retorno);
             exit;
