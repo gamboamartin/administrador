@@ -2306,10 +2306,6 @@ class modelo extends modelo_base
 
         $offset = ($pagina - 1) * $n_rows_for_page;
 
-        if ($n_rows <= $limit) {
-            $offset = 0;
-        }
-
         $result = $this->filtro_and(columnas: $columnas, extra_join: $extra_join, filtro: $filtro,
             filtro_especial: $filtro_especial, filtro_extra: $filtro_extra, filtro_rango: $filtro_rango, in: $in,
             limit: $limit, offset: $offset,
