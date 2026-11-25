@@ -263,25 +263,38 @@ class adm_menu extends _modelo_parent_sin_codigo {
     }
 
     public function menus_visibles_permitidos_full(){
-
-        $adm_menus = (new _base_accion())->menus_visibles_permitidos(link:$this->link, table: $this->tabla);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
+        $adm_menus = (new _base_accion())->menus_con_secciones_permitidas(link: $this->link);
+        if (errores::$error || $adm_menus === []) {
+            return $adm_menus;
         }
 
-        $adm_menus = (new _base_accion())->asigna_secciones_a_menu(adm_menus: $adm_menus,link:  $this->link);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al obtener menus',data:  $adm_menus);
+        // La pertenencia al sistema se consulta una sola vez, sin conservarla
+        // entre llamadas. Una sección puede pertenecer a más de un sistema.
+        $pertenencias = (new adm_seccion_pertenece(link: $this->link))->filtro_and(
+            columnas: ['adm_seccion_id'],
+            filtro: ['adm_sistema.descripcion' => (new generales())->sistema]);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al validar si existe en sistema', data: $pertenencias);
+        }
+        $secciones_del_sistema = [];
+        foreach ($pertenencias->registros as $pertenencia) {
+            $secciones_del_sistema[$pertenencia['adm_seccion_id']] = true;
         }
 
-        $adm_menus_out = $this->adm_menus_out(adm_menus: $adm_menus);
-        if(errores::$error){
-            return $this->error->error(mensaje: 'Error al integrar menus',data:  $adm_menus_out);
+        $adm_menus_out = [];
+        foreach ($adm_menus as $menu) {
+            foreach ($menu['adm_secciones'] as $seccion) {
+                if (!isset($secciones_del_sistema[$seccion['adm_seccion_id']])) {
+                    continue;
+                }
+                $adm_menus_out = $this->genera_adm_menu(
+                    adm_menu: $menu, adm_menus_out: $adm_menus_out, adm_seccion: $seccion);
+                if (errores::$error) {
+                    return $this->error->error(mensaje: 'Error al integrar menus', data: $adm_menus_out);
+                }
+            }
         }
-
-
         return $adm_menus_out;
-
     }
 
     /**

@@ -138,6 +138,69 @@ class _base_accion{
     }
 
     /**
+     * Lee el árbol autorizado por lotes. El usuario se vuelve a consultar en cada
+     * llamada: no conserva permisos en sesión ni entre peticiones.
+     */
+    public function menus_con_secciones_permitidas(PDO $link): array
+    {
+        $filtro = $this->filtro_menu_visible_permitido(link: $link);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al obtener filtro', data: $filtro);
+        }
+
+        $modelo = new adm_accion_grupo(link: $link);
+        $menus = $this->registros_menu_por_tabla(modelo: $modelo, tabla: 'adm_menu', filtro: $filtro);
+        if (errores::$error || $menus === []) {
+            return $menus;
+        }
+        foreach ($menus as $menu) {
+            $valida = $this->validacion->valida_ids(keys: ['adm_menu_id'], registro: $menu);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar adm_menu', data: $valida);
+            }
+        }
+        $secciones = $this->registros_menu_por_tabla(modelo: $modelo, tabla: 'adm_seccion', filtro: $filtro);
+        if (errores::$error) {
+            return $secciones;
+        }
+        foreach ($secciones as $seccion) {
+            $valida = $this->validacion->valida_ids(keys: ['adm_seccion_id'], registro: $seccion);
+            if (errores::$error) {
+                return $this->error->error(mensaje: 'Error al validar adm_seccion', data: $valida);
+            }
+        }
+        $acciones = $this->registros_menu_por_tabla(modelo: $modelo, tabla: 'adm_accion', filtro: $filtro);
+        if (errores::$error) {
+            return $acciones;
+        }
+
+        $acciones_por_seccion = [];
+        foreach ($acciones as $accion) {
+            $acciones_por_seccion[$accion['adm_accion_adm_seccion_id']][] = $accion;
+        }
+        $secciones_por_menu = [];
+        foreach ($secciones as $seccion) {
+            $seccion['adm_acciones'] = $acciones_por_seccion[$seccion['adm_seccion_id']] ?? [];
+            $secciones_por_menu[$seccion['adm_seccion_adm_menu_id']][] = $seccion;
+        }
+        foreach ($menus as $key => $menu) {
+            $menus[$key]['adm_secciones'] = $secciones_por_menu[$menu['adm_menu_id']] ?? [];
+        }
+        return $menus;
+    }
+
+    /** Conserva la proyección y agrupación usadas por cada consulta histórica. */
+    private function registros_menu_por_tabla(adm_accion_grupo $modelo, string $tabla, array $filtro): array
+    {
+        $resultado = $modelo->filtro_and(
+            columnas_by_table: [$tabla], filtro: $filtro, group_by: [$tabla . '.id']);
+        if (errores::$error) {
+            return $this->error->error(mensaje: 'Error al generar menus visibles permitidos', data: $resultado);
+        }
+        return $resultado->registros;
+    }
+
+    /**
      * Integra valores de css a row en proceso
      * @param int $id Identificador de registro
      * @param modelo $modelo Modelo en ejecucion
