@@ -192,8 +192,11 @@ class _base_accion{
     /** Conserva la proyección y agrupación usadas por cada consulta histórica. */
     private function registros_menu_por_tabla(adm_accion_grupo $modelo, string $tabla, array $filtro): array
     {
+        // MySQL no garantiza el orden implícito de GROUP BY. Los hijos conservan
+        // su orden histórico por id; el orden propio de los menús no se modifica.
+        $order = in_array($tabla, ['adm_seccion', 'adm_accion'], true) ? [$tabla . '.id' => 'ASC'] : [];
         $resultado = $modelo->filtro_and(
-            columnas_by_table: [$tabla], filtro: $filtro, group_by: [$tabla . '.id']);
+            columnas_by_table: [$tabla], filtro: $filtro, group_by: [$tabla . '.id'], order: $order);
         if (errores::$error) {
             return $this->error->error(mensaje: 'Error al generar menus visibles permitidos', data: $resultado);
         }

@@ -53,6 +53,7 @@ namespace gamboamartin\administrador\models {
         public static array $usuarios = [];
         public static array $pertenencias = [];
         public static int $consultas = 0;
+        public static array $argumentos_consulta = [];
         public static ?string $fallar_tabla = null;
         public static function filas(string $tabla): array { return match ($tabla) {
             'adm_menu' => self::$menus, 'adm_seccion' => self::$secciones,
@@ -97,9 +98,11 @@ namespace gamboamartin\administrador\models {
     }
     final class adm_accion_grupo {
         public function __construct(\PDO $link) {}
-        public function filtro_and(array $columnas_by_table, array $filtro, array $group_by): \stdClass {
+        public function filtro_and(array $columnas_by_table, array $filtro, array $group_by,
+                                   array $order = []): \stdClass {
             Catalogo::$consultas++;
             $tabla = $columnas_by_table[0];
+            Catalogo::$argumentos_consulta[] = ['tabla' => $tabla, 'order' => $order];
             if (Catalogo::$fallar_tabla === $tabla) {
                 \gamboamartin\errores\errores::$error = true;
                 return (object)['registros' => []];
@@ -189,6 +192,7 @@ namespace {
         Catalogo::$usuarios = [1 => ['adm_grupo_id' => 1], 2 => ['adm_grupo_id' => 2], 3 => ['adm_grupo_id' => 3]];
         Catalogo::$pertenencias = [[11, 'principal'], [11, 'principal'], [12, 'principal'], [21, 'principal'], [31, 'otro']];
         Catalogo::$fallar_tabla = null; Catalogo::$consultas = 0;
+        Catalogo::$argumentos_consulta = [];
         errores::$error = false; $_SESSION = ['usuario_id' => 1, 'grupo_id' => 999];
         \config\generales::$sistema_qa = 'principal';
     }
@@ -232,6 +236,15 @@ namespace {
     verifica(count($m->menus_visibles_permitidos_full()[0]['adm_secciones']) === 1, 'Contexto de otro usuario retenido'); $casos++;
     prepara(); $m = new adm_menu($pdo); $m->menus_visibles_permitidos_full(); \config\generales::$sistema_qa = 'otro';
     verifica($m->menus_visibles_permitidos_full()[0]['adm_menu_id'] === '3', 'Sistema anterior retenido'); $casos++;
+    // Regresión MySQL: GROUP BY puede entregar hijos en otro orden sin ORDER BY.
+    // Se verifica el contrato enviado al ORM; no se ordenan los árboles comparados.
+    prepara(); (new adm_menu($pdo))->menus_visibles_permitidos_full();
+    verifica(Catalogo::$argumentos_consulta === [
+        ['tabla' => 'adm_menu', 'order' => []],
+        ['tabla' => 'adm_seccion', 'order' => ['adm_seccion.id' => 'ASC']],
+        ['tabla' => 'adm_accion', 'order' => ['adm_accion.id' => 'ASC']],
+    ], 'El orden explícito debe aplicarse solo a secciones y acciones');
+    $casos++;
     echo json_encode(['estado' => 'PASS_MENU_EQUIVALENCIA', 'casos' => $casos, 'aserciones' => $aserciones,
         'consultas_fixture_antes' => $antes, 'consultas_fixture_despues' => $despues, 'sin_bd_red' => true], JSON_PRETTY_PRINT), PHP_EOL;
 }
